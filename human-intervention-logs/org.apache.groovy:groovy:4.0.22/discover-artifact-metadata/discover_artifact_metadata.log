@@ -1,0 +1,2222 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df42c-27b8-7840-83a3-66848e5c837b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.groovy:groovy:4.0.22
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.22" when "$version$" is replaced with "4.0.22".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+- Set "coordinates" to "org.apache.groovy:groovy:4.0.22".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.22".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata format in the repo, then check Maven/GitHub/Apache references for the version-specific source, test, and docs URLs before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy:4.0.22"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.apache\\.groovy|apache/groovy|\\\"language\\\"' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json:2:  "coordinates" : "org.apache.groovy:groovy:4.0.22"
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+
+web search: 
+web search: Maven Central org.apache.groovy groovy 4.0.22 sources jar tests jar
+codex
+Maven Central has a source artifact for `groovy:4.0.22`, so I’m checking whether there is an equivalent published test artifact or whether the project tag is the right fallback for tests.
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/
+web search: 
+web search: 
+web search: 
+web search: docs.groovy-lang.org 4.0.22 groovy api documentation
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.scala-lang/scala3-interfaces/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-sources.jar",
+    "repository-url" : "https://github.com/scala/scala3",
+    "test-code-url" : "https://github.com/scala/scala3/tree/$version$/tests",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-javadoc.jar",
+    "description" : "scala3-interfaces provides Java interfaces used by the Scala 3 compiler for compiler callbacks, diagnostics, source files, and source positions. These interfaces define the API surface that tools and integrations use to communicate with the Scala 3 compiler without depending on compiler implementation classes.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.3.5",
+      "3.3.6",
+      "3.3.7",
+      "3.4.0",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.5.0",
+      "3.5.1",
+      "3.5.2",
+      "3.6.0",
+      "3.6.1",
+      "3.6.2",
+      "3.6.3",
+      "3.6.4",
+      "3.7.0",
+      "3.7.1",
+      "3.7.2",
+      "3.7.3",
+      "3.7.4",
+      "3.8.0",
+      "3.8.1",
+      "3.8.2",
+      "3.8.3",
+      "3.8.4-RC1",
+      "3.8.4-RC2"
+    ],
+    "allowed-packages" : [
+      "dotty.tools.dotc.interfaces"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+      "1.8.21",
+      "1.8.22",
+      "1.9.0",
+      "1.9.10",
+      "1.9.20",
+      "1.9.21",
+      "1.9.22",
+      "1.9.23",
+      "1.9.24",
+      "1.9.25",
+      "2.0.0",
+      "2.0.10",
+      "2.0.20",
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'groovydoc|docs\\.groovy-lang|repo1\\.maven\\.org/maven2/.+sources|test-code-url' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-io/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/io/src/test/java",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/classloader/src/test/java",
+metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/os/src/test/java",
+metadata/io.smallrye.common/smallrye-common-os/index.json:24:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/os/src/test/java",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:21:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:7:    "test-code-url" : "https://github.com/lemire/javaewah/tree/JavaEWAH-$version$/src/test",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/relaxng-datatype/src/test",
+metadata/com.sun.xml.bind.external/rngom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/rngom/src/test",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:7:    "test-code-url" : "N/A",
+metadata/com.ongres.stringprep/stringprep/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+metadata/com.ongres.stringprep/saslprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/com.android.databinding/baseLibrary/index.json:7:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_$version$/integration-tests/",
+metadata/com.android.databinding/baseLibrary/index.json:21:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_1.5.0/integration-tests/",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:52:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:84:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.jnr/jnr-x86asm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-sources.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.graphql-java/graphql-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java/index.json:52:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:54:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/$version$/hibernate-models/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:23:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/$version$/duct-tape-$version$-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/$version$/src/test/java",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/org.hamcrest/hamcrest-library/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/org.slf4j/slf4j-ext/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v$version$/slf4j-ext/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/org.hamcrest/hamcrest-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:47:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:65:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.hamcrest/hamcrest/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/v$version$/hamcrest/src/test",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-process/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/process/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/$version$/slf4j-nop-$version$-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/$version$/slf4j-nop-$version$-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:21:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/io.smallrye.common/smallrye-common-function/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:41:    "test-code-url" : "N/A",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/resource/src/test",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/org.w3c.css/sac/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/guava-bootstrap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'not-for-native-image|replacement|reason' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+metadata/org.slf4j/log4j-over-slf4j/index.json:9:    "description" : "log4j-over-slf4j provides replacement classes for the Log4j version 1 API that route logging calls to SLF4J. It lets applications and dependencies written against Log4j use the SLF4J binding selected by the application without keeping a Log4j version 1 runtime implementation on the classpath.",
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:4:    "reason": "The published sangria_3 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the JVM implementation classes are in sangria-core_3 and sangria-derivation_3.",
+metadata/org.sangria-graphql/sangria_3/index.json:5:    "replacement": "org.sangria-graphql:sangria-core_3:4.2.9 and org.sangria-graphql:sangria-derivation_3:4.2.9"
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup.wire/wire-runtime/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup.wire:wire-runtime-jvm:5.3.3.",
+metadata/com.squareup.wire/wire-runtime/index.json:5:    "replacement": "com.squareup.wire:wire-runtime-jvm:5.3.3"
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrency-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrency/index.json:5:    "replacement": "co.touchlab:stately-concurrency-jvm:2.1.0"
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-strict-jvm:2.1.0.",
+metadata/co.touchlab/stately-strict/index.json:5:    "replacement": "co.touchlab:stately-strict-jvm:2.1.0"
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrent-collections-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrent-collections/index.json:5:    "replacement": "co.touchlab:stately-concurrent-collections-jvm:2.1.0"
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:9:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:26:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:41:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:4:    "reason": "The root multiplatform artifact publishes a non-JVM Kotlin metadata jar with no JVM class files; JVM consumers resolve the separate JVM variant.",
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm:0.4.16"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:4:    "reason": "The published root JAR contains Kotlin metadata and no JVM class files; Gradle module metadata redirects JVM variants to com.github.h0tk3y.betterParse:better-parse-jvm:0.4.4.",
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:5:    "replacement": "com.github.h0tk3y.betterParse:better-parse-jvm:0.4.4"
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup:kotlinpoet-jvm:2.3.0.",
+metadata/com.squareup/kotlinpoet/index.json:5:    "replacement": "com.squareup:kotlinpoet-jvm:2.3.0"
+metadata/io.insert-koin/koin-test/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-test/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to io.insert-koin:koin-test-jvm:4.2.1.",
+metadata/io.insert-koin/koin-test/index.json:5:    "replacement": "io.insert-koin:koin-test-jvm:4.2.1"
+metadata/io.insert-koin/koin-ktor/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-ktor/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to io.insert-koin:koin-ktor-jvm:4.2.1.",
+metadata/io.insert-koin/koin-ktor/index.json:5:    "replacement": "io.insert-koin:koin-ktor-jvm:4.2.1"
+metadata/io.insert-koin/koin-core/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-core/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to io.insert-koin:koin-core-jvm:4.1.0.",
+metadata/io.insert-koin/koin-core/index.json:5:    "replacement": "io.insert-koin:koin-core-jvm:4.1.0"
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to app.cash.sqldelight:runtime-jvm:2.3.2.",
+metadata/app.cash.sqldelight/runtime/index.json:5:    "replacement": "app.cash.sqldelight:runtime-jvm:2.3.2"
+metadata/com.google.protobuf/protobuf-java-util/index.json:37:        "reason" : "Published POM for com.google.protobuf:protobuf-java-util:3.22.1 is malformed: dependency com.google.protobuf:protobuf-java uses invalid groupId '$com.google.protobuf' and omits the version."
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/primitive-adapters/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to app.cash.sqldelight:primitive-adapters-jvm:2.3.2.",
+metadata/app.cash.sqldelight/primitive-adapters/index.json:5:    "replacement": "app.cash.sqldelight:primitive-adapters-jvm:2.3.2"
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-codec-classes-quic:0.0.34.Final"
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-transport-classes-io_uring:0.0.26.Final"
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-transport-native-io_uring/index.json:4:    "reason": "The main JAR contains only module metadata, and platform classifier JARs carry native libraries; the JVM io_uring transport classes are published separately.",
+metadata/io.netty/netty-transport-native-io_uring/index.json:5:    "replacement": "io.netty:netty-transport-classes-io_uring:4.2.1.Final"
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:4:    "reason": "The default JAR contains only Maven metadata plus META-INF/versions/11/module-info.class, not application/library JVM classes for Native Image metadata; Java classes are published separately.",
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:5:    "replacement": "io.netty:netty-tcnative-classes:2.0.73.Final"
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:4:    "reason": "The default and macOS classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:5:    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+metadata/net.jcip/jcip-annotations/index.json:9:    "description" : "JCIP Annotations provides marker annotations from Java Concurrency in Practice to document thread-safety contracts such as @ThreadSafe, @NotThreadSafe, @Immutable, and @GuardedBy. The library contains only annotation types and adds no runtime behavior, helping tools and developers reason about concurrent code.",
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:34:            "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:132:                "$ref": "#/$defs/reason"
+
+web search: 
+web search: site:github.com/apache/groovy/tree GROOVY_4_0_22
+web search: 
+web search: https://github.com/apache/groovy
+web search: 
+web search: https://github.com/apache/groovy/tree/GROOVY_4_0_22
+web search: 
+web search: https://github.com/apache/groovy/tree/GROOVY_4_0_22/src/test
+codex
+The GitHub release tag is `GROOVY_4_0_22`, and the core tests live under `src/test` at that tag. The artifact is a normal JVM jar, so I’m leaving the Native Image exclusion fields out.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.groovy</groupId>
+  <artifactId>groovy</artifactId>
+  <version>4.0.22</version>
+  <name>Apache Groovy</name>
+  <description>Groovy: A powerful multi-faceted language for the JVM</description>
+  <url>https://groovy-lang.org</url>
+  <inceptionYear>2003</inceptionYear>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://apache.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>glaforge</id>
+      <name>Guillaume Laforge</name>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstrachan</id>
+      <name>James Strachan</name>
+      <email>james@coredevelopers.com</email>
+      <organization>Core Developers Network</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>skizz</id>
+      <name>Chris Stevenson</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jamiemc</id>
+      <name>Jamie McCrindle</name>
+      <organization>Three</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mattf</id>
+      <name>Matt Foemmel</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>alextkachman</id>
+      <name>Alex Tkachman</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>roshandawrani</id>
+      <name>Roshan Dawrani</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>spullara</id>
+      <name>Sam Pullara</name>
+      <email>sam@sampullara.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kasper</id>
+      <name>Kasper Nielsen</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>travis</id>
+      <name>Travis Kay</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>zohar</id>
+      <name>Zohar Melamed</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwilson</id>
+      <name>John Wilson</name>
+      <email>tug@wilson.co.uk</email>
+      <organization>The Wilson Partnership</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cpoirier</id>
+      <name>Chris Poirier</name>
+      <email>cpoirier@dreaming.org</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ckl</id>
+      <name>Christiaan ten Klooster</name>
+      <email>ckl@dacelo.nl</email>
+      <organization>Dacelo WebDevelopment</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>goetze</id>
+      <name>Steve Goetze</name>
+      <email>goetze@dovetail.com</email>
+      <organization>Dovetailed Technologies, LLC</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bran</id>
+      <name>Bing Ran</name>
+      <email>b55r@sina.com</email>
+      <organization>Leadingcare</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jez</id>
+      <name>Jeremy Rayner</name>
+      <email>jeremy.rayner@gmail.com</email>
+      <organization>javanicus</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstump</id>
+      <name>John Stump</name>
+      <email>johnstump2@yahoo.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>blackdrag</id>
+      <name>Jochen Theodorou</name>
+      <email>blackdrag@gmx.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>russel</id>
+      <name>Russel Winder</name>
+      <email>russel@winder.org.uk</email>
+      <organization>Concertant LLP &amp; It'z Interactive Ltd</organization>
+      <roles>
+        <role>Developer</role>
+        <role>Founder of Gant</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>phk</id>
+      <name>Pilho Kim</name>
+      <email>phkim@cluecom.co.kr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cstein</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmx.de</email>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-tests.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/groovy-4.0.22.jar https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22.jar && jar tf /tmp/groovy-4.0.22.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-javadoc.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-groovydoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 300ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 18:07:59 GMT
+content-type: text/html
+cf-ray: 9f6972bac8cebbf9-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 523ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 18:07:59 GMT
+content-type: application/java-archive
+content-length: 2583257
+cf-ray: 9f6972bbaff8bc12-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1352843
+etag: "06713b5848cc53853fdbbf89b28d3525"
+last-modified: Thu, 27 Jun 2024 07:17:57 GMT
+x-checksum-md5: 06713b5848cc53853fdbbf89b28d3525
+x-checksum-sha1: 221051b27d1747635652fcd2b772b81f5b19a6a9
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 04 May 2026 18:07:59 GMT
+content-type: application/java-archive
+content-length: 6717647
+cf-ray: 9f6972bc89bf0211-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 627301
+etag: "1bdb81dd85b594836677a89fec11b20b"
+last-modified: Thu, 27 Jun 2024 07:17:26 GMT
+x-checksum-md5: 1bdb81dd85b594836677a89fec11b20b
+x-checksum-sha1: 57c2950e28327cf33de959202916e5a1a463f3f3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 04 May 2026 18:07:59 GMT
+content-type: application/java-archive
+content-length: 6183421
+cf-ray: 9f6972bd4cedb159-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "63742d011ecf1915bc9632ddf8485bf4"
+last-modified: Thu, 27 Jun 2024 07:17:43 GMT
+x-checksum-md5: 63742d011ecf1915bc9632ddf8485bf4
+x-checksum-sha1: 80b401256f95ccee56f193fa1b8b55a7cd193fee
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 850ms:
+groovy/beans/Bindable.class
+groovy/beans/BindableASTTransformation.class
+groovy/beans/DefaultPropertyAccessor.class
+groovy/beans/DefaultPropertyReader.class
+groovy/beans/DefaultPropertyWriter.class
+groovy/beans/ListenerList.class
+groovy/beans/ListenerListASTTransformation$_addFireMethods_closure3.class
+groovy/beans/ListenerListASTTransformation$_visit_closure1.class
+groovy/beans/ListenerListASTTransformation$_visit_closure2.class
+groovy/beans/ListenerListASTTransformation.class
+groovy/beans/PropertyAccessor.class
+groovy/beans/PropertyReader.class
+groovy/beans/PropertyWriter.class
+groovy/beans/Vetoable.class
+groovy/beans/VetoableASTTransformation.class
+groovy/cli/CliBuilderException.class
+groovy/cli/Option.class
+groovy/cli/OptionField$CollectorHelper.class
+groovy/cli/OptionField.class
+groovy/cli/TypedOption.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22.pom | rg -n '<scm>|<connection>|<developerConnection>|<url>|<description>|<name>' -C 2" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+11-  <artifactId>groovy</artifactId>
+12-  <version>4.0.22</version>
+13:  <name>Apache Groovy</name>
+14:  <description>Groovy: A powerful multi-faceted language for the JVM</description>
+15:  <url>https://groovy-lang.org</url>
+16-  <inceptionYear>2003</inceptionYear>
+17-  <organization>
+18:    <name>Apache Software Foundation</name>
+19:    <url>https://apache.org</url>
+20-  </organization>
+21-  <licenses>
+22-    <license>
+23:      <name>The Apache Software License, Version 2.0</name>
+24:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+25-      <distribution>repo</distribution>
+26-    </license>
+--
+29-    <developer>
+30-      <id>glaforge</id>
+31:      <name>Guillaume Laforge</name>
+32-      <organization>Google</organization>
+33-      <roles>
+--
+37-    <developer>
+38-      <id>bob</id>
+39:      <name>bob mcwhirter</name>
+40-      <email>bob@werken.com</email>
+41-      <organization>The Werken Company</organization>
+--
+46-    <developer>
+47-      <id>jstrachan</id>
+48:      <name>James Strachan</name>
+49-      <email>james@coredevelopers.com</email>
+50-      <organization>Core Developers Network</organization>
+--
+55-    <developer>
+56-      <id>joe</id>
+57:      <name>Joe Walnes</name>
+58-      <organization>ThoughtWorks</organization>
+59-      <roles>
+--
+63-    <developer>
+64-      <id>skizz</id>
+65:      <name>Chris Stevenson</name>
+66-      <organization>ThoughtWorks</organization>
+67-      <roles>
+--
+71-    <developer>
+72-      <id>jamiemc</id>
+73:      <name>Jamie McCrindle</name>
+74-      <organization>Three</organization>
+75-      <roles>
+--
+79-    <developer>
+80-      <id>mattf</id>
+81:      <name>Matt Foemmel</name>
+82-      <organization>ThoughtWorks</organization>
+83-      <roles>
+--
+87-    <developer>
+88-      <id>alextkachman</id>
+89:      <name>Alex Tkachman</name>
+90-      <roles>
+91-        <role>Developer Emeritus</role>
+--
+94-    <developer>
+95-      <id>roshandawrani</id>
+96:      <name>Roshan Dawrani</name>
+97-      <roles>
+98-        <role>Developer Emeritus</role>
+--
+101-    <developer>
+102-      <id>spullara</id>
+103:      <name>Sam Pullara</name>
+104-      <email>sam@sampullara.com</email>
+105-      <roles>
+--
+109-    <developer>
+110-      <id>kasper</id>
+111:      <name>Kasper Nielsen</name>
+112-      <roles>
+113-        <role>Developer Emeritus</role>
+--
+116-    <developer>
+117-      <id>travis</id>
+118:      <name>Travis Kay</name>
+119-      <roles>
+120-        <role>Developer Emeritus</role>
+--
+123-    <developer>
+124-      <id>zohar</id>
+125:      <name>Zohar Melamed</name>
+126-      <roles>
+127-        <role>Developer Emeritus</role>
+--
+130-    <developer>
+131-      <id>jwilson</id>
+132:      <name>John Wilson</name>
+133-      <email>tug@wilson.co.uk</email>
+134-      <organization>The Wilson Partnership</organization>
+--
+139-    <developer>
+140-      <id>cpoirier</id>
+141:      <name>Chris Poirier</name>
+142-      <email>cpoirier@dreaming.org</email>
+143-      <roles>
+--
+147-    <developer>
+148-      <id>ckl</id>
+149:      <name>Christiaan ten Klooster</name>
+150-      <email>ckl@dacelo.nl</email>
+151-      <organization>Dacelo WebDevelopment</organization>
+--
+156-    <developer>
+157-      <id>goetze</id>
+158:      <name>Steve Goetze</name>
+159-      <email>goetze@dovetail.com</email>
+160-      <organization>Dovetailed Technologies, LLC</organization>
+--
+165-    <developer>
+166-      <id>bran</id>
+167:      <name>Bing Ran</name>
+168-      <email>b55r@sina.com</email>
+169-      <organization>Leadingcare</organization>
+--
+174-    <developer>
+175-      <id>jez</id>
+176:      <name>Jeremy Rayner</name>
+177-      <email>jeremy.rayner@gmail.com</email>
+178-      <organization>javanicus</organization>
+--
+183-    <developer>
+184-      <id>jstump</id>
+185:      <name>John Stump</name>
+186-      <email>johnstump2@yahoo.com</email>
+187-      <roles>
+--
+191-    <developer>
+192-      <id>blackdrag</id>
+193:      <name>Jochen Theodorou</name>
+194-      <email>blackdrag@gmx.org</email>
+195-      <roles>
+--
+199-    <developer>
+200-      <id>russel</id>
+201:      <name>Russel Winder</name>
+202-      <email>russel@winder.org.uk</email>
+203-      <organization>Concertant LLP &amp; It'z Interactive Ltd</organization>
+--
+209-    <developer>
+210-      <id>phk</id>
+211:      <name>Pilho Kim</name>
+212-      <email>phkim@cluecom.co.kr</email>
+213-      <roles>
+--
+217-    <developer>
+218-      <id>cstein</id>
+219:      <name>Christian Stein</name>
+220-      <email>sormuras@gmx.de</email>
+221-      <organization>CTSR.de</organization>
+--
+226-    <developer>
+227-      <id>mittie</id>
+228:      <name>Dierk Koenig</name>
+229-      <organization>Karakun AG</organization>
+230-      <roles>
+--
+234-    <developer>
+235-      <id>paulk</id>
+236:      <name>Paul King</name>
+237-      <email>paulk@asert.com.au</email>
+238-      <organization>OCI, Australia</organization>
+--
+244-    <developer>
+245-      <id>galleon</id>
+246:      <name>Guillaume Alleon</name>
+247-      <email>guillaume.alleon@gmail.com</email>
+248-      <roles>
+--
+252-    <developer>
+253-      <id>user57</id>
+254:      <name>Jason Dillon</name>
+255-      <email>jason@planet57.com</email>
+256-      <roles>
+--
+260-    <developer>
+261-      <id>shemnon</id>
+262:      <name>Danno Ferrin</name>
+263-      <roles>
+264-        <role>Developer Emeritus</role>
+--
+267-    <developer>
+268-      <id>jwill</id>
+269:      <name>James Williams</name>
+270-      <roles>
+271-        <role>Developer Emeritus</role>
+--
+274-    <developer>
+275-      <id>timyates</id>
+276:      <name>Tim Yates</name>
+277-      <roles>
+278-        <role>Developer</role>
+--
+281-    <developer>
+282-      <id>aalmiray</id>
+283:      <name>Andres Almiray</name>
+284-      <email>aalmiray@users.sourceforge.net</email>
+285-      <roles>
+--
+289-    <developer>
+290-      <id>mguillem</id>
+291:      <name>Marc Guillemot</name>
+292-      <email>mguillemot@yahoo.fr</email>
+293-      <roles>
+--
+297-    <developer>
+298-      <id>jimwhite</id>
+299:      <name>Jim White</name>
+300-      <email>jim@pagesmiths.com</email>
+301-      <organization>IFCX.org</organization>
+--
+306-    <developer>
+307-      <id>pniederw</id>
+308:      <name>Peter Niederwieser</name>
+309-      <email>pniederw@gmail.com</email>
+310-      <roles>
+--
+314-    <developer>
+315-      <id>andresteingress</id>
+316:      <name>Andre Steingress</name>
+317-      <roles>
+318-        <role>Developer</role>
+--
+321-    <developer>
+322-      <id>hamletdrc</id>
+323:      <name>Hamlet D'Arcy</name>
+324-      <email>hamletdrc@gmail.com</email>
+325-      <roles>
+--
+329-    <developer>
+330-      <id>melix</id>
+331:      <name>Cedric Champeau</name>
+332-      <email>cedric.champeau@gmail.com</email>
+333-      <roles>
+--
+337-    <developer>
+338-      <id>pascalschumacher</id>
+339:      <name>Pascal Schumacher</name>
+340-      <roles>
+341-        <role>Developer</role>
+--
+344-    <developer>
+345-      <id>sunlan</id>
+346:      <name>Daniel Sun</name>
+347-      <roles>
+348-        <role>Developer</role>
+--
+351-    <developer>
+352-      <id>rpopma</id>
+353:      <name>Remko Popma</name>
+354-      <roles>
+355-        <role>Developer</role>
+--
+358-    <developer>
+359-      <id>grocher</id>
+360:      <name>Graeme Rocher</name>
+361-      <roles>
+362-        <role>Developer</role>
+--
+365-    <developer>
+366-      <id>emilles</id>
+367:      <name>Eric Milles</name>
+368-      <organization>Thomson Reuters</organization>
+369-      <roles>
+--
+374-  <contributors>
+375-    <contributor>
+376:      <name>Joern Eyrich</name>
+377-    </contributor>
+378-    <contributor>
+379:      <name>Robert Kuzelj</name>
+380-    </contributor>
+381-    <contributor>
+382:      <name>Rod Cope</name>
+383-    </contributor>
+384-    <contributor>
+385:      <name>Yuri Schimke</name>
+386-    </contributor>
+387-    <contributor>
+388:      <name>James Birchfield</name>
+389-    </contributor>
+390-    <contributor>
+391:      <name>Robert Fuller</name>
+392-    </contributor>
+393-    <contributor>
+394:      <name>Sergey Udovenko</name>
+395-    </contributor>
+396-    <contributor>
+397:      <name>Hallvard Traetteberg</name>
+398-    </contributor>
+399-    <contributor>
+400:      <name>Peter Reilly</name>
+401-    </contributor>
+402-    <contributor>
+403:      <name>Brian McCallister</name>
+404-    </contributor>
+405-    <contributor>
+406:      <name>Richard Monson-Haefel</name>
+407-    </contributor>
+408-    <contributor>
+409:      <name>Brian Larson</name>
+410-    </contributor>
+411-    <contributor>
+412:      <name>Artur Biesiadowski</name>
+413-      <email>abies@pg.gda.pl</email>
+414-    </contributor>
+415-    <contributor>
+416:      <name>Ivan Z. Ganza</name>
+417-    </contributor>
+418-    <contributor>
+419:      <name>Larry Jacobson</name>
+420-    </contributor>
+421-    <contributor>
+422:      <name>Jake Gage</name>
+423-    </contributor>
+424-    <contributor>
+425:      <name>Arjun Nayyar</name>
+426-    </contributor>
+427-    <contributor>
+428:      <name>Masato Nagai</name>
+429-    </contributor>
+430-    <contributor>
+431:      <name>Mark Chu-Carroll</name>
+432-    </contributor>
+433-    <contributor>
+434:      <name>Mark Turansky</name>
+435-    </contributor>
+436-    <contributor>
+437:      <name>Jean-Louis Berliet</name>
+438-    </contributor>
+439-    <contributor>
+440:      <name>Graham Miller</name>
+441-    </contributor>
+442-    <contributor>
+443:      <name>Marc Palmer</name>
+444-    </contributor>
+445-    <contributor>
+446:      <name>Tugdual Grall</name>
+447-    </contributor>
+448-    <contributor>
+449:      <name>Edwin Tellman</name>
+450-    </contributor>
+451-    <contributor>
+452:      <name>Evan "Hippy" Slatis</name>
+453-    </contributor>
+454-    <contributor>
+455:      <name>Mike Dillon</name>
+456-    </contributor>
+457-    <contributor>
+458:      <name>Bernhard Huber</name>
+459-    </contributor>
+460-    <contributor>
+461:      <name>Yasuharu Nakano</name>
+462-    </contributor>
+463-    <contributor>
+464:      <name>Marc DeXeT</name>
+465-    </contributor>
+466-    <contributor>
+467:      <name>Dejan Bosanac</name>
+468-      <email>dejan@nighttale.net</email>
+469-    </contributor>
+470-    <contributor>
+471:      <name>Denver Dino</name>
+472-    </contributor>
+473-    <contributor>
+474:      <name>Ted Naleid</name>
+475-    </contributor>
+476-    <contributor>
+477:      <name>Ted Leung</name>
+478-    </contributor>
+479-    <contributor>
+480:      <name>Merrick Schincariol</name>
+481-    </contributor>
+482-    <contributor>
+483:      <name>Chanwit Kaewkasi</name>
+484-    </contributor>
+485-    <contributor>
+486:      <name>Stefan Matthias Aust</name>
+487-    </contributor>
+488-    <contributor>
+489:      <name>Andy Dwelly</name>
+490-    </contributor>
+491-    <contributor>
+492:      <name>Philip Milne</name>
+493-    </contributor>
+494-    <contributor>
+495:      <name>Tiago Fernandez</name>
+496-    </contributor>
+497-    <contributor>
+498:      <name>Steve Button</name>
+499-    </contributor>
+500-    <contributor>
+501:      <name>Joachim Baumann</name>
+502-    </contributor>
+503-    <contributor>
+504:      <name>Jochen Eddel+</name>
+505-    </contributor>
+506-    <contributor>
+507:      <name>Ilinca V. Hallberg</name>
+508-    </contributor>
+509-    <contributor>
+510:      <name>Björn Westlin</name>
+511-    </contributor>
+512-    <contributor>
+513:      <name>Andrew Glover</name>
+514-    </contributor>
+515-    <contributor>
+516:      <name>Brad Long</name>
+517-    </contributor>
+518-    <contributor>
+519:      <name>John Bito</name>
+520-    </contributor>
+521-    <contributor>
+522:      <name>Jim Jagielski</name>
+523-    </contributor>
+524-    <contributor>
+525:      <name>Rodolfo Velasco</name>
+526-    </contributor>
+527-    <contributor>
+528:      <name>John Hurst</name>
+529-    </contributor>
+530-    <contributor>
+531:      <name>Merlyn Albery-Speyer</name>
+532-    </contributor>
+533-    <contributor>
+534:      <name>jeremi Joslin</name>
+535-    </contributor>
+536-    <contributor>
+537:      <name>UEHARA Junji</name>
+538-    </contributor>
+539-    <contributor>
+540:      <name>NAKANO Yasuharu</name>
+541-    </contributor>
+542-    <contributor>
+543:      <name>Dinko Srkoc</name>
+544-    </contributor>
+545-    <contributor>
+546:      <name>Raffaele Cigni</name>
+547-    </contributor>
+548-    <contributor>
+549:      <name>Alberto Vilches Raton</name>
+550-    </contributor>
+551-    <contributor>
+552:      <name>Paulo Poiati</name>
+553-    </contributor>
+554-    <contributor>
+555:      <name>Alexander Klein</name>
+556-    </contributor>
+557-    <contributor>
+558:      <name>Adam Murdoch</name>
+559-    </contributor>
+560-    <contributor>
+561:      <name>David Durham</name>
+562-    </contributor>
+563-    <contributor>
+564:      <name>Daniel Henrique Alves Lima</name>
+565-    </contributor>
+566-    <contributor>
+567:      <name>John Wagenleitner</name>
+568-    </contributor>
+569-    <contributor>
+570:      <name>Colin Harrington</name>
+571-    </contributor>
+572-    <contributor>
+573:      <name>Brian Alexander</name>
+574-    </contributor>
+575-    <contributor>
+576:      <name>Jan Weitz</name>
+577-    </contributor>
+578-    <contributor>
+579:      <name>Chris K Wensel</name>
+580-    </contributor>
+581-    <contributor>
+582:      <name>David Sutherland</name>
+583-    </contributor>
+584-    <contributor>
+585:      <name>Mattias Reichel</name>
+586-    </contributor>
+587-    <contributor>
+588:      <name>David Lee</name>
+589-    </contributor>
+590-    <contributor>
+591:      <name>Sergei Egorov</name>
+592-    </contributor>
+593-    <contributor>
+594:      <name>Hein Meling</name>
+595-    </contributor>
+596-    <contributor>
+597:      <name>Michael Baehr</name>
+598-    </contributor>
+599-    <contributor>
+600:      <name>Craig Andrews</name>
+601-    </contributor>
+602-    <contributor>
+603:      <name>Peter Ledbrook</name>
+604-    </contributor>
+605-    <contributor>
+606:      <name>Scott Stirling</name>
+607-    </contributor>
+608-    <contributor>
+609:      <name>Thibault Kruse</name>
+610-    </contributor>
+611-    <contributor>
+612:      <name>Tim Tiemens</name>
+613-    </contributor>
+614-    <contributor>
+615:      <name>Mike Spille</name>
+616-    </contributor>
+617-    <contributor>
+618:      <name>Nikolay Chugunov</name>
+619-    </contributor>
+620-    <contributor>
+621:      <name>Francesco Durbin</name>
+622-    </contributor>
+623-    <contributor>
+624:      <name>Paolo Di Tommaso</name>
+625-    </contributor>
+626-    <contributor>
+627:      <name>Rene Scheibe</name>
+628-    </contributor>
+629-    <contributor>
+630:      <name>Matias Bjarland</name>
+631-    </contributor>
+632-    <contributor>
+633:      <name>Tomasz Bujok</name>
+634-    </contributor>
+635-    <contributor>
+636:      <name>Richard Hightower</name>
+637-    </contributor>
+638-    <contributor>
+639:      <name>Andrey Bloschetsov</name>
+640-    </contributor>
+641-    <contributor>
+642:      <name>Yu Kobayashi</name>
+643-    </contributor>
+644-    <contributor>
+645:      <name>Nick Grealy</name>
+646-    </contributor>
+647-    <contributor>
+648:      <name>Vaclav Pech</name>
+649-    </contributor>
+650-    <contributor>
+651:      <name>Chuck Tassoni</name>
+652-    </contributor>
+653-    <contributor>
+654:      <name>Steven Devijver</name>
+655-    </contributor>
+656-    <contributor>
+657:      <name>Ben Manes</name>
+658-    </contributor>
+659-    <contributor>
+660:      <name>Troy Heninger</name>
+661-    </contributor>
+662-    <contributor>
+663:      <name>Andrew Eisenberg</name>
+664-    </contributor>
+665-    <contributor>
+666:      <name>Eric Milles</name>
+667-    </contributor>
+668-    <contributor>
+669:      <name>Kohsuke Kawaguchi</name>
+670-    </contributor>
+671-    <contributor>
+672:      <name>Scott Vlaminck</name>
+673-    </contributor>
+674-    <contributor>
+675:      <name>Hjalmar Ekengren</name>
+676-    </contributor>
+677-    <contributor>
+678:      <name>Rafael Luque</name>
+679-    </contributor>
+680-    <contributor>
+681:      <name>Joachim Heldmann</name>
+682-    </contributor>
+683-    <contributor>
+684:      <name>dgouyette</name>
+685-    </contributor>
+686-    <contributor>
+687:      <name>Marcin Grzejszczak</name>
+688-    </contributor>
+689-    <contributor>
+690:      <name>Pap Lőrinc</name>
+691-    </contributor>
+692-    <contributor>
+693:      <name>Guillaume Balaine</name>
+694-    </contributor>
+695-    <contributor>
+696:      <name>Santhosh Kumar T</name>
+697-    </contributor>
+698-    <contributor>
+699:      <name>Alan Green</name>
+700-    </contributor>
+701-    <contributor>
+702:      <name>Marty Saxton</name>
+703-    </contributor>
+704-    <contributor>
+705:      <name>Marcel Overdijk</name>
+706-    </contributor>
+707-    <contributor>
+708:      <name>Jonathan Carlson</name>
+709-    </contributor>
+710-    <contributor>
+711:      <name>Thomas Heller</name>
+712-    </contributor>
+713-    <contributor>
+714:      <name>John Stump</name>
+715-    </contributor>
+716-    <contributor>
+717:      <name>Ivan Ganza</name>
+718-    </contributor>
+719-    <contributor>
+720:      <name>Alex Popescu</name>
+721-    </contributor>
+722-    <contributor>
+723:      <name>Martin Kempf</name>
+724-    </contributor>
+725-    <contributor>
+726:      <name>Martin Ghados</name>
+727-    </contributor>
+728-    <contributor>
+729:      <name>Martin Stockhammer</name>
+730-    </contributor>
+731-    <contributor>
+732:      <name>Martin C. Martin</name>
+733-    </contributor>
+734-    <contributor>
+735:      <name>Alexey Verkhovsky</name>
+736-    </contributor>
+737-    <contributor>
+738:      <name>Alberto Mijares</name>
+739-    </contributor>
+740-    <contributor>
+741:      <name>Matthias Cullmann</name>
+742-    </contributor>
+743-    <contributor>
+744:      <name>Tomek Bujok</name>
+745-    </contributor>
+746-    <contributor>
+747:      <name>Stephane Landelle</name>
+748-    </contributor>
+749-    <contributor>
+750:      <name>Stephane Maldini</name>
+751-    </contributor>
+752-    <contributor>
+753:      <name>Mark Volkmann</name>
+754-    </contributor>
+755-    <contributor>
+756:      <name>Andrew Taylor</name>
+757-    </contributor>
+758-    <contributor>
+759:      <name>Vladimir Vivien</name>
+760-    </contributor>
+761-    <contributor>
+762:      <name>Vladimir Orany</name>
+763-    </contributor>
+764-    <contributor>
+765:      <name>Joe Wolf</name>
+766-    </contributor>
+767-    <contributor>
+768:      <name>Kent Inge Fagerland Simonsen</name>
+769-    </contributor>
+770-    <contributor>
+771:      <name>Tom Nichols</name>
+772-    </contributor>
+773-    <contributor>
+774:      <name>Ingo Hoffmann</name>
+775-    </contributor>
+776-    <contributor>
+777:      <name>Sergii Bondarenko</name>
+778-    </contributor>
+779-    <contributor>
+780:      <name>mgroovy</name>
+781-    </contributor>
+782-    <contributor>
+783:      <name>Dominik Przybysz</name>
+784-    </contributor>
+785-    <contributor>
+786:      <name>Jason Thomas</name>
+787-    </contributor>
+788-    <contributor>
+789:      <name>Trygve Amundsens</name>
+790-    </contributor>
+791-    <contributor>
+792:      <name>Morgan Hankins</name>
+793-    </contributor>
+794-    <contributor>
+795:      <name>Shruti Gupta</name>
+796-    </contributor>
+797-    <contributor>
+798:      <name>Ben Yu</name>
+799-    </contributor>
+800-    <contributor>
+801:      <name>Dejan Bosanac</name>
+802-    </contributor>
+803-    <contributor>
+804:      <name>Lidia Donajczyk-Lipinska</name>
+805-    </contributor>
+806-    <contributor>
+807:      <name>Peter Gromov</name>
+808-    </contributor>
+809-    <contributor>
+810:      <name>Johannes Link</name>
+811-    </contributor>
+812-    <contributor>
+813:      <name>Chris Reeves</name>
+814-    </contributor>
+815-    <contributor>
+816:      <name>Sean Timm</name>
+817-    </contributor>
+818-    <contributor>
+819:      <name>Dmitry Vyazelenko</name>
+820-    </contributor>
+821-  </contributors>
+822-  <mailingLists>
+823-    <mailingList>
+824:      <name>Groovy Developer List</name>
+825-      <archive>https://mail-archives.apache.org/mod_mbox/groovy-dev/</archive>
+826-    </mailingList>
+827-    <mailingList>
+828:      <name>Groovy User List</name>
+829-      <archive>https://mail-archives.apache.org/mod_mbox/groovy-users/</archive>
+830-    </mailingList>
+831-  </mailingLists>
+832:  <scm>
+833:    <connection>scm:git:https://github.com/apache/groovy.git</connection>
+834:    <developerConnection>scm:git:https://github.com/apache/groovy.git</developerConnection>
+835:    <url>https://github.com/apache/groovy.git</url>
+836-  </scm>
+837-  <issueManagement>
+838-    <system>jira</system>
+839:    <url>https://issues.apache.org/jira/browse/GROOVY</url>
+840-  </issueManagement>
+841-  <dependencyManagement>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/groovy/git/trees/GROOVY_4_0_22?recursive=1 | jq -r '.tree[].path' | rg '"'^src/main|''^subprojects/.*/src/main'"' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/groovy/git/trees/GROOVY_4_0_22?recursive=1 | jq -r '.tree[].path' | rg '"'^src/test|''^subprojects/.*/src/test'"' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 635ms:
+src/main
+src/main/groovy
+src/main/groovy/groovy
+src/main/groovy/groovy/beans
+src/main/groovy/groovy/beans/ListenerList.groovy
+src/main/groovy/groovy/beans/ListenerListASTTransformation.groovy
+src/main/groovy/groovy/cli
+src/main/groovy/groovy/cli/CliBuilderException.groovy
+src/main/groovy/groovy/cli/OptionField.groovy
+src/main/groovy/groovy/cli/UnparsedField.groovy
+src/main/groovy/groovy/cli/internal
+src/main/groovy/groovy/cli/internal/CliBuilderInternal.groovy
+src/main/groovy/groovy/cli/internal/OptionAccessor.groovy
+src/main/groovy/groovy/grape
+src/main/groovy/groovy/grape/GrapeIvy.groovy
+src/main/groovy/groovy/transform
+src/main/groovy/groovy/transform/AutoExternalize.groovy
+src/main/groovy/groovy/transform/Canonical.groovy
+src/main/groovy/groovy/transform/CompileDynamic.groovy
+src/main/groovy/groovy/transform/ConditionalInterrupt.groovy
+src/main/groovy/groovy/transform/Immutable.groovy
+src/main/groovy/groovy/transform/ImmutableProperties.groovy
+src/main/groovy/groovy/transform/RecordType.groovy
+src/main/groovy/groovy/transform/ThreadInterrupt.groovy
+src/main/groovy/groovy/transform/TimedInterrupt.groovy
+src/main/groovy/groovy/util
+src/main/groovy/groovy/util/ConfigSlurper.groovy
+src/main/groovy/groovy/util/FileNameByRegexFinder.groovy
+src/main/groovy/groovy/util/FileTreeBuilder.groovy
+src/main/groovy/org
+src/main/groovy/org/codehaus
+src/main/groovy/org/codehaus/groovy
+src/main/groovy/org/codehaus/groovy/ast
+src/main/groovy/org/codehaus/groovy/ast/builder
+src/main/groovy/org/codehaus/groovy/ast/builder/AstBuilder.groovy
+src/main/groovy/org/codehaus/groovy/ast/builder/AstSpecificationCompiler.groovy
+src/main/groovy/org/codehaus/groovy/classgen
+src/main/groovy/org/codehaus/groovy/classgen/genArrayAccess.groovy
+src/main/groovy/org/codehaus/groovy/classgen/genArrayUtil.groovy
+src/main/groovy/org/codehaus/groovy/classgen/genDgmMath.groovy
+src/main/groovy/org/codehaus/groovy/classgen/genMathModification.groovy
+src/main/groovy/org/codehaus/groovy/control
+src/main/groovy/org/codehaus/groovy/control/customizers
+src/main/groovy/org/codehaus/groovy/control/customizers/ASTTransformationCustomizer.groovy
+src/main/groovy/org/codehaus/groovy/control/customizers/builder
+src/main/groovy/org/codehaus/groovy/control/customizers/builder/ASTTransformationCustomizerFactory.groovy
+src/main/groovy/org/codehaus/groovy/control/customizers/builder/CompilerCustomizationBuilder.groovy
+src/main/groovy/org/codehaus/groovy/tools
+src/main/groovy/org/codehaus/groovy/tools/GrapeMain.groovy
+src/main/groovy/org/codehaus/groovy/tools/ast
+src/main/groovy/org/codehaus/groovy/tools/ast/TransformTestHelper.groovy
+src/main/groovy/org/codehaus/groovy/transform
+src/main/groovy/org/codehaus/groovy/transform/ASTTestTransformation.groovy
+src/main/groovy/org/codehaus/groovy/transform/ConditionalInterruptibleASTTransformation.groovy
+src/main/groovy/org/codehaus/groovy/transform/ThreadInterruptibleASTTransformation.groovy
+src/main/groovy/org/codehaus/groovy/transform/TimedInterruptibleASTTransformation.groovy
+src/main/groovy/org/codehaus/groovy/util
+src/main/groovy/org/codehaus/groovy/util/StringUtil.groovy
+src/main/java
+src/main/java/groovy
+src/main/java/groovy/beans
+src/main/java/groovy/beans/Bindable.java
+src/main/java/groovy/beans/BindableASTTransformation.java
+src/main/java/groovy/beans/DefaultPropertyAccessor.java
+src/main/java/groovy/beans/DefaultPropertyReader.java
+src/main/java/groovy/beans/DefaultPropertyWriter.java
+src/main/java/groovy/beans/PropertyAccessor.java
+src/main/java/groovy/beans/PropertyReader.java
+src/main/java/groovy/beans/PropertyWriter.java
+src/main/java/groovy/beans/Vetoable.java
+src/main/java/groovy/beans/VetoableASTTransformation.java
+src/main/java/groovy/cli
+src/main/java/groovy/cli/Option.java
+src/main/java/groovy/cli/TypedOption.java
+src/main/java/groovy/cli/Unparsed.java
+src/main/java/groovy/grape
+src/main/java/groovy/grape/GrabAnnotationTransformation.java
+src/main/java/groovy/grape/Grape.java
+src/main/java/groovy/grape/GrapeEngine.java
+src/main/java/groovy/inspect
+
+ succeeded in 692ms:
+src/test-fixtures
+src/test-fixtures/extmodule
+src/test-fixtures/extmodule/src
+src/test-fixtures/extmodule/src/main
+src/test-fixtures/extmodule/src/main/java
+src/test-fixtures/extmodule/src/main/java/org
+src/test-fixtures/extmodule/src/main/java/org/codehaus
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy/runtime
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy/runtime/m12n
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy/runtime/m12n/Groovy7225Extension.java
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy/runtime/m12n/TestMapExtension.java
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy/runtime/m12n/TestStaticStringExtension2.java
+src/test-fixtures/extmodule/src/main/java/org/codehaus/groovy/runtime/m12n/TestStringExtension2.java
+src/test-fixtures/extmodule/src/main/resources
+src/test-fixtures/extmodule/src/main/resources/META-INF
+src/test-fixtures/extmodule/src/main/resources/META-INF/groovy
+src/test-fixtures/extmodule/src/main/resources/META-INF/groovy/org.codehaus.groovy.runtime.ExtensionModule
+src/test-resources
+src/test-resources/META-INF
+src/test-resources/META-INF/groovy
+src/test-resources/META-INF/groovy/org.codehaus.groovy.runtime.ExtensionModule
+src/test-resources/META-INF/services
+src/test-resources/META-INF/services/java.lang.System$LoggerFinder
+src/test-resources/META-INF/services/org.codehaus.groovy.source.Extensions
+src/test-resources/bugs
+src/test-resources/bugs/BUG-GROOVY-10181.groovy
+src/test-resources/bugs/BUG-GROOVY-10406.groovy
+src/test-resources/bugs/BUG-GROOVY-10659.groovy
+src/test-resources/bugs/BUG-GROOVY-2324.groovy
+src/test-resources/bugs/BUG-GROOVY-4438.groovy
+src/test-resources/bugs/BUG-GROOVY-4757.groovy
+src/test-resources/bugs/BUG-GROOVY-4762.groovy
+src/test-resources/bugs/BUG-GROOVY-5318.groovy
+src/test-resources/bugs/BUG-GROOVY-5652.groovy
+src/test-resources/bugs/BUG-GROOVY-6038.groovy
+src/test-resources/bugs/BUG-GROOVY-8150.groovy
+src/test-resources/bugs/BUG-GROOVY-8161.groovy
+src/test-resources/bugs/BUG-GROOVY-8216.groovy
+src/test-resources/bugs/BUG-GROOVY-8311.groovy
+src/test-resources/bugs/BUG-GROOVY-8426.groovy
+src/test-resources/bugs/BUG-GROOVY-8511.groovy
+src/test-resources/bugs/BUG-GROOVY-8613.groovy
+src/test-resources/bugs/BUG-GROOVY-8641.groovy
+src/test-resources/bugs/BUG-GROOVY-8913.groovy
+src/test-resources/bugs/BUG-GROOVY-8991.groovy
+src/test-resources/bugs/BUG-GROOVY-9399.groovy
+src/test-resources/bugs/BUG-GROOVY-9427.groovy
+src/test-resources/bugs/BUG-GROOVY-9433.groovy
+src/test-resources/bugs/BUG-GROOVY-9449.groovy
+src/test-resources/bugs/BUG-GROOVY-9507.groovy
+src/test-resources/bugs/BUG-GROOVY-9511.groovy
+src/test-resources/bugs/BUG-GROOVY-9522.groovy
+src/test-resources/bugs/BUG-GROOVY-9692.groovy
+src/test-resources/bugs/BUG-GROOVY-9859.groovy
+src/test-resources/bugs/GROOVY-3898.groovy
+src/test-resources/bugs/GROOVY-8228.groovy
+src/test-resources/core
+src/test-resources/core/AnnotationDeclaration_01.groovy
+src/test-resources/core/Annotation_01.groovy
+src/test-resources/core/Annotation_02.groovy
+src/test-resources/core/Annotation_03.groovy
+src/test-resources/core/Annotation_04.groovy
+src/test-resources/core/Annotation_05.groovy
+src/test-resources/core/Annotation_06.groovy
+src/test-resources/core/Annotation_07.groovy
+src/test-resources/core/Annotation_08.groovy
+src/test-resources/core/Annotation_09.groovy
+src/test-resources/core/Annotation_10x.groovy
+src/test-resources/core/Array_01x.groovy
+src/test-resources/core/Assert_01.groovy
+src/test-resources/core/Assert_02x.groovy
+src/test-resources/core/Assert_03x.groovy
+src/test-resources/core/Assert_04x.groovy
+src/test-resources/core/Break_01.groovy
+src/test-resources/core/BreakingChange_01x.groovy
+src/test-resources/core/BreakingChange_02x.groovy
+src/test-resources/core/BreakingChange_03x.groovy
+src/test-resources/core/BreakingChange_04x.groovy
+src/test-resources/core/ClassDeclaration_01.groovy
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/ | rg -o 'href=\"["'^"]+"'"' | sed 's/href=\"//;s/\"//'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+../
+groovy-4.0.22-grooid.jar
+groovy-4.0.22-grooid.jar.asc
+groovy-4.0.22-grooid.jar.asc.md5
+groovy-4.0.22-grooid.jar.asc.sha1
+groovy-4.0.22-grooid.jar.asc.sha256
+groovy-4.0.22-grooid.jar.asc.sha512
+groovy-4.0.22-grooid.jar.md5
+groovy-4.0.22-grooid.jar.sha1
+groovy-4.0.22-grooid.jar.sha256
+groovy-4.0.22-grooid.jar.sha512
+groovy-4.0.22-groovydoc.jar
+groovy-4.0.22-groovydoc.jar.asc
+groovy-4.0.22-groovydoc.jar.asc.md5
+groovy-4.0.22-groovydoc.jar.asc.sha1
+groovy-4.0.22-groovydoc.jar.asc.sha256
+groovy-4.0.22-groovydoc.jar.asc.sha512
+groovy-4.0.22-groovydoc.jar.md5
+groovy-4.0.22-groovydoc.jar.sha1
+groovy-4.0.22-groovydoc.jar.sha256
+groovy-4.0.22-groovydoc.jar.sha512
+groovy-4.0.22-javadoc.jar
+groovy-4.0.22-javadoc.jar.asc
+groovy-4.0.22-javadoc.jar.asc.md5
+groovy-4.0.22-javadoc.jar.asc.sha1
+groovy-4.0.22-javadoc.jar.asc.sha256
+groovy-4.0.22-javadoc.jar.asc.sha512
+groovy-4.0.22-javadoc.jar.md5
+groovy-4.0.22-javadoc.jar.sha1
+groovy-4.0.22-javadoc.jar.sha256
+groovy-4.0.22-javadoc.jar.sha512
+groovy-4.0.22-raw.jar
+groovy-4.0.22-raw.jar.asc
+groovy-4.0.22-raw.jar.asc.md5
+groovy-4.0.22-raw.jar.asc.sha1
+groovy-4.0.22-raw.jar.asc.sha256
+groovy-4.0.22-raw.jar.asc.sha512
+groovy-4.0.22-raw.jar.md5
+groovy-4.0.22-raw.jar.sha1
+groovy-4.0.22-raw.jar.sha256
+groovy-4.0.22-raw.jar.sha512
+groovy-4.0.22-sources.jar
+groovy-4.0.22-sources.jar.asc
+groovy-4.0.22-sources.jar.asc.md5
+groovy-4.0.22-sources.jar.asc.sha1
+groovy-4.0.22-sources.jar.asc.sha256
+groovy-4.0.22-sources.jar.asc.sha512
+groovy-4.0.22-sources.jar.md5
+groovy-4.0.22-sources.jar.sha1
+groovy-4.0.22-sources.jar.sha256
+groovy-4.0.22-sources.jar.sha512
+groovy-4.0.22.jar
+groovy-4.0.22.jar.asc
+groovy-4.0.22.jar.asc.md5
+groovy-4.0.22.jar.asc.sha1
+groovy-4.0.22.jar.asc.sha256
+groovy-4.0.22.jar.asc.sha512
+groovy-4.0.22.jar.md5
+groovy-4.0.22.jar.sha1
+groovy-4.0.22.jar.sha256
+groovy-4.0.22.jar.sha512
+groovy-4.0.22.module
+groovy-4.0.22.module.asc
+groovy-4.0.22.module.asc.md5
+groovy-4.0.22.module.asc.sha1
+groovy-4.0.22.module.asc.sha256
+groovy-4.0.22.module.asc.sha512
+groovy-4.0.22.module.md5
+groovy-4.0.22.module.sha1
+groovy-4.0.22.module.sha256
+groovy-4.0.22.module.sha512
+groovy-4.0.22.pom
+groovy-4.0.22.pom.asc
+groovy-4.0.22.pom.asc.md5
+groovy-4.0.22.pom.asc.sha1
+groovy-4.0.22.pom.asc.sha256
+groovy-4.0.22.pom.asc.sha512
+groovy-4.0.22.pom.md5
+groovy-4.0.22.pom.sha1
+groovy-4.0.22.pom.sha256
+groovy-4.0.22.pom.sha512
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/groovy/tags?per_page=100 | jq -r '.[].name' | rg '4[._]0[._]22|GROOVY' | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc 'curl -fsI https://archive.apache.org/dist/groovy/4.0.22/sources/apache-groovy-src-4.0.22.zip || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc 'curl -fsI https://docs.groovy-lang.org/4.0.22/html/documentation/ || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 240ms:
+GROOVY_6_0_0_ALPHA_1
+GROOVY_5_0_6
+GROOVY_5_0_5
+GROOVY_5_0_4
+GROOVY_5_0_3
+GROOVY_5_0_2
+GROOVY_5_0_1
+GROOVY_5_0_0
+GROOVY_5_0_0_RC_1
+GROOVY_5_0_0_BETA_2
+GROOVY_5_0_0_BETA_1
+GROOVY_5_0_0_ALPHA_12
+GROOVY_5_0_0_ALPHA_11
+GROOVY_5_0_0_ALPHA_10
+GROOVY_5_0_0_ALPHA_9
+GROOVY_5_0_0_ALPHA_8
+GROOVY_5_0_0_ALPHA_7
+GROOVY_5_0_0_ALPHA_6
+GROOVY_5_0_0_ALPHA_5
+GROOVY_5_0_0_ALPHA_4
+
+ succeeded in 181ms:
+HTTP/1.1 200 OK
+Date: Mon, 04 May 2026 18:08:20 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Sun, 30 Jun 2024 08:00:18 GMT
+ETag: "90c425-61c16df23f8b8"
+Accept-Ranges: bytes
+Content-Length: 9487397
+Content-Type: application/zip
+
+
+ succeeded in 203ms:
+HTTP/1.1 200 OK
+Date: Mon, 04 May 2026 18:08:20 GMT
+Server: Apache/2.4.29 (Ubuntu)
+Accept-Ranges: bytes
+X-Mod-Pagespeed: 1.13.35.2-0
+Vary: Accept-Encoding
+Content-Security-Policy: default-src 'self' data: 'unsafe-inline' https://www.apachecon.com/ https://analytics.apache.org/ http://analytics.apache.org/; frame-src 'self' https://docs.groovy-lang.org/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://analytics.apache.org/; style-src 'self' 'unsafe-inline'; frame-ancestors 'self' https://groovy-lang.org/;
+Cache-Control: max-age=0, no-cache
+Content-Length: 2358244
+Content-Type: text/html
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/groovy/tree/v4.0.22/src/test || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/groovy/tree/4.0.22/src/test || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/groovy/tree/groovy-4.0.22/src/test || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/groovy/tree/apache-groovy-4.0.22/src/test || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 451ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 18:08:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=nMDkhPkToiE%2FuLqErTVyOnHC1KEYn0S9Hec6hCSUnqxRBpgs6AydCrf7rMMiBY%2BNe%2Blupnf1wUa9QJ2P9MgrXir38%2FDOxZJkyKFP%2BKUelhcyFOrfUZ3cVeF2Kyh9ECDk4aiC7hwDFWVD8rEYtpk6%2F8D0Zp0G6mvO%2BUa%2Fc9HhZ34z02YMle1yUxXY1C5m9A47hphhnwYRp9Ufu3H%2BEAU6aTa7iE0L7dXgTtD9KvjCOU40gYP4cnVf293aYxr0tMIjJr0dXlMa2%2FyPfA%2FrAkcSrg%3D%3D--w08Fd2Tg7twYLgE1--TDgMNUMPqChmf9%2Fuk7KRvg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.339802941.1777918107; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511F:10B654:1A57DF5:13E8576:69F8E09B
+
+
+ succeeded in 445ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 18:08:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=pAJGfOTw%2Buw0w3pAfs23zp0FMKdNBPmqoI3gguJoHkumm%2B%2FtwPPEv5Zt9aycrwLYQAu5zhtuwluCOSO0nMVGWN99oPef5IfPpM%2BsUyuopgsxlVWhfBQRjxushQE8s8z%2BS6516IF6f%2FZwoVlspK0Z0CQyaimP%2FAg1l9DUjwKdk5kc9zi8lqOil%2FjiTnkSAUUI3KX10cmv9OdIez6yJyggvbCuRAWETL3tobrvakRyxi1%2Fv6eCWlOtDM1izK%2B1ZGQo9sYI8hysLV5hOcZ0uTOSnw%3D%3D--jgv%2FyHeVjGNseWRx--GX8Fhfp7M%2Fw6breld2yZqw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.584597078.1777918107; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5125:156BDE:1B22447:1489A8F:69F8E09B
+
+
+ succeeded in 466ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 18:08:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=E0wfSOCbXRHOyT845AOtE9V6NikM%2FLfy2ZkofQZFQnb4W8i7uhoiV24lMByxVRAlbts0eH0Yo5VRi0842U5CXVOeApAkFJyvtAU5qVOyNVeoUcgMfBtGEnTF%2BvVZ0p04Hyoxw5sYPLvdNNHUKbIxoCMymGsqXoT5e7qnjdla2cCmxLV%2F6wc6k%2FzLZLNYfKPtOfgWYcyVsv63lk1cP9DAbKPRZry8HfvYyO4ATN3bEiu7seYXMi6Jd2KkrG2UGHnnSoRGX%2Btlw92pBDHSJS6xsQ%3D%3D--7IhBRMpU%2Fyjy%2B82U--wUtktUC8dGuLF7hDB23XRQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.165576239.1777918107; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5126:32C34D:1ABEA28:143761B:69F8E09B
+
+
+ succeeded in 1606ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 18:08:28 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=GkDg6HBXmEOfHLPw1BHPDmRjhAtbi1hzCqVwP1aNtym12PZTvO5JYQu6keprnvDqBx8ezmyuEvqkUyEd5jJ%2FrVEScQZfOHxwt6r2xfnDABpoFnKvSOiQk9339jUiqzn0IKoNVhxU5FW%2FZQ23v2gcZ9SbsvInAN%2FwW32SzghchOnvNiPcvFxdEVYeBrBoqUcg6UuIs0iExn4ma6i%2BLRNxuHwdyfIddcGHNHmrnVLHG76VNwwAU4yRNAmiu9wnDz9APNIuwASxz70uz3S25D7uXw%3D%3D--2GdgoXZGIK9qd8sw--QTF2pbZ3HMi34FYoQoc%2Bog%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.653116472.1777918107; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 18:08:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5124:1702A3:1B4A360:14A3F3B:69F8E09B
+
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://github.com/apache/groovy
+web search: 
+web search: docs.groovy-lang.org 4.0.22 html documentation Apache Groovy 4.0.22
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/apache-groovy-src-4.0.22.zip https://archive.apache.org/dist/groovy/4.0.22/sources/apache-groovy-src-4.0.22.zip && unzip -l /tmp/apache-groovy-src-4.0.22.zip | rg '/src/test/' | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/groovy/4.0.22/sources/ | rg -o 'href=\"["'^"]+"'"' | sed 's/href=\"//;s/\"//'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 138ms:
+http://downloads.apache.org/
+?C=N;O=D
+?C=M;O=A
+?C=S;O=A
+?C=D;O=A
+/dist/groovy/4.0.22/
+apache-groovy-src-4.0.22.zip
+apache-groovy-src-4.0.22.zip.asc
+apache-groovy-src-4.0.22.zip.sha256
+
+ succeeded in 16284ms:
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/
+    11220  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/AntTest.groovy
+     1494  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/AntTestCase.groovy
+     1536  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/FileNameFinderTest.groovy
+     2084  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy7362Test.groovy
+     1460  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy7812Bug.groovy
+     2682  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy8496Test.groovy
+     2422  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy8497Test.groovy
+     3579  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy8669Test.groovy
+     5023  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy8872Test.groovy
+     2899  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy8951Test.groovy
+     2799  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy8969Test.groovy
+     1784  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy9105Test.groovy
+     4981  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/Groovy9352Test.groovy
+     1733  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/SpoofTask.java
+     2182  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/groovy/ant/SpoofTaskContainer.java
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/codehaus/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/codehaus/groovy/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/codehaus/groovy/ant/
+     7810  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/codehaus/groovy/ant/GroovyTest.java
+     1001  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/codehaus/groovy/ant/GroovyTest2Class.groovy
+    12864  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-ant/src/test/groovy/org/codehaus/groovy/ant/GroovycTest.java
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/groovy/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/groovy/bugs/
+     1265  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/groovy/bugs/Groovy4272Bug.groovy
+     1502  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/groovy/bugs/Groovy5025Bug.groovy
+     1254  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/groovy/bugs/MyConstants4272.java
+     2168  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/groovy/bugs/MyConstantsASTTransformation4272.groovy
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/org/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/org/codehaus/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/org/codehaus/groovy/
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/org/codehaus/groovy/ast/
+     5342  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/org/codehaus/groovy/ast/CodeVisitorSupportTest.groovy
+        0  1980-02-01 00:00   groovy-4.0.22/subprojects/groovy-astbuilder/src/test/groovy/org/codehaus/groovy/ast/builder/
+
+codex
+I found no published `groovy-4.0.22-tests.jar`, so I’ll use the Apache 4.0.22 source release zip for the test suite because it contains the project tests and preserves the required `$version$` substitution. Maven Central will be used for the source jar and API documentation jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+index 9a4332016a0f4ae6b2cf13c66fcce7cd27679e1d..b36cbe1686cc781d26153a1f06912e732dc4bb2e
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy:4.0.22"
++  "coordinates" : "org.apache.groovy:groovy:4.0.22",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
++  "description" : "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+index 9a4332016a0f4ae6b2cf13c66fcce7cd27679e1d..b36cbe1686cc781d26153a1f06912e732dc4bb2e
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy:4.0.22"
++  "coordinates" : "org.apache.groovy:groovy:4.0.22",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
++  "description" : "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+codex
+The JSON is updated. I’m doing a quick structural validation and checking that the final substituted URLs resolve for version `4.0.22`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.groovy:groovy:4.0.22",
+  "repository-url": "https://github.com/apache/groovy",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
+  "test-code-url": "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
+  "description": "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
+  "language": {
+    "name": "groovy",
+    "version": "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json, re
+from pathlib import Path
+p=Path('build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json')
+data=json.loads(p.read_text())
+desc=data['description']
+print(len([s for s in re.split(r'(?<=[."'!?])'"\\s+', desc) if s]))
+print(data.get('language'))
+print('not-for-native-image' in data)
+PY" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+2
+{'name': 'groovy', 'version': '4.0'}
+False
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-sources.jar \\
+  https://archive.apache.org/dist/groovy/4.0.22/sources/apache-groovy-src-4.0.22.zip \\
+  https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/groovy-4.0.22-javadoc.jar; do \\
+  curl -fsI \""'$url" | sed -n '"'1p'; \\
+done" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+index 9a4332016a0f4ae6b2cf13c66fcce7cd27679e1d..b36cbe1686cc781d26153a1f06912e732dc4bb2e
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy:4.0.22"
++  "coordinates" : "org.apache.groovy:groovy:4.0.22",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
++  "description" : "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 294ms:
+HTTP/1.1 200 OK
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+index 9a4332016a0f4ae6b2cf13c66fcce7cd27679e1d..b36cbe1686cc781d26153a1f06912e732dc4bb2e
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy:4.0.22"
++  "coordinates" : "org.apache.groovy:groovy:4.0.22",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
++  "description" : "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json && git status --short -- build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+index 9a4332016a0f4ae6b2cf13c66fcce7cd27679e1d..b36cbe1686cc781d26153a1f06912e732dc4bb2e
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy:4.0.22"
++  "coordinates" : "org.apache.groovy:groovy:4.0.22",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
++  "description" : "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 198ms:
+web search: 
+web search: repo1.maven.org maven2 org apache groovy groovy 4.0.22 sources javadoc
+codex
+Updated [org.apache.groovy-groovy-4.0.22.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json).
+
+I used Maven Central for the sources and javadoc artifacts, GitHub as the repository root, and the Apache 4.0.22 source archive for tests because no Maven tests jar is published for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/?utm_source=openai))
+
+Validation done: JSON parses, the three substituted URLs return `200`, the description is exactly two sentences, `language` is set to Groovy `4.0`, and `not-for-native-image` is absent because the jar contains JVM class files.
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+index 9a4332016a0f4ae6b2cf13c66fcce7cd27679e1d..b36cbe1686cc781d26153a1f06912e732dc4bb2e
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy:4.0.22"
++  "coordinates" : "org.apache.groovy:groovy:4.0.22",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/groovy/groovy/$version$/groovy-$version$-javadoc.jar",
++  "description" : "Apache Groovy is a dynamic, optionally typed language for the JVM that provides the core runtime, language classes, AST transformations, and integration APIs used by Groovy programs. The groovy artifact is the main library for compiling and running Groovy code, including runtime support for scripting, metaprogramming, closures, and Java interoperability.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+123,320
+Updated [org.apache.groovy-groovy-4.0.22.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9/build/discovered-artifact-metadata/org.apache.groovy-groovy-4.0.22.json).
+
+I used Maven Central for the sources and javadoc artifacts, GitHub as the repository root, and the Apache 4.0.22 source archive for tests because no Maven tests jar is published for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/groovy/groovy/4.0.22/?utm_source=openai))
+
+Validation done: JSON parses, the three substituted URLs return `200`, the description is exactly two sentences, `language` is set to Groovy `4.0`, and `not-for-native-image` is absent because the jar contains JVM class files.
+Ran agent for org.apache.groovy:groovy:4.0.22 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9/build/agent-artifact-discovery-logs/org.apache.groovy-groovy-4.0.22.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2451-f64263d9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 43s
+9 actionable tasks: 4 executed, 5 from cache

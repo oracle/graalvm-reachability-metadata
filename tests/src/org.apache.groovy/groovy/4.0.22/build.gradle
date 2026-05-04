@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.compile.GroovyCompile
+
 /*
  * Copyright and related rights waived via CC0
  *
@@ -15,6 +17,10 @@ dependencies {
     testImplementation "org.apache.groovy:groovy:$libraryVersion"
     testImplementation localGroovy()
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(GroovyCompile).configureEach {
+    groovyOptions.optimizationOptions.indy = false
 }
 
 java {
