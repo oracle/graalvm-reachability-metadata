@@ -16,6 +16,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.EnumMap
 import java.util.EnumSet
+import kotlin.properties.Delegates
 
 public class ArrowAnnotationsJvmTest {
     @Test
@@ -202,6 +203,19 @@ public class ArrowAnnotationsJvmTest {
         assertThat(branchSelector.localValueBranch(enabled = true)).isEqualTo("mode:enabled")
         assertThat(branchSelector.localValueBranch(enabled = false)).isEqualTo("mode:disabled")
     }
+
+    @Test
+    fun syntheticAnnotationCanMarkDelegatedPropertiesAndFunctionTypes() {
+        val state: SyntheticObservableState = SyntheticObservableState(initialValue = "draft")
+        val formatter: @synthetic (@synthetic SyntheticString) -> @synthetic SyntheticString = { value: SyntheticString ->
+            "state=$value"
+        }
+
+        state.value = "published"
+
+        assertThat(state.renderWith(formatter)).isEqualTo("state=published")
+        assertThat(state.changes()).containsExactly("draft", "published")
+    }
 }
 
 private fun OpticsTarget.description(): String = when (this) {
@@ -372,4 +386,24 @@ private class SyntheticLocalValueSelector(
         @synthetic val mode: @synthetic SyntheticString = if (enabled) "enabled" else "disabled"
         return "$prefix:$mode"
     }
+}
+
+@synthetic
+private class SyntheticObservableState(
+    initialValue: @synthetic SyntheticString,
+) {
+    private val history: MutableList<SyntheticString> = mutableListOf(initialValue)
+
+    @synthetic
+    var value: @synthetic SyntheticString by Delegates.observable(initialValue) { _, _, newValue: SyntheticString ->
+        history += newValue
+    }
+
+    @synthetic
+    fun renderWith(
+        @synthetic formatter: @synthetic (@synthetic SyntheticString) -> @synthetic SyntheticString,
+    ): @synthetic SyntheticString = formatter(value)
+
+    @synthetic
+    fun changes(): List<@synthetic SyntheticString> = history.toList()
 }
