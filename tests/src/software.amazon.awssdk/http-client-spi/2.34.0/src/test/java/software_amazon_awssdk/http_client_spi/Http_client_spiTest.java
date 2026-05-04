@@ -106,6 +106,26 @@ public class Http_client_spiTest {
     }
 
     @Test
+    void queryParametersCanBeEncodedAsFormData() {
+        SdkHttpRequest request = SdkHttpRequest.builder()
+            .protocol("https")
+            .host("example.com")
+            .encodedPath("/submit")
+            .method(SdkHttpMethod.POST)
+            .putRawQueryParameter("multi", List.of("one", "two"))
+            .putRawQueryParameter("space", "two words")
+            .putRawQueryParameter("symbols", "a+b&c=d")
+            .build();
+
+        assertThat(request.encodedQueryParametersAsFormData()).hasValueSatisfying(formData ->
+            assertThat(formData.split("&")).containsExactlyInAnyOrder(
+                "multi=one",
+                "multi=two",
+                "space=two+words",
+                "symbols=a%2Bb%26c%3Dd"));
+    }
+
+    @Test
     void contentStreamProvidersCreateExpectedStreams() throws Exception {
         byte[] safeBytes = "safe".getBytes(UTF_8);
         ContentStreamProvider safeProvider = ContentStreamProvider.fromByteArray(safeBytes);
