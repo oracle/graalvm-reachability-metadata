@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 import io.grpc.Status.Code;
+import io.grpc.StatusException;
+import io.grpc.StatusRuntimeException;
 import io.opencensus.contrib.grpc.util.StatusConverter;
 import io.opencensus.trace.Status.CanonicalCode;
 import java.util.Map;
@@ -157,6 +159,34 @@ public class Opencensus_contrib_grpc_utilTest {
             assertThat(roundTrippedStatus.getCanonicalCode()).isEqualTo(mapping.getValue());
             assertThat(roundTrippedStatus.getDescription()).isEqualTo(description);
         }
+    }
+
+    @Test
+    void convertsGrpcStatusExtractedFromRuntimeException() {
+        String description = "authenticated user lacks the required permission";
+        StatusRuntimeException exception = io.grpc.Status.PERMISSION_DENIED
+                .withDescription(description)
+                .asRuntimeException();
+
+        io.opencensus.trace.Status convertedStatus = StatusConverter.fromGrpcStatus(
+                io.grpc.Status.fromThrowable(exception));
+
+        assertThat(convertedStatus.getCanonicalCode()).isEqualTo(CanonicalCode.PERMISSION_DENIED);
+        assertThat(convertedStatus.getDescription()).isEqualTo(description);
+    }
+
+    @Test
+    void convertedOpenCensusStatusCanBeUsedAsGrpcCheckedExceptionStatus() {
+        String description = "quota was exhausted while handling the RPC";
+        io.opencensus.trace.Status opencensusStatus = io.opencensus.trace.Status.RESOURCE_EXHAUSTED
+                .withDescription(description);
+
+        StatusException exception = StatusConverter.toGrpcStatus(opencensusStatus).asException();
+        io.grpc.Status recoveredStatus = io.grpc.Status.fromThrowable(exception);
+
+        assertThat(recoveredStatus.getCode()).isEqualTo(Code.RESOURCE_EXHAUSTED);
+        assertThat(recoveredStatus.getDescription()).isEqualTo(description);
+        assertThat(StatusConverter.fromGrpcStatus(recoveredStatus)).isEqualTo(opencensusStatus);
     }
 
     @Test
