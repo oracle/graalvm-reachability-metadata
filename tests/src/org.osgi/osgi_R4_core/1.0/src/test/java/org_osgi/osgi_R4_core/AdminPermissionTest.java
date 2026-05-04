@@ -10,6 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -39,6 +42,19 @@ public class AdminPermissionTest {
 
         assertThat(permission.getName()).isEqualTo("(id=7)");
         assertThat(permission.getActions()).isEqualTo("class,metadata");
+    }
+
+    @Test
+    void classLiteralHelperLoadsRequestedClass() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(AdminPermission.class, MethodHandles.lookup());
+        MethodHandle classLiteralHelper = lookup.findStatic(
+                AdminPermission.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class));
+
+        Class<?> loadedClass = (Class<?>) classLiteralHelper.invoke("java.lang.String");
+
+        assertThat(loadedClass).isEqualTo(String.class);
     }
 
     private static final class TestBundle implements Bundle {
