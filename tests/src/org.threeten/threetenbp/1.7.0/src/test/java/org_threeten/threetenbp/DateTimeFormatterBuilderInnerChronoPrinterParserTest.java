@@ -11,10 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.ThaiBuddhistChronology;
 import org.threeten.bp.chrono.ThaiBuddhistDate;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.TemporalQueries;
 
 public class DateTimeFormatterBuilderInnerChronoPrinterParserTest {
     @Test
@@ -26,5 +29,18 @@ public class DateTimeFormatterBuilderInnerChronoPrinterParserTest {
         String formatted = formatter.format(ThaiBuddhistDate.of(2567, 1, 1));
 
         assertThat(formatted).isEqualTo("Buddhist Calendar");
+    }
+
+    @Test
+    void appendChronologyIdFormatsAndParsesChronologyId() {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendChronologyId()
+                .toFormatter(Locale.ENGLISH);
+
+        String formatted = formatter.format(ThaiBuddhistDate.of(2567, 1, 1));
+        Chronology parsed = formatter.parse("ThaiBuddhist", TemporalQueries.chronology());
+
+        assertThat(formatted).isEqualTo("ThaiBuddhist");
+        assertThat(parsed).isSameAs(ThaiBuddhistChronology.INSTANCE);
     }
 }

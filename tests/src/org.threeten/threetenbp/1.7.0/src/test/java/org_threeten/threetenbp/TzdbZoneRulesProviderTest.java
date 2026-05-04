@@ -12,6 +12,8 @@ import java.util.NavigableMap;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.zone.TzdbZoneRulesProvider;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesProvider;
@@ -31,6 +33,8 @@ public class TzdbZoneRulesProviderTest {
         assertThat(provider).isInstanceOf(ZoneRulesProvider.class);
         assertThat(zoneIds).contains("Europe/London", "America/New_York", "Asia/Tokyo");
         assertThat(londonRules.isFixedOffset()).isFalse();
+        assertThat(londonRules.getOffset(Instant.parse("2016-01-01T00:00:00Z"))).isEqualTo(ZoneOffset.UTC);
+        assertThat(londonRules.getOffset(Instant.parse("2016-07-01T00:00:00Z"))).isEqualTo(ZoneOffset.ofHours(1));
         assertThat(londonVersions).isNotEmpty();
     }
 }
