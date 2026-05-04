@@ -172,6 +172,27 @@ public class Kotlinx_serialization_properties_jvmTest {
     }
 
     @Test
+    public fun serialNameAnnotationsDefineFlattenedPropertyPaths() {
+        val config: PublicClientConfig = PublicClientConfig(
+            displayName = "checkout-api",
+            endpoint = PublicEndpoint(host = "api.example.test", port = 443),
+        )
+
+        val encoded: Map<String, String> = Properties.Default.encodeToStringMap(PublicClientConfig.serializer(), config)
+        val decoded: PublicClientConfig = Properties.Default.decodeFromStringMap(PublicClientConfig.serializer(), encoded)
+
+        assertThat(encoded).containsExactlyInAnyOrderEntriesOf(
+            mapOf(
+                "display-name" to "checkout-api",
+                "server.host-name" to "api.example.test",
+                "server.port-number" to "443",
+            ),
+        )
+        assertThat(encoded.keys).doesNotContain("displayName", "endpoint.host", "endpoint.port")
+        assertThat(decoded).isEqualTo(config)
+    }
+
+    @Test
     public fun customSerializersModuleSupportsPolymorphicProperties() {
         val module: SerializersModule = SerializersModule {
             polymorphic(AuditEvent::class) {
@@ -267,6 +288,18 @@ public data class FeatureToggle(
     val name: String,
     val retryCount: Int = 3,
     val note: String? = null,
+)
+
+@Serializable
+public data class PublicClientConfig(
+    @SerialName("display-name") val displayName: String,
+    @SerialName("server") val endpoint: PublicEndpoint,
+)
+
+@Serializable
+public data class PublicEndpoint(
+    @SerialName("host-name") val host: String,
+    @SerialName("port-number") val port: Int,
 )
 
 @Serializable
