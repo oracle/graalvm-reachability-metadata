@@ -10,6 +10,7 @@ import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
+import io.grpc.Metadata;
 import io.grpc.Status.Code;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
@@ -187,6 +188,27 @@ public class Opencensus_contrib_grpc_utilTest {
         assertThat(recoveredStatus.getCode()).isEqualTo(Code.RESOURCE_EXHAUSTED);
         assertThat(recoveredStatus.getDescription()).isEqualTo(description);
         assertThat(StatusConverter.fromGrpcStatus(recoveredStatus)).isEqualTo(opencensusStatus);
+    }
+
+    @Test
+    void convertedOpenCensusStatusCanBeUsedAsGrpcRuntimeExceptionStatusWithTrailers() {
+        Metadata.Key<String> retryHintKey = Metadata.Key.of("retry-hint", Metadata.ASCII_STRING_MARSHALLER);
+        Metadata trailers = new Metadata();
+        trailers.put(retryHintKey, "do-not-retry");
+        String description = "response frame could not be decoded";
+        io.opencensus.trace.Status opencensusStatus = io.opencensus.trace.Status.DATA_LOSS
+                .withDescription(description);
+
+        StatusRuntimeException exception = StatusConverter.toGrpcStatus(opencensusStatus)
+                .asRuntimeException(trailers);
+        io.grpc.Status recoveredStatus = io.grpc.Status.fromThrowable(exception);
+        Metadata recoveredTrailers = io.grpc.Status.trailersFromThrowable(exception);
+
+        assertThat(recoveredStatus.getCode()).isEqualTo(Code.DATA_LOSS);
+        assertThat(recoveredStatus.getDescription()).isEqualTo(description);
+        assertThat(StatusConverter.fromGrpcStatus(recoveredStatus)).isEqualTo(opencensusStatus);
+        assertThat(recoveredTrailers).isNotNull();
+        assertThat(recoveredTrailers.get(retryHintKey)).isEqualTo("do-not-retry");
     }
 
     @Test
