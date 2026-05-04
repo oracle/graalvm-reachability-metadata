@@ -39,6 +39,11 @@ from utility_scripts.local_ci_verification import (
     local_ci_requires_human_intervention,
     run_local_ci_verification,
 )
+from utility_scripts.dynamic_access_report import (
+    DynamicAccessCallSite,
+    DynamicAccessCoverageReport,
+    load_dynamic_access_coverage_report,
+)
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 REPO = "oracle/graalvm-reachability-metadata"
@@ -62,11 +67,101 @@ def _extract_covered_dynamic_access_calls(library_stats: dict | None) -> int | N
     return covered_calls
 
 
-def format_dynamic_access_metadata_entry_note(metadata_entries: int, library_stats: dict | None) -> str:
+def _covered_dynamic_access_call_sites(
+        dynamic_access_report: DynamicAccessCoverageReport | None,
+) -> list[tuple[str, DynamicAccessCallSite]]:
+    """Return covered call sites from a generated dynamic-access report."""
+    if dynamic_access_report is None:
+        return []
+
+    covered_call_sites: list[tuple[str, DynamicAccessCallSite]] = []
+    for class_coverage in dynamic_access_report.classes:
+        for call_site in class_coverage.call_sites:
+            if call_site.covered:
+                covered_call_sites.append((class_coverage.class_name, call_site))
+    return covered_call_sites
+
+
+def _requires_zero_metadata_dynamic_access_evidence(metadata_entries: int, library_stats: dict | None) -> bool:
+    """Return True when PR publication needs covered call-site evidence."""
+    covered_calls = _extract_covered_dynamic_access_calls(library_stats)
+    return metadata_entries <= 0 and covered_calls is not None and covered_calls > 0
+
+
+def _validate_zero_metadata_dynamic_access_evidence(
+        coordinates: str,
+        metadata_entries: int,
+        library_stats: dict | None,
+        dynamic_access_report: DynamicAccessCoverageReport | None,
+) -> None:
+    """Reject zero-metadata dynamic-access PRs when covered call-site evidence is absent."""
+    covered_calls = _extract_covered_dynamic_access_calls(library_stats)
+    if metadata_entries > 0 or covered_calls is None or covered_calls <= 0:
+        return
+
+    if dynamic_access_report is None:
+        raise ValueError(
+            f"Refusing to create PR for {coordinates}: metadata entries are {metadata_entries} but "
+            f"library stats report {covered_calls} covered dynamic-access calls. The generated "
+            "dynamic-access report is required so the PR body can include covered call-site evidence."
+        )
+
+    covered_call_sites = _covered_dynamic_access_call_sites(dynamic_access_report)
+    if not covered_call_sites:
+        raise ValueError(
+            f"Refusing to create PR for {coordinates}: metadata entries are {metadata_entries} but "
+            f"library stats report {covered_calls} covered dynamic-access calls. The generated "
+            "dynamic-access report has no covered call-site evidence."
+        )
+    if len(covered_call_sites) < covered_calls:
+        raise ValueError(
+            f"Refusing to create PR for {coordinates}: metadata entries are {metadata_entries} but "
+            f"library stats report {covered_calls} covered dynamic-access calls. The generated "
+            f"dynamic-access report only contains evidence for {len(covered_call_sites)} covered call sites."
+        )
+
+
+def _format_covered_dynamic_access_call_site_evidence(
+        dynamic_access_report: DynamicAccessCoverageReport | None,
+) -> str:
+    """Format covered call sites for durable PR-body evidence."""
+    lines: list[str] = []
+    for class_name, call_site in _covered_dynamic_access_call_sites(dynamic_access_report):
+        line_suffix = ""
+        if call_site.line is not None:
+            line_suffix = f" (line {call_site.line})"
+        lines.append(
+            f"- `{class_name}`: [{call_site.metadata_type}] {call_site.tracked_api} <- "
+            f"{call_site.frame}{line_suffix}"
+        )
+    return "\n".join(lines)
+
+
+def format_dynamic_access_metadata_entry_note(
+        metadata_entries: int,
+        library_stats: dict | None,
+        dynamic_access_report: DynamicAccessCoverageReport | None = None,
+) -> str:
     """Explain large dynamic-access/metadata-entry count differences in generated PR bodies."""
     covered_calls = _extract_covered_dynamic_access_calls(library_stats)
-    if metadata_entries <= 0 or covered_calls is None:
+    if covered_calls is None or covered_calls <= 0:
         return ""
+    if metadata_entries <= 0:
+        covered_call_site_evidence = _format_covered_dynamic_access_call_site_evidence(dynamic_access_report)
+        if not covered_call_site_evidence:
+            raise ValueError(
+                "Covered dynamic-access call-site evidence is required when metadata entries are zero."
+            )
+        return (
+            "\n### Metadata/dynamic-access evidence\n\n"
+            f"- Covered dynamic-access calls: {covered_calls}\n"
+            f"- Metadata entries: {metadata_entries}\n"
+            "- Empty shipped metadata can be valid when covered sites resolve to metadata-free JDK behavior "
+            "or application/test-owned dynamic-access targets. The covered call-site evidence is included "
+            "so reviewers can verify that no library-owned metadata rule is missing.\n"
+            "- Covered dynamic-access call sites:\n"
+            f"{covered_call_site_evidence}\n"
+        )
     if covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
         return ""
 
@@ -95,6 +190,7 @@ def build_pull_request_body(
         large_library_part=None,
         series_id=None,
         local_ci_verification=None,
+        dynamic_access_report=None,
 ):
     """Build the PR body with metrics, strategy name, and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
@@ -116,6 +212,13 @@ def build_pull_request_body(
     part_line = ""
     if is_large_library_part:
         part_line = f"- Large-library series: `{series_id or 'unknown'}`\n- Part: {large_library_part}\n"
+
+    _validate_zero_metadata_dynamic_access_evidence(
+        coordinates,
+        entries_found,
+        library_stats,
+        dynamic_access_report,
+    )
 
     body = f"""
 ## What does this PR do?
@@ -139,7 +242,7 @@ Summary:
 - Generated lines of code: {generated_loc}
 - Tested library lines of code: {tested_library_loc}
 """
-    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats)
+    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats, dynamic_access_report)
     body += "\n" + format_forge_revision_section() + "\n"
     if library_stats:
         body += "\n" + format_stats_section(library_stats) + "\n"
@@ -195,6 +298,34 @@ def _fetch_pr_base(repo_path: str) -> str:
     return "FETCH_HEAD"
 
 
+def dynamic_access_coverage_report_path(repo_path: str, coordinates: str) -> str:
+    """Return the generated dynamic-access coverage report path for coordinates."""
+    group, artifact, library_version = parse_coordinate_parts(coordinates)
+    return os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        library_version,
+        "build",
+        "reports",
+        "dynamic-access",
+        "dynamic-access-coverage.json",
+    )
+
+
+def load_dynamic_access_coverage_report_for_coordinates(
+        repo_path: str,
+        coordinates: str,
+) -> DynamicAccessCoverageReport | None:
+    """Load the generated dynamic-access coverage report for coordinates when present."""
+    report_path = dynamic_access_coverage_report_path(repo_path, coordinates)
+    if not os.path.isfile(report_path):
+        return None
+    return load_dynamic_access_coverage_report(report_path)
+
+
 def create_pull_request(
         branch,
         coordinates,
@@ -231,7 +362,11 @@ def create_pull_request(
     if large_library_part is not None:
         title = f"{title} (part {large_library_part})"
 
-    library_stats = load_library_stats(repo_path, coordinates)
+    library_stats = load_library_stats(repo_path, coordinates) or matched.get("stats")
+    entries_found = int(metrics.get("metadata_entries", 0) or 0)
+    dynamic_access_report = None
+    if _requires_zero_metadata_dynamic_access_evidence(entries_found, library_stats):
+        dynamic_access_report = load_dynamic_access_coverage_report_for_coordinates(repo_path, coordinates)
     body = build_pull_request_body(
         issue_no=issue_no,
         coordinates=coordinates,
@@ -247,6 +382,7 @@ def create_pull_request(
         is_final_large_library_part=is_final_large_library_part,
         large_library_part=large_library_part,
         series_id=series_id,
+        dynamic_access_report=dynamic_access_report,
     )
 
     cmd = [
