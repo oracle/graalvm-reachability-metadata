@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.api.AnnotationsProto;
+import com.google.api.ClientProto;
+import com.google.api.HttpRule;
 import com.google.cloud.bigquery.storage.v1beta1.ArrowProto;
 import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowRecordBatch;
 import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowSchema;
@@ -307,6 +310,57 @@ public class Proto_google_cloud_bigquerystorage_v1beta1Test {
                 ReadOptions.getDescriptor().getName());
         assertEquals("google/cloud/bigquery/storage/v1beta1/table_reference.proto",
                 TableReferenceProto.getDescriptor().getName());
+    }
+
+    @Test
+    void generatedDescriptorsExposeHttpBindingsAndClientOptions() {
+        ServiceDescriptor service = Storage.getDescriptor().findServiceByName("BigQueryStorage");
+        assertNotNull(service);
+        assertEquals("bigquerystorage.googleapis.com", service.getOptions().getExtension(ClientProto.defaultHost));
+        assertEquals("https://www.googleapis.com/auth/bigquery,https://www.googleapis.com/auth/cloud-platform",
+                service.getOptions().getExtension(ClientProto.oauthScopes));
+
+        MethodDescriptor createReadSession = service.findMethodByName("CreateReadSession");
+        assertNotNull(createReadSession);
+        HttpRule createHttp = createReadSession.getOptions().getExtension(AnnotationsProto.http);
+        assertEquals("/v1beta1/{table_reference.project_id=projects/*}", createHttp.getPost());
+        assertEquals("*", createHttp.getBody());
+        assertEquals(1, createHttp.getAdditionalBindingsCount());
+        assertEquals("/v1beta1/{table_reference.dataset_id=projects/*/datasets/*}",
+                createHttp.getAdditionalBindings(0).getPost());
+        assertEquals("*", createHttp.getAdditionalBindings(0).getBody());
+        assertIterableEquals(List.of("table_reference,parent,requested_streams"),
+                createReadSession.getOptions().getExtension(ClientProto.methodSignature));
+
+        MethodDescriptor readRows = service.findMethodByName("ReadRows");
+        assertNotNull(readRows);
+        HttpRule readRowsHttp = readRows.getOptions().getExtension(AnnotationsProto.http);
+        assertEquals("/v1beta1/{read_position.stream.name=projects/*/streams/*}", readRowsHttp.getGet());
+        assertIterableEquals(List.of("read_position"),
+                readRows.getOptions().getExtension(ClientProto.methodSignature));
+
+        MethodDescriptor batchCreateReadSessionStreams = service.findMethodByName("BatchCreateReadSessionStreams");
+        assertNotNull(batchCreateReadSessionStreams);
+        HttpRule batchHttp = batchCreateReadSessionStreams.getOptions().getExtension(AnnotationsProto.http);
+        assertEquals("/v1beta1/{session.name=projects/*/sessions/*}", batchHttp.getPost());
+        assertEquals("*", batchHttp.getBody());
+        assertIterableEquals(List.of("session,requested_streams"),
+                batchCreateReadSessionStreams.getOptions().getExtension(ClientProto.methodSignature));
+
+        MethodDescriptor finalizeStream = service.findMethodByName("FinalizeStream");
+        assertNotNull(finalizeStream);
+        HttpRule finalizeHttp = finalizeStream.getOptions().getExtension(AnnotationsProto.http);
+        assertEquals("/v1beta1/{stream.name=projects/*/streams/*}", finalizeHttp.getPost());
+        assertEquals("*", finalizeHttp.getBody());
+        assertIterableEquals(List.of("stream"),
+                finalizeStream.getOptions().getExtension(ClientProto.methodSignature));
+
+        MethodDescriptor splitReadStream = service.findMethodByName("SplitReadStream");
+        assertNotNull(splitReadStream);
+        HttpRule splitHttp = splitReadStream.getOptions().getExtension(AnnotationsProto.http);
+        assertEquals("/v1beta1/{original_stream.name=projects/*/streams/*}", splitHttp.getGet());
+        assertIterableEquals(List.of("original_stream"),
+                splitReadStream.getOptions().getExtension(ClientProto.methodSignature));
     }
 
     @Test
