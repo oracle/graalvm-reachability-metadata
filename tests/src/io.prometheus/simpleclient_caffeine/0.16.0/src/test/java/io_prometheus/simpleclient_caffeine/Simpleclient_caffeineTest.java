@@ -11,8 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -141,6 +143,30 @@ public class Simpleclient_caffeineTest {
         assertThat(metricValue(samples, "caffeine_cache_load_failure", "async")).isEqualTo(0.0);
         assertThat(metricValue(samples, "caffeine_cache_estimated_size", "async")).isEqualTo(1.0);
         assertThat(summaryValue(samples, "caffeine_cache_load_duration_seconds_count", "async")).isEqualTo(1.0);
+    }
+
+    @Test
+    void collectReportsMetricsForManualAsyncCacheWithoutLoadSamples() throws Exception {
+        AsyncCache<String, String> cache = Caffeine.newBuilder()
+                .recordStats()
+                .executor(Runnable::run)
+                .buildAsync();
+        cache.put("ready", CompletableFuture.completedFuture("async-ready"));
+
+        assertThat(cache.getIfPresent("ready").get(1, SECONDS)).isEqualTo("async-ready");
+        assertThat(cache.getIfPresent("missing")).isNull();
+
+        CacheMetricsCollector collector = new CacheMetricsCollector();
+        collector.addCache("manual-async", cache);
+
+        List<MetricFamilySamples> samples = collector.collect();
+        assertThat(metricValue(samples, "caffeine_cache_hit", "manual-async")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_miss", "manual-async")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_requests", "manual-async")).isEqualTo(2.0);
+        assertThat(metricValue(samples, "caffeine_cache_estimated_size", "manual-async")).isEqualTo(1.0);
+        assertThat(family(samples, "caffeine_cache_load_failure").samples).isEmpty();
+        assertThat(family(samples, "caffeine_cache_loads").samples).isEmpty();
+        assertThat(family(samples, "caffeine_cache_load_duration_seconds").samples).isEmpty();
     }
 
     @Test
