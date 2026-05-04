@@ -35,10 +35,10 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
-import org.hibernate.jpamodelgen.Context;
-import org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor;
-import org.hibernate.jpamodelgen.util.FileTimeStampChecker;
-import org.hibernate.jpamodelgen.xml.JpaDescriptorParser;
+import org.hibernate.processor.Context;
+import org.hibernate.processor.HibernateProcessor;
+import org.hibernate.processor.util.FileTimeStampChecker;
+import org.hibernate.processor.xml.JpaDescriptorParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -90,7 +90,7 @@ public class JpaDescriptorParserTest {
 
         @Override
         public Map<String, String> getOptions() {
-            return Map.of(JPAMetaModelEntityProcessor.LAZY_XML_PARSING, Boolean.TRUE.toString());
+            return Map.of(HibernateProcessor.LAZY_XML_PARSING, Boolean.TRUE.toString());
         }
 
         @Override
