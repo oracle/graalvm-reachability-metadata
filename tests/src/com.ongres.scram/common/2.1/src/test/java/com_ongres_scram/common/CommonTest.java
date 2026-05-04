@@ -151,7 +151,7 @@ public class CommonTest {
         ClientFirstMessage simple = new ClientFirstMessage("user", RFC5802_CLIENT_NONCE);
 
         assertThat(simple.toString()).isEqualTo("n,," + RFC5802_CLIENT_FIRST_BARE);
-        assertThat(simple.writeToWithoutGs2Header(new StringBuffer()).toString()).isEqualTo(RFC5802_CLIENT_FIRST_BARE);
+        assertThat(simple.writeToWithoutGs2Header(new java.lang.StringBuffer()).toString()).isEqualTo(RFC5802_CLIENT_FIRST_BARE);
 
         ClientFirstMessage parsed = ClientFirstMessage.parseFrom(simple.toString());
         assertThat(parsed.getChannelBindingFlag()).isSameAs(Gs2CbindFlag.CLIENT_NOT);
@@ -312,7 +312,7 @@ public class CommonTest {
         assertThat(nonce.toString()).isEqualTo("r=abc123");
         assertThat(parsed.getChar()).isEqualTo('r');
         assertThat(parsed.getValue()).isEqualTo("abc123");
-        assertThat(ScramAttributeValue.writeTo(new StringBuffer(), ScramAttributes.USERNAME, "user").toString())
+        assertThat(ScramAttributeValue.writeTo(new java.lang.StringBuffer(), ScramAttributes.USERNAME, "user").toString())
                 .isEqualTo("n=user");
 
         assertThatThrownBy(() -> ScramAttributeValue.parse("abc123"))
@@ -331,7 +331,7 @@ public class CommonTest {
         assertThat(channelBinding.getChar()).isEqualTo('p');
         assertThat(channelBinding.getValue()).isEqualTo("tls-server-end-point");
         assertThat(channelBinding.toString()).isEqualTo("p=tls-server-end-point");
-        assertThat(Gs2AttributeValue.writeTo(new StringBuffer(), Gs2Attributes.AUTHZID, "authzid").toString())
+        assertThat(Gs2AttributeValue.writeTo(new java.lang.StringBuffer(), Gs2Attributes.AUTHZID, "authzid").toString())
                 .isEqualTo("a=authzid");
         assertThat(Gs2AttributeValue.parse(null)).isNull();
 
