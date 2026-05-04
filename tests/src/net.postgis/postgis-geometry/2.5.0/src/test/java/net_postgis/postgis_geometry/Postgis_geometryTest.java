@@ -257,6 +257,26 @@ public class Postgis_geometryTest {
     }
 
     @Test
+    void outerWktCanSuppressMeasuredTypeMarker() throws Exception {
+        Geometry measuredPoint = GeometryBuilder.geomFromString("POINTM(1 2 3)");
+        StringBuffer pointWithMeasureMarker = new StringBuffer();
+        StringBuffer pointWithoutMeasureMarker = new StringBuffer();
+
+        measuredPoint.outerWKT(pointWithMeasureMarker, true);
+        measuredPoint.outerWKT(pointWithoutMeasureMarker, false);
+
+        assertThat(pointWithMeasureMarker).hasToString("POINTM(1 2 3)");
+        assertThat(pointWithoutMeasureMarker).hasToString("POINT(1 2 3)");
+
+        Geometry measuredLine = GeometryBuilder.geomFromString("LINESTRINGM(0 0 5,3 4 6)");
+        StringBuffer lineWithoutMeasureMarker = new StringBuffer();
+
+        measuredLine.outerWKT(lineWithoutMeasureMarker, false);
+
+        assertThat(lineWithoutMeasureMarker).hasToString("LINESTRING(0 0 5,3 4 6)");
+    }
+
+    @Test
     void binaryWriterAndParserRoundTripRepresentativeGeometriesInBothEndiannesses() throws Exception {
         Geometry[] geometries = new Geometry[] {
                 measuredPoint(),
