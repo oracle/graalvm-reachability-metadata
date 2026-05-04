@@ -168,6 +168,60 @@ public class Proto_google_cloud_bigquerystorage_v1betaTest {
     }
 
     @Test
+    void nestedBuildersConstructAndMutateBatchCreateRequestsInPlace() {
+        BatchCreateMetastorePartitionsRequest.Builder batchBuilder = BatchCreateMetastorePartitionsRequest
+                .newBuilder()
+                .setParent(LOCATION_PARENT)
+                .setTraceId(TRACE_ID);
+        CreateMetastorePartitionRequest.Builder createBuilder = batchBuilder.addRequestsBuilder()
+                .setParent(LOCATION_PARENT);
+        MetastorePartition.Builder partitionBuilder = createBuilder.getMetastorePartitionBuilder()
+                .addAllValues(List.of("2026-05-06", "amer"))
+                .putAllParameters(Map.of("owner", "etl", "status", "new"));
+        partitionBuilder.getCreateTimeBuilder().setSeconds(1_700_100_000L);
+        partitionBuilder.getStorageDescriptorBuilder()
+                .setLocationUri("gs://warehouse/events/dt=2026-05-06/region=amer")
+                .setInputFormat("org.apache.hadoop.mapred.TextInputFormat")
+                .getSerdeInfoBuilder()
+                .setName("json-serde")
+                .setSerializationLibrary("org.apache.hive.hcatalog.data.JsonSerDe")
+                .putAllParameters(Map.of(
+                        "ignore.malformed.json", "true",
+                        "timestamp.formats", "yyyy-MM-dd HH:mm:ss"));
+        partitionBuilder.addFieldsBuilder().setName("payload").setType("STRING");
+        partitionBuilder.addFieldsBuilder().setName("ingested_at").setType("TIMESTAMP");
+        partitionBuilder.getFieldsBuilder(0).setType("JSON");
+
+        BatchCreateMetastorePartitionsRequest request = batchBuilder.build();
+
+        assertEquals(1, request.getRequestsCount());
+        MetastorePartition partition = request.getRequests(0).getMetastorePartition();
+        assertTrue(partition.hasCreateTime());
+        assertEquals(1_700_100_000L, partition.getCreateTime().getSeconds());
+        assertIterableEquals(List.of("2026-05-06", "amer"), partition.getValuesList());
+        assertEquals("JSON", partition.getFields(0).getType());
+        assertEquals("TIMESTAMP", partition.getFields(1).getType());
+        assertEquals("etl", partition.getParametersOrThrow("owner"));
+        assertEquals("org.apache.hadoop.mapred.TextInputFormat", partition.getStorageDescriptor().getInputFormat());
+        assertEquals("true", partition.getStorageDescriptor().getSerdeInfo().getParametersOrThrow(
+                "ignore.malformed.json"));
+
+        BatchCreateMetastorePartitionsRequest.Builder amendedBuilder = request.toBuilder();
+        amendedBuilder.getRequestsBuilder(0)
+                .getMetastorePartitionBuilder()
+                .removeParameters("status")
+                .putParameters("status", "queued")
+                .getStorageDescriptorBuilder()
+                .clearInputFormat();
+        BatchCreateMetastorePartitionsRequest amended = amendedBuilder.build();
+
+        MetastorePartition amendedPartition = amended.getRequests(0).getMetastorePartition();
+        assertEquals("queued", amendedPartition.getParametersOrThrow("status"));
+        assertEquals("", amendedPartition.getStorageDescriptor().getInputFormat());
+        assertEquals("org.apache.hadoop.mapred.TextInputFormat", partition.getStorageDescriptor().getInputFormat());
+    }
+
+    @Test
     void createUpdateDeleteAndBatchMessagesPreserveRequestsMasksAndResponses() throws Exception {
         MetastorePartition firstPartition = partition("2026-05-04", "emea");
         MetastorePartition secondPartition = partition("2026-05-05", "apac");
