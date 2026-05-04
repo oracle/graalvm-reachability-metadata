@@ -31,6 +31,7 @@ import javax.activation.ActivationDataFlavor;
 import javax.activation.CommandInfo;
 import javax.activation.CommandMap;
 import javax.activation.DataContentHandler;
+import javax.activation.DataContentHandlerFactory;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -104,6 +105,30 @@ public class Jakarta_activation_apiTest {
         assertThat(parameters.toString()).contains("charset=UTF-8", "format=flowed");
         assertThatThrownBy(() -> new MimeTypeParameterList("; broken"))
                 .isInstanceOf(MimeTypeParseException.class);
+    }
+
+    @Test
+    void dataHandlerUsesRegisteredDataContentHandlerFactory() throws Exception {
+        DataContentHandlerFactory factory = mimeType -> {
+            if ("application/x-factory-upper".equals(mimeType)) {
+                return new UppercaseTextContentHandler("application/x-factory-upper");
+            }
+            return null;
+        };
+        DataHandler.setDataContentHandlerFactory(factory);
+        DataHandler handler = new DataHandler("factory value", "application/x-factory-upper; charset=UTF-8");
+        DataFlavor flavor = handler.getTransferDataFlavors()[0];
+
+        assertThat(handler.isDataFlavorSupported(flavor)).isTrue();
+        assertThat(handler.getContent()).isEqualTo("factory value");
+
+        ByteArrayOutputStream directOutput = new ByteArrayOutputStream();
+        handler.writeTo(directOutput);
+        assertThat(directOutput.toString(StandardCharsets.UTF_8)).isEqualTo("FACTORY VALUE");
+
+        try (InputStream inputStream = handler.getInputStream()) {
+            assertThat(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8)).isEqualTo("FACTORY VALUE");
+        }
     }
 
     @Test
@@ -366,8 +391,15 @@ public class Jakarta_activation_apiTest {
     }
 
     private static final class UppercaseTextContentHandler implements DataContentHandler {
-        private final ActivationDataFlavor flavor = new ActivationDataFlavor(String.class, "application/x-upper",
-                "Uppercase text");
+        private final ActivationDataFlavor flavor;
+
+        private UppercaseTextContentHandler() {
+            this("application/x-upper");
+        }
+
+        private UppercaseTextContentHandler(String mimeType) {
+            this.flavor = new ActivationDataFlavor(String.class, mimeType, "Uppercase text");
+        }
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
