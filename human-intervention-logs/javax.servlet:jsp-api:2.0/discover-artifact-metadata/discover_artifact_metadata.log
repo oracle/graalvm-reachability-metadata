@@ -1,0 +1,885 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df56b-dc52-7642-bd33-c6f2dcdb376e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.servlet:jsp-api:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0" when "$version$" is replaced with "2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+- Set "coordinates" to "javax.servlet:jsp-api:2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s Maven metadata and upstream links first, then update the JSON in place with version-tokenized URLs where they resolve for `2.0`.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'javax\\.servlet:jsp-api|jsp-api' ." in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 0ms:
+./COVERAGE.md:288:| `javax.servlet.jsp:jsp-api` | 2.1 | 100.0% (4/4 calls) | <details><summary>Show</summary> This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.</details> |
+./metadata/javax.servlet.jsp/jsp-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+./metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+./tests/src/javax.servlet.jsp/jsp-api/2.1/build.gradle:14:    testImplementation "javax.servlet.jsp:jsp-api:$libraryVersion"
+./tests/src/javax.servlet.jsp/jsp-api/2.1/settings.gradle:20:rootProject.name = 'javax.servlet.jsp.jsp-api_tests'
+./tests/src/javax.servlet.jsp/jsp-api/2.1/gradle.properties:4:library.coordinates = javax.servlet.jsp:jsp-api:2.1
+./tests/src/javax.servlet.jsp/jsp-api/2.1/gradle.properties:6:metadata.dir = javax.servlet.jsp/jsp-api/2.1/
+./stats/javax.servlet.jsp/jsp-api/2.1/execution-metrics.json:4:    "library": "javax.servlet.jsp:jsp-api:2.1",
+./stats/javax.servlet.jsp/jsp-api/2.1/execution-metrics.json:59:      "test_file": "tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java",
+./stats/javax.servlet.jsp/jsp-api/2.1/execution-metrics.json:60:      "metadata_file": "metadata/javax.servlet.jsp/jsp-api/2.1/reachability-metadata.json"
+
+web search: 
+web search: javax.servlet jsp-api 2.0 Maven POM source repository
+codex
+The local repo already has metadata for the later `javax.servlet.jsp:jsp-api:2.1` artifact, so I’m checking whether the requested legacy coordinate is the same Maven lineage or a separate coordinate alias before copying any URL pattern.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 135ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet.jsp</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+</project>
+
+ succeeded in 158ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-11-06 01:08     50493      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-11-06 01:08        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-11-06 01:08        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-11-06 01:08       362      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-11-06 01:08       134      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-11-06 01:08       142      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       172      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       136      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 135ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-sources.jar" title="jsp-api-2.0-sources.jar">jsp-api-2.0-sources.jar</a>                           2006-07-17 11:09    118348      
+<a href="jsp-api-2.0-sources.jar.md5" title="jsp-api-2.0-sources.jar.md5">jsp-api-2.0-sources.jar.md5</a>                       2006-07-17 11:09        32      
+<a href="jsp-api-2.0-sources.jar.sha1" title="jsp-api-2.0-sources.jar.sha1">jsp-api-2.0-sources.jar.sha1</a>                      2006-07-17 11:09        40      
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-07-17 11:09     48457      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-07-17 11:09        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-07-17 11:09       157      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-07-17 11:09        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       121      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        85      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 147ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsI https://javadoc.io/doc/javax.servlet/jsp-api/2.0' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-tests.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsI https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 244ms:
+HTTP/2 303 
+date: Mon, 04 May 2026 23:56:41 GMT
+content-length: 0
+location: /doc/javax.servlet.jsp/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=GG5k%2BUDDh1eLfLX0SZnD0Yc%2BryOXWFmo6TLyHNbLoh%2F27%2FhyK6RdnDkKhoYLtwlFkEY3HW3Z83hbnOIucqcVYnZOGk2IMY1mkLeFTIgDMTzAfsBwyRYYx7tFF%2Fj2lOYaqC27lq8jjgUA"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f6b7188d9423b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 245ms:
+HTTP/2 303 
+date: Mon, 04 May 2026 23:56:41 GMT
+content-length: 0
+location: /doc/javax.servlet/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=xH6cw4V4s45XzIDreEGAxcjS08TYWaBTNZOYMOENdqi%2BRZcStbr2YkA8YdVuj8xy9LOXB%2BfFcdxKd%2F4SyoNco8bZhbZguO2LHxqxQ2GnNnDfGblosKXj%2B5zaxtslaNqoVRgxDaYcJS1%2B"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f6b7188d8573b5d-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 270ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:56:41 GMT
+content-type: text/html
+cf-ray: 9f6b71887b8270cb-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 298ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:56:41 GMT
+content-type: text/html
+cf-ray: 9f6b71887db0039d-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/javax.servlet.jsp/jsp-api/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"language\"|\"repository-url\"' build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:6:    "repository-url": "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-common-protos/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/ru.vyarus/generics-resolver/index.json:6:    "repository-url" : "https://github.com/xvik/generics-resolver",
+metadata/dev.zio/zio-config_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-config",
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:5:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:25:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-http",
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:5:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:24:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-prelude",
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-prelude",
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-config",
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-tracer_3/index.json:6:    "repository-url" : "https://github.com/zio/interop-cats",
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:6:    "repository-url" : "https://github.com/scalatra/scalatra",
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:30:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.javamoney.moneta/moneta-core/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/org.javamoney.moneta/moneta-core/index.json:21:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/dev.failsafe/failsafe/index.json:6:    "repository-url" : "https://github.com/failsafe-lib/failsafe",
+metadata/nekohtml/xercesMinimal/index.json:6:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+metadata/org.aspectj/aspectjweaver/index.json:6:    "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/com.google.api/gax/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.api/gax-httpjson/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jsp-api-javax-servlet-2.0.jar" https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar; jar tf "$tmp/jsp-api-javax-servlet-2.0.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jsp-api-javax-servlet-jsp-2.0.jar" https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar; jar tf "$tmp/jsp-api-javax-servlet-jsp-2.0.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/maven-metadata.xml' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/maven-metadata.xml' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 237ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+ succeeded in 288ms:
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+  <versioning />
+</metadata>
+ succeeded in 315ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+ succeeded in 346ms:
+<metadata>
+  <groupId>javax.servlet.jsp</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+</metadata>
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/a.jar" https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar; curl -fsSL -o "$tmp/b.jar" https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar; sha1sum "$tmp/a.jar" "$tmp/b.jar"; cmp -s "$tmp/a.jar" "$tmp/b.jar"; echo "cmp=$?"; unzip -p "$tmp/a.jar" META-INF/MANIFEST.MF; echo; unzip -p "$tmp/b.jar" META-INF/MANIFEST.MF; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 316ms:
+e6def06602b51b1d9be51f6c3fcdf163ecd01644  /tmp/tmp.61GeIoERx3/a.jar
+e749de55a88f61457866d80da527f5a01bc9c6f3  /tmp/tmp.61GeIoERx3/b.jar
+cmp=1
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.2
+Created-By: 1.4.2_06-b03 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: 1.5.0_04-b05 (Sun Microsystems Inc.)
+Extension-Name: javax.servlet.jsp
+Specification-Title: JavaServer Pages(TM) Specification
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Version: 2.0
+Implementation-Vendor: Sun Microsystems, Inc.
+Implementation-Vendor-Id: org.apache
+Implementation-Title: Sun Java System Application Server
+
+
+web search: 
+web search: "Implementation-Version: 2.0.public_draft" "javax.servlet.jsp"
+web search: 
+web search: "e6def06602b51b1d9be51f6c3fcdf163ecd01644"
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-sources.jar; jar tf "$tmp/sources.jar" | sed -n '"'1,120p'; echo '--- PageContext source header'; unzip -p \""'$tmp/sources.jar" javax/servlet/jsp/PageContext.java | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 308ms:
+dtd/
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/tagext/doc-files/
+dtd/jsp_2_0.xsd
+dtd/jspxml.dtd
+dtd/jspxml.xsd
+dtd/web-jsptaglibrary_1_1.dtd
+dtd/web-jsptaglibrary_1_2.dtd
+dtd/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/ErrorData.java
+javax/servlet/jsp/HttpJspPage.java
+javax/servlet/jsp/JspContext.java
+javax/servlet/jsp/JspEngineInfo.java
+javax/servlet/jsp/JspException.java
+javax/servlet/jsp/JspFactory.java
+javax/servlet/jsp/JspPage.java
+javax/servlet/jsp/JspTagException.java
+javax/servlet/jsp/JspWriter.java
+javax/servlet/jsp/PageContext.java
+javax/servlet/jsp/SkipPageException.java
+javax/servlet/jsp/el/ELException.java
+javax/servlet/jsp/el/ELParseException.java
+javax/servlet/jsp/el/Expression.java
+javax/servlet/jsp/el/ExpressionEvaluator.java
+javax/servlet/jsp/el/FunctionMapper.java
+javax/servlet/jsp/el/VariableResolver.java
+javax/servlet/jsp/el/package.html
+javax/servlet/jsp/package.html
+javax/servlet/jsp/tagext/BodyContent.java
+javax/servlet/jsp/tagext/BodyTag.java
+javax/servlet/jsp/tagext/BodyTagSupport.java
+javax/servlet/jsp/tagext/DynamicAttributes.java
+javax/servlet/jsp/tagext/FunctionInfo.java
+javax/servlet/jsp/tagext/IterationTag.java
+javax/servlet/jsp/tagext/JspFragment.java
+javax/servlet/jsp/tagext/JspTag.java
+javax/servlet/jsp/tagext/PageData.java
+javax/servlet/jsp/tagext/SimpleTag.java
+javax/servlet/jsp/tagext/SimpleTagSupport.java
+javax/servlet/jsp/tagext/Tag.java
+javax/servlet/jsp/tagext/TagAdapter.java
+javax/servlet/jsp/tagext/TagAttributeInfo.java
+javax/servlet/jsp/tagext/TagData.java
+javax/servlet/jsp/tagext/TagExtraInfo.java
+javax/servlet/jsp/tagext/TagFileInfo.java
+javax/servlet/jsp/tagext/TagInfo.java
+javax/servlet/jsp/tagext/TagLibraryInfo.java
+javax/servlet/jsp/tagext/TagLibraryValidator.java
+javax/servlet/jsp/tagext/TagSupport.java
+javax/servlet/jsp/tagext/TagVariableInfo.java
+javax/servlet/jsp/tagext/TryCatchFinally.java
+javax/servlet/jsp/tagext/ValidationMessage.java
+javax/servlet/jsp/tagext/VariableInfo.java
+javax/servlet/jsp/tagext/doc-files/BodyTagProtocol.gif
+javax/servlet/jsp/tagext/doc-files/IterationTagProtocol.gif
+javax/servlet/jsp/tagext/doc-files/TagProtocol.gif
+javax/servlet/jsp/tagext/doc-files/VariableInfo-1.gif
+javax/servlet/jsp/tagext/package.html
+--- PageContext source header
+/*
+ * The contents of this file are subject to the terms
+ * of the Common Development and Distribution License
+ * (the "License").  You may not use this file except
+ * in compliance with the License.
+ *
+ * You can obtain a copy of the license at
+ * glassfish/bootstrap/legal/CDDLv1.0.txt or
+ * https://glassfish.dev.java.net/public/CDDLv1.0.html.
+ * See the License for the specific language governing
+ * permissions and limitations under the License.
+ *
+ * When distributing Covered Code, include this CDDL
+ * HEADER in each file and include the License file at
+ * glassfish/bootstrap/legal/CDDLv1.0.txt.  If applicable,
+ * add the following below this CDDL HEADER, with the
+ * fields enclosed by brackets "[]" replaced with your
+ * own identifying information: Portions Copyright [yyyy]
+ * [name of copyright owner]
+ *
+ * Copyright 2005 Sun Microsystems, Inc. All rights reserved.
+ *
+ * Portions Copyright Apache Software Foundation.
+ */ 
+ 
+package javax.servlet.jsp;
+
+import java.io.IOException;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import javax.servlet.http.HttpSession;
+
+import javax.servlet.jsp.tagext.BodyContent;
+
+/**
+ * <p>
+ * PageContext extends JspContext to provide useful context information for
+ * when JSP technology is used in a Servlet environment.
+ * <p>
+ * A PageContext instance provides access to all the namespaces associated
+ * with a JSP page, provides access to several page attributes, as well as
+ * a layer above the implementation details.  Implicit objects are added
+ * to the pageContext automatically.
+ *
+ * <p> The <code> PageContext </code> class is an abstract class, designed to be
+ * extended to provide implementation dependent implementations thereof, by
+ * conformant JSP engine runtime environments. A PageContext instance is 
+ * obtained by a JSP implementation class by calling the
+ * JspFactory.getPageContext() method, and is released by calling
+ * JspFactory.releasePageContext().
+ *
+ * <p> An example of how PageContext, JspFactory, and other classes can be
+ * used  within a JSP Page Implementation object is given elsewhere.
+ *
+ * <p>
+ * The PageContext provides a number of facilities to the page/component 
+ * author and page implementor, including:
+ * <ul>
+ * <li>a single API to manage the various scoped namespaces
+ * <li>a number of convenience API's to access various public objects
+ * <li>a mechanism to obtain the JspWriter for output
+ * <li>a mechanism to manage session usage by the page
+ * <li>a mechanism to expose page directive attributes to the scripting 
+ *     environment
+ * <li>mechanisms to forward or include the current request to other active 
+ *     components in the application
+ * <li>a mechanism to handle errorpage exception processing
+ * </ul>
+ *
+ * <p><B>Methods Intended for Container Generated Code</B>
+ * <p>Some methods are intended to be used by the code generated by the
+ * container, not by code written by JSP page authors, or JSP tag library 
+ * authors.
+ * <p>The methods supporting <B>lifecycle</B> are <code>initialize()</code>
+
+web search: 
+web search: "javax.servlet" "jsp-api" "2.0.public_draft" "Apache Software Foundation"
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/
+web search: 
+web search: javadoc.io javax.servlet jsp-api 2.0
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc "curl -fsSL https://central.sonatype.com/artifact/javax.servlet/jsp-api/2.0 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/javax/servlet/jsp/JspPage.html | sed -n '1,50p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 195ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet">javax.servlet</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet/javax.servlet-api" class="dropdown-item">
+							javax.servlet-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jstl" class="dropdown-item">
+							jstl
+						</a>
+						
+						<a href="/doc/javax.servlet/servlet-api" class="dropdown-item">
+							servlet-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.0
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.servlet/jsp-api/latest/index.html" class="dropdown-item">
+							2.0.public_draft
+						</a>
+
+ succeeded in 324ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet">javax.servlet</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+
+2026-05-04T23:57:45.194519Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+ succeeded in 15141ms:
+<!DOCTYPE html><html lang="en" class="nx-html nx-html--page-scrolling"><head><meta charSet="utf-8"/><meta charSet="utf-8"/><meta name="viewport" content="initial-scale=1, width=device-width"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/chunks/7e3e88e29a20ba42.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/32204ee6079875e1.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/8c0406260fdbe388.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/9081046f14a49fdb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/51ef267aa05bd38f.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/1deb7c57d32b741b.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/ced9f21470ab95fb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/4eb596bd6324dd5e.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/a5748c610fec802f.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/f7e2cfca66b95516.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/186bad8c212236ce.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/7dc6542cb616f016.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/c8d4bc0d7f9a9824.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/34607cd62ce05140.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/813162c4632647fb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/7ed5ecffc2f62eb9.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/5d5f0cf63561e2a5.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/76418237caa3e37a.js"/><script src="/_next/static/chunks/c1e46bf1da7ac198.js" async=""></script><script src="/_next/static/chunks/976a13be385354eb.js" async=""></script><script src="/_next/static/chunks/turbopack-b481cddba173e4d8.js" async=""></script><script src="/_next/static/chunks/55ce0c659f554151.js" async=""></script><script src="/_next/static/chunks/8470f6f33050dc1a.js" async=""></script><script src="/_next/static/chunks/051729d8fce77793.js" async=""></script><script src="/_next/static/chunks/ccd98df1b5858a96.js" async=""></script><script src="/_next/static/chunks/1c72bde1a0607731.js" async=""></script><script src="/_next/static/chunks/d5a7727462d482f9.js" async=""></script><script src="/_next/static/chunks/a56342ba7750290f.js" async=""></script><script src="/_next/static/chunks/00cddfb81128b1ae.js" async=""></script><script src="/_next/static/chunks/30deb0153bb50880.js" async=""></script><script src="/_next/static/chunks/19d5cfba024d9664.js" async=""></script><script src="/_next/static/chunks/9ccb4ff44c1651d3.js" async=""></script><script src="/_next/static/chunks/eb7371fbba2d646f.js" async=""></script><script src="/_next/static/chunks/266aff81c34c52d8.js" async=""></script><script src="/_next/static/chunks/e74bc7b807f472d5.js" async=""></script><script src="/_next/static/chunks/bff03ff048fb52fa.js" async=""></script><script src="/_next/static/chunks/f5f0db4ed8cc734f.js" async=""></script><script src="/_next/static/chunks/b2e2ccf4a15126ed.js" async=""></script><link rel="preload" href="/_next/static/chunks/d62ffb4503514735.css" as="style"/><link rel="preload" href="https://cdn.bizible.com/scripts/bizible.js" as="script"/><link rel="preload" href="https://static.zdassets.com/ekr/snippet.js?key=67cfc48f-e344-43ae-9fe7-46f37b7eaef6" as="script"/><title>Maven Central: javax.servlet:jsp-api:2.0</title><meta name="description" content="Discover jsp-api in the javax.servlet namespace. Explore metadata, contributors, the Maven POM file, and more."/><link rel="canonical" href="https://central.sonatype.com/artifact/javax.servlet/jsp-api/2.0"/><meta property="og:title" content="Maven Central: javax.servlet:jsp-api:2.0"/><meta property="og:description" content="Discover jsp-api in the javax.servlet namespace. Explore metadata, contributors, the Maven POM file, and more."/><meta property="og:site_name" content="Maven Central"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:site" content="@sonatype"/><meta name="twitter:title" content="Maven Central: javax.servlet:jsp-api:2.0"/><meta name="twitter:description" content="Discover jsp-api in the javax.servlet namespace. Explore metadata, contributors, the Maven POM file, and more."/><meta name="next-size-adjust" content=""/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="nx-body"><div hidden=""><!--$--><!--/$--></div><!--$?--><template id="B:0"></template><!--/$--><div class="nx-page"><!--$?--><template id="B:1"></template><div class="nx-page-content"><main class="nx-page-main"><div class="nx-page-title SummaryView-module-scss-module__dDyj8W__pageTitle"><h1 class="nx-h1" data-test="header">jsp-api</h1><div class="SummaryView-module-scss-module__dDyj8W__metaWrapper"><div class="nx-page-title__tags"><div class="SummaryView-module-scss-module__dDyj8W__purlWrapper"><label class="nx-tag SummaryView-module-scss-module__dDyj8W__purl nx-selectable-color--yellow" data-test="component-purl"><span class="nx-tag__text">pkg:maven/javax.servlet/jsp-api@2.0</span></label><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><button class="nx-btn nx-tile-button SummaryView-module-scss-module__dDyj8W__copyPurlBtn nx-btn nx-btn--icon-only" data-test="copy-purl-to-clipboard-btn" aria-label=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg></button><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></div></div></div><div class="SummaryView-module-scss-module__dDyj8W__usedInWrapper"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cube" class="svg-inline--fa fa-cube SummaryView-module-scss-module__dDyj8W__cubeIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M234.5 5.7c13.9-5 29.1-5 43.1 0l192 68.6C495 83.4 512 107.5 512 134.6V377.4c0 27-17 51.2-42.5 60.3l-192 68.6c-13.9 5-29.1 5-43.1 0l-192-68.6C17 428.6 0 404.5 0 377.4V134.6c0-27 17-51.2 42.5-60.3l192-68.6zM256 66L82.3 128 256 190l173.7-62L256 66zm32 368.6l160-57.1v-188L288 246.6v188z"></path></svg><span class="SummaryView-module-scss-module__dDyj8W__usedIn">Used in:</span> <div class="UsedIn-module-scss-module__7rfWDG__usedInLoaderContainer"><div class="UsedIn-module-scss-module__7rfWDG__usedInLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="var(--nx-swatch-grey-90)"><animate attributeName="fill" values="var(--nx-swatch-grey-90);#ecebeb;var(--nx-swatch-grey-90)" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><span>components</span></div></div></div><div id="tabs-id" class="nx-tabs ComponentDetailsPage-module-scss-module__nReE7W__tabs"><ul role="tablist" class="nx-tab-list"><li role="tab" id="tabs-id-tab-0" aria-controls="tabs-id-tabpanel-0" class="nx-tab Tab-module-scss-module__YrLTTG__tab active" aria-selected="true" tabindex="0" title="">Overview<div class="nx-tab__hidden-children">Overview</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-1" aria-controls="tabs-id-tabpanel-1" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Versions<div class="nx-tab__hidden-children">Versions</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-2" aria-controls="tabs-id-tabpanel-2" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Dependents<div class="nx-tab__hidden-children">Dependents</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-3" aria-controls="tabs-id-tabpanel-3" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Dependencies<div class="nx-tab__hidden-children">Dependencies</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></ul><div role="tabpanel" id="tabs-id-tabpanel-0" aria-labelledby="tabs-id-tab-0" class="nx-tab-panel" tabindex="0"><section class="Overview-module-scss-module__r-A2kW__overviewSection"><div class="Overview-module-scss-module__r-A2kW__overview"><div class="Overview-module-scss-module__r-A2kW__overviewHeaderLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__snippetLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__pomFileLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div></div><div class="Overview-module-scss-module__r-A2kW__metadata"><div class="Overview-module-scss-module__r-A2kW__ossIndexLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__metadataLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div></div></section></div></div></main></div><!--/$--></div><footer class="Footer-module-scss-module__yFPs5G__footer t-page-footer"><div class="Footer-module-scss-module__yFPs5G__footerInner"><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title"><a class="nx-text-link Footer-module-scss-module__yFPs5G__logoLink t-page-footer-sonatype" rel="" target="_blank" data-test="footer-logo-link" href="https://www.sonatype.com/" aria-disabled="false"><img alt="Sonatype" loading="lazy" width="121" height="21" decoding="async" data-nimg="1" style="color:transparent" src="/SON_logo_white_.svg"/></a></h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-company nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/company" aria-disabled="false"><span>Company</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-products nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/products/software-supply-chain-management" aria-disabled="false"><span>Products</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><span class="Footer-module-scss-module__yFPs5G__text">Copyright 2025</span></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Search</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-browse" rel="" target="" data-test="footer-link" href="/search" aria-disabled="false"><span>Browse</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Publish</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-namespace" rel="" target="" data-test="footer-link" href="/publishing/namespaces" aria-disabled="false"><span>Namespace</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Support</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-api-documents" rel="" target="" data-test="footer-link" href="/api-doc" aria-disabled="false"><span>API Documents</span></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-getting-started nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/publish-ea/publish-ea-guide/" aria-disabled="false"><span>Getting Started</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-help nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/pages/support/" aria-disabled="false"><span>Help</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Partners</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-eol-partners" rel="" target="" data-test="footer-link" href="/partners/eol/HeroDevs" aria-disabled="false"><span>End of Life Partners</span></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-become-a-partner" rel="" target="" data-test="footer-link" href="/partners" aria-disabled="false"><span>Become a Partner</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Validate</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-privacy-policy nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/privacy-policy" aria-disabled="false"><span>Privacy Policy</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-terms-of-service nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/terms.html" aria-disabled="false"><span>Terms of Service</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Log in</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-sign-in" rel="" target="" data-test="footer-link" href="/api/auth/login" aria-disabled="false"><span>Sign in</span></a></li></ul></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/76418237caa3e37a.js" id="_R_" async=""></script><div hidden id="S:0"><header class="nx-page-header Header-module-scss-module__C2D4eG__header"><div class="nx-page-header__inner"><div class="nx-product"><div class="nx-product__logo"><a class="nx-product__home-link" href="/" aria-label="Home"><img src="/maven-central-logo.svg" class="nx-product__logo-image nx-product__logo-image--light" alt="Logo"/><img src="/_next/static/media/sonatype-logo-with-hexagon-dark-mode.84574b4a.png" class="nx-product__logo-image nx-product__logo-image--dark" alt="Logo"/></a></div></div><div class="nx-page-header__extra-content"><div class="Header-module-scss-module__C2D4eG__headerSearch"></div><ul class="Header-module-scss-module__C2D4eG__menu"><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/api-doc" aria-disabled="false"><span>API Doc</span></a></li><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink nx-text-link--external" rel="noreferrer" target="_blank" data-test="text-link" href="https://central.sonatype.org/pages/support/" aria-disabled="false"><span>Help</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Header-module-scss-module__C2D4eG__browseLink"><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/search" aria-disabled="false"><span>Browse</span></a></li><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/api/auth/login" aria-disabled="false"><span>Sign In</span></a></li></ul></div></div></header></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><div hidden id="S:1"><template id="P:2"></template><!--$--><!--/$--></div><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[39950,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n3:I[55009,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/ccd98df1b5858a96.js\",\"/_next/static/chunks/1c72bde1a0607731.js\",\"/_next/static/chunks/d5a7727462d482f9.js\",\"/_next/static/chunks/a56342ba7750290f.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\"],\"default\"]\n4:I[94594,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n5:I[52199,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/30deb0153bb50880.js\",\"/_next/static/chunks/1c72bde1a0607731.js\",\"/_next/static/chunks/d5a7727462d482f9.js\",\"/_next/static/chunks/a56342ba7750290f.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\"],\"default\"]\n22:I[38256,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n23:I[8399,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"UserProvider\"]\n24:\"$Sreact.suspense\"\n25:I[18835,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"Header\"]\n26:I[75896,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"LayoutPage\"]\n27:I[15370,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"Footer\"]\n28:I[44421,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"\"]\n2a:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"OutletBoundary\"]\n2c:I[55777,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/b2e2ccf4a15126ed.js\"],\"default\"]\n2d:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"ViewportBoundary\"]\n2f:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"MetadataBoundary\"]\n:HL[\"/_next/static/chunks/7e3e88e29a20ba42.css\",\"style\"]\n:HL[\"/_next/static/chunks/32204ee6079875e1.css\",\"style\"]\n:HL[\"/_next/static/chunks/8c0406260fdbe388.css\",\"style\"]\n:HL[\"/_next/static/chunks/9081046f14a49fdb.css\",\"style\"]\n:HL[\"/_next/static/chunks/51ef267aa05bd38f.css\",\"style\"]\n:HL[\"/_next/static/chunks/1deb7c57d32b741b.css\",\"style\"]\n:HL[\"/_next/static/chunks/ced9f21470ab95fb.css\",\"style\"]\n:HL[\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"style\"]\n:HL[\"/_next/static/chunks/a5748c610fec802f.css\",\"style\"]\n:HL[\"/_next/static/chunks/f7e2cfca66b95516.css\",\"style\"]\n:HL[\"/_next/static/chunks/186bad8c212236ce.css\",\"style\"]\n:HC[\"/\",\"\"]\n:HL[\"/_next/static/chunks/7dc6542cb616f016.css\",\""])</script><script>self.__next_f.push([1,"style\"]\n:HL[\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"style\"]\n:HL[\"/_next/static/chunks/34607cd62ce05140.css\",\"style\"]\n:HL[\"/_next/static/chunks/813162c4632647fb.css\",\"style\"]\n:HL[\"/_next/static/chunks/7ed5ecffc2f62eb9.css\",\"style\"]\n:HL[\"/_next/static/chunks/5d5f0cf63561e2a5.css\",\"style\"]\n:HL[\"/_next/static/chunks/d62ffb4503514735.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"Fjy4n5M6AWyOV088ruqQP\",\"c\":[\"\",\"artifact\",\"javax.servlet\",\"jsp-api\",\"2.0\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"(default)\",{\"children\":[\"artifact\",{\"children\":[[\"namespace\",\"javax.servlet\",\"d\"],{\"children\":[[\"name\",\"jsp-api\",\"d\"],{\"children\":[[\"paths\",\"2.0\",\"oc\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/051729d8fce77793.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"className\":\"nx-html nx-html--page-scrolling\",\"children\":[[\"$\",\"head\",null,{\"children\":[[\"$\",\"meta\",null,{\"name\":\"viewport\",\"content\":\"initial-scale=1, width=device-width\"}],[\"$\",\"meta\",null,{\"charSet\":\"utf-8\"}],\"\"]}],[\"$\",\"body\",null,{\"className\":\"nx-body\",\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$3\",\"errorStyles\":[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],\"errorScripts\":[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/ccd98df1b5858a96.js\",\"async\":true}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/1c72bde1a0607731.js\",\"async\":true}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/d5a7727462d482f9.js\",\"async\":true}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/a56342ba7750290f.js\",\"async\":true}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/00cddfb81128b1ae.js\",\"async\":true}]],\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"$L5\",null,{}],[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]]}]]}],{\"children\":[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7e3e88e29a20ba42.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],\"$L6\",\"$L7\",\"$L8\",\"$L9\",\"$La\",\"$Lb\",\"$Lc\",\"$Ld\",\"$Le\",\"$Lf\",\"$L10\",\"$L11\",\"$L12\",\"$L13\"],\"$L14\"]}],{\"children\":[\"$L15\",{\"children\":[\"$L16\",{\"children\":[\"$L17\",{\"children\":[\"$L18\",{\"children\":[\"$L19\",{},null,false,false]},[\"$L1a\",[\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"],[\"$L1f\",\"$L20\"]],false,false]},null,false,false]},null,false,false]},null,false,false]},null,false,false]},null,false,false],\"$L21\",false]],\"m\":\"$undefined\",\"G\":[\"$22\",[]],\"S\":false}\n"])</script><script>self.__next_f.push([1,"6:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n7:[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n8:[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n9:[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\na:[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nb:[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nc:[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/f7e2cfca66b95516.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nd:[\"$\",\"link\",\"10\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/186bad8c212236ce.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\ne:[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/19d5cfba024d9664.js\",\"async\":true,\"nonce\":\"$undefined\"}]\nf:[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n10:[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/eb7371fbba2d646f.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n11:[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/266aff81c34c52d8.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n12:[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/00cddfb81128b1ae.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n13:[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/e74bc7b807f472d5.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n14:[false,[\"$\",\"$L23\",null,{\"children\":[[\"$\",\"$24\",null,{\"fallback\":null,\"children\":[\"$\",\"$L25\",null,{}]}],[\"$\",\"$L26\",null,{\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"$L5\",null,{}],[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"$L27\",null,{}]]}],[\"$\",\"$L28\",null,{\"src\":\"https://cdn.bizible.com/scripts/bizible.js\"}],[\"$\",\"$L28\",null,{\"id\":\"ze-snippet\",\"src\":\"https://static.zdassets.com/ekr/snippet.js?key=67cfc48f-e344-43ae-9fe7-46f37b7eaef6\"}]]\n15:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n16:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n17:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n18:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\""])</script><script>self.__next_f.push([1,",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n19:[\"$\",\"$1\",\"c\",{\"children\":[\"$L29\",[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7dc6542cb616f016.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/34607cd62ce05140.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/813162c4632647fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7ed5ecffc2f62eb9.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/5d5f0cf63561e2a5.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/bff03ff048fb52fa.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/f5f0db4ed8cc734f.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L2a\",null,{\"children\":[\"$\",\"$24\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@2b\"}]}]]}]\n1a:[\"$\",\"$L2c\",\"l\",{}]\n1b:[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/813162c4632647fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1c:[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7dc6542cb616f016.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1d:[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1e:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/34607cd62ce05140.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1f:[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/bff03ff048fb52fa.js\",\"async\":true}]\n20:[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/b2e2ccf4a15126ed.js\",\"async\":true}]\n21:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L2d\",null,{\"children\":\"$L2e\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L2f\",null,{\"children\":[\"$\",\"$24\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L30\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n2e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n2b:null\n30:[[\"$\",\"title\",\"0\",{\"children\":\"Maven Central: javax.servlet:jsp-api:2.0\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Discover jsp-api in the javax.servlet namespace. Explore metadata, contributors, the Maven POM file, and more.\"}],[\"$\",\"link\",\"2\",{\"rel\":\"canonical\",\"href\":\"https://central.sonatype.com/artifact/javax.servlet/jsp-api/2.0\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"Maven Central: javax.servlet:jsp-api:2.0\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Discover jsp-api in the javax.servlet namespace. Explore metadata, contributors, the Maven POM file, and more.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:site_name\",\"content\":\"Maven Central\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"7\",{\"name\":\"twitter:card\",\"content\":\"summary\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:site\",\"content\":\"@sonatype\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:title\",\"content\":\"Maven Central: javax.servlet:jsp-api:2.0\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:description\",\"content\":\"Discover jsp-api in the javax.servlet namespace. Explore metadata, contributors, the Maven POM file, and more.\"}]]\n"])</script><script>self.__next_f.push([1,"31:I[5522,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"ComponentDetailsPage\"]\n32:I[3540,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"SummaryView\"]\n33:I[61932,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Tabs\"]\n34:I[99892,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Overview\"]\n35:I[28769,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Versions\"]\n36:I[11024,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"DependentsList\"]\n37:I[96599,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"DependenciesList\"]\n"])</script><script>self.__next_f.push([1,"29:[[\"$\",\"$L31\",null,{\"children\":[[\"$\",\"$L32\",null,{\"name\":\"jsp-api\",\"namespace\":\"javax.servlet\",\"version\":\"2.0\",\"versions\":[\"2.0.public_draft\",\"2.0\"],\"tags\":[],\"usedIn\":26195,\"tab\":null}],[\"$\",\"$L33\",null,{\"className\":\"ComponentDetailsPage-module-scss-module__nReE7W__tabs\",\"path\":\"/artifact/javax.servlet/jsp-api/2.0\",\"activeTab\":\"overview\",\"tabs\":[{\"name\":\"overview\",\"title\":\"Overview\",\"dataTest\":\"overview-tab\",\"content\":[\"$\",\"$L34\",null,{\"id\":\"pkg:maven/javax.servlet/jsp-api@2.0\",\"name\":\"jsp-api\",\"namespace\":\"javax.servlet\",\"version\":\"2.0\",\"description\":null,\"published\":1131487092000,\"licenses\":[],\"url\":null,\"contributors\":[],\"pomFile\":\"\u003cproject\u003e\\n  \u003cmodelVersion\u003e4.0.0\u003c/modelVersion\u003e\\n  \u003cgroupId\u003ejavax.servlet\u003c/groupId\u003e\\n  \u003cartifactId\u003ejsp-api\u003c/artifactId\u003e\\n  \u003cversion\u003e2.0\u003c/version\u003e\\n  \u003cdependencies\u003e\\n    \u003cdependency\u003e\\n      \u003cgroupId\u003ejavax.servlet\u003c/groupId\u003e\\n      \u003cartifactId\u003eservlet-api\u003c/artifactId\u003e\\n      \u003cversion\u003e2.4\u003c/version\u003e\\n      \u003cscope\u003ecompile\u003c/scope\u003e\\n    \u003c/dependency\u003e\\n  \u003c/dependencies\u003e\\n\u003c/project\u003e\",\"qualityScore\":null,\"scmUrl\":null,\"issueManagementUrl\":null,\"ciManagementUrl\":null,\"usedIn\":26195,\"ossIndexUrl\":\"https://guide.sonatype.com/component/maven/javax.servlet:jsp-api/2.0\",\"packaging\":\"jar\"}]},{\"name\":\"versions\",\"title\":\"Versions\",\"dataTest\":\"versions-tab\",\"content\":[\"$\",\"$L35\",null,{\"namespace\":\"javax.servlet\",\"name\":\"jsp-api\",\"binaryEndpointUrl\":\"https://repo1.maven.org/maven2\"}]},{\"name\":\"dependents\",\"title\":\"Dependents\",\"dataTest\":\"dependents-tab\",\"content\":[\"$\",\"$L36\",\"pkg:maven/javax.servlet/jsp-api@2.0\",{\"componentId\":\"pkg:maven/javax.servlet/jsp-api@2.0\"}]},{\"name\":\"dependencies\",\"title\":\"Dependencies\",\"dataTest\":\"dependencies-tab\",\"content\":[\"$\",\"$L37\",\"pkg:maven/javax.servlet/jsp-api@2.0\",{\"componentId\":\"pkg:maven/javax.servlet/jsp-api@2.0\"}]}]}]]}],[\"$\",\"$L28\",null,{\"data-test\":\"json-ld-script\",\"type\":\"application/ld+json\",\"dangerouslySetInnerHTML\":{\"__html\":\"{\\\"@context\\\":\\\"https://schema.org\\\",\\\"@type\\\":\\\"BreadcrumbList\\\",\\\"itemListElement\\\":[{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":1,\\\"name\\\":\\\"javax.servlet\\\",\\\"item\\\":\\\"https://central.sonatype.com/namespace/javax.servlet\\\"},{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":2,\\\"name\\\":\\\"jsp-api\\\",\\\"item\\\":\\\"https://central.sonatype.com/artifact/javax.servlet/jsp-api\\\"},{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":3,\\\"name\\\":\\\"2.0\\\",\\\"item\\\":\\\"https://central.sonatype.com/artifact/javax.servlet/jsp-api/2.0\\\"}]}\"}}],null]\n"])</script><div hidden id="S:2"><div class="nx-page-content"><main class="nx-page-main"><div class="nx-page-title SummaryView-module-scss-module__dDyj8W__pageTitle"><h1 class="nx-h1" data-test="header">jsp-api</h1><div class="SummaryView-module-scss-module__dDyj8W__metaWrapper"><div class="nx-page-title__tags"><div class="SummaryView-module-scss-module__dDyj8W__purlWrapper"><label class="nx-tag SummaryView-module-scss-module__dDyj8W__purl nx-selectable-color--yellow" data-test="component-purl"><span class="nx-tag__text">pkg:maven/javax.servlet/jsp-api@2.0</span></label><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><button class="nx-btn nx-tile-button SummaryView-module-scss-module__dDyj8W__copyPurlBtn nx-btn nx-btn--icon-only" data-test="copy-purl-to-clipboard-btn" aria-label=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg></button><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></div></div></div><div class="SummaryView-module-scss-module__dDyj8W__usedInWrapper"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cube" class="svg-inline--fa fa-cube SummaryView-module-scss-module__dDyj8W__cubeIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M234.5 5.7c13.9-5 29.1-5 43.1 0l192 68.6C495 83.4 512 107.5 512 134.6V377.4c0 27-17 51.2-42.5 60.3l-192 68.6c-13.9 5-29.1 5-43.1 0l-192-68.6C17 428.6 0 404.5 0 377.4V134.6c0-27 17-51.2 42.5-60.3l192-68.6zM256 66L82.3 128 256 190l173.7-62L256 66zm32 368.6l160-57.1v-188L288 246.6v188z"></path></svg><span class="SummaryView-module-scss-module__dDyj8W__usedIn">Used in:</span> <span data-test="used-in-count">26195 components</span></div></div><div id="tabs-id" class="nx-tabs ComponentDetailsPage-module-scss-module__nReE7W__tabs"><ul role="tablist" class="nx-tab-list"><li role="tab" id="tabs-id-tab-0" aria-controls="tabs-id-tabpanel-0" class="nx-tab Tab-module-scss-module__YrLTTG__tab active" aria-selected="true" tabindex="0" data-test="overview-tab" title="">Overview<div class="nx-tab__hidden-children">Overview</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-1" aria-controls="tabs-id-tabpanel-1" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="versions-tab" title="">Versions<div class="nx-tab__hidden-children">Versions</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-2" aria-controls="tabs-id-tabpanel-2" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="dependents-tab" title="">Dependents<div class="nx-tab__hidden-children">Dependents</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-3" aria-controls="tabs-id-tabpanel-3" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="dependencies-tab" title="">Dependencies<div class="nx-tab__hidden-children">Dependencies</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></ul><div role="tabpanel" id="tabs-id-tabpanel-0" aria-labelledby="tabs-id-tab-0" class="nx-tab-panel" tabindex="0"><section class="Overview-module-scss-module__r-A2kW__overviewSection"><div class="Overview-module-scss-module__r-A2kW__overview"><h2 class="nx-h2">Overview</h2><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><h3 class="nx-h3" data-test="header-overview">Description</h3><div data-test="overview">No description provided</div></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="Snippet-module-scss-module__IV1CpW__header"><h3 class="nx-h3 Snippet-module-scss-module__IV1CpW__title" data-test="header-snippets">Snippets</h3><!--$!--><template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template><!--/$--><button class="nx-btn nx-tile-button t-component-copy-snippet nx-btn nx-btn--tertiary" data-test="copy-to-clipboard-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg><span>Copy to clipboard</span></button></div><pre class="nx-pre Snippet-module-scss-module__IV1CpW__snippetBody" data-test="snippet">&lt;dependency&gt;
+    &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
+    &lt;version&gt;2.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="POMFile-module-scss-module__rH_pIG__header"><h3 class="nx-h3 POMFile-module-scss-module__rH_pIG__title" data-test="header-pom-file">Maven POM File</h3><button class="nx-btn nx-tile-button t-component-copy-maven-pom nx-btn nx-btn--tertiary" data-test="copy-to-clipboard-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg><span>Copy to clipboard</span></button></div><pre class="nx-pre POMFile-module-scss-module__rH_pIG__pomFileBody" data-test="pom-file">&lt;project&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+  &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
+  &lt;version&gt;2.0&lt;/version&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+      &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+      &lt;version&gt;2.4&lt;/version&gt;
+      &lt;scope&gt;compile&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;</pre></div></div><div class="Overview-module-scss-module__r-A2kW__metadata"><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical Overview-module-scss-module__r-A2kW__cardMetaData"><div class="Overview-module-scss-module__r-A2kW__description"><h4 class="nx-h4" data-test="header-metadata">Metadata</h4><div class="Overview-module-scss-module__r-A2kW__metaDataContainer"><div class="Overview-module-scss-module__r-A2kW__descriptionItem" data-test="published-metadata"><span class="Overview-module-scss-module__r-A2kW__descriptionItemLabel">Age:</span><span>20 years ago</span></div><div class="Overview-module-scss-module__r-A2kW__descriptionItem"><span class="Overview-module-scss-module__r-A2kW__descriptionItemLabel">Licenses:</span><span><ul class="Overview-module-scss-module__r-A2kW__licensesContainer"></ul></span></div></div></div><div class="Overview-module-scss-module__r-A2kW__description"><h4 class="nx-h4" data-test="header-organization">Organization</h4><div class="Overview-module-scss-module__r-A2kW__descriptionItem"><a class="nx-text-link Namespace-module-scss-module__vOKsWq__namespaceLink name-space-link" rel="" target="" href="/namespace/javax.servlet" aria-disabled="false"><label class="nx-small-tag Namespace-module-scss-module__vOKsWq__namespace nx-small-tag--teal" data-test="component-namespace"><span class="nx-small-tag__text">javax.servlet</span></label></a></div></div><div class="Contributors-module-scss-module__QfFLJG__container"><h4 class="nx-h4" data-test="header-known-contributors">Known Contributors</h4><div data-test="no-contributors-found" class="Contributors-module-scss-module__QfFLJG__contributorsContainer">No contributors found</div></div></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="OssIndex-module-scss-module__DZPPKq__container"><svg aria-hidden="true" focusable="false" data-prefix="sntp" data-icon="sntpGuideLogo" class="svg-inline--fa fa-sntpGuideLogo fa-fw OssIndex-module-scss-module__DZPPKq__sntpIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 175"><path fill="currentColor" d="M133.01,0v25.97l35.92,20.46v83.51l-35.92,20.41v24.34l58.05-33.04V32.98l-58.05-32.98ZM0,141.64l57.99,32.98v-24.29l-35.87-20.41V46.42l35.87-20.41V0L0,32.98v108.66ZM93.1,136.17c-8.03,0-14.34-1.56-18.93-4.67s-7.57-6.87-8.94-11.29l13.4-3.25c.9,1.84,2.47,3.62,4.69,5.35,2.22,1.73,5.56,2.59,10.03,2.59s7.75-1.03,10.51-3.08c2.75-2.06,4.13-5.4,4.13-10.03v-11.96h-.74c-.77,1.54-1.89,3.11-3.35,4.73-1.47,1.62-3.4,2.97-5.8,4.07-2.4,1.1-5.41,1.64-9.03,1.64-4.85,0-9.24-1.14-13.18-3.43s-7.06-5.72-9.37-10.3-3.47-10.29-3.47-17.15,1.16-12.79,3.47-17.58c2.32-4.78,5.45-8.41,9.4-10.9,3.95-2.48,8.35-3.72,13.2-3.72,3.73,0,6.79.62,9.19,1.87,2.4,1.25,4.3,2.74,5.72,4.48,1.41,1.74,2.49,3.38,3.23,4.91h.82v-10.44h14.68v64.18c0,5.37-1.29,9.83-3.87,13.38-2.58,3.55-6.09,6.2-10.55,7.96-4.45,1.75-9.53,2.63-15.23,2.63ZM93.23,98.59c4.74,0,8.4-1.71,10.98-5.12,2.58-3.41,3.86-8.13,3.86-14.16s-1.27-10.79-3.82-14.43c-2.55-3.65-6.22-5.47-11.02-5.47s-8.7,1.89-11.23,5.65c-2.52,3.77-3.78,8.52-3.78,14.25s1.28,10.48,3.82,14c2.55,3.52,6.28,5.28,11.18,5.28Z"></path></svg><span class="OssIndex-module-scss-module__DZPPKq__linkLabel">Sonatype Guide</span><div class="OssIndex-module-scss-module__DZPPKq__vulnerabilitiesLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="#f3f3f3"><animate attributeName="fill" values="#f3f3f3;#ecebeb;#f3f3f3" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><a class="nx-text-link nx-text-link--external" rel="" target="_blank" data-test="ossindex-metadata-link" href="https://guide.sonatype.com/component/maven/javax.servlet:jsp-api/2.0" aria-disabled="false"><span>View</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></div></div></div></section></div></div></main></div></div><script>$RS=function(a,b){a=document.getElementById(a);b=document.getElementById(b);for(a.parentNode.removeChild(a);a.firstChild;)b.parentNode.insertBefore(a.firstChild,b);b.parentNode.removeChild(b)};$RS("S:2","P:2")</script><script>$RC("B:1","S:1")</script></body></html>
+exec
+/usr/bin/bash -lc "ps -ef | rg 'curl -fsSL https://central\\.sonatype\\.com/artifact/javax\\.servlet/jsp-api/2\\.0|sed -n'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 0ms:
+vjovanov  577492  563554  0 01:57 ?        00:00:00 /usr/bin/bash -c ps -ef | rg 'curl -fsSL https://central\.sonatype\.com/artifact/javax\.servlet/jsp-api/2\.0|sed -n'
+vjovanov  577501  577492  0 01:57 ?        00:00:00 rg curl -fsSL https://central\.sonatype\.com/artifact/javax\.servlet/jsp-api/2\.0|sed -n
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet%22+AND+a:%22jsp-api%22+AND+v:%222.0%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-f4110978
+ succeeded in 213ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"javax.servlet\" AND a:\"jsp-api\" AND v:\"2.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet:jsp-api:2.0","g":"javax.servlet","a":"jsp-api","v":"2.0","p":"jar","timestamp":1131487092000,"ec":[".jar",".pom"]}]}}
+web search: 
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
