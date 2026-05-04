@@ -25,6 +25,7 @@ import software.amazon.awssdk.profiles.Profile;
 import software.amazon.awssdk.profiles.ProfileFile;
 import software.amazon.awssdk.profiles.ProfileFileLocation;
 import software.amazon.awssdk.profiles.ProfileFileSupplier;
+import software.amazon.awssdk.profiles.ProfileFileSystemSetting;
 import software.amazon.awssdk.profiles.ProfileProperty;
 
 public class ProfilesTest {
@@ -460,6 +461,19 @@ public class ProfilesTest {
                 .containsEntry(ProfileProperty.AWS_ACCESS_KEY_ID, "refreshed-key")
                 .containsEntry(ProfileProperty.AWS_SECRET_ACCESS_KEY, "refreshed-secret");
         assertThat(supplier.get()).isSameAs(refreshed);
+    }
+
+    @Test
+    void profileFileSystemSettingExposesAwsProfileSelection() {
+        assertThat(ProfileFileSystemSetting.AWS_PROFILE.property()).isEqualTo("aws.profile");
+        assertThat(ProfileFileSystemSetting.AWS_PROFILE.environmentVariable()).isEqualTo("AWS_PROFILE");
+        assertThat(ProfileFileSystemSetting.AWS_PROFILE.defaultValue()).isEqualTo("default");
+
+        withSystemProperty(ProfileFileSystemSetting.AWS_PROFILE.property(), "analytics", () -> {
+            assertThat(ProfileFileSystemSetting.AWS_PROFILE.getStringValue()).contains("analytics");
+            assertThat(ProfileFileSystemSetting.AWS_PROFILE.getNonDefaultStringValue()).contains("analytics");
+            assertThat(ProfileFileSystemSetting.AWS_PROFILE.getStringValueOrThrow()).isEqualTo("analytics");
+        });
     }
 
     @Test
