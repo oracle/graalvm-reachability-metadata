@@ -33,6 +33,16 @@ public class Urlencoder_lib_jvmTest {
     }
 
     @Test
+    fun preservesExplicitlyAllowedNonAsciiCharacters(): Unit {
+        val source: String = "café 🦕/茶"
+        val allowedCharacters: String = "é🦕"
+
+        val encoded: String = UrlEncoderUtil.encode(source, allow = allowedCharacters)
+
+        assertThat(encoded).isEqualTo("café%20🦕%2F%E8%8C%B6")
+    }
+
+    @Test
     fun encodesSpacesAsPlusOnlyWhenRequested(): Unit {
         val source: String = "a b+c"
 
