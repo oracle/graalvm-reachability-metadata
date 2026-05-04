@@ -28,6 +28,8 @@ import org.aesh.command.completer.CompleterInvocation;
 import org.aesh.command.completer.OptionCompleter;
 import org.aesh.command.converter.Converter;
 import org.aesh.command.converter.ConverterInvocation;
+import org.aesh.command.export.ExportManager;
+import org.aesh.command.export.ExportPreProcessor;
 import org.aesh.command.impl.registry.AeshCommandRegistryBuilder;
 import org.aesh.command.invocation.CommandInvocation;
 import org.aesh.command.operator.OperatorType;
@@ -153,6 +155,29 @@ public class AeshTest {
 
         ParsedLine invalidLine = new LineParser().parseLine("recipe \"unterminated");
         assertThat(invalidLine.status()).isEqualTo(ParserStatus.UNCLOSED_QUOTE);
+    }
+
+    @Test
+    void exportManagerExpandsVariablesAndProvidesCompletionNames(@TempDir Path tempDir) {
+        ExportManager manager = new ExportManager(tempDir.resolve("exports").toFile());
+
+        assertThat(manager.addVariable("export BASE=/opt/aesh")).isNull();
+        assertThat(manager.addVariable("export BIN=$BASE/bin")).isNull();
+        assertThat(manager.addVariable("export MODE=fast")).isNull();
+
+        assertThat(manager.keys()).containsExactlyInAnyOrder("BASE", "BIN", "MODE");
+        assertThat(manager.getValue("BIN")).isEqualTo("/opt/aesh/bin");
+        assertThat(manager.getValue("run-${BIN}:$MODE")).isEqualTo("run-/opt/aesh/bin:fast");
+        assertThat(manager.getValueIgnoreCase("mode")).isEqualTo("fast");
+        assertThat(manager.findAllMatchingKeys("$B")).containsExactlyInAnyOrder("$BASE", "$BIN");
+        assertThat(manager.getAllNamesWithEquals()).contains("BASE=", "BIN=", "MODE=");
+        assertThat(manager.listAllVariables())
+                .contains("BASE=/opt/aesh")
+                .contains("BIN=/opt/aesh/bin")
+                .contains("MODE=fast");
+
+        ExportPreProcessor preProcessor = new ExportPreProcessor(manager);
+        assertThat(preProcessor.apply("$BIN/tool --mode=$MODE")).contains("/opt/aesh/bin/tool --mode=fast");
     }
 
     @Test
