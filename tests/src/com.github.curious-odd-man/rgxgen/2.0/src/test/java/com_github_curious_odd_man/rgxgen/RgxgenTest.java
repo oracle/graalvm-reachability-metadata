@@ -120,6 +120,11 @@ public class RgxgenTest {
     }
 
     @Test
+    void unicodePropertyEscapesAreParsedAndGenerated() {
+        assertGeneratedValuesMatch("\\p{Lu}{2}\\P{Nd}", 0);
+    }
+
+    @Test
     void unicodeAndCharacterDefinitionsIntegrateWithGeneration() {
         SymbolRange range = SymbolRange.range('a', 'c');
         assertThat(range.size()).isEqualTo(3);
