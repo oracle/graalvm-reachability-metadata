@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -195,6 +196,26 @@ public class Org_osgi_util_promiseTest {
             callbackExecutor.shutdownNow();
             scheduledExecutor.shutdownNow();
         }
+    }
+
+    @Test
+    void completionStageBridgesExceptionalCompletionInBothDirections() throws Exception {
+        PromiseFactory factory = new PromiseFactory(PromiseFactory.inlineExecutor());
+        IllegalStateException stageFailure = new IllegalStateException("stage failed");
+        CompletableFuture<String> stage = new CompletableFuture<>();
+
+        Promise<String> fromStage = factory.resolvedWith(stage);
+        stage.completeExceptionally(stageFailure);
+        assertFailureCause(fromStage, stageFailure);
+
+        IllegalArgumentException promiseFailure = new IllegalArgumentException("promise failed");
+        CompletableFuture<String> fromPromise = factory.<String>failed(promiseFailure)
+                .toCompletionStage()
+                .toCompletableFuture();
+
+        assertThatThrownBy(() -> fromPromise.get(1, TimeUnit.SECONDS))
+                .isInstanceOf(ExecutionException.class)
+                .hasCause(promiseFailure);
     }
 
     @Test
