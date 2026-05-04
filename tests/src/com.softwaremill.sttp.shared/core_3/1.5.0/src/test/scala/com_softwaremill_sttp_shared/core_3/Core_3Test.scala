@@ -349,6 +349,43 @@ class Core_3Test {
   }
 
   @Test
+  def synchronousMonadsEvaluateBlockingComputationsInTheirEffect(): Unit = {
+    val calls: AtomicInteger = new AtomicInteger(0)
+    val eitherFailure: IllegalStateException = new IllegalStateException("either blocking failure")
+    val tryFailure: IllegalArgumentException = new IllegalArgumentException("try blocking failure")
+
+    val identityResult: Int = IdentityMonad.blocking {
+      calls.incrementAndGet()
+      25
+    }
+    assertEquals(25, identityResult)
+
+    val eitherResult: EitherEffect[Int] = EitherMonad.blocking {
+      calls.incrementAndGet()
+      26
+    }
+    assertEquals(Right(26), eitherResult)
+    assertSame(eitherFailure, expectThrows(classOf[IllegalStateException]) {
+      EitherMonad.blocking[Int] {
+        calls.incrementAndGet()
+        throw eitherFailure
+      }
+      ()
+    })
+
+    val tryResult: Try[Int] = TryMonad.blocking {
+      calls.incrementAndGet()
+      27
+    }
+    assertEquals(Success(27), tryResult)
+    assertSame(tryFailure, TryMonad.blocking[Int] {
+      calls.incrementAndGet()
+      throw tryFailure
+    }.failed.get)
+    assertEquals(5, calls.get())
+  }
+
+  @Test
   def monadSyntaxUsesTheImplicitMonadErrorInstance(): Unit = {
     given MonadError[EitherEffect] = EitherMonad
 
