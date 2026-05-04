@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import software.amazon.awssdk.identity.spi.AwsCredentialsIdentity;
 import software.amazon.awssdk.identity.spi.AwsSessionCredentialsIdentity;
+import software.amazon.awssdk.identity.spi.Identity;
 import software.amazon.awssdk.identity.spi.IdentityProperty;
 import software.amazon.awssdk.identity.spi.IdentityProvider;
 import software.amazon.awssdk.identity.spi.IdentityProviders;
@@ -32,6 +33,8 @@ public class Identity_spiTest {
             IdentityProperty.create(Identity_spiTest.class, "attempt");
     private static final IdentityProperty<String> AUDIENCE_PROPERTY =
             IdentityProperty.create(Identity_spiTest.class, "audience");
+    private static final IdentityProperty<String> SUBJECT_PROPERTY =
+            IdentityProperty.create(CustomIdentity.class, "subject");
 
     @Test
     void awsCredentialsFactoryAndBuilderExposeRequiredAndOptionalFields() {
@@ -254,6 +257,27 @@ public class Identity_spiTest {
     }
 
     @Test
+    void identityProvidersRegistrySupportsApplicationDefinedIdentityTypes() throws Exception {
+        CustomIdentityProvider provider = new CustomIdentityProvider();
+        ResolveIdentityRequest request = ResolveIdentityRequest.builder()
+                .putProperty(SUBJECT_PROPERTY, "user-123")
+                .putProperty(AUDIENCE_PROPERTY, "internal-service")
+                .build();
+        IdentityProviders providers = IdentityProviders.builder()
+                .putIdentityProvider(provider)
+                .build();
+
+        IdentityProvider<CustomIdentity> registeredProvider = providers.identityProvider(CustomIdentity.class);
+        CustomIdentity identity = registeredProvider.resolveIdentity(request).get(1, TimeUnit.SECONDS);
+
+        assertThat(registeredProvider).isSameAs(provider);
+        assertThat(identity.subject()).isEqualTo("user-123");
+        assertThat(identity.audience()).isEqualTo("internal-service");
+        assertThat(identity.providerName()).isEmpty();
+        assertThat(identity.expirationTime()).isEmpty();
+    }
+
+    @Test
     void identityProviderDefaultResolveMethodsBuildRequestsBeforeDelegating() throws Exception {
         RequestAwareCredentialsProvider provider = new RequestAwareCredentialsProvider();
 
@@ -322,6 +346,38 @@ public class Identity_spiTest {
 
         private String lastRegion() {
             return lastRegion;
+        }
+    }
+
+    private static final class CustomIdentity implements Identity {
+        private final String subject;
+        private final String audience;
+
+        private CustomIdentity(String subject, String audience) {
+            this.subject = subject;
+            this.audience = audience;
+        }
+
+        private String subject() {
+            return subject;
+        }
+
+        private String audience() {
+            return audience;
+        }
+    }
+
+    private static final class CustomIdentityProvider implements IdentityProvider<CustomIdentity> {
+        @Override
+        public Class<CustomIdentity> identityType() {
+            return CustomIdentity.class;
+        }
+
+        @Override
+        public CompletableFuture<CustomIdentity> resolveIdentity(ResolveIdentityRequest request) {
+            String subject = Objects.requireNonNull(request.property(SUBJECT_PROPERTY));
+            String audience = Objects.requireNonNull(request.property(AUDIENCE_PROPERTY));
+            return CompletableFuture.completedFuture(new CustomIdentity(subject, audience));
         }
     }
 
