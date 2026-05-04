@@ -32,7 +32,7 @@ public class CertificateBuilderTest {
         PublicKey issuerPublicKey = new MlDsaPublicKey();
         X509Certificate issuerCertificate = new MinimalX509Certificate(issuerPublicKey);
         X509Bundle issuerBundle = X509Bundle.fromCertificatePath(
-                new X509Certificate[] { issuerCertificate },
+                new X509Certificate[] {issuerCertificate},
                 issuerCertificate,
                 new KeyPair(issuerPublicKey, new MinimalPrivateKey()));
 
