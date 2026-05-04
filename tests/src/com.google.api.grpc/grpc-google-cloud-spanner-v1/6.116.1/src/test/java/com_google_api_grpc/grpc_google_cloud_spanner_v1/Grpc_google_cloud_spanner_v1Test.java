@@ -7,6 +7,7 @@
 package com_google_api_grpc.grpc_google_cloud_spanner_v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
@@ -46,6 +47,8 @@ import io.grpc.MethodDescriptor;
 import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.BlockingClientCall;
@@ -207,6 +210,18 @@ public class Grpc_google_cloud_spanner_v1Test {
         }
     }
 
+    @Test
+    void directAsyncServiceReportsUnimplementedForDefaultRpcHandlers() throws Exception {
+        try (GrpcFixture fixture = GrpcFixture.start(new DefaultAsyncSpannerService())) {
+            SpannerGrpc.SpannerBlockingStub stub =
+                    SpannerGrpc.newBlockingStub(fixture.channel).withDeadlineAfter(5, TimeUnit.SECONDS);
+
+            assertThatThrownBy(() -> stub.getSession(GetSessionRequest.newBuilder().setName(SESSION).build()))
+                    .isInstanceOfSatisfying(StatusRuntimeException.class,
+                            exception -> assertThat(exception.getStatus().getCode()).isEqualTo(Code.UNIMPLEMENTED));
+        }
+    }
+
     private static List<String> expectedFullMethodNames() {
         return List.of(
                 fullMethodName("CreateSession"),
@@ -317,6 +332,17 @@ public class Grpc_google_cloud_spanner_v1Test {
             return new GrpcFixture(server, channel);
         }
 
+        static GrpcFixture start(SpannerGrpc.AsyncService service) throws Exception {
+            String serverName = InProcessServerBuilder.generateName();
+            Server server = InProcessServerBuilder.forName(serverName)
+                    .directExecutor()
+                    .addService(SpannerGrpc.bindService(service))
+                    .build()
+                    .start();
+            ManagedChannel channel = InProcessChannelBuilder.forName(serverName).directExecutor().build();
+            return new GrpcFixture(server, channel);
+        }
+
         @Override
         public void close() throws Exception {
             channel.shutdownNow();
@@ -324,6 +350,9 @@ public class Grpc_google_cloud_spanner_v1Test {
             server.shutdownNow();
             assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
         }
+    }
+
+    private static final class DefaultAsyncSpannerService implements SpannerGrpc.AsyncService {
     }
 
     private static final class FakeSpannerService extends SpannerGrpc.SpannerImplBase {
