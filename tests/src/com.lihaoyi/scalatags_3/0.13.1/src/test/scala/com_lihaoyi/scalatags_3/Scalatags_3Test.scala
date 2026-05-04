@@ -6,6 +6,10 @@
  */
 package com_lihaoyi.scalatags_3
 
+import java.io.ByteArrayOutputStream
+import java.io.StringWriter
+import java.nio.charset.StandardCharsets
+
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import scalatags.Text.all._
@@ -149,5 +153,29 @@ class Scalatags_3Test {
         "fill=\"none\" stroke=\"#333\" stroke-width=\"4\"></rect>" +
         "</svg>"
     )
+  }
+
+  @Test
+  def writesMarkupToCharacterAndByteStreams(): Unit = {
+    val component: scalatags.Text.TypedTag[String] = form(
+      h2("Streamed output"),
+      ul(
+        li("first"),
+        li("second")
+      )
+    )
+    val expectedMarkup: String =
+      "<form><h2>Streamed output</h2><ul><li>first</li><li>second</li></ul></form>"
+
+    val writer: StringWriter = new StringWriter()
+    component.writeTo(writer)
+
+    val output: ByteArrayOutputStream = new ByteArrayOutputStream()
+    component.writeBytesTo(output)
+    val byteStreamMarkup: String = new String(output.toByteArray, StandardCharsets.UTF_8)
+
+    assertThat(writer.toString).isEqualTo(expectedMarkup)
+    assertThat(byteStreamMarkup).isEqualTo(expectedMarkup)
+    assertThat(component.httpContentType.contains("text/html")).isTrue()
   }
 }
