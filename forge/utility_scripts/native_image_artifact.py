@@ -28,6 +28,25 @@ class NativeImageEligibility:
     replacement: str | None = None
 
 
+@dataclass(frozen=True)
+class MavenDependency:
+    """Dependency coordinates declared by a Maven POM."""
+
+    group: str
+    artifact: str
+    version: str
+    scope: str | None = None
+    classifier: str | None = None
+
+
+@dataclass(frozen=True)
+class MavenPomMetadata:
+    """Small subset of Maven POM metadata used for artifact classification."""
+
+    packaging: str | None
+    dependencies: tuple[MavenDependency, ...]
+
+
 def discovery_file_path(repo_path: str, coordinate: str) -> str:
     """Return the Gradle build-local discovery file path for a coordinate."""
     sanitized = coordinate.replace(":", "-").replace("/", "-")
@@ -130,7 +149,8 @@ def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
     base_path = "/".join([group.replace(".", "/"), artifact, version])
     base_url = f"{MAVEN_CENTRAL}/{base_path}/{artifact}-{version}"
 
-    packaging = read_maven_packaging(f"{base_url}.pom")
+    pom_metadata = read_maven_pom_metadata(f"{base_url}.pom")
+    packaging = pom_metadata.packaging if pom_metadata else None
     if packaging in {"aar", "klib"}:
         return NativeImageEligibility(
             True,
@@ -155,29 +175,55 @@ def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
     if class_files:
         return NativeImageEligibility(False)
 
+    replacement = (
+        netty_classes_replacement(group, artifact, pom_metadata)
+        or jvm_artifact_replacement(artifact)
+    )
+
     if any(name.endswith(".sjsir") for name in names):
         return NativeImageEligibility(
             True,
             "Artifact JAR contains Scala.js IR and no JVM class files.",
-            jvm_artifact_replacement(artifact),
+            replacement,
         )
 
     if any(name.endswith(".klib") or name.startswith("default/linkdata/") for name in names):
         return NativeImageEligibility(
             True,
             "Artifact contains Kotlin Native metadata and no JVM class files.",
-            jvm_artifact_replacement(artifact),
+            replacement,
+        )
+
+    module_info_files = [
+        name for name in names
+        if name.endswith("module-info.class")
+    ]
+    if module_info_files:
+        reason = (
+            "Artifact JAR contains no application/library JVM class files beyond "
+            "module-info.class, so there is no library code for native-image metadata."
+        )
+    else:
+        reason = (
+            "Artifact JAR contains no JVM class files, so there is no library code "
+            "for native-image metadata."
         )
 
     return NativeImageEligibility(
         True,
-        "Artifact JAR contains no JVM class files, so there is no library code for native-image metadata.",
-        jvm_artifact_replacement(artifact),
+        reason,
+        replacement,
     )
 
 
 def read_maven_packaging(pom_url: str) -> str | None:
     """Read the Maven POM packaging value, defaulting to jar when omitted."""
+    metadata = read_maven_pom_metadata(pom_url)
+    return metadata.packaging if metadata else None
+
+
+def read_maven_pom_metadata(pom_url: str) -> MavenPomMetadata | None:
+    """Read the Maven POM packaging and direct dependencies."""
     pom_bytes = fetch_url(pom_url)
     if pom_bytes is None:
         return None
@@ -188,7 +234,29 @@ def read_maven_packaging(pom_url: str) -> str | None:
     namespace_match = re.match(r"\{.*\}", root.tag)
     namespace = namespace_match.group(0) if namespace_match else ""
     packaging = root.findtext(f"{namespace}packaging")
-    return packaging.strip() if packaging else "jar"
+    dependencies: list[MavenDependency] = []
+    for dependency in root.findall(f"{namespace}dependencies/{namespace}dependency"):
+        dependency_group = _find_stripped_text(dependency, namespace, "groupId")
+        dependency_artifact = _find_stripped_text(dependency, namespace, "artifactId")
+        dependency_version = _find_stripped_text(dependency, namespace, "version")
+        if not dependency_group or not dependency_artifact or not dependency_version:
+            continue
+        dependencies.append(
+            MavenDependency(
+                dependency_group,
+                dependency_artifact,
+                dependency_version,
+                _find_stripped_text(dependency, namespace, "scope"),
+                _find_stripped_text(dependency, namespace, "classifier"),
+            )
+        )
+    return MavenPomMetadata(packaging.strip() if packaging else "jar", tuple(dependencies))
+
+
+def _find_stripped_text(element: ET.Element, namespace: str, child: str) -> str | None:
+    """Return trimmed text for an XML child element."""
+    text = element.findtext(f"{namespace}{child}")
+    return text.strip() if text else None
 
 
 def fetch_url(url: str):
@@ -218,4 +286,28 @@ def jvm_artifact_replacement(artifact: str) -> str | None:
         replacement = re.sub(pattern, "", artifact)
         if replacement != artifact and replacement:
             return f"Use `{replacement}` if a JVM artifact is available."
+    return None
+
+
+def netty_classes_replacement(
+        group: str,
+        artifact: str,
+        pom_metadata: MavenPomMetadata | None,
+) -> str | None:
+    """Infer Netty native package replacements from compile dependencies."""
+    if pom_metadata is None or not group.startswith("io.netty"):
+        return None
+    if "-native" not in artifact and "tcnative" not in artifact:
+        return None
+
+    for dependency in pom_metadata.dependencies:
+        if dependency.group != group:
+            continue
+        if dependency.artifact == artifact or "-classes" not in dependency.artifact:
+            continue
+        if dependency.classifier:
+            continue
+        if dependency.scope not in (None, "", "compile"):
+            continue
+        return f"{dependency.group}:{dependency.artifact}:{dependency.version}"
     return None
