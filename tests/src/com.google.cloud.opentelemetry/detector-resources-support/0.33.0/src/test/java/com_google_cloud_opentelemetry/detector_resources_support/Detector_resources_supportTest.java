@@ -37,10 +37,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Detector_resources_supportTest {
     @Test
+    @Order(1)
     void publicAttributeKeysExposeExpectedOpenTelemetryResourceNames() {
         assertThat(AttributeKeys.GCE_AVAILABILITY_ZONE).isEqualTo("availability_zone");
         assertThat(AttributeKeys.GCE_CLOUD_REGION).isEqualTo("cloud_region");
@@ -69,6 +74,7 @@ public class Detector_resources_supportTest {
     }
 
     @Test
+    @Order(2)
     void supportedPlatformEnumContainsAllAdvertisedPlatforms() {
         Set<SupportedPlatform> supportedPlatforms = EnumSet.allOf(SupportedPlatform.class);
 
@@ -86,6 +92,27 @@ public class Detector_resources_supportTest {
     }
 
     @Test
+    @Order(3)
+    void detectorRejectsMetadataResponsesWithoutGoogleFlavorHeader() throws Exception {
+        ProxySelector originalProxySelector = ProxySelector.getDefault();
+        try (MetadataProxy metadataProxy = new MetadataProxy()) {
+            ProxySelector.setDefault(metadataProxy.proxySelector(originalProxySelector));
+            metadataProxy.respondWithoutMetadataFlavor(Map.of("project/project-id", "project-without-flavor"));
+
+            DetectedPlatform platform = GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
+
+            assertThat(platform.getSupportedPlatform()).isEqualTo(SupportedPlatform.UNKNOWN_PLATFORM);
+            assertThat(platform.getProjectId()).isEmpty();
+            assertThat(platform.getAttributes()).isEmpty();
+            assertThat(metadataProxy.requestHeaders("project/project-id"))
+                    .anySatisfy(headers -> assertThat(headers).containsEntry("metadata-flavor", "Google"));
+        } finally {
+            ProxySelector.setDefault(originalProxySelector);
+        }
+    }
+
+    @Test
+    @Order(4)
     void detectorHandlesMissingAndAvailableMetadataServerResponses() throws Exception {
         ProxySelector originalProxySelector = ProxySelector.getDefault();
         try (MetadataProxy metadataProxy = new MetadataProxy()) {
@@ -205,7 +232,7 @@ public class Detector_resources_supportTest {
 
         private final ServerSocket serverSocket;
         private final ExecutorService executor;
-        private final Map<String, String> responses = new ConcurrentHashMap<>();
+        private final Map<String, MetadataResponse> responses = new ConcurrentHashMap<>();
         private final Map<String, Set<Map<String, String>>> requestHeaders = new ConcurrentHashMap<>();
 
         private MetadataProxy() throws IOException {
@@ -247,7 +274,12 @@ public class Detector_resources_supportTest {
 
         private void respondWith(Map<String, String> newResponses) {
             responses.clear();
-            responses.putAll(newResponses);
+            newResponses.forEach((key, body) -> responses.put(key, new MetadataResponse(body, true)));
+        }
+
+        private void respondWithoutMetadataFlavor(Map<String, String> newResponses) {
+            responses.clear();
+            newResponses.forEach((key, body) -> responses.put(key, new MetadataResponse(body, false)));
         }
 
         private Set<Map<String, String>> requestHeaders(String key) {
@@ -295,12 +327,13 @@ public class Detector_resources_supportTest {
                         .computeIfAbsent(key, ignored -> ConcurrentHashMap.newKeySet())
                         .add(Map.copyOf(headers));
 
-                String responseBody = responses.get(key);
-                if (responseBody == null) {
-                    writeResponse(acceptedSocket.getOutputStream(), 404, "Not Found", "");
+                MetadataResponse response = responses.get(key);
+                if (response == null) {
+                    writeResponse(acceptedSocket.getOutputStream(), 404, "Not Found", "", true);
                     return;
                 }
-                writeResponse(acceptedSocket.getOutputStream(), 200, "OK", responseBody);
+                writeResponse(
+                        acceptedSocket.getOutputStream(), 200, "OK", response.body(), response.metadataFlavorHeader());
             }
         }
 
@@ -322,11 +355,13 @@ public class Detector_resources_supportTest {
             return key;
         }
 
-        private static void writeResponse(OutputStream outputStream, int status, String message, String body)
+        private static void writeResponse(
+                OutputStream outputStream, int status, String message, String body, boolean metadataFlavorHeader)
                 throws IOException {
             byte[] bodyBytes = body.getBytes(StandardCharsets.UTF_8);
+            String metadataHeader = metadataFlavorHeader ? "Metadata-Flavor: Google\r\n" : "";
             String headers = "HTTP/1.1 " + status + " " + message + "\r\n"
-                    + "Metadata-Flavor: Google\r\n"
+                    + metadataHeader
                     + "Content-Type: text/plain; charset=utf-8\r\n"
                     + "Content-Length: " + bodyBytes.length + "\r\n"
                     + "Connection: close\r\n"
@@ -335,6 +370,8 @@ public class Detector_resources_supportTest {
             outputStream.write(bodyBytes);
             outputStream.flush();
         }
+
+        private record MetadataResponse(String body, boolean metadataFlavorHeader) {}
 
         @Override
         public void close() throws Exception {
