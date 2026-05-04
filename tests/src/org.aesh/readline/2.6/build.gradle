@@ -16,6 +16,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--initialize-at-run-time=org.aesh.terminal.utils.OSUtils')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
