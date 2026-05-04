@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.File;
 import java.lang.module.Configuration;
+import java.lang.module.FindException;
 import java.lang.module.ModuleFinder;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
@@ -81,6 +82,9 @@ public class StringConvertTest {
                 return;
             }
             throw error;
+        } catch (FindException exception) {
+            // Native Image code sources point at the executable, not the original modular JAR.
+            return;
         }
     }
 
