@@ -143,6 +143,20 @@ public class KotlinxCliJvmTest {
     }
 
     @Test
+    fun skipsUnexpectedTrailingArgumentsWhenConfigured() {
+        val parser = ArgParser("single-file", skipExtraArguments = true)
+        val fileArgument = parser.argument(ArgType.String, fullName = "file")
+
+        val file by fileArgument
+
+        val result = parser.parse(arrayOf("manifest.txt", "ignored-one.txt", "ignored-two.txt"))
+
+        assertThat(result.commandName).isEqualTo("single-file")
+        assertThat(file).isEqualTo("manifest.txt")
+        assertThat(fileArgument.valueOrigin).isEqualTo(ArgParser.ValueOrigin.SET_BY_USER)
+    }
+
+    @Test
     fun infersNamesForDelegatedOptionsAndArguments() {
         val parser = ArgParser("infer")
         val retryOption = parser.option(ArgType.Int, shortName = "r").default(1)
