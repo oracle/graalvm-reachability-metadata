@@ -12,6 +12,7 @@ import kotlinx.html.attributes.enumEncode
 import kotlinx.html.attributes.stringSetDecode
 import kotlinx.html.attributes.stringSetEncode
 import kotlinx.html.dom.append
+import kotlinx.html.dom.createHTMLDocument
 import kotlinx.html.dom.prepend
 import kotlinx.html.dom.serialize
 import kotlinx.html.stream.appendHTML
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.w3c.dom.Element
 import javax.xml.parsers.DocumentBuilderFactory
 
 public class Kotlinx_html_jvmTest {
@@ -236,6 +238,37 @@ public class Kotlinx_html_jvmTest {
         assertTrue(serialized.contains("id=\"root\""))
         assertTrue(serialized.contains("data-source=\"dom\""))
         assertTrue(serialized.contains("DOM &amp; stream compatible"))
+    }
+
+    @Test
+    fun domDocumentConsumerCreatesCompleteDocumentAndSerializesDoctype() {
+        val document = createHTMLDocument().html {
+            head {
+                meta(charset = "utf-8")
+                title { +"Generated DOM document" }
+            }
+            body {
+                main {
+                    id = "content"
+                    p { +"DOM document & serialization" }
+                }
+            }
+        }
+
+        assertEquals("html", document.documentElement.tagName)
+        assertEquals("Generated DOM document", document.getElementsByTagName("title").item(0).textContent)
+
+        val meta: Element = document.getElementsByTagName("meta").item(0) as Element
+        assertEquals("utf-8", meta.getAttribute("charset"))
+        assertEquals("DOM document & serialization", document.getElementsByTagName("p").item(0).textContent)
+
+        val main: Element = document.getElementsByTagName("main").item(0) as Element
+        assertEquals("content", main.getAttribute("id"))
+
+        val serialized: String = document.serialize(prettyPrint = false)
+        assertTrue(serialized.startsWith("<!DOCTYPE html>"))
+        assertTrue(serialized.contains("<title>Generated DOM document</title>"))
+        assertTrue(serialized.contains("DOM document &amp; serialization"))
     }
 
     @Test
