@@ -23,7 +23,7 @@ public class SecurityActionsTest {
                 Class[].class, Object[].class, Class.class, ClassLoader.class));
 
         Object instance = newInstance.invoke(SecurityActionsTarget.class.getName(),
-            new Class<?>[] { String.class, int.class }, new Object[] { "created", 2 }, SecurityActionsTarget.class,
+            new Class<?>[] {String.class, int.class }, new Object[] {"created", 2 }, SecurityActionsTarget.class,
             SecurityActionsTarget.class.getClassLoader());
 
         assertThat(instance).isInstanceOf(SecurityActionsTarget.class);
