@@ -170,6 +170,37 @@ public class Org_osgi_util_trackerTest {
     }
 
     @Test
+    void serviceTrackerDoesNotTrackServicesRejectedByCustomizer() throws Exception {
+        FakeBundleContext context = new FakeBundleContext();
+        RejectingServiceCustomizer customizer = new RejectingServiceCustomizer(context);
+        ServiceRegistration<Greeting> rejected = context.registerService(Greeting.class, () -> "rejected",
+                dictionary("category", "tracked"));
+        ServiceRegistration<Greeting> accepted = context.registerService(Greeting.class, () -> "accepted",
+                dictionary("category", "tracked", "enabled", true));
+        ServiceTracker<Greeting, String> tracker = new ServiceTracker<>(context,
+                context.createFilter("(category=tracked)"), customizer);
+
+        tracker.open();
+        try {
+            assertThat(customizer.events).containsExactly("adding:rejected", "adding:accepted");
+            assertThat(tracker.size()).isOne();
+            assertThat(tracker.getService(rejected.getReference())).isNull();
+            assertThat(tracker.getService(accepted.getReference())).isEqualTo("accepted:accepted");
+            assertThat(tracker.getTracked()).containsExactly(Map.entry(accepted.getReference(), "accepted:accepted"));
+            assertThat(tracker.getTrackingCount()).isOne();
+
+            rejected.setProperties(dictionary("category", "tracked", "enabled", true));
+
+            assertThat(customizer.events).containsExactly("adding:rejected", "adding:accepted", "adding:rejected");
+            assertThat(tracker.size()).isEqualTo(2);
+            assertThat(tracker.getService(rejected.getReference())).isEqualTo("accepted:rejected");
+            assertThat(tracker.getTrackingCount()).isEqualTo(2);
+        } finally {
+            tracker.close();
+        }
+    }
+
+    @Test
     void serviceTrackerCanTrackAllServicesAndSingleReferences() throws Exception {
         FakeBundleContext context = new FakeBundleContext();
         ServiceRegistration<Greeting> registration = context.registerService(Greeting.class, () -> "all",
@@ -308,6 +339,35 @@ public class Org_osgi_util_trackerTest {
         @Override
         public void removedService(ServiceReference<Greeting> reference, String service) {
             events.add("removed:" + service.substring("custom:".length()));
+        }
+    }
+
+    private static final class RejectingServiceCustomizer implements ServiceTrackerCustomizer<Greeting, String> {
+        private final FakeBundleContext context;
+        private final List<String> events = new ArrayList<>();
+
+        private RejectingServiceCustomizer(FakeBundleContext context) {
+            this.context = context;
+        }
+
+        @Override
+        public String addingService(ServiceReference<Greeting> reference) {
+            Greeting service = context.getService(reference);
+            events.add("adding:" + service.message());
+            if (!Boolean.TRUE.equals(reference.getProperty("enabled"))) {
+                return null;
+            }
+            return "accepted:" + service.message();
+        }
+
+        @Override
+        public void modifiedService(ServiceReference<Greeting> reference, String service) {
+            events.add("modified:" + service.substring("accepted:".length()));
+        }
+
+        @Override
+        public void removedService(ServiceReference<Greeting> reference, String service) {
+            events.add("removed:" + service.substring("accepted:".length()));
         }
     }
 
