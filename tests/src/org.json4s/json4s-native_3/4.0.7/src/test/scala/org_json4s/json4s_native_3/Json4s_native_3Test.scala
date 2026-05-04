@@ -7,7 +7,7 @@
 package org_json4s.json4s_native_3
 
 import org.json4s.*
-import org.json4s.`native`.{Json as NativeJson, JsonParser, Serialization as NativeSerialization}
+import org.json4s.`native`.{Document, Json as NativeJson, JsonParser, Printer, Serialization as NativeSerialization}
 import org.json4s.`native`.{compactJson, parseJson, parseJsonOpt, prettyJson, renderJValue}
 import org.json4s.`native`.JsonMethods.*
 import org.json4s.prefs.EmptyValueStrategy
@@ -130,6 +130,34 @@ class Json4s_native_3Test {
     assertTrue(prettyText.contains("\n"))
     assertTrue(prettyText.contains("\\u00E9"))
     assertTrue(prettyText.contains("  \"nested\""))
+  }
+
+  @Test
+  def formatsCustomDocumentsWithNativePrinterCombinators(): Unit = {
+    def append(left: Document, right: Document): Document = right.`::`(left)
+    def line(left: Document, right: Document): Document = right.`:/:`(left)
+
+    val fields: Document = line(
+      Document.text("name = Ada,"),
+      line(Document.text("score = 42"), Document.text(")"))
+    )
+    val document: Document = Document.group(
+      append(
+        Document.text("record("),
+        Document.nest(2, line(Document.empty, fields))
+      )
+    )
+
+    val compactWriter: StringWriter = new StringWriter()
+    assertSame(compactWriter, Printer.compact(document, compactWriter))
+    assertEquals("record(name = Ada,score = 42)", compactWriter.toString)
+
+    val prettyWriter: StringWriter = new StringWriter()
+    assertSame(prettyWriter, Printer.pretty(document, prettyWriter))
+    assertEquals(
+      "record(\n  name = Ada,\n  score = 42\n  )",
+      prettyWriter.toString
+    )
   }
 
   @Test
