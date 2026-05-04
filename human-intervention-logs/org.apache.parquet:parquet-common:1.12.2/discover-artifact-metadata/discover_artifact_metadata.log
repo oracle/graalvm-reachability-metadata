@@ -1,0 +1,1253 @@
+Starting a Gradle Daemon, 9 busy and 5 incompatible and 250 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df454-c4b7-7d71-bc69-d4b4513f504e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.parquet:parquet-common:1.12.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.12.2" when "$version$" is replaced with "1.12.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+- Set "coordinates" to "org.apache.parquet:parquet-common:1.12.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.12.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Apache Parquet repo, then patch the JSON in place with version-tokenized URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.parquet-parquet-common-1\\.12\\.2\\.json"'$|org'"\\.apache\\.parquet'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+
+codex
+The target file currently only has coordinates, so I’m checking nearby discovered metadata patterns before choosing Maven-vs-GitHub URLs.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' -n build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:6:    "repository-url": "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "find metadata -maxdepth 5 -type f | rg 'parquet' | head -100" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+metadata/org.apache.parquet/parquet-format-structures/index.json
+metadata/org.apache.parquet/parquet-format-structures/1.12.3/reachability-metadata.json
+metadata/org.apache.parquet/parquet-format-structures/1.12.2/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'parquet' | head -100" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 111ms:
+stats/org.apache.parquet/parquet-format-structures/1.12.2/stats.json
+stats/org.apache.parquet/parquet-format-structures/1.12.2/execution-metrics.json
+stats/org.apache.parquet/parquet-format-structures/1.12.3/stats.json
+stats/org.apache.parquet/parquet-format-structures/1.12.3/execution-metrics.json
+metadata/org.apache.parquet/parquet-format-structures/1.12.2/reachability-metadata.json
+metadata/org.apache.parquet/parquet-format-structures/1.12.3/reachability-metadata.json
+metadata/org.apache.parquet/parquet-format-structures/index.json
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/build.gradle
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/settings.gradle
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/FieldMetaDataTest.java
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/gradle.properties
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/user-code-filter.json
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/build.gradle
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/settings.gradle
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/FieldMetaDataTest.java
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/gradle.properties
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/user-code-filter.json
+
+web search: 
+web search: Maven org.apache.parquet parquet-common 1.12.2 sources javadoc tests jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/
+web search: 
+web search: 
+web search: 
+web search: site:github.com/apache/parquet-mr/tree/apache-parquet-1.12.2 parquet-common src test
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.apache.parquet</groupId>
+    <artifactId>parquet</artifactId>
+    <relativePath>../pom.xml</relativePath>
+    <version>1.12.2</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>parquet-common</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Apache Parquet Common</name>
+  <url>https://parquet.apache.org</url>
+
+  <properties>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-format-structures</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.semver</groupId>
+      <artifactId>api</artifactId>
+      <version>${semver.api.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.yetus</groupId>
+      <artifactId>audience-annotations</artifactId>
+      <version>0.12.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-generator</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.apache.parquet.version.Generator</mainClass>
+          <includePluginDependencies>true</includePluginDependencies>
+          <arguments>
+            <argument>${basedir}/target/generated-src</argument>
+          </arguments>
+          <sourceRoot>${basedir}/target/generated-src</sourceRoot>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet/1.12.2/parquet-1.12.2.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>16</version>
+  </parent>
+
+  <groupId>org.apache.parquet</groupId>
+  <artifactId>parquet</artifactId>
+  <version>1.12.2</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Parquet MR</name>
+  <url>https://parquet.apache.org</url>
+  <description>Parquet is a columnar storage format that supports nested data. This provides the java implementation.</description>
+
+  <scm>
+    <connection>scm:git:git@github.com:apache/parquet-mr.git</connection>
+    <url>scm:git:git@github.com:apache/parquet-mr.git</url>
+    <developerConnection>scm:git:git@github.com:apache/parquet-mr.git</developerConnection>
+    <tag>apache-parquet-1.12.2-rc0</tag>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/PARQUET</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Dev Mailing List</name>
+      <post>dev@parquet.apache.org</post>
+      <subscribe>dev-subscribe@parquet.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@parquet.apache.org</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Commits Mailing List</name>
+      <post>commits@parquet.apache.org</post>
+      <subscribe>commits-subscribe@parquet.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@parquet.apache.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+      <name>Jitpack.io repository</name>
+      <!-- needed for brotli-codec -->
+    </repository>
+  </repositories>
+
+  <developers>
+    <developer>
+      <name>Julien Le Dem</name>
+      <email>julien@twitter.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <targetJavaVersion>1.8</targetJavaVersion>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>${targetJavaVersion}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <github.global.server>github</github.global.server>
+    <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+    <jackson.groupId>com.fasterxml.jackson.core</jackson.groupId>
+    <jackson.package>com.fasterxml.jackson</jackson.package>
+    <jackson.version>2.11.4</jackson.version>
+    <jackson-databind.version>${jackson.version}</jackson-databind.version>
+    <japicmp.version>0.14.2</japicmp.version>
+    <shade.prefix>shaded.parquet</shade.prefix>
+    <hadoop.version>2.10.1</hadoop.version>
+    <cascading.version>2.7.1</cascading.version>
+    <cascading3.version>3.1.2</cascading3.version>
+    <parquet.format.version>2.8.0</parquet.format.version>
+    <previous.version>1.11.0</previous.version>
+    <thrift.executable>thrift</thrift.executable>
+    <format.thrift.executable>thrift</format.thrift.executable>
+    <scala.version>2.12.8</scala.version>
+    <!-- scala.binary.version is used for projects that fetch dependencies that are in scala -->
+    <scala.binary.version>2.12</scala.binary.version>
+    <scala.maven.test.skip>false</scala.maven.test.skip>
+    <scrooge.verion>19.10.0</scrooge.verion>
+    <pig.version>0.16.0</pig.version>
+    <pig.classifier>h2</pig.classifier>
+    <thrift-maven-plugin.version>0.10.0</thrift-maven-plugin.version>
+    <thrift.version>0.13.0</thrift.version>
+    <format.thrift.version>0.13.0</format.thrift.version>
+    <fastutil.version>8.4.2</fastutil.version>
+    <semver.api.version>0.9.33</semver.api.version>
+    <slf4j.version>1.7.22</slf4j.version>
+    <avro.version>1.10.1</avro.version>
+    <guava.version>27.0.1-jre</guava.version>
+    <brotli-codec.version>0.1.1</brotli-codec.version>
+    <mockito.version>1.10.19</mockito.version>
+    <net.openhft.version>0.9</net.openhft.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+
+    <!-- parquet-cli dependencies -->
+    <opencsv.version>2.3</opencsv.version>
+    <jcommander.version>1.72</jcommander.version>
+    <zstd-jni.version>1.4.9-1</zstd-jni.version>
+    <commons-text.version>1.8</commons-text.version>
+
+    <!-- properties for the profiles -->
+    <surefire.logLevel>INFO</surefire.logLevel>
+  </properties>
+
+  <modules>
+    <module>parquet-arrow</module>
+    <module>parquet-avro</module>
+    <module>parquet-benchmarks</module>
+    <module>parquet-cascading-deprecated</module>
+    <module>parquet-cascading3-deprecated</module>
+    <module>parquet-cli</module>
+    <module>parquet-column</module>
+    <module>parquet-common</module>
+    <module>parquet-encoding</module>
+    <module>parquet-format-structures</module>
+    <module>parquet-generator</module>
+    <module>parquet-hadoop</module>
+    <module>parquet-jackson</module>
+    <module>parquet-pig</module>
+    <module>parquet-pig-bundle</module>
+    <module>parquet-protobuf</module>
+    <module>parquet-scala</module>
+    <module>parquet-scrooge-deprecated</module>
+    <module>parquet-thrift</module>
+    <module>parquet-hadoop-bundle</module>
+    <module>parquet-tools-deprecated</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <reportSets>
+          <reportSet><!-- by default, id = "default" -->
+            <reports><!-- select non-aggregate reports -->
+              <report>javadoc</report>
+              <report>test-javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet><!-- aggregate reportSet, to define in poms having modules -->
+            <id>aggregate</id>
+            <inherited>false</inherited><!-- don't run aggregate in child modules -->
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/generated-sources/**/*.java</sourceFileExclude>
+          </sourceFileExcludes>
+          <source>8</source>
+          <quiet>true</quiet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.5.2</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+          </formats>
+          <aggregate>true</aggregate>
+          <instrumentation>
+            <ignores>
+              <ignore>java.lang.UnsupportedOperationException.*</ignore>
+            </ignores>
+            <excludes>
+              <exclude>parquet/Log.class</exclude>
+              <exclude>**/*Exception.class</exclude>
+              <exclude>parquet/example/**/*.class</exclude>
+            </excludes>
+          </instrumentation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- Disable the source artifact from ASF parent -->
+          <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>source-release-assembly</id>
+              <phase>none</phase>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.3.1</version>
+         <executions>
+           <execution>
+            <id>enforce-banned-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>org.slf4j:slf4j-log4j12</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+         </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <minimizeJar>true</minimizeJar>
+                <artifactSet>
+                  <includes>
+                    <include>${jackson.groupId}:*</include>
+                    <include>it.unimi.dsi:fastutil</include>
+                    <include>net.openhft:*</include>
+                  </includes>
+                </artifactSet>
+                <!-- Shade jackson but do not include any class. Let parquet-jackson handle this -->
+                <filters>
+                  <filter>
+                    <artifact>${jackson.groupId}:*</artifact>
+                    <excludes>
+                      <exclude>**</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
+                <relocations>
+                  <relocation>
+                    <pattern>${jackson.package}</pattern>
+                    <shadedPattern>${shade.prefix}.${jackson.package}</shadedPattern>
+                  </relocation>
+                  <relocation>
+                    <pattern>it.unimi.dsi</pattern>
+                    <shadedPattern>${shade.prefix}.it.unimi.dsi</shadedPattern>
+                  </relocation>
+                  <relocation>
+                    <pattern>net.openhft</pattern>
+                    <shadedPattern>${shade.prefix}.net.openhft</shadedPattern>
+                  </relocation>
+                </relocations>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <git-SHA-1>${buildNumber}</git-SHA-1>
+              </manifestEntries>
+            </archive>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/generated-sources/**/*.java</sourceFileExclude>
+          </sourceFileExcludes>
+          <source>8</source>
+          <quiet>true</quiet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.10.b1</version>
+        <configuration>
+          <header>src/license.txt</header>
+          <strictCheck>true</strictCheck>
+        </configuration>
+        <!--executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions-->
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+      </plugin>
+
+      <plugin>
+        <!-- Override source and target from the ASF parent -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <argLine>-XX:MaxPermSize=256m</argLine>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.10</version>
+        <configuration>
+          <argLine>${surefire.argLine}</argLine>
+          <systemPropertyVariables>
+            <!-- Configure Parquet logging during tests
+                 See http://www.slf4j.org/api/org/slf4j/impl/SimpleLogger.html
+                 -->
+            <org.slf4j.simpleLogger.defaultLogLevel>${surefire.logLevel}</org.slf4j.simpleLogger.defaultLogLevel>
+            <org.slf4j.simpleLogger.showDateTime>true</org.slf4j.simpleLogger.showDateTime>
+            <org.slf4j.simpleLogger.dateTimeFormat>YYYY-MM-dd HH:mm:ss</org.slf4j.simpleLogger.dateTimeFormat>
+            <org.slf4j.simpleLogger.showThreadName>false</org.slf4j.simpleLogger.showThreadName>
+            <org.slf4j.simpleLogger.showShortLogName>true</org.slf4j.simpleLogger.showShortLogName>
+
+            <!-- Configure log level for Hadoop -->
+            <hadoop.logLevel>${surefire.logLevel}</hadoop.logLevel>
+          </systemPropertyVariables>
+          <excludes>
+            <exclude>**/benchmark/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+         </execution>
+       </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.12</version>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <consoleOutput>true</consoleOutput>
+          <excludes>
+            <exclude>.github/PULL_REQUEST_TEMPLATE.md</exclude>
+            <exclude>**/*.parquet</exclude>
+            <exclude>**/*.avro</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/names.txt</exclude> <!-- parquet-cascading test data -->
+            <exclude>**/*.avsc</exclude>
+            <exclude>**/*.iml</exclude>
+            <exclude>**/*.log</exclude>
+            <exclude>**/*.md.vm</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/build/**</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>.gitmodules</exclude>
+            <exclude>.idea/**</exclude>
+            <exclude>*/jdiff/*.xml</exclude>
+            <exclude>licenses/**</exclude>
+            <exclude>protobuf_install/**</exclude>
+            <exclude>thrift-${thrift.version}/**</exclude>
+            <exclude>thrift-${thrift.version}.tar.gz</exclude>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <version>${japicmp.version}</version>
+        <configuration>
+          <parameter>
+            <oldVersionPattern>${previous.version}</oldVersionPattern>
+            <breakBuildOnSourceIncompatibleModifications>true</breakBuildOnSourceIncompatibleModifications>
+            <onlyModified>true</onlyModified>
+            <overrideCompatibilityChangeParameters>
+              <!-- Adding a new method with default implementation to an interface should be a compatible change.
+                That's why they invented it. -->
+              <overrideCompatibilityChangeParameter>
+                <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
+                <semanticVersionLevel>MINOR</semanticVersionLevel>
+                <binaryCompatible>true</binaryCompatible>
+                <sourceCompatible>true</sourceCompatible>
+              </overrideCompatibilityChangeParameter>
+            </overrideCompatibilityChangeParameters>
+            <excludeModules>
+              <!-- Excluding the following modules because they are not part of the parquet public API -->
+              <excludeModule>parquet-benchmarks</excludeModule>
+              <excludeModule>parquet-cli</excludeModule>
+              <excludeModule>parquet-tools-deprecated</excludeModule>
+              <excludeModule>parquet-format-structures</excludeModule>
+
+              <!-- Excluding the following modules because bundles do not contain any java classes while they still fail the
+                compatibility check because of missing dependencies -->
+              <excludeModule>parquet-hadoop-bundle</excludeModule>
+              <excludeModule>parquet-pig-bundle</excludeModule>
+            </excludeModules>
+            <excludes>
+              <exclude>${shade.prefix}</exclude>
+              <!-- In PARQUET-2052 this field is changed from int to long which is a minor API
+                change to fix a integer overflow issue.
+                TODO: remove this after Parquet 1.13 release -->
+              <exclude>org.apache.parquet.column.values.dictionary.DictionaryValuesWriter#dictionaryByteSize</exclude>
+            </excludes>
+          </parameter>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>cmp</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>update-github-site</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.7</version>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>index</report>
+                  <report>mailing-list</report>
+                  <report>dependency-info</report>
+                  <report>project-team</report>
+                  <report>dependencies</report>
+                  <report>license</report>
+                  <report>scm</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+      <distributionManagement>
+        <site>
+          <id>github-pages-site</id>
+          <name>Deployment through GitHub's site deployment plugin</name>
+          <url>site/${project.version}</url>
+        </site>
+      </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.3</version>
+            <configuration>
+              <skipDeploy>true</skipDeploy>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>0.8</version>
+            <configuration>
+              <message>Creating site for ${project.version}</message>
+              <path>${project.distributionManagement.site.url}</path>
+              <merge>true</merge>
+            </configuration>
+            <executions>
+              <execution>
+                <id>github-site</id>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <phase>site-deploy</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>thrift9</id>
+      <properties>
+        <thrift.version>0.9.0</thrift.version>
+      </properties>
+    </profile>
+
+    <!-- Profile for CI tests to have less output -->
+    <profile>
+      <id>ci-test</id>
+      <properties>
+        <surefire.logLevel>WARN</surefire.logLevel>
+        <surefire.argLine>-XX:MaxJavaStackTraceDepth=10</surefire.argLine>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>jdk9+</id>
+      <activation>
+        <jdk>[1.9,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <release>8</release>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-tests.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 200ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 18:51:57 GMT
+content-type: application/java-archive
+content-length: 68422
+cf-ray: 9f69b326bea101e3-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 316907
+etag: "a25c6492b5cf09236b3638eec5503f35"
+last-modified: Thu, 30 Sep 2021 12:13:43 GMT
+x-checksum-md5: a25c6492b5cf09236b3638eec5503f35
+x-checksum-sha1: ba28258d820e7786d940a7c523b3fd3db705a128
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 04 May 2026 18:51:57 GMT
+content-type: application/java-archive
+content-length: 735629
+cf-ray: 9f69b32739df1e6d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 232141
+etag: "a7cbadcbeda35dff4307cd19f93a2db9"
+last-modified: Thu, 30 Sep 2021 12:13:43 GMT
+x-checksum-md5: a7cbadcbeda35dff4307cd19f93a2db9
+x-checksum-sha1: cbdfe8b535f64b000bf1e9ea43652cbaa5fa9b45
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+Maven Central has sources, tests, and Javadocs for `parquet-common` 1.12.2, so I’m using those artifact URLs rather than GitHub tree URLs. The parent POM identifies the upstream SCM as Apache’s `parquet-mr` repository for this release.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..22b91546eeaa89565fab06df92249797422e0e32
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-mr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..22b91546eeaa89565fab06df92249797422e0e32
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-mr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+codex
+I’ve patched the metadata and am doing a quick validation pass: JSON syntax, token-substituted URLs, and whether the main artifact is a normal JVM jar.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.parquet:parquet-common:1.12.2",
+  "repository-url": "https://github.com/apache/parquet-mr",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
+  "description": "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+}
+
+exec
+/usr/bin/bash -lc 'for classifier in sources tests javadoc; do url="https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-${classifier}.jar"; printf '"'%s ' \""'$classifier"; curl -o /dev/null -fsSL -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/parquet-common-1.12.2.jar" https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2.jar; jar tf "$tmp/parquet-common-1.12.2.jar" | rg '"'\\.class"'$'"' | head -20; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..22b91546eeaa89565fab06df92249797422e0e32
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-mr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+ succeeded in 137ms:
+org/apache/parquet/bytes/BytesInput$BAOS.class
+org/apache/parquet/bytes/BytesInput$StreamBytesInput.class
+org/apache/parquet/bytes/BytesInput$SequenceBytesIn.class
+org/apache/parquet/bytes/BytesInput$IntBytesInput.class
+org/apache/parquet/bytes/BytesInput$UnsignedVarIntBytesInput.class
+org/apache/parquet/bytes/BytesInput$UnsignedVarLongBytesInput.class
+org/apache/parquet/bytes/BytesInput$EmptyBytesInput.class
+org/apache/parquet/bytes/BytesInput$CapacityBAOSBytesInput.class
+org/apache/parquet/bytes/BytesInput$BAOSBytesInput.class
+org/apache/parquet/bytes/BytesInput$ByteArrayBytesInput.class
+org/apache/parquet/bytes/BytesInput$BufferListBytesInput.class
+org/apache/parquet/bytes/BytesInput$ByteBufferBytesInput.class
+org/apache/parquet/bytes/BytesInput$1.class
+org/apache/parquet/bytes/BytesInput.class
+org/apache/parquet/bytes/CapacityByteArrayOutputStream.class
+org/apache/parquet/bytes/ByteBufferInputStream.class
+org/apache/parquet/bytes/ByteBufferAllocator.class
+org/apache/parquet/bytes/ConcatenatingByteArrayCollector.class
+org/apache/parquet/bytes/DirectByteBufferAllocator.class
+org/apache/parquet/bytes/SingleBufferInputStream.class
+
+ succeeded in 241ms:
+200
+
+web search: 
+web search: org.apache.parquet parquet-common 1.12.2 Maven Central
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.parquet/parquet/1.12.2
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..22b91546eeaa89565fab06df92249797422e0e32
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-mr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+ succeeded in 374ms:
+web search: 
+web search: org.apache.parquet parquet-common 1.12.2 Maven Central parquet-common-1.12.2-sources.jar parquet-common-1.12.2-tests.jar parquet-common-1.12.2-javadoc.jar
+web search: 
+web search: org.apache.parquet parquet 1.12.2 pom scm github apache parquet-mr
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet/1.12.2/
+web search: 
+web search: 
+web search: 
+web search: "scm:git:git@github.com:apache/parquet-mr.git" "apache-parquet-1.12.2-rc0"
+exec
+/usr/bin/bash -lc "curl -I -fsSL -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-common/src/test" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+exec
+/usr/bin/bash -lc "curl -I -fsSL -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/apache/parquet-mr" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 634ms:
+https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-common/src/test
+200
+
+ succeeded in 940ms:
+https://github.com/apache/parquet-java
+200
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/apache/parquet-mr/tree/apache-parquet-1.12.2/parquet-common/src/test" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 182ms:
+https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-common/src/test
+200
+
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..22b91546eeaa89565fab06df92249797422e0e32
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-mr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+codex
+One refinement: GitHub redirects the historical `apache/parquet-mr` SCM URL to the current canonical `apache/parquet-java` repository, and the 1.12.2 tag resolves there. I’m updating the repository root to that canonical URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..3e4c72d43f9c56889f8e4bb6f2df2b87c2134c10
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..3e4c72d43f9c56889f8e4bb6f2df2b87c2134c10
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.parquet:parquet-common:1.12.2",
+  "repository-url": "https://github.com/apache/parquet-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
+  "description": "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL -o /dev/null -w 'repo %{url_effective} %{http_code}\\n' https://github.com/apache/parquet-java && for classifier in sources tests javadoc; do url=\"https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-"'${classifier}.jar"; printf '"'%s ' \""'$classifier"; curl -o /dev/null -fsSL -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..3e4c72d43f9c56889f8e4bb6f2df2b87c2134c10
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+ succeeded in 994ms:
+200
+tests 200
+javadoc 200
+
+web search: 
+web search: Maven Central org.apache.parquet parquet-common 1.12.2 sources tests javadoc
+web search: 
+web search: Apache Parquet Java GitHub parquet-java repository
+codex
+Updated [org.apache.parquet-parquet-common-1.12.2.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json) with the repository, Maven Central source/test/Javadoc URLs, and a two-sentence description.
+
+I left `language` absent because this is a Java/JVM artifact, not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the main artifact is a normal JVM `jar` with `.class` files. The canonical repository is `apache/parquet-java`, which GitHub describes as the Java implementation of Apache Parquet, and Maven Central lists `parquet-common` 1.12.2 as a JVM jar artifact. ([github.com](https://github.com/apache/parquet-java?utm_source=openai))
+
+Validation done: `jq` passed, and the token-substituted Maven Central sources, tests, and Javadoc URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..3e4c72d43f9c56889f8e4bb6f2df2b87c2134c10
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, configuration helpers, logging, exceptions, and version metadata used across Apache Parquet's Java modules. It supports reading and writing Parquet columnar data by supplying common infrastructure rather than a standalone file format implementation."
+ }
+
+tokens used
+86,293
+Updated [org.apache.parquet-parquet-common-1.12.2.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json) with the repository, Maven Central source/test/Javadoc URLs, and a two-sentence description.
+
+I left `language` absent because this is a Java/JVM artifact, not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the main artifact is a normal JVM `jar` with `.class` files. The canonical repository is `apache/parquet-java`, which GitHub describes as the Java implementation of Apache Parquet, and Maven Central lists `parquet-common` 1.12.2 as a JVM jar artifact. ([github.com](https://github.com/apache/parquet-java?utm_source=openai))
+
+Validation done: `jq` passed, and the token-substituted Maven Central sources, tests, and Javadoc URLs all returned HTTP 200.
+Ran agent for org.apache.parquet:parquet-common:1.12.2 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/agent-artifact-discovery-logs/org.apache.parquet-parquet-common-1.12.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-b7dd9ca6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 19s
+9 actionable tasks: 4 executed, 5 from cache
