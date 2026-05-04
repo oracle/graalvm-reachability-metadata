@@ -1,0 +1,603 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df0d7-9e0c-7be3-884d-20e6d2e82470
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.camel:camel-util-json:4.20.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.20.0" when "$version$" is replaced with "4.20.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+- Set "coordinates" to "org.apache.camel:camel-util-json:4.20.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.20.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from authoritative sources first, then update the JSON in place. I’m going to inspect the existing file and check Maven/GitHub coordinates for the exact `4.20.0` tag.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.camel-camel-util-json-4\\.20\\.0\\.json"'$'"'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
+}
+
+codex
+The target file currently only has coordinates, so this is a straightforward enrichment. I’m checking nearby Apache Camel entries to match the repository’s established URL style before writing anything.
+exec
+/usr/bin/bash -lc "find metadata -path '*org.apache.camel*' -name 'index.json' -o -path '*camel*' -name 'index.json' | head -40" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+metadata/org.apache.camel/spi-annotations/index.json
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json
+metadata/org.apache.camel/apt/index.json
+metadata/org.apache.camel/camel-util-json/index.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\" : \"org\\.apache\\.camel:' build/discovered-artifact-metadata metadata -g '*.json' | head -50" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json:2:  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.camel/camel-util-json/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.20.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+    "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically.",
+    "tested-versions" : [
+      "4.20.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.util.json"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.camel/spi-annotations/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+    "description" : "Apache Camel SPI Annotations provides annotation types used by Camel endpoint developers to describe URI endpoints, paths, parameters, and metadata. These annotations support Camel tooling and documentation generation by exposing endpoint configuration details in a structured form.",
+    "tested-versions" : [
+      "3.2.0",
+      "3.3.0",
+      "3.4.0",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.4.4",
+      "3.4.5",
+      "3.4.6",
+      "3.5.0",
+      "3.6.0",
+      "3.7.0",
+      "3.7.1",
+      "3.7.2",
+      "3.7.3",
+      "3.7.4",
+      "3.7.5",
+      "3.7.6",
+      "3.7.7",
+      "3.8.0",
+      "3.9.0",
+      "3.10.0",
+      "3.11.0",
+      "3.11.1",
+      "3.11.2",
+      "3.11.3",
+      "3.11.4",
+      "3.11.5",
+      "3.11.6",
+      "3.11.7",
+      "3.12.0",
+      "3.13.0",
+      "3.14.0",
+      "3.14.1",
+      "3.14.2",
+      "3.14.3",
+      "3.14.4",
+      "3.14.5",
+      "3.14.6",
+      "3.14.7",
+      "3.14.8",
+      "3.14.9",
+      "3.14.10",
+      "3.15.0",
+      "3.16.0",
+      "3.17.0",
+      "3.18.0",
+      "3.18.1",
+      "3.18.2",
+      "3.18.3",
+      "3.18.4",
+      "3.18.5",
+      "3.18.6",
+      "3.18.7",
+      "3.18.8",
+      "3.19.0",
+      "3.20.0",
+      "3.20.1",
+      "3.20.2",
+      "3.20.3",
+      "3.20.4"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.spi"
+    ]
+  },
+  {
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+    "description" : "Apache Camel SPI Annotations provides annotation types used by Camel endpoint developers to describe URI endpoints, paths, parameters, and metadata. These annotations support Camel tooling and documentation generation by exposing endpoint configuration details in a structured form.",
+    "tested-versions" : [
+      "3.0.0",
+      "3.0.1",
+      "3.1.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.spi"
+    ]
+  },
+  {
+    "metadata-version" : "2.16.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+    "description" : "Apache Camel SPI Annotations provides annotation types used by Camel endpoint developers to describe URI endpoints, paths, parameters, and metadata. These annotations support Camel tooling and documentation generation by exposing endpoint configuration details in a structured form.",
+    "tested-versions" : [
+      "2.16.2",
+      "2.16.3",
+      "2.16.4",
+      "2.16.5",
+      "2.17.0",
+      "2.17.1",
+      "2.17.2",
+      "2.17.3",
+      "2.17.4",
+      "2.17.5",
+      "2.17.6",
+      "2.17.7",
+      "2.18.0",
+      "2.18.1",
+      "2.18.2",
+      "2.18.3",
+      "2.18.4",
+      "2.18.5",
+      "2.19.0",
+      "2.19.1",
+      "2.19.2",
+      "2.19.3",
+      "2.19.4",
+      "2.19.5",
+      "2.20.0",
+      "2.20.1",
+      "2.20.2",
+      "2.20.3",
+      "2.20.4",
+      "2.21.0",
+      "2.21.1",
+      "2.21.2",
+      "2.21.3",
+      "2.21.4",
+      "2.21.5",
+      "2.22.0",
+      "2.22.1",
+      "2.22.2",
+      "2.22.3",
+      "2.22.4",
+      "2.22.5",
+      "2.23.0",
+      "2.23.1",
+      "2.23.2",
+      "2.23.3",
+      "2.23.4",
+      "2.24.0",
+      "2.24.1",
+      "2.24.2",
+      "2.24.3",
+      "2.25.0",
+      "2.25.1",
+      "2.25.2",
+      "2.25.3",
+      "2.25.4"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.spi"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.camel/camel-xml-jaxp-util/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.19.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-xml-jaxp-util/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-javadoc.jar",
+    "description" : "Camel XML JAXP Util provides Apache Camel's JAXP-based XML utility classes, including a secure SAX-driven pretty printer for XML text. It is used by Camel code that needs lightweight XML formatting and colorization support without pulling in a full XML component.",
+    "tested-versions" : [
+      "4.19.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.util.xml.pretty"
+    ]
+  }
+]
+
+web search: 
+web search: https://github.com/apache/camel/tree/camel-4.20.0/tooling/camel-util-json/src/test
+web search: 
+web search: repo.maven.apache.org maven2 org apache camel camel-util-json 4.20.0 sources javadoc
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.camel/camel-util-json
+codex
+There is already repo-local metadata for `camel-util-json` at `metadata/org.apache.camel/camel-util-json/index.json`, and it matches this version. I’m still verifying Maven Central artifact availability and whether a test-sources artifact exists, because the requested precedence favors Maven when available.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/camel-util-json-4.20.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>tooling</artifactId>
+    <version>4.20.0</version>
+  </parent>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-util-json</artifactId>
+  <version>4.20.0</version>
+  <name>Camel :: Util :: JSon</name>
+  <description>A json simple parser that preserves the ordering in Map as read from JSon source</description>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/camel/camel-util-json/4.20.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/camel/camel-util-json/4.20.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="camel-util-json-4.20.0-javadoc.jar" title="camel-util-json-4.20.0-javadoc.jar">camel-util-json-4.20.0-javadoc.jar</a>                2026-04-23 16:20    161447      
+<a href="camel-util-json-4.20.0-javadoc.jar.asc" title="camel-util-json-4.20.0-javadoc.jar.asc">camel-util-json-4.20.0-javadoc.jar.asc</a>            2026-04-23 16:20       833      
+<a href="camel-util-json-4.20.0-javadoc.jar.md5" title="camel-util-json-4.20.0-javadoc.jar.md5">camel-util-json-4.20.0-javadoc.jar.md5</a>            2026-04-23 16:20        32      
+<a href="camel-util-json-4.20.0-javadoc.jar.sha1" title="camel-util-json-4.20.0-javadoc.jar.sha1">camel-util-json-4.20.0-javadoc.jar.sha1</a>           2026-04-23 16:20        40      
+<a href="camel-util-json-4.20.0-sources.jar" title="camel-util-json-4.20.0-sources.jar">camel-util-json-4.20.0-sources.jar</a>                2026-04-23 16:20     35480      
+<a href="camel-util-json-4.20.0-sources.jar.asc" title="camel-util-json-4.20.0-sources.jar.asc">camel-util-json-4.20.0-sources.jar.asc</a>            2026-04-23 16:20       833      
+<a href="camel-util-json-4.20.0-sources.jar.md5" title="camel-util-json-4.20.0-sources.jar.md5">camel-util-json-4.20.0-sources.jar.md5</a>            2026-04-23 16:20        32      
+<a href="camel-util-json-4.20.0-sources.jar.sha1" title="camel-util-json-4.20.0-sources.jar.sha1">camel-util-json-4.20.0-sources.jar.sha1</a>           2026-04-23 16:20        40      
+<a href="camel-util-json-4.20.0.jar" title="camel-util-json-4.20.0.jar">camel-util-json-4.20.0.jar</a>                        2026-04-23 16:20     43018      
+<a href="camel-util-json-4.20.0.jar.asc" title="camel-util-json-4.20.0.jar.asc">camel-util-json-4.20.0.jar.asc</a>                    2026-04-23 16:20       833      
+<a href="camel-util-json-4.20.0.jar.md5" title="camel-util-json-4.20.0.jar.md5">camel-util-json-4.20.0.jar.md5</a>                    2026-04-23 16:20        32      
+<a href="camel-util-json-4.20.0.jar.sha1" title="camel-util-json-4.20.0.jar.sha1">camel-util-json-4.20.0.jar.sha1</a>                   2026-04-23 16:20        40      
+<a href="camel-util-json-4.20.0.pom" title="camel-util-json-4.20.0.pom">camel-util-json-4.20.0.pom</a>                        2026-04-23 16:20      1689      
+<a href="camel-util-json-4.20.0.pom.asc" title="camel-util-json-4.20.0.pom.asc">camel-util-json-4.20.0.pom.asc</a>                    2026-04-23 16:20       833      
+<a href="camel-util-json-4.20.0.pom.md5" title="camel-util-json-4.20.0.pom.md5">camel-util-json-4.20.0.pom.md5</a>                    2026-04-23 16:20        32      
+<a href="camel-util-json-4.20.0.pom.sha1" title="camel-util-json-4.20.0.pom.sha1">camel-util-json-4.20.0.pom.sha1</a>                   2026-04-23 16:20        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'for suffix in jar sources.jar javadoc.jar test-sources.jar tests.jar; do url="https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/camel-util-json-4.20.0-${suffix}"; [ "$suffix" = jar ] && url="https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/camel-util-json-4.20.0.jar"; printf '"'%s ' \""'$suffix"; curl -fsSI "$url" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 729ms:
+200
+test-sources.jar curl: (22) The requested URL returned error: 404
+404
+tests.jar curl: (22) The requested URL returned error: 404
+404
+
+web search: 
+web search: Maven Central org.apache.camel camel-util-json 4.20.0 javadoc sources jar
+web search: 
+web search: https://github.com/apache/camel/tree/camel-4.20.0/tooling/camel-util-json/src/test
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.camel/camel-util-json
+web search: 
+web search: https://github.com/apache/camel
+codex
+Maven Central has the main JAR, sources JAR, and Javadoc JAR for `4.20.0`, but no `test-sources` or `tests` classifier. The test URL should therefore stay on the `camel-4.20.0` GitHub tag, while source and documentation can use Maven-hosted artifacts.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/camel/tree/camel-4.20.0/tooling/camel-util-json/src/test | awk 'NR==1{print "'$0}'"' && curl -fsSI https://github.com/apache/camel/tree/camel-4.20.0/tooling/camel-util-json/src/main | awk 'NR==1{print "'$0}'"'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 1254ms:
+HTTP/2 200 
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/camel-util-json-4.20.0.jar; jar tf "$tmp" | sed -n '"'1,80p'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 200ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/camel/
+org/apache/camel/util/
+org/apache/camel/util/json/
+META-INF/maven/
+META-INF/maven/org.apache.camel/
+META-INF/maven/org.apache.camel/camel-util-json/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/apache/camel/util/json/DeserializationException$Problems.class
+org/apache/camel/util/json/DeserializationException.class
+org/apache/camel/util/json/JsonArray.class
+org/apache/camel/util/json/JsonObject.class
+org/apache/camel/util/json/Jsonable.class
+org/apache/camel/util/json/Jsoner$1.class
+org/apache/camel/util/json/Jsoner$ColorPrintElement.class
+org/apache/camel/util/json/Jsoner$DeserializationOptions.class
+org/apache/camel/util/json/Jsoner$SerializationOptions.class
+org/apache/camel/util/json/Jsoner$States.class
+org/apache/camel/util/json/Jsoner.class
+org/apache/camel/util/json/Yylex.class
+org/apache/camel/util/json/Yytoken$Types.class
+org/apache/camel/util/json/Yytoken.class
+META-INF/maven/org.apache.camel/camel-util-json/pom.xml
+META-INF/maven/org.apache.camel/camel-util-json/pom.properties
+
+codex
+I’ve confirmed it is a normal JVM JAR with `.class` files under `org/apache/camel/util/json`, so I’m leaving `not-for-native-image` and `language` absent. Next I’ll write the discovered metadata using the same formatting as the repository’s existing JSON.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+index 4f941d0866bfbc14dc897cda8b6d4cd50c5cd4d8..08e458849a06a90e9c949fec505bcdb6de45e21d
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util-json:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
++  "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+index 4f941d0866bfbc14dc897cda8b6d4cd50c5cd4d8..08e458849a06a90e9c949fec505bcdb6de45e21d
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util-json:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
++  "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+ }
+
+codex
+The file is updated. I’m doing a quick validation pass now: JSON parse, exact description sentence count by inspection, and URL reachability after substituting `4.20.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.camel:camel-util-json:4.20.0",
+  "repository-url": "https://github.com/apache/camel",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+  "description": "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/camel-util-json-4.20.0-sources.jar \\
+  https://github.com/apache/camel/tree/camel-4.20.0/tooling/camel-util-json/src/test \\
+  https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/4.20.0/camel-util-json-4.20.0-javadoc.jar; do printf '%s ' \""'$url"; curl -fsSI "$url" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+index 4f941d0866bfbc14dc897cda8b6d4cd50c5cd4d8..08e458849a06a90e9c949fec505bcdb6de45e21d
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util-json:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
++  "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+ }
+
+ succeeded in 126ms:
+200
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json && sed -n '1,120p' build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+index 4f941d0866bfbc14dc897cda8b6d4cd50c5cd4d8..08e458849a06a90e9c949fec505bcdb6de45e21d
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util-json:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
++  "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+ }
+
+ succeeded in 233ms:
+{
+  "coordinates" : "org.apache.camel:camel-util-json:4.20.0",
+  "repository-url" : "https://github.com/apache/camel",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+  "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+}
+
+web search: 
+web search: 
+web search: 
+web search: org.apache.camel camel-util-json 4.20.0 repo.maven.apache.org
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.camel/camel-util-json
+web search: 
+web search: 'camel-util-json' in https://github.com/apache/camel/tree/camel-4.20.0/tooling/camel-util-json/src/test
+codex
+Updated [org.apache.camel-camel-util-json-4.20.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json:1).
+
+I used Maven-hosted sources/Javadoc, the `camel-4.20.0` GitHub tag for tests, and the Apache Camel repository root. The artifact is a JVM JAR with `.class` files, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Apache Camel’s release page confirms the `camel-4.20.0` tag, and the GitHub test path exists under that tag. ([camel.apache.org](https://camel.apache.org/releases/release-4.20.0/))
+
+Validation done: JSON parses with `jq`, and substituted source/test/documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+index 4f941d0866bfbc14dc897cda8b6d4cd50c5cd4d8..08e458849a06a90e9c949fec505bcdb6de45e21d
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util-json:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util-json:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
++  "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically."
+ }
+
+tokens used
+71,885
+Updated [org.apache.camel-camel-util-json-4.20.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46/build/discovered-artifact-metadata/org.apache.camel-camel-util-json-4.20.0.json:1).
+
+I used Maven-hosted sources/Javadoc, the `camel-4.20.0` GitHub tag for tests, and the Apache Camel repository root. The artifact is a JVM JAR with `.class` files, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Apache Camel’s release page confirms the `camel-4.20.0` tag, and the GitHub test path exists under that tag. ([camel.apache.org](https://camel.apache.org/releases/release-4.20.0/))
+
+Validation done: JSON parses with `jq`, and substituted source/test/documentation URLs all returned HTTP 200.
+Ran agent for org.apache.camel:camel-util-json:4.20.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46/build/agent-artifact-discovery-logs/org.apache.camel-camel-util-json-4.20.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4778-3340bb46/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 4 executed, 5 from cache
