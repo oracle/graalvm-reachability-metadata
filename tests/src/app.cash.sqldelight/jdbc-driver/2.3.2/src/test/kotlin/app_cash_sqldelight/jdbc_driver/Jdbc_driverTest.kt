@@ -17,6 +17,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.h2.jdbcx.JdbcDataSource
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.sql.Date
+import java.sql.Time
+import java.sql.Timestamp
 import java.sql.Types
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -158,6 +161,67 @@ public class Jdbc_driverTest {
     }
 
     @Test
+    fun jdbcPreparedStatementAndCursorBindAndReadTemporalTypes(): Unit = withDriver { driver: JdbcDriver ->
+        driver.execute(
+            identifier = null,
+            sql = """
+                CREATE TABLE scheduled_events (
+                  id INTEGER PRIMARY KEY,
+                  event_date DATE,
+                  event_time TIME,
+                  created_at TIMESTAMP
+                )
+            """.trimIndent(),
+            parameters = 0,
+            binders = null,
+        )
+
+        val eventDate: Date = Date.valueOf("2025-03-14")
+        val eventTime: Time = Time.valueOf("09:26:53")
+        val createdAt: Timestamp = Timestamp.valueOf("2025-03-14 09:26:53")
+
+        driver.execute(
+            identifier = 30,
+            sql = "INSERT INTO scheduled_events (id, event_date, event_time, created_at) VALUES (?, ?, ?, ?)",
+            parameters = 4,
+        ) {
+            val statement: JdbcPreparedStatement = this as JdbcPreparedStatement
+            statement.bindInt(0, 1)
+            statement.bindDate(2, eventDate)
+            statement.bindTime(3, eventTime)
+            statement.bindTimestamp(4, createdAt)
+        }
+
+        val scheduledEvent: ScheduledEventRow = driver.executeQuery(
+            identifier = 31,
+            sql = "SELECT id, event_date, event_time, created_at FROM scheduled_events",
+            mapper = { cursor ->
+                assertThat(cursor.next().value).isTrue()
+                val jdbcCursor: JdbcCursor = cursor as JdbcCursor
+                QueryResult.Value(
+                    ScheduledEventRow(
+                        id = jdbcCursor.getInt(0),
+                        eventDate = jdbcCursor.getDate(2),
+                        eventTime = jdbcCursor.getTime(3),
+                        createdAt = jdbcCursor.getTimestamp(4),
+                    ),
+                )
+            },
+            parameters = 0,
+            binders = null,
+        ).value
+
+        assertThat(scheduledEvent).isEqualTo(
+            ScheduledEventRow(
+                id = 1,
+                eventDate = eventDate,
+                eventTime = eventTime,
+                createdAt = createdAt,
+            ),
+        )
+    }
+
+    @Test
     fun transacterCommitsRollsBackAndRunsCallbacksOnJdbcConnection(): Unit = withDriver { driver: JdbcDriver ->
         driver.execute(
             identifier = null,
@@ -241,6 +305,13 @@ public class Jdbc_driverTest {
         val label: String?,
         val ratio: Float?,
         val arrayValues: List<Int>,
+    )
+
+    private data class ScheduledEventRow(
+        val id: Int?,
+        val eventDate: Date?,
+        val eventTime: Time?,
+        val createdAt: Timestamp?,
     )
 
     private class DriverBackedTransacter(driver: JdbcDriver) : TransacterImpl(driver)
