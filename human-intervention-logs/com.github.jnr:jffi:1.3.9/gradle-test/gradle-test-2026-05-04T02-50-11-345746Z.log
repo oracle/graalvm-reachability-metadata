@@ -1,0 +1,143 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.github.jnr:jffi:1.3.9
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4790-88c8d3be/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+
+ComKenaiJffiInvokeDynamicSupportInnerJSR292Test > getFastNumericInvokerBindsForeignInvokeMethodHandle() FAILED
+    java.lang.UnsatisfiedLinkError: could not get native definition for type `SINT32`, original error message follows: java.lang.UnsatisfiedLinkError: could not locate stub library in jar file.  Tried [jni/x86_64-Linux/libjffi-1.2.so, /jni/x86_64-Linux/libjffi-1.2.so]
+    	at com.kenai.jffi.internal.StubLoader.getStubLibraryStream(StubLoader.java:577)
+    	at com.kenai.jffi.internal.StubLoader.loadFromJar(StubLoader.java:432)
+    	at com.kenai.jffi.internal.StubLoader.load(StubLoader.java:326)
+    	at com.kenai.jffi.internal.StubLoader.<clinit>(StubLoader.java:614)
+    	at java.base/java.lang.Class.forName0(Native Method)
+    	at java.base/java.lang.Class.forName(Class.java:547)
+    	at com.kenai.jffi.Init.load(Init.java:68)
+    	at com.kenai.jffi.Foreign$InstanceHolder.getInstanceHolder(Foreign.java:50)
+    	at com.kenai.jffi.Foreign$InstanceHolder.<clinit>(Foreign.java:46)
+    	at com.kenai.jffi.Foreign.getInstance(Foreign.java:104)
+    	at com.kenai.jffi.Type$Builtin.lookupTypeInfo(Type.java:242)
+    	at com.kenai.jffi.Type$Builtin.getTypeInfo(Type.java:237)
+    	at com.kenai.jffi.Type.resolveHandle(Type.java:163)
+    	at com.kenai.jffi.Type.handle(Type.java:129)
+    	at com.kenai.jffi.Type.hashCode(Type.java:176)
+    	at com.kenai.jffi.Type$Builtin.hashCode(Type.java:272)
+    	at com.kenai.jffi.CallContextCache$Signature.calculateHashCode(CallContextCache.java:168)
+    	at com.kenai.jffi.CallContextCache$Signature.hashCode(CallContextCache.java:182)
+    	at java.base/java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:948)
+    	at com.kenai.jffi.CallContextCache.getCallContext(CallContextCache.java:84)
+    	at com.kenai.jffi.CallContextCache.getCallContext(CallContextCache.java:78)
+    	at com.kenai.jffi.CallContextCache.getCallContext(CallContextCache.java:68)
+    	at com.kenai.jffi.CallContext.getCallContext(CallContext.java:87)
+    	at com_github_jnr.jffi.ComKenaiJffiInvokeDynamicSupportInnerJSR292Test.getFastNumericInvokerBindsForeignInvokeMethodHandle(ComKenaiJffiInvokeDynamicSupportInnerJSR292Test.java:25)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+        at com.kenai.jffi.Type$Builtin.lookupTypeInfo(Type.java:253)
+        at com.kenai.jffi.Type$Builtin.getTypeInfo(Type.java:237)
+        at com.kenai.jffi.Type.resolveHandle(Type.java:163)
+        at com.kenai.jffi.Type.handle(Type.java:129)
+        at com.kenai.jffi.Type.hashCode(Type.java:176)
+        at com.kenai.jffi.Type$Builtin.hashCode(Type.java:272)
+        at com.kenai.jffi.CallContextCache$Signature.calculateHashCode(CallContextCache.java:168)
+        at com.kenai.jffi.CallContextCache$Signature.hashCode(CallContextCache.java:182)
+        at java.base/java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:948)
+        at com.kenai.jffi.CallContextCache.getCallContext(CallContextCache.java:84)
+        at com.kenai.jffi.CallContextCache.getCallContext(CallContextCache.java:78)
+        at com.kenai.jffi.CallContextCache.getCallContext(CallContextCache.java:68)
+        at com.kenai.jffi.CallContext.getCallContext(CallContext.java:87)
+        at com_github_jnr.jffi.ComKenaiJffiInvokeDynamicSupportInnerJSR292Test.getFastNumericInvokerBindsForeignInvokeMethodHandle(ComKenaiJffiInvokeDynamicSupportInnerJSR292Test.java:25)
+
+2 tests completed, 1 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4790-88c8d3be/tests/src/com.github.jnr/jffi/1.3.9/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4790-88c8d3be/tests/src/com.github.jnr/jffi/1.3.9/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 5s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 4 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4790-88c8d3be/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.github.jnr:jffi:1.3.9 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 7s
+9 actionable tasks: 1 executed, 8 up-to-date
