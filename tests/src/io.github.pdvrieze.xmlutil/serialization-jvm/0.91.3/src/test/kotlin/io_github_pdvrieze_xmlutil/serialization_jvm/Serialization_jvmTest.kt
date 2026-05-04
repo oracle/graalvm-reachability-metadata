@@ -25,6 +25,7 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
+import nl.adaptivity.xmlutil.serialization.XmlCData
 import nl.adaptivity.xmlutil.serialization.XmlChildrenName
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlOtherAttributes
@@ -110,6 +111,18 @@ public class Serialization_jvmTest {
     }
 
     @Test
+    fun serializesCDataValueWithoutEscapingMarkup(): Unit {
+        val snippet = CDataSnippet(content = "<section>Tom & Jerry</section>")
+
+        val encoded: String = compactXml.encodeToString(CDataSnippetSerializer, snippet, QName("snippet"))
+        val decoded: CDataSnippet = compactXml.decodeFromString(CDataSnippetSerializer, encoded, QName("snippet"))
+
+        assertThat(encoded).contains("<![CDATA[<section>Tom & Jerry</section>]]>")
+        assertThat(encoded).doesNotContain("&lt;section&gt;Tom &amp; Jerry&lt;/section&gt;")
+        assertThat(decoded).isEqualTo(snippet)
+    }
+
+    @Test
     fun exposesXmlDescriptorForCustomSerializer(): Unit {
         val descriptor = compactXml.xmlDescriptor(TicketSerializer, QName("ticket"))
 
@@ -151,6 +164,8 @@ public class Serialization_jvmTest {
         val otherAttributes: Map<String, String>,
         val label: String,
     )
+
+    private data class CDataSnippet(val content: String)
 
     private enum class Priority(val xmlValue: String) {
         Low("low"),
@@ -241,6 +256,29 @@ public class Serialization_jvmTest {
                 otherAttributes = otherAttributes,
                 label = requireNotNull(label) { "Missing item label" },
             )
+        }
+    }
+
+    private object CDataSnippetSerializer : KSerializer<CDataSnippet> {
+        @OptIn(ExperimentalSerializationApi::class)
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("CDataSnippet") {
+            element<String>("content", annotations = listOf(XmlValue(true), XmlCData(true)))
+        }
+
+        override fun serialize(encoder: Encoder, value: CDataSnippet): Unit = encoder.encodeStructure(descriptor) {
+            encodeStringElement(descriptor, 0, value.content)
+        }
+
+        override fun deserialize(decoder: Decoder): CDataSnippet = decoder.decodeStructure(descriptor) {
+            var content: String? = null
+            while (true) {
+                when (val index: Int = decodeElementIndex(descriptor)) {
+                    CompositeDecoder.DECODE_DONE -> break
+                    0 -> content = decodeStringElement(descriptor, index)
+                    else -> error("Unexpected element index: $index")
+                }
+            }
+            CDataSnippet(content = requireNotNull(content) { "Missing snippet content" })
         }
     }
 
