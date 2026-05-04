@@ -213,6 +213,28 @@ public class Kotlinx_serialization_properties_jvmTest {
     }
 
     @Test
+    public fun valueClassPropertiesAreEncodedAtOwningPropertyPath() {
+        val route: GatewayRoute = GatewayRoute(
+            name = RouteName("checkout"),
+            retryLimit = RetryLimit(5),
+            enabled = EnabledFlag(true),
+        )
+
+        val encoded: Map<String, String> = Properties.Default.encodeToStringMap(GatewayRoute.serializer(), route)
+        val decoded: GatewayRoute = Properties.Default.decodeFromStringMap(GatewayRoute.serializer(), encoded)
+
+        assertThat(encoded).containsExactlyInAnyOrderEntriesOf(
+            mapOf(
+                "name" to "checkout",
+                "retryLimit" to "5",
+                "enabled" to "true",
+            ),
+        )
+        assertThat(encoded.keys).doesNotContain("name.value", "retryLimit.value", "enabled.value")
+        assertThat(decoded).isEqualTo(route)
+    }
+
+    @Test
     public fun invalidEnumNameReportsSerializationException() {
         assertThatThrownBy {
             Properties.Default.decodeFromStringMap(
@@ -301,6 +323,25 @@ public data class PublicEndpoint(
     @SerialName("host-name") val host: String,
     @SerialName("port-number") val port: Int,
 )
+
+@Serializable
+public data class GatewayRoute(
+    val name: RouteName,
+    val retryLimit: RetryLimit,
+    val enabled: EnabledFlag,
+)
+
+@Serializable
+@JvmInline
+public value class RouteName(public val value: String)
+
+@Serializable
+@JvmInline
+public value class RetryLimit(public val value: Int)
+
+@Serializable
+@JvmInline
+public value class EnabledFlag(public val value: Boolean)
 
 @Serializable
 public abstract class AuditEvent
