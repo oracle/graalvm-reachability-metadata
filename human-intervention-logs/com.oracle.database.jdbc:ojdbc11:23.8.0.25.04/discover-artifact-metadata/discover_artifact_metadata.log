@@ -1,0 +1,1842 @@
+Starting a Gradle Daemon, 9 busy and 1 incompatible and 281 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df54d-5afe-7370-bd01-4efb052302a6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.oracle.database.jdbc:ojdbc11:23.8.0.25.04
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "23.8.0.25.04" when "$version$" is replaced with "23.8.0.25.04".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+- Set "coordinates" to "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "23.8.0.25.04".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+ERROR: Reconnecting... 1/5
+codex
+I’ll look at the existing metadata file first, then verify the Oracle JDBC artifact details from Maven/Oracle sources before editing it.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+-rw-rw-r-- 1 vjovanov vjovanov 70 May  5 01:23 build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+{
+  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
+}
+
+web search: 
+web search: Maven Central com.oracle.database.jdbc ojdbc11 23.8.0.25.04 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/
+web search: 
+web search: 
+codex
+Maven Central does publish the main jar plus `-sources` and `-javadoc` artifacts for this exact version. I’m checking the POM/source contents now to avoid pointing metadata at a source jar that is only a placeholder.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.database.jdbc</groupId>
+  <artifactId>ojdbc11</artifactId>
+  <version>23.8.0.25.04</version>
+  <packaging>jar</packaging>  
+
+  <!--
+      ojdbc11.jar: Supports JDBC 4.3 spec and for use with JDK11, JDK17, JDK19, and JDK21.
+      Includes all classes to support basic functionality of the thin driver.
+      Refer to "List of Artifacts (BOM)" section of the Maven Central Guide
+      https://www.oracle.com/database/technologies/maven-central-guide.html#artifacts 
+    -->
+  <name>ojdbc11</name>
+  <description> Oracle JDBC Driver compatible with JDK11, JDK17, JDK19, and JDK21</description>
+  <url>https://www.oracle.com/database/technologies/maven-central-guide.html</url>
+  <inceptionYear>1997</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Oracle Free Use Terms and Conditions (FUTC)</name>
+      <url>https://www.oracle.com/downloads/licenses/oracle-free-license.html</url>
+    </license>
+  </licenses>
+ 
+  <developers>
+    <developer>
+      <organization>Oracle America, Inc.</organization>
+      <organizationUrl>http://www.oracle.com</organizationUrl>
+    </developer>
+  </developers>
+  
+  <scm>
+    <url></url>
+  </scm>
+  
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/ojdbc11-23.8.0.25.04-sources.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-sources.jar && unzip -l /tmp/ojdbc11-23.8.0.25.04-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+Archive:  /tmp/ojdbc11-23.8.0.25.04-sources.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      190  2019-09-06 08:47   source.txt
+---------                     -------
+      190                     1 file
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/ojdbc11-23.8.0.25.04.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar && jar tf /tmp/ojdbc11-23.8.0.25.04.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 531ms:
+META-INF/MANIFEST.MF
+nativelib/
+nativelib/tcpfastopen/
+nativelib/tcpfastopen/linux/
+nativelib/tcpfastopen/linux/aarch64/
+nativelib/tcpfastopen/linux/x86_64/
+nativelib/tcpfastopen/linux/aarch64/libtfojdbc1.so
+nativelib/tcpfastopen/linux/x86_64/libtfojdbc1.so
+oracle/
+oracle/core/
+oracle/core/lmx/
+oracle/core/lmx/CoreException.class
+oracle/core/lmx/LmxRepConversion.class
+oracle/core/lvf/
+oracle/core/lvf/VersionMgr.class
+oracle/jdbc/
+oracle/jdbc/AccessToken.class
+oracle/jdbc/AdditionalDatabaseMetaData.class
+oracle/jdbc/Const.class
+oracle/jdbc/DatabaseFunction.class
+oracle/jdbc/ErrorSet$1.class
+oracle/jdbc/ErrorSet$2.class
+oracle/jdbc/ErrorSet.class
+oracle/jdbc/LargeObjectAccessMode.class
+oracle/jdbc/LogicalTransactionId.class
+oracle/jdbc/LogicalTransactionIdEvent.class
+oracle/jdbc/LogicalTransactionIdEventListener.class
+oracle/jdbc/NotificationRegistration$RegistrationState.class
+oracle/jdbc/NotificationRegistration.class
+oracle/jdbc/OracleArray.class
+oracle/jdbc/OracleBfile.class
+oracle/jdbc/OracleBlob.class
+oracle/jdbc/OracleCallableStatement.class
+oracle/jdbc/OracleClob.class
+oracle/jdbc/OracleCommonConnection.class
+oracle/jdbc/OracleCommonConnectionBuilder.class
+oracle/jdbc/OracleCommonPreparedStatement.class
+oracle/jdbc/OracleCommonResultSet.class
+oracle/jdbc/OracleCommonStatement.class
+oracle/jdbc/OracleConnection$CommitOption.class
+oracle/jdbc/OracleConnection$ConnectionValidation.class
+oracle/jdbc/OracleConnection$DRCPState.class
+oracle/jdbc/OracleConnection$DatabaseShutdownMode.class
+oracle/jdbc/OracleConnection$DatabaseStartupMode.class
+oracle/jdbc/OracleConnection.class
+oracle/jdbc/OracleConnectionBuilder.class
+oracle/jdbc/OracleConnectionStringBuilder$ConnectInfo.class
+oracle/jdbc/OracleConnectionStringBuilder.class
+oracle/jdbc/OracleConnectionStringBuilderImpl.class
+oracle/jdbc/OracleConnectionWrapper$CloseInvocationHandler.class
+oracle/jdbc/OracleConnectionWrapper.class
+oracle/jdbc/OracleData.class
+oracle/jdbc/OracleDataFactory.class
+oracle/jdbc/OracleDatabaseException.class
+oracle/jdbc/OracleDatabaseMetaData$DataTypeSource.class
+oracle/jdbc/OracleDatabaseMetaData.class
+oracle/jdbc/OracleDriver.class
+oracle/jdbc/OracleHostnameResolver.class
+oracle/jdbc/OracleNClob.class
+oracle/jdbc/OracleOCIFailover.class
+oracle/jdbc/OracleOpaque.class
+oracle/jdbc/OracleParameterMetaData.class
+oracle/jdbc/OraclePooledConnectionBuilder.class
+oracle/jdbc/OraclePreparedStatement.class
+oracle/jdbc/OracleRef.class
+oracle/jdbc/OracleResultSet$AuthorizationIndicator.class
+oracle/jdbc/OracleResultSet.class
+oracle/jdbc/OracleResultSetMetaData$SecurityAttribute.class
+oracle/jdbc/OracleResultSetMetaData.class
+oracle/jdbc/OracleRow.class
+oracle/jdbc/OracleSQLPermission.class
+oracle/jdbc/OracleSavepoint.class
+oracle/jdbc/OracleShardingKey.class
+oracle/jdbc/OracleShardingKeyBuilder.class
+oracle/jdbc/OracleStatement.class
+oracle/jdbc/OracleStruct.class
+oracle/jdbc/OracleTemporalField$Field$1.class
+oracle/jdbc/OracleTemporalField$Field.class
+oracle/jdbc/OracleTemporalField.class
+oracle/jdbc/OracleTranslatingConnection$SqlTranslationVersion.class
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/
+web search: 
+web search: 
+web search: 
+web search: Oracle JDBC Driver ojdbc11 23.8.0.25.04 JDBC 4.3 JDK11 JDK17 JDK21
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/ojdbc11-23.8.0.25.04-sources.jar source.txt' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+THIS IS A DUMMY SOURCE FILE
+
+Oracle Corporation does not open source the Oracle JDBC driver
+and any other companion jars. Therefore, the source code is not 
+included in this distribution. 
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.database.jdbc</groupId>
+  <artifactId>ojdbc11</artifactId>
+  <version>23.8.0.25.04</version>
+  <packaging>jar</packaging>  
+
+  <!--
+      ojdbc11.jar: Supports JDBC 4.3 spec and for use with JDK11, JDK17, JDK19, and JDK21.
+      Includes all classes to support basic functionality of the thin driver.
+      Refer to "List of Artifacts (BOM)" section of the Maven Central Guide
+      https://www.oracle.com/database/technologies/maven-central-guide.html#artifacts 
+    -->
+  <name>ojdbc11</name>
+  <description> Oracle JDBC Driver compatible with JDK11, JDK17, JDK19, and JDK21</description>
+  <url>https://www.oracle.com/database/technologies/maven-central-guide.html</url>
+  <inceptionYear>1997</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Oracle Free Use Terms and Conditions (FUTC)</name>
+      <url>https://www.oracle.com/downloads/licenses/oracle-free-license.html</url>
+    </license>
+  </licenses>
+ 
+  <developers>
+    <developer>
+      <organization>Oracle America, Inc.</organization>
+      <organizationUrl>http://www.oracle.com</organizationUrl>
+    </developer>
+  </developers>
+  
+  <scm>
+    <url></url>
+  </scm>
+  
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/ojdbc11-23.8.0.25.04-javadoc.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-javadoc.jar && unzip -l /tmp/ojdbc11-23.8.0.25.04-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 451ms:
+Archive:  /tmp/ojdbc11-23.8.0.25.04-javadoc.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2025-04-02 14:59   META-INF/
+      108  2025-04-02 14:59   META-INF/MANIFEST.MF
+        0  2025-04-02 14:59   jquery/
+        0  2025-04-02 14:59   jquery/external/
+        0  2025-04-02 14:59   jquery/external/jquery/
+        0  2025-04-02 14:59   legal/
+        0  2025-04-02 14:59   oracle/
+        0  2025-04-02 14:59   oracle/jdbc/
+        0  2025-04-02 14:59   oracle/jdbc/aq/
+        0  2025-04-02 14:59   oracle/jdbc/aq/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/babelfish/
+        0  2025-04-02 14:59   oracle/jdbc/babelfish/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/datasource/
+        0  2025-04-02 14:59   oracle/jdbc/datasource/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/datasource/impl/
+        0  2025-04-02 14:59   oracle/jdbc/datasource/impl/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/dcn/
+        0  2025-04-02 14:59   oracle/jdbc/dcn/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/diagnostics/
+        0  2025-04-02 14:59   oracle/jdbc/diagnostics/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/pool/
+        0  2025-04-02 14:59   oracle/jdbc/pool/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/replay/
+        0  2025-04-02 14:59   oracle/jdbc/replay/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/spi/
+        0  2025-04-02 14:59   oracle/jdbc/spi/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/xa/
+        0  2025-04-02 14:59   oracle/jdbc/xa/class-use/
+        0  2025-04-02 14:59   oracle/jdbc/xa/client/
+        0  2025-04-02 14:59   oracle/jdbc/xa/client/class-use/
+        0  2025-04-02 14:59   oracle/sql/
+        0  2025-04-02 14:59   oracle/sql/class-use/
+        0  2025-04-02 14:59   oracle/sql/json/
+        0  2025-04-02 14:59   oracle/sql/json/class-use/
+        0  2025-04-02 14:59   resources/
+    86463  2025-04-02 14:59   allclasses-index.html
+    34996  2025-04-02 14:59   allclasses.html
+     8903  2025-04-02 14:59   allpackages-index.html
+   522914  2025-04-02 14:59   constant-values.html
+    63961  2025-04-02 14:59   deprecated-list.html
+      256  2025-04-02 14:59   element-list
+    10212  2025-04-02 14:59   help-doc.html
+  2014307  2025-04-02 14:59   index-all.html
+    12307  2025-04-02 14:59   index.html
+      501  2025-04-02 14:59   jquery-ui.overrides.css
+   287630  2025-04-02 14:59   jquery/external/jquery/jquery.js
+    87533  2025-04-02 14:59   jquery/jquery-3.7.1.min.js
+     1842  2025-04-02 14:59   jquery/jquery-ui.min.css
+    32680  2025-04-02 14:59   jquery/jquery-ui.min.js
+     1157  2025-04-02 14:59   legal/jquery.md
+     1870  2025-04-02 14:59   legal/jqueryUI.md
+     2034  2025-04-02 14:59   legal/pako.md
+   489765  2025-04-02 14:59   member-search-index.js
+    15405  2025-04-02 14:59   oracle/jdbc/AccessToken.html
+    27013  2025-04-02 14:59   oracle/jdbc/AdditionalDatabaseMetaData.html
+    48745  2025-04-02 14:59   oracle/jdbc/DatabaseFunction.html
+    10774  2025-04-02 14:59   oracle/jdbc/ErrorSet.html
+    13731  2025-04-02 14:59   oracle/jdbc/LargeObjectAccessMode.html
+     6189  2025-04-02 14:59   oracle/jdbc/LogicalTransactionId.html
+    11238  2025-04-02 14:59   oracle/jdbc/LogicalTransactionIdEvent.html
+     8923  2025-04-02 14:59   oracle/jdbc/LogicalTransactionIdEventListener.html
+    14547  2025-04-02 14:59   oracle/jdbc/NotificationRegistration.RegistrationState.html
+    12168  2025-04-02 14:59   oracle/jdbc/NotificationRegistration.html
+    22985  2025-04-02 14:59   oracle/jdbc/OracleArray.html
+    34105  2025-04-02 14:59   oracle/jdbc/OracleBfile.html
+    48194  2025-04-02 14:59   oracle/jdbc/OracleBlob.html
+   190082  2025-04-02 14:59   oracle/jdbc/OracleCallableStatement.html
+    46556  2025-04-02 14:59   oracle/jdbc/OracleClob.html
+    30718  2025-04-02 14:59   oracle/jdbc/OracleCommonConnection.html
+    11622  2025-04-02 14:59   oracle/jdbc/OracleCommonConnectionBuilder.html
+    24689  2025-04-02 14:59   oracle/jdbc/OracleCommonPreparedStatement.html
+    14428  2025-04-02 14:59   oracle/jdbc/OracleCommonResultSet.html
+    12910  2025-04-02 14:59   oracle/jdbc/OracleCommonStatement.html
+    16549  2025-04-02 14:59   oracle/jdbc/OracleConnection.CommitOption.html
+    19164  2025-04-02 14:59   oracle/jdbc/OracleConnection.ConnectionValidation.html
+    15083  2025-04-02 14:59   oracle/jdbc/OracleConnection.DRCPState.html
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://search.maven.org/solrsearch/select?q=g:%22com.oracle.database.jdbc%22%20AND%20a:%22ojdbc11%22%20AND%20v:%2223.8.0.25.04%22&rows=20&wt=json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/oracle/database/jdbc/ojdbc11/23.8.0.25.04</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/oracle/database/jdbc/ojdbc11/23.8.0.25.04</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ojdbc11-23.8.0.25.04-javadoc.jar" title="ojdbc11-23.8.0.25.04-javadoc.jar">ojdbc11-23.8.0.25.04-javadoc.jar</a>                  2025-05-06 10:01   2523614      
+<a href="ojdbc11-23.8.0.25.04-javadoc.jar.asc" title="ojdbc11-23.8.0.25.04-javadoc.jar.asc">ojdbc11-23.8.0.25.04-javadoc.jar.asc</a>              2025-05-06 10:01       866      
+<a href="ojdbc11-23.8.0.25.04-javadoc.jar.md5" title="ojdbc11-23.8.0.25.04-javadoc.jar.md5">ojdbc11-23.8.0.25.04-javadoc.jar.md5</a>              2025-05-06 10:01        32      
+<a href="ojdbc11-23.8.0.25.04-javadoc.jar.sha1" title="ojdbc11-23.8.0.25.04-javadoc.jar.sha1">ojdbc11-23.8.0.25.04-javadoc.jar.sha1</a>             2025-05-06 10:01        40      
+<a href="ojdbc11-23.8.0.25.04-sources.jar" title="ojdbc11-23.8.0.25.04-sources.jar">ojdbc11-23.8.0.25.04-sources.jar</a>                  2025-05-06 10:01       285      
+<a href="ojdbc11-23.8.0.25.04-sources.jar.asc" title="ojdbc11-23.8.0.25.04-sources.jar.asc">ojdbc11-23.8.0.25.04-sources.jar.asc</a>              2025-05-06 10:01       866      
+<a href="ojdbc11-23.8.0.25.04-sources.jar.md5" title="ojdbc11-23.8.0.25.04-sources.jar.md5">ojdbc11-23.8.0.25.04-sources.jar.md5</a>              2025-05-06 10:01        32      
+<a href="ojdbc11-23.8.0.25.04-sources.jar.sha1" title="ojdbc11-23.8.0.25.04-sources.jar.sha1">ojdbc11-23.8.0.25.04-sources.jar.sha1</a>             2025-05-06 10:01        40      
+<a href="ojdbc11-23.8.0.25.04.jar" title="ojdbc11-23.8.0.25.04.jar">ojdbc11-23.8.0.25.04.jar</a>                          2025-05-06 10:01   7370168      
+<a href="ojdbc11-23.8.0.25.04.jar.asc" title="ojdbc11-23.8.0.25.04.jar.asc">ojdbc11-23.8.0.25.04.jar.asc</a>                      2025-05-06 10:01       866      
+<a href="ojdbc11-23.8.0.25.04.jar.md5" title="ojdbc11-23.8.0.25.04.jar.md5">ojdbc11-23.8.0.25.04.jar.md5</a>                      2025-05-06 10:01        32      
+<a href="ojdbc11-23.8.0.25.04.jar.sha1" title="ojdbc11-23.8.0.25.04.jar.sha1">ojdbc11-23.8.0.25.04.jar.sha1</a>                     2025-05-06 10:01        40      
+<a href="ojdbc11-23.8.0.25.04.pom" title="ojdbc11-23.8.0.25.04.pom">ojdbc11-23.8.0.25.04.pom</a>                          2025-05-06 10:01      1453      
+<a href="ojdbc11-23.8.0.25.04.pom.asc" title="ojdbc11-23.8.0.25.04.pom.asc">ojdbc11-23.8.0.25.04.pom.asc</a>                      2025-05-06 10:01       866      
+<a href="ojdbc11-23.8.0.25.04.pom.md5" title="ojdbc11-23.8.0.25.04.pom.md5">ojdbc11-23.8.0.25.04.pom.md5</a>                      2025-05-06 10:01        32      
+<a href="ojdbc11-23.8.0.25.04.pom.sha1" title="ojdbc11-23.8.0.25.04.pom.sha1">ojdbc11-23.8.0.25.04.pom.sha1</a>                     2025-05-06 10:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 50ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-tests.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ exited 22 in 250ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:23:38 GMT
+content-type: text/html
+cf-ray: 9f6b411d2b12343e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+codex
+The `-sources.jar` exists but contains only Oracle’s dummy `source.txt` saying the driver is not open source, and Maven Central has no `-tests.jar` for this version. I’m checking nearby metadata patterns in this repository so the final values match local convention.
+exec
+/usr/bin/bash -lc "rg -n \"oracle.database.jdbc|ojdbc11|ojdbc\" build/discovered-artifact-metadata metadata -g '*.json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+metadata/library-and-framework-list.json:850:    "artifact": "com.oracle.database.jdbc:ojdbc11",
+metadata/library-and-framework-list.json:856:          "https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/"
+metadata/library-and-framework-list.json:866:    "artifact": "com.oracle.database.jdbc:ojdbc8",
+metadata/library-and-framework-list.json:872:          "https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc8/"
+build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json:2:  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*sources.jar|\"test-code-url\".*tests.jar|\"documentation-url\".*javadoc.jar|\"source-code-url\" : \"N/A\"' build/discovered-artifact-metadata metadata -g '*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/$version$/smallrye-common-classloader-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/$version$/smallrye-common-classloader-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-javadoc.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/$version$/org.abego.treelayout.core-$version$-sources.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/$version$/org.abego.treelayout.core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:52:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:55:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '830,880p' metadata/library-and-framework-list.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+      }
+    ]
+  },
+  {
+    "artifact": "com.oracle.apm.agent.java:apm-java-agent-micronaut",
+    "description": "Oracle Application Performance Monoitoring(APM) Java Tracer for Micronaut based applications",
+    "details": [
+      {
+        "minimum_version": "1.8.3326",
+        "metadata_locations": [
+          "https://repo1.maven.org/maven2/com/oracle/apm/agent/java/apm-java-agent-micronaut/"
+        ],
+        "tests_locations": [
+          "https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-apm-tracer-graalvm.html"
+        ],
+        "test_level": "fully-tested"
+      }
+    ]
+  },
+  {
+    "artifact": "com.oracle.database.jdbc:ojdbc11",
+    "description": "Oracle JDBC Driver compatible with JDK11, JDK12, JDK13, JDK14 and JDK15",
+    "details": [
+      {
+        "minimum_version": "21.1.0.0",
+        "metadata_locations": [
+          "https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/"
+        ],
+        "tests_locations": [
+          "https://www.oracle.com/a/otn/docs/what-is-in-db21c-for-java-developers.pdf"
+        ],
+        "test_level": "fully-tested"
+      }
+    ]
+  },
+  {
+    "artifact": "com.oracle.database.jdbc:ojdbc8",
+    "description": "Oracle JDBC Driver compatible with JDK8, JDK11, JDK12, JDK13, JDK14 and JDK15",
+    "details": [
+      {
+        "minimum_version": "21.1.0.0",
+        "metadata_locations": [
+          "https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc8/"
+        ],
+        "tests_locations": [
+          "https://www.oracle.com/a/otn/docs/what-is-in-db21c-for-java-developers.pdf"
+        ],
+        "test_level": "fully-tested"
+      }
+    ]
+  },
+
+exec
+/usr/bin/bash -lc "find metadata -path '*com.oracle.database.jdbc*' -type f -maxdepth 5 -print -exec sed -n '1,80p' {} \\;" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | sed -n '1,20p' | xargs -r -n1 sh -c 'echo \""'$1"; sed -n "1,80p" "$1"'"' sh" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+{
+  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'not-for-native-image|\"language\"' metadata build/discovered-artifact-metadata -g '*.json' | sed -n '1,140p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/sqlite-driver/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:51:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:69:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/pprint_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-core_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/unroll-annotation_3/index.json:10:    "language" : {
+metadata/org.webjars/jquery/index.json:3:    "not-for-native-image": true,
+metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/io.insert-koin/koin-test/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-ktor/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-core/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.springframework/spring-jcl/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.3.15",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+    "description" : "Spring JCL is Spring Framework's Commons Logging bridge, providing the org.apache.commons.logging API used by Spring while routing log calls to Log4j 2, SLF4J, or java.util.logging based on the runtime classpath. It lets Spring and applications use a small logging facade without depending on the external commons-logging artifact.",
+    "tested-versions" : [
+      "5.3.15",
+      "5.3.16",
+      "5.3.17",
+      "5.3.18",
+      "5.3.19",
+      "5.3.20",
+      "5.3.21",
+      "5.3.22",
+      "5.3.23",
+      "5.3.24",
+      "5.3.25",
+      "5.3.26",
+      "5.3.27",
+      "5.3.28",
+      "5.3.29",
+      "5.3.30",
+      "5.3.31",
+      "5.3.32",
+      "5.3.33",
+      "5.3.34",
+      "5.3.35",
+      "5.3.36",
+      "5.3.37",
+      "5.3.38",
+      "5.3.39",
+      "6.0.0",
+      "6.0.1",
+      "6.0.2",
+      "6.0.3",
+      "6.0.4",
+
+exec
+/usr/bin/bash -lc "sed -n '1,24p' metadata/org.sangria-graphql/sangria_3/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published sangria_3 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the JVM implementation classes are in sangria-core_3 and sangria-derivation_3.",
+    "replacement": "org.sangria-graphql:sangria-core_3:4.2.9 and org.sangria-graphql:sangria-derivation_3:4.2.9"
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,28p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+web search: 
+web search: Oracle JDBC GitHub repository ojdbc11
+web search: 
+web search: https://central.sonatype.com/artifact/com.oracle.database.jdbc/ojdbc11
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/
+web search: 
+web search: central.sonatype.com artifact com.oracle.database.jdbc ojdbc11 23.8.0.25.04 POM
+web search: 
+web search: javadoc.io com.oracle.database.jdbc ojdbc11 23.8.0.25.04 oracle jdbc
+web search: 
+web search: Oracle database examples JDBC GitHub tests ojdbc11
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.database.jdbc</groupId>
+  <artifactId>ojdbc11</artifactId>
+  <version>23.8.0.25.04</version>
+  <packaging>jar</packaging>  
+
+  <!--
+      ojdbc11.jar: Supports JDBC 4.3 spec and for use with JDK11, JDK17, JDK19, and JDK21.
+      Includes all classes to support basic functionality of the thin driver.
+      Refer to "List of Artifacts (BOM)" section of the Maven Central Guide
+      https://www.oracle.com/database/technologies/maven-central-guide.html#artifacts 
+    -->
+  <name>ojdbc11</name>
+  <description> Oracle JDBC Driver compatible with JDK11, JDK17, JDK19, and JDK21</description>
+  <url>https://www.oracle.com/database/technologies/maven-central-guide.html</url>
+  <inceptionYear>1997</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Oracle Free Use Terms and Conditions (FUTC)</name>
+      <url>https://www.oracle.com/downloads/licenses/oracle-free-license.html</url>
+    </license>
+  </licenses>
+ 
+  <developers>
+    <developer>
+      <organization>Oracle America, Inc.</organization>
+      <organizationUrl>http://www.oracle.com</organizationUrl>
+    </developer>
+  </developers>
+  
+  <scm>
+    <url></url>
+  </scm>
+  
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.26.1.0.0/ojdbc11-23.26.1.0.0.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.database.jdbc</groupId>
+  <artifactId>ojdbc11</artifactId>
+  <version>23.26.1.0.0</version>
+  <packaging>jar</packaging>  
+
+  <!--
+      ojdbc11.jar: Supports JDBC 4.3 spec and for use with JDK11, JDK17, JDK19, and JDK21.
+      Includes all classes to support basic functionality of the thin driver.
+      Refer to "List of Artifacts (BOM)" section of the Maven Central Guide
+      https://www.oracle.com/database/technologies/maven-central-guide.html#artifacts 
+    -->
+  <name>ojdbc11</name>
+  <description> Oracle JDBC Driver compatible with JDK11, JDK17, JDK19, and JDK21</description>
+  <url>https://www.oracle.com/database/technologies/maven-central-guide.html</url>
+  <inceptionYear>1997</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Oracle Free Use Terms and Conditions (FUTC)</name>
+      <url>https://www.oracle.com/downloads/licenses/oracle-free-license.html</url>
+    </license>
+  </licenses>
+ 
+  <developers>
+    <developer>
+      <organization>Oracle America, Inc.</organization>
+      <organizationUrl>http://www.oracle.com</organizationUrl>
+    </developer>
+  </developers>
+  
+  <scm>
+    <url>https://github.com/oracle</url>
+  </scm>
+  
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-tests.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ exited 22 in 240ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 23:24:22 GMT
+content-type: text/html
+cf-ray: 9f6b422e5bfd7a85-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,180p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
+  "type": "array",
+  "minItems": 1,
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "#/$defs/metadataIndexEntry"
+      }
+    },
+    {
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/notForNativeImageEntry"
+      }
+    }
+  ],
+  "$defs": {
+    "metadataIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed-packages",
+        "metadata-version",
+        "tested-versions"
+      ],
+      "properties": {
+        "metadata-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+        },
+        "tested-versions": {
+          "type": "array",
+          "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "test-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+        },
+        "source-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the metadata source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "repository-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the canonical project repository for this entry."
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "requires": {
+          "type": "array",
+          "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/moduleCoordinate"
+          }
+        }
+      }
+    },
+    "notForNativeImageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "not-for-native-image",
+        "reason"
+      ],
+      "properties": {
+        "not-for-native-image": {
+          "type": "boolean",
+          "const": true,
+          "description": "Marks this artifact as intentionally not applicable to GraalVM Native Image metadata."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reason this artifact is not a Native Image metadata target."
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional replacement artifact or guidance for users."
+        }
+      }
+    },
+    "moduleCoordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+$"
+    },
+    "libraryLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [ "name", "version" ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [ "kotlin", "scala" ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "scala"
+
+exec
+/usr/bin/bash -lc "rg -n 'repository-url.*oracle|oracle.*repository-url|maven-central-guide' metadata build -g '*.json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+metadata/berkeleydb/je/index.json:8:    "repository-url": "https://download.oracle.com/berkeley-db/je-$version$.zip",
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/berkeleydb/je/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages" : [
+      "com.sleepycat"
+    ],
+    "source-code-url": "https://download.oracle.com/berkeley-db/je-$version$.tar.gz",
+    "repository-url": "https://download.oracle.com/berkeley-db/je-$version$.zip",
+    "test-code-url": "https://download.oracle.com/berkeley-db/je-$version$.zip",
+    "documentation-url": "https://download.oracle.com/berkeley-db/docs/je/$version$/index.html",
+    "description": "Berkeley DB Java Edition is a pure Java embedded database library that provides a transactional key-value store built on a B+Tree access method. It lets applications persist and query local data using direct database APIs, collections bindings, and an object persistence layer.",
+    "metadata-version": "3.2.76",
+    "tested-versions": [
+      "3.2.76"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://repo|\"repository-url\": \"https://repo|\"repository-url\" : \"N/A\"|\"repository-url\": \"N/A\"' metadata build/discovered-artifact-metadata -g '*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/org.example/library/index.json:10:    "repository-url": "N/A",
+metadata/javax.transaction/transaction-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.servlet.jsp/jsp-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+metadata/javax.jcr/jcr/index.json:6:    "repository-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "sed -n '1,20p' metadata/org.ccil.cowan.tagsoup/tagsoup/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+    "description" : "TagSoup is a SAX-compliant Java parser for handling malformed real-world HTML through standard XML processing APIs. It also includes a command-line processor that can turn HTML input into clean HTML or well-formed XML approximating XHTML.",
+    "tested-versions" : [
+      "1.2.1"
+    ],
+    "allowed-packages" : [
+      "org.ccil.cowan.tagsoup"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,20p' metadata/javax.transaction/transaction-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/$version$/transaction-api-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otndocs/jcp/jta-$version$-javadoc-oth-JSpec/?submit=Download",
+    "description" : "The Java Transaction API defines standard interfaces and exceptions for demarcating and coordinating transactions in Java applications and application servers. It covers user-managed transactions, transaction manager operations, synchronization callbacks, and XA resource integration contracts used by compliant transaction implementations.",
+    "tested-versions" : [
+      "1.1-rev-1",
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "javax.transaction"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/oracle/oracle-db-examples.git | rg '23\\.8|23\\.8\\.0|ojdbc|jdbc' || true" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/oracle/oracle-db-examples.git | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/oracle | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 212ms:
+remote: Not Found
+fatal: repository 'https://github.com/oracle/' not found
+
+ succeeded in 343ms:
+b808fd5f30cf14164f0287b7f010ca6b1e34727e	refs/heads/dependabot/maven/txeventq/kafka-connector-example/kafka_client/org.apache.kafka-kafka-clients-3.9.2
+710c050956735302e48d9e6129fdabe079535c3a	refs/heads/dependabot/maven/txeventq/kafka-connector-example/kafka_client/org.apache.logging.log4j-log4j-core-2.25.4
+f6b41f4541745cfa69ffd3ed62fe5a7c8423c4a6	refs/heads/main
+
+ succeeded in 369ms:
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' metadata -g '*.json' | sed -n '1,250p' | rg -v 'github|gitlab|bitbucket|codehaus|sourceforge|N/A|download.oracle|apache.org|eclipse.org|gradle' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+metadata/com.google.android/annotations/index.json:7:    "repository-url": "https://android.googlesource.com/platform/sdk",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' metadata -g '*.json' | wc -l && rg -n '\"repository-url\"' metadata -g '*.json' | rg 'oracle|maven|www\\.' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+1050
+metadata/org.w3c.css/sac/index.json:6:    "repository-url" : "https://www.w3.org/Style/CSS/SAC/",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/antlr/antlr/index.json:6:    "repository-url" : "https://www.antlr2.org",
+metadata/xpp3/xpp3/index.json:6:    "repository-url" : "http://www.extreme.indiana.edu/viewcvs/~checkout~/XPP3/java/",
+metadata/berkeleydb/je/index.json:8:    "repository-url": "https://download.oracle.com/berkeley-db/je-$version$.zip",
+metadata/org.apache.maven/maven-api-di/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-api-meta/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:21:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:27:    "repository-url" : "https://github.com/apache/maven-resolver",
+
+exec
+/usr/bin/bash -lc "rg -n \"discovered-artifact-metadata|coordinates\" . -g '*.java' -g '*.groovy' -g '*.kt' -g '*.py' -g '*.json' -g '*.md' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+./COVERAGE.md:365:| [`org.apache.maven.resolver:maven-resolver-connector-basic`](https://github.com/apache/maven-resolver) | 1.9.25<br>– 2.0.0 | 100% (0/0 calls) | <details><summary>Show</summary> Maven Resolver Connector Basic provides the standard repository connector implementation for Maven Artifact Resolver repositories that use URI-based layouts. It coordinates artifact and metadata transfers through the Resolver connector SPI and configured transport implementations.</details> |
+./COVERAGE.md:490:| [`org.jboss.narayana.jta:jta`](https://github.com/jbosstm/narayana) | 5.12.4.Final<br>– 7.3.1.Final | 100.0% (9/9 calls) | <details><summary>Show</summary> Narayana JTA provides a Java Transaction API implementation built on the Narayana transaction manager. It coordinates transactional work and recovery across local resources, application servers, and XA-capable systems.</details> |
+./COVERAGE.md:537:| [`org.junit.platform:junit-platform-launcher`](https://github.com/junit-team/junit-framework) | 1.9.2 | 100.0% (2/2 calls) | <details><summary>Show</summary> JUnit Platform Launcher provides the public API and default implementation for discovering and executing tests through JUnit Platform test engines. It builds test plans, coordinates engine discovery and execution, and reports progress and results through registered listeners.</details> |
+./skills/review-library-new-request/SKILL.md:32:   - Read the title and body to identify the target coordinates.
+./skills/review-library-new-request/SKILL.md:43:   - Treat extra `metadata/**` or `tests/src/**` trees for other coordinates as a blocking scope violation, not as a minor cleanup issue.
+./skills/review-library-new-request/SKILL.md:72:   - Expected minimum: metadata validation and library test jobs for the target coordinates are green.
+./skills/fix-missing-reachability-metadata/SKILL.md:12:Library coordinates should be provided in the prompt in the format `group:artifact:version`. If you are not sure what the coordinates are, ask the user.
+./skills/fix-missing-reachability-metadata/SKILL.md:17:   - Run `./gradlew test -Pcoordinates=<coordinates>` from repository root.
+./skills/fix-missing-reachability-metadata/SKILL.md:31:   - Run `./gradlew test -Pcoordinates=<coordinates>` again.
+./skills/README.md:11:Fixes missing GraalVM reachability metadata for a library specified by coordinates. 
+./skills/review-fixes-javac-fail/SKILL.md:49:   - Confirm the edit addresses the actual Java compilation failure, such as renamed classes, changed method signatures, module boundaries, annotation processors, or dependency coordinates.
+./forge/forge_metadata.py:238:    issue_coordinates: str
+./forge/forge_metadata.py:239:    current_coordinates: str | None = None
+./forge/forge_metadata.py:1896:def get_review_log_path(pr_number: int, coordinates: str | None = None) -> str:
+./forge/forge_metadata.py:1898:    return build_task_log_path("pr-review", coordinates, f"codex_pr_review_{pr_number}.log")
+./forge/forge_metadata.py:2024:        coordinates: str | None = None,
+./forge/forge_metadata.py:2039:    log_path = get_review_log_path(pr_number, coordinates)
+./forge/forge_metadata.py:2242:        coordinates = extract_maven_coordinates(pr_title)
+./forge/forge_metadata.py:2248:                coordinates,
+./forge/forge_metadata.py:2332:def extract_maven_coordinates(title: str) -> Optional[str]:
+./forge/forge_metadata.py:2334:    Extract Maven coordinates (groupId:artifactId:version) from an issue title.
+./forge/forge_metadata.py:2335:    Returns the coordinates string or None if not found.
+./forge/forge_metadata.py:2439:    group, artifact, version = claimed_issue.issue_coordinates.split(":")
+./forge/forge_metadata.py:2536:    group, artifact, version = claimed_issue.issue_coordinates.split(":")
+./forge/forge_metadata.py:2573:        f"- Library: {claimed_issue.issue_coordinates}\n"
+./forge/forge_metadata.py:2603:        f"Automation completed for `{claimed_issue.issue_coordinates}`, but dynamic-access coverage remains "
+./forge/forge_metadata.py:2623:def get_codex_failure_analysis_log_path(issue_number: int, coordinates: str) -> str:
+./forge/forge_metadata.py:2627:        coordinates,
+./forge/forge_metadata.py:2634:    coordinate = claimed_issue.issue_coordinates
+./forge/forge_metadata.py:2653:    coordinate = claimed_issue.issue_coordinates
+./forge/forge_metadata.py:2738:        f"- Library: {claimed_issue.issue_coordinates}\n"
+./forge/forge_metadata.py:2785:        f"The automated `{claimed_issue.label}` job failed for `{claimed_issue.issue_coordinates}` with "
+./forge/forge_metadata.py:2816:        claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3052:    coordinate = _sanitize_branch_segment(claimed_issue.issue_coordinates)
+./forge/forge_metadata.py:3074:    safe_library_name = sanitize_library_log_segment(claimed_issue.issue_coordinates)
+./forge/forge_metadata.py:3079:            f"No workflow logs found for {claimed_issue.issue_coordinates}; skipping log copy.",
+./forge/forge_metadata.py:3094:            library=claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3311:            f"Invoking add_new_library_support workflow for issue #{issue_number}: {claimed_issue.issue_coordinates}",
+./forge/forge_metadata.py:3314:            "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3338:            f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}",
+./forge/forge_metadata.py:3341:            "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:3363:            f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}",
+./forge/forge_metadata.py:3366:            "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:3388:            f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}",
+./forge/forge_metadata.py:3391:            "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:3410:            f"{claimed_issue.issue_coordinates}",
+./forge/forge_metadata.py:3413:            "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3845:    """Resolve the coordinates needed to execute a claimed issue."""
+./forge/forge_metadata.py:3846:    issue_coordinates = extract_maven_coordinates(issue["title"])
+./forge/forge_metadata.py:3847:    if issue_coordinates is None:
+./forge/forge_metadata.py:3848:        print(f"ERROR: No coordinates found in issue title: {issue['title']}", file=sys.stderr)
+./forge/forge_metadata.py:3852:        return issue_coordinates, None, None
+./forge/forge_metadata.py:3856:        print(f"ERROR: No coordinates found in issue title: {issue['title']}", file=sys.stderr)
+./forge/forge_metadata.py:3868:    current_coordinates = f"{group}:{artifact}:{current_version}"
+./forge/forge_metadata.py:3869:    return issue_coordinates, current_coordinates, new_version
+./forge/forge_metadata.py:3950:    issue_coordinates = extract_maven_coordinates(issue["title"])
+./forge/forge_metadata.py:3951:    if issue_coordinates is None:
+./forge/forge_metadata.py:3953:    group, artifact, _version = metadata_coordinate_parts(issue_coordinates)
+./forge/forge_metadata.py:4043:    issue_coordinates, current_coordinates, new_version = claim_metadata
+./forge/forge_metadata.py:4051:        issue_coordinates=issue_coordinates,
+./forge/forge_metadata.py:4052:        current_coordinates=current_coordinates,
+./forge/forge_metadata.py:4205:        group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
+./forge/forge_metadata.py:4209:                    "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:4217:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:4228:                "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:4239:                "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:4250:                "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:4261:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/utility_scripts/workflow_setup.py:82:        ["./gradlew", "test", f"-Pcoordinates={library}"],
+./forge/utility_scripts/style_checks.py:63:def _build_pi_checkstyle_log_path(coordinates: str) -> str:
+./forge/utility_scripts/style_checks.py:65:    return build_pi_log_path("checkstyle", coordinates)
+./forge/utility_scripts/style_checks.py:188:        coordinates: str,
+./forge/utility_scripts/style_checks.py:192:    """Apply style fixes and run style checks for the provided library coordinates."""
+./forge/utility_scripts/style_checks.py:193:    coordinate_arg = f"-Pcoordinates={coordinates}"
+./forge/utility_scripts/style_checks.py:206:    log_path = _build_pi_checkstyle_log_path(coordinates)
+./forge/utility_scripts/metadata_index.py:18:    """Parse group:artifact[:version] coordinates."""
+./forge/utility_scripts/metadata_index.py:24:    print(f"ERROR: Invalid coordinates format: {coordinate}", file=sys.stderr)
+./forge/utility_scripts/native_test_verification.py:317:    return f"./gradlew generateMetadata -Pcoordinates={coordinate} --agentAllowedPackages=fromJar"
+./forge/utility_scripts/native_test_verification.py:321:    return f"./gradlew test -Pcoordinates={coordinate}"
+./forge/utility_scripts/native_test_verification.py:337:        f"-Pcoordinates={coordinate}",
+./forge/utility_scripts/native_test_verification.py:354:    cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}"]
+./forge/utility_scripts/native_test_verification.py:410:        f"-Pcoordinates={coordinate}",
+./forge/utility_scripts/native_test_verification.py:442:        f"-Pcoordinates={coordinate}",
+./forge/utility_scripts/native_image_artifact.py:33:    """Dependency coordinates declared by a Maven POM."""
+./forge/utility_scripts/native_image_artifact.py:53:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./forge/utility_scripts/native_image_artifact.py:93:        print(f"ERROR: Invalid coordinates format: {coordinate}", file=sys.stderr)
+./forge/utility_scripts/library_finalization.py:142:            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={library}"],
+./forge/utility_scripts/library_finalization.py:184:    if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
+./forge/utility_scripts/library_finalization.py:199:    if not _run_gradle_command(repo_path, ["./gradlew", "generateLibraryStats", f"-Pcoordinates={library}"]):
+./forge/utility_scripts/gradle_test_runner.py:45:    resolved_library = library or _extract_coordinates(test_cmd)
+./forge/utility_scripts/gradle_test_runner.py:110:def _extract_coordinates(command: str) -> str | None:
+./forge/utility_scripts/gradle_test_runner.py:111:    match = re.search(r"-Pcoordinates=(?P<coordinates>[^\s]+)", command)
+./forge/utility_scripts/gradle_test_runner.py:114:    return match.group("coordinates").strip("'\"")
+./forge/utility_scripts/local_ci_verification.py:97:def parse_coordinate_parts(coordinates: str) -> tuple[str, str, str]:
+./forge/utility_scripts/local_ci_verification.py:98:    """Return group, artifact, version from Maven coordinates."""
+./forge/utility_scripts/local_ci_verification.py:99:    parts = coordinates.split(":")
+./forge/utility_scripts/local_ci_verification.py:101:        raise ValueError(f"Expected Maven coordinates group:artifact:version, got {coordinates!r}")
+./forge/utility_scripts/local_ci_verification.py:108:        coordinates: str,
+./forge/utility_scripts/local_ci_verification.py:120:            result.repo_fix_paths = classify_repo_fix_paths(repo_path, base_commit, coordinates)
+./forge/utility_scripts/local_ci_verification.py:133:        fixup = _run_fixup(repo_path, coordinates, failed_command)
+./forge/utility_scripts/local_ci_verification.py:211:def classify_repo_fix_paths(repo_path: str, base_commit: str, coordinates: str) -> list[str]:
+./forge/utility_scripts/local_ci_verification.py:213:    group, artifact, _ = parse_coordinate_parts(coordinates)
+./forge/utility_scripts/local_ci_verification.py:321:    pulled_coordinates: set[str] = set()
+./forge/utility_scripts/local_ci_verification.py:323:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:324:        if not coordinates or coordinates in pulled_coordinates:
+./forge/utility_scripts/local_ci_verification.py:326:        if not _coordinate_uses_docker(repo_path, coordinates):
+./forge/utility_scripts/local_ci_verification.py:331:            ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
+./forge/utility_scripts/local_ci_verification.py:336:        pulled_coordinates.add(coordinates)
+./forge/utility_scripts/local_ci_verification.py:339:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:341:        if not coordinates or not isinstance(versions, list):
+./forge/utility_scripts/local_ci_verification.py:347:            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
+./forge/utility_scripts/local_ci_verification.py:359:                coordinates,
+./forge/utility_scripts/local_ci_verification.py:377:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:378:        if not coordinates:
+./forge/utility_scripts/local_ci_verification.py:381:        if _coordinate_uses_docker(repo_path, coordinates):
+./forge/utility_scripts/local_ci_verification.py:385:                ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
+./forge/utility_scripts/local_ci_verification.py:394:            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
+./forge/utility_scripts/local_ci_verification.py:403:            ["./gradlew", "testInfra", f"-Pcoordinates={coordinates}", "-Pparallelism=1", "--stacktrace"],
+./forge/utility_scripts/local_ci_verification.py:494:            "changed-index-coordinates",
+./forge/utility_scripts/local_ci_verification.py:498:    changed_coordinates = str(output.get("changed-coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:499:    if not changed_coordinates:
+./forge/utility_scripts/local_ci_verification.py:504:        ["./gradlew", "validateIndexFiles", f"-Pcoordinates={changed_coordinates}"],
+./forge/utility_scripts/local_ci_verification.py:526:            "changed-coordinates-only-matrix",
+./forge/utility_scripts/local_ci_verification.py:530:    coordinates = matrix.get("coordinates")
+./forge/utility_scripts/local_ci_verification.py:531:    if not isinstance(coordinates, list):
+./forge/utility_scripts/local_ci_verification.py:533:    for coordinate in coordinates:
+./forge/utility_scripts/local_ci_verification.py:537:            ["./gradlew", "checkstyle", f"-Pcoordinates={coordinate}", "--console=plain"],
+./forge/utility_scripts/local_ci_verification.py:623:            str(entry.get("coordinates") or ""),
+./forge/utility_scripts/local_ci_verification.py:649:def _coordinate_uses_docker(repo_path: str, coordinates: str) -> bool:
+./forge/utility_scripts/local_ci_verification.py:651:    required_images_path = _required_docker_images_path(repo_path, coordinates)
+./forge/utility_scripts/local_ci_verification.py:658:def _required_docker_images_path(repo_path: str, coordinates: str) -> str | None:
+./forge/utility_scripts/local_ci_verification.py:660:    group, artifact, _version = parse_coordinate_parts(coordinates)
+./forge/utility_scripts/local_ci_verification.py:661:    test_version = _resolve_coordinate_test_version(repo_path, coordinates)
+./forge/utility_scripts/local_ci_verification.py:678:def _resolve_coordinate_test_version(repo_path: str, coordinates: str) -> str | None:
+./forge/utility_scripts/local_ci_verification.py:680:    group, artifact, version = parse_coordinate_parts(coordinates)
+./forge/utility_scripts/local_ci_verification.py:967:def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) -> FixupRecord:
+./forge/utility_scripts/local_ci_verification.py:969:    log_path = build_timestamped_task_log_path("local-ci-fixup", coordinates, failed_command.gate)
+./forge/utility_scripts/local_ci_verification.py:970:    prompt = _build_fixup_prompt(coordinates, failed_command)
+./forge/utility_scripts/local_ci_verification.py:1042:def _build_fixup_prompt(coordinates: str, failed_command: CommandRecord) -> str:
+./forge/utility_scripts/local_ci_verification.py:1052:        f"Library: {coordinates}",
+./forge/utility_scripts/source_context.py:143:        f"--coordinates={coordinate}",
+./forge/utility_scripts/source_context.py:177:        f"--coordinates={coordinate}",
+./forge/utility_scripts/source_context.py:422:        print(f"ERROR: Invalid coordinates format: {coordinate}", file=sys.stderr)
+./forge/utility_scripts/native_metadata_exploration.py:120:            f"-Pcoordinates={coordinate}",
+./forge/utility_scripts/native_metadata_exploration.py:147:            f"-Pcoordinates={coordinate}",
+./forge/tests/test_forge_metadata.py:108:        issue_coordinates="org.example:lib:1.0.0",
+./forge/tests/test_forge_metadata.py:126:            "--coordinates", "org.example:lib:1.0.0",
+./forge/tests/test_forge_metadata.py:894:        pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
+./forge/tests/test_forge_metadata.py:902:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/tests/test_forge_metadata.py:913:        pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
+./forge/tests/test_forge_metadata.py:921:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/tests/test_make_pr_not_for_native_image.py:74:                patch.object(make_pr_not_for_native_image, "find_issue_for_coordinates", return_value=1234), \
+./forge/tests/test_local_ci_verification.py:165:                    coordinates="org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:281:                [{"coordinates": "org.example:demo:1.0.0", "versions": ["1.0.0"]}],
+./forge/tests/test_local_ci_verification.py:293:                "coordinates": "org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:300:                "coordinates": "org.example:other:2.0.0",
+./forge/tests/test_local_ci_verification.py:309:                "coordinates": "org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:358:                        {"coordinates": "org.example:plain-demo:1.0.0", "versions": ["1.0.0"]},
+./forge/tests/test_local_ci_verification.py:359:                        {"coordinates": "org.example:docker-demo:1.0.0", "versions": ["1.0.0"]},
+./forge/tests/test_local_ci_verification.py:370:                        ["./gradlew", "pullAllowedDockerImages", "-Pcoordinates=org.example:docker-demo:1.0.0"],
+
+exec
+/usr/bin/bash -lc "sed -n '1,140p' forge/utility_scripts/native_image_artifact.py" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+"""Conservative checks for artifacts that are not Native Image metadata targets."""
+
+from dataclasses import dataclass
+import json
+import os
+import re
+import sys
+import urllib.error
+import urllib.request
+import xml.etree.ElementTree as ET
+import zipfile
+
+
+MAVEN_CENTRAL = "https://repo1.maven.org/maven2"
+
+
+@dataclass(frozen=True)
+class NativeImageEligibility:
+    """Eligibility result for a Maven artifact."""
+
+    not_for_native_image: bool
+    reason: str | None = None
+    replacement: str | None = None
+
+
+@dataclass(frozen=True)
+class MavenDependency:
+    """Dependency coordinates declared by a Maven POM."""
+
+    group: str
+    artifact: str
+    version: str
+    scope: str | None = None
+    classifier: str | None = None
+
+
+@dataclass(frozen=True)
+class MavenPomMetadata:
+    """Small subset of Maven POM metadata used for artifact classification."""
+
+    packaging: str | None
+    dependencies: tuple[MavenDependency, ...]
+
+
+def discovery_file_path(repo_path: str, coordinate: str) -> str:
+    """Return the Gradle build-local discovery file path for a coordinate."""
+    sanitized = coordinate.replace(":", "-").replace("/", "-")
+    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+
+
+def load_discovered_eligibility(repo_path: str, coordinate: str) -> NativeImageEligibility:
+    """Read not-for-native-image eligibility from the discovery file when present."""
+    path = discovery_file_path(repo_path, coordinate)
+    if not os.path.isfile(path):
+        return NativeImageEligibility(False)
+    try:
+        with open(path, "r", encoding="utf-8") as discovery_file:
+            metadata = json.load(discovery_file)
+    except (OSError, json.JSONDecodeError):
+        return NativeImageEligibility(False)
+    if metadata.get("not-for-native-image") is not True:
+        return NativeImageEligibility(False)
+    reason = str(metadata.get("reason") or "").strip()
+    if not reason:
+        reason = "Artifact discovery identified this as not applicable to GraalVM Native Image metadata."
+    replacement = str(metadata.get("replacement") or "").strip() or None
+    return NativeImageEligibility(True, reason, replacement)
+
+
+def evaluate_native_image_eligibility(repo_path: str, coordinate: str) -> NativeImageEligibility:
+    """Return a marker result only for certain non-Native-Image artifacts."""
+    discovered = load_discovered_eligibility(repo_path, coordinate)
+    if discovered.not_for_native_image:
+        return discovered
+
+    coordinate_result = classify_coordinate_name(coordinate)
+    if coordinate_result.not_for_native_image:
+        return coordinate_result
+
+    return inspect_maven_artifact(coordinate)
+
+
+def classify_coordinate_name(coordinate: str) -> NativeImageEligibility:
+    """Classify certain platform artifacts by coordinate naming conventions."""
+    try:
+        group, artifact, _version = coordinate.split(":", 2)
+    except ValueError:
+        print(f"ERROR: Invalid coordinates format: {coordinate}", file=sys.stderr)
+        raise SystemExit(1)
+
+    if group == "org.scala-js" or "_sjs" in artifact or "scalajs" in artifact.lower():
+        return NativeImageEligibility(
+            True,
+            "Scala.js artifact; it is not a JVM library consumed by native-image.",
+            jvm_artifact_replacement(artifact),
+        )
+
+    android_groups = ("com.android", "androidx.")
+    if group.startswith(android_groups):
+        return NativeImageEligibility(
+            True,
+            "Android artifact; it targets the Android runtime or Android toolchain rather than JVM Native Image.",
+        )
+
+    kotlin_native_suffixes = (
+        "-iosarm64",
+        "-iosx64",
+        "-iossimulatorarm64",
+        "-linuxx64",
+        "-linuxarm64",
+        "-macosx64",
+        "-macosarm64",
+        "-mingwx64",
+        "-tvosarm64",
+        "-tvosx64",
+        "-tvossimulatorarm64",
+        "-watchosarm32",
+        "-watchosarm64",
+        "-watchosdevicearm64",
+        "-watchossimulatorarm64",
+        "-wasm-js",
+        "-wasm-wasi",
+    )
+    if artifact.endswith(kotlin_native_suffixes):
+        return NativeImageEligibility(
+            True,
+            "Kotlin Native/Wasm artifact; it is not a JVM library consumed by native-image.",
+            jvm_artifact_replacement(artifact),
+        )
+
+    if artifact.endswith("-js") and group.startswith(("org.jetbrains.kotlin", "org.jetbrains.kotlinx")):
+        return NativeImageEligibility(
+            True,
+            "Kotlin/JavaScript artifact; it is not a JVM library consumed by native-image.",
+            jvm_artifact_replacement(artifact),
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/
+web search: 
+web search: 
+web search: 
+web search: https://www.oracle.com/database/technologies/maven-central-guide.html
+codex
+I’ve got enough to make the file consistent: Maven Central has exact-version source and Javadoc artifacts, no Maven test artifact, and the driver jar contains JVM class files, so it remains a Native Image metadata target. The artifact is ordinary Java/JDBC rather than Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..31e80d0c29cbd16cf7646bca13cc98988245e4bb
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin JDBC 4.3 driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..31e80d0c29cbd16cf7646bca13cc98988245e4bb
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin JDBC 4.3 driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+{
+  "coordinates": "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
+  "repository-url": "https://www.oracle.com/database/technologies/maven-central-guide.html",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
+  "description": "Oracle JDBC Driver for JDK 11 and newer provides the thin JDBC 4.3 driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+}
+
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+path = Path('build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json')
+data = json.loads(path.read_text())
+for key in ('source-code-url', 'documentation-url'):
+    print(key, data[key].replace('"'$version$'"', '23.8.0.25.04'))
+print('description sentences:', data['description'].count('.') )
+PY" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+source-code-url https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-sources.jar
+documentation-url https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-javadoc.jar
+description sentences: 3
+
+exec
+/usr/bin/bash -lc 'for url in "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-sources.jar" "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04-javadoc.jar"; do curl -fsSI "$url" | sed -n '"'1,4p'; done" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:25:32 GMT
+content-type: application/java-archive
+content-length: 285
+HTTP/2 200 
+date: Mon, 04 May 2026 23:25:32 GMT
+content-type: application/java-archive
+content-length: 2523614
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..31e80d0c29cbd16cf7646bca13cc98988245e4bb
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin JDBC 4.3 driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+codex
+The JSON is valid and the Maven source/Javadoc URLs resolve after substituting `23.8.0.25.04`. I found one formatting issue in the description check: `JDBC 4.3` adds an extra period for simple sentence counters, so I’m rewording that without changing meaning.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..3d7f37cb88591c500dd12e97c15e484447861e0d
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..3d7f37cb88591c500dd12e97c15e484447861e0d
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+{
+  "coordinates": "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
+  "repository-url": "https://www.oracle.com/database/technologies/maven-central-guide.html",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
+  "description": "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+}
+
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+path = Path('build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json')
+data = json.loads(path.read_text())
+print(data['description'])
+print('description sentences:', data['description'].count('.'))
+print('language present:', 'language' in data)
+print('not-for-native-image present:', 'not-for-native-image' in data)
+PY" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications.
+description sentences: 2
+language present: False
+not-for-native-image present: False
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..3d7f37cb88591c500dd12e97c15e484447861e0d
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..3d7f37cb88591c500dd12e97c15e484447861e0d
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+{
+  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
+  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
+  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..3d7f37cb88591c500dd12e97c15e484447861e0d
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+web search: 
+web search: repo.maven.apache.org maven2 com oracle database jdbc ojdbc11 23.8.0.25.04 javadoc sources jar
+codex
+Updated [com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json:1).
+
+Set Maven Central `sources` and `javadoc` URLs with `$version$`, `test-code-url` to `N/A` because no tests artifact is published for that version, and used Oracle’s Maven Central guide as the repository URL. The artifact is a JVM JDBC driver, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/?utm_source=openai))
+
+Verified JSON validity and confirmed the substituted source/Javadoc URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+index 33c47acd3f4f385228b7e06ff7cf313d3c62607e..3d7f37cb88591c500dd12e97c15e484447861e0d
+--- a/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
++++ b/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04"
++  "coordinates" : "com.oracle.database.jdbc:ojdbc11:23.8.0.25.04",
++  "repository-url" : "https://www.oracle.com/database/technologies/maven-central-guide.html",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/oracle/database/jdbc/ojdbc11/$version$/ojdbc11-$version$-javadoc.jar",
++  "description" : "Oracle JDBC Driver for JDK 11 and newer provides the thin driver classes used by Java applications to connect to Oracle Database. It implements Oracle-specific JDBC extensions, connection handling, statement execution, result processing, and database type support for client applications."
+ }
+
+tokens used
+120,394
+Updated [com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/discovered-artifact-metadata/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.json:1).
+
+Set Maven Central `sources` and `javadoc` URLs with `$version$`, `test-code-url` to `N/A` because no tests artifact is published for that version, and used Oracle’s Maven Central guide as the repository URL. The artifact is a JVM JDBC driver, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/?utm_source=openai))
+
+Verified JSON validity and confirmed the substituted source/Javadoc URLs return HTTP 200.
+Ran agent for com.oracle.database.jdbc:ojdbc11:23.8.0.25.04 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/agent-artifact-discovery-logs/com.oracle.database.jdbc-ojdbc11-23.8.0.25.04.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4502-59b1f258/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 14s
+9 actionable tasks: 4 executed, 5 from cache
