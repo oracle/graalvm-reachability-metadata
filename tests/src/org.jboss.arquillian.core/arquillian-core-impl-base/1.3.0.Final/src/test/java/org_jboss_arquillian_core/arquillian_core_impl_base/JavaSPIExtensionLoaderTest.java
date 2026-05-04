@@ -9,6 +9,8 @@ package org_jboss_arquillian_core.arquillian_core_impl_base;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,18 @@ public class JavaSPIExtensionLoaderTest {
         assertThat(services)
                 .extracting(JavaSpiTestService::name)
                 .containsExactly("first", "second");
+    }
+
+    @Test
+    void loadVetoedLoadsServiceAndImplementationClassesFromExclusionsResource() {
+        JavaSPIExtensionLoader loader = new JavaSPIExtensionLoader();
+
+        Map<Class<?>, Set<Class<?>>> vetoed = loader.loadVetoed(JavaSPIExtensionLoaderTest.class.getClassLoader());
+
+        assertThat(vetoed)
+                .containsKey(JavaSpiTestService.class);
+        assertThat(vetoed.get(JavaSpiTestService.class))
+                .containsExactly(VetoedJavaSpiTestService.class, SecondJavaSpiTestService.class);
     }
 }
 

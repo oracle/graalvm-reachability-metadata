@@ -111,5 +111,13 @@ public class ObserverImplTest {
         @Override
         public void shutdown() {
         }
+
+        @Override
+        public void addExtension(Class<?> extensionClass) {
+        }
+
+        @Override
+        public void removeExtension(Class<?> extensionClass) {
+        }
     }
 }
