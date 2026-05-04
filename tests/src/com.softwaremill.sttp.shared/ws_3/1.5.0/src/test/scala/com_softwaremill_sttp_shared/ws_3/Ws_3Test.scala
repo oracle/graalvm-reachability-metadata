@@ -225,6 +225,34 @@ class Ws_3Test {
   }
 
   @Test
+  def websocketStubBuildCreatesIndependentSocketsWithFreshQueuesAndState(): Unit = {
+    val stub: WebSocketStub[Int] = WebSocketStub
+      .initialReceive(List(Text("initial", finalFragment = true, None)))
+      .thenRespondS(0) { (count: Int, frame: WebSocketFrame) =>
+        val next: Int = count + 1
+        val response: WebSocketFrame = frame match {
+          case Text(payload, _, _) => Text(s"$next:$payload", finalFragment = true, None)
+          case _                   => Text(s"$next:other", finalFragment = true, None)
+        }
+        (next, List(response))
+      }
+
+    val first: WebSocket[Try] = stub.build(TryMonad)
+    val second: WebSocket[Try] = stub.build(TryMonad)
+
+    assertEquals(Success(Text("initial", finalFragment = true, None)), first.receive())
+    assertEquals(Success(Text("initial", finalFragment = true, None)), second.receive())
+
+    assertEquals(Success(()), first.sendText("one"))
+    assertEquals(Success(()), first.sendText("two"))
+    assertEquals(Success(()), second.sendText("one"))
+
+    assertEquals(Success(Text("1:one", finalFragment = true, None)), first.receive())
+    assertEquals(Success(Text("2:two", finalFragment = true, None)), first.receive())
+    assertEquals(Success(Text("1:one", finalFragment = true, None)), second.receive())
+  }
+
+  @Test
   def receiveDataFrameSkipsControlFramesAndPongsReceivedPingByDefault(): Unit = {
     val webSocket: WebSocket[Try] = WebSocketStub
       .initialReceive(List(Pong(Array[Byte](1)), Ping(Array[Byte](2, 3))))
