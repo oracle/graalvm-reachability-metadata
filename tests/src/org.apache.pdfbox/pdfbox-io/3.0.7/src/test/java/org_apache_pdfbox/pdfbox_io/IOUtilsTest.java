@@ -11,12 +11,19 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.RandomAccessReadMemoryMappedFile;
 import org.junit.jupiter.api.Test;
@@ -63,5 +70,88 @@ public class IOUtilsTest {
         }
 
         assertThatCode(() -> Files.delete(mappedFile)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void initializesFallbackUnmapperWhenUnsafeCleanerIsUnavailable() throws Exception {
+        Optional<String> javaAgentArgument = jacocoJavaAgentArgument();
+        if (javaAgentArgument.isEmpty()) {
+            assertThatCode(() -> IOUtils.unmap(ByteBuffer.allocateDirect(1))).doesNotThrowAnyException();
+            return;
+        }
+
+        ProcessResult result = runFallbackProbe(javaAgentArgument.get());
+
+        assertThat(result.exitCode()).as(result.output()).isEqualTo(0);
+        assertThat(result.output()).contains("fallback-unmapper-initialized");
+    }
+
+    private static Optional<String> jacocoJavaAgentArgument() {
+        return ManagementFactory.getRuntimeMXBean()
+                .getInputArguments()
+                .stream()
+                .filter(argument -> argument.startsWith("-javaagent:") && argument.contains("jacoco"))
+                .findFirst()
+                .map(IOUtilsTest::forceJacocoAppend);
+    }
+
+    private static String forceJacocoAppend(String javaAgentArgument) {
+        if (javaAgentArgument.contains("append=")) {
+            return javaAgentArgument.replace("append=false", "append=true");
+        }
+        if (javaAgentArgument.contains("=")) {
+            return javaAgentArgument + ",append=true";
+        }
+        return javaAgentArgument + "=append=true";
+    }
+
+    private static ProcessResult runFallbackProbe(String javaAgentArgument) throws Exception {
+        List<String> command = new ArrayList<>();
+        command.add(Path.of(System.getProperty("java.home"), "bin", "java").toString());
+        command.add(javaAgentArgument);
+        command.add("--limit-modules=java.base,java.instrument,java.logging,java.management,java.naming,java.xml");
+        command.add("--add-opens=java.base/java.nio=ALL-UNNAMED");
+        command.add("--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED");
+        command.add("-cp");
+        command.add(probeClasspath());
+        command.add(IOUtilsFallbackUnmapperProbe.class.getName());
+
+        Process process = new ProcessBuilder(command)
+                .redirectErrorStream(true)
+                .start();
+        boolean completed = process.waitFor(30, TimeUnit.SECONDS);
+        if (!completed) {
+            process.destroyForcibly();
+            process.waitFor(5, TimeUnit.SECONDS);
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        assertThat(completed).as(output).isTrue();
+        return new ProcessResult(process.exitValue(), output);
+    }
+
+    private static String probeClasspath() throws Exception {
+        return String.join(
+                File.pathSeparator,
+                codeSourceLocation(IOUtilsFallbackUnmapperProbe.class),
+                codeSourceLocation(IOUtils.class),
+                codeSourceLocation(LogFactory.class));
+    }
+
+    private static String codeSourceLocation(Class<?> type) throws Exception {
+        return Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toString();
+    }
+
+    private record ProcessResult(int exitCode, String output) {
+    }
+}
+
+final class IOUtilsFallbackUnmapperProbe {
+
+    private IOUtilsFallbackUnmapperProbe() {
+    }
+
+    public static void main(String[] args) {
+        IOUtils.unmap(ByteBuffer.allocateDirect(1));
+        System.out.println("fallback-unmapper-initialized");
     }
 }
