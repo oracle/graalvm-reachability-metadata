@@ -1,0 +1,974 @@
+Starting a Gradle Daemon, 19 busy and 5 incompatible and 180 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df094-f0fd-7710-8a94-e1ad5fa7ee74
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.10.Final" when "$version$" is replaced with "1.1.10.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+- Set "coordinates" to "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.10.Final".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven Central and the upstream Arquillian repo, then update the discovered metadata JSON in place. After the edit I’ll validate the file is still valid JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.jboss\\.arquillian\\.test-arquillian-test-spi-1\\.1\\.10\\.Final\\.json"'$'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+
+web search: 
+web search: Maven Central org.jboss.arquillian.test arquillian-test-spi 1.1.10.Final sources javadoc test-sources
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.arquillian.test/arquillian-test-spi
+web search: 
+web search: https://arquillian.org/
+web search: 
+web search: site:github.com/arquillian arquillian-core 1.1.10.Final tag
+codex
+Maven Central confirms this is the Arquillian Test SPI module and exposes the POM metadata. I’m checking the exact 1.1.10.Final artifact directory now so the URLs prefer Maven-hosted source/javadoc/test artifacts where they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/arquillian-test-spi-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 212ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-build</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../../build/pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.arquillian.test</groupId>
+    <artifactId>arquillian-test-spi</artifactId>
+    <name>Arquillian Test SPI</name>
+    <description>SPI for the Test integration.</description>
+
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Versioning -->
+
+    </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <!-- org.jboss.arquillian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>
+
+
+ succeeded in 331ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="arquillian-test-spi-1.1.10.Final-javadoc.jar" title="arquillian-test-spi-1.1.10.Final-javadoc.jar">arquillian-test-spi-1.1.10.Final-javadoc.jar</a>      2015-10-19 12:55    535983      
+<a href="arquillian-test-spi-1.1.10.Final-javadoc.jar.md5" title="arquillian-test-spi-1.1.10.Final-javadoc.jar.md5">arquillian-test-spi-1.1.10.Final-javadoc.jar....</a>  2015-10-19 12:55        32      
+<a href="arquillian-test-spi-1.1.10.Final-javadoc.jar.sha1" title="arquillian-test-spi-1.1.10.Final-javadoc.jar.sha1">arquillian-test-spi-1.1.10.Final-javadoc.jar....</a>  2015-10-19 12:55        40      
+<a href="arquillian-test-spi-1.1.10.Final-sources.jar" title="arquillian-test-spi-1.1.10.Final-sources.jar">arquillian-test-spi-1.1.10.Final-sources.jar</a>      2015-10-19 12:55     45526      
+<a href="arquillian-test-spi-1.1.10.Final-sources.jar.md5" title="arquillian-test-spi-1.1.10.Final-sources.jar.md5">arquillian-test-spi-1.1.10.Final-sources.jar....</a>  2015-10-19 12:55        32      
+<a href="arquillian-test-spi-1.1.10.Final-sources.jar.sha1" title="arquillian-test-spi-1.1.10.Final-sources.jar.sha1">arquillian-test-spi-1.1.10.Final-sources.jar....</a>  2015-10-19 12:55        40      
+<a href="arquillian-test-spi-1.1.10.Final-test-sources.jar" title="arquillian-test-spi-1.1.10.Final-test-sources.jar">arquillian-test-spi-1.1.10.Final-test-sources...</a>  2015-10-19 12:55      6741      
+<a href="arquillian-test-spi-1.1.10.Final-test-sources.jar.md5" title="arquillian-test-spi-1.1.10.Final-test-sources.jar.md5">arquillian-test-spi-1.1.10.Final-test-sources...</a>  2015-10-19 12:55        32      
+<a href="arquillian-test-spi-1.1.10.Final-test-sources.jar.sha1" title="arquillian-test-spi-1.1.10.Final-test-sources.jar.sha1">arquillian-test-spi-1.1.10.Final-test-sources...</a>  2015-10-19 12:55        40      
+<a href="arquillian-test-spi-1.1.10.Final-tests.jar" title="arquillian-test-spi-1.1.10.Final-tests.jar">arquillian-test-spi-1.1.10.Final-tests.jar</a>        2015-10-19 12:55     13997      
+<a href="arquillian-test-spi-1.1.10.Final-tests.jar.md5" title="arquillian-test-spi-1.1.10.Final-tests.jar.md5">arquillian-test-spi-1.1.10.Final-tests.jar.md...</a>  2015-10-19 12:55        32      
+<a href="arquillian-test-spi-1.1.10.Final-tests.jar.sha1" title="arquillian-test-spi-1.1.10.Final-tests.jar.sha1">arquillian-test-spi-1.1.10.Final-tests.jar.sh...</a>  2015-10-19 12:55        40      
+<a href="arquillian-test-spi-1.1.10.Final.jar" title="arquillian-test-spi-1.1.10.Final.jar">arquillian-test-spi-1.1.10.Final.jar</a>              2015-10-19 12:55     41242      
+<a href="arquillian-test-spi-1.1.10.Final.jar.md5" title="arquillian-test-spi-1.1.10.Final.jar.md5">arquillian-test-spi-1.1.10.Final.jar.md5</a>          2015-10-19 12:55        32      
+<a href="arquillian-test-spi-1.1.10.Final.jar.sha1" title="arquillian-test-spi-1.1.10.Final.jar.sha1">arquillian-test-spi-1.1.10.Final.jar.sha1</a>         2015-10-19 12:55        40      
+<a href="arquillian-test-spi-1.1.10.Final.pom" title="arquillian-test-spi-1.1.10.Final.pom">arquillian-test-spi-1.1.10.Final.pom</a>              2015-10-19 12:55      1563      
+<a href="arquillian-test-spi-1.1.10.Final.pom.md5" title="arquillian-test-spi-1.1.10.Final.pom.md5">arquillian-test-spi-1.1.10.Final.pom.md5</a>          2015-10-19 12:55        32      
+<a href="arquillian-test-spi-1.1.10.Final.pom.sha1" title="arquillian-test-spi-1.1.10.Final.pom.sha1">arquillian-test-spi-1.1.10.Final.pom.sha1</a>         2015-10-19 12:55        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+The Maven directory includes `sources`, `test-sources`, `tests`, and `javadoc` JARs for this exact version, so those are the best fit for the source/test/documentation fields. I’m checking the parent POM for the canonical repository root and then I’ll patch the JSON.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-build/1.1.10.Final/arquillian-build-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-parent</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>arquillian-build</artifactId>
+    <name>Arquillian Build</name>
+    <description>Arquillian Build Configuration</description>
+    <packaging>pom</packaging>
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Arquillian Core common Deps, Test related -->
+        <version.javax.inject_javax.inject>1</version.javax.inject_javax.inject>
+        <version.junit_junit>4.12</version.junit_junit>
+        <version.mockito_all>1.8.3</version.mockito_all>
+        <version.testng_testng>5.14.6</version.testng_testng>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${version.javax.inject_javax.inject}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+                <artifactId>shrinkwrap-descriptors-bom</artifactId>
+                <version>${version.shrinkwrap_descriptors}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit_junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${version.testng_testng}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito_all}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>signature-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java15</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/arquillian-test-spi-1.1.10.Final.jar https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/arquillian-test-spi-1.1.10.Final.jar && jar tf /tmp/arquillian-test-spi-1.1.10.Final.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 369ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/test/
+org/jboss/arquillian/test/spi/
+org/jboss/arquillian/test/spi/context/
+org/jboss/arquillian/test/spi/execution/
+org/jboss/arquillian/test/spi/enricher/
+org/jboss/arquillian/test/spi/enricher/resource/
+org/jboss/arquillian/test/spi/event/
+org/jboss/arquillian/test/spi/event/enrichment/
+org/jboss/arquillian/test/spi/event/suite/
+org/jboss/arquillian/test/spi/annotation/
+org/jboss/arquillian/test/spi/SecurityActions.class
+org/jboss/arquillian/test/spi/TestRunnerAdaptorBuilder.class
+org/jboss/arquillian/test/spi/SecurityActions$GetTcclAction.class
+org/jboss/arquillian/test/spi/SecurityActions$2.class
+org/jboss/arquillian/test/spi/TestResult$Status.class
+org/jboss/arquillian/test/spi/SecurityActions$3.class
+org/jboss/arquillian/test/spi/LifecycleMethodExecutor.class
+org/jboss/arquillian/test/spi/TestResult.class
+org/jboss/arquillian/test/spi/LifecycleMethodExecutor$1.class
+org/jboss/arquillian/test/spi/context/ClassContext.class
+org/jboss/arquillian/test/spi/context/SuiteContext.class
+org/jboss/arquillian/test/spi/context/TestContext.class
+org/jboss/arquillian/test/spi/TestMethodExecutor.class
+org/jboss/arquillian/test/spi/TestEnricher.class
+org/jboss/arquillian/test/spi/execution/ExecutionDecision.class
+org/jboss/arquillian/test/spi/execution/TestExecutionDecider$1.class
+org/jboss/arquillian/test/spi/execution/ExecutionDecision$Decision.class
+org/jboss/arquillian/test/spi/execution/SkippedTestExecutionException.class
+org/jboss/arquillian/test/spi/execution/TestExecutionDecider.class
+org/jboss/arquillian/test/spi/enricher/resource/ResourceProvider.class
+org/jboss/arquillian/test/spi/enricher/resource/ResourceProvider$MethodInjection.class
+org/jboss/arquillian/test/spi/enricher/resource/ResourceProvider$ClassInjection.class
+org/jboss/arquillian/test/spi/TestClass.class
+org/jboss/arquillian/test/spi/ArquillianProxyException.class
+org/jboss/arquillian/test/spi/SecurityActions$4.class
+org/jboss/arquillian/test/spi/event/enrichment/EnrichmentEvent.class
+org/jboss/arquillian/test/spi/event/enrichment/BeforeEnrichment.class
+org/jboss/arquillian/test/spi/event/enrichment/AfterEnrichment.class
+org/jboss/arquillian/test/spi/event/suite/ClassEvent.class
+org/jboss/arquillian/test/spi/event/suite/ClassLifecycleEvent.class
+org/jboss/arquillian/test/spi/event/suite/Before.class
+org/jboss/arquillian/test/spi/event/suite/AfterClass.class
+org/jboss/arquillian/test/spi/event/suite/Test.class
+org/jboss/arquillian/test/spi/event/suite/BeforeSuite.class
+org/jboss/arquillian/test/spi/event/suite/LifecycleEvent.class
+org/jboss/arquillian/test/spi/event/suite/BeforeClass.class
+org/jboss/arquillian/test/spi/event/suite/TestLifecycleEvent.class
+org/jboss/arquillian/test/spi/event/suite/SuiteEvent.class
+org/jboss/arquillian/test/spi/event/suite/After.class
+org/jboss/arquillian/test/spi/event/suite/AfterSuite.class
+org/jboss/arquillian/test/spi/event/suite/Validate.class
+org/jboss/arquillian/test/spi/event/suite/BeforeTestLifecycleEvent.class
+org/jboss/arquillian/test/spi/event/suite/TestEvent.class
+org/jboss/arquillian/test/spi/event/suite/AfterTestLifecycleEvent.class
+org/jboss/arquillian/test/spi/ExceptionProxy.class
+org/jboss/arquillian/test/spi/SecurityActions$1.class
+org/jboss/arquillian/test/spi/SecurityActions$5.class
+org/jboss/arquillian/test/spi/TestRunnerAdaptor.class
+org/jboss/arquillian/test/spi/annotation/SuiteScoped.class
+org/jboss/arquillian/test/spi/annotation/TestScoped.class
+org/jboss/arquillian/test/spi/annotation/ClassScoped.class
+META-INF/maven/
+META-INF/maven/org.jboss.arquillian.test/
+META-INF/maven/org.jboss.arquillian.test/arquillian-test-spi/
+META-INF/maven/org.jboss.arquillian.test/arquillian-test-spi/pom.xml
+META-INF/maven/org.jboss.arquillian.test/arquillian-test-spi/pom.properties
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-parent/1.1.10.Final/arquillian-parent-1.1.10.Final.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>14</version>
+        <relativePath />
+    </parent>
+
+    <!-- Model Information -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Information -->
+    <groupId>org.jboss.arquillian</groupId>
+    <artifactId>arquillian-parent</artifactId>
+    <version>1.1.10.Final</version>
+    <packaging>pom</packaging>
+    <name>Arquillian Aggregator</name>
+    <url>http://arquillian.org</url>
+    <description>Arquillian Aggregator</description>
+
+    <properties>
+
+        <!-- jboss-parent override -->
+        <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
+
+
+        <!-- External Deps -->
+        <version.shrinkwrap_shrinkwrap>1.2.2</version.shrinkwrap_shrinkwrap>
+        <version.shrinkwrap_descriptors>2.0.0-alpha-8</version.shrinkwrap_descriptors>
+
+    </properties>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.jboss.com/jira/browse/ARQ</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://git@github.com:arquillian/arquillian-core.git</connection>
+        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-core.git</developerConnection>
+        <url>git://github.com/arquillian/arquillian-core.git</url>
+      <tag>1.1.10.Final</tag>
+  </scm>
+
+    <modules>
+        <module>build</module>
+        <module>core</module>
+        <module>config</module>
+        <module>test</module>
+        <module>container</module>
+
+        <module>junit</module>
+        <module>testng</module>
+
+        <module>testenrichers</module>
+        <module>protocols</module>
+
+        <module>bom</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <useFile>true</useFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <pushChanges>false</pushChanges>
+                            <localCheckout>true</localCheckout>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclet>org.jboss.apiviz.APIviz</doclet>
+                            <docletArtifact>
+                                <groupId>org.jboss.apiviz</groupId>
+                                <artifactId>apiviz</artifactId>
+                                <version>1.3.2.GA</version>
+                            </docletArtifact>
+                            <useStandardDocletOptions>true</useStandardDocletOptions>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <breakiterator>true</breakiterator>
+                            <version>true</version>
+                            <author>true</author>
+                            <keywords>true</keywords>
+                            <additionalparam>-sourceclasspath
+                                ${project.build.outputDirectory}</additionalparam>
+                            <stylesheetfile>${project.parent.parent.basedir}/javadoc/stylesheet.css</stylesheetfile>
+                            <javadocDirectory>${project.parent.parent.basedir}/javadoc</javadocDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/arquillian-test-spi-1.1.10.Final-sources.jar -o /tmp/arquillian-test-spi-1.1.10.Final-sources.jar && jar tf /tmp/arquillian-test-spi-1.1.10.Final-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/arquillian-test-spi-1.1.10.Final-test-sources.jar -o /tmp/arquillian-test-spi-1.1.10.Final-test-sources.jar && jar tf /tmp/arquillian-test-spi-1.1.10.Final-test-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 331ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/test/
+org/jboss/arquillian/test/spi/
+org/jboss/arquillian/test/spi/UnknownException.java
+org/jboss/arquillian/test/spi/ExceptionProxyTestCase.java
+org/jboss/arquillian/test/spi/ExceptionProxySerializationTestCase.java
+org/jboss/arquillian/test/spi/UnknownObject.java
+META-INF/INDEX.LIST
+
+ succeeded in 514ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/test/
+org/jboss/arquillian/test/spi/
+org/jboss/arquillian/test/spi/context/
+org/jboss/arquillian/test/spi/execution/
+org/jboss/arquillian/test/spi/enricher/
+org/jboss/arquillian/test/spi/enricher/resource/
+org/jboss/arquillian/test/spi/event/
+org/jboss/arquillian/test/spi/event/enrichment/
+org/jboss/arquillian/test/spi/event/suite/
+org/jboss/arquillian/test/spi/annotation/
+org/jboss/arquillian/test/spi/TestClass.java
+org/jboss/arquillian/test/spi/TestRunnerAdaptorBuilder.java
+org/jboss/arquillian/test/spi/TestRunnerAdaptor.java
+org/jboss/arquillian/test/spi/LifecycleMethodExecutor.java
+org/jboss/arquillian/test/spi/context/ClassContext.java
+org/jboss/arquillian/test/spi/context/SuiteContext.java
+org/jboss/arquillian/test/spi/context/TestContext.java
+org/jboss/arquillian/test/spi/SecurityActions.java
+org/jboss/arquillian/test/spi/execution/SkippedTestExecutionException.java
+org/jboss/arquillian/test/spi/execution/TestExecutionDecider.java
+org/jboss/arquillian/test/spi/execution/ExecutionDecision.java
+org/jboss/arquillian/test/spi/enricher/resource/ResourceProvider.java
+org/jboss/arquillian/test/spi/TestEnricher.java
+org/jboss/arquillian/test/spi/event/enrichment/BeforeEnrichment.java
+org/jboss/arquillian/test/spi/event/enrichment/EnrichmentEvent.java
+org/jboss/arquillian/test/spi/event/enrichment/AfterEnrichment.java
+org/jboss/arquillian/test/spi/event/suite/After.java
+org/jboss/arquillian/test/spi/event/suite/ClassLifecycleEvent.java
+org/jboss/arquillian/test/spi/event/suite/AfterClass.java
+org/jboss/arquillian/test/spi/event/suite/AfterTestLifecycleEvent.java
+org/jboss/arquillian/test/spi/event/suite/LifecycleEvent.java
+org/jboss/arquillian/test/spi/event/suite/Before.java
+org/jboss/arquillian/test/spi/event/suite/Test.java
+org/jboss/arquillian/test/spi/event/suite/BeforeSuite.java
+org/jboss/arquillian/test/spi/event/suite/ClassEvent.java
+org/jboss/arquillian/test/spi/event/suite/AfterSuite.java
+org/jboss/arquillian/test/spi/event/suite/TestLifecycleEvent.java
+org/jboss/arquillian/test/spi/event/suite/Validate.java
+org/jboss/arquillian/test/spi/event/suite/SuiteEvent.java
+org/jboss/arquillian/test/spi/event/suite/BeforeClass.java
+org/jboss/arquillian/test/spi/event/suite/TestEvent.java
+org/jboss/arquillian/test/spi/event/suite/BeforeTestLifecycleEvent.java
+org/jboss/arquillian/test/spi/TestMethodExecutor.java
+org/jboss/arquillian/test/spi/TestResult.java
+org/jboss/arquillian/test/spi/ArquillianProxyException.java
+org/jboss/arquillian/test/spi/annotation/TestScoped.java
+org/jboss/arquillian/test/spi/annotation/ClassScoped.java
+org/jboss/arquillian/test/spi/annotation/SuiteScoped.java
+org/jboss/arquillian/test/spi/ExceptionProxy.java
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc "rg 'test-code-url' -n build/discovered-artifact-metadata | sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org.*test-sources|repo1.maven.org.*tests.jar|test-sources.jar' -n build/discovered-artifact-metadata metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-test-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:22:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.immutables/value/index.json:8:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:40:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:24:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/$version$/jta-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/$version$/commons-logging-$version$-test-sources.jar",
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/$version$/picocli-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
+metadata/com.github.docker-java/docker-java-transport/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/$version$/docker-java-transport-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-tests.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/ch.qos.logback/logback-classic/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:44:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:72:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:87:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/commons-codec/commons-codec/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-test-sources.jar",
+metadata/jline/jline/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/jline/jline/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/$version$/kafka-clients-$version$-test-sources.jar",
+metadata/org.apache.kafka/kafka-streams/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/$version$/kafka-streams-$version$-test-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/com.hazelcast/hazelcast/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$version$/hazelcast-$version$-tests.jar",
+metadata/com.hazelcast/hazelcast/index.json:28:    "test-code-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$version$/hazelcast-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+metadata/io.undertow/undertow-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/$version$/undertow-core-$version$-tests.jar",
+metadata/io.undertow/undertow-core/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/$version$/undertow-core-$version$-tests.jar",
+metadata/dev.langchain4j/langchain4j/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-test-sources.jar",
+metadata/org.asynchttpclient/async-http-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/asynchttpclient/async-http-client/$version$/async-http-client-$version$-tests.jar",
+metadata/io.netty/netty-codec-stomp/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-stomp/$version$/netty-codec-stomp-$version$-test-sources.jar",
+metadata/io.netty/netty-transport-udt/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:53:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-test-sources.jar",
+metadata/io.netty/netty-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+metadata/io.netty/netty-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+metadata/io.netty/netty-common/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+metadata/io.netty/netty-transport-sctp/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-sctp/$version$/netty-transport-sctp-$version$-test-sources.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:53:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-test-sources.jar",
+metadata/io.netty/netty-handler-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-test-sources.jar",
+metadata/io.netty/netty-transport/index.json:11:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-test-sources.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jboss.arquillian.core/arquillian-core-api/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-javadoc.jar",
+    "description" : "Arquillian Core API provides the core public contracts used by the Arquillian test platform. It defines APIs for injection, event observation, lifecycle events, and execution context management across Arquillian components.",
+    "tested-versions" : [
+      "1.1.10.Final",
+      "1.1.11.Final",
+      "1.1.12.Final",
+      "1.1.13.Final",
+      "1.1.14.Final",
+      "1.1.15.Final",
+      "1.2.0.Final",
+      "1.2.1.Final",
+      "1.3.0.Final",
+      "1.4.0.Final",
+      "1.4.1.Final",
+      "1.5.0.Final",
+      "1.6.0.Final",
+      "1.7.0.Final",
+      "1.7.1.Final",
+      "1.7.2.Final",
+      "1.8.0.Final",
+      "1.8.1.Final",
+      "1.9.0.Final",
+      "1.9.1.Final",
+      "1.9.2.Final",
+      "1.9.3.Final",
+      "1.9.4.Final",
+      "1.9.5.Final",
+      "1.10.0.Final",
+      "1.10.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.core.api"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
+    "description" : "Arquillian Core SPI provides service-provider interfaces and extension hooks for the Arquillian core runtime. It defines contracts for contexts, event processing, object stores, extension loading, manager creation, and observer invocation used by Arquillian integrations and extensions.",
+    "tested-versions" : [
+      "1.1.10.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.core.spi"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'arquillian-test' metadata build/discovered-artifact-metadata | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json:2:  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jboss.arquillian.test/arquillian-test-api/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-tests.jar",
+    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+    "description" : "Arquillian Test API provides the public annotation used by Arquillian tests to request runtime-managed test resources. It is a small Java API module that integrates Arquillian test code with the Arquillian Core resource injection model.",
+    "tested-versions" : [
+      "1.1.10.Final",
+      "1.1.11.Final",
+      "1.1.12.Final",
+      "1.1.13.Final",
+      "1.1.14.Final",
+      "1.1.15.Final",
+      "1.2.0.Final",
+      "1.2.1.Final",
+      "1.3.0.Final",
+      "1.4.0.Final",
+      "1.4.1.Final",
+      "1.5.0.Final",
+      "1.6.0.Final",
+      "1.7.0.Final",
+      "1.7.1.Final",
+      "1.7.2.Final",
+      "1.8.0.Final",
+      "1.8.1.Final",
+      "1.9.0.Final",
+      "1.9.1.Final",
+      "1.9.2.Final",
+      "1.9.3.Final",
+      "1.9.4.Final",
+      "1.9.5.Final",
+      "1.10.0.Final",
+      "1.10.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.test.api"
+    ]
+  }
+]
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2 org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final arquillian-test-spi-1.1.10.Final-tests.jar
+codex
+I found matching metadata already present for adjacent Arquillian modules, and this artifact follows the same repository and Maven URL pattern. The JAR contains JVM `.class` files, so it remains a normal Native Image metadata candidate and I won’t add `not-for-native-image`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+index 1c8e50fe1fc5afe5243191f456dd8b00bfb7821d..491d301a8186cc8e330c797f64c75c988c74965d
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
++  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+index 1c8e50fe1fc5afe5243191f456dd8b00bfb7821d..491d301a8186cc8e330c797f64c75c988c74965d
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
++  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+ }
+
+codex
+The metadata file is patched. I’m doing a quick JSON parse and URL substitution check so we catch formatting or placeholder mistakes before wrapping up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
+  "repository-url": "https://github.com/arquillian/arquillian-core",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
+  "description": "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+}
+
+exec
+/usr/bin/bash -lc 'for field in source-code-url test-code-url documentation-url; do url=$(jq -r --arg f "$field" '"'.["'$f]'"' build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json | sed 's/\\"'$version'"\\"'$/1.1.10.Final/g'"'); code="'$(curl -fsSI -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s %s\\n' \""'$field" "$code" "$url"; done' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+index 1c8e50fe1fc5afe5243191f456dd8b00bfb7821d..491d301a8186cc8e330c797f64c75c988c74965d
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
++  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+ }
+
+ succeeded in 979ms:
+test-code-url 200 https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/arquillian-test-spi-1.1.10.Final-tests.jar
+documentation-url 200 https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/arquillian-test-spi-1.1.10.Final-javadoc.jar
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+index 1c8e50fe1fc5afe5243191f456dd8b00bfb7821d..491d301a8186cc8e330c797f64c75c988c74965d
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
++  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json && sed -n '1,120p' build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+index 1c8e50fe1fc5afe5243191f456dd8b00bfb7821d..491d301a8186cc8e330c797f64c75c988c74965d
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
++  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+ }
+
+ succeeded in 495ms:
+{
+  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
+  "repository-url" : "https://github.com/arquillian/arquillian-core",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
+  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+}
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/1.1.10.Final/
+codex
+Updated [org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json:1) with the repository, Maven-hosted source/test/javadoc URLs, and a two-sentence description. The repository root comes from Arquillian’s SCM metadata, and Maven Central identifies the artifact as `Arquillian Test SPI`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.arquillian/arquillian-parent?utm_source=openai))
+
+Validation passed: `jq` parsed the JSON, and substituting `1.1.10.Final` into the source, test, and documentation URLs returned HTTP 200. I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM JAR with `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+index 1c8e50fe1fc5afe5243191f456dd8b00bfb7821d..491d301a8186cc8e330c797f64c75c988c74965d
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-spi/$version$/arquillian-test-spi-$version$-javadoc.jar",
++  "description" : "Arquillian Test SPI provides service-provider interfaces and extension hooks for integrating test runners and resource enrichment with Arquillian's test execution lifecycle. It defines contracts for test contexts, lifecycle events, execution decisions, result handling, and test enricher/resource provider implementations."
+ }
+
+tokens used
+58,134
+Updated [org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2/build/discovered-artifact-metadata/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.json:1) with the repository, Maven-hosted source/test/javadoc URLs, and a two-sentence description. The repository root comes from Arquillian’s SCM metadata, and Maven Central identifies the artifact as `Arquillian Test SPI`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.arquillian/arquillian-parent?utm_source=openai))
+
+Validation passed: `jq` parsed the JSON, and substituting `1.1.10.Final` into the source, test, and documentation URLs returned HTTP 200. I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM JAR with `.class` files.
+Ran agent for org.jboss.arquillian.test:arquillian-test-spi:1.1.10.Final (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2/build/agent-artifact-discovery-logs/org.jboss.arquillian.test-arquillian-test-spi-1.1.10.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3779-397732f2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 4 executed, 5 from cache
