@@ -58,6 +58,8 @@ import com.google.spanner.admin.database.v1.GetDatabaseDdlResponse;
 import com.google.spanner.admin.database.v1.GetDatabaseRequest;
 import com.google.spanner.admin.database.v1.IncrementalBackupSpec;
 import com.google.spanner.admin.database.v1.InstanceName;
+import com.google.spanner.admin.database.v1.InternalUpdateGraphOperationRequest;
+import com.google.spanner.admin.database.v1.InternalUpdateGraphOperationResponse;
 import com.google.spanner.admin.database.v1.ListBackupOperationsRequest;
 import com.google.spanner.admin.database.v1.ListBackupOperationsResponse;
 import com.google.spanner.admin.database.v1.ListBackupSchedulesRequest;
@@ -533,6 +535,46 @@ public class Proto_google_cloud_spanner_admin_database_v1Test {
         assertThat(listRequest.getPageToken()).isEqualTo("schedule-page");
         assertThat(listResponse.getBackupSchedulesList()).containsExactly(fullSchedule);
         assertThat(deleteRequest.getName()).isEqualTo(SCHEDULE);
+    }
+
+    @Test
+    void internalGraphOperationUpdatesCarryProgressStatusAndServiceDescriptor() throws Exception {
+        Status status = Status.newBuilder()
+                .setCode(0)
+                .setMessage("graph operation updated")
+                .build();
+        InternalUpdateGraphOperationRequest request = InternalUpdateGraphOperationRequest.newBuilder()
+                .setDatabase(DATABASE)
+                .setOperationId("graph-operation")
+                .setVmIdentityToken("identity-token")
+                .setProgress(0.75D)
+                .setStatus(status)
+                .build();
+        Descriptors.MethodDescriptor method = SpannerDatabaseAdminProto.getDescriptor()
+                .findServiceByName("DatabaseAdmin")
+                .findMethodByName("InternalUpdateGraphOperation");
+        InternalUpdateGraphOperationResponse response = InternalUpdateGraphOperationResponse.newBuilder().build();
+
+        assertThat(method.getInputType().getFullName())
+                .isEqualTo("google.spanner.admin.database.v1.InternalUpdateGraphOperationRequest");
+        assertThat(method.getOutputType().getFullName())
+                .isEqualTo("google.spanner.admin.database.v1.InternalUpdateGraphOperationResponse");
+        assertThat(InternalUpdateGraphOperationRequest.getDescriptor().getFields())
+                .extracting(Descriptors.FieldDescriptor::getName)
+                .containsExactly("database", "operation_id", "vm_identity_token", "progress", "status");
+        assertThat(request.getDatabase()).isEqualTo(DATABASE);
+        assertThat(request.getOperationId()).isEqualTo("graph-operation");
+        assertThat(request.getVmIdentityToken()).isEqualTo("identity-token");
+        assertThat(request.getProgress()).isEqualTo(0.75D);
+        assertThat(request.hasStatus()).isTrue();
+        assertThat(request.getStatus()).isEqualTo(status);
+        assertThat(request.toBuilder().clearStatus().setProgress(1.0D).build())
+                .satisfies(updatedRequest -> {
+                    assertThat(updatedRequest.hasStatus()).isFalse();
+                    assertThat(updatedRequest.getProgress()).isEqualTo(1.0D);
+                });
+        assertThat(response.isInitialized()).isTrue();
+        assertThat(InternalUpdateGraphOperationResponse.getDescriptor().getFields()).isEmpty();
     }
 
     @Test
