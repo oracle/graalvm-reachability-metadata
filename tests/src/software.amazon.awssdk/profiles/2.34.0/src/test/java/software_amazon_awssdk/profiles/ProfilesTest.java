@@ -25,6 +25,7 @@ import software.amazon.awssdk.profiles.Profile;
 import software.amazon.awssdk.profiles.ProfileFile;
 import software.amazon.awssdk.profiles.ProfileFileLocation;
 import software.amazon.awssdk.profiles.ProfileFileSupplier;
+import software.amazon.awssdk.profiles.ProfileFileSystemSetting;
 import software.amazon.awssdk.profiles.ProfileProperty;
 
 public class ProfilesTest {
@@ -67,6 +68,8 @@ public class ProfilesTest {
         assertThat(copy).isEqualTo(profile);
         assertThat(copy.hashCode()).isEqualTo(profile.hashCode());
         assertThat(changed).isNotEqualTo(profile);
+        assertThat(profile).isNotEqualTo(null)
+                           .isNotEqualTo("integration");
         assertThat(profile.toString()).contains("integration", ProfileProperty.REGION);
     }
 
@@ -248,6 +251,96 @@ public class ProfilesTest {
     }
 
     @Test
+    void profileFileExposesImmutableProfilesViewAndValueSemantics() {
+        ProfileFile profileFile = configurationFile("""
+                [default]
+                region = us-east-1
+
+                [profile qa]
+                region = eu-west-3
+
+                [sso-session admin]
+                sso_region = eu-west-3
+                """);
+        ProfileFile sameProfileFile = configurationFile("""
+                [default]
+                region = us-east-1
+
+                [profile qa]
+                region = eu-west-3
+
+                [sso-session admin]
+                sso_region = eu-west-3
+                """);
+        ProfileFile differentProfileFile = configurationFile("""
+                [default]
+                region = ap-northeast-1
+                """);
+
+        assertThat(ProfileFile.PROFILES_SECTION_TITLE).isEqualTo("profiles");
+        assertThat(profileFile.profiles().keySet()).containsExactly("default", "qa");
+        assertThat(profileFile.getSection(ProfileFile.PROFILES_SECTION_TITLE, "qa"))
+                .isEqualTo(profileFile.profile("qa"));
+        assertThat(profileFile.getSection("unknown", "qa")).isEmpty();
+        assertThatThrownBy(() -> profileFile.profiles().clear())
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        assertThat(profileFile).isEqualTo(sameProfileFile)
+                               .isNotEqualTo(differentProfileFile)
+                               .isNotEqualTo(null)
+                               .isNotEqualTo("profiles");
+        assertThat(profileFile.hashCode()).isEqualTo(sameProfileFile.hashCode());
+        assertThat(profileFile.toString()).contains("ProfileFile", "profiles", "default", "qa", "sso-session");
+    }
+
+    @Test
+    void parserIgnoresInvalidPropertyProfileAndSpecialSectionNames() {
+        ProfileFile profileFile = configurationFile("""
+                [profile valid]
+                region = us-west-2
+                not valid = ignored
+
+                [profile invalid name]
+                region = ignored-profile
+
+                [sso-session invalid name]
+                sso_region = ignored-session
+
+                [sso-session valid-session]
+                sso_region = eu-central-1
+                """);
+
+        Profile validProfile = profileFile.profile("valid").orElseThrow();
+        assertThat(validProfile.properties()).containsEntry(ProfileProperty.REGION, "us-west-2")
+                                             .doesNotContainKey("not valid");
+        assertThat(profileFile.profile("invalid name")).isEmpty();
+        assertThat(profileFile.getSection("sso-session", "invalid name")).isEmpty();
+        assertThat(profileFile.getSection("sso-session", "valid-session").orElseThrow().properties())
+                .containsEntry(ProfileProperty.SSO_REGION, "eu-central-1");
+    }
+
+    @Test
+    void profileFileSystemSettingsExposePropertiesEnvironmentVariablesAndDefaults() {
+        assertThat(ProfileFileSystemSetting.values()).containsExactly(
+                ProfileFileSystemSetting.AWS_CONFIG_FILE,
+                ProfileFileSystemSetting.AWS_SHARED_CREDENTIALS_FILE,
+                ProfileFileSystemSetting.AWS_PROFILE);
+        assertThat(ProfileFileSystemSetting.valueOf("AWS_PROFILE")).isSameAs(ProfileFileSystemSetting.AWS_PROFILE);
+
+        assertThat(ProfileFileSystemSetting.AWS_CONFIG_FILE.property()).isEqualTo(AWS_CONFIG_FILE_PROPERTY);
+        assertThat(ProfileFileSystemSetting.AWS_CONFIG_FILE.environmentVariable()).isEqualTo("AWS_CONFIG_FILE");
+        assertThat(ProfileFileSystemSetting.AWS_CONFIG_FILE.defaultValue()).isNull();
+        assertThat(ProfileFileSystemSetting.AWS_SHARED_CREDENTIALS_FILE.property())
+                .isEqualTo(AWS_SHARED_CREDENTIALS_FILE_PROPERTY);
+        assertThat(ProfileFileSystemSetting.AWS_SHARED_CREDENTIALS_FILE.environmentVariable())
+                .isEqualTo("AWS_SHARED_CREDENTIALS_FILE");
+        assertThat(ProfileFileSystemSetting.AWS_SHARED_CREDENTIALS_FILE.defaultValue()).isNull();
+        assertThat(ProfileFileSystemSetting.AWS_PROFILE.property()).isEqualTo("aws.profile");
+        assertThat(ProfileFileSystemSetting.AWS_PROFILE.environmentVariable()).isEqualTo("AWS_PROFILE");
+        assertThat(ProfileFileSystemSetting.AWS_PROFILE.defaultValue()).isEqualTo("default");
+    }
+
+    @Test
     void profileFileSuppliersCanReturnFixedAndAggregatedViews() {
         ProfileFile first = credentialsFile("""
                 [default]
@@ -345,6 +438,32 @@ public class ProfilesTest {
     }
 
     @Test
+    void defaultSupplierLoadsConfiguredLocationsWhenTheyExist() throws IOException {
+        Path credentials = tempDir.resolve("supplier-credentials");
+        Path config = tempDir.resolve("supplier-config");
+        Files.writeString(credentials, """
+                [default]
+                aws_access_key_id = supplier-key
+                region = credentials-region
+                """);
+        Files.writeString(config, """
+                [default]
+                region = config-region
+                retry_mode = adaptive
+                """);
+
+        withSystemProperty(AWS_SHARED_CREDENTIALS_FILE_PROPERTY, credentials.toString(), () ->
+                withSystemProperty(AWS_CONFIG_FILE_PROPERTY, config.toString(), () -> {
+                    ProfileFile supplied = ProfileFileSupplier.defaultSupplier().get();
+
+                    assertThat(supplied.profile("default").orElseThrow().properties())
+                            .containsEntry(ProfileProperty.AWS_ACCESS_KEY_ID, "supplier-key")
+                            .containsEntry(ProfileProperty.REGION, "credentials-region")
+                            .containsEntry(ProfileProperty.RETRY_MODE, "adaptive");
+                }));
+    }
+
+    @Test
     void defaultSupplierReturnsEmptyProfileFileWhenConfiguredLocationsDoNotExist() {
         Path missingCredentials = tempDir.resolve("missing-credentials");
         Path missingConfig = tempDir.resolve("missing-config");
@@ -379,6 +498,13 @@ public class ProfilesTest {
                 """))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Profile definition must end with ']'");
+
+        assertThatThrownBy(() -> credentialsFile("""
+                [default]
+                = value-without-name
+                """))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Property did not have a name on line 2");
     }
 
     private static final class CloseRecordingInputStream extends ByteArrayInputStream {
