@@ -7,6 +7,7 @@
 package org_jetbrains_kotlinx.kotlinx_serialization_json_jvm
 
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
@@ -18,6 +19,7 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.DecodeSequenceMode
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
@@ -27,6 +29,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.JsonTransformingSerializer
 import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.decodeToSequence
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.double
@@ -163,6 +166,25 @@ public class Kotlinx_serialization_json_jvmTest {
         assertThat(events).containsExactly(MetricEvent("requests", 12), MessageEvent("started", "INFO"))
         assertThat(encoded[0].jsonObject.keys).containsExactly("metric", "value")
         assertThat(encoded[1].jsonObject.keys).containsExactly("message", "severity")
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun decodesWhitespaceSeparatedJsonValuesFromStream(): Unit {
+        val input: String =
+            """
+            {"name":"metadata","stars":11,"tags":["json","stream"],"active":true}
+            {"name":"native","stars":17,"tags":["graalvm"],"active":false}
+            """.trimIndent()
+
+        val decoded: List<Project> = input.byteInputStream().use { stream ->
+            Json.decodeToSequence(stream, ProjectSerializer, DecodeSequenceMode.WHITESPACE_SEPARATED).toList()
+        }
+
+        assertThat(decoded).containsExactly(
+            Project(name = "metadata", stars = 11, tags = listOf("json", "stream"), active = true),
+            Project(name = "native", stars = 17, tags = listOf("graalvm"), active = false),
+        )
     }
 }
 
