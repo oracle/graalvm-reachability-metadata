@@ -98,6 +98,26 @@ public class Shared_resourcemappingTest {
     }
 
     @Test
+    void mapsUnsupportedCloudPlatformUsingAvailableNonCloudResourceAttributes() {
+        Resource resource = Resource.builder()
+                .put(CLOUD_PLATFORM, "azure_functions")
+                .put(CLOUD_REGION, "westus2")
+                .put(SERVICE_NAMESPACE, "billing")
+                .put(SERVICE_NAME, "settlement-worker")
+                .put(SERVICE_INSTANCE_ID, "invocation-42")
+                .build();
+
+        GcpResource mappedResource = ResourceTranslator.mapResource(resource);
+
+        assertThat(mappedResource.getResourceType()).isEqualTo("generic_task");
+        assertThat(labels(mappedResource)).isEqualTo(Map.of(
+                "location", "westus2",
+                "namespace", "billing",
+                "job", "settlement-worker",
+                "task_id", "invocation-42"));
+    }
+
+    @Test
     void mapsKubernetesResourcesByMostSpecificAvailableIdentity() {
         Resource containerResource = Resource.builder()
                 .put(K8S_CLUSTER_NAME, "cluster-a")
