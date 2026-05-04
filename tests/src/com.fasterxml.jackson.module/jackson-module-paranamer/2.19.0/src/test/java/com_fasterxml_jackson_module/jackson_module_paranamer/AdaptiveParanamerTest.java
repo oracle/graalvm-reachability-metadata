@@ -8,18 +8,18 @@ package com_fasterxml_jackson_module.jackson_module_paranamer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.module.paranamer.shaded.DefaultParanamer;
+import com.fasterxml.jackson.module.paranamer.shaded.AdaptiveParanamer;
 import java.lang.reflect.Constructor;
 import org.junit.jupiter.api.Test;
 
-public class DefaultParanamerTest {
+public class AdaptiveParanamerTest {
     @Test
-    void readsParameterNamesFromReflectionMetadata() throws Exception {
-        DefaultParanamer paranamer = new DefaultParanamer();
+    void defaultConstructorIncludesReflectionBasedParameterNameLookup() throws Exception {
+        AdaptiveParanamer paranamer = new AdaptiveParanamer();
         Constructor<ConstructorParameterFixture> constructor = ConstructorParameterFixture.class.getDeclaredConstructor(
                 String.class, int.class);
 
-        String[] parameterNames = paranamer.lookupParameterNames(constructor);
+        String[] parameterNames = paranamer.lookupParameterNames(constructor, false);
 
         assertThat(parameterNames).containsExactly("text", "repeatCount");
     }
