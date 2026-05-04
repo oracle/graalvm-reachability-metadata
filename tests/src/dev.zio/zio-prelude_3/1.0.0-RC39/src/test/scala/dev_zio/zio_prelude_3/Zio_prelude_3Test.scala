@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import zio.prelude.NonEmptyList
 import zio.prelude.NonEmptyMap
+import zio.prelude.NonEmptySet
 import zio.prelude.These
 import zio.prelude.ZSet
 import zio.prelude.ZValidation
@@ -56,6 +57,21 @@ class Zio_prelude_3Test {
     assertTrue(inventory.tailNonEmpty.isDefined)
     assertTrue(NonEmptyMap.fromMapOption(Map.empty[String, Int]).isEmpty)
     assertEquals(Some(NonEmptyMap.single("only" -> 1)), NonEmptyMap.fromMapOption(Map("only" -> 1)))
+  }
+
+  @Test
+  def nonEmptySetMaintainsNonEmptyInvariantWhileTransformingMembers(): Unit = {
+    val fruits: NonEmptySet[String] = NonEmptySet("apple", "banana", "apple")
+    val expanded: NonEmptySet[String] = fruits + "pear"
+
+    assertEquals(Set("apple", "banana"), fruits.toSet)
+    assertEquals(Set("apple", "banana", "pear"), expanded.toSet)
+    assertEquals(Some(Set("banana")), fruits.removeNonEmpty("apple").map(_.toSet))
+    assertEquals(None, NonEmptySet.single("only").removeNonEmpty("only"))
+    assertEquals(Set("apple"), fruits.remove("banana"))
+    assertEquals(Set(4, 5, 6), expanded.map(_.length).toSet)
+    assertEquals(Some(Set("apple", "banana")), NonEmptySet.fromIterableOption(List("apple", "banana", "apple")).map(_.toSet))
+    assertTrue(NonEmptySet.fromIterableOption(List.empty[String]).isEmpty)
   }
 
   @Test
