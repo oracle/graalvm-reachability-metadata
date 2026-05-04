@@ -11,8 +11,11 @@ import com.github.ajalt.mordant.rendering.BorderType
 import com.github.ajalt.mordant.rendering.OverflowWrap
 import com.github.ajalt.mordant.rendering.TextAlign
 import com.github.ajalt.mordant.rendering.TextColors
+import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.rendering.TextStyles
+import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.rendering.Whitespace
+import com.github.ajalt.mordant.rendering.plus
 import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.ColumnWidth
 import com.github.ajalt.mordant.table.contentToCsv
@@ -347,6 +350,40 @@ public class Mordant_core_jvmTest {
         assertThat(terminal.render(spinner)).isEqualTo("c")
         spinner.advanceTick()
         assertThat(terminal.render(spinner)).isEqualTo("a")
+    }
+
+    @Test
+    fun customThemesMergeAndResolveNamedValues() {
+        val baseTheme: Theme = Theme(Theme.Plain) {
+            styles["status"] = TextColors.red
+            strings["status.label"] = "Result"
+            flags["status.visible"] = false
+            dimensions["status.width"] = 8
+        }
+        val overrideTheme: Theme = Theme {
+            styles["status"] = TextColors.green + TextStyles.bold
+            flags["status.visible"] = true
+        }
+        val terminal: Terminal = Terminal(
+            ansiLevel = AnsiLevel.ANSI16,
+            theme = baseTheme + overrideTheme,
+            width = 40,
+            height = 8,
+            terminalInterface = TerminalRecorder(ansiLevel = AnsiLevel.ANSI16, width = 40, height = 8),
+        )
+        val statusStyle: TextStyle = terminal.theme.style("status")
+
+        val rendered: String = terminal.render(
+            "${terminal.theme.string("status.label")}: ${statusStyle("ready")}",
+        )
+
+        assertThat(terminal.theme.flag("status.visible")).isTrue()
+        assertThat(terminal.theme.dimension("status.width")).isEqualTo(8)
+        assertThat(terminal.theme.string("missing", default = "fallback")).isEqualTo("fallback")
+        assertThat(terminal.theme.style("missing", default = TextStyles.italic.style).italic).isTrue()
+        assertThat(statusStyle.color).isNotNull()
+        assertThat(statusStyle.bold).isTrue()
+        assertThat(rendered).contains("Result:", "ready", "\u001B[")
     }
 
     @Test
