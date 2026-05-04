@@ -320,6 +320,36 @@ public class Sqlite_driverTest {
     }
 
     @Test
+    fun transacterDefersQueryNotificationsUntilSuccessfulTransactionCompletes(): Unit =
+        withDriver { driver: JdbcSqliteDriver ->
+            val transacter: DriverBackedTransacter = DriverBackedTransacter(driver)
+            val notificationCount: AtomicInteger = AtomicInteger()
+            val listener: Query.Listener = Query.Listener { notificationCount.incrementAndGet() }
+            driver.addListener("deferred_items", listener = listener)
+
+            transacter.transaction {
+                transacter.notifyTables(60, "deferred_items")
+                transacter.notifyTables(60, "deferred_items")
+                assertThat(notificationCount.get()).isZero()
+            }
+
+            assertThat(notificationCount.get()).isEqualTo(1)
+
+            assertThatThrownBy {
+                transacter.transaction {
+                    transacter.notifyTables(61, "deferred_items")
+                    assertThat(notificationCount.get()).isEqualTo(1)
+                    throw IllegalStateException("rollback deferred notification")
+                }
+            }
+                .isInstanceOf(IllegalStateException::class.java)
+                .hasMessage("rollback deferred notification")
+
+            assertThat(notificationCount.get()).isEqualTo(1)
+            driver.removeListener("deferred_items", listener = listener)
+        }
+
+    @Test
     fun fileBackedDriverUsesConnectionsAcrossThreadsAndPersistsData(): Unit = withDatabaseFile { databaseFile: Path ->
         JdbcSqliteDriver(sqliteUrl(databaseFile)).use { driver: JdbcSqliteDriver ->
             driver.execute(
@@ -366,7 +396,13 @@ public class Sqlite_driverTest {
         val payload: ByteArray?,
     )
 
-    private class DriverBackedTransacter(driver: JdbcSqliteDriver) : TransacterImpl(driver)
+    private class DriverBackedTransacter(driver: JdbcSqliteDriver) : TransacterImpl(driver) {
+        fun notifyTables(queryIdentifier: Int, vararg tableNames: String): Unit {
+            notifyQueries(queryIdentifier) { emit: (String) -> Unit ->
+                tableNames.forEach { tableName: String -> emit(tableName) }
+            }
+        }
+    }
 
     private class VersionedSchema(
         override val version: Long,
