@@ -258,6 +258,22 @@ public class RetriesTest {
     }
 
     @Test
+    void customRetryPredicatesCanUseFailureStateAndAreAdditive() {
+        RetryStrategy strategy = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnException(failure -> failure instanceof IllegalStateException
+                && failure.getMessage().contains("transient"))
+            .retryOnException(failure -> failure instanceof UnsupportedOperationException)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .circuitBreakerEnabled(false)
+            .build();
+
+        assertRefreshSucceeds(strategy, new IllegalStateException("transient connection reset"));
+        assertRefreshSucceeds(strategy, new UnsupportedOperationException("retryable by second predicate"));
+        assertRefreshFails(strategy, new IllegalStateException("permanent validation failure"));
+    }
+
+    @Test
     void requestFactoriesAndCopyBuilderPreserveValues() {
         RetryToken token = StandardRetryStrategy.builder()
             .maxAttempts(2)
