@@ -879,6 +879,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             "FORGE_JAVAC_WORK_LIMIT": "0",
             "FORGE_JAVA_RUN_WORK_LIMIT": "2",
             "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
             "FORGE_WORK_LIMIT": "3",
             "FORGE_STRATEGY_NAME": "custom-strategy",
             "FORGE_WORK_LABEL": forge_metadata.LABEL_LIBRARY_NEW,
@@ -894,7 +895,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
                 (forge_metadata.LABEL_JAVA_RUN_FAIL, 2, None, False),
                 (forge_metadata.LABEL_NI_RUN_FAIL, 0, None, False),
                 (forge_metadata.LABEL_LIBRARY_UPDATE, 0, None, False),
-                (forge_metadata.LABEL_LIBRARY_NEW, 3, "custom-strategy", True),
+                (forge_metadata.LABEL_LIBRARY_NEW, 3, "custom-strategy", False),
             ],
         )
 
@@ -926,6 +927,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             "FORGE_JAVAC_WORK_LIMIT": "0",
             "FORGE_JAVA_RUN_WORK_LIMIT": "0",
             "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
             "FORGE_WORK_LIMIT": "1",
             "FORGE_RANDOM_WORK_OFFSET": "0",
         }
@@ -935,11 +937,27 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
         self.assertFalse(configs[-1].random_offset)
 
+    def test_random_work_offset_can_be_enabled_from_environment(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_RANDOM_WORK_OFFSET": "1",
+        }
+
+        with patch.dict(os.environ, env, clear=True):
+            configs = forge_metadata.get_work_queue_configs_from_environment()
+
+        self.assertTrue(configs[-1].random_offset)
+
     def test_random_work_offset_can_be_disabled_from_cli_override(self) -> None:
         env = {
             "FORGE_JAVAC_WORK_LIMIT": "0",
             "FORGE_JAVA_RUN_WORK_LIMIT": "0",
             "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
             "FORGE_WORK_LIMIT": "1",
             "FORGE_RANDOM_WORK_OFFSET": "1",
         }
@@ -981,6 +999,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             "FORGE_JAVAC_WORK_LIMIT": "0",
             "FORGE_JAVA_RUN_WORK_LIMIT": "1",
             "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
             "FORGE_WORK_LIMIT": "0",
             "FORGE_REVIEW_LIMIT": "0",
             "FORGE_JAVA_RUN_STRATEGY_NAME": "java-run-strategy",
@@ -1018,6 +1037,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             "FORGE_JAVAC_WORK_LIMIT": "0",
             "FORGE_JAVA_RUN_WORK_LIMIT": "0",
             "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
             "FORGE_WORK_LIMIT": "1",
             "FORGE_REVIEW_LIMIT": "0",
             "FORGE_RANDOM_WORK_OFFSET": "1",
@@ -1059,6 +1079,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             "FORGE_JAVAC_WORK_LIMIT": "0",
             "FORGE_JAVA_RUN_WORK_LIMIT": "0",
             "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
             "FORGE_WORK_LIMIT": "0",
             "FORGE_REVIEW_LIMIT": "1",
             "FORGE_REVIEW_LABEL": forge_metadata.LABEL_LIBRARY_NEW,

@@ -20,7 +20,7 @@ LIBRARY_UPDATE_WORK_LIMIT="${FORGE_LIBRARY_UPDATE_WORK_LIMIT:-1}"
 LIBRARY_UPDATE_WORK_STRATEGY_NAME="${FORGE_LIBRARY_UPDATE_STRATEGY_NAME:-}"
 WORK_LABEL="${FORGE_WORK_LABEL:-library-new-request}"
 WORK_LIMIT="${FORGE_WORK_LIMIT:-1}"
-RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-1}"
+RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-0}"
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
@@ -96,9 +96,10 @@ Options:
       Process up to N new-library tasks per run; 0 disables it. Defaults to
       FORGE_WORK_LIMIT, then 1.
   --random-offset
-      Start new-library issue scans at a random offset. This is the default.
+      Start new-library issue scans at a random offset.
   --no-random-offset
-      Start new-library issue scans from the beginning of the issue list.
+      Start new-library issue scans from the beginning of the issue list. This
+      is the default.
   --parallelism N
       Run up to N issue workflows in parallel. Defaults to FORGE_PARALLELISM,
       then 1. The maximum is 4.
@@ -122,7 +123,7 @@ Environment:
       Path to the shared stop marker. Defaults to ~/.metadata-forge-stop.
   FORGE_RANDOM_WORK_OFFSET
       Set to 1 to start new-library issue scans at a random offset, or 0 to
-      scan from the beginning. Defaults to 1.
+      scan from the beginning. Defaults to 0.
   FORGE_PARALLELISM
       Run up to this many issue workflows in parallel. Defaults to 1. The
       maximum is 4.

@@ -3377,7 +3377,7 @@ def get_work_queue_configs_from_environment(
             random_offset=(
                 random_offset_override
                 if random_offset_override is not None
-                else get_env_zero_one_bool("FORGE_RANDOM_WORK_OFFSET", True)
+                else get_env_zero_one_bool("FORGE_RANDOM_WORK_OFFSET", False)
             ),
         ),
     ]

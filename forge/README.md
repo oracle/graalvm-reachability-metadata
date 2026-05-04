@@ -28,6 +28,7 @@ Common options:
 - `--ni-run-limit N`: process up to `N` Native Image runtime failure tasks per cycle.
 - `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
+- `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
