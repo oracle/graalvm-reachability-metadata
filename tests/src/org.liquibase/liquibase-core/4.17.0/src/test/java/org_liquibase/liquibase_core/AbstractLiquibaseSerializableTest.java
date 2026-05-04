@@ -6,270 +6,148 @@
  */
 package org_liquibase.liquibase_core;
 
+import liquibase.change.ColumnConfig;
+import liquibase.change.core.CreateTableChange;
+import liquibase.changelog.ChangeSet;
+import liquibase.changelog.DatabaseChangeLog;
 import liquibase.parser.core.ParsedNode;
-import liquibase.parser.core.ParsedNodeException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.serializer.AbstractLiquibaseSerializable;
-import liquibase.serializer.LiquibaseSerializable.SerializationType;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractLiquibaseSerializableTest {
 
     @Test
-    void loadCreatesSerializableCollectionsNestedObjectsAndEscapedValues() throws Exception {
-        ParentSerializable parent = new ParentSerializable();
-        ParsedNode root = new ParsedNode(null, "parent");
-        root.addChild(collectionFieldNode());
-        root.addChild(standaloneCollectionElementNode());
-        root.addChild(nestedFieldNode());
-        root.addChild(null, "dateValue", "2020-01-02!{java.sql.Date}");
-        root.addChild(null, "numberValue", "12345!{java.math.BigInteger}");
+    void loadsCollectionFieldFromWrapperNode() throws Exception {
+        CreateTableChange change = new CreateTableChange();
+        attachToChangeSet(change);
+        ParsedNode root = new ParsedNode(null, "createTable")
+                .addChild(new ParsedNode(null, "columns")
+                        .addChild(columnNode("id", "int")));
 
-        parent.load(root, new ClassLoaderResourceAccessor());
+        change.load(root, null);
 
-        assertEquals(Arrays.asList("from collection field", "from standalone element"), parent.getChildNames());
-        assertNotNull(parent.getNested());
-        assertEquals("from nested field", parent.getNested().getName());
-        assertEquals(Date.valueOf("2020-01-02"), parent.getDateValue());
-        assertEquals(new BigInteger("12345"), parent.getNumberValue());
+        assertThat(change.getColumns())
+                .singleElement()
+                .satisfies(column -> {
+                    assertThat(column.getName()).isEqualTo("id");
+                    assertThat(column.getType()).isEqualTo("int");
+                });
     }
 
-    private static ParsedNode collectionFieldNode() throws ParsedNodeException {
-        ParsedNode collectionNode = new ParsedNode(null, "children");
-        collectionNode.addChild(childNode("from collection field"));
-        return collectionNode;
+    @Test
+    void loadsCollectionFieldFromElementNode() throws Exception {
+        CreateTableChange change = new CreateTableChange();
+        attachToChangeSet(change);
+        ParsedNode root = new ParsedNode(null, "createTable")
+                .addChild(columnNode("username", "varchar(32)"));
+
+        change.load(root, null);
+
+        assertThat(change.getColumns())
+                .singleElement()
+                .satisfies(column -> {
+                    assertThat(column.getName()).isEqualTo("username");
+                    assertThat(column.getType()).isEqualTo("varchar(32)");
+                });
     }
 
-    private static ParsedNode standaloneCollectionElementNode() throws ParsedNodeException {
-        return childNode("from standalone element");
+    @Test
+    void loadsConcreteSerializableField() throws Exception {
+        ColumnHolder holder = new ColumnHolder();
+        ParsedNode root = new ParsedNode(null, "holder")
+                .addChild(new ParsedNode(null, "columnConfig")
+                        .addChild(null, "name", "created_at")
+                        .addChild(null, "type", "timestamp"));
+
+        holder.load(root, null);
+
+        assertThat(holder.getColumnConfig().getName()).isEqualTo("created_at");
+        assertThat(holder.getColumnConfig().getType()).isEqualTo("timestamp");
     }
 
-    private static ParsedNode nestedFieldNode() throws ParsedNodeException {
-        ParsedNode nestedNode = new ParsedNode(null, "nested");
-        nestedNode.addChild(null, "name", "from nested field");
-        return nestedNode;
+    @Test
+    void convertsEscapedDatesAndStringConstructedValues() {
+        EscapedValueAccessor accessor = new EscapedValueAccessor();
+
+        Object date = accessor.convert("2024-01-02!{java.sql.Date}");
+        Object integer = accessor.convert("12345!{java.math.BigInteger}");
+
+        assertThat(date).isEqualTo(Date.valueOf("2024-01-02"));
+        assertThat(integer).isEqualTo(new BigInteger("12345"));
     }
 
-    private static ParsedNode childNode(String name) throws ParsedNodeException {
-        ParsedNode childNode = new ParsedNode(null, "child");
-        childNode.addChild(null, "name", name);
-        return childNode;
+    private static ParsedNode columnNode(String name, String type) throws Exception {
+        return new ParsedNode(null, "column")
+                .addChild(null, "name", name)
+                .addChild(null, "type", type);
     }
 
-    public static class ParentSerializable extends AbstractLiquibaseSerializable {
-        private final List<ChildSerializable> children = new ArrayList<>();
-        private NestedSerializable nested;
-        private Date dateValue;
-        private BigInteger numberValue;
+    private static void attachToChangeSet(CreateTableChange change) {
+        ChangeSet changeSet = new ChangeSet(new DatabaseChangeLog("real-class-test.xml"));
 
-        public ParentSerializable() {
-        }
+        changeSet.addChange(change);
+
+        assertThat(change.getChangeSet()).isSameAs(changeSet);
+    }
+
+    private static final class ColumnHolder extends AbstractLiquibaseSerializable {
+        private ColumnConfig columnConfig;
 
         @Override
         public String getSerializedObjectName() {
-            return "parent";
+            return "holder";
         }
 
         @Override
         public Set<String> getSerializableFields() {
-            return new LinkedHashSet<>(Arrays.asList("children", "nested", "dateValue", "numberValue"));
+            return Collections.singleton("columnConfig");
         }
 
         @Override
         public Object getSerializableFieldValue(String field) {
-            switch (field) {
-                case "children":
-                    return children;
-                case "nested":
-                    return nested;
-                case "dateValue":
-                    return dateValue;
-                case "numberValue":
-                    return numberValue;
-                default:
-                    throw new IllegalArgumentException("Unknown field: " + field);
-            }
+            return columnConfig;
         }
 
         @Override
         protected Class getSerializableFieldDataTypeClass(String field) {
-            switch (field) {
-                case "children":
-                    return Collection.class;
-                case "nested":
-                    return NestedSerializable.class;
-                case "dateValue":
-                    return Date.class;
-                case "numberValue":
-                    return BigInteger.class;
-                default:
-                    throw new IllegalArgumentException("Unknown field: " + field);
-            }
-        }
-
-        @Override
-        protected Type[] getSerializableFieldDataTypeClassParameters(String field) {
-            if ("children".equals(field)) {
-                return new Type[] {ChildSerializable.class};
-            }
-            return new Type[0];
+            return ColumnConfig.class;
         }
 
         @Override
         protected void setSerializableFieldValue(String field, Object value) {
-            if ("nested".equals(field)) {
-                nested = (NestedSerializable) value;
-                return;
-            }
-            throw new IllegalArgumentException("Unknown field: " + field);
+            columnConfig = (ColumnConfig) value;
         }
 
         @Override
         public String getSerializedObjectNamespace() {
-            return GENERIC_CHANGELOG_EXTENSION_NAMESPACE;
+            return STANDARD_CHANGELOG_NAMESPACE;
         }
 
-        public List<String> getChildNames() {
-            List<String> childNames = new ArrayList<>();
-            for (ChildSerializable child : children) {
-                childNames.add(child.getName());
-            }
-            return childNames;
-        }
-
-        public NestedSerializable getNested() {
-            return nested;
-        }
-
-        public Date getDateValue() {
-            return dateValue;
-        }
-
-        public void setDateValue(Date dateValue) {
-            this.dateValue = dateValue;
-        }
-
-        public BigInteger getNumberValue() {
-            return numberValue;
-        }
-
-        public void setNumberValue(BigInteger numberValue) {
-            this.numberValue = numberValue;
+        private ColumnConfig getColumnConfig() {
+            return columnConfig;
         }
     }
 
-    public static class ChildSerializable extends AbstractLiquibaseSerializable {
-        private String name;
-
-        public ChildSerializable() {
-        }
-
+    private static final class EscapedValueAccessor extends AbstractLiquibaseSerializable {
         @Override
         public String getSerializedObjectName() {
-            return "child";
-        }
-
-        @Override
-        public Set<String> getSerializableFields() {
-            return new LinkedHashSet<>(Arrays.asList("name"));
-        }
-
-        @Override
-        public Object getSerializableFieldValue(String field) {
-            if ("name".equals(field)) {
-                return name;
-            }
-            throw new IllegalArgumentException("Unknown field: " + field);
-        }
-
-        @Override
-        protected Class getSerializableFieldDataTypeClass(String field) {
-            if ("name".equals(field)) {
-                return String.class;
-            }
-            throw new IllegalArgumentException("Unknown field: " + field);
+            return "escapedValueAccessor";
         }
 
         @Override
         public String getSerializedObjectNamespace() {
-            return GENERIC_CHANGELOG_EXTENSION_NAMESPACE;
+            return STANDARD_CHANGELOG_NAMESPACE;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
-    public static class NestedSerializable extends AbstractLiquibaseSerializable {
-        private String name;
-
-        public NestedSerializable() {
-        }
-
-        @Override
-        public String getSerializedObjectName() {
-            return "nested";
-        }
-
-        @Override
-        public Set<String> getSerializableFields() {
-            return new LinkedHashSet<>(Arrays.asList("name"));
-        }
-
-        @Override
-        public Object getSerializableFieldValue(String field) {
-            if ("name".equals(field)) {
-                return name;
-            }
-            throw new IllegalArgumentException("Unknown field: " + field);
-        }
-
-        @Override
-        protected Class getSerializableFieldDataTypeClass(String field) {
-            if ("name".equals(field)) {
-                return String.class;
-            }
-            throw new IllegalArgumentException("Unknown field: " + field);
-        }
-
-        @Override
-        public String getSerializableFieldNamespace(String field) {
-            return GENERIC_CHANGELOG_EXTENSION_NAMESPACE;
-        }
-
-        @Override
-        public SerializationType getSerializableFieldType(String field) {
-            return SerializationType.NAMED_FIELD;
-        }
-
-        @Override
-        public String getSerializedObjectNamespace() {
-            return GENERIC_CHANGELOG_EXTENSION_NAMESPACE;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
+        private Object convert(Object value) {
+            return convertEscaped(value);
         }
     }
 }
