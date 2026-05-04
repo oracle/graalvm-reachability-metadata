@@ -33,6 +33,12 @@ import io.opentelemetry.semconv.TelemetryAttributes.TelemetrySdkLanguageValues;
 import io.opentelemetry.semconv.UrlAttributes;
 import io.opentelemetry.semconv.UserAgentAttributes;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 public class Opentelemetry_semconvTest {
@@ -74,6 +80,29 @@ public class Opentelemetry_semconvTest {
                 .isEqualTo(AttributeKey.doubleArrayKey("test.double_array.ratios"));
         assertThat(stringTemplate.getAttributeKey("name")).isSameAs(stringTemplate.getAttributeKey("name"));
         assertThat(stringTemplate.getAttributeKey("other")).isNotSameAs(stringTemplate.getAttributeKey("name"));
+    }
+
+    @Test
+    void attributeKeyTemplatesReturnCachedKeysAcrossConcurrentAccess() throws Exception {
+        AttributeKeyTemplate<String> template = AttributeKeyTemplate.stringKeyTemplate("test.concurrent");
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+
+        try {
+            List<Callable<AttributeKey<String>>> tasks = IntStream.range(0, 16)
+                    .mapToObj(index -> (Callable<AttributeKey<String>>) () -> template.getAttributeKey("tenant"))
+                    .toList();
+            List<Future<AttributeKey<String>>> futures = executor.invokeAll(tasks, 30, TimeUnit.SECONDS);
+            AttributeKey<String> expectedKey = template.getAttributeKey("tenant");
+
+            for (Future<AttributeKey<String>> future : futures) {
+                assertThat(future.isDone()).isTrue();
+                assertThat(future.isCancelled()).isFalse();
+                assertThat(future.get(1, TimeUnit.SECONDS)).isSameAs(expectedKey);
+            }
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(30, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
