@@ -281,6 +281,9 @@ object Command {
   implicit val rw: MiniPickle.ReadWriter[Command] = MiniPickle.macroRWAll[Command]
 }
 
+case object Heartbeat
+implicit val heartbeatRw: MiniPickle.ReadWriter[Heartbeat.type] = MiniPickle.macroRWAll[Heartbeat.type]
+
 class Upickle_implicits_3Test {
   import MiniPickle.*
   import TestTreeCodec.*
@@ -359,6 +362,14 @@ class Upickle_implicits_3Test {
     assertThat(tree("priority")).isEqualTo(5)
     assertThat(tree.contains("meta")).isFalse
     assertThat(readTree[Envelope](tree)).isEqualTo(envelope)
+  }
+
+  @Test
+  def singletonCaseObjectDerivationWritesReadableObjectAndReadsSameInstance(): Unit = {
+    val tree: ListMap[String, Any] = writeTree(Heartbeat).asInstanceOf[ListMap[String, Any]]
+
+    assertThat(readTree[Heartbeat.type](tree)).isSameAs(Heartbeat)
+    assertThat(roundTrip(Heartbeat)).isSameAs(Heartbeat)
   }
 
   @Test
