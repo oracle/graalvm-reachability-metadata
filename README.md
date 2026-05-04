@@ -38,8 +38,8 @@ curl -sSL \
 ### 🙋 Manually Request Library Support
 
 <p align="center">
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="400"></a>
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg" width="400"></a>
+  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/button-new-library-dark.png"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library-light.png" width="400"></picture></a>
+  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/button-update-metadata-dark.png"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata-light.png" width="400"></picture></a>
 </p>
 
 ---
