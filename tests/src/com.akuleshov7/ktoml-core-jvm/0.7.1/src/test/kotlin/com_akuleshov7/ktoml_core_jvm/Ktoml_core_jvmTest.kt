@@ -12,6 +12,8 @@ import com.akuleshov7.ktoml.TomlInputConfig
 import com.akuleshov7.ktoml.TomlOutputConfig
 import com.akuleshov7.ktoml.exceptions.TomlDecodingException
 import com.akuleshov7.ktoml.parsers.TomlParser
+import com.akuleshov7.ktoml.tree.nodes.TableType
+import com.akuleshov7.ktoml.tree.nodes.TomlArrayOfTablesElement
 import com.akuleshov7.ktoml.tree.nodes.TomlKeyValueArray
 import com.akuleshov7.ktoml.tree.nodes.TomlKeyValuePrimitive
 import com.akuleshov7.ktoml.tree.nodes.TomlTable
@@ -160,6 +162,48 @@ public class Ktoml_core_jvmTest {
         assertThat(encodedNestedTable).contains("[owner]")
         assertThat(encodedNestedTable).contains("name = \"Tom\"")
         assertThat(encodedNestedTable).contains("organization = \"GitHub\"")
+    }
+
+    @Test
+    fun decodesInlineTablesAndParsesArraysOfTables(): Unit {
+        val toml = Toml.Default
+        val nestedStringMapSerializer = MapSerializer(
+            String.serializer(),
+            MapSerializer(String.serializer(), String.serializer()),
+        )
+
+        val servers: Map<String, Map<String, String>> = toml.decodeFromString(
+            nestedStringMapSerializer,
+            "servers = { alpha = \"10.0.0.1\", beta = \"10.0.0.2\" }",
+        )
+        val tree = TomlParser(TomlInputConfig.compliant()).parseString(
+            """
+                [[products]]
+                name = "Hammer"
+                sku = "738594937"
+
+                [[products]]
+                name = "Nail"
+                sku = "284758393"
+            """.trimIndent(),
+        )
+        val products = tree.findTableInAstByName("products") as TomlTable
+        val productElements: List<TomlArrayOfTablesElement> = products.children
+            .filterIsInstance<TomlArrayOfTablesElement>()
+        val productFields: List<Map<String, String>> = productElements.map { element ->
+            element.children
+                .filterIsInstance<TomlKeyValuePrimitive>()
+                .associate { it.name to it.value.content.toString() }
+        }
+
+        assertThat(servers.getValue("servers"))
+            .containsEntry("alpha", "10.0.0.1")
+            .containsEntry("beta", "10.0.0.2")
+        assertThat(products.type).isEqualTo(TableType.ARRAY)
+        assertThat(productFields).containsExactly(
+            mapOf("name" to "Hammer", "sku" to "738594937"),
+            mapOf("name" to "Nail", "sku" to "284758393"),
+        )
     }
 
     @Test
