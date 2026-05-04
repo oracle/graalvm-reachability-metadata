@@ -12,6 +12,7 @@ import kotlinx.html.attributes.enumEncode
 import kotlinx.html.attributes.stringSetDecode
 import kotlinx.html.attributes.stringSetEncode
 import kotlinx.html.dom.append
+import kotlinx.html.dom.prepend
 import kotlinx.html.dom.serialize
 import kotlinx.html.stream.appendHTML
 import kotlinx.html.stream.createHTML
@@ -235,6 +236,33 @@ public class Kotlinx_html_jvmTest {
         assertTrue(serialized.contains("id=\"root\""))
         assertTrue(serialized.contains("data-source=\"dom\""))
         assertTrue(serialized.contains("DOM &amp; stream compatible"))
+    }
+
+    @Test
+    fun domPrependInsertsGeneratedElementBeforeExistingChildren() {
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+        val section = document.createElement("section")
+        val existingParagraph = document.createElement("p")
+        existingParagraph.textContent = "already present"
+        section.appendChild(existingParagraph)
+        document.appendChild(section)
+
+        val elements = section.prepend {
+            article {
+                id = "intro"
+                h2 { +"Prepended" }
+                p { +"Inserted before existing DOM children" }
+            }
+        }
+
+        assertEquals(1, elements.size)
+        val inserted = elements.single()
+        assertEquals("article", inserted.tagName)
+        assertEquals("intro", inserted.getAttribute("id"))
+        assertTrue(section.firstChild === inserted)
+        assertTrue(section.lastChild === existingParagraph)
+        assertEquals("PrependedInserted before existing DOM children", inserted.textContent)
+        assertEquals("already present", existingParagraph.textContent)
     }
 
     @Test
