@@ -18,6 +18,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.Value;
 import com.google.rpc.Status;
 import com.google.spanner.admin.database.v1.AddSplitPointsRequest;
+import com.google.spanner.admin.database.v1.AddSplitPointsResponse;
 import com.google.spanner.admin.database.v1.Backup;
 import com.google.spanner.admin.database.v1.BackupInfo;
 import com.google.spanner.admin.database.v1.BackupInstancePartition;
@@ -575,6 +576,23 @@ public class Proto_google_cloud_spanner_admin_database_v1Test {
                 });
         assertThat(response.isInitialized()).isTrue();
         assertThat(InternalUpdateGraphOperationResponse.getDescriptor().getFields()).isEmpty();
+    }
+
+    @Test
+    void addSplitPointsResponseIsEmptyAcknowledgementForDatabaseAdminRpc() {
+        Descriptors.MethodDescriptor method = SpannerDatabaseAdminProto.getDescriptor()
+                .findServiceByName("DatabaseAdmin")
+                .findMethodByName("AddSplitPoints");
+        AddSplitPointsResponse response = AddSplitPointsResponse.newBuilder().build();
+
+        assertThat(method.getOutputType().getFullName())
+                .isEqualTo(AddSplitPointsResponse.getDescriptor().getFullName());
+        assertThat(method.isClientStreaming()).isFalse();
+        assertThat(method.isServerStreaming()).isFalse();
+        assertThat(AddSplitPointsResponse.getDescriptor().getFields()).isEmpty();
+        assertThat(response.isInitialized()).isTrue();
+        assertThat(response.getDefaultInstanceForType()).isEqualTo(AddSplitPointsResponse.getDefaultInstance());
+        assertThat(response.toBuilder().build()).isEqualTo(response);
     }
 
     @Test
