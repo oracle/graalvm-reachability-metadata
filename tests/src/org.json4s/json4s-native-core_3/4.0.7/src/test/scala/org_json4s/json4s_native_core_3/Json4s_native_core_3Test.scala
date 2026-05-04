@@ -255,6 +255,16 @@ class Json4s_native_core_3Test {
   }
 
   @Test
+  def parsesCustomInputsThroughJsonInputTypeClass(): Unit = {
+    given AsJsonInput[JsonEnvelope] = AsJsonInput.stringAsJsonInput.contramap(_.payload)
+
+    val parsed: JValue = JsonMethods.parse(new JsonEnvelope("""{"kind":"custom","tags":["public","api"]}"""))
+
+    assertEquals(JString("custom"), parsed \ "kind")
+    assertEquals(JArray(List(JString("public"), JString("api"))), parsed \ "tags")
+  }
+
+  @Test
   def acceptsNonStringInputsThroughJsonMethodsFacade(): Unit = {
     val stream: TrackingByteArrayInputStream = new TrackingByteArrayInputStream(
       """{"text":"héllo","source":"stream"}""".getBytes(StandardCharsets.UTF_8)
@@ -290,6 +300,8 @@ class Json4s_native_core_3Test {
     }
     builder.toList
   }
+
+  private final class JsonEnvelope(val payload: String)
 
   private final class TrackingStringReader(text: String) extends StringReader(text) {
     var closed: Boolean = false
