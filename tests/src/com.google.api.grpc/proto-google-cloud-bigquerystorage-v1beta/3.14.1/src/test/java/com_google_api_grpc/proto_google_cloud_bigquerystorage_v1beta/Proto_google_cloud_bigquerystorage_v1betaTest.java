@@ -45,6 +45,7 @@ import com.google.cloud.bigquery.storage.v1beta.StreamMetastorePartitionsRequest
 import com.google.cloud.bigquery.storage.v1beta.StreamMetastorePartitionsResponse;
 import com.google.cloud.bigquery.storage.v1beta.TableName;
 import com.google.cloud.bigquery.storage.v1beta.UpdateMetastorePartitionRequest;
+import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -54,6 +55,8 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Timestamp;
+import com.google.rpc.Code;
+import com.google.rpc.Status;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -311,6 +314,35 @@ public class Proto_google_cloud_bigquerystorage_v1betaTest {
         BatchSizeTooLargeError parsedError = BatchSizeTooLargeError.parser().parseFrom(error.toByteArray());
         assertEquals(900L, parsedError.getMaxBatchSize());
         assertEquals("batch contains too many partitions", parsedError.getErrorMessage());
+    }
+
+    @Test
+    void structuredErrorsCanBeAttachedToRpcStatusDetails() throws Exception {
+        BatchSizeTooLargeError error = BatchSizeTooLargeError.newBuilder()
+                .setMaxBatchSize(900L)
+                .setErrorMessage("batch contains too many partitions")
+                .build();
+
+        Status status = Status.newBuilder()
+                .setCode(Code.INVALID_ARGUMENT_VALUE)
+                .setMessage("cannot commit metastore partitions")
+                .addDetails(Any.pack(error))
+                .build();
+
+        assertEquals(Code.INVALID_ARGUMENT_VALUE, status.getCode());
+        assertEquals(Code.INVALID_ARGUMENT, Code.forNumber(status.getCode()));
+        assertEquals("cannot commit metastore partitions", status.getMessage());
+        assertEquals(1, status.getDetailsCount());
+
+        Any detail = status.getDetails(0);
+        assertEquals("type.googleapis.com/google.cloud.bigquery.storage.v1beta.BatchSizeTooLargeError",
+                detail.getTypeUrl());
+        assertTrue(detail.is(BatchSizeTooLargeError.class));
+        assertFalse(detail.is(MetastorePartition.class));
+
+        BatchSizeTooLargeError unpacked = detail.unpack(BatchSizeTooLargeError.class);
+        assertEquals(900L, unpacked.getMaxBatchSize());
+        assertEquals("batch contains too many partitions", unpacked.getErrorMessage());
     }
 
     @Test
