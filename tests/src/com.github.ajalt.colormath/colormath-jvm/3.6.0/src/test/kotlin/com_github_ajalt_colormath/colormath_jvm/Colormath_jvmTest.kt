@@ -27,10 +27,12 @@ import com.github.ajalt.colormath.model.RGBColorSpaces
 import com.github.ajalt.colormath.model.XYZColorSpaces
 import com.github.ajalt.colormath.parse
 import com.github.ajalt.colormath.parseOrNull
+import com.github.ajalt.colormath.transform.HueAdjustments
 import com.github.ajalt.colormath.transform.divideAlpha
 import com.github.ajalt.colormath.transform.interpolate
 import com.github.ajalt.colormath.transform.interpolator
 import com.github.ajalt.colormath.transform.map
+import com.github.ajalt.colormath.transform.mix
 import com.github.ajalt.colormath.transform.multiplyAlpha
 import com.github.ajalt.colormath.transform.sequence
 import org.assertj.core.api.Assertions.assertThat
@@ -208,6 +210,20 @@ public class Colormath_jvmTest {
         val samples = gradient.sequence(5).toList()
         assertThat(samples).hasSize(5)
         assertRgbClose(samples.first(), 1f, 0f, 0f)
+    }
+
+    @Test
+    fun `mixes weighted colors and controls hue interpolation direction`(): Unit {
+        val red = RGB("#ff0000")
+        val blue = RGB("#0000ff")
+
+        val semiTransparentPurple = RGB.mix(red, 0.2, blue, 0.3).toSRGB()
+        assertRgbClose(semiTransparentPurple, 0.4f, 0f, 0.6f, 0.5f)
+
+        val nearRed = HSL(10, 1, 0.5)
+        val nearMagenta = HSL(350, 1, 0.5)
+        assertClose(HSL.mix(nearRed, nearMagenta).toHSL().h, 0f)
+        assertClose(HSL.mix(nearRed, nearMagenta, HueAdjustments.longer).toHSL().h, 180f)
     }
 
     @Test
