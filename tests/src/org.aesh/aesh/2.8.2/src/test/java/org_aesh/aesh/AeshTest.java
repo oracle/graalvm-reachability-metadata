@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.aesh.command.AeshCommandRuntimeBuilder;
 import org.aesh.command.Command;
 import org.aesh.command.CommandDefinition;
+import org.aesh.command.CommandException;
 import org.aesh.command.CommandResult;
 import org.aesh.command.CommandRuntime;
 import org.aesh.command.GroupCommandDefinition;
@@ -37,6 +38,9 @@ import org.aesh.command.option.Arguments;
 import org.aesh.command.option.Option;
 import org.aesh.command.option.OptionList;
 import org.aesh.command.registry.CommandRegistry;
+import org.aesh.command.result.ResultHandler;
+import org.aesh.command.validator.CommandValidator;
+import org.aesh.command.validator.CommandValidatorException;
 import org.aesh.command.validator.OptionValidator;
 import org.aesh.command.validator.OptionValidatorException;
 import org.aesh.command.validator.ValidatorInvocation;
@@ -57,11 +61,17 @@ import org.junit.jupiter.api.io.TempDir;
 public class AeshTest {
     private static RecipeExecution lastRecipeExecution;
     private static String lastAdminExecution;
+    private static String lastValidatedTask;
+    private static String lastTaskExecution;
+    private static String lastResultHandlerEvent;
 
     @BeforeEach
     void resetCapturedExecutions() {
         lastRecipeExecution = null;
         lastAdminExecution = null;
+        lastValidatedTask = null;
+        lastTaskExecution = null;
+        lastResultHandlerEvent = null;
     }
 
     @Test
@@ -131,6 +141,29 @@ public class AeshTest {
         assertThat(lastAdminExecution).isEqualTo("status:production");
         assertThat(runtime.getCommandRegistry().getAllCommandNames()).contains("admin");
         assertThat(runtime.commandInfo("admin")).contains("Administrative commands").contains("status");
+    }
+
+    @Test
+    void commandValidatorAndResultHandlerObserveCommandOutcomes() throws Exception {
+        CommandRuntime<CommandInvocation> runtime = runtimeFor(ValidatedTaskCommand.class);
+
+        CommandResult result = runtime.executeCommand("task --name deploy");
+
+        assertThat(result).isEqualTo(CommandResult.SUCCESS);
+        assertThat(lastValidatedTask).isEqualTo("deploy");
+        assertThat(lastTaskExecution).isEqualTo("deploy");
+        assertThat(lastResultHandlerEvent).isEqualTo("success");
+
+        lastValidatedTask = null;
+        lastTaskExecution = null;
+        lastResultHandlerEvent = null;
+
+        assertThatThrownBy(() -> runtime.executeCommand("task --name forbidden"))
+                .isInstanceOf(CommandValidatorException.class)
+                .hasMessageContaining("forbidden");
+        assertThat(lastValidatedTask).isEqualTo("forbidden");
+        assertThat(lastTaskExecution).isNull();
+        assertThat(lastResultHandlerEvent).isEqualTo("validation:CommandValidatorException");
     }
 
     @Test
@@ -297,6 +330,54 @@ public class AeshTest {
         public CommandResult execute(CommandInvocation commandInvocation) {
             lastAdminExecution = "status:" + name;
             return CommandResult.SUCCESS;
+        }
+    }
+
+    @CommandDefinition(
+            name = "task",
+            description = "Runs a validated task",
+            validator = TaskCommandValidator.class,
+            resultHandler = TaskResultHandler.class)
+    public static class ValidatedTaskCommand implements Command<CommandInvocation> {
+        @Option(name = "name", required = true, description = "Task name")
+        private String name;
+
+        @Override
+        public CommandResult execute(CommandInvocation commandInvocation) {
+            lastTaskExecution = name;
+            return CommandResult.SUCCESS;
+        }
+    }
+
+    public static class TaskCommandValidator implements CommandValidator<ValidatedTaskCommand, CommandInvocation> {
+        @Override
+        public void validate(ValidatedTaskCommand command) throws CommandValidatorException {
+            lastValidatedTask = command.name;
+            if ("forbidden".equals(command.name)) {
+                throw new CommandValidatorException("forbidden task names are rejected");
+            }
+        }
+    }
+
+    public static class TaskResultHandler implements ResultHandler {
+        @Override
+        public void onSuccess() {
+            lastResultHandlerEvent = "success";
+        }
+
+        @Override
+        public void onFailure(CommandResult commandResult) {
+            lastResultHandlerEvent = "failure:" + commandResult.getResultValue();
+        }
+
+        @Override
+        public void onValidationFailure(CommandResult commandResult, Exception exception) {
+            lastResultHandlerEvent = "validation:" + exception.getClass().getSimpleName();
+        }
+
+        @Override
+        public void onExecutionFailure(CommandResult commandResult, CommandException exception) {
+            lastResultHandlerEvent = "execution:" + exception.getClass().getSimpleName();
         }
     }
 
