@@ -93,6 +93,14 @@ public class StringprepTest {
     }
 
     @Test
+    void mapsSupplementaryPlaneCodePoints() {
+        assertThat(StringPrep.mapUsedWithNoNormalization(0x10425)).containsExactly(0x1044D);
+        assertThat(StringPrep.mapUsedWithNoNormalization(0x10426)).containsExactly(0x10426);
+        assertThat(StringPrep.mapUsedWithNfkc(0x1D7BB)).containsExactly(0x03C3);
+        assertThat(StringPrep.mapUsedWithNfkc(0x1D7BC)).containsExactly(0x1D7BC);
+    }
+
+    @Test
     void detectsAllProhibitedCharacterCategories() {
         assertAccepted(StringPrep::prohibitionAsciiSpace, 0x0020);
         assertRejected(StringPrep::prohibitionAsciiSpace, 0x0009, 0x00A0, 'A');
