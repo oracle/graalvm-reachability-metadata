@@ -51,6 +51,18 @@ object Email {
 
 final case class Contact(name: String, primaryEmail: Email, secondaryEmails: List[Email]) derives ReadWriter
 
+final case class ProductCode(prefix: String, number: Int)
+
+object ProductCode {
+  given ReadWriter[ProductCode] = stringKeyRW(readwriter[String].bimap[ProductCode](
+    code => s"${code.prefix}-${code.number}",
+    value => {
+      val parts: Array[String] = value.split("-", 2)
+      ProductCode(parts(0), parts(1).toInt)
+    }
+  ))
+}
+
 final case class DefaultsEnabled(name: String, active: Boolean = true, aliases: List[String] = Nil) derives ReadWriter
 
 final case class ExternalLine(sku: String, quantity: Int) derives ReadWriter
@@ -167,6 +179,24 @@ class Upickle_3Test {
         |""".stripMargin
     )
     assertEquals(Contact("Support", Email("help@example.com"), List(Email("admin@example.com"), Email("ops@example.com"))), parsed)
+  }
+
+  @Test
+  def supportsCustomTypesAsJsonObjectKeysWithStringKeyReadWriter(): Unit = {
+    val stockByProduct: Map[ProductCode, Int] = Map(
+      ProductCode("BOOK", 1) -> 12,
+      ProductCode("PEN", 9) -> 5
+    )
+
+    val jsonValue: ujson.Value = writeJs(stockByProduct)
+    assertEquals(12.0, jsonValue(objKey("BOOK-1")).num, 0.0)
+    assertEquals(5.0, jsonValue(objKey("PEN-9")).num, 0.0)
+    assertEquals(stockByProduct, read[Map[ProductCode, Int]](jsonValue))
+
+    val jsonText: String = write(stockByProduct, -1, false, true)
+    assertTrue(jsonText.startsWith("{"))
+    assertFalse(jsonText.startsWith("["))
+    assertEquals(stockByProduct, read[Map[ProductCode, Int]](jsonText))
   }
 
   @Test
