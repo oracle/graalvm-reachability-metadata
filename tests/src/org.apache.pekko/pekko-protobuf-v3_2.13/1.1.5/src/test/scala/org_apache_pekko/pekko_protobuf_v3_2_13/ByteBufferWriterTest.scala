@@ -6,6 +6,7 @@
  */
 package org_apache_pekko.pekko_protobuf_v3_2_13
 
+import org.apache.pekko.protobufv3.internal.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,7 @@ class ByteBufferWriterTest {
   @Test
   def initializesByteBufferWriterRuntimeSupport(): Unit = {
     val className: String = "org.apache.pekko.protobufv3.internal.ByteBufferWriter"
-    val writerClass: Class[_] = Class.forName(className, true, getClass.getClassLoader)
+    val writerClass: Class[_] = Class.forName(className, true, classOf[ByteString].getClassLoader)
 
     assertThat(writerClass.getName).isEqualTo(className)
   }
