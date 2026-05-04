@@ -4,13 +4,18 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+@file:arrow.synthetic
+
 package io_arrow_kt.arrow_annotations_jvm
 
 import arrow.optics.OpticsTarget
 import arrow.optics.optics
 import arrow.synthetic
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.util.EnumMap
+import java.util.EnumSet
 
 public class ArrowAnnotationsJvmTest {
     @Test
@@ -28,6 +33,30 @@ public class ArrowAnnotationsJvmTest {
         assertThat(OpticsTarget.valueOf("LENS")).isSameAs(OpticsTarget.LENS)
         assertThat(OpticsTarget.values().map(OpticsTarget::name))
             .containsExactly("ISO", "LENS", "PRISM", "OPTIONAL", "DSL")
+        assertThatThrownBy { OpticsTarget.valueOf("TRAVERSAL") }
+            .isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun opticsTargetEnumSupportsStableJdkEnumCollectionsAndOrdering() {
+        val structuralTargets: EnumSet<OpticsTarget> = EnumSet.of(OpticsTarget.ISO, OpticsTarget.LENS)
+        val descriptions: EnumMap<OpticsTarget, String> = EnumMap(OpticsTarget::class.java)
+
+        OpticsTarget.entries.forEach { target: OpticsTarget ->
+            descriptions[target] = target.description()
+        }
+
+        assertThat(structuralTargets).containsExactly(OpticsTarget.ISO, OpticsTarget.LENS)
+        assertThat(descriptions.values)
+            .containsExactly("isomorphism", "lens", "prism", "optional", "dsl")
+        assertThat(OpticsTarget.entries.sortedDescending())
+            .containsExactly(
+                OpticsTarget.DSL,
+                OpticsTarget.OPTIONAL,
+                OpticsTarget.PRISM,
+                OpticsTarget.LENS,
+                OpticsTarget.ISO,
+            )
     }
 
     @Test
@@ -42,6 +71,16 @@ public class ArrowAnnotationsJvmTest {
         assertThat(movedOrder.id).isEqualTo("order-1")
         assertThat(movedOrder.shippingAddress.city).isEqualTo("Belgrade")
         assertThat(movedOrder.shippingAddress.street).isEqualTo("Main Street")
+    }
+
+    @Test
+    fun opticsAnnotationCanRequestIsoTargetsOnInlineAndDataTypes() {
+        val accountId: IsoAnnotatedAccountId = IsoAnnotatedAccountId("account-42")
+        val coordinates: IsoAnnotatedCoordinates = IsoAnnotatedCoordinates(x = 3, y = 5)
+
+        assertThat(accountId.normalized()).isEqualTo("ACCOUNT-42")
+        assertThat(coordinates.copy(y = coordinates.x + coordinates.y))
+            .isEqualTo(IsoAnnotatedCoordinates(x = 3, y = 8))
     }
 
     @Test
@@ -84,6 +123,25 @@ public class ArrowAnnotationsJvmTest {
         assertThat(numbers.value).containsExactly(1, 2, 3)
         assertThat(doubled.value).isEqualTo("doubled=2, 4, 6")
     }
+
+    @Test
+    fun syntheticAnnotationCanMarkObjectsEnumsOperatorsAndSetterParameters() {
+        SyntheticRegistry.clear()
+
+        SyntheticRegistry += SyntheticRegistry.Entry(name = "alpha", weight = 2)
+        SyntheticRegistry += SyntheticRegistry.Entry(name = "beta", weight = 3)
+
+        assertThat(SyntheticRegistry.names()).containsExactly("alpha", "beta")
+        assertThat(SyntheticMode.ENABLED.render()).isEqualTo("enabled")
+    }
+}
+
+private fun OpticsTarget.description(): String = when (this) {
+    OpticsTarget.ISO -> "isomorphism"
+    OpticsTarget.LENS -> "lens"
+    OpticsTarget.PRISM -> "prism"
+    OpticsTarget.OPTIONAL -> "optional"
+    OpticsTarget.DSL -> "dsl"
 }
 
 @optics(targets = [OpticsTarget.LENS, OpticsTarget.PRISM, OpticsTarget.OPTIONAL, OpticsTarget.DSL])
@@ -96,6 +154,20 @@ private data class OpticsAnnotatedOrder(
 private data class ShippingAddress(
     val street: String,
     val city: String,
+)
+
+@optics(targets = [OpticsTarget.ISO])
+@JvmInline
+private value class IsoAnnotatedAccountId(
+    val value: String,
+) {
+    fun normalized(): String = value.uppercase()
+}
+
+@optics(targets = [OpticsTarget.ISO])
+private data class IsoAnnotatedCoordinates(
+    val x: Int,
+    val y: Int,
 )
 
 @optics.copy
@@ -124,6 +196,7 @@ private class SyntheticAnnotatedSample @synthetic constructor(
     @field:synthetic
     @get:synthetic
     @set:synthetic
+    @setparam:synthetic
     var mutableValue: @synthetic SyntheticString = constructorValue
 
     @synthetic
@@ -146,4 +219,41 @@ private data class SyntheticTypedBox<@synthetic T : Any>(
     fun <@synthetic R : Any> map(
         transform: (T) -> R,
     ): SyntheticTypedBox<R> = SyntheticTypedBox(transform(value))
+}
+
+@synthetic
+private object SyntheticRegistry {
+    private val entries: MutableList<Entry> = mutableListOf()
+
+    @synthetic
+    operator fun plusAssign(@synthetic entry: Entry) {
+        entries += entry
+    }
+
+    @synthetic
+    fun names(): List<@synthetic SyntheticString> = entries.map(Entry::name)
+
+    @synthetic
+    fun clear() {
+        entries.clear()
+    }
+
+    @SyntheticDomainAnnotation("entry")
+    data class Entry(
+        @property:synthetic
+        @field:synthetic
+        val name: @synthetic SyntheticString,
+        @property:synthetic
+        val weight: Int,
+    )
+}
+
+@synthetic
+private enum class SyntheticMode {
+    ENABLED,
+    DISABLED,
+    ;
+
+    @synthetic
+    fun render(): @synthetic SyntheticString = name.lowercase()
 }
