@@ -298,6 +298,22 @@ public class Arrow_atomic_jvmTest {
     }
 
     @Test
+    fun atomicReferenceCompareAndSetRequiresTheSameExpectedInstance() {
+        val initial = State(step = 1, label = "same value")
+        val equalButDifferentInstance = initial.copy()
+        val replacement = State(step = 2, label = "replacement")
+        val state = Atomic(initial)
+
+        assertThat(equalButDifferentInstance).isEqualTo(initial)
+        assertThat(equalButDifferentInstance).isNotSameAs(initial)
+        assertThat(state.compareAndSet(equalButDifferentInstance, replacement)).isFalse()
+        assertThat(state.value).isSameAs(initial)
+
+        assertThat(state.compareAndSet(initial, replacement)).isTrue()
+        assertThat(state.value).isSameAs(replacement)
+    }
+
+    @Test
     fun atomicReferenceSupportsPublicUpdateFunctionsAndReportsFailedTryUpdate() {
         val state = Atomic(State(step = 1, label = "initial"))
 
