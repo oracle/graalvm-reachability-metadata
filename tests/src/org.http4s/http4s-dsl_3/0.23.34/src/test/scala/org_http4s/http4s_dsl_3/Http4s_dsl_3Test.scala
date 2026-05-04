@@ -120,6 +120,20 @@ class Http4s_dsl_3Test {
   }
 
   @Test
+  def prefixPathExtractorCapturesFirstSegmentAndRemainingRelativePath(): Unit = {
+    val nested: Response[IO] = run(Request[IO](Method.GET, uri"/docs/guides/native-image"))
+    assertEquals(Status.Ok, nested.status)
+    assertEquals("section=docs,remaining=guides/native-image", bodyText(nested))
+
+    val emptyTail: Response[IO] = run(Request[IO](Method.GET, uri"/docs"))
+    assertEquals(Status.Ok, emptyTail.status)
+    assertEquals("section=docs,remaining=", bodyText(emptyTail))
+
+    val unmatchedPrefix: Response[IO] = run(Request[IO](Method.GET, uri"/articles/guides/native-image"))
+    assertEquals(Status.NotFound, unmatchedPrefix.status)
+  }
+
+  @Test
   def requestBodyDecodingAndEntityResponseGeneratorsCreateStatusHeadersAndBodies(): Unit = {
     val created: Response[IO] = run(Request[IO](Method.POST, uri"/echo").withEntity("native-image"))
     assertEquals(Status.Created, created.status)
@@ -191,6 +205,9 @@ object Http4s_dsl_3Test {
 
     case GET -> Root / "board" / BoardSquare(IntVar(x), IntVar(y)) =>
       Ok(s"square:$x,$y")
+
+    case GET -> "docs" /: remaining =>
+      Ok(s"section=docs,remaining=${remaining.renderString}")
 
     case (GET | HEAD) -> Root / "health" =>
       NoContent()
