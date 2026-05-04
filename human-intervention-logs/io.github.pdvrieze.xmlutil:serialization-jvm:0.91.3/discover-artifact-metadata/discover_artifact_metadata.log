@@ -1,0 +1,738 @@
+Starting a Gradle Daemon, 6 busy and 6 incompatible and 142 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df369-1f81-72c2-b42a-938ef6b1bb5a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.91.3" when "$version$" is replaced with "0.91.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+- Set "coordinates" to "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.91.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven/GitHub sources first, then patch the JSON directly with version-templated URLs. After that I’ll sanity-check the file formatting and the language/native-image fields.
+web search: 
+web search: io.github.pdvrieze.xmlutil serialization-jvm 0.91.3 Maven source tests repository
+codex
+The search results identify `pdvrieze/xmlutil` as the upstream project and show `serialization-jvm` is a JVM jar, so I’ll treat it as a Native Image candidate unless the Maven artifacts show otherwise. I’m checking the repository’s existing metadata conventions now so the URLs match local style.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+{
+  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url|source-code-url|test-code-url|not-for-native-image|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+metadata/org.w3c.css/sac/index.json:7:    "test-code-url" : "N/A",
+metadata/org.w3c.css/sac/index.json:8:    "documentation-url" : "https://www.w3.org/Style/CSS/SAC/doc/",
+
+exec
+/usr/bin/bash -lc "rg -n 'pdvrieze|xmlutil|serialization-jvm' . -g '*.json' -g '*.toml' -g '*.properties' -g '*.gradle*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+./tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/build.gradle:15:    testImplementation "io.github.pdvrieze.xmlutil:core-jvmcommon:$libraryVersion"
+./tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/settings.gradle:20:rootProject.name = 'io.github.pdvrieze.xmlutil.core-jvmcommon_tests'
+./tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/gradle.properties:4:library.coordinates = io.github.pdvrieze.xmlutil:core-jvmcommon:0.91.3
+./tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/gradle.properties:6:metadata.dir = io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/
+./tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/user-code-filter.json:7:      "includeClasses" : "nl.adaptivity.xmlutil.**"
+./tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/user-code-filter.json:10:      "includeClasses" : "io_github_pdvrieze_xmlutil.core_jvmcommon.**"
+./stats/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/execution-metrics.json:4:    "library": "io.github.pdvrieze.xmlutil:core-jvmcommon:0.91.3",
+./stats/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/execution-metrics.json:46:      "test_file": "tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/src/test/kotlin/io_github_pdvrieze_xmlutil/core_jvmcommon/Core_jvmcommonTest.kt",
+./stats/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/execution-metrics.json:47:      "metadata_file": "metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/reachability-metadata.json"
+./metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/core-jvmcommon/$version$/core-jvmcommon-$version$-sources.jar",
+./metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:6:    "repository-url" : "https://github.com/pdvrieze/xmlutil",
+./metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:7:    "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/core/base/src/commonTest",
+./metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/core-jvmcommon/$version$/core-jvmcommon-$version$-javadoc.jar",
+./metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:18:      "nl.adaptivity.xmlutil"
+
+web search: 
+web search: 
+web search: 
+web search: io.github.pdvrieze.xmlutil serialization-jvm 0.91.3 Maven source tests repository
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.91.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/core-jvmcommon/$version$/core-jvmcommon-$version$-sources.jar",
+    "repository-url" : "https://github.com/pdvrieze/xmlutil",
+    "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/core/base/src/commonTest",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/core-jvmcommon/$version$/core-jvmcommon-$version$-javadoc.jar",
+    "description" : "XMLUtil core-jvmcommon is the Kotlin JVM-common core module of XMLUtil, providing XML streaming, reader/writer, namespace, QName, DOM-like, and utility APIs shared by the JVM and Android-specific core artifacts. It supports Kotlin Multiplatform XML processing and underpins XML serialization integrations while packaging standard JVM class files for use from JVM code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.2"
+    },
+    "tested-versions" : [
+      "0.91.3"
+    ],
+    "allowed-packages" : [
+      "nl.adaptivity.xmlutil"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.pdvrieze.xmlutil</groupId>
+  <artifactId>serialization-jvm</artifactId>
+  <version>0.91.3</version>
+  <name>serialization</name>
+  <description>Component of the XMLUtil library</description>
+  <url>https://github.com/pdvrieze/xmlutil</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>pdvrieze</id>
+      <name>Paul de Vrieze</name>
+      <email>paul.devrieze@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/pdvrieze/xmlutil.git</connection>
+    <developerConnection>scm:git:https://github.com/pdvrieze/xmlutil.git</developerConnection>
+    <url>https://github.com/pdvrieze/xmlutil</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.pdvrieze.xmlutil</groupId>
+      <artifactId>core-jvmcommon</artifactId>
+      <version>0.91.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-serialization-core-jvm</artifactId>
+      <version>1.9.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.2.21</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 335ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="serialization-jvm-0.91.3-javadoc.jar" title="serialization-jvm-0.91.3-javadoc.jar">serialization-jvm-0.91.3-javadoc.jar</a>              2025-10-28 14:44      9554      
+<a href="serialization-jvm-0.91.3-javadoc.jar.asc" title="serialization-jvm-0.91.3-javadoc.jar.asc">serialization-jvm-0.91.3-javadoc.jar.asc</a>          2025-10-28 14:44       485      
+<a href="serialization-jvm-0.91.3-javadoc.jar.asc.md5" title="serialization-jvm-0.91.3-javadoc.jar.asc.md5">serialization-jvm-0.91.3-javadoc.jar.asc.md5</a>      2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3-javadoc.jar.asc.sha1" title="serialization-jvm-0.91.3-javadoc.jar.asc.sha1">serialization-jvm-0.91.3-javadoc.jar.asc.sha1</a>     2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3-javadoc.jar.asc.sha256" title="serialization-jvm-0.91.3-javadoc.jar.asc.sha256">serialization-jvm-0.91.3-javadoc.jar.asc.sha2...</a>  2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3-javadoc.jar.asc.sha512" title="serialization-jvm-0.91.3-javadoc.jar.asc.sha512">serialization-jvm-0.91.3-javadoc.jar.asc.sha5...</a>  2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3-javadoc.jar.md5" title="serialization-jvm-0.91.3-javadoc.jar.md5">serialization-jvm-0.91.3-javadoc.jar.md5</a>          2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3-javadoc.jar.sha1" title="serialization-jvm-0.91.3-javadoc.jar.sha1">serialization-jvm-0.91.3-javadoc.jar.sha1</a>         2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3-javadoc.jar.sha256" title="serialization-jvm-0.91.3-javadoc.jar.sha256">serialization-jvm-0.91.3-javadoc.jar.sha256</a>       2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3-javadoc.jar.sha512" title="serialization-jvm-0.91.3-javadoc.jar.sha512">serialization-jvm-0.91.3-javadoc.jar.sha512</a>       2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3-sources.jar" title="serialization-jvm-0.91.3-sources.jar">serialization-jvm-0.91.3-sources.jar</a>              2025-10-28 14:44    131515      
+<a href="serialization-jvm-0.91.3-sources.jar.asc" title="serialization-jvm-0.91.3-sources.jar.asc">serialization-jvm-0.91.3-sources.jar.asc</a>          2025-10-28 14:44       485      
+<a href="serialization-jvm-0.91.3-sources.jar.asc.md5" title="serialization-jvm-0.91.3-sources.jar.asc.md5">serialization-jvm-0.91.3-sources.jar.asc.md5</a>      2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3-sources.jar.asc.sha1" title="serialization-jvm-0.91.3-sources.jar.asc.sha1">serialization-jvm-0.91.3-sources.jar.asc.sha1</a>     2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3-sources.jar.asc.sha256" title="serialization-jvm-0.91.3-sources.jar.asc.sha256">serialization-jvm-0.91.3-sources.jar.asc.sha2...</a>  2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3-sources.jar.asc.sha512" title="serialization-jvm-0.91.3-sources.jar.asc.sha512">serialization-jvm-0.91.3-sources.jar.asc.sha5...</a>  2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3-sources.jar.md5" title="serialization-jvm-0.91.3-sources.jar.md5">serialization-jvm-0.91.3-sources.jar.md5</a>          2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3-sources.jar.sha1" title="serialization-jvm-0.91.3-sources.jar.sha1">serialization-jvm-0.91.3-sources.jar.sha1</a>         2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3-sources.jar.sha256" title="serialization-jvm-0.91.3-sources.jar.sha256">serialization-jvm-0.91.3-sources.jar.sha256</a>       2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3-sources.jar.sha512" title="serialization-jvm-0.91.3-sources.jar.sha512">serialization-jvm-0.91.3-sources.jar.sha512</a>       2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3.jar" title="serialization-jvm-0.91.3.jar">serialization-jvm-0.91.3.jar</a>                      2025-10-28 14:44    591221      
+<a href="serialization-jvm-0.91.3.jar.asc" title="serialization-jvm-0.91.3.jar.asc">serialization-jvm-0.91.3.jar.asc</a>                  2025-10-28 14:44       485      
+<a href="serialization-jvm-0.91.3.jar.asc.md5" title="serialization-jvm-0.91.3.jar.asc.md5">serialization-jvm-0.91.3.jar.asc.md5</a>              2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3.jar.asc.sha1" title="serialization-jvm-0.91.3.jar.asc.sha1">serialization-jvm-0.91.3.jar.asc.sha1</a>             2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3.jar.asc.sha256" title="serialization-jvm-0.91.3.jar.asc.sha256">serialization-jvm-0.91.3.jar.asc.sha256</a>           2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3.jar.asc.sha512" title="serialization-jvm-0.91.3.jar.asc.sha512">serialization-jvm-0.91.3.jar.asc.sha512</a>           2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3.jar.md5" title="serialization-jvm-0.91.3.jar.md5">serialization-jvm-0.91.3.jar.md5</a>                  2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3.jar.sha1" title="serialization-jvm-0.91.3.jar.sha1">serialization-jvm-0.91.3.jar.sha1</a>                 2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3.jar.sha256" title="serialization-jvm-0.91.3.jar.sha256">serialization-jvm-0.91.3.jar.sha256</a>               2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3.jar.sha512" title="serialization-jvm-0.91.3.jar.sha512">serialization-jvm-0.91.3.jar.sha512</a>               2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3.module" title="serialization-jvm-0.91.3.module">serialization-jvm-0.91.3.module</a>                   2025-10-28 14:44      4299      
+<a href="serialization-jvm-0.91.3.module.asc" title="serialization-jvm-0.91.3.module.asc">serialization-jvm-0.91.3.module.asc</a>               2025-10-28 14:44       485      
+<a href="serialization-jvm-0.91.3.module.asc.md5" title="serialization-jvm-0.91.3.module.asc.md5">serialization-jvm-0.91.3.module.asc.md5</a>           2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3.module.asc.sha1" title="serialization-jvm-0.91.3.module.asc.sha1">serialization-jvm-0.91.3.module.asc.sha1</a>          2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3.module.asc.sha256" title="serialization-jvm-0.91.3.module.asc.sha256">serialization-jvm-0.91.3.module.asc.sha256</a>        2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3.module.asc.sha512" title="serialization-jvm-0.91.3.module.asc.sha512">serialization-jvm-0.91.3.module.asc.sha512</a>        2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3.module.md5" title="serialization-jvm-0.91.3.module.md5">serialization-jvm-0.91.3.module.md5</a>               2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3.module.sha1" title="serialization-jvm-0.91.3.module.sha1">serialization-jvm-0.91.3.module.sha1</a>              2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3.module.sha256" title="serialization-jvm-0.91.3.module.sha256">serialization-jvm-0.91.3.module.sha256</a>            2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3.module.sha512" title="serialization-jvm-0.91.3.module.sha512">serialization-jvm-0.91.3.module.sha512</a>            2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3.pom" title="serialization-jvm-0.91.3.pom">serialization-jvm-0.91.3.pom</a>                      2025-10-28 14:44      2089      
+<a href="serialization-jvm-0.91.3.pom.asc" title="serialization-jvm-0.91.3.pom.asc">serialization-jvm-0.91.3.pom.asc</a>                  2025-10-28 14:44       485      
+<a href="serialization-jvm-0.91.3.pom.asc.md5" title="serialization-jvm-0.91.3.pom.asc.md5">serialization-jvm-0.91.3.pom.asc.md5</a>              2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3.pom.asc.sha1" title="serialization-jvm-0.91.3.pom.asc.sha1">serialization-jvm-0.91.3.pom.asc.sha1</a>             2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3.pom.asc.sha256" title="serialization-jvm-0.91.3.pom.asc.sha256">serialization-jvm-0.91.3.pom.asc.sha256</a>           2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3.pom.asc.sha512" title="serialization-jvm-0.91.3.pom.asc.sha512">serialization-jvm-0.91.3.pom.asc.sha512</a>           2025-10-28 14:44       128      
+<a href="serialization-jvm-0.91.3.pom.md5" title="serialization-jvm-0.91.3.pom.md5">serialization-jvm-0.91.3.pom.md5</a>                  2025-10-28 14:44        32      
+<a href="serialization-jvm-0.91.3.pom.sha1" title="serialization-jvm-0.91.3.pom.sha1">serialization-jvm-0.91.3.pom.sha1</a>                 2025-10-28 14:44        40      
+<a href="serialization-jvm-0.91.3.pom.sha256" title="serialization-jvm-0.91.3.pom.sha256">serialization-jvm-0.91.3.pom.sha256</a>               2025-10-28 14:44        64      
+<a href="serialization-jvm-0.91.3.pom.sha512" title="serialization-jvm-0.91.3.pom.sha512">serialization-jvm-0.91.3.pom.sha512</a>               2025-10-28 14:44       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/commonTest && curl -I -L -s https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmTest && curl -I -L -s https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 1926ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 14:34:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fa73b55e2f343d14ab684f23232fba0c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=J81I9lPMcXkSs6NbK14axj3rgIyDs4x2GWYstUGtdgHKuZ%2FoOpUJyhK2hv6BGpyhj8SYu9xR7gJK1vn38VgpSSjQ8k7DxARMXifNbW1isXPASikWclf5vx8BQoRqS1eMZp%2BMQ5xv2TMm6Vh9NV39cR%2FE6%2FVcPm60CuXJAxHqtz4MoOF3AduqMyynw7CAzMNIHqgglCkRh3qH7YYRUFjWhMN%2Beacbw%2BlCc%2BVgkltWMMpgd%2F%2Ft%2FcmbGEjFcdpV9qrwtirw9%2BYSlq9LW%2BvU%2FrnO6A%3D%3D--ZCgIAcJ9xn8abDtX--bi7RQULGsYdtxxriHzNe%2Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.556553553.1777905278; expires=Tue, 04 May 2027 14:34:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 14:34:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5104:14E85F:23860F1:1C62A84:69F8AE7E
+
+HTTP/2 200 
+date: Mon, 04 May 2026 14:34:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3b3cec5e650be780b320c2fa13bb6439"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Y%2FLeFr5%2BTIiHNA%2FA6maMIqIFh8mrU7Ls6zRkdLHt98IVvZMC%2B1bJ96P65ZlxG2On8MBCZ47QXraAUgC3Mgwcj9ltJ7onxZRpd0GEl8wUypmYuID0NIhlFIOFUnmZ6FtTQQA9BW1mjlhgnpKUBsUKMqJi08RWHm3OzepexBxOHEVyBi9Qg0fUk9EQfn8b3UMppOGiOw2nYauxlOO0a2EGHjx6PfTUL55ZErKs1Gri98vtfucnKhSWwRRhGx32ngWkwws%2BHcEfljByqsUWuZk%2FvA%3D%3D--eGQkhglRBAGRnuUU--dO5JfIltlIIvc%2F6mwIIggg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1251106931.1777905279; expires=Tue, 04 May 2027 14:34:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 14:34:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:22BF3A:23A59CA:1C871FB:69F8AE7F
+
+HTTP/2 200 
+date: Mon, 04 May 2026 14:34:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"156375286c3d96ff163b0f030e1f520c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3lDhUmOirrNuvowJwidcWKv0T7iK%2FPO3XPy8uDgIcsXyECBUDHkW4iXpspvY%2BSQC1rYyujH3ZMdzWg4cemzcQQ9uXfO7u1Kj3O3zLkk09vaQrVzBbcVeUz6mATni3tuiDHOSmkgR82ZyTJvczbV25atfU6adQ%2B%2B9ZL2xkEGka3vz3IoZ5YmeOqikiP%2FqR80xaVam%2F2vLMaEv1VO9P3qFcWq3NLRKrt7%2BkzwC84KAEnwWukg2QAxwmIMxp5%2FmwDb9U5ZBgARWaMuAAN52O39xfw%3D%3D--DMBMB1IN2S71JQii--450%2FL6BA%2Bpga5aqSB853Gg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.773234459.1777905279; expires=Tue, 04 May 2027 14:34:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 14:34:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510A:2FF845:2422536:1CED68E:69F8AE7F
+
+
+web search: 
+web search: Maven Central io.github.pdvrieze.xmlutil serialization-jvm 0.91.3 POM SCM kotlin-stdlib 2.2.21
+codex
+The local metadata for the sibling `core-jvmcommon` artifact already uses Maven Central for sources and javadoc, and GitHub tag `v$version$` for tests. I found the `serialization-jvm` Maven directory has sources, javadoc, and a normal jar, but no Maven-published test jar, so I’m using the tagged GitHub test tree for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/pdvrieze/xmlutil/contents/serialization/src?ref=v0.91.3 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3.jar -o /tmp/serialization-jvm-0.91.3.jar && jar tf /tmp/serialization-jvm-0.91.3.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-sources.jar && curl -fsI https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 254ms:
+    "name": "README.md",
+    "path": "serialization/src/README.md",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/README.md",
+    "type": "file",
+    "name": "commonDomMain",
+    "path": "serialization/src/commonDomMain",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/commonDomMain",
+    "type": "dir",
+    "name": "commonMain",
+    "path": "serialization/src/commonMain",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/commonMain",
+    "type": "dir",
+    "name": "commonTest",
+    "path": "serialization/src/commonTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/commonTest",
+    "type": "dir",
+    "name": "inlineSupportTest",
+    "path": "serialization/src/inlineSupportTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/inlineSupportTest",
+    "type": "dir",
+    "name": "jsMain",
+    "path": "serialization/src/jsMain",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jsMain",
+    "type": "dir",
+    "name": "jsTest",
+    "path": "serialization/src/jsTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jsTest",
+    "type": "dir",
+    "name": "jvmMain",
+    "path": "serialization/src/jvmMain",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmMain",
+    "type": "dir",
+    "name": "jvmMainModule",
+    "path": "serialization/src/jvmMainModule",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmMainModule",
+    "type": "dir",
+    "name": "jvmTest",
+    "path": "serialization/src/jvmTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmTest",
+    "type": "dir",
+    "name": "jvmWoodstoxTest",
+    "path": "serialization/src/jvmWoodstoxTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmWoodstoxTest",
+    "type": "dir",
+    "name": "nativeMain",
+    "path": "serialization/src/nativeMain",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/nativeMain",
+    "type": "dir",
+    "name": "nativeTest",
+    "path": "serialization/src/nativeTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/nativeTest",
+    "type": "dir",
+    "name": "wasmCommonMain",
+    "path": "serialization/src/wasmCommonMain",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/wasmCommonMain",
+    "type": "dir",
+    "name": "wasmCommonTest",
+    "path": "serialization/src/wasmCommonTest",
+    "html_url": "https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/wasmCommonTest",
+    "type": "dir",
+
+ succeeded in 505ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 14:35:02 GMT
+content-type: application/java-archive
+content-length: 9554
+cf-ray: 9f683ac809ccbe5a-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "c80ff3a40d791b7faad6b15dc094dc79"
+last-modified: Tue, 28 Oct 2025 14:44:12 GMT
+x-checksum-md5: c80ff3a40d791b7faad6b15dc094dc79
+x-checksum-sha1: 181c17a8d3dcce921638cb31b754f6f638f14a79
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 5173ms:
+nl/adaptivity/xmlutil/serialization/AbstractXmlSerializer.class
+nl/adaptivity/xmlutil/serialization/AnnotationsKt.class
+nl/adaptivity/xmlutil/serialization/CompactFragmentSerializer.class
+nl/adaptivity/xmlutil/serialization/CompactFragmentSerializerKt.class
+nl/adaptivity/xmlutil/serialization/DefaultFormatCache$Companion.class
+nl/adaptivity/xmlutil/serialization/DefaultFormatCache$DescKey.class
+nl/adaptivity/xmlutil/serialization/DefaultFormatCache$TypeKey.class
+nl/adaptivity/xmlutil/serialization/DefaultFormatCache.class
+nl/adaptivity/xmlutil/serialization/DefaultPlatformModuleKt.class
+nl/adaptivity/xmlutil/serialization/DefaultXmlSerializationPolicy$Builder.class
+nl/adaptivity/xmlutil/serialization/DefaultXmlSerializationPolicy$Companion.class
+nl/adaptivity/xmlutil/serialization/DefaultXmlSerializationPolicy$WhenMappings.class
+nl/adaptivity/xmlutil/serialization/DefaultXmlSerializationPolicy.class
+nl/adaptivity/xmlutil/serialization/DelegatableFormatCache.class
+nl/adaptivity/xmlutil/serialization/ElementSerializer.class
+nl/adaptivity/xmlutil/serialization/ElementSerializerKt.class
+nl/adaptivity/xmlutil/serialization/FormatCache$Dummy.class
+nl/adaptivity/xmlutil/serialization/FormatCache.class
+nl/adaptivity/xmlutil/serialization/FormatCache_javaSharedKt.class
+nl/adaptivity/xmlutil/serialization/ICompactFragmentSerializer.class
+
+web search: 
+web search: https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmTest
+web search: 
+web search: repo.maven.apache.org io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3 serialization-jvm-0.91.3-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/pdvrieze/xmlutil/contents/serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization?ref=v0.91.3 | rg '\"name\"|\"path\"|\"html_url\"' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/pdvrieze/xmlutil/contents/serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization?ref=v0.91.3 | rg '\"name\"|\"path\"|\"html_url\"' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 189ms:
+    "name": "TestFormatCache.kt",
+    "path": "serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization/TestFormatCache.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization/TestFormatCache.kt",
+    "name": "TestLRUCache.kt",
+    "path": "serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization/TestLRUCache.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization/TestLRUCache.kt",
+    "name": "TestSubDocumentReader.kt",
+    "path": "serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization/TestSubDocumentReader.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/commonTest/kotlin/nl/adaptivity/xmlutil/serialization/TestSubDocumentReader.kt",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/pdvrieze/xmlutil/contents/serialization/src/jvmWoodstoxTest/kotlin/nl/adaptivity/xmlutil/serialization?ref=v0.91.3 | rg '\"name\"|\"path\"|\"html_url\"' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 213ms:
+    "name": "JvmSerializationTest.kt",
+    "path": "serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/JvmSerializationTest.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/JvmSerializationTest.kt",
+    "name": "JvmTestBase.kt",
+    "path": "serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/JvmTestBase.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/JvmTestBase.kt",
+    "name": "ReturningNullTest.kt",
+    "path": "serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/ReturningNullTest.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/ReturningNullTest.kt",
+    "name": "TestXMLJVM.kt",
+    "path": "serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/TestXMLJVM.kt",
+    "html_url": "https://github.com/pdvrieze/xmlutil/blob/v0.91.3/serialization/src/jvmTest/kotlin/nl/adaptivity/xmlutil/serialization/TestXMLJVM.kt",
+
+ succeeded in 223ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -5 | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+{
+  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
+}
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | wc -l" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+1
+
+codex
+I’m going to patch the discovered metadata with Maven Central source/javadoc URLs, the tagged JVM test suite, Kotlin language metadata from the published POM dependency, and no `not-for-native-image` marker because the artifact jar contains JVM `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+diff --git a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+index 8e98aff63c60245e581b61acd5d71e67f0fc9488..fc133ec815f3d0d00de843976807e49a1ca31553
+--- a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
++++ b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
++  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/pdvrieze/xmlutil",
++  "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/serialization/src/jvmTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-javadoc.jar",
++  "description" : "XMLUtil serialization-jvm provides the JVM variant of XMLUtil's kotlinx.serialization integration, allowing Kotlin serialization models to be encoded to and decoded from XML. It builds on XMLUtil's streaming and core XML APIs and offers configuration and descriptor-handling support for XML formats on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+index 8e98aff63c60245e581b61acd5d71e67f0fc9488..fc133ec815f3d0d00de843976807e49a1ca31553
+--- a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
++++ b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
++  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/pdvrieze/xmlutil",
++  "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/serialization/src/jvmTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-javadoc.jar",
++  "description" : "XMLUtil serialization-jvm provides the JVM variant of XMLUtil's kotlinx.serialization integration, allowing Kotlin serialization models to be encoded to and decoded from XML. It builds on XMLUtil's streaming and core XML APIs and offers configuration and descriptor-handling support for XML formats on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'for url in 
+  https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-sources.jar 
+  https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmTest 
+  https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-javadoc.jar; do curl -fsIL "$url" >/dev/null && printf '"'OK %s\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ exited 2 in 0ms:
+/usr/bin/bash: -c: line 2: syntax error near unexpected token `https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-sources.jar'
+/usr/bin/bash: -c: line 2: `  https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-sources.jar '
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+{
+  "coordinates": "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3",
+  "source-code-url": "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-sources.jar",
+  "repository-url": "https://github.com/pdvrieze/xmlutil",
+  "test-code-url": "https://github.com/pdvrieze/xmlutil/tree/v$version$/serialization/src/jvmTest",
+  "documentation-url": "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-javadoc.jar",
+  "description": "XMLUtil serialization-jvm provides the JVM variant of XMLUtil's kotlinx.serialization integration, allowing Kotlin serialization models to be encoded to and decoded from XML. It builds on XMLUtil's streaming and core XML APIs and offers configuration and descriptor-handling support for XML formats on the JVM.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+index 8e98aff63c60245e581b61acd5d71e67f0fc9488..fc133ec815f3d0d00de843976807e49a1ca31553
+--- a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
++++ b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
++  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/pdvrieze/xmlutil",
++  "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/serialization/src/jvmTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-javadoc.jar",
++  "description" : "XMLUtil serialization-jvm provides the JVM variant of XMLUtil's kotlinx.serialization integration, allowing Kotlin serialization models to be encoded to and decoded from XML. It builds on XMLUtil's streaming and core XML APIs and offers configuration and descriptor-handling support for XML formats on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+codex
+The JSON parses cleanly. One URL verification command had a shell syntax issue, so I’m rerunning the three URL checks as separate HEAD requests before I close this out.
+exec
+/usr/bin/bash -lc "curl -fsIL https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-javadoc.jar >/dev/null && printf 'docs OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+docs OK
+
+exec
+/usr/bin/bash -lc "curl -fsIL https://github.com/pdvrieze/xmlutil/tree/v0.91.3/serialization/src/jvmTest >/dev/null && printf 'tests OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+exec
+/usr/bin/bash -lc "curl -fsIL https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/0.91.3/serialization-jvm-0.91.3-sources.jar >/dev/null && printf 'sources OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 0ms:
+sources OK
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1
+ succeeded in 210ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+index 8e98aff63c60245e581b61acd5d71e67f0fc9488..fc133ec815f3d0d00de843976807e49a1ca31553
+--- a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
++++ b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
++  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/pdvrieze/xmlutil",
++  "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/serialization/src/jvmTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-javadoc.jar",
++  "description" : "XMLUtil serialization-jvm provides the JVM variant of XMLUtil's kotlinx.serialization integration, allowing Kotlin serialization models to be encoded to and decoded from XML. It builds on XMLUtil's streaming and core XML APIs and offers configuration and descriptor-handling support for XML formats on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+ succeeded in 723ms:
+tests OK
+
+web search: 
+web search: io.github.pdvrieze.xmlutil serialization-jvm 0.91.3 Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3
+codex
+Updated [io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json).
+
+I set the repository, Maven Central source/javadoc URLs, tagged JVM test URL, two-sentence description, and Kotlin `2.2` language field. The Maven Central POM lists the GitHub SCM URL and `kotlin-stdlib` `2.2.21`, and the upstream README describes XMLUtil as a Kotlin XML serialization library compatible with `kotlinx.serialization`. ([central.sonatype.com](https://central.sonatype.com/artifact/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3))
+
+Validation done: `jq` parsed the JSON, all expanded URLs returned OK, and I left `not-for-native-image` absent because the artifact jar contains JVM `.class` files.
+diff --git a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+index 8e98aff63c60245e581b61acd5d71e67f0fc9488..fc133ec815f3d0d00de843976807e49a1ca31553
+--- a/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
++++ b/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3"
++  "coordinates" : "io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/pdvrieze/xmlutil",
++  "test-code-url" : "https://github.com/pdvrieze/xmlutil/tree/v$version$/serialization/src/jvmTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/pdvrieze/xmlutil/serialization-jvm/$version$/serialization-jvm-$version$-javadoc.jar",
++  "description" : "XMLUtil serialization-jvm provides the JVM variant of XMLUtil's kotlinx.serialization integration, allowing Kotlin serialization models to be encoded to and decoded from XML. It builds on XMLUtil's streaming and core XML APIs and offers configuration and descriptor-handling support for XML formats on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+tokens used
+75,281
+Updated [io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/discovered-artifact-metadata/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.json).
+
+I set the repository, Maven Central source/javadoc URLs, tagged JVM test URL, two-sentence description, and Kotlin `2.2` language field. The Maven Central POM lists the GitHub SCM URL and `kotlin-stdlib` `2.2.21`, and the upstream README describes XMLUtil as a Kotlin XML serialization library compatible with `kotlinx.serialization`. ([central.sonatype.com](https://central.sonatype.com/artifact/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3))
+
+Validation done: `jq` parsed the JSON, all expanded URLs returned OK, and I left `not-for-native-image` absent because the artifact jar contains JVM `.class` files.
+Ran agent for io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/agent-artifact-discovery-logs/io.github.pdvrieze.xmlutil-serialization-jvm-0.91.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 7s
+9 actionable tasks: 4 executed, 5 from cache

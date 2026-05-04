@@ -1,0 +1,127 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 4 busy and 5 incompatible and 152 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :compileKotlin NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :compileTestKotlin
+> Task :compileTestJava NO-SOURCE
+> Task :testClasses UP-TO-DATE
+
+> Task :test
+
+RootNameAndOrderingTest > configuredXmlDeclarationAndGenericParserRoundTripCollectionRoot() FAILED
+    nl.adaptivity.xmlutil.serialization.XmlParsingException: Invalid XML value at position: 3:4: 3:4 - name expected, found: 0
+        at app//nl.adaptivity.xmlutil.serialization.XmlDecoderBase.deserializeSafe(XMLDecoder.kt:2348)
+        at app//nl.adaptivity.xmlutil.serialization.XmlDecoderBase.deserializeSafe$default(XMLDecoder.kt:97)
+        at app//nl.adaptivity.xmlutil.serialization.XmlDecoderBase$XmlDecoder.decodeSerializableValue(XMLDecoder.kt:375)
+        at app//nl.adaptivity.xmlutil.serialization.XML.decodeFromReader(XML.kt:545)
+        at app//nl.adaptivity.xmlutil.serialization.XML.decodeFromReader$lambda$0(XML.kt:506)
+        at app//nl.adaptivity.xmlutil.serialization.XML.useUnsafeCodecConfig$lambda$0(XML.kt:88)
+        at app//nl.adaptivity.xmlutil.serialization.LayeredCache.useUnsafe$serialization(LayeredCache.kt:53)
+        at app//nl.adaptivity.xmlutil.serialization.XML.useUnsafeCodecConfig(XML.kt:87)
+        at app//nl.adaptivity.xmlutil.serialization.XML.decodeFromReader(XML.kt:505)
+        at app//nl.adaptivity.xmlutil.serialization.XML.decodeFromString(XML.kt:446)
+        at app//io_github_pdvrieze_xmlutil.serialization_jvm.RootNameAndOrderingTest.configuredXmlDeclarationAndGenericParserRoundTripCollectionRoot(RootNameAndOrderingTest.kt:57)
+
+        Caused by:
+        nl.adaptivity.xmlutil.XmlException: 3:4 - name expected, found: 0
+            at app//nl.adaptivity.xmlutil.core.KtXmlReader.exception(KtXmlReader.kt:285)
+            at app//nl.adaptivity.xmlutil.core.KtXmlReader.error(KtXmlReader.kt:281)
+            at app//nl.adaptivity.xmlutil.core.KtXmlReader.readCName(KtXmlReader.kt:1685)
+            at app//nl.adaptivity.xmlutil.core.KtXmlReader.parseStartTag(KtXmlReader.kt:805)
+            at app//nl.adaptivity.xmlutil.core.KtXmlReader.nextImplBody(KtXmlReader.kt:447)
+            at app//nl.adaptivity.xmlutil.core.KtXmlReader.next(KtXmlReader.kt:1882)
+            at app//nl.adaptivity.xmlutil.serialization.impl.PseudoBufferedReader.next(PseudoBufferedReader.kt:72)
+            at app//nl.adaptivity.xmlutil.XmlReader.nextTag(XmlReader.kt:49)
+            at app//nl.adaptivity.xmlutil.serialization.XmlDecoderBase$NamedListDecoder.decodeElementIndex(XMLDecoder.kt:1842)
+            at app//nl.adaptivity.xmlutil.serialization.XmlDecoderBase$TagDecoderBase.decodeElementIndex(XMLDecoder.kt:1210)
+            at app//kotlinx.serialization.internal.AbstractCollectionSerializer.merge(CollectionSerializers.kt:34)
+            at app//kotlinx.serialization.internal.AbstractCollectionSerializer.deserialize(CollectionSerializers.kt:43)
+            at app//nl.adaptivity.xmlutil.serialization.XmlDecoderBase.deserializeSafe(XMLDecoder.kt:116)
+            ... 10 more
+
+
+3 tests completed, 1 failed
+> Task :test FAILED
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/tests/src/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/tests/src/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED14 actionable tasks: 3 executed, 11 up-to-date
+ in 12s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5387-987e33b1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.github.pdvrieze.xmlutil:serialization-jvm:0.91.3 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 14s
+9 actionable tasks: 1 executed, 8 up-to-date
