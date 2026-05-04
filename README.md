@@ -1,4 +1,7 @@
-# GraalVM Reachability Metadata Repository
+<h1>
+  <img src="docs/assets/readme/graalvm-bunny.svg" alt="" width="42" align="absmiddle">
+  GraalVM Reachability Metadata Repository
+</h1>
 
 [![Libraries supported](https://img.shields.io/badge/dynamic/json.svg?label=libraries%20supported&query=%24.badges.librariesSupported&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=0A7EC2)](COVERAGE.md)
 [![Tested library versions](https://img.shields.io/badge/dynamic/json.svg?label=tested%20library%20versions&query=%24.badges.testedLibraryVersions&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=BF8700)](COVERAGE.md)
@@ -21,20 +24,16 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 <table>
   <tr>
     <td width="25%" align="center">
-      <a href="#check-if-your-library-or-framework-is-supported"><img alt="Start with the support checker" src="https://img.shields.io/badge/1-Check%20support-0A7EC2?style=for-the-badge"></a><br>
-      <sub>Find the right next step</sub>
+      <a href="#check-if-your-library-or-framework-is-supported"><img alt="Start with the support checker" src="docs/assets/readme/button-check-support.svg"></a>
     </td>
     <td width="25%" align="center">
-      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="https://img.shields.io/badge/2-New%20library-1F9D55?style=for-the-badge"></a><br>
-      <sub>Library is missing</sub>
+      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg"></a>
     </td>
     <td width="25%" align="center">
-      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="https://img.shields.io/badge/3-Update%20metadata-BF8700?style=for-the-badge"></a><br>
-      <sub>Support exists but fails</sub>
+      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg"></a>
     </td>
     <td width="25%" align="center">
-      <a href="#contribute-a-fix"><img alt="Open a contribution tracking ticket" src="https://img.shields.io/badge/4-Contribute%20a%20fix-6F42C1?style=for-the-badge"></a><br>
-      <sub>Send the patch yourself</sub>
+      <a href="#contribute-a-fix"><img alt="Open contribution instructions" src="docs/assets/readme/button-contribute-fix.svg"></a>
     </td>
   </tr>
 </table>
@@ -47,22 +46,8 @@ To quickly check whether reachability metadata exists for a specific library, ru
 curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
 ```
 
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <strong>Checker says the library is missing?</strong><br><br>
-      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml">
-        <img alt="Open new metadata ticket" src="https://img.shields.io/badge/Open-new%20metadata%20ticket-0A7EC2?style=for-the-badge">
-      </a>
-    </td>
-    <td width="50%" align="center">
-      <strong>Checker finds support, but your build fails?</strong><br><br>
-      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml">
-        <img alt="Open update ticket" src="https://img.shields.io/badge/Open-update%20ticket-BF8700?style=for-the-badge">
-      </a>
-    </td>
-  </tr>
-</table>
+If the checker says the library is missing, open a [new library support ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml).
+If support exists but your build fails, open an [existing metadata update ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml).
 
 For a broader overview of supported libraries and frameworks, you can visit [this page](https://www.graalvm.org/native-image/libraries-and-frameworks/). It lists libraries and frameworks that are tested and ready for GraalVM Native Image.  
 
@@ -73,40 +58,19 @@ Before submitting a pull request, please read [this guide](docs/CONTRIBUTING.md#
 
 Open a library-request ticket, include the Maven coordinates, and the automation will take it from there.
 
-<p align="center">
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml">
-    <img alt="Request support for a new library" src="https://img.shields.io/badge/Request%20support-New%20library%20ticket-1F9D55?style=for-the-badge">
-  </a>
-</p>
+Use the [new library support ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml).
 
 ### 🛠️ Request an Update to an Existing Library
 
 Open an update ticket and include the Maven coordinates of the library version that needs changes.
 
-<p align="center">
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml">
-    <img alt="Request an update to existing metadata" src="https://img.shields.io/badge/Request%20an%20update-Existing%20metadata%20ticket-C2410C?style=for-the-badge">
-  </a>
-</p>
+Use the [existing metadata update ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml).
 
 ### ✅ Contribute a Fix
 
 Open the tracking ticket first, mark that you want to fix it, then follow the contribution guide.
 
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml">
-        <img alt="Open tracking ticket" src="https://img.shields.io/badge/Open-tracking%20ticket-6F42C1?style=for-the-badge">
-      </a>
-    </td>
-    <td width="50%" align="center">
-      <a href="docs/CONTRIBUTING.md">
-        <img alt="Read the contribution guide" src="https://img.shields.io/badge/Read-contribution%20guide-24292F?style=for-the-badge">
-      </a>
-    </td>
-  </tr>
-</table>
+Open the [tracking ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml), then read the [contribution guide](docs/CONTRIBUTING.md).
 
 ---
 
