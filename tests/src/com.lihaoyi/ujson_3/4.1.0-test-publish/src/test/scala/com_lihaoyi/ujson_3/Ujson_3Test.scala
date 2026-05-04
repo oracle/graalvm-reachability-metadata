@@ -148,6 +148,40 @@ class Ujson_3Test {
   }
 
   @Test
+  def sortsObjectFieldsRecursivelyWhenRequested(): Unit = {
+    val value = ujson.Obj.from(Seq[(String, ujson.Value)](
+      "z" -> ujson.Num(1),
+      "a" -> ujson.Obj.from(Seq[(String, ujson.Value)](
+        "delta" -> ujson.Bool(false),
+        "beta" -> ujson.Bool(true)
+      )),
+      "m" -> ujson.Arr(Seq[ujson.Value](
+        ujson.Obj.from(Seq[(String, ujson.Value)](
+          "two" -> ujson.Str("second"),
+          "one" -> ujson.Str("first")
+        ))
+      )*)
+    ))
+
+    val unsorted = ujson.write(value, -1, false, false)
+    assertFieldOrder(unsorted, Seq("z", "a", "m"))
+    assertFieldOrder(unsorted, Seq("delta", "beta"))
+    assertFieldOrder(unsorted, Seq("two", "one"))
+
+    val sorted = ujson.write(value, -1, false, true)
+    assertFieldOrder(sorted, Seq("a", "m", "z"))
+    assertFieldOrder(sorted, Seq("beta", "delta"))
+    assertFieldOrder(sorted, Seq("one", "two"))
+    assertSortedObjectContent(sorted)
+
+    val reformatted = ujson.reformat(ujson.Readable.fromString(unsorted), -1, false, true)
+    assertFieldOrder(reformatted, Seq("a", "m", "z"))
+    assertFieldOrder(reformatted, Seq("beta", "delta"))
+    assertFieldOrder(reformatted, Seq("one", "two"))
+    assertSortedObjectContent(reformatted)
+  }
+
+  @Test
   def supportsValueAccessorsSelectorsMutationAndDeepCopy(): Unit = {
     val original = ujson.read(
       """{"cart":{"items":[{"sku":"a","price":2.5},{"sku":"b","price":3.5}],"discount":0},"paid":false}"""
@@ -266,6 +300,15 @@ class Ujson_3Test {
     assertEquals("snowman ☃", value(strSelector("text")).str)
     assertFalse(value(strSelector("obj"))(strSelector("b")).bool)
     assertTrue(value(strSelector("obj"))(strSelector("a")).bool)
+  }
+
+  private def assertSortedObjectContent(json: String): Unit = {
+    val value = ujson.read(ujson.Readable.fromString(json))
+    assertEquals(1.0, value(strSelector("z")).num, 0.0)
+    assertTrue(value(strSelector("a"))(strSelector("beta")).bool)
+    assertFalse(value(strSelector("a"))(strSelector("delta")).bool)
+    assertEquals("first", value(strSelector("m"))(intSelector(0))(strSelector("one")).str)
+    assertEquals("second", value(strSelector("m"))(intSelector(0))(strSelector("two")).str)
   }
 
   private def assertFieldOrder(json: String, fields: Seq[String]): Unit = {
