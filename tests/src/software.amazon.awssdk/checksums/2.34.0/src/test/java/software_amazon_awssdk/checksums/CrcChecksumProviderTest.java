@@ -8,9 +8,13 @@ package software_amazon_awssdk.checksums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.nio.charset.StandardCharsets;
 import software.amazon.awssdk.checksums.DefaultChecksumAlgorithm;
 import software.amazon.awssdk.checksums.SdkChecksum;
+import software.amazon.awssdk.checksums.internal.CrcChecksumProvider;
 import org.junit.jupiter.api.Test;
 
 public class CrcChecksumProviderTest {
@@ -25,6 +29,19 @@ public class CrcChecksumProviderTest {
         assertThat(checksum.getValue()).isEqualTo(0xE3069283L);
         assertThat(checksum.getChecksumBytes())
             .containsExactly((byte) 0xE3, (byte) 0x06, (byte) 0x92, (byte) 0x83);
+    }
+
+    @Test
+    void crtCrc32cImplementationInstantiatesAvailableCrtConstructor() throws Throwable {
+        MethodHandle createCrtCrc32C = MethodHandles.privateLookupIn(CrcChecksumProvider.class, MethodHandles.lookup())
+            .findStatic(CrcChecksumProvider.class, "createCrtCrc32C", MethodType.methodType(SdkChecksum.class));
+
+        SdkChecksum checksum = (SdkChecksum) createCrtCrc32C.invoke();
+        checksum.update(CHECKSUM_INPUT);
+
+        assertThat(checksum.getValue()).isEqualTo(477L);
+        assertThat(checksum.getChecksumBytes())
+            .containsExactly((byte) 0, (byte) 0, (byte) 1, (byte) 0xDD);
     }
 
     @Test
