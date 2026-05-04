@@ -443,6 +443,26 @@ public class Retries_spiTest {
     }
 
     @Test
+    void retryStrategyBuilderSupportsConsumerBasedMutation() {
+        TestRetryStrategyBuilder builder = new TestRetryStrategyBuilder();
+
+        TestRetryStrategyBuilder returnedBuilder = builder.applyMutation(mutableBuilder -> mutableBuilder
+                .retryOnExceptionInstanceOf(IllegalArgumentException.class)
+                .maxAttempts(3)
+                .backoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(FIFTY_MILLIS))
+                .throttlingBackoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(HUNDRED_MILLIS))
+                .treatAsThrottling(IllegalStateException.class::isInstance));
+        TestRetryStrategy strategy = returnedBuilder.build();
+
+        assertThat(returnedBuilder).isSameAs(builder);
+        assertThat(strategy.maxAttempts()).isEqualTo(3);
+        assertThat(strategy.shouldRetry(new NumberFormatException("subclass"))).isTrue();
+        assertThat(strategy.acquireInitialToken(AcquireInitialTokenRequest.create("mutated")).delay())
+                .isEqualTo(FIFTY_MILLIS);
+        assertThat(strategy.isThrottling(new IllegalStateException("throttled"))).isTrue();
+    }
+
+    @Test
     void retryStrategyBuilderUseClientDefaultsDefaultMethodIsChainable() {
         TestRetryStrategyBuilder builder = new TestRetryStrategyBuilder();
 
