@@ -10,8 +10,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.graalvm.internal.tck.Coordinates;
 import org.graalvm.internal.tck.model.LibraryLanguage;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
@@ -45,6 +48,7 @@ public final class MetadataGenerationUtils {
 
     public static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
+    private static final String REACHABILITY_METADATA_FILE = "reachability-metadata.json";
 
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -192,6 +196,9 @@ public final class MetadataGenerationUtils {
 
         GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
+        normalizeLegacySerializableEntries(metadataDirectory.resolve(REACHABILITY_METADATA_FILE));
+        normalizeLegacySerializableEntries(testsDirectory.resolve("src/test/resources/META-INF/native-image").resolve(REACHABILITY_METADATA_FILE));
+        normalizeLegacySerializableEntries(testsDirectory.resolve("build/native/agent-output/test").resolve(REACHABILITY_METADATA_FILE));
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
@@ -208,9 +215,85 @@ public final class MetadataGenerationUtils {
 
         GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
+        normalizeLegacySerializableEntries(metadataDirectory.resolve(REACHABILITY_METADATA_FILE));
+        normalizeLegacySerializableEntries(testsDirectory.resolve("src/test/resources/META-INF/native-image").resolve(REACHABILITY_METADATA_FILE));
+        normalizeLegacySerializableEntries(testsDirectory.resolve("build/native/agent-output/test").resolve(REACHABILITY_METADATA_FILE));
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+    }
+
+    private static void normalizeLegacySerializableEntries(Path metadataFile) {
+        if (!Files.isRegularFile(metadataFile)) {
+            return;
+        }
+
+        try {
+            JsonNode parsed = objectMapper.readTree(metadataFile.toFile());
+            if (!(parsed instanceof ObjectNode metadata)) {
+                return;
+            }
+
+            JsonNode reflectionNode = metadata.get("reflection");
+            if (!(reflectionNode instanceof ArrayNode reflectionEntries)) {
+                return;
+            }
+
+            ArrayNode serializationEntries = metadata.withArray("serialization");
+            boolean changed = false;
+            for (JsonNode entryNode : reflectionEntries) {
+                if (!(entryNode instanceof ObjectNode reflectionEntry)) {
+                    continue;
+                }
+                JsonNode serializableNode = reflectionEntry.get("serializable");
+                if (serializableNode == null || !serializableNode.isBoolean() || !serializableNode.booleanValue()) {
+                    continue;
+                }
+
+                ObjectNode serializationEntry = objectMapper.createObjectNode();
+                JsonNode conditionNode = reflectionEntry.get("condition");
+                if (conditionNode != null) {
+                    serializationEntry.set("condition", conditionNode.deepCopy());
+                }
+                JsonNode reasonNode = reflectionEntry.get("reason");
+                if (reasonNode != null) {
+                    serializationEntry.set("reason", reasonNode.deepCopy());
+                }
+                JsonNode typeNode = reflectionEntry.get("type");
+                if (typeNode != null) {
+                    serializationEntry.set("type", typeNode.deepCopy());
+                }
+
+                if (!containsEntry(serializationEntries, serializationEntry)) {
+                    serializationEntries.add(serializationEntry);
+                }
+                reflectionEntry.remove("serializable");
+                changed = true;
+            }
+
+            if (!changed) {
+                return;
+            }
+
+            DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+            prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+            String json = objectMapper.writer(prettyPrinter).writeValueAsString(metadata);
+            if (!json.endsWith(System.lineSeparator())) {
+                json = json + System.lineSeparator();
+            }
+            Files.writeString(metadataFile, json, StandardCharsets.UTF_8);
+        } catch (IOException exception) {
+            throw new GradleException("Cannot normalize legacy serialization metadata in " + metadataFile, exception);
+        }
+    }
+
+    private static boolean containsEntry(ArrayNode entries, ObjectNode candidate) {
+        for (JsonNode entry : entries) {
+            if (entry.equals(candidate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
