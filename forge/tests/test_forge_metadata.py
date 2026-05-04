@@ -447,6 +447,86 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(set(preflights), set(issue_numbers))
         self.assertLessEqual(forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE, 4)
 
+    def test_open_issues_blocked_by_issue_counts_use_blocking_edge(self) -> None:
+        blocking_nodes = [
+            {"number": issue_number, "closed": False}
+            for issue_number in range(1, 11)
+        ]
+        blocking_nodes.append({"number": 99, "closed": True})
+        response = {
+            "data": {
+                "repository": {
+                    "issue_1412": {
+                        "blocking": {
+                            "nodes": blocking_nodes,
+                            "pageInfo": {"hasNextPage": False, "endCursor": None},
+                        },
+                    },
+                },
+            },
+        }
+
+        with patch.object(forge_metadata, "gh_json", return_value=response) as gh_json:
+            counts = forge_metadata.get_open_issues_blocked_by_issue_counts([1412])
+
+        self.assertEqual(counts, {1412: forge_metadata.PRIORITY_BLOCKING_LIBRARY_THRESHOLD})
+        gh_json.assert_called_once()
+        self.assertEqual(gh_json.call_args.kwargs, {"quiet": True})
+        self.assertIn("blocking(first: 100", gh_json.call_args.args[-1])
+        self.assertNotIn("blockedBy(first:", gh_json.call_args.args[-1])
+
+    def test_mark_issues_blocking_many_libraries_adds_priority_label_to_payload(self) -> None:
+        priority_issue = _search_issue(1412)
+        regular_issue = _search_issue(1413)
+
+        with patch.object(
+                forge_metadata,
+                "get_open_issues_blocked_by_issue_counts",
+                return_value={1412: forge_metadata.PRIORITY_BLOCKING_LIBRARY_THRESHOLD, 1413: 9},
+        ), \
+                patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
+                patch("sys.stdout", new_callable=io.StringIO):
+            forge_metadata.mark_issues_blocking_many_libraries_as_priority([
+                priority_issue,
+                regular_issue,
+            ])
+
+        add_issue_label.assert_called_once_with(1412, forge_metadata.LABEL_PRIORITY)
+        self.assertTrue(forge_metadata.issue_has_label(priority_issue, forge_metadata.LABEL_PRIORITY))
+        self.assertFalse(forge_metadata.issue_has_label(regular_issue, forge_metadata.LABEL_PRIORITY))
+
+    def test_prioritized_issue_fetch_marks_blocking_libraries_before_sorting(self) -> None:
+        regular_issue = _search_issue(1412)
+        priority_issue = _search_issue(1413)
+
+        with patch.object(
+                forge_metadata,
+                "get_issues_with_label",
+                return_value=[regular_issue, priority_issue],
+        ), \
+                patch.object(
+                    forge_metadata,
+                    "get_open_issues_blocked_by_issue_counts",
+                    return_value={
+                        1412: 0,
+                        1413: forge_metadata.PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+                    },
+                ), \
+                patch.object(forge_metadata, "add_issue_label"), \
+                patch("sys.stdout", new_callable=io.StringIO):
+            issues, priority_offset, regular_offset, priority_exhausted, exhausted = (
+                forge_metadata.get_prioritized_issues_with_label(
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    2,
+                )
+            )
+
+        self.assertEqual([issue["number"] for issue in issues], [1413, 1412])
+        self.assertEqual(priority_offset, 0)
+        self.assertEqual(regular_offset, 2)
+        self.assertTrue(priority_exhausted)
+        self.assertFalse(exhausted)
+
     def test_issue_scan_batch_size_returns_candidate_batch_size(self) -> None:
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(1, 1),
@@ -1534,6 +1614,26 @@ class IssueClaimLockTests(unittest.TestCase):
                         get_open_blocking_issues.assert_not_called()
                 finally:
                     claim_lock.release()
+
+    def test_try_claim_issue_marks_open_blockers_that_block_many_libraries(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:lib:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[1392]), \
+                    patch.object(
+                        forge_metadata,
+                        "try_mark_issue_numbers_blocking_many_libraries_as_priority",
+                    ) as mark_priority, \
+                    patch.object(forge_metadata, "get_issue_assignees") as get_issue_assignees:
+                self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
+
+        mark_priority.assert_called_once_with([1392])
+        get_issue_assignees.assert_not_called()
 
     def test_try_claim_issue_refreshes_assignees_after_local_lock(self) -> None:
         issue = {

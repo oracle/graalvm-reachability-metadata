@@ -120,6 +120,8 @@ DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
 ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
 GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
+PRIORITY_BLOCKING_LIBRARY_THRESHOLD = 10
+PRIORITY_BLOCKING_ISSUE_QUERY_CHUNK_SIZE = 25
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
 ISSUE_CLAIM_CACHE_VERSION = 1
@@ -198,6 +200,8 @@ NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
     "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
 )
+PRIORITY_LABEL_COLOR = "FBCA04"
+PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
 LARGE_LIBRARY_LABEL_COLOR = "C5DEF5"
 LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION = "Issue is intentionally split across multiple reviewable PR parts"
 LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION = "Previous large-library part merged; automation may resume the next part"
@@ -638,6 +642,17 @@ def issue_has_label(issue: dict, label_name: str) -> bool:
         if isinstance(label, dict) and label.get("name") == label_name:
             return True
     return False
+
+
+def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
+    """Update a local issue payload after a label was applied remotely."""
+    if issue_has_label(issue, label_name):
+        return
+    labels = issue.get("labels")
+    if not isinstance(labels, list):
+        labels = []
+        issue["labels"] = labels
+    labels.append({"name": label_name})
 
 
 def get_issue_payload_assignees(issue: dict) -> Optional[list[str]]:
@@ -1249,6 +1264,151 @@ def pull_request_has_label(pr: dict, label_name: str) -> bool:
     return issue_has_label(pr, label_name)
 
 
+def get_open_issues_blocked_by_issue_counts(
+        issue_numbers: list[int],
+        minimum_count: int = PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+        chunk_size: int = PRIORITY_BLOCKING_ISSUE_QUERY_CHUNK_SIZE,
+) -> dict[int, int]:
+    """Return open issue counts blocked by each issue, capped after `minimum_count`."""
+    if minimum_count <= 0 or chunk_size <= 0:
+        return {}
+
+    owner, repo_name = REPO.split("/")
+    unique_issue_numbers = list(dict.fromkeys(issue_numbers))
+    counts = {issue_number: 0 for issue_number in unique_issue_numbers}
+    cursors: dict[int, str | None] = {issue_number: None for issue_number in unique_issue_numbers}
+    remaining_issue_numbers = set(unique_issue_numbers)
+
+    while remaining_issue_numbers:
+        batch = list(remaining_issue_numbers)[:chunk_size]
+        issue_fields = "\n".join(
+            f"""
+        issue_{issue_number}: issue(number: {issue_number}) {{
+          blocking(first: 100{f', after: "{cursors[issue_number]}"' if cursors[issue_number] else ""}) {{
+            nodes {{
+              number
+              closed
+            }}
+            pageInfo {{
+              hasNextPage
+              endCursor
+            }}
+          }}
+        }}
+            """
+            for issue_number in batch
+        )
+        query = f"""
+        query {{
+          repository(owner: "{owner}", name: "{repo_name}") {{
+{issue_fields}
+          }}
+        }}
+        """
+        result = gh_json("api", "graphql", "-f", f"query={query}", quiet=True)
+        repository = (
+            result.get("data", {})
+            .get("repository", {})
+        ) or {}
+
+        for issue_number in batch:
+            issue = repository.get(f"issue_{issue_number}")
+            blocking = issue.get("blocking", {}) if isinstance(issue, dict) else {}
+            for blocked_issue in blocking.get("nodes", []):
+                if isinstance(blocked_issue, dict) and not blocked_issue.get("closed", False):
+                    counts[issue_number] += 1
+                    if counts[issue_number] >= minimum_count:
+                        break
+
+            page_info = blocking.get("pageInfo", {}) if isinstance(blocking, dict) else {}
+            if counts[issue_number] >= minimum_count or not page_info.get("hasNextPage"):
+                remaining_issue_numbers.discard(issue_number)
+                continue
+
+            cursor = page_info.get("endCursor")
+            if cursor:
+                cursors[issue_number] = cursor
+            else:
+                remaining_issue_numbers.discard(issue_number)
+
+    return counts
+
+
+def mark_issue_numbers_blocking_many_libraries_as_priority(
+        issue_numbers: list[int],
+        threshold: int = PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+) -> set[int]:
+    """Apply the priority label to issues that block at least `threshold` open issues."""
+    priority_issue_numbers: set[int] = set()
+    if not issue_numbers:
+        return priority_issue_numbers
+
+    counts = get_open_issues_blocked_by_issue_counts(issue_numbers, threshold)
+    for issue_number in issue_numbers:
+        if counts.get(issue_number, 0) < threshold or issue_number in priority_issue_numbers:
+            continue
+        add_issue_label(issue_number, LABEL_PRIORITY)
+        priority_issue_numbers.add(issue_number)
+        log_stage(
+            "priority",
+            (
+                f"Issue #{issue_number} blocks at least {threshold} open issue(s); "
+                f"added label '{LABEL_PRIORITY}'"
+            ),
+        )
+    return priority_issue_numbers
+
+
+def mark_issues_blocking_many_libraries_as_priority(
+        issues: list[dict],
+        threshold: int = PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+) -> None:
+    """Mark unprioritized issue payloads as priority when they block many open issues."""
+    candidate_issue_numbers = [
+        issue["number"]
+        for issue in issues
+        if isinstance(issue, dict)
+        and isinstance(issue.get("number"), int)
+        and not issue_has_label(issue, LABEL_PRIORITY)
+    ]
+    priority_issue_numbers = mark_issue_numbers_blocking_many_libraries_as_priority(
+        candidate_issue_numbers,
+        threshold,
+    )
+    for issue in issues:
+        issue_number = issue.get("number") if isinstance(issue, dict) else None
+        if issue_number in priority_issue_numbers:
+            add_issue_label_to_payload(issue, LABEL_PRIORITY)
+
+
+def try_mark_issues_blocking_many_libraries_as_priority(issues: list[dict]) -> None:
+    """Best-effort priority labeling for queue ordering."""
+    try:
+        mark_issues_blocking_many_libraries_as_priority(issues)
+    except GitHubRateLimitExceeded:
+        raise
+    except Exception as exc:
+        print(
+            "ERROR: Failed to mark blocker issues as priority; "
+            f"continuing without dependency priority updates: {format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
+
+
+def try_mark_issue_numbers_blocking_many_libraries_as_priority(issue_numbers: list[int]) -> None:
+    """Best-effort priority labeling for blockers discovered during claim checks."""
+    try:
+        mark_issue_numbers_blocking_many_libraries_as_priority(issue_numbers)
+    except GitHubRateLimitExceeded:
+        raise
+    except Exception as exc:
+        print(
+            "ERROR: Failed to mark blocker issues as priority; "
+            f"continuing without dependency priority updates: {format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
+
+
 def get_prioritized_issues_with_label(
         label: str,
         limit: int,
@@ -1259,6 +1419,7 @@ def get_prioritized_issues_with_label(
     """Fetch one issue batch and return priority issues first within that batch."""
     regular_issues = get_issues_with_label(label, limit, regular_offset)
     regular_offset += len(regular_issues)
+    try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
     sorted_issues = sorted(
         regular_issues,
         key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
@@ -2804,6 +2965,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     if label_name == LABEL_NOT_FOR_NATIVE_IMAGE:
         label_color = NOT_FOR_NATIVE_IMAGE_LABEL_COLOR
         label_description = NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION
+    elif label_name == LABEL_PRIORITY:
+        label_color = PRIORITY_LABEL_COLOR
+        label_description = PRIORITY_LABEL_DESCRIPTION
     elif label_name == LABEL_LARGE_LIBRARY_SERIES:
         label_color = LARGE_LIBRARY_LABEL_COLOR
         label_description = LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION
@@ -4732,6 +4896,7 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
     # Skip if blocked by another issue
     open_blockers = get_open_blocking_issue_numbers(number)
     if open_blockers:
+        try_mark_issue_numbers_blocking_many_libraries_as_priority(open_blockers)
         record_issue_claim_cache_observations([
             IssueClaimCacheObservation(
                 issue_number=number,
