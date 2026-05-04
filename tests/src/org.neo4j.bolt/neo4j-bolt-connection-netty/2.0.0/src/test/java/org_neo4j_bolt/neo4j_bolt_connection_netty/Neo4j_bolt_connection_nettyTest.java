@@ -186,6 +186,38 @@ public class Neo4j_bolt_connection_nettyTest {
     }
 
     @Test
+    void connectionRunsAutoCommitTransactionAndDiscardsResultStream() throws Exception {
+        try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
+                TestProvider provider = new TestProvider()) {
+            BoltConnection connection = await(provider.connect(server.address()));
+            BasicResponseHandler handler = new BasicResponseHandler();
+
+            await(connection.runInAutoCommitTransaction(
+                            DatabaseNameUtil.database("neo4j"),
+                            AccessMode.READ,
+                            null,
+                            Set.of("bm-before-auto-commit"),
+                            "RETURN $name",
+                            Map.of("name", VALUE_FACTORY.value("Bob")),
+                            Duration.ofSeconds(2),
+                            Map.of("purpose", VALUE_FACTORY.value("auto-commit-test")),
+                            NotificationConfig.defaultConfig())
+                    .thenCompose(c -> c.discard(1, -1))
+                    .thenCompose(c -> c.flush(handler)));
+            BasicResponseHandler.Summaries summaries = await(handler.summaries());
+
+            assertThat(summaries.runSummary().queryId()).isEqualTo(42L);
+            assertThat(summaries.discardSummary()).isNotNull();
+            assertThat(summaries.discardSummary().metadata().get("has_more").asBoolean()).isFalse();
+            assertThat(summaries.valuesList()).isEmpty();
+
+            await(connection.close());
+            server.awaitHandled();
+            assertThat(server.signatures()).containsSubsequence(0x01, 0x10, 0x2F);
+        }
+    }
+
+    @Test
     void connectionRouteDiscoversClusterComposition() throws Exception {
         try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
                 TestProvider provider = new TestProvider()) {
@@ -434,6 +466,7 @@ public class Neo4j_bolt_connection_nettyTest {
                     writeRecord(output, List.of("Alice"));
                     writeSuccess(output, Map.of("has_more", false, "type", "r"));
                 }
+                case 0x2F -> writeSuccess(output, Map.of("has_more", false));
                 case 0x11 -> writeSuccess(output, Map.of("db", "neo4j"));
                 case 0x12 -> writeSuccess(output, Map.of("bookmark", "bm-after-commit"));
                 case 0x66 -> writeSuccess(output, Map.of("rt", routeTable()));
