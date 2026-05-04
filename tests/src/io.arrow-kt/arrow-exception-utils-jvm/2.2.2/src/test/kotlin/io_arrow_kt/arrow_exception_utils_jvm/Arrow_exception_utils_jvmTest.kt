@@ -132,6 +132,20 @@ public class ArrowExceptionUtilsJvmTest {
     }
 
     @Test
+    fun `mergeSuppressed accumulates cleanup failures starting from no primary failure`() {
+        var accumulated: Throwable? = null
+        val firstCleanupFailure: IllegalStateException = IllegalStateException("first cleanup")
+        val secondCleanupFailure: RuntimeException = RuntimeException("second cleanup")
+
+        accumulated = accumulated mergeSuppressed firstCleanupFailure
+        accumulated = accumulated mergeSuppressed secondCleanupFailure
+
+        assertThat(accumulated).isSameAs(firstCleanupFailure)
+        assertThat(firstCleanupFailure.suppressed).containsExactly(secondCleanupFailure)
+        assertThat(secondCleanupFailure.suppressed).isEmpty()
+    }
+
+    @Test
     fun `mergeSuppressed preserves existing suppressed failures and appends the next one`() {
         val primary: IllegalArgumentException = IllegalArgumentException("primary")
         val existing: IllegalStateException = IllegalStateException("existing")
