@@ -27,9 +27,13 @@ import org.junit.jupiter.api.Test;
 
 import static jnr.x86asm.Asm.X86_32;
 import static jnr.x86asm.Asm.X86_64;
+import static jnr.x86asm.Asm.al;
+import static jnr.x86asm.Asm.byte_ptr;
 import static jnr.x86asm.Asm.dword_ptr;
 import static jnr.x86asm.Asm.eax;
 import static jnr.x86asm.Asm.ebx;
+import static jnr.x86asm.Asm.ecx;
+import static jnr.x86asm.Asm.edx;
 import static jnr.x86asm.Asm.imm;
 import static jnr.x86asm.Asm.ptr_abs;
 import static jnr.x86asm.Asm.qword_ptr;
@@ -211,6 +215,26 @@ public class Jnr_x86asmTest {
         assertThat(absolute.target()).isEqualTo(0x1234L);
         assertThat(absolute.displacement()).isEqualTo(8L);
         assertThat(absolute.segmentPrefix()).isEqualTo(SEGMENT.SEGMENT_FS);
+    }
+
+    @Test
+    void emitsConditionCodeMoveAndSetInstructions() {
+        Assembler assembler = new Assembler(X86_64);
+
+        assembler.cmp(eax, ebx);
+        assembler.set(CONDITION.C_NOT_EQUAL, al);
+        assembler.cmov(CONDITION.C_E, ecx, edx);
+        assembler.setg(byte_ptr(rax, 1L));
+        assembler.cmovl(ecx, dword_ptr(rax, 4L));
+        assembler.ret();
+
+        assertThat(unsignedBytes(assembler)).containsExactly(
+                0x3B, 0xC3,
+                0x0F, 0x95, 0xC0,
+                0x0F, 0x44, 0xCA,
+                0x0F, 0x9F, 0x40, 0x01,
+                0x0F, 0x4C, 0x48, 0x04,
+                0xC3);
     }
 
     @Test
