@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.appengine.api.backends.BackendService;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.datastore.Blob;
@@ -38,6 +39,9 @@ import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.Transform;
 import com.google.appengine.api.mail.MailService;
 import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.modules.ModulesException;
+import com.google.appengine.api.modules.ModulesService;
+import com.google.appengine.api.modules.ModulesServiceFactory;
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Facet;
 import com.google.appengine.api.search.Field;
@@ -360,6 +364,20 @@ public class Appengine_api_1_0_sdkTest {
     }
 
     @Test
+    void modulesServiceReadsCurrentRuntimeMetadataFromEnvironment() {
+        environment = new TestEnvironment("payments", "blue.20240504", "instance-2");
+        ApiProxy.setEnvironmentForCurrentThread(environment);
+        ModulesService modulesService = ModulesServiceFactory.getModulesService();
+
+        assertThat(modulesService.getCurrentModule()).isEqualTo("payments");
+        assertThat(modulesService.getCurrentVersion()).isEqualTo("blue");
+        assertThat(modulesService.getCurrentInstanceId()).isEqualTo("instance-2");
+
+        environment.getAttributes().remove(BackendService.INSTANCE_ID_ENV_ATTRIBUTE);
+        assertThatThrownBy(modulesService::getCurrentInstanceId).isInstanceOf(ModulesException.class);
+    }
+
+    @Test
     void mailUsersMemcacheBlobstoreCapabilitiesAndImagesExposeValueState() {
         MailService.Attachment attachment = new MailService.Attachment("report.txt", bytes("report"), "content-id");
         MailService.Header header = new MailService.Header("X-App", "test");
@@ -429,6 +447,20 @@ public class Appengine_api_1_0_sdkTest {
 
     private static final class TestEnvironment implements ApiProxy.Environment {
         private final Map<String, Object> attributes = new HashMap<>();
+        private final String moduleId;
+        private final String versionId;
+
+        private TestEnvironment() {
+            this("default", "v1", null);
+        }
+
+        private TestEnvironment(String moduleId, String versionId, String instanceId) {
+            this.moduleId = moduleId;
+            this.versionId = versionId;
+            if (instanceId != null) {
+                attributes.put(BackendService.INSTANCE_ID_ENV_ATTRIBUTE, instanceId);
+            }
+        }
 
         @Override
         public String getAppId() {
@@ -437,12 +469,12 @@ public class Appengine_api_1_0_sdkTest {
 
         @Override
         public String getModuleId() {
-            return "default";
+            return moduleId;
         }
 
         @Override
         public String getVersionId() {
-            return "v1";
+            return versionId;
         }
 
         @Override
