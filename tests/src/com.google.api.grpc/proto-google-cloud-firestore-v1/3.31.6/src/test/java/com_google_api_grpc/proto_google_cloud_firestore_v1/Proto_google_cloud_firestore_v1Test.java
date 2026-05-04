@@ -1,0 +1,16 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package com_google_api_grpc.proto_google_cloud_firestore_v1;
+
+import org.junit.jupiter.api.Test;
+
+class Proto_google_cloud_firestore_v1Test {
+    @Test
+    void test() throws Exception {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
