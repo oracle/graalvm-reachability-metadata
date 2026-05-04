@@ -10,7 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.ongres.stringprep.StringPrep;
+import java.text.Normalizer;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import org.junit.jupiter.api.Test;
 
@@ -98,6 +100,18 @@ public class StringprepTest {
         assertThat(StringPrep.mapUsedWithNoNormalization(0x10426)).containsExactly(0x10426);
         assertThat(StringPrep.mapUsedWithNfkc(0x1D7BB)).containsExactly(0x03C3);
         assertThat(StringPrep.mapUsedWithNfkc(0x1D7BC)).containsExactly(0x1D7BC);
+    }
+
+    @Test
+    void composesMappingTablesForACompleteNfkcProfileMappingStep() {
+        String fullwidthHello = "\uFF28\uFF45\uFF4C\uFF4C\uFF4F";
+        String softHyphen = "\u00AD";
+        String fullwidthDigits = "\uFF11\uFF12\uFF13";
+
+        String mapped = mapForNfkcProfile(fullwidthHello + softHyphen + fullwidthDigits);
+
+        assertThat(Normalizer.normalize(mapped, Normalizer.Form.NFKC))
+                .isEqualTo("hello123");
     }
 
     @Test
@@ -197,6 +211,24 @@ public class StringprepTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Prohibited codepoint")
                 .hasMessageContaining("position 1");
+    }
+
+    private static String mapForNfkcProfile(String value) {
+        return mapProfile(value, StringPrep::mapUsedWithNfkc);
+    }
+
+    private static String mapProfile(String value, IntFunction<int[]> mapping) {
+        StringBuilder mapped = new StringBuilder();
+        value.codePoints()
+                .filter(codePoint -> !StringPrep.mapToNothing(codePoint))
+                .forEach(codePoint -> appendCodePoints(mapped, mapping.apply(codePoint)));
+        return mapped.toString();
+    }
+
+    private static void appendCodePoints(StringBuilder builder, int[] codePoints) {
+        for (int codePoint : codePoints) {
+            builder.appendCodePoint(codePoint);
+        }
     }
 
     private static void assertAccepted(IntPredicate predicate, int... codePoints) {
