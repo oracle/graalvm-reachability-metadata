@@ -6,6 +6,7 @@
  */
 package org_jetbrains_kotlin.kotlin_stdlib_jdk8
 
+import java.time.Duration as JavaDuration
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.stream.Collectors
 import java.util.stream.DoubleStream
@@ -13,6 +14,9 @@ import java.util.stream.IntStream
 import java.util.stream.LongStream
 import java.util.stream.Stream
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.toJavaDuration
+import kotlin.time.toKotlinDuration
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 import kotlin.streams.toList as streamToList
@@ -139,6 +143,19 @@ public class Kotlin_stdlib_jdk8Test {
         assertThat(port?.value).isEqualTo("443")
         assertThat(port?.range).isEqualTo(22..24)
         assertThat(match.groups["query"]).isNull()
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    public fun durationsRoundTripThroughJavaTimeDurationConversions() {
+        val positiveDuration: kotlin.time.Duration = JavaDuration.ofSeconds(2, 345_678_901).toKotlinDuration()
+        val negativeDuration: kotlin.time.Duration = JavaDuration.ofSeconds(-2, 250_000_000).toKotlinDuration()
+
+        assertThat(positiveDuration.inWholeSeconds).isEqualTo(2L)
+        assertThat(positiveDuration.inWholeMilliseconds).isEqualTo(2_345L)
+        assertThat(positiveDuration.toJavaDuration()).isEqualTo(JavaDuration.ofSeconds(2, 345_678_901))
+        assertThat(negativeDuration.inWholeMilliseconds).isEqualTo(-1_750L)
+        assertThat(negativeDuration.toJavaDuration()).isEqualTo(JavaDuration.ofSeconds(-2, 250_000_000))
     }
 
     @Test
