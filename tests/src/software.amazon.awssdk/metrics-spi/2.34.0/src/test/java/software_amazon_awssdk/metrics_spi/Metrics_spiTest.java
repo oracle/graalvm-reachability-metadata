@@ -117,6 +117,21 @@ public class Metrics_spiTest {
     }
 
     @Test
+    void collectorCollectsEmptyNamedCollectionWithoutReportedMetrics() {
+        Instant beforeCollect = Instant.now();
+        MetricCollector collector = MetricCollector.create("EmptyApiCall");
+
+        MetricCollection collection = collector.collect();
+        Instant afterCollect = Instant.now();
+
+        assertThat(collection.name()).isEqualTo("EmptyApiCall");
+        assertThat(collection.creationTime()).isBetween(beforeCollect, afterCollect);
+        assertThat(collection.stream()).isEmpty();
+        assertThat(collection.children()).isEmpty();
+        assertThat(collection.toString()).contains("EmptyApiCall");
+    }
+
+    @Test
     void collectorCollectsMultipleTypedMetricValuesAndRecords() {
         SdkMetric<String> operationName = SdkMetric.create(
                 uniqueMetricName("operationName"), String.class, MetricLevel.INFO, MetricCategory.CORE);
