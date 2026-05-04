@@ -224,6 +224,33 @@ public class KotlinxCliJvmTest {
     }
 
     @Test
+    fun parsesOptionsAndArgumentsWithCustomArgumentType() {
+        val parser = ArgParser("publish")
+        val moduleOption = parser.option(
+            CoordinateArgType,
+            fullName = "module",
+            shortName = "m",
+            description = "Published module",
+        ).required()
+        val dependencyArgument = parser.argument(
+            CoordinateArgType,
+            fullName = "dependency",
+            description = "Required dependency",
+        )
+
+        val module by moduleOption
+        val dependency by dependencyArgument
+
+        val result = parser.parse(arrayOf("--module", "org.sample:app", "com.example:library"))
+
+        assertThat(result.commandName).isEqualTo("publish")
+        assertThat(module).isEqualTo(Coordinate("org.sample", "app"))
+        assertThat(dependency).isEqualTo(Coordinate("com.example", "library"))
+        assertThat(moduleOption.valueOrigin).isEqualTo(ArgParser.ValueOrigin.SET_BY_USER)
+        assertThat(dependencyArgument.valueOrigin).isEqualTo(ArgParser.ValueOrigin.SET_BY_USER)
+    }
+
+    @Test
     fun validatesPublicConfigurationErrorsBeforeParsing() {
         val parser = ArgParser("invalid")
 
@@ -249,6 +276,20 @@ public class KotlinxCliJvmTest {
     private enum class Mode(val cliName: String) {
         FAST("fast-path"),
         SAFE("safe"),
+    }
+
+    private data class Coordinate(val group: kotlin.String, val name: kotlin.String)
+
+    private object CoordinateArgType : ArgType<Coordinate>(true) {
+        override val description: kotlin.String = "group:name"
+
+        override fun convert(value: kotlin.String, name: kotlin.String): Coordinate {
+            val parts: List<kotlin.String> = value.split(":", limit = 2)
+            require(parts.size == 2 && parts.all { it.isNotBlank() }) {
+                "Expected $name to use group:name syntax"
+            }
+            return Coordinate(parts[0], parts[1])
+        }
     }
 
     @OptIn(ExperimentalCli::class)
