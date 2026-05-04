@@ -7,6 +7,9 @@
 package io_netty.netty_transport_classes_io_uring;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -25,6 +28,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultFileRegion;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.IoHandlerFactory;
 import io.netty.channel.MultiThreadIoEventLoopGroup;
@@ -45,6 +49,7 @@ import io.netty.channel.uring.IoUringSocketChannel;
 import io.netty.channel.uring.IoUringTcpInfo;
 import io.netty.util.CharsetUtil;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -331,6 +336,55 @@ public class Netty_transport_classes_io_uringTest {
     }
 
     @Test
+    void tcpChannelsCanSendFileRegionsWhenAvailable(@TempDir Path tempDir) throws Exception {
+        if (!IoUring.isAvailable()) {
+            assertThatThrownBy(IoUringIoHandler::newFactory).isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        String payload = "file-region payload\ntransferred by io_uring";
+        Path source = tempDir.resolve("payload.txt");
+        Files.writeString(source, payload, StandardCharsets.UTF_8);
+        long payloadSize = Files.size(source);
+        EventLoopGroup bossGroup = null;
+        EventLoopGroup workerGroup = null;
+        EventLoopGroup clientGroup = null;
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            bossGroup = newIoUringEventLoopGroup();
+            workerGroup = newIoUringEventLoopGroup();
+            clientGroup = newIoUringEventLoopGroup();
+            CountDownLatch received = new CountDownLatch(1);
+            AtomicReference<String> receivedContent = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            serverChannel = awaitSuccess(new ServerBootstrap()
+                    .group(bossGroup, workerGroup)
+                    .channel(IoUringServerSocketChannel.class)
+                    .childHandler(new FileRegionServerInitializer(payloadSize, receivedContent, received, failure))
+                    .bind(new InetSocketAddress("127.0.0.1", 0))).channel();
+            int port = ((InetSocketAddress) serverChannel.localAddress()).getPort();
+            clientChannel = awaitSuccess(new Bootstrap()
+                    .group(clientGroup)
+                    .channel(IoUringSocketChannel.class)
+                    .handler(new NoopInitializer())
+                    .connect("127.0.0.1", port)).channel();
+
+            awaitSuccess(clientChannel.writeAndFlush(new DefaultFileRegion(source.toFile(), 0, payloadSize)));
+
+            assertThat(received.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(receivedContent.get()).isEqualTo(payload);
+        } finally {
+            close(clientChannel);
+            close(serverChannel);
+            shutdown(clientGroup);
+            shutdown(workerGroup);
+            shutdown(bossGroup);
+        }
+    }
+
+    @Test
     void datagramChannelsCanExchangePacketsWhenAvailable() throws Exception {
         if (!IoUring.isAvailable()) {
             assertThatThrownBy(IoUringIoHandler::newFactory).isInstanceOf(LinkageError.class);
@@ -476,6 +530,58 @@ public class Netty_transport_classes_io_uringTest {
                     ctx.close();
                 }
             });
+        }
+    }
+
+    private static final class FileRegionServerInitializer extends ChannelInitializer<Channel> {
+        private final long expectedBytes;
+        private final AtomicReference<String> receivedContent;
+        private final CountDownLatch received;
+        private final AtomicReference<Throwable> failure;
+
+        private FileRegionServerInitializer(
+                long expectedBytes,
+                AtomicReference<String> receivedContent,
+                CountDownLatch received,
+                AtomicReference<Throwable> failure
+        ) {
+            this.expectedBytes = expectedBytes;
+            this.receivedContent = receivedContent;
+            this.received = received;
+            this.failure = failure;
+        }
+
+        @Override
+        protected void initChannel(Channel channel) {
+            channel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+                private final StringBuilder content = new StringBuilder();
+                private long receivedBytes;
+
+                @Override
+                protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
+                    receivedBytes += msg.readableBytes();
+                    content.append(msg.toString(CharsetUtil.UTF_8));
+                    if (receivedBytes >= expectedBytes) {
+                        receivedContent.set(content.toString());
+                        received.countDown();
+                        ctx.close();
+                    }
+                }
+
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                    failure.compareAndSet(null, cause);
+                    received.countDown();
+                    ctx.close();
+                }
+            });
+        }
+    }
+
+    private static final class NoopInitializer extends ChannelInitializer<Channel> {
+        @Override
+        protected void initChannel(Channel channel) {
+            channel.config().setAutoRead(true);
         }
     }
 
