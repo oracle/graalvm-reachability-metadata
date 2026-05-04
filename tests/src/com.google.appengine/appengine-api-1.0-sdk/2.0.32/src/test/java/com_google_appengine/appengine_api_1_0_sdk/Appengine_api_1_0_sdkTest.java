@@ -10,6 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.appengine.api.NamespaceManager;
+import com.google.appengine.api.appidentity.AppIdentityService;
+import com.google.appengine.api.appidentity.AppIdentityService.GetAccessTokenResult;
+import com.google.appengine.api.appidentity.AppIdentityService.ParsedAppId;
+import com.google.appengine.api.appidentity.AppIdentityService.SigningResult;
+import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.appengine.api.appidentity.PublicCertificate;
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.FileInfo;
@@ -380,6 +386,36 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(message.getHeaders()).containsExactly(header);
         assertThat(header.getName()).isEqualTo("X-Correlation-Id");
         assertThat(header.getValue()).isEqualTo("corr-1");
+    }
+
+    @Test
+    void appIdentityParsesFullAppIdsAndExposesIdentityResultObjects() {
+        AppIdentityService appIdentityService = AppIdentityServiceFactory.getAppIdentityService();
+        ParsedAppId fullAppId = appIdentityService.parseFullAppId("s~example.com:sample-app");
+        ParsedAppId simpleAppId = appIdentityService.parseFullAppId("sample-app");
+        Date expiration = new Date(1_700_000_456_000L);
+        GetAccessTokenResult accessTokenResult = new GetAccessTokenResult("access-token", expiration);
+        SigningResult signingResult = new SigningResult("key-name", new byte[] {7, 8, 9});
+        PublicCertificate certificate = new PublicCertificate(
+                "certificate-name",
+                """
+                -----BEGIN CERTIFICATE-----
+                test-certificate
+                -----END CERTIFICATE-----
+                """);
+
+        assertThat(fullAppId.getPartition()).isEqualTo("s");
+        assertThat(fullAppId.getDomain()).isEqualTo("example.com");
+        assertThat(fullAppId.getId()).isEqualTo("sample-app");
+        assertThat(simpleAppId.getPartition()).isEmpty();
+        assertThat(simpleAppId.getDomain()).isEmpty();
+        assertThat(simpleAppId.getId()).isEqualTo("sample-app");
+        assertThat(accessTokenResult.getAccessToken()).isEqualTo("access-token");
+        assertThat(accessTokenResult.getExpirationTime()).isEqualTo(expiration);
+        assertThat(signingResult.getKeyName()).isEqualTo("key-name");
+        assertThat(signingResult.getSignature()).containsExactly((byte) 7, (byte) 8, (byte) 9);
+        assertThat(certificate.getCertificateName()).isEqualTo("certificate-name");
+        assertThat(certificate.getX509CertificateInPemFormat()).contains("BEGIN CERTIFICATE");
     }
 
     @Test
