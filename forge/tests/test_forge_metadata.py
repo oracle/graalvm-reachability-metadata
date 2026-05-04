@@ -540,11 +540,12 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_offset_issue_fetch_uses_search_page_instead_of_expanding_limit(self) -> None:
         page_items = [_search_issue(number) for number in range(200, 300)]
 
-        with patch.object(
-                forge_metadata,
-                "gh_json",
-                return_value={"items": page_items},
-        ) as gh_json:
+        with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
+                patch.object(
+                        forge_metadata,
+                        "gh_json",
+                        return_value={"items": page_items},
+                ) as gh_json:
             issues = forge_metadata.get_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
@@ -1529,6 +1530,42 @@ class IssueClaimLockTests(unittest.TestCase):
 
         set_item_status.assert_called_once_with("item-1", forge_metadata.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
+
+
+class IssueSearchCacheTests(unittest.TestCase):
+    def test_search_page_cache_is_shared_by_label_queries(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:cached:1.0.0",
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/issues/1412",
+            "labels": [{"name": forge_metadata.LABEL_LIBRARY_NEW}],
+            "assignees": [],
+        }
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata.time, "time", return_value=100.0), \
+                    patch.object(forge_metadata, "fetch_issue_search_page", return_value=[issue]) as fetch_page:
+                self.assertEqual(
+                    forge_metadata.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
+                    [issue],
+                )
+                self.assertEqual(
+                    forge_metadata.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
+                    [issue],
+                )
+
+        fetch_page.assert_called_once()
+
+    def test_search_count_cache_is_shared_by_random_offset_resolution(self) -> None:
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata.time, "time", return_value=100.0), \
+                    patch.object(forge_metadata, "fetch_issue_search_count", return_value=42) as fetch_count:
+                self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
+                self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
+
+        fetch_count.assert_called_once()
 
 
 class EnvironmentValidationTests(unittest.TestCase):

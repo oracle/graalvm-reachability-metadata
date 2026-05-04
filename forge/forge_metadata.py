@@ -18,6 +18,7 @@ Usage:
 import argparse
 import concurrent.futures
 import errno
+import hashlib
 import json
 import os
 import random
@@ -123,6 +124,10 @@ ISSUE_CLAIM_CACHE_VERSION = 1
 ISSUE_CLAIM_CACHE_FILENAME = "issue-cache-v1.json"
 ISSUE_CLAIM_CACHE_LOCK_FILENAME = "issue-cache-v1.lock"
 DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS = 15 * 60
+ISSUE_SEARCH_CACHE_VERSION = 1
+ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
+ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
+DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
@@ -503,6 +508,12 @@ def search_issues_with_label(
     page = (offset // per_page) + 1
     page_offset = offset % per_page
     query = build_issue_search_query(label, extra_labels)
+    items = get_issue_search_page(query, page, per_page)
+    return items[page_offset:page_offset + limit]
+
+
+def fetch_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
+    """Fetch and normalize one GitHub search result page for issues."""
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
@@ -511,16 +522,47 @@ def search_issues_with_label(
         "-F", f"per_page={per_page}",
         "-F", f"page={page}",
     )
-    items = data.get("items", [])
     return [
         normalize_github_issue_search_item(item)
-        for item in items[page_offset:page_offset + limit]
+        for item in data.get("items", [])
     ]
+
+
+def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
+    """Return one issue search page, using the shared local cache when fresh."""
+    if not is_issue_search_cache_enabled() or get_issue_search_cache_ttl_seconds() <= 0:
+        return fetch_issue_search_page(query, page, per_page)
+
+    ttl_seconds = get_issue_search_cache_ttl_seconds()
+    cache_key = build_issue_search_cache_key("page", query, "created", "desc", page, per_page)
+    now = time.time()
+    cached_payload = _read_issue_search_cache_payload()
+    if cached_payload is not None:
+        cached_page = _get_cached_issue_search_page(cached_payload, cache_key, now, ttl_seconds)
+        if cached_page is not None:
+            return cached_page
+
+    with LocalIssueSearchCacheWriterLock():
+        now = time.time()
+        payload = _read_issue_search_cache_payload_or_empty(now)
+        cached_page = _get_cached_issue_search_page(payload, cache_key, now, ttl_seconds)
+        if cached_page is not None:
+            return cached_page
+
+        issues = fetch_issue_search_page(query, page, per_page)
+        _set_cached_issue_search_page(payload, cache_key, issues, now)
+        _write_issue_search_cache_payload(payload, now)
+        return issues
 
 
 def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
     query = build_issue_search_query(label, extra_labels)
+    return get_issue_search_count(query)
+
+
+def fetch_issue_search_count(query: str) -> int:
+    """Fetch GitHub's count of open issues for a search query."""
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
@@ -529,11 +571,35 @@ def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -
     return int(data.get("total_count", 0))
 
 
+def get_issue_search_count(query: str) -> int:
+    """Return an issue search count, using the shared local cache when fresh."""
+    if not is_issue_search_cache_enabled() or get_issue_search_cache_ttl_seconds() <= 0:
+        return fetch_issue_search_count(query)
+
+    ttl_seconds = get_issue_search_cache_ttl_seconds()
+    cache_key = build_issue_search_cache_key("count", query)
+    now = time.time()
+    cached_payload = _read_issue_search_cache_payload()
+    if cached_payload is not None:
+        cached_count = _get_cached_issue_search_count(cached_payload, cache_key, now, ttl_seconds)
+        if cached_count is not None:
+            return cached_count
+
+    with LocalIssueSearchCacheWriterLock():
+        now = time.time()
+        payload = _read_issue_search_cache_payload_or_empty(now)
+        cached_count = _get_cached_issue_search_count(payload, cache_key, now, ttl_seconds)
+        if cached_count is not None:
+            return cached_count
+
+        total_count = fetch_issue_search_count(query)
+        _set_cached_issue_search_count(payload, cache_key, total_count, now)
+        _write_issue_search_cache_payload(payload, now)
+        return total_count
+
+
 def get_issues_with_label(label: str, limit: int, offset: int = 0, extra_labels: list[str] | None = None) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
-    label_desc = f"'{label}'" + (f" + {extra_labels}" if extra_labels else "")
-    print()
-    log_stage("issue-scan", f"Fetching issues with label {label_desc} from {REPO} (offset={offset}, limit={limit})")
     return search_issues_with_label(label, limit, offset, extra_labels)
 
 
@@ -725,6 +791,51 @@ class LocalIssueClaimCacheWriterLock:
                 time.sleep(0.05)
 
 
+class LocalIssueSearchCacheWriterLock:
+    """Short-lived exclusive lock for shared issue-search cache updates."""
+
+    def __init__(self):
+        self.lock_path = get_issue_search_cache_lock_path()
+        self.lock_file = None
+        self.fallback_lock_path = f"{self.lock_path}.exclusive"
+
+    def __enter__(self):
+        self.acquire()
+        return self
+
+    def __exit__(self, _exc_type, _exc, _traceback) -> None:
+        self.release()
+
+    def acquire(self) -> None:
+        os.makedirs(os.path.dirname(self.lock_path), exist_ok=True)
+        if fcntl is None:
+            self._acquire_exclusive_file_lock()
+            return
+        self.lock_file = open(self.lock_path, "a+", encoding="utf-8")
+        fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX)
+
+    def release(self) -> None:
+        if self.lock_file is None:
+            return
+        try:
+            if fcntl is not None:
+                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
+        finally:
+            self.lock_file.close()
+            self.lock_file = None
+            if fcntl is None and os.path.exists(self.fallback_lock_path):
+                os.unlink(self.fallback_lock_path)
+
+    def _acquire_exclusive_file_lock(self) -> None:
+        while True:
+            try:
+                fd = os.open(self.fallback_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                self.lock_file = os.fdopen(fd, "w", encoding="utf-8")
+                return
+            except FileExistsError:
+                time.sleep(0.05)
+
+
 def get_issue_claim_locks_root() -> str:
     """Return the shared local directory for issue claim locks."""
     return os.path.join(
@@ -747,6 +858,16 @@ def get_issue_claim_cache_path() -> str:
 def get_issue_claim_cache_lock_path() -> str:
     """Return the shared local issue-claim cache writer lock path."""
     return os.path.join(get_issue_claim_locks_root(), ISSUE_CLAIM_CACHE_LOCK_FILENAME)
+
+
+def get_issue_search_cache_path() -> str:
+    """Return the shared local issue-search cache path."""
+    return os.path.join(get_issue_claim_locks_root(), ISSUE_SEARCH_CACHE_FILENAME)
+
+
+def get_issue_search_cache_lock_path() -> str:
+    """Return the shared local issue-search cache writer lock path."""
+    return os.path.join(get_issue_claim_locks_root(), ISSUE_SEARCH_CACHE_LOCK_FILENAME)
 
 
 def try_acquire_issue_claim_lock(issue_number: int) -> LocalIssueClaimLock | None:
@@ -945,6 +1066,145 @@ def invalidate_issue_claim_cache_entry(issue_number: int, now: float | None = No
         _write_issue_claim_cache_entries(cache, now)
 
 
+def is_issue_search_cache_enabled() -> bool:
+    """Return True when the shared local issue-search cache is enabled."""
+    return os.environ.get("FORGE_ISSUE_SEARCH_CACHE", "1") != "0"
+
+
+def get_issue_search_cache_ttl_seconds() -> int:
+    """Return the issue-search cache TTL in seconds."""
+    raw_value = os.environ.get("FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS")
+    if raw_value is None or raw_value == "":
+        return DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS
+    try:
+        value = int(raw_value)
+    except ValueError:
+        print("ERROR: FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
+        sys.exit(1)
+    if value < 0:
+        print("ERROR: FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
+        sys.exit(1)
+    return value
+
+
+def _read_issue_search_cache_payload() -> dict | None:
+    cache_path = get_issue_search_cache_path()
+    try:
+        with open(cache_path, "r", encoding="utf-8") as cache_file:
+            payload = json.load(cache_file)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if payload.get("version") != ISSUE_SEARCH_CACHE_VERSION:
+        return None
+    if payload.get("repo") != REPO:
+        return None
+    if not isinstance(payload.get("pages"), dict):
+        return None
+    if not isinstance(payload.get("counts"), dict):
+        return None
+    return payload
+
+
+def _empty_issue_search_cache_payload(now: float) -> dict:
+    return {
+        "version": ISSUE_SEARCH_CACHE_VERSION,
+        "repo": REPO,
+        "updated_at_epoch": now,
+        "pages": {},
+        "counts": {},
+    }
+
+
+def _read_issue_search_cache_payload_or_empty(now: float) -> dict:
+    return _read_issue_search_cache_payload() or _empty_issue_search_cache_payload(now)
+
+
+def _write_issue_search_cache_payload(payload: dict, updated_at_epoch: float) -> None:
+    cache_path = get_issue_search_cache_path()
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    payload["version"] = ISSUE_SEARCH_CACHE_VERSION
+    payload["repo"] = REPO
+    payload["updated_at_epoch"] = updated_at_epoch
+    payload.setdefault("pages", {})
+    payload.setdefault("counts", {})
+
+    temp_path = f"{cache_path}.{os.getpid()}.{uuid.uuid4().hex}.tmp"
+    try:
+        with open(temp_path, "w", encoding="utf-8") as cache_file:
+            json.dump(payload, cache_file, sort_keys=True)
+            cache_file.write("\n")
+            cache_file.flush()
+            os.fsync(cache_file.fileno())
+        os.replace(temp_path, cache_path)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+def build_issue_search_cache_key(*parts: object) -> str:
+    """Return a stable compact cache key for a GitHub issue-search request."""
+    key_payload = json.dumps(parts, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(key_payload.encode("utf-8")).hexdigest()
+
+
+def _is_fresh_issue_search_entry(entry: dict, now: float, ttl_seconds: int) -> bool:
+    try:
+        observed_at_epoch = float(entry.get("observed_at_epoch"))
+    except (TypeError, ValueError):
+        return False
+    return now - observed_at_epoch <= ttl_seconds
+
+
+def _get_cached_issue_search_page(
+        payload: dict,
+        cache_key: str,
+        now: float,
+        ttl_seconds: int,
+) -> list[dict] | None:
+    entry = payload.get("pages", {}).get(cache_key)
+    if not isinstance(entry, dict) or not _is_fresh_issue_search_entry(entry, now, ttl_seconds):
+        return None
+    issues = entry.get("issues")
+    if not isinstance(issues, list):
+        return None
+    return [
+        issue
+        for issue in issues
+        if isinstance(issue, dict) and isinstance(issue.get("number"), int)
+    ]
+
+
+def _set_cached_issue_search_page(payload: dict, cache_key: str, issues: list[dict], now: float) -> None:
+    payload.setdefault("pages", {})[cache_key] = {
+        "observed_at_epoch": now,
+        "issues": issues,
+    }
+
+
+def _get_cached_issue_search_count(
+        payload: dict,
+        cache_key: str,
+        now: float,
+        ttl_seconds: int,
+) -> int | None:
+    entry = payload.get("counts", {}).get(cache_key)
+    if not isinstance(entry, dict) or not _is_fresh_issue_search_entry(entry, now, ttl_seconds):
+        return None
+    total_count = entry.get("total_count")
+    if not isinstance(total_count, int):
+        return None
+    return total_count
+
+
+def _set_cached_issue_search_count(payload: dict, cache_key: str, total_count: int, now: float) -> None:
+    payload.setdefault("counts", {})[cache_key] = {
+        "observed_at_epoch": now,
+        "total_count": total_count,
+    }
+
+
 def pull_request_has_label(pr: dict, label_name: str) -> bool:
     """Return True when the GitHub pull request payload contains the given label."""
     return issue_has_label(pr, label_name)
@@ -958,8 +1218,6 @@ def get_prioritized_issues_with_label(
         priority_exhausted: bool = False,
 ) -> tuple[list[dict], int, int, bool, bool]:
     """Fetch one issue batch and return priority issues first within that batch."""
-    print()
-    log_stage("issue-scan", f"Searching issues for label '{label}' with priority issues first in the fetched batch")
     regular_issues = get_issues_with_label(label, limit, regular_offset)
     regular_offset += len(regular_issues)
     sorted_issues = sorted(
@@ -4572,6 +4830,7 @@ def process_issues_with_label(
     authenticated_user = resolve_authenticated_user(authenticated_user)
 
     processed_count = 0
+    scanned_count = 0
     current_offset = offset
     priority_offset = 0
     regular_offset = 0
@@ -4634,8 +4893,7 @@ def process_issues_with_label(
                             (issue, cached_skips.get(issue["number"]))
                             for issue in issues
                         )
-                        print()
-                        log_stage("issue-scan", f"Found {len(issues)} issue(s) to consider")
+                        scanned_count += len(issues)
                         continue
                     else:
                         break
@@ -4706,6 +4964,8 @@ def process_issues_with_label(
     finally:
         executor.shutdown(wait=False, cancel_futures=True)
 
+    print()
+    log_stage("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
     return processed_count
 
 
