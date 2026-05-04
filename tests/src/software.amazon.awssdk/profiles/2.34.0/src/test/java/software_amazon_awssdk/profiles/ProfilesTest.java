@@ -9,7 +9,9 @@ package software_amazon_awssdk.profiles;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -165,6 +167,23 @@ public class ProfilesTest {
                 .containsEntry(ProfileProperty.AWS_SESSION_TOKEN, "token-value")
                 .containsEntry(ProfileProperty.METADATA_SERVICE_TIMEOUT, "3");
         assertThat(profileFile.profile("profile dev")).isEmpty();
+    }
+
+    @Test
+    void profileFileBuilderReadsAndClosesInputStreamContent() {
+        CloseRecordingInputStream content = new CloseRecordingInputStream("""
+                [stream]
+                aws_account_id = 123456789012
+                """.getBytes(StandardCharsets.UTF_8));
+
+        ProfileFile profileFile = ProfileFile.builder()
+                                              .content(content)
+                                              .type(ProfileFile.Type.CREDENTIALS)
+                                              .build();
+
+        assertThat(profileFile.profile("stream").orElseThrow().property(ProfileProperty.AWS_ACCOUNT_ID))
+                .contains("123456789012");
+        assertThat(content.isClosed()).isTrue();
     }
 
     @Test
@@ -360,6 +379,24 @@ public class ProfilesTest {
                 """))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Profile definition must end with ']'");
+    }
+
+    private static final class CloseRecordingInputStream extends ByteArrayInputStream {
+        private boolean closed;
+
+        private CloseRecordingInputStream(byte[] data) {
+            super(data);
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        }
+
+        private boolean isClosed() {
+            return closed;
+        }
     }
 
     private static ProfileFile configurationFile(String content) {
