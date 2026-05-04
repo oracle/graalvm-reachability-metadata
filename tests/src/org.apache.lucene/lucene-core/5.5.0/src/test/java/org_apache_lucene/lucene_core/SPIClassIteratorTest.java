@@ -30,9 +30,10 @@ public class SPIClassIteratorTest {
 
     @Test
     void findsServiceDefinitionWithSystemClassLoaderResources() {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         SPIClassIterator<SPIClassIteratorSystemService> iterator = SPIClassIterator.get(
                 SPIClassIteratorSystemService.class,
-                null);
+                classLoader);
 
         assertThat(iterator.hasNext()).isTrue();
         assertThat(iterator.next()).isEqualTo(SPIClassIteratorSystemServiceImplementation.class);
