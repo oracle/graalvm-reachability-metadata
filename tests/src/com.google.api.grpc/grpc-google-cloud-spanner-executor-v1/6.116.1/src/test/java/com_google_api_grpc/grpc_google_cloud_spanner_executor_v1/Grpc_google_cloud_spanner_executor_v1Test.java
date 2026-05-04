@@ -174,6 +174,21 @@ public class Grpc_google_cloud_spanner_executor_v1Test {
     }
 
     @Test
+    void implBaseDefaultServiceReportsUnimplementedStreamingMethod() {
+        SpannerExecutorProxyGrpc.SpannerExecutorProxyImplBase service =
+                new SpannerExecutorProxyGrpc.SpannerExecutorProxyImplBase() { };
+        ServerMethodDefinition<SpannerAsyncActionRequest, SpannerAsyncActionResponse> methodDefinition =
+                getExecuteActionMethodDefinition(service.bindService());
+        RecordingServerCall serverCall = new RecordingServerCall(methodDefinition.getMethodDescriptor());
+
+        methodDefinition.getServerCallHandler().startCall(serverCall, new Metadata());
+
+        assertThat(serverCall.closedStatus).isNotNull();
+        assertThat(serverCall.closedStatus.getCode()).isEqualTo(io.grpc.Status.Code.UNIMPLEMENTED);
+        assertThat(serverCall.messages).isEmpty();
+    }
+
+    @Test
     void asyncStubSendsRequestWithConfiguredCallOptionsAndReceivesResponse() throws Exception {
         SpannerAsyncActionResponse expectedResponse = response(ACTION_ID, 0, "async-ok");
         RecordingChannel channel = new RecordingChannel(request -> expectedResponse);
