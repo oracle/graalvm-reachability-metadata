@@ -9,6 +9,7 @@ package net_postgis.postgis_geometry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -259,19 +260,19 @@ public class Postgis_geometryTest {
     @Test
     void outerWktCanSuppressMeasuredTypeMarker() throws Exception {
         Geometry measuredPoint = GeometryBuilder.geomFromString("POINTM(1 2 3)");
-        StringBuffer pointWithMeasureMarker = new StringBuffer();
-        StringBuffer pointWithoutMeasureMarker = new StringBuffer();
+        StringWriter pointWithMeasureMarker = new StringWriter();
+        StringWriter pointWithoutMeasureMarker = new StringWriter();
 
-        measuredPoint.outerWKT(pointWithMeasureMarker, true);
-        measuredPoint.outerWKT(pointWithoutMeasureMarker, false);
+        measuredPoint.outerWKT(pointWithMeasureMarker.getBuffer(), true);
+        measuredPoint.outerWKT(pointWithoutMeasureMarker.getBuffer(), false);
 
         assertThat(pointWithMeasureMarker).hasToString("POINTM(1 2 3)");
         assertThat(pointWithoutMeasureMarker).hasToString("POINT(1 2 3)");
 
         Geometry measuredLine = GeometryBuilder.geomFromString("LINESTRINGM(0 0 5,3 4 6)");
-        StringBuffer lineWithoutMeasureMarker = new StringBuffer();
+        StringWriter lineWithoutMeasureMarker = new StringWriter();
 
-        measuredLine.outerWKT(lineWithoutMeasureMarker, false);
+        measuredLine.outerWKT(lineWithoutMeasureMarker.getBuffer(), false);
 
         assertThat(lineWithoutMeasureMarker).hasToString("LINESTRING(0 0 5,3 4 6)");
     }
