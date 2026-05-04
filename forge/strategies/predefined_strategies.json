@@ -774,6 +774,26 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
+    "name": "library_update_dynamic_access_bulk_pi_gpt-5.5",
+    "description": "Library-update bulk dynamic-access strategy: runs only the optimistic full-report workflow against existing tests, without per-class refinement.",
+    "agent": "pi",
+    "workflow": "optimistic_dynamic_access",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration-update.md"
+    },
+    "parameters": {
+      "max-optimistic-iterations": 3,
+      "max-test-iterations": 3,
+      "max-native-test-verification-iterations": 40,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
     "name": "library_update_optimistic_pi_gpt-5.5",
     "description": "Library-update composite strategy: bulk dynamic-access coverage in one broad pass first, then per-class iterative refinement of any stragglers. Mirrors the iterative library-update strategy but starts with a faster bulk pass.",
     "agent": "pi",
