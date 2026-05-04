@@ -247,6 +247,27 @@ class Fansi_3Test {
   }
 
   @Test
+  def renderEmitsAnsiTransitionsForAdjacentPerCharacterStyleChanges(): Unit = {
+    val redState: Long = Color.Red.transform(0L)
+    val blueState: Long = Color.Blue.transform(0L)
+    val blueBackgroundState: Long = (Color.Blue ++ Back.Blue).transform(0L)
+    val styled: Str = Str.fromArrays(
+      Array('a', 'b', 'c', 'd', 'e'),
+      Array(0L, redState, blueState, blueBackgroundState, 0L)
+    )
+
+    assertEquals("abcde", styled.plainText)
+    assertEquals(
+      s"a${Red}b${Blue}c${BlueBackground}d$ForegroundReset${BackgroundReset}e",
+      styled.render
+    )
+    assertEquals(redState, styled.getColor(1))
+    assertEquals(blueState, styled.getColor(2))
+    assertEquals(blueBackgroundState, styled.getColor(3))
+    assertEquals(0L, styled.getColor(4))
+  }
+
+  @Test
   def publicAttributeMetadataAndValidationAreAvailable(): Unit = {
     assertEquals("Color.Red", Color.Red.name)
     assertEquals(Some(Red), Color.Red.escapeOpt)
