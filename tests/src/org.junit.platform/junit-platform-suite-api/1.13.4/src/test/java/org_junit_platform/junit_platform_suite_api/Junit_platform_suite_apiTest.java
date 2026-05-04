@@ -145,6 +145,20 @@ public class Junit_platform_suite_apiTest {
     }
 
     @Test
+    void suiteConfigurationAnnotationsAreInheritedBySubclassSuites() {
+        assertThat(annotationOn(DerivedSuite.class, Suite.class).failIfNoTests()).isFalse();
+        assertThat(annotationOn(DerivedSuite.class, IncludeEngines.class).value()).containsExactly("junit-jupiter");
+        assertThat(annotationOn(DerivedSuite.class, IncludeTags.class).value()).containsExactly("inherited-fast");
+        assertThat(annotationsByTypeOn(DerivedSuite.class, ConfigurationParameter.class))
+                .extracting(ConfigurationParameter::key)
+                .containsExactly("inherited.suite.parameter");
+        assertThat(annotationsByTypeOn(DerivedSuite.class, SelectFile.class))
+                .extracting(SelectFile::value)
+                .containsExactly("inherited-suite.gradle");
+        assertThat(readAnnotation(DerivedSuite.class, SuiteDisplayName.class)).isNull();
+    }
+
+    @Test
     void defaultAttributeValuesAreStableForOptionalSuiteAnnotations() {
         Suite suite = annotationOn(DefaultedSuite.class, Suite.class);
         SelectClasses classes = annotationOn(DefaultedSuite.class, SelectClasses.class);
@@ -244,6 +258,18 @@ public class Junit_platform_suite_apiTest {
     @SelectFile("defaults.txt")
     @SelectMethod
     private static class DefaultedSuite {
+    }
+
+    @Suite(failIfNoTests = false)
+    @SuiteDisplayName("Base suite display name")
+    @ConfigurationParameter(key = "inherited.suite.parameter", value = "enabled")
+    @IncludeEngines("junit-jupiter")
+    @IncludeTags("inherited-fast")
+    @SelectFile("inherited-suite.gradle")
+    private static class BaseSuite {
+    }
+
+    private static class DerivedSuite extends BaseSuite {
     }
 
     private static class LifecycleFixture {
