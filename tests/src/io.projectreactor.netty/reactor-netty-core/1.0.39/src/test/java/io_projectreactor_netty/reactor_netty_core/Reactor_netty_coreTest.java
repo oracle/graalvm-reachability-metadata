@@ -138,6 +138,45 @@ public class Reactor_netty_coreTest {
     }
 
     @Test
+    void connectionInvokesIdleCallbacksWhenNoTrafficOccurs() throws Exception {
+        CountDownLatch readIdle = new CountDownLatch(1);
+        CountDownLatch writeIdle = new CountDownLatch(1);
+        LoopResources loops = LoopResources.create("reactor-netty-idle-test", 1, true);
+        DisposableServer server = null;
+        Connection client = null;
+
+        try {
+            server = TcpServer.create()
+                    .host(LOOPBACK)
+                    .runOn(loops, false)
+                    .port(0)
+                    .doOnConnection(connection -> {
+                        connection.onReadIdle(100, readIdle::countDown);
+                        connection.onWriteIdle(100, writeIdle::countDown);
+                    })
+                    .handle((inbound, outbound) -> inbound.receive().then())
+                    .bindNow(TIMEOUT);
+
+            client = TcpClient.create()
+                    .host(LOOPBACK)
+                    .runOn(loops, false)
+                    .port(server.port())
+                    .connectNow(TIMEOUT);
+
+            assertThat(readIdle.await(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)).isTrue();
+            assertThat(writeIdle.await(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)).isTrue();
+        } finally {
+            if (client != null) {
+                client.disposeNow(TIMEOUT);
+            }
+            if (server != null) {
+                server.disposeNow(TIMEOUT);
+            }
+            loops.disposeLater(Duration.ofMillis(100), Duration.ofSeconds(2)).block(TIMEOUT);
+        }
+    }
+
+    @Test
     void udpServerReceivesDatagramsFromClient() throws Exception {
         CountDownLatch receivedDatagram = new CountDownLatch(1);
         Queue<String> receivedMessages = new ConcurrentLinkedQueue<>();
