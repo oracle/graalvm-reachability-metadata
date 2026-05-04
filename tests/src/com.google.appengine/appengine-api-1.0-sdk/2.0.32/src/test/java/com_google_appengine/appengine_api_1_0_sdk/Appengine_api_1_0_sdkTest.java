@@ -23,10 +23,12 @@ import com.google.appengine.api.datastore.Category;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.Entities;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyRange;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.PhoneNumber;
 import com.google.appengine.api.datastore.PostalAddress;
@@ -206,6 +208,40 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(query.getProjections()).hasSize(1);
         assertThat(query.getDistinct()).isTrue();
         assertThat(reversed.getSortPredicates().get(0).getDirection()).isEqualTo(SortDirection.ASCENDING);
+    }
+
+    @Test
+    void datastoreMetadataKeysAndKeyRangesAreComposable() {
+        installEnvironment();
+        Key accountKey = KeyFactory.createKey("Account", "acme");
+        Key firstInvoiceKey = KeyFactory.createKey(accountKey, "Invoice", 101L);
+        Key secondInvoiceKey = KeyFactory.createKey(accountKey, "Invoice", 102L);
+        Key thirdInvoiceKey = KeyFactory.createKey(accountKey, "Invoice", 103L);
+        KeyRange keyRange = new KeyRange(accountKey, "Invoice", 101L, 103L);
+        Key kindKey = Entities.createKindKey("Invoice");
+        Key propertyKey = Entities.createPropertyKey("Invoice", "amount");
+        Key namespaceKey = Entities.createNamespaceKey("customer-a");
+        Key defaultNamespaceKey = Entities.createNamespaceKey("");
+        Key entityGroupKey = Entities.createEntityGroupKey(firstInvoiceKey);
+        Entity entityGroupMetadata = new Entity(entityGroupKey);
+
+        entityGroupMetadata.setProperty("__version__", 7L);
+
+        assertThat(keyRange.getStart()).isEqualTo(firstInvoiceKey);
+        assertThat(keyRange.getEnd()).isEqualTo(thirdInvoiceKey);
+        assertThat(keyRange.getSize()).isEqualTo(3L);
+        assertThat(keyRange).containsExactly(firstInvoiceKey, secondInvoiceKey, thirdInvoiceKey);
+        assertThat(kindKey.getKind()).isEqualTo(Entities.KIND_METADATA_KIND);
+        assertThat(kindKey.getName()).isEqualTo("Invoice");
+        assertThat(propertyKey.getParent()).isEqualTo(kindKey);
+        assertThat(propertyKey.getKind()).isEqualTo(Entities.PROPERTY_METADATA_KIND);
+        assertThat(propertyKey.getName()).isEqualTo("amount");
+        assertThat(Entities.getNamespaceFromNamespaceKey(namespaceKey)).isEqualTo("customer-a");
+        assertThat(Entities.getNamespaceFromNamespaceKey(defaultNamespaceKey)).isEmpty();
+        assertThat(entityGroupKey.getParent()).isEqualTo(accountKey);
+        assertThat(entityGroupKey.getKind()).isEqualTo(Entities.ENTITY_GROUP_METADATA_KIND);
+        assertThat(entityGroupKey.getId()).isEqualTo(Entities.ENTITY_GROUP_METADATA_ID);
+        assertThat(Entities.getVersionProperty(entityGroupMetadata)).isEqualTo(7L);
     }
 
     @Test
