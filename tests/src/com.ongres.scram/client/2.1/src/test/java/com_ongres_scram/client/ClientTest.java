@@ -31,6 +31,12 @@ public class ClientTest {
     private static final String RFC5802_COMBINED_NONCE = RFC5802_CLIENT_NONCE + RFC5802_SERVER_NONCE;
     private static final String RFC5802_SERVER_FIRST = "r=" + RFC5802_COMBINED_NONCE + ",s=QSXCR+Q6sek8bf92,i=4096";
     private static final String RFC5802_SERVER_FINAL = "v=rmF9pqV8S7suAoZWja4dJRkFsKQ=";
+    private static final String RFC7677_CLIENT_NONCE = "rOprNGfwEbeRWgbNEkqO";
+    private static final String RFC7677_SERVER_NONCE = "%hvYDpWUa2RaTCAfuxFIlj)hNlF$k0";
+    private static final String RFC7677_COMBINED_NONCE = RFC7677_CLIENT_NONCE + RFC7677_SERVER_NONCE;
+    private static final String RFC7677_SERVER_FIRST = "r=" + RFC7677_COMBINED_NONCE
+            + ",s=W22ZaJ0SNY7soEsUEjb6gQ==,i=4096";
+    private static final String RFC7677_SERVER_FINAL = "v=6rriTRBi23WpRR/wtup+mMhUZUn/dB5nLTJRsjl95G4=";
 
     @Test
     void advertisesSupportedMechanismsAndMapsChannelBindingModes() {
@@ -199,6 +205,27 @@ public class ClientTest {
         assertThat(clientFinalProcessor.clientFinalMessage()).isEqualTo(
                 "c=biws,r=" + RFC5802_COMBINED_NONCE + ",p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=");
         assertThatCode(() -> clientFinalProcessor.receiveServerFinalMessage(RFC5802_SERVER_FINAL))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void completesRfc7677ScramSha256ClientExchange() throws Exception {
+        ScramSession session = ScramClient.channelBinding(ScramClient.ChannelBinding.NO)
+                .stringPreparation(StringPreparations.NO_PREPARATION)
+                .selectClientMechanism(ScramMechanisms.SCRAM_SHA_256)
+                .nonceSupplier(() -> RFC7677_CLIENT_NONCE)
+                .setup()
+                .scramSession("user");
+
+        String clientFirstMessage = session.clientFirstMessage();
+        ScramSession.ClientFinalProcessor clientFinalProcessor = session
+                .receiveServerFirstMessage(RFC7677_SERVER_FIRST)
+                .clientFinalProcessor("pencil");
+
+        assertThat(clientFirstMessage).isEqualTo("n,,n=user,r=" + RFC7677_CLIENT_NONCE);
+        assertThat(clientFinalProcessor.clientFinalMessage()).isEqualTo(
+                "c=biws,r=" + RFC7677_COMBINED_NONCE + ",p=dHzbZapWIk4jUhN+Ute9ytag9zjfMHgsqmmiz7AndVQ=");
+        assertThatCode(() -> clientFinalProcessor.receiveServerFinalMessage(RFC7677_SERVER_FINAL))
                 .doesNotThrowAnyException();
     }
 
