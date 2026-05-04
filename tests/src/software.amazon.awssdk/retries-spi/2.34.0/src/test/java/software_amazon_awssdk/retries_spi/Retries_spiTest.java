@@ -71,6 +71,15 @@ public class Retries_spiTest {
     }
 
     @Test
+    void refreshRetryTokenResponseFactoryRejectsNegativeDelay() {
+        RetryToken token = new TestRetryToken("token");
+        Duration negativeDelay = Duration.ofMillis(-1);
+
+        assertThatThrownBy(() -> RefreshRetryTokenResponse.create(token, negativeDelay))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void refreshRetryTokenRequestBuilderRequiresTokenAndFailureAndDefaultsDelayToZero() {
         RetryToken token = new TestRetryToken("retry");
         IllegalStateException failure = new IllegalStateException("transient failure");
@@ -258,6 +267,21 @@ public class Retries_spiTest {
         builder.retryOnRootCauseInstanceOf(IllegalArgumentException.class);
         assertThat(builder.shouldRetry(new RuntimeException(
                 "outer", new NumberFormatException("subclass root")))).isTrue();
+    }
+
+    @Test
+    void retryStrategyBuilderUseClientDefaultsDefaultMethodIsChainable() {
+        TestRetryStrategyBuilder builder = new TestRetryStrategyBuilder();
+
+        TestRetryStrategyBuilder returnedBuilder = builder.useClientDefaults(false)
+                .retryOnExceptionInstanceOf(IllegalArgumentException.class)
+                .maxAttempts(2);
+        TestRetryStrategy strategy = returnedBuilder.build();
+
+        assertThat(returnedBuilder).isSameAs(builder);
+        assertThat(strategy.maxAttempts()).isEqualTo(2);
+        assertThat(strategy.useClientDefaults()).isTrue();
+        assertThat(strategy.shouldRetry(new NumberFormatException("subclass"))).isTrue();
     }
 
     @Test
