@@ -121,6 +121,31 @@ public class Retries_spiTest {
     }
 
     @Test
+    void refreshRetryTokenRequestSupportsConsumerBasedMutationAndCopy() {
+        RetryToken originalToken = new TestRetryToken("original");
+        RetryToken copiedToken = new TestRetryToken("copied");
+        RuntimeException originalFailure = new RuntimeException("original failure");
+        RuntimeException copiedFailure = new RuntimeException("copied failure");
+
+        RefreshRetryTokenRequest original = RefreshRetryTokenRequest.builder()
+                .token(originalToken)
+                .failure(originalFailure)
+                .applyMutation(builder -> builder.suggestedDelay(FIFTY_MILLIS))
+                .build();
+        RefreshRetryTokenRequest copied = original.copy(builder -> builder
+                .token(copiedToken)
+                .suggestedDelay(HUNDRED_MILLIS)
+                .failure(copiedFailure));
+
+        assertThat(original.token()).isSameAs(originalToken);
+        assertThat(original.suggestedDelay()).contains(FIFTY_MILLIS);
+        assertThat(original.failure()).isSameAs(originalFailure);
+        assertThat(copied.token()).isSameAs(copiedToken);
+        assertThat(copied.suggestedDelay()).contains(HUNDRED_MILLIS);
+        assertThat(copied.failure()).isSameAs(copiedFailure);
+    }
+
+    @Test
     void refreshRetryTokenRequestRejectsInvalidBuilderInputs() {
         RetryToken token = new TestRetryToken("retry");
         RuntimeException failure = new RuntimeException("failure");
