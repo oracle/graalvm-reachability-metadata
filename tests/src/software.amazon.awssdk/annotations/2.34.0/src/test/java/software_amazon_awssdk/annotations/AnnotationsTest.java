@@ -8,7 +8,9 @@ package software_amazon_awssdk.annotations;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.annotations.Generated;
@@ -26,6 +28,7 @@ import software.amazon.awssdk.annotations.ThreadSafe;
 import software.amazon.awssdk.annotations.ToBuilderIgnoreField;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AnnotationsTest {
     @Test
@@ -226,6 +229,41 @@ public class AnnotationsTest {
         assertThat(fixture.rebuildToken()).isEqualTo("rebuild-annotations-contract");
     }
 
+    @Test
+    void annotatedComponentsKeepTheirNormalValidationSemantics() {
+        assertThatThrownBy(() -> new AnnotatedClientConfiguration("", "us-east-1", 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("service must not be blank");
+        assertThatThrownBy(() -> new AnnotatedClientConfiguration("s3", "", 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("region must not be blank");
+        assertThatThrownBy(() -> new AnnotatedClientConfiguration("s3", "us-east-1", -1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("maxRetries must not be negative");
+    }
+
+    @Test
+    void sdkAnnotationsCanDocumentFluentBuildersAndIgnoredComputedState() {
+        AnnotatedRequestBuilder builder = new AnnotatedRequestBuilder()
+                .service("dynamodb")
+                .region("ap-south-1")
+                .operation("ListTables")
+                .putAttribute("tenant", "analytics")
+                .withCachedSigningRegion("ap-south-1-signing");
+
+        ServiceOperation operation = builder.build();
+
+        assertThat(builder.ignoredBuilderFields()).containsExactly("cachedSigningRegion", "attributes");
+        assertThat(operation.service()).isEqualTo("dynamodb");
+        assertThat(operation.region()).isEqualTo("ap-south-1");
+        assertThat(operation.operation()).isEqualTo("ListTables");
+        assertThat(operation.signingRegion()).isEqualTo("ap-south-1-signing");
+        assertThat(operation.attributes())
+                .hasSize(2)
+                .containsEntry("tenant", "analytics")
+                .containsEntry("endpoint", "dynamodb.ap-south-1.amazonaws.com");
+    }
+
     @NotNull
     @Generated("metadata-contract")
     @interface MetadataContract {
@@ -378,6 +416,101 @@ public class AnnotationsTest {
         String generatedDescription(String generator) {
             return generator + ":" + name;
         }
+    }
+
+    @Mutable
+    @NotThreadSafe
+    @SdkPublicApi
+    static final class AnnotatedRequestBuilder {
+        @NotNull
+        @SdkPublicApi
+        private String service;
+
+        @NotNull
+        @SdkPublicApi
+        private String region;
+
+        @NotNull
+        @SdkPublicApi
+        private String operation;
+
+        @SdkInternalApi
+        private String cachedSigningRegion;
+
+        private final Map<String, String> attributes = new LinkedHashMap<>();
+
+        @SdkPublicApi
+        AnnotatedRequestBuilder() {
+        }
+
+        @SdkPublicApi
+        AnnotatedRequestBuilder service(@NotNull String service) {
+            this.service = requireText(service, "service");
+            return this;
+        }
+
+        @SdkPublicApi
+        AnnotatedRequestBuilder region(@NotNull String region) {
+            this.region = requireText(region, "region");
+            return this;
+        }
+
+        @SdkPublicApi
+        AnnotatedRequestBuilder operation(@NotNull String operation) {
+            this.operation = requireText(operation, "operation");
+            return this;
+        }
+
+        @SdkPreviewApi
+        AnnotatedRequestBuilder putAttribute(@NotNull String name, @NotNull String value) {
+            attributes.put(requireText(name, "name"), requireText(value, "value"));
+            return this;
+        }
+
+        @SdkProtectedApi
+        AnnotatedRequestBuilder withCachedSigningRegion(@NotNull String signingRegion) {
+            this.cachedSigningRegion = requireText(signingRegion, "signingRegion");
+            return this;
+        }
+
+        @ToBuilderIgnoreField({"cachedSigningRegion", "attributes"})
+        List<String> ignoredBuilderFields() {
+            return List.of("cachedSigningRegion", "attributes");
+        }
+
+        @SdkPublicApi
+        ServiceOperation build() {
+            String resolvedService = requireText(service, "service");
+            String resolvedRegion = requireText(region, "region");
+            String resolvedOperation = requireText(operation, "operation");
+            String signingRegion = cachedSigningRegion == null ? resolvedRegion : cachedSigningRegion;
+            Map<String, String> resolvedAttributes = new LinkedHashMap<>(attributes);
+            resolvedAttributes.put("endpoint", resolvedService + "." + resolvedRegion + ".amazonaws.com");
+            return new ServiceOperation(
+                    resolvedService,
+                    resolvedRegion,
+                    resolvedOperation,
+                    signingRegion,
+                    Map.copyOf(resolvedAttributes));
+        }
+
+        private static String requireText(String value, String fieldName) {
+            if (value == null || value.isBlank()) {
+                throw new IllegalArgumentException(fieldName + " must not be blank");
+            }
+            return value;
+        }
+    }
+
+    @Immutable
+    @ThreadSafe
+    @SdkPublicApi
+    record ServiceOperation(
+            @NotNull String service,
+            @NotNull String region,
+            @NotNull String operation,
+            @SdkInternalApi String signingRegion,
+            @SdkProtectedApi Map<String, String> attributes) {
     }
 
     @SdkTestInternalApi
