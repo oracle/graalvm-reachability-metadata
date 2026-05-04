@@ -8,7 +8,7 @@ package javax_ws_rs.jsr311_api;
 
 import org.junit.jupiter.api.Test;
 
-class Jsr311_apiTest {
+public class Jsr311_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
