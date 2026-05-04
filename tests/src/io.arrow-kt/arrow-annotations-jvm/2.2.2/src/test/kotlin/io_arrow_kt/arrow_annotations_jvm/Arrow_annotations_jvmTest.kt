@@ -53,6 +53,15 @@ public class ArrowAnnotationsJvmTest {
     }
 
     @Test
+    fun opticsAnnotationCanUseDefaultTargetsOnSealedDomainModels() {
+        val authorized: DefaultOpticsPayment = DefaultOpticsPayment.Authorized(reference = "auth-1")
+        val rejected: DefaultOpticsPayment = DefaultOpticsPayment.Rejected(reason = "insufficient funds")
+
+        assertThat(authorized.status()).isEqualTo("authorized:auth-1")
+        assertThat(rejected.status()).isEqualTo("rejected:insufficient funds")
+    }
+
+    @Test
     fun syntheticAnnotationCanDecorateKotlinDeclarationsWithoutChangingBehavior() {
         val sample: SyntheticAnnotatedSample = SyntheticAnnotatedSample("payload")
         sample.mutableValue = "updated"
@@ -94,6 +103,18 @@ private data class CopyAnnotatedPricing(
     val amount: Double,
     val currency: String,
 )
+
+@optics
+private sealed interface DefaultOpticsPayment {
+    fun status(): String = when (this) {
+        is Authorized -> "authorized:$reference"
+        is Rejected -> "rejected:$reason"
+    }
+
+    data class Authorized(val reference: String) : DefaultOpticsPayment
+
+    data class Rejected(val reason: String) : DefaultOpticsPayment
+}
 
 @synthetic
 private class SyntheticAnnotatedSample @synthetic constructor(
