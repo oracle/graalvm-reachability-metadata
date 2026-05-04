@@ -6,8 +6,14 @@
 import json
 import os
 import re
+import subprocess
 
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
+from ai_workflows.workflow_strategies.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+)
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, format_call_sites
 from utility_scripts.pgo_near_call_report import format_pgo_near_call_guidance
 from utility_scripts.runtime_context import collect_runtime_environment_summary
@@ -64,6 +70,52 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
         self._runtime_environment_summary = str(
             self.context.get("runtime_environment_summary") or collect_runtime_environment_summary()
         )
+
+    def run(self, agent, checkpoint_commit_hash):
+        initial_report = self._generate_dynamic_access_report()
+        if initial_report is None:
+            self._print_dynamic_access_message(
+                "PGO profile-driven exploration cannot continue without dynamic-access guidance: "
+                f"cause={self._dynamic_access_fallback_cause()} "
+                f"previous_report={self._current_dynamic_access_status()} "
+                f"coordinate={self.library}"
+            )
+            self._print_failure_analysis(
+                "pgo_profile_driven_exploration",
+                issue=self._dynamic_access_fallback_cause(),
+                indent_level=1,
+            )
+            return RUN_STATUS_FAILURE, 0, 0
+
+        if not initial_report.has_dynamic_access or initial_report.total_calls == 0:
+            self._print_dynamic_access_message(
+                "PGO profile-driven exploration cannot continue because the dynamic-access report "
+                "contains no call-site guidance: "
+                f"cause={self._dynamic_access_fallback_cause()} "
+                f"coordinate={self.library}"
+            )
+            self._print_failure_analysis(
+                "pgo_profile_driven_exploration",
+                issue=self._dynamic_access_fallback_cause(),
+                indent_level=1,
+                has_dynamic_access=str(initial_report.has_dynamic_access).lower(),
+                total_calls=initial_report.total_calls,
+                covered_calls=initial_report.covered_calls,
+            )
+            return RUN_STATUS_FAILURE, 0, 0
+
+        self._maybe_activate_large_library_series(initial_report)
+
+        global_iterations = 0
+        phase_ok, extra_iterations = self._run_dynamic_access_phase(agent, initial_report)
+        global_iterations += extra_iterations
+        if self._last_phase_status == RUN_STATUS_CHUNK_READY:
+            return RUN_STATUS_CHUNK_READY, global_iterations, 1
+        if not phase_ok:
+            subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
+            return RUN_STATUS_FAILURE, global_iterations, 0
+
+        return RUN_STATUS_SUCCESS, global_iterations, 1
 
     def _dynamic_access_prompt_extras(self, active_class) -> dict:
         guidance = self._pgo_guidance_by_class.get(active_class.class_name)

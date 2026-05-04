@@ -14,10 +14,41 @@ from ai_workflows.workflow_strategies.pgo_profile_driven_exploration_strategy im
     PgoNearCallGuidanceUnavailableError,
     PgoProfileDrivenExplorationStrategy,
 )
+from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, DynamicAccessClass, DynamicAccessCoverageReport
 
 
 class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
+    def test_run_fails_instead_of_basic_fallback_when_initial_report_is_unavailable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            with patch.object(strategy, "_generate_dynamic_access_report", return_value=None), \
+                    patch.object(
+                        strategy,
+                        "_run_basic_iterative_fallback",
+                        side_effect=AssertionError("basic fallback must not run"),
+                    ):
+                status, iterations, generated_tests = strategy.run(agent=object(), checkpoint_commit_hash="checkpoint")
+
+        self.assertEqual(status, RUN_STATUS_FAILURE)
+        self.assertEqual(iterations, 0)
+        self.assertEqual(generated_tests, 0)
+
+    def test_run_fails_instead_of_basic_fallback_when_report_has_no_dynamic_access(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            with patch.object(strategy, "_generate_dynamic_access_report", return_value=self._empty_report()), \
+                    patch.object(
+                        strategy,
+                        "_run_basic_iterative_fallback",
+                        side_effect=AssertionError("basic fallback must not run"),
+                    ):
+                status, iterations, generated_tests = strategy.run(agent=object(), checkpoint_commit_hash="checkpoint")
+
+        self.assertEqual(status, RUN_STATUS_FAILURE)
+        self.assertEqual(iterations, 0)
+        self.assertEqual(generated_tests, 0)
+
     def test_refresh_runs_pgo_diagnostic_task_and_formats_guidance_for_active_class(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             strategy = self._strategy(tmpdir)
@@ -381,6 +412,16 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
                     ],
                 )
             ],
+        )
+
+    @staticmethod
+    def _empty_report() -> DynamicAccessCoverageReport:
+        return DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=False,
+            total_calls=0,
+            covered_calls=0,
+            classes=[],
         )
 
 
