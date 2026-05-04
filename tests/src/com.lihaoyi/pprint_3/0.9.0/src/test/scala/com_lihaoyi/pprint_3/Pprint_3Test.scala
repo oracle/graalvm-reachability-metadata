@@ -173,11 +173,42 @@ class Pprint_3Test {
     assertTrue(plainLoggedOutput.contains("List(1, 2, 3)"))
   }
 
+  @Test
+  def logsThroughErrFacadeToStandardError(): Unit = {
+    val stdout: String = captureStandardOut {
+      val stderr: String = captureStandardErr {
+        val value: Vector[String] = Vector("warning", "details")
+        val returned: Vector[String] = PPrinter.BlackWhite.err.log(value, tag = "stderr", width = 80)
+        assertEquals(value, returned)
+      }
+      val plainStderr: String = stripAnsi(stderr)
+
+      assertTrue(plainStderr.contains("stderr"))
+      assertTrue(plainStderr.contains("Vector(\"warning\", \"details\")"))
+    }
+
+    assertEquals("", stdout)
+  }
+
   private def captureStandardOut(body: => Unit): String = {
     val buffer: ByteArrayOutputStream = new ByteArrayOutputStream()
     val stream: PrintStream = new PrintStream(buffer, true, StandardCharsets.UTF_8)
     try {
       Console.withOut(stream) {
+        body
+      }
+      stream.flush()
+      new String(buffer.toByteArray, StandardCharsets.UTF_8)
+    } finally {
+      stream.close()
+    }
+  }
+
+  private def captureStandardErr(body: => Unit): String = {
+    val buffer: ByteArrayOutputStream = new ByteArrayOutputStream()
+    val stream: PrintStream = new PrintStream(buffer, true, StandardCharsets.UTF_8)
+    try {
+      Console.withErr(stream) {
         body
       }
       stream.flush()
