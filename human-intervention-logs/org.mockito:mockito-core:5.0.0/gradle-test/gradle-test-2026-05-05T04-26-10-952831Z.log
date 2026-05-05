@@ -1,0 +1,142 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mockito:mockito-core:5.0.0
+Command: `/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-b842c236/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by net.bytebuddy.dynamic.loading.ClassInjector$UsingUnsafe$Dispatcher$CreationAction (file:/home/vjovanov/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy/1.12.22/984e536b4f3fb668b21f15b90c1e8704292d4bdd/byte-buddy-1.12.22.jar)
+WARNING: Please consider reporting this to the maintainers of class net.bytebuddy.dynamic.loading.ClassInjector$UsingUnsafe$Dispatcher$CreationAction
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+
+> Task :test FAILED
+
+ModuleHandlerInnerModuleSystemFoundTest > subclassMockMakerAdjustsModuleGraphForNonExportedJdkZipfsProvider() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: class jdk.nio.zipfs.ZipFileSystemProvider.
+
+    Mockito can only mock non-private & non-final classes, but the root cause of this error might be different.
+    Please check the full stacktrace to understand what the issue is.
+    If you're still not sure why you're getting this error, please open an issue on GitHub.
+
+
+    Java               : 25
+    JVM vendor name    : Oracle Corporation
+    JVM vendor version : 25.0.3+9-LTS-jvmci-b01
+    JVM name           : Java HotSpot(TM) 64-Bit Server VM
+    JVM version        : 25.0.3+9-LTS-jvmci-b01
+    JVM info           : mixed mode, sharing
+    OS name            : Linux
+    OS version         : 6.17.0-22-generic
+
+
+    Underlying exception : java.lang.IllegalArgumentException: Could not create type
+        at app//org_mockito.mockito_core.ModuleHandlerInnerModuleSystemFoundTest.subclassMockMakerAdjustsModuleGraphForNonExportedJdkZipfsProvider(ModuleHandlerInnerModuleSystemFoundTest.java:27)
+
+        Caused by:
+        java.lang.IllegalArgumentException: Could not create type
+            at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:170)
+            at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:40)
+            at org.mockito.internal.creation.bytebuddy.SubclassByteBuddyMockMaker.createMockType(SubclassByteBuddyMockMaker.java:77)
+            at org.mockito.internal.creation.bytebuddy.SubclassByteBuddyMockMaker.createMock(SubclassByteBuddyMockMaker.java:43)
+            at org.mockito.internal.creation.bytebuddy.ByteBuddyMockMaker.createMock(ByteBuddyMockMaker.java:42)
+            at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+            at org.mockito.internal.MockitoCore.mock(MockitoCore.java:88)
+            at org.mockito.Mockito.mock(Mockito.java:2037)
+            ... 1 more
+
+            Caused by:
+            java.lang.IllegalAccessError: class jdk.nio.zipfs.ZipFileSystemProvider$MockitoModuleProbe$61ropa3vg24vv1 (in module jdk.zipfs) cannot access class org.mockito.codegen.MockitoTypeCarrier$61ropa3vg24vv1 (in unnamed module @0x39b3fca4) because module jdk.zipfs does not read unnamed module @0x39b3fca4
+                at jdk.zipfs/jdk.nio.zipfs.ZipFileSystemProvider$MockitoModuleProbe$61ropa3vg24vv1.<clinit>(Unknown Source)
+                at java.base/java.lang.Class.forName0(Native Method)
+                at java.base/java.lang.Class.forName(Class.java:547)
+                at org.mockito.internal.creation.bytebuddy.ModuleHandler$ModuleSystemFound.adjustModuleGraph(ModuleHandler.java:263)
+                at org.mockito.internal.creation.bytebuddy.SubclassBytecodeGenerator.mockClass(SubclassBytecodeGenerator.java:217)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:47)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                ... 11 more
+3 tests completed, 1 failed
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-b842c236/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-b842c236/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-b842c236/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mockito:mockito-core:5.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 7s
+9 actionable tasks: 1 executed, 8 up-to-date
