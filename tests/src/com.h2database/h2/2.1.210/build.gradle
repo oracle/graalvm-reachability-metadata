@@ -30,12 +30,12 @@ tasks.named("test") {
     systemProperty "h2.upgrade.oldJar", upgradeLegacyH2Jar
 }
 
-tasks.named("nativeTest") {
-    runtimeArgs.add("-Dh2.nioCleanerHack=true")
-    runtimeArgs.add("-Dh2.upgrade.oldJar=$upgradeLegacyH2Jar")
-}
-
 graalvmNative {
+    binaries {
+        test {
+            buildArgs("-H:+AllowJRTFileSystem")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
@@ -49,4 +49,11 @@ graalvmNative {
             outputDirectories.add("src/test/resources/META-INF/native-image/com.h2database/h2")
         }
     }
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+    runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+    runtimeArgs.add("-Dh2.nioCleanerHack=true")
+    runtimeArgs.add("-Dh2.upgrade.oldJar=$upgradeLegacyH2Jar")
 }

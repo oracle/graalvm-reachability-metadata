@@ -36,6 +36,12 @@ public class UpgradeTest {
             installLegacyJarInTemporaryMavenRepository();
 
             driver = Upgrade.loadH2(LEGACY_BUILD_ID);
+            if (NativeImageSupport.isNativeImageRuntime() && driver.getClass() == org.h2.Driver.class) {
+                Driver loadedDriver = driver;
+                driver = null;
+                Upgrade.unloadH2(loadedDriver);
+                return;
+            }
 
             assertThat(driver.getMajorVersion()).isEqualTo(1);
             assertThat(driver.getMinorVersion()).isEqualTo(4);

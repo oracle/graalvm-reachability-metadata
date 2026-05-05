@@ -45,6 +45,6 @@ public class CompareModeIcu4JTest {
         CompareMode mode = CompareMode.getInstance(CompareMode.ICU4J + "en-US", Collator.PRIMARY);
 
         assertThat(mode.getName()).isEqualTo("en-US");
-        assertThat(mode.compareString("resume", "résumé", false)).isZero();
+        assertThat(mode.compareString("resume", "r\u00e9sum\u00e9", false)).isZero();
     }
 }
