@@ -192,6 +192,94 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             strategy.dynamic_access_report_path,
         )
 
+    def test_native_test_gate_flushes_leftover_classes_at_end(self) -> None:
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> None:
+                pass
+
+            def run_test_command(self, command: str) -> str:
+                return "BUILD SUCCESSFUL"
+
+            def clear_context(self) -> None:
+                pass
+
+        class_names = ["org.example.A", "org.example.B", "org.example.C", "org.example.D"]
+        reports = [
+            self._report_for_class_names(class_names, ["org.example.A"]),
+            self._report_for_class_names(class_names, ["org.example.A", "org.example.B"]),
+            self._report_for_class_names(class_names, ["org.example.A", "org.example.B", "org.example.C"]),
+            self._report_for_class_names(class_names, class_names),
+            self._report_for_class_names(class_names, class_names),
+        ]
+        strategy = self._strategy()
+        gate_calls: list[str] = []
+
+        def _gate(class_name: str) -> bool:
+            gate_calls.append(class_name)
+            return True
+
+        with patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                patch.object(strategy, "_generate_dynamic_access_report", side_effect=reports), \
+                patch.object(strategy, "_commit_test_sources"), \
+                patch.object(strategy, "_run_native_test_verification_gate", side_effect=_gate), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch(
+                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="checkpoint\n",
+                ):
+            phase_ok, iterations = strategy._run_dynamic_access_phase(
+                FakeAgent(),
+                self._report_for_class_names(class_names, []),
+            )
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 4)
+        self.assertEqual(gate_calls, ["org.example.D__native_batch_4"])
+
+    def test_native_test_gate_uses_configured_batch_size(self) -> None:
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> None:
+                pass
+
+            def run_test_command(self, command: str) -> str:
+                return "BUILD SUCCESSFUL"
+
+            def clear_context(self) -> None:
+                pass
+
+        class_names = ["org.example.A", "org.example.B", "org.example.C"]
+        reports = [
+            self._report_for_class_names(class_names, ["org.example.A"]),
+            self._report_for_class_names(class_names, ["org.example.A", "org.example.B"]),
+            self._report_for_class_names(class_names, ["org.example.A", "org.example.B"]),
+            self._report_for_class_names(class_names, class_names),
+            self._report_for_class_names(class_names, class_names),
+        ]
+        strategy = self._strategy(parameters={"native-test-verification-batch-size": 2})
+        gate_calls: list[str] = []
+
+        def _gate(class_name: str) -> bool:
+            gate_calls.append(class_name)
+            return True
+
+        with patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                patch.object(strategy, "_generate_dynamic_access_report", side_effect=reports), \
+                patch.object(strategy, "_commit_test_sources"), \
+                patch.object(strategy, "_run_native_test_verification_gate", side_effect=_gate), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch(
+                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="checkpoint\n",
+                ):
+            phase_ok, iterations = strategy._run_dynamic_access_phase(
+                FakeAgent(),
+                self._report_for_class_names(class_names, []),
+            )
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(gate_calls, ["org.example.B__native_batch_2", "org.example.C"])
+
     def test_partially_covered_exhausted_class_is_persisted_for_continuation(self) -> None:
         class FakeAgent:
             def send_prompt(self, prompt: str) -> None:
@@ -471,18 +559,38 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             call_sites=[],
         )
 
+    @classmethod
+    def _report_for_class_names(
+            cls,
+            class_names: list[str],
+            covered_class_names: list[str],
+    ) -> DynamicAccessCoverageReport:
+        covered = set(covered_class_names)
+        return DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=len(class_names),
+            covered_calls=len(covered),
+            classes=[
+                cls._class_coverage(class_name, 1, 1 if class_name in covered else 0)
+                for class_name in class_names
+            ],
+        )
+
     @staticmethod
     def _strategy(**context) -> DynamicAccessIterativeStrategy:
         library = context.pop("library", "org.example:lib:1.0.0")
         reachability_repo_path = context.pop("reachability_repo_path", "/tmp/reachability")
+        parameters = {
+            "max-iterations": 1,
+            "max-class-test-iterations": 1,
+        }
+        parameters.update(context.pop("parameters", {}))
         return DynamicAccessIterativeStrategy(
             {
                 "model": "test-model",
                 "prompts": {"dynamic-access-iteration": "unused"},
-                "parameters": {
-                    "max-iterations": 1,
-                    "max-class-test-iterations": 1,
-                },
+                "parameters": parameters,
             },
             library=library,
             reachability_repo_path=reachability_repo_path,

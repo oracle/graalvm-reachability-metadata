@@ -223,6 +223,12 @@ class GateRoutingTests(unittest.TestCase):
         self.repo = tempfile.mkdtemp(prefix="repo-")
         self.addCleanup(_rmtree, self.repo)
         _make_complete_reachability_repo(self.repo)
+        self.repo_validation = patch(
+            "utility_scripts.native_test_verification.require_complete_reachability_repo",
+            return_value=self.repo,
+        )
+        self.repo_validation.start()
+        self.addCleanup(self.repo_validation.stop)
         self.output_dir = os.path.join(
             tempfile.mkdtemp(prefix="output-"),
             "natively-collected",
