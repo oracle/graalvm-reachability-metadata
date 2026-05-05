@@ -6,7 +6,9 @@
  */
 package com_github_pureconfig.pureconfig_generic_scala3_3
 
-import com.typesafe.config.{Config, ConfigObject}
+import java.util.Locale
+
+import com.typesafe.config.{Config, ConfigObject, ConfigValue}
 import org.junit.jupiter.api.Assertions.{assertEquals, assertFalse, assertTrue, fail}
 import org.junit.jupiter.api.Test
 import pureconfig.{CamelCase, ConfigFieldMapping, ConfigReader, ConfigSource, ConfigWriter, SnakeCase}
@@ -74,6 +76,14 @@ object PureconfigGenericScala3Models {
 
   given ConfigReader[Release] = deriveReader[Release]
   given ConfigWriter[Release] = deriveWriter[Release]
+
+  enum DatabaseAccess {
+    case ReadOnly, ReadWrite
+  }
+
+  given pureconfig.ConfigConvert[DatabaseAccess] = deriveEnumerationConvert[DatabaseAccess] { (name: String) =>
+    s"database-${name.toLowerCase(Locale.ROOT)}"
+  }
 }
 
 class Pureconfig_generic_scala3_3Test {
@@ -229,5 +239,24 @@ class Pureconfig_generic_scala3_3Test {
 
     val roundTripped: Release = ConfigSource.fromConfig(written.toConfig).loadOrThrow[Release]
     assertEquals(Release(DeploymentMode.Canary), roundTripped)
+  }
+
+  @Test
+  def derivesEnumConvertersWithCustomNameTransformation(): Unit = {
+    val access: DatabaseAccess = ConfigSource
+      .string("access = database-readonly")
+      .at("access")
+      .loadOrThrow[DatabaseAccess]
+
+    assertEquals(DatabaseAccess.ReadOnly, access)
+
+    val written: ConfigValue = ConfigWriter[DatabaseAccess].to(DatabaseAccess.ReadWrite)
+    assertEquals("database-readwrite", written.unwrapped())
+
+    val roundTripped: DatabaseAccess = ConfigSource
+      .string(s"access = ${written.render()}")
+      .at("access")
+      .loadOrThrow[DatabaseAccess]
+    assertEquals(DatabaseAccess.ReadWrite, roundTripped)
   }
 }
