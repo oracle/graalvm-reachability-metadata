@@ -8,7 +8,7 @@ package org_apache_maven.maven_core;
 
 import org.junit.jupiter.api.Test;
 
-class Maven_coreTest {
+public class Maven_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
