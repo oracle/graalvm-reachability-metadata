@@ -7,10 +7,14 @@
 package dnsjava.dnsjava;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +71,7 @@ import org.xbill.DNS.Type;
 import org.xbill.DNS.URIRecord;
 import org.xbill.DNS.Update;
 import org.xbill.DNS.Zone;
+import org.xbill.DNS.ZoneTransferIn;
 import org.xbill.DNS.utils.base32;
 import org.xbill.DNS.utils.base64;
 
@@ -295,6 +300,37 @@ public class DnsjavaTest {
     }
 
     @Test
+    void performsAuthoritativeZoneTransferOverTcp() throws Exception {
+        Name origin = Name.fromString("example.com.");
+        SOARecord soa = new SOARecord(origin, DClass.IN, 3_600, Name.fromString("ns.example.com."),
+                Name.fromString("hostmaster.example.com."), 2024050502L, 7_200L, 3_600L, 1_209_600L, 300L);
+        ARecord address = new ARecord(Name.fromString("www.example.com."), DClass.IN, 300,
+                InetAddress.getByName("192.0.2.90"));
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try (ServerSocket serverSocket = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            serverSocket.setSoTimeout(5_000);
+            Future<?> server = executor.submit(() -> answerOneTcpZoneTransfer(serverSocket, origin, soa, address));
+
+            ZoneTransferIn transfer = ZoneTransferIn.newAXFR(origin,
+                    new InetSocketAddress(InetAddress.getLoopbackAddress(), serverSocket.getLocalPort()), null);
+            transfer.setTimeout(2);
+            List<Record> transferredRecords = transfer.run();
+
+            assertThat(transfer.getName()).isEqualTo(origin);
+            assertThat(transfer.getType()).isEqualTo(Type.AXFR);
+            assertThat(transfer.isAXFR()).isTrue();
+            assertThat(transfer.isIXFR()).isFalse();
+            assertThat(transfer.getAXFR()).isEqualTo(transferredRecords);
+            assertThat(transferredRecords).containsExactly(soa, address, soa);
+            server.get(5, TimeUnit.SECONDS);
+        } finally {
+            executor.shutdownNow();
+            assertThatCode(() -> executor.awaitTermination(5, TimeUnit.SECONDS)).doesNotThrowAnyException();
+        }
+    }
+
+    @Test
     void performsLookupFromCacheAndLocalUdpResolver() throws Exception {
         Name name = Name.fromString("cached.example.com.");
         Cache cache = new Cache(DClass.IN);
@@ -330,6 +366,37 @@ public class DnsjavaTest {
         } finally {
             executor.shutdownNow();
             assertThatCode(() -> executor.awaitTermination(5, TimeUnit.SECONDS)).doesNotThrowAnyException();
+        }
+    }
+
+    private static void answerOneTcpZoneTransfer(ServerSocket serverSocket, Name origin, SOARecord soa,
+            ARecord address) {
+        try (Socket socket = serverSocket.accept();
+                DataInputStream input = new DataInputStream(socket.getInputStream());
+                DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
+            socket.setSoTimeout(5_000);
+            int length = input.readUnsignedShort();
+            byte[] queryBytes = input.readNBytes(length);
+            Message query = new Message(queryBytes);
+            Record question = query.getQuestion();
+
+            assertThat(question.getName()).isEqualTo(origin);
+            assertThat(question.getType()).isEqualTo(Type.AXFR);
+
+            Message response = new Message(query.getHeader().getID());
+            response.getHeader().setFlag(Flags.QR);
+            response.getHeader().setFlag(Flags.AA);
+            response.addRecord(question, Section.QUESTION);
+            response.addRecord(soa, Section.ANSWER);
+            response.addRecord(address, Section.ANSWER);
+            response.addRecord(soa, Section.ANSWER);
+
+            byte[] responseBytes = response.toWire();
+            output.writeShort(responseBytes.length);
+            output.write(responseBytes);
+            output.flush();
+        } catch (Exception exception) {
+            throw new IllegalStateException("DNS TCP zone transfer test server failed", exception);
         }
     }
 
