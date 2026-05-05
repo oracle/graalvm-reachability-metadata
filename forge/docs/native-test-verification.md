@@ -27,9 +27,14 @@ for a given coordinate. The ordered recovery contract is:
    `-H:+MetadataTracingSupport`, `--exact-reachability-metadata`, and
    `-H:MissingRegistrationReportingMode=Exit`.
 4. If native tracing converges, merge the accepted trace dirs into
-   `output_dir` and return `PASSED`. If tracing stalls, exhausts its budget,
-   or fails for a non-metadata reason, route the accumulated diagnostics to
-   codex. Codex is the final recovery step.
+   `output_dir`, fold the merged metadata into the durable
+   `metadata/<group>/<artifact>/<version>/reachability-metadata.json`,
+   and return `PASSED`. If tracing stalls, exhausts its budget, or fails
+   for a non-metadata reason, route the accumulated diagnostics to codex.
+   Codex is the final recovery step — the only failures that bypass it
+   are failures of the post-success merge or durable-aggregation steps
+   themselves, which are infrastructure problems codex cannot repair and
+   therefore terminate as `FAILED` directly (see §4 gate semantics).
 
 Pi is **not** invoked. Removing failing tests would mask exactly the code
 issues that must surface to the coding agent.
@@ -64,7 +69,10 @@ branch to its checkpoint.
   `mergeNativeTraceMetadata` invocation at the end). It may remain empty
   when JVM-agent metadata alone made the native tests pass, when Codex is
   invoked before tracing, or when Codex is invoked after a stalled trace
-  fallback. Empty on `FAILED`.
+  fallback. Empty on `FAILED`, except when the failure is the trace-output
+  merge (`mergeNativeTraceMetadata`) or the durable-metadata aggregation
+  step itself — in that case `output_dir` may contain whatever the
+  partially completed merge wrote before the failure.
 - `iterations_used` — number of outer cycles consumed.
 - `last_native_test_log_path` — absolute path to the last relevant
   Gradle log (`generateMetadata`, `test`, or `runNativeTraceImage`).
@@ -167,6 +175,21 @@ Gate semantics:
   for diagnostics.)
 - **Hard fail.** If codex does not converge, the gate returns `FAILED` and
   the calling workflow aborts; see §6.
+- **Merge and aggregation failures are terminal without codex.** Two
+  post-success steps run after a trace cycle returns binary exit `0`:
+  (a) `./gradlew mergeNativeTraceMetadata` consolidates the accepted
+  per-cycle dirs into `output_dir`; (b) the durable-metadata aggregation
+  folds `output_dir/reachability-metadata.json` into
+  `metadata/<group>/<artifact>/<version>/reachability-metadata.json`. If
+  either step fails, the gate returns `FAILED` directly. Codex is **not**
+  invoked for these failures: they are infrastructure problems (Gradle
+  merge task, filesystem write, malformed durable JSON) downstream of a
+  successful trace, and codex cannot repair the metadata pipeline itself.
+  The calling workflow handles them like any other `FAILED` (§6). This is
+  the only carve-out from the "only codex failure may FAIL" invariant —
+  every other failure mode (JVM-agent failure, `gradlew test` failure
+  before `nativeTest`, `172` with no usable / no new metadata, non-`0`/
+  `172` trace cycle exit, budget exhaustion) routes through codex first.
 
 ## 5. Reusable Implementation Surface
 
@@ -248,7 +271,12 @@ A `verify_native_test_passes(...)` invocation is correct iff:
    "exit value N" log line and routed:
    - `0` → run `mergeNativeTraceMetadata` once with all accepted run
      dirs as `-PinputDirs=` and the caller's `output_dir` as
-     `-PoutputDir=`, then return `PASSED`.
+     `-PoutputDir=`, then fold the resulting reachability metadata into
+     `metadata/<group>/<artifact>/<version>/reachability-metadata.json`,
+     then return `PASSED`. If either the `mergeNativeTraceMetadata` task
+     or the durable-aggregation step fails, return `FAILED` directly —
+     codex is **not** invoked for these post-success infrastructure
+     failures.
    - `172` with new trace metadata entries → append
      `runs_dir/cycle-<i>` to the running config dirs and continue to the
      next outer cycle. Codex is **not** invoked.

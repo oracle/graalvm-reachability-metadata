@@ -27,6 +27,7 @@ class until coverage is reached or the per-class budget is exhausted.
 | Per-attempt test-retry cap | strategy parameter `max-class-test-iterations` | yes |
 | Class iteration prompt | strategy `prompts["dynamic-access-iteration"]` | yes |
 | Per-class native-test verification budget | strategy parameter `max-native-test-verification-iterations` | yes (default 100) |
+| Native-test verification batch size | strategy parameter `native-test-verification-batch-size` | no (default 5; must be >= 1) |
 | Keep tests without DA gain | `--keep-tests-without-dynamic-access` | no |
 
 ## 3. Outputs
@@ -195,7 +196,9 @@ prompt-iteration count, and the entry script resets the branch to
 ### 6.4 Per-class native-test verification gate
 
 After every per-class iteration that committed a coverage gain — i.e. the
-**Resolved** or **PartialCommit** branches in §6.2 — the strategy invokes
+**Resolved** or **PartialCommit** branches in §6.2 — the strategy queues
+one native-test verification step. When the queue reaches
+`native-test-verification-batch-size` (default `5`), the strategy invokes
 the [Native test verification gate](native-test-verification.md) for the
 current coordinate with
 
@@ -204,8 +207,12 @@ output_dir = tests/src/<group>/<artifact>/<version>/build/natively-collected/<cl
 ```
 
 where `<class-key>` is a sanitized form of the class name the per-class
-iteration just resolved or advanced. The gate always starts with the
-normal JVM-agent metadata path:
+iteration that triggered the batch flush just resolved or advanced, with a
+batch suffix when the flush contains more than one class step. If the loop
+finishes, or a large-library chunk boundary is reached, with fewer than the
+configured number of queued class steps, the strategy flushes that partial
+batch before returning. The gate always starts with the normal JVM-agent
+metadata path:
 
 ```text
 ./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar
@@ -223,10 +230,11 @@ failed tracing to Codex. Pi is not part of this gate.
 
 Effects within this workflow:
 
-1. The contents of the gate's `output_dir`, if any trace-backed metadata
-   was merged there, are added to the agent's read-only context for
-   subsequent class iterations. The directory may remain empty when
-   JVM-agent metadata alone made the native tests pass.
+1. The gate keeps metadata cumulative. JVM-agent output is written to the
+   durable `metadata/<group>/<artifact>/<version>/` directory; if native
+   tracing was needed, the merged trace output is also folded into that
+   durable metadata file before the next batch starts or before the phase
+   returns.
 2. The dynamic-access coverage report is regenerated **after** the gate so
    that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.
@@ -310,7 +318,7 @@ useful.
 | `utility_scripts/source_context.py` | `populate_artifact_urls`, `normalize_source_context_types`, `prepare_source_contexts`, `resolve_test_source_layout`. |
 | `utility_scripts/dynamic_access_report.py` | `load_dynamic_access_coverage_report`, `compute_class_delta`, `format_call_sites`. |
 | `utility_scripts/native_metadata_exploration.py` | `run_native_metadata_exploration` — the standalone trace loop used as a precondition to codex fixup at finalization, and the Gradle task contract reused by the verification gate's fallback. See [native-metadata-exploration.md](native-metadata-exploration.md). |
-| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the per-class gate invoked after every class with coverage gain; it runs JVM-agent metadata first, native tracing only as fallback, and Codex last. See [native-test-verification.md](native-test-verification.md). |
+| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the native-test gate invoked for each configured batch of classes with coverage gain; it runs JVM-agent metadata first, native tracing only as fallback, and Codex last. See [native-test-verification.md](native-test-verification.md). |
 | `prompt_templates/dynamic_access/dynamic-access-iteration.md` | Per-class prompt template. |
 | Reachability-repo Gradle tasks | `scaffold`, `populateArtifactURLs`, `generateDynamicAccessCoverageReport`, `test`, `nativeTest`, `generateMetadata`, `generateLibraryStats`. |
 
@@ -328,11 +336,11 @@ support iff **all** of the following hold at exit:
    `run_native_metadata_exploration(...)` runs **before** any codex fixup; the
    fixup is invoked only when exploration returns `SUCCESS` or
    `BUDGET_EXHAUSTED`.
-3. After every per-class iteration that committed a coverage gain
-   (Resolved or PartialCommit), the
-   [native test verification gate](native-test-verification.md) was
-   invoked and returned `PASSED` or `PASSED_WITH_INTERVENTION`. A `FAILED`
-   gate result aborts the run with `RUN_STATUS_FAILURE`.
+3. After each configured batch of per-class iterations that committed a
+   coverage gain (Resolved or PartialCommit), and once more for any final
+   partial batch, the [native test verification gate](native-test-verification.md)
+   was invoked and returned `PASSED` or `PASSED_WITH_INTERVENTION`. A
+   `FAILED` gate result aborts the run with `RUN_STATUS_FAILURE`.
 4. The scaffold-placeholder quality gate
    (`cleanup_scaffold_placeholder_tests`) leaves no remaining placeholders.
 5. The metrics record validates against the active schema.

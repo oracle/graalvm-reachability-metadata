@@ -193,6 +193,19 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         return true;
     }
 
+    /**
+     * Forward a Gradle property to a subprocess command as `-P<name>=<value>` if the project sets it.
+     *
+     * Used by tasks that re-invoke `./gradlew` and must propagate inputs (e.g. `metadataConfigDirs`)
+     * to the inner build. No-op when the property is unset.
+     */
+    protected void appendProperty(List<String> command, String propertyName) {
+        Object propertyValue = getProject().findProperty(propertyName);
+        if (propertyValue != null) {
+            command.add("-P" + propertyName + "=" + propertyValue);
+        }
+    }
+
     private static String md5(String s) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");

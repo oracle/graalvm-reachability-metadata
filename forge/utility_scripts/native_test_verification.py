@@ -27,6 +27,7 @@ from dataclasses import dataclass, field
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
@@ -231,6 +232,12 @@ def verify_native_test_passes(
             if not _merge_into_output(
                 reachability_repo_path=reachability_repo_path,
                 run_dirs=run_dirs_to_merge,
+                output_dir=output_dir,
+            ):
+                return _make_result(STATUS_FAILED, cycle + 1)
+            if not _aggregate_trace_metadata(
+                reachability_repo_path=reachability_repo_path,
+                coordinate=coordinate,
                 output_dir=output_dir,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
@@ -821,6 +828,115 @@ def _print_aggregated_metadata_path(output_dir: str) -> None:
         os.path.join(output_dir, _AGGREGATED_METADATA_FILE_NAME),
         indent_level=1,
     )
+
+
+def _aggregate_trace_metadata(
+        reachability_repo_path: str,
+        coordinate: str,
+        output_dir: str,
+) -> bool:
+    """Merge trace-backed metadata into the durable library metadata file."""
+    trace_metadata_path = os.path.join(output_dir, _AGGREGATED_METADATA_FILE_NAME)
+    if not os.path.isfile(trace_metadata_path):
+        log_stage(_GATE_STAGE, "native trace produced no reachability-metadata.json to aggregate")
+        return True
+
+    try:
+        group, artifact, library_version = coordinate.split(":", 2)
+        metadata_version = resolve_metadata_version(
+            reachability_repo_path,
+            group,
+            artifact,
+            library_version,
+        )
+        durable_metadata_path = os.path.join(
+            reachability_repo_path,
+            "metadata",
+            group,
+            artifact,
+            metadata_version,
+            _AGGREGATED_METADATA_FILE_NAME,
+        )
+        durable_metadata = _read_metadata_json(durable_metadata_path)
+        trace_metadata = _read_metadata_json(trace_metadata_path)
+        merged_metadata = _merge_metadata(durable_metadata, trace_metadata)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        log_stage(_GATE_STAGE, f"failed to aggregate native trace metadata: {exc}", indent_level=1)
+        return False
+
+    if merged_metadata == durable_metadata:
+        log_stage(_GATE_STAGE, "native trace metadata already present in durable metadata")
+        return True
+
+    os.makedirs(os.path.dirname(durable_metadata_path), exist_ok=True)
+    with open(durable_metadata_path, "w", encoding="utf-8") as metadata_file:
+        json.dump(merged_metadata, metadata_file, indent=2)
+        metadata_file.write("\n")
+    log_stage(
+        _GATE_STAGE,
+        f"aggregated native trace metadata into {os.path.relpath(durable_metadata_path, reachability_repo_path)}",
+    )
+    return True
+
+
+def _read_metadata_json(path: str) -> dict:
+    if not os.path.isfile(path):
+        return {}
+    with open(path, "r", encoding="utf-8") as metadata_file:
+        data = json.load(metadata_file)
+    if not isinstance(data, dict):
+        raise ValueError(f"Reachability metadata must be a JSON object: {path}")
+    return data
+
+
+def _merge_metadata(base: dict, addition: dict) -> dict:
+    merged = dict(base)
+    for key, value in addition.items():
+        if key not in merged:
+            merged[key] = value
+            continue
+        merged[key] = _merge_metadata_value(merged[key], value)
+    return merged
+
+
+def _merge_metadata_value(base_value: object, addition_value: object) -> object:
+    if isinstance(base_value, list) and isinstance(addition_value, list):
+        merged = list(base_value)
+        seen_entries = {_canonical_metadata_key(entry) for entry in merged}
+        for entry in addition_value:
+            entry_key = _canonical_metadata_key(entry)
+            if entry_key not in seen_entries:
+                merged.append(entry)
+                seen_entries.add(entry_key)
+        return merged
+    if isinstance(base_value, dict) and isinstance(addition_value, dict):
+        return _merge_metadata(base_value, addition_value)
+    if base_value == addition_value:
+        return base_value
+    return addition_value
+
+
+def _canonical_metadata_key(value: object) -> str:
+    """Stable string key for an entry, treating nested arrays as unordered sets.
+
+    Reachability metadata leaf arrays (`methods`, `fields`, `queriedMethods`, …)
+    are semantic sets, so two entries that differ only in inner-array order
+    must dedup as one. Sorting recursively makes the JSON dump invariant under
+    those reorderings.
+    """
+    return json.dumps(_canonicalize(value), sort_keys=True, separators=(",", ":"))
+
+
+def _canonicalize(value: object) -> object:
+    if isinstance(value, list):
+        canonical_items = [_canonicalize(item) for item in value]
+        return sorted(
+            canonical_items,
+            key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":")),
+        )
+    if isinstance(value, dict):
+        return {key: _canonicalize(val) for key, val in value.items()}
+    return value
 
 
 def _reset_directory(path: str) -> None:
