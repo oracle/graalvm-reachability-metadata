@@ -12,6 +12,7 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.contentnegotiation.exclude
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -128,6 +129,33 @@ public class Ktor_client_content_negotiation_jvmTest {
     }
 
     @Test
+    fun `excluded content type is omitted from generated accept header`(): Unit = runBlocking {
+        val engine = MockEngine { request ->
+            val acceptHeader = request.headers[HttpHeaders.Accept].orEmpty()
+            assertThat(acceptHeader).contains(AlternateMessageContentType.toString())
+            assertThat(acceptHeader).doesNotContain(MessageContentType.toString())
+
+            respond(content = "", status = HttpStatusCode.OK)
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                register(MessageContentType, MessageConverter()) { }
+                register(AlternateMessageContentType, MessageConverter()) { }
+            }
+        }
+
+        try {
+            val response = client.get("https://example.test/excluded-accept") {
+                exclude(MessageContentType)
+            }
+
+            assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
     fun `removed ignored type lets converter handle string request bodies`(): Unit = runBlocking {
         val engine = MockEngine { request ->
             assertThat(request.body.contentType?.withoutParameters()).isEqualTo(MessageContentType)
@@ -195,6 +223,7 @@ public class Ktor_client_content_negotiation_jvmTest {
 
     private companion object {
         val MessageContentType: ContentType = ContentType("application", "x-message")
+        val AlternateMessageContentType: ContentType = ContentType("application", "x-alternate-message")
 
         fun encodeMessage(message: Message): String = "name=${message.name};count=${message.count}"
 
