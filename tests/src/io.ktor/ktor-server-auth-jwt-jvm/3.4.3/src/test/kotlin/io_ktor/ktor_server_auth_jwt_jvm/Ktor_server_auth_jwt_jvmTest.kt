@@ -138,6 +138,37 @@ public class KtorServerAuthJwtJvmTest {
         assertThat(customHeaderResponse.bodyAsText()).isEqualTo("custom:from-custom-header")
     }
 
+    @Test
+    fun customAuthorizationSchemeAuthenticatesToken(): Unit = testApplication {
+        install(Authentication) {
+            jwt("token-scheme-jwt") {
+                realm = REALM
+                authSchemes("Token")
+                verifier(jwtVerifier())
+                validate { credential -> JWTPrincipal(credential.payload) }
+            }
+        }
+        routing {
+            authenticate("token-scheme-jwt") {
+                get("/custom-scheme") {
+                    val principal: JWTPrincipal = requireNotNull(call.principal<JWTPrincipal>())
+                    call.respondText("scheme:${principal.payload.subject}")
+                }
+            }
+        }
+
+        val bearerResponse = client.get("/custom-scheme") {
+            header(HttpHeaders.Authorization, "Bearer ${jwtToken(subject = "bearer-subject")}")
+        }
+        val tokenSchemeResponse = client.get("/custom-scheme") {
+            header(HttpHeaders.Authorization, "Token ${jwtToken(subject = "token-subject")}")
+        }
+
+        assertThat(bearerResponse.status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(tokenSchemeResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(tokenSchemeResponse.bodyAsText()).isEqualTo("scheme:token-subject")
+    }
+
     private companion object {
         private const val ISSUER: String = "https://issuer.example.test/"
         private const val AUDIENCE: String = "ktor-server-auth-jwt-tests"
