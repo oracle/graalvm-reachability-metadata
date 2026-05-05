@@ -1,0 +1,15 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Implemented the post-generation intervention.
+
+Changes made:
+- Removed the non-metadata-related failing generated test:
+  - `tests/src/org.mortbay.jetty/jetty-util/6.1.26/src/test/java/org_mortbay_jetty/jetty_util/JSONObjectConvertorTest.java`
+  - Removed `serializesWithConvertorLoadedByFreshRuntimeClassLoader()` and its custom `URLClassLoader` helper.
+- Wrote the required report:
+  - `post-gen-interventions/org.mortbay.jetty_jetty-util_6.1.26.md`
+- Did not modify metadata files.
+
+Verification:
+- Ran:
+  - `./gradlew test -Pcoordinates=org.mortbay.jetty:jetty-util:6.1.26 --stacktrace`
+- Result: passed, with `45` native tests successful and `0` failed.
