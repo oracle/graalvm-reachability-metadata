@@ -44,6 +44,7 @@ import com.android.builder.model.SigningConfig;
 import com.android.builder.model.SourceProvider;
 import com.android.builder.model.SourceProviderContainer;
 import com.android.builder.model.SyncIssue;
+import com.android.builder.model.TestedTargetVariant;
 import com.android.builder.model.Variant;
 import com.android.builder.model.VectorDrawablesOptions;
 import com.android.builder.model.Version;
@@ -109,8 +110,14 @@ public class Builder_modelTest {
         assertThat(SyncIssue.TYPE_GENERIC).isEqualTo(0);
         assertThat(SyncIssue.TYPE_GRADLE_TOO_OLD).isEqualTo(12);
         assertThat(SyncIssue.TYPE_BUILD_TOOLS_TOO_LOW).isEqualTo(13);
-        assertThat(SyncIssue.TYPE_JACK_REQUIRED_FOR_JAVA_8_LANGUAGE_FEATURES).isEqualTo(14);
-        assertThat(SyncIssue.TYPE_MAX).isEqualTo(SyncIssue.TYPE_JACK_REQUIRED_FOR_JAVA_8_LANGUAGE_FEATURES);
+        assertThat(SyncIssue.TYPE_DEPENDENCY_MAVEN_ANDROID).isEqualTo(14);
+        assertThat(SyncIssue.TYPE_DEPENDENCY_INTERNAL_CONFLICT).isEqualTo(15);
+        assertThat(SyncIssue.TYPE_EXTERNAL_NATIVE_BUILD_CONFIGURATION).isEqualTo(16);
+        assertThat(SyncIssue.TYPE_EXTERNAL_NATIVE_BUILD_PROCESS_EXCEPTION).isEqualTo(17);
+        assertThat(SyncIssue.TYPE_JACK_REQUIRED_FOR_JAVA_8_LANGUAGE_FEATURES).isEqualTo(18);
+        assertThat(SyncIssue.TYPE_DEPENDENCY_WEAR_APK_TOO_MANY).isEqualTo(19);
+        assertThat(SyncIssue.TYPE_DEPENDENCY_WEAR_APK_WITH_UNBUNDLED).isEqualTo(20);
+        assertThat(SyncIssue.TYPE_MAX).isEqualTo(SyncIssue.TYPE_DEPENDENCY_WEAR_APK_WITH_UNBUNDLED);
     }
 
     @Test
@@ -303,6 +310,7 @@ public class Builder_modelTest {
         assertThat(demoFlavor.getMaxSdkVersion()).isEqualTo(28);
         assertThat(demoFlavor.getRenderscriptTargetApi()).isEqualTo(21);
         assertThat(demoFlavor.getRenderscriptSupportModeEnabled()).isTrue();
+        assertThat(demoFlavor.getRenderscriptSupportModeBlasEnabled()).isFalse();
         assertThat(demoFlavor.getRenderscriptNdkModeEnabled()).isFalse();
         assertThat(demoFlavor.getTestApplicationId()).isEqualTo("com.example.demo.test");
         assertThat(demoFlavor.getTestInstrumentationRunner()).contains("AndroidJUnitRunner");
@@ -313,6 +321,7 @@ public class Builder_modelTest {
         assertThat(demoFlavor.getSigningConfig()).isEqualTo(signingConfig);
         assertThat(demoFlavor.getVectorDrawables().getGeneratedDensities()).containsExactly("mdpi", "xxhdpi");
         assertThat(demoFlavor.getVectorDrawables().getUseSupportLibrary()).isTrue();
+        assertThat(demoFlavor.getWearAppUnbundled()).isFalse();
         assertThat(demoFlavor.getDimension()).isEqualTo("environment");
 
         assertThat(mainSourceProvider.getName()).isEqualTo("main");
@@ -334,6 +343,8 @@ public class Builder_modelTest {
         assertThat(signingConfig.getKeyAlias()).isEqualTo("androiddebugkey");
         assertThat(signingConfig.getKeyPassword()).isEqualTo("key");
         assertThat(signingConfig.getStoreType()).isEqualTo("jks");
+        assertThat(signingConfig.isV1SigningEnabled()).isTrue();
+        assertThat(signingConfig.isV2SigningEnabled()).isTrue();
         assertThat(signingConfig.isSigningReady()).isTrue();
         assertThat(applicationIdField.getType()).isEqualTo("String");
         assertThat(applicationIdField.getValue()).isEqualTo("\"com.example.demo\"");
@@ -353,6 +364,8 @@ public class Builder_modelTest {
         assertThat(artifact.getMultiFlavorSourceProvider()).isEqualTo(androidTestSourceProvider);
         assertThat(artifact.getIdeSetupTaskNames()).containsExactly("generate_main_Sources");
         assertThat(artifact.getGeneratedSourceFolders()).containsExactly(file("build/generated/source/r/_main_"));
+        assertThat(artifact.getCompileDependencies()).isSameAs(dependencies);
+        assertThat(artifact.getPackageDependencies()).isSameAs(dependencies);
         assertThat(artifact.getGeneratedResourceFolders())
                 .containsExactly(file("build/generated/res/resValues/_main_"));
         assertThat(artifact.isSigned()).isTrue();
@@ -363,12 +376,13 @@ public class Builder_modelTest {
         assertThat(artifact.getNativeLibraries()).containsExactly(nativeLibrary);
         assertThat(artifact.getBuildConfigFields()).containsEntry("APPLICATION_ID", applicationIdField);
         assertThat(artifact.getResValues()).containsEntry("APPLICATION_ID", applicationIdField);
-        assertThat(artifact.getInstantRun().getIncrementalAssembleTaskName()).isEqualTo("assemble_main_Incremental");
+        assertThat(artifact.getInstantRun().getSupportStatus()).isEqualTo(InstantRun.STATUS_SUPPORTED);
         assertThat(artifact.getInstantRun().getInfoFile())
                 .isEqualTo(file("build/intermediates/reload-dex/_main_/build-info.xml"));
         assertThat(artifact.getInstantRun().isSupportedByArtifact()).isTrue();
+        assertThat(firstVariant.getTestedTargetVariants()).isEmpty();
 
-        Dependencies artifactDependencies = artifact.getDependencies();
+        Dependencies artifactDependencies = artifact.getCompileDependencies();
         assertThat(artifactDependencies.getLibraries()).containsExactly(androidLibrary);
         assertThat(artifactDependencies.getJavaLibraries()).containsExactly(directJavaLibrary);
         assertThat(artifactDependencies.getProjects()).containsExactly(":shared");
@@ -377,6 +391,7 @@ public class Builder_modelTest {
         assertThat(directJavaDependencies).hasSize(1);
         assertThat(directJavaDependencies.iterator().next()).isSameAs(transitiveJavaLibrary);
         assertThat(directJavaLibrary.isProvided()).isTrue();
+        assertThat(directJavaLibrary.isSkipped()).isFalse();
         assertThat(androidLibrary.getProject()).isEqualTo(":library");
         assertThat(androidLibrary.getProjectVariant()).isEqualTo("debug");
         assertThat(androidLibrary.getBundle()).isEqualTo(file("libs/library.aar"));
@@ -394,7 +409,10 @@ public class Builder_modelTest {
         assertThat(androidLibrary.getLintJar()).isEqualTo(file("exploded-aar/library/lint.jar"));
         assertThat(androidLibrary.getExternalAnnotations()).isEqualTo(file("exploded-aar/library/annotations.zip"));
         assertThat(androidLibrary.getPublicResources()).isEqualTo(file("exploded-aar/library/public.txt"));
-        assertThat(androidLibrary.isOptional()).isTrue();
+        assertThat(androidLibrary.isProvided()).isTrue();
+        assertThat(androidLibrary.isSkipped()).isFalse();
+        assertThat(androidLibrary.getSymbolFile()).isEqualTo(file("exploded-aar/library/R.txt"));
+        assertThat(androidLibrary.getJavaDependencies()).isEmpty();
         assertThat(((Library) androidLibrary).getRequestedCoordinates().getArtifactId()).isEqualTo("requested");
         assertThat(((Library) androidLibrary).getResolvedCoordinates().getClassifier()).isEqualTo("debug");
 
@@ -512,6 +530,7 @@ public class Builder_modelTest {
         assertThat(project.getToolChains()).containsExactly(toolchain);
         assertThat(project.getSettings()).containsExactly(settings);
         assertThat(project.getFileExtensions()).containsEntry("cpp", "c++");
+        assertThat(project.getBuildSystems()).containsExactly(NativeAndroidProject.BUILD_SYSTEM_CMAKE);
 
         assertThat(artifact.getName()).isEqualTo("libdemo");
         assertThat(artifact.getToolChain()).isEqualTo("clang");
@@ -519,6 +538,9 @@ public class Builder_modelTest {
         assertThat(artifact.getSourceFiles()).containsExactly(sourceFile);
         assertThat(artifact.getOutputFile()).isEqualTo(file("build/intermediates/ndk/debug/lib/x86/libdemo.so"));
         assertThat(artifact.getGroupName()).isEqualTo("main");
+        assertThat(artifact.getAbi()).isEqualTo("x86");
+        assertThat(artifact.getTargetName()).isEqualTo("demo");
+        assertThat(artifact.getAssembleTaskName()).isEqualTo("assembleDemoDebug");
         assertThat(artifact.getExportedHeaders()).containsExactly(file("src/main/cpp/include"));
         assertThat(sourceFolder.getFolderPath()).isEqualTo(file("src/main/cpp"));
         assertThat(sourceFolder.getPerLanguageSettings()).containsEntry("c++", "debug-cpp");
@@ -536,6 +558,7 @@ public class Builder_modelTest {
     private static void assertBaseConfig(BaseConfig config, String expectedName) {
         assertThat(config.getName()).isEqualTo(expectedName);
         assertThat(config.getApplicationIdSuffix()).isEqualTo("." + expectedName);
+        assertThat(config.getVersionNameSuffix()).isEqualTo("-" + expectedName);
         assertThat(config.getBuildConfigFields()).containsKey("APPLICATION_ID");
         assertThat(config.getResValues()).containsKey("APPLICATION_ID");
         assertThat(config.getProguardFiles()).containsExactly(file("proguard-rules.pro"));
@@ -610,6 +633,16 @@ public class Builder_modelTest {
         }
 
         @Override
+        public String getProject() {
+            return null;
+        }
+
+        @Override
+        public String getName() {
+            return resolvedCoordinates.getArtifactId();
+        }
+
+        @Override
         public MavenCoordinates getRequestedCoordinates() {
             return requestedCoordinates;
         }
@@ -617,6 +650,16 @@ public class Builder_modelTest {
         @Override
         public MavenCoordinates getResolvedCoordinates() {
             return resolvedCoordinates;
+        }
+
+        @Override
+        public boolean isSkipped() {
+            return false;
+        }
+
+        @Override
+        public boolean isProvided() {
+            return false;
         }
     }
 
@@ -701,6 +744,11 @@ public class Builder_modelTest {
         }
 
         @Override
+        public Collection<? extends JavaLibrary> getJavaDependencies() {
+            return Collections.emptyList();
+        }
+
+        @Override
         public Collection<File> getLocalJars() {
             return Collections.singletonList(file("exploded-aar/library/libs/local.jar"));
         }
@@ -748,6 +796,16 @@ public class Builder_modelTest {
         @Override
         public File getPublicResources() {
             return file("exploded-aar/library/public.txt");
+        }
+
+        @Override
+        public File getSymbolFile() {
+            return file("exploded-aar/library/R.txt");
+        }
+
+        @Override
+        public boolean isProvided() {
+            return optional;
         }
 
         @Override
@@ -840,6 +898,11 @@ public class Builder_modelTest {
         @Override
         public String getApplicationIdSuffix() {
             return "." + name;
+        }
+
+        @Override
+        public String getVersionNameSuffix() {
+            return "-" + name;
         }
 
         @Override
@@ -1014,6 +1077,11 @@ public class Builder_modelTest {
         }
 
         @Override
+        public Boolean getRenderscriptSupportModeBlasEnabled() {
+            return Boolean.FALSE;
+        }
+
+        @Override
         public Boolean getRenderscriptNdkModeEnabled() {
             return Boolean.FALSE;
         }
@@ -1061,6 +1129,11 @@ public class Builder_modelTest {
         @Override
         public String getDimension() {
             return "environment";
+        }
+
+        @Override
+        public Boolean getWearAppUnbundled() {
+            return Boolean.FALSE;
         }
     }
 
@@ -1152,6 +1225,16 @@ public class Builder_modelTest {
         @Override
         public String getStoreType() {
             return storeType;
+        }
+
+        @Override
+        public boolean isV1SigningEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isV2SigningEnabled() {
+            return true;
         }
 
         @Override
@@ -1344,6 +1427,14 @@ public class Builder_modelTest {
             return dependencies;
         }
 
+        public Dependencies getCompileDependencies() {
+            return dependencies;
+        }
+
+        public Dependencies getPackageDependencies() {
+            return dependencies;
+        }
+
         public SourceProvider getVariantSourceProvider() {
             return variantSourceProvider;
         }
@@ -1447,8 +1538,8 @@ public class Builder_modelTest {
         }
 
         @Override
-        public String getIncrementalAssembleTaskName() {
-            return "assemble" + artifactName + "Incremental";
+        public int getSupportStatus() {
+            return InstantRun.STATUS_SUPPORTED;
         }
 
         @Override
@@ -1535,6 +1626,11 @@ public class Builder_modelTest {
         @Override
         public ProductFlavor getMergedFlavor() {
             return mergedFlavor;
+        }
+
+        @Override
+        public Collection<TestedTargetVariant> getTestedTargetVariants() {
+            return Collections.emptyList();
         }
     }
 
@@ -2273,6 +2369,21 @@ public class Builder_modelTest {
         }
 
         @Override
+        public String getAbi() {
+            return "x86";
+        }
+
+        @Override
+        public String getTargetName() {
+            return "demo";
+        }
+
+        @Override
+        public String getAssembleTaskName() {
+            return "assembleDemoDebug";
+        }
+
+        @Override
         public File getOutputFile() {
             return outputFile;
         }
@@ -2348,6 +2459,11 @@ public class Builder_modelTest {
         @Override
         public Map<String, String> getFileExtensions() {
             return singletonStringMap("cpp", "c++");
+        }
+
+        @Override
+        public Collection<String> getBuildSystems() {
+            return Collections.singletonList(NativeAndroidProject.BUILD_SYSTEM_CMAKE);
         }
     }
 }
