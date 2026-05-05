@@ -1,0 +1,133 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.google.protobuf:protobuf-javalite:3.25.3
+Command: `/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-ff220d38/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/vjovanov/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-javalite/3.25.3/62d8ab6091b4ad7f0696eb22c584f8e106eb7de0/protobuf-javalite-3.25.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+> Task :test FAILED
+
+GeneratedMessageLiteInnerSerializedFormTest > readResolveLoadsClassByNameAndUsesDefaultInstanceField() FAILED
+    java.lang.IllegalArgumentException: Default instance must be immutable.
+        at com.google.protobuf.GeneratedMessageLite$Builder.<init>(GeneratedMessageLite.java:429)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest$CurrentStyleMessage$Builder.<init>(GeneratedMessageLiteInnerSerializedFormTest.java:115)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest$CurrentStyleMessage.dynamicMethod(GeneratedMessageLiteInnerSerializedFormTest.java:91)
+        at com.google.protobuf.GeneratedMessageLite.dynamicMethod(GeneratedMessageLite.java:290)
+        at com.google.protobuf.GeneratedMessageLite.newBuilderForType(GeneratedMessageLite.java:102)
+        at com.google.protobuf.GeneratedMessageLite.newBuilderForType(GeneratedMessageLite.java:37)
+        at com.google.protobuf.GeneratedMessageLite$SerializedForm.readResolve(GeneratedMessageLite.java:1439)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at java.base/java.io.ObjectStreamClass.invokeReadResolve(ObjectStreamClass.java:1066)
+        at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2142)
+        at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+        at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+        at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest.serializeFormAndReadBackWithClassNameLookup(GeneratedMessageLiteInnerSerializedFormTest.java:50)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest.readResolveLoadsClassByNameAndUsesDefaultInstanceField(GeneratedMessageLiteInnerSerializedFormTest.java:25)
+
+GeneratedMessageLiteInnerSerializedFormTest > readResolveLoadsClassByNameAndFallsBackToLegacyDefaultInstanceField() FAILED
+    java.lang.IllegalArgumentException: Default instance must be immutable.
+        at com.google.protobuf.GeneratedMessageLite$Builder.<init>(GeneratedMessageLite.java:429)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest$LegacyStyleMessage$Builder.<init>(GeneratedMessageLiteInnerSerializedFormTest.java:163)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest$LegacyStyleMessage.dynamicMethod(GeneratedMessageLiteInnerSerializedFormTest.java:139)
+        at com.google.protobuf.GeneratedMessageLite.dynamicMethod(GeneratedMessageLite.java:290)
+        at com.google.protobuf.GeneratedMessageLite.newBuilderForType(GeneratedMessageLite.java:102)
+        at com.google.protobuf.GeneratedMessageLite.newBuilderForType(GeneratedMessageLite.java:37)
+        at com.google.protobuf.GeneratedMessageLite$SerializedForm.readResolveFallback(GeneratedMessageLite.java:1464)
+        at com.google.protobuf.GeneratedMessageLite$SerializedForm.readResolve(GeneratedMessageLite.java:1443)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at java.base/java.io.ObjectStreamClass.invokeReadResolve(ObjectStreamClass.java:1066)
+        at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2142)
+        at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+        at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+        at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest.serializeFormAndReadBackWithClassNameLookup(GeneratedMessageLiteInnerSerializedFormTest.java:50)
+        at com_google_protobuf.protobuf_javalite.GeneratedMessageLiteInnerSerializedFormTest.readResolveLoadsClassByNameAndFallsBackToLegacyDefaultInstanceField(GeneratedMessageLiteInnerSerializedFormTest.java:34)
+
+4 tests completed, 2 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-ff220d38/tests/src/com.google.protobuf/protobuf-javalite/3.25.3/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-ff220d38/tests/src/com.google.protobuf/protobuf-javalite/3.25.3/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+14 actionable tasks: 3 executed, 11 up-to-dateBUILD FAILED in 6s
+
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-ff220d38/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.google.protobuf:protobuf-javalite:3.25.3 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 8s
+9 actionable tasks: 1 executed, 8 up-to-date
