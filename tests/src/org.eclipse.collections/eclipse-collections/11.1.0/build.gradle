@@ -4,13 +4,63 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.Task
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String eclipseCollectionsGroup = "org.eclipse.collections"
+
+// GraalVM 25 analysis trips over signer certificates embedded in the signed Eclipse Collections jars.
+Provider<List<File>> signedEclipseCollectionsJars = providers.provider {
+    List<File> resolvedJars = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts.findAll { artifact ->
+        artifact.moduleVersion.id.group == eclipseCollectionsGroup && artifact.file.name.endsWith(".jar")
+    }.collect { artifact ->
+        artifact.file
+    }.sort { File file ->
+        file.absolutePath
+    }
+    if (resolvedJars.isEmpty()) {
+        throw new GradleException("Unable to resolve signed Eclipse Collections jars for ${libraryVersion}")
+    }
+    return resolvedJars
+}
+
+Provider<Map<String, File>> unsignedEclipseCollectionsJars = providers.provider {
+    signedEclipseCollectionsJars.get().collectEntries { File signedJar ->
+        File unsignedJar = layout.buildDirectory.file("unsigned-eclipse-collections/${signedJar.name}").get().asFile
+        [(signedJar.absolutePath): unsignedJar]
+    }
+}
+
+TaskProvider<Task> prepareUnsignedEclipseCollectionsJars = tasks.register("prepareUnsignedEclipseCollectionsJars") { Task task ->
+    task.inputs.files(signedEclipseCollectionsJars)
+    task.outputs.files(providers.provider {
+        unsignedEclipseCollectionsJars.get().values()
+    })
+    task.doLast {
+        unsignedEclipseCollectionsJars.get().each { String signedJarPath, File unsignedJar ->
+            File signedJar = file(signedJarPath)
+            File stagingDir = new File(task.temporaryDir, signedJar.name.replace(".jar", ""))
+            delete(stagingDir)
+            delete(unsignedJar)
+            copy { spec ->
+                spec.from(zipTree(signedJar))
+                spec.into(stagingDir)
+                spec.exclude("META-INF/*.SF", "META-INF/*.RSA", "META-INF/*.DSA", "META-INF/*.EC")
+            }
+            unsignedJar.parentFile.mkdirs()
+            ant.zip(destfile: unsignedJar.absolutePath, basedir: stagingDir.absolutePath)
+        }
+    }
+}
 
 dependencies {
+    testRuntimeOnly(project.files(providers.provider {
+        unsignedEclipseCollectionsJars.get().values()
+    }).builtBy(prepareUnsignedEclipseCollectionsJars))
     testImplementation "org.eclipse.collections:eclipse-collections:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
