@@ -36,7 +36,7 @@ public class GenericArrayTypeInformationTest {
 
         @Override
         public String[] findAll() {
-            return new String[] { "lettuce" };
+            return new String[] {"lettuce" };
         }
     }
 }
