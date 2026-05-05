@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // okhttp3.internal.Util eagerly resolves UTF-32 charsets during static init.
+            buildArgs.add("-H:+AddAllCharsets")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
