@@ -1,0 +1,757 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019df72c-833e-7661-8452-48562adba9d1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:org.osgi.namespace.contract:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.0" when "$version$" is replaced with "1.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+- Set "coordinates" to "org.osgi:org.osgi.namespace.contract:1.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact from Maven and upstream OSGi sources, then update the discovered metadata JSON in place. After that I’ll validate the file is valid JSON.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.osgi-org\\.osgi\\.namespace\\.contract-1\\.0\\.0\\.json'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+
+web search: 
+web search: org.osgi org.osgi.namespace.contract 1.0.0 maven sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0
+codex
+Maven Central confirms this is a normal `jar` artifact and publishes both sources and Javadoc jars. I’m checking the POM and jar contents now to decide whether Maven-hosted source/Javadoc URLs are the best metadata links and whether there is any test artifact.
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-tests.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 08:06:39 GMT
+content-type: text/html
+cf-ray: 9f6e3f419e780db0-BEG
+cf-cache-status: HIT
+age: 1679
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>org.osgi.namespace.contract</artifactId>
+  <version>1.0.0</version>
+  <description>OSGi Companion Code for org.osgi.namespace.contract Version 1.0.0.</description>
+  <name>org.osgi:org.osgi.namespace.contract</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/bin/bash -lc 'curl -fsSL -o /tmp/org.osgi.namespace.contract-1.0.0.jar https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0.jar && jar tf /tmp/org.osgi.namespace.contract-1.0.0.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+exec
+/bin/bash -lc 'curl -fsSL -o /tmp/org.osgi.namespace.contract-1.0.0-sources.jar https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-sources.jar && jar tf /tmp/org.osgi.namespace.contract-1.0.0-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 245ms:
+META-INF/MANIFEST.MF
+LICENSE
+META-INF/
+META-INF/maven/
+META-INF/maven/org.osgi/
+META-INF/maven/org.osgi/org.osgi.namespace.contract/
+META-INF/maven/org.osgi/org.osgi.namespace.contract/pom.xml
+OSGI-OPT/
+OSGI-OPT/src/
+OSGI-OPT/src/org/
+OSGI-OPT/src/org/osgi/
+OSGI-OPT/src/org/osgi/namespace/
+OSGI-OPT/src/org/osgi/namespace/contract/
+OSGI-OPT/src/org/osgi/namespace/contract/ContractNamespace.java
+OSGI-OPT/src/org/osgi/namespace/contract/package-info.java
+OSGI-OPT/src/org/osgi/namespace/contract/packageinfo
+about.html
+org/
+org/osgi/
+org/osgi/namespace/
+org/osgi/namespace/contract/
+org/osgi/namespace/contract/ContractNamespace.class
+org/osgi/namespace/contract/package-info.class
+org/osgi/namespace/contract/packageinfo
+
+ succeeded in 249ms:
+META-INF/
+META-INF/MANIFEST.MF
+LICENSE
+org/
+org/osgi/
+org/osgi/namespace/
+org/osgi/namespace/contract/
+org/osgi/namespace/contract/ContractNamespace.java
+org/osgi/namespace/contract/package-info.java
+org/osgi/namespace/contract/packageinfo
+about.html
+
+web search: 
+web search: "org.osgi.namespace.contract" "build.git"
+exec
+/bin/bash -lc "unzip -p /tmp/org.osgi.namespace.contract-1.0.0.jar META-INF/MANIFEST.MF && printf '\\n--- source ---\\n' && unzip -p /tmp/org.osgi.namespace.contract-1.0.0-sources.jar org/osgi/namespace/contract/ContractNamespace.java | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Bnd-LastModified: 1432153441833
+Bundle-Copyright: Copyright (c) OSGi Alliance (2000, 2015). All Rights R
+ eserved.
+Bundle-Description: OSGi Companion Code for org.osgi.namespace.contract 
+ Version 1.0.0.
+Bundle-Developers: osgi; email=info@osgi.org; name="OSGi Alliance"; orga
+ nization="OSGi Alliance"
+Bundle-DocURL: http://www.osgi.org/
+Bundle-License: http://opensource.org/licenses/apache2.0.php; link="http
+ ://www.apache.org/licenses/LICENSE-2.0"; description="Apache License, V
+ ersion 2.0"
+Bundle-ManifestVersion: 2
+Bundle-Name: org.osgi:org.osgi.namespace.contract
+Bundle-SCM: url=https://osgi.org/git/build.git, connection=scm:git:https
+ ://osgi.org/git/build.git, developerConnection=scm:git:https://osgi.org
+ /git/build.git
+Bundle-SymbolicName: org.osgi.namespace.contract
+Bundle-Vendor: OSGi Alliance http://www.osgi.org/
+Bundle-Version: 1.0.0.201505202024
+Created-By: 1.7.0_80 (Oracle Corporation)
+Export-Package: org.osgi.namespace.contract;version="1.0";uses:="org.osg
+ i.resource"
+Git-Descriptor: hudson-build.cmpn-793
+Git-SHA: b0858c3b90a73ecc81055c7565fbbcbd4f76674e
+Import-Package: org.osgi.resource;version="[1.0,2)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.5))"
+Tool: Bnd-2.4.1.201501161923
+
+--- source ---
+/*
+ * Copyright (c) OSGi Alliance (2012, 2014). All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.osgi.namespace.contract;
+
+import org.osgi.resource.Namespace;
+
+/**
+ * Contract Capability and Requirement Namespace.
+ * 
+ * <p>
+ * This class defines the names for the attributes and directives for this
+ * namespace. All unspecified capability attributes are of type {@code String}
+ * and are used as arbitrary matching attributes for the capability. The values
+ * associated with the specified directive and attribute keys are of type
+ * {@code String}, unless otherwise indicated.
+ * 
+ * @Immutable
+ * @author $Id: ec9abdeffbc9303bcb01b108faef41ee4cfb6b41 $
+ */
+public final class ContractNamespace extends Namespace {
+
+	/**
+	 * Namespace name for contract capabilities and requirements.
+	 * 
+	 * <p>
+	 * Also, the capability attribute used to specify the name of the contract.
+	 */
+	public static final String	CONTRACT_NAMESPACE				= "osgi.contract";
+
+	/**
+	 * The capability attribute contains the {@code Version} of the
+	 * specification of the contract. The value of this attribute must be of
+	 * type {@code Version}.
+	 */
+	public final static String	CAPABILITY_VERSION_ATTRIBUTE	= "version";
+
+	private ContractNamespace() {
+		// empty
+	}
+}
+
+exec
+/bin/bash -lc "rg 'repo.maven.apache.org/.+sources.jar|javadoc.jar|test-code-url' build/discovered-artifact-metadata -g '*.json' | head -n 80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-javadoc.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 08:06:48 GMT
+content-type: application/java-archive
+content-length: 42016
+cf-ray: 9f6e3f786895562e-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 161870
+etag: "8b1b727d70f9ab7e8b2deee4816a11be"
+last-modified: Tue, 18 Aug 2015 13:17:41 GMT
+x-checksum-md5: 8b1b727d70f9ab7e8b2deee4816a11be
+x-checksum-sha1: 074939b490d7c29a185e1b4a39604047e28a9e1f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata -g '*.json' | head -n 30" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+web search: 
+web search: "Git-SHA" "b0858c3b90a73ecc81055c7565fbbcbd4f76674e"
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0.pom
+exec
+/bin/bash -lc 'git ls-remote https://osgi.org/git/build.git | head -n 80' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/osgi/osgi.git | rg 'r6|cmpn|1\\.0\\.0|b0858c3' | head -n 80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+exec
+/bin/bash -lc 'git ls-remote --tags https://github.com/osgi/osgi.enroute.git | head -n 40' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 577ms:
+705eba1ba09abdaaab755aed9d7e5d3bd87aadf1	refs/tags/8.1.0.cmpn
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/tags/8.1.0.cmpn^{}
+9e1c74c47197691eb3f85e1d8cc914a5b3b836e3	refs/tags/8.1.0.cmpn-RC1
+a50e1dbfe4c99fa93bce3df288fd774973e7f09b	refs/tags/8.1.0.cmpn-RC1^{}
+b39cb733f4468ca67ee6a7a8c82762023fd8e539	refs/tags/r401-cmpn-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-cmpn-ri-tck-final^{}
+bcb8a044f35859cf7b63120d62f029d17fddaf76	refs/tags/r401-cmpn-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-cmpn-spec-final^{}
+d90b46c492395793d004bcd02199038f8f3631ef	refs/tags/r4v41-cmpn-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-cmpn-ri-tck-final^{}
+0d9b2787fa8d341930d806f87aa2216bd041cb90	refs/tags/r4v42-cmpn-spec-final
+8b283d49469e805fd42dc8486416ff6d8e7359e3	refs/tags/r4v42-cmpn-spec-final^{}
+ec6b5ff8940c6a954a596f6b626233bcb671c299	refs/tags/r4v42-core-cmpn-final
+7f0db3bb6dfc444c2604b09e540f965df7ab8b29	refs/tags/r4v42-core-cmpn-final^{}
+74c035a17b9b4a2ec2935b5096f645d5c2f4711b	refs/tags/r4v43-cmpn-ri-ct-final
+b4bdf0b13eb363c03a297903efbdecb4ec68f3c8	refs/tags/r4v43-cmpn-ri-ct-final^{}
+72920c5b272795ec24c05b4a29b138a76f54a9ba	refs/tags/r4v43-cmpn-spec-final
+11b8e9cfce63e1ec92d567ca570528220513946a	refs/tags/r4v43-cmpn-spec-final^{}
+8f1f83c4ad1c427e0e10a1b9156dffef6711c4ba	refs/tags/r4v431-core-cmpn-spec-final
+c7da4c70103383ed4e94a520e8c337b441a512b3	refs/tags/r4v431-core-cmpn-spec-final^{}
+7db8eb64f579ccb2208add5e543149ad259ecf76	refs/tags/r5-cmpn-ri-ct-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-ri-ct-final^{}
+8a3d85bbe1d04ef79bda177255bae087236565a2	refs/tags/r5-cmpn-spec-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-spec-final^{}
+44369ee9127e86c27c1af59f1be763ecc263e34d	refs/tags/r6-cmpn-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-cmpn-ri-ct-final^{}
+482a684d7c95cdb8a7a308d9d12dcdded893fb34	refs/tags/r6-cmpn-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-cmpn-spec-final^{}
+2a11a3e5d8c60b50e4081343ebed6bcec311a598	refs/tags/r6-core-ri-ct-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-ri-ct-final^{}
+d8890daf8811f2c2c451a7ed793bac2d8dcce35a	refs/tags/r6-core-spec-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+837e5d17769f3ef0646b913f1e02509291349d7f	refs/tags/r6-enterprise-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-enterprise-ri-ct-final^{}
+301ecbf2d2502438d34aeaedce156c45882ed856	refs/tags/r6-enterprise-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-enterprise-spec-final^{}
+234b425b53e5b3ef3e475750dc86561b81a7b1c2	refs/tags/r6-residential-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-residential-ri-ct-final^{}
+5655cfae7d61f051746213bab0f386423fa38d8e	refs/tags/r6-residential-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-residential-spec-final^{}
+b23a773251adfcd4e3f8248318a1262cb22ee7cb	refs/tags/r6-residential-supplement-ri-ct-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-ri-ct-final^{}
+7742076a96cb0f7cdd869f0d47ab11678fae7bdb	refs/tags/r6-residential-supplement-spec-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-spec-final^{}
+c27b1731cbca5a6b836195161c9330c8e395bafe	refs/tags/r7-cmpn-ri-ct-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-cmpn-ri-ct-final^{}
+06a66f4bd61a26146a0fd8e9a9c44c25fe7d0256	refs/tags/r7-cmpn-spec-final
+ac877b9fdaa36e26adb939cf9dd425e77243f449	refs/tags/r7-cmpn-spec-final^{}
+148d6a318212c3e9e6f738563190d90c70815ff2	refs/tags/r8-cmpn-final
+db39ce672917cadce15aad14a33795cbed7e8791	refs/tags/r8-cmpn-final^{}
+4fd91a48643c84ab29ecb49ee9f42384f2b32fe5	refs/tags/r8-cmpn-spec-RC1
+b986b23c6429cf7bf0fa9079828cdcab15902325	refs/tags/r8-cmpn-spec-RC1^{}
+
+ succeeded in 620ms:
+65244ef2ced218f4c41f3d0a6639beae9b025053	refs/tags/7.0.0
+47778c8ef32869bd4d506d67bf93c057431ddeed	refs/tags/7.0.0^{}
+f9f4b47e3f21583b231671a2e863b68e4fc103f4	refs/tags/pre-v7
+310c16182abab915907b40803aa8e3377d7ae8ed	refs/tags/pre-v7^{}
+66abafbaa71b5895e5cab5161bd5255a1d8c8eef	refs/tags/v1.0.0
+58f841fe026b512db5ef38a49309e6d63be7b5f0	refs/tags/v1.0.0^{}
+ed63190d23edaec8598b90d7aacbecd4583f1b1c	refs/tags/v1.7.0
+6d192916c6a966d587314733581cca23b597853f	refs/tags/v1.7.0^{}
+
+ succeeded in 905ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+codex
+The artifact’s manifest includes JVM `.class` files and an `osgi.ee=JavaSE` requirement, so I’m treating it as applicable to Native Image metadata. The manifest SHA matches the `r6-cmpn-spec-final` tag in the OSGi GitHub repository, which gives a version-correct upstream tag for any non-Maven links.
+exec
+/bin/bash -lc 'rm -rf /tmp/osgi-r6 && git clone --depth 1 --branch r6-cmpn-spec-final --filter=blob:none https://github.com/osgi/osgi.git /tmp/osgi-r6' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 32963ms:
+Note: switching to 'b0858c3b90a73ecc81055c7565fbbcbd4f76674e'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Updating files:   0% (2/14393)
+Updating files:   1% (144/14393)
+Updating files:   1% (149/14393)
+Updating files:   2% (288/14393)
+Updating files:   3% (432/14393)
+Updating files:   4% (576/14393)
+Updating files:   5% (720/14393)
+Updating files:   6% (864/14393)
+Updating files:   7% (1008/14393)
+Updating files:   8% (1152/14393)
+Updating files:   9% (1296/14393)
+Updating files:  10% (1440/14393)
+Updating files:  11% (1584/14393)
+Updating files:  12% (1728/14393)
+Updating files:  13% (1872/14393)
+Updating files:  14% (2016/14393)
+Updating files:  15% (2159/14393)
+Updating files:  16% (2303/14393)
+Updating files:  17% (2447/14393)
+Updating files:  18% (2591/14393)
+Updating files:  19% (2735/14393)
+Updating files:  20% (2879/14393)
+Updating files:  21% (3023/14393)
+Updating files:  22% (3167/14393)
+Updating files:  23% (3311/14393)
+Updating files:  24% (3455/14393)
+Updating files:  25% (3599/14393)
+Updating files:  26% (3743/14393)
+Updating files:  27% (3887/14393)
+Updating files:  28% (4031/14393)
+Updating files:  29% (4174/14393)
+Updating files:  30% (4318/14393)
+Updating files:  31% (4462/14393)
+Updating files:  32% (4606/14393)
+Updating files:  33% (4750/14393)
+Updating files:  34% (4894/14393)
+Updating files:  35% (5038/14393)
+Updating files:  36% (5182/14393)
+Updating files:  36% (5269/14393)
+Updating files:  37% (5326/14393)
+Updating files:  38% (5470/14393)
+Updating files:  39% (5614/14393)
+Updating files:  40% (5758/14393)
+Updating files:  41% (5902/14393)
+Updating files:  42% (6046/14393)
+Updating files:  43% (6189/14393)
+Updating files:  44% (6333/14393)
+Updating files:  45% (6477/14393)
+Updating files:  46% (6621/14393)
+Updating files:  47% (6765/14393)
+Updating files:  48% (6909/14393)
+Updating files:  48% (6958/14393)
+Updating files:  49% (7053/14393)
+Updating files:  49% (7116/14393)
+Updating files:  50% (7197/14393)
+Updating files:  51% (7341/14393)
+Updating files:  52% (7485/14393)
+Updating files:  53% (7629/14393)
+Updating files:  54% (7773/14393)
+Updating files:  55% (7917/14393)
+Updating files:  56% (8061/14393)
+Updating files:  57% (8205/14393)
+Updating files:  58% (8348/14393)
+Updating files:  59% (8492/14393)
+Updating files:  59% (8500/14393)
+Updating files:  60% (8636/14393)
+Updating files:  61% (8780/14393)
+Updating files:  62% (8924/14393)
+Updating files:  63% (9068/14393)
+Updating files:  64% (9212/14393)
+Updating files:  65% (9356/14393)
+Updating files:  66% (9500/14393)
+Updating files:  67% (9644/14393)
+Updating files:  68% (9788/14393)
+Updating files:  69% (9932/14393)
+Updating files:  70% (10076/14393)
+Updating files:  71% (10220/14393)
+Updating files:  72% (10363/14393)
+Updating files:  73% (10507/14393)
+Updating files:  74% (10651/14393)
+Updating files:  75% (10795/14393)
+Updating files:  76% (10939/14393)
+Updating files:  77% (11083/14393)
+Updating files:  78% (11227/14393)
+Updating files:  79% (11371/14393)
+Updating files:  80% (11515/14393)
+Updating files:  81% (11659/14393)
+Updating files:  82% (11803/14393)
+Updating files:  83% (11947/14393)
+Updating files:  84% (12091/14393)
+Updating files:  85% (12235/14393)
+Updating files:  86% (12378/14393)
+Updating files:  87% (12522/14393)
+Updating files:  88% (12666/14393)
+Updating files:  89% (12810/14393)
+Updating files:  90% (12954/14393)
+Updating files:  91% (13098/14393)
+Updating files:  92% (13242/14393)
+Updating files:  93% (13386/14393)
+Updating files:  94% (13530/14393)
+Updating files:  95% (13674/14393)
+Updating files:  96% (13818/14393)
+Updating files:  96% (13888/14393)
+Updating files:  97% (13962/14393)
+Updating files:  98% (14106/14393)
+Updating files:  99% (14250/14393)
+Updating files:  99% (14294/14393)
+Updating files: 100% (14393/14393)
+Updating files: 100% (14393/14393), done.
+
+exec
+/bin/bash -lc "rg --files /tmp/osgi-r6 | rg 'org.osgi.namespace.contract|ContractNamespace|contract' | head -n 100" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+exec
+/bin/bash -lc 'rg -n "ContractNamespace|org.osgi.namespace.contract|osgi.contract" /tmp/osgi-r6 | head -n 100' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+exec
+/bin/bash -lc "find /tmp/osgi-r6 -maxdepth 4 -type d \\( -iname '*test*' -o -iname '*tck*' \\) | head -n 100" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+/tmp/osgi-r6/org.osgi.test.cases.subsystem
+/tmp/osgi-r6/org.osgi.test.cases.coordinator
+/tmp/osgi-r6/org.osgi.test.cases.networkadapter
+/tmp/osgi-r6/org.osgi.test.cases.cm
+/tmp/osgi-r6/org.osgi.test.cases.remoteserviceadmin.secure
+/tmp/osgi-r6/org.osgi.test.cases.position
+/tmp/osgi-r6/org.osgi.test.cases.permissionadmin
+/tmp/osgi-r6/org.osgi.test.cases.http
+/tmp/osgi-r6/org.osgi.test.cases.dmt.tc2
+/tmp/osgi-r6/org.osgi.test.cases.jmx.cm
+/tmp/osgi-r6/org.osgi.test.cases.dal
+/tmp/osgi-r6/org.osgi.test.cases.repository
+/tmp/osgi-r6/org.osgi.test.cases.repository/resources/testresources
+/tmp/osgi-r6/templates/org.osgi.test.cases.template
+/tmp/osgi-r6/org.osgi.test.cases.transaction
+/tmp/osgi-r6/org.osgi.test.cases.deploymentadmin.tc1
+/tmp/osgi-r6/org.osgi.test.cases.serviceloader.secure
+/tmp/osgi-r6/org.osgi.test.cases.jndi
+/tmp/osgi-r6/org.osgi.test.cases.log
+/tmp/osgi-r6/org.osgi.test.cases.jpa
+/tmp/osgi-r6/org.osgi.test.cases.framework.secure
+/tmp/osgi-r6/licensed/japitools/test
+/tmp/osgi-r6/licensed/repo/jbosgi-repository-tck
+/tmp/osgi-r6/licensed/docbook-xsl-ns/tests
+/tmp/osgi-r6/org.osgi.test.cases.coordinator.secure
+/tmp/osgi-r6/org.osgi.test.cases.wireadmin
+/tmp/osgi-r6/org.osgi.test.cases.framework
+/tmp/osgi-r6/org.osgi.test.cases.tr069todmt
+/tmp/osgi-r6/org.osgi.test.cases.blueprint.secure
+/tmp/osgi-r6/org.osgi.test.cases.monitor
+/tmp/osgi-r6/org.osgi.test.cases.condpermadmin
+/tmp/osgi-r6/org.osgi.test.cases.serial
+/tmp/osgi-r6/org.osgi.test.cases.dmt.tc3
+/tmp/osgi-r6/org.osgi.test.cases.component
+/tmp/osgi-r6/org.osgi.test.filter
+/tmp/osgi-r6/org.osgi.test.cases.xml
+/tmp/osgi-r6/org.osgi.test.cases.dal.secure
+/tmp/osgi-r6/org.osgi.test.cases.jmx.framework
+/tmp/osgi-r6/org.osgi.test.cases.residentialmanagement
+/tmp/osgi-r6/org.osgi.test.cases.upnp
+/tmp/osgi-r6/org.osgi.test.cases.usbinfo
+/tmp/osgi-r6/org.osgi.test.cases.jndi.secure
+/tmp/osgi-r6/org.osgi.test.cases.deploymentadmin.mo
+/tmp/osgi-r6/org.osgi.test.cases.deploymentadmin.tc2
+/tmp/osgi-r6/org.osgi.test.cases.jmx.provisioning
+/tmp/osgi-r6/org.osgi.test.cases.blueprint
+/tmp/osgi-r6/org.osgi.test.cases.url
+/tmp/osgi-r6/org.osgi.test.cases.useradmin
+/tmp/osgi-r6/org.osgi.test.cases.promise
+/tmp/osgi-r6/org.osgi.test.cases.subsystem.secure
+/tmp/osgi-r6/org.osgi.test.cases.metatype
+/tmp/osgi-r6/org.osgi.test.cases.jdbc
+/tmp/osgi-r6/org.osgi.test.cases.event
+/tmp/osgi-r6/org.osgi.test.cases.application
+/tmp/osgi-r6/org.osgi.test.cases.tracker
+/tmp/osgi-r6/org.osgi.test.cases.http.whiteboard
+/tmp/osgi-r6/org.osgi.test.cases.framework.launch.secure
+/tmp/osgi-r6/org.osgi.test.cases.blueprint.java5
+/tmp/osgi-r6/org.osgi.test.cases.serviceloader
+/tmp/osgi-r6/org.osgi.test.cases.prefs
+/tmp/osgi-r6/org.osgi.test.cases.io
+/tmp/osgi-r6/org.osgi.test.cases.async
+/tmp/osgi-r6/org.osgi.test.cases.remoteserviceadmin
+/tmp/osgi-r6/org.osgi.test.cases.resolver
+/tmp/osgi-r6/org.osgi.test.cases.jmx.framework.secure
+/tmp/osgi-r6/org.osgi.test.cases.dal.functions
+/tmp/osgi-r6/org.osgi.test.cases.async.secure
+/tmp/osgi-r6/org.osgi.test.cases.zigbee
+/tmp/osgi-r6/org.osgi.test.cases.dmt.tc4
+/tmp/osgi-r6/org.osgi.test.cases.enocean
+/tmp/osgi-r6/org.osgi.test.cases.component.annotations
+/tmp/osgi-r6/org.osgi.test.cases.resourcemonitoring
+/tmp/osgi-r6/org.osgi.test.cases.webcontainer
+/tmp/osgi-r6/org.osgi.test.support
+/tmp/osgi-r6/org.osgi.test.cases.provisioning
+/tmp/osgi-r6/org.osgi.test.cases.device
+/tmp/osgi-r6/org.osgi.test.cases.remoteservices
+/tmp/osgi-r6/org.osgi.test.cases.rest
+/tmp/osgi-r6/org.osgi.test.cases.measurement
+/tmp/osgi-r6/org.osgi.test.cases.dmt.tc1
+/tmp/osgi-r6/org.osgi.test.cases.framework.launch
+/tmp/osgi-r6/org.osgi.test.cases.jmx.useradmin
+
+ succeeded in 117ms:
+/tmp/osgi-r6/org.osgi.namespace.contract/bnd.bnd
+/tmp/osgi-r6/org.osgi.namespace.contract/src/org/osgi/namespace/contract/packageinfo
+/tmp/osgi-r6/org.osgi.namespace.contract/src/org/osgi/namespace/contract/ContractNamespace.java
+/tmp/osgi-r6/org.osgi.namespace.contract/src/org/osgi/namespace/contract/package-info.java
+
+ succeeded in 118ms:
+exec
+/bin/bash -lc "rg -n \"osgi\\.contract|ContractNamespace|org\\.osgi\\.namespace\\.contract\" /tmp/osgi-r6/org.osgi.test.* /tmp/osgi-r6/*test* 2>/dev/null | head -n 80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 113ms:
+web search: 
+web search: https://github.com/osgi/osgi/tree/r6-cmpn-spec-final/org.osgi.namespace.contract
+web search: 
+web search: Maven Central org.osgi org.osgi.namespace.contract 1.0.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0
+codex
+I found no Maven `-tests.jar` and no tagged upstream test case referencing this namespace package, so I’ll record the test suite URL as `N/A`. I’m using Maven Central for the source and Javadoc jar URLs because those are versioned exactly by the artifact version.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16781e35295c9cc029ca65484dc746ffb0d1b022
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "This artifact provides OSGi constants for the osgi.contract capability and requirement namespace. It lets OSGi bundles describe and require shared API contracts with a contract name and optional version metadata."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16781e35295c9cc029ca65484dc746ffb0d1b022
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "This artifact provides OSGi constants for the osgi.contract capability and requirement namespace. It lets OSGi bundles describe and require shared API contracts with a contract name and optional version metadata."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+{
+  "coordinates": "org.osgi:org.osgi.namespace.contract:1.0.0",
+  "repository-url": "https://github.com/osgi/osgi",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
+  "description": "This artifact provides OSGi constants for the osgi.contract capability and requirement namespace. It lets OSGi bundles describe and require shared API contracts with a contract name and optional version metadata."
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+ succeeded in 0ms:
+exec
+/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-sources.jar' \\
+  'https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-javadoc.jar'; do \\
+  curl -fsSI \""'$url" | sed -n '"'1p'; \\
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16781e35295c9cc029ca65484dc746ffb0d1b022
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "This artifact provides OSGi constants for the osgi.contract capability and requirement namespace. It lets OSGi bundles describe and require shared API contracts with a contract name and optional version metadata."
+ }
+
+ succeeded in 146ms:
+HTTP/2 200 
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json && git ls-files --stage build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16781e35295c9cc029ca65484dc746ffb0d1b022
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "This artifact provides OSGi constants for the osgi.contract capability and requirement namespace. It lets OSGi bundles describe and require shared API contracts with a contract name and optional version metadata."
+ }
+
+ succeeded in 278ms:
+web search: 
+web search: Maven org.osgi:org.osgi.namespace.contract 1.0.0 POM SCM Git-SHA
+codex
+Updated [org.osgi-org.osgi.namespace.contract-1.0.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json).
+
+I set Maven Central source and Javadoc jar URLs with `$version$`, used the OSGi GitHub repository root, and left `test-code-url` as `N/A` because no Maven test jar or matching tagged upstream test suite was found. The artifact contains JVM class files and is not Kotlin/Groovy/Scala-specific, so I did not add `language` or `not-for-native-image`. Verified the JSON with `jq` and checked both Maven URLs return `HTTP/2 200`.
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16781e35295c9cc029ca65484dc746ffb0d1b022
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "This artifact provides OSGi constants for the osgi.contract capability and requirement namespace. It lets OSGi bundles describe and require shared API contracts with a contract name and optional version metadata."
+ }
+
+tokens used
+77,993
+Updated [org.osgi-org.osgi.namespace.contract-1.0.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json).
+
+I set Maven Central source and Javadoc jar URLs with `$version$`, used the OSGi GitHub repository root, and left `test-code-url` as `N/A` because no Maven test jar or matching tagged upstream test suite was found. The artifact contains JVM class files and is not Kotlin/Groovy/Scala-specific, so I did not add `language` or `not-for-native-image`. Verified the JSON with `jq` and checked both Maven URLs return `HTTP/2 200`.
+Ran agent for org.osgi:org.osgi.namespace.contract:1.0.0 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/build/agent-artifact-discovery-logs/org.osgi-org.osgi.namespace.contract-1.0.0.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-64b99b7a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 28s
+9 actionable tasks: 9 executed
