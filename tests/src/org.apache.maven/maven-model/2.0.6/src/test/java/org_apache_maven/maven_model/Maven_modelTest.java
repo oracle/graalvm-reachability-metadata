@@ -210,6 +210,32 @@ public class Maven_modelTest {
     }
 
     @Test
+    void readerResolvesDefaultEntityReferencesWhenEnabled() throws Exception {
+        String pomXml = """
+                <project>
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>org.example</groupId>
+                  <artifactId>entity-reader</artifactId>
+                  <version>1.0</version>
+                  <description>Copyright &copy; Example &mdash; all rights reserved</description>
+                </project>
+                """;
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+
+        Model model = reader.read(new StringReader(pomXml));
+
+        assertThat(reader.getAddDefaultEntities()).isTrue();
+        assertThat(model.getDescription()).isEqualTo("Copyright © Example — all rights reserved");
+
+        MavenXpp3Reader readerWithoutDefaultEntities = new MavenXpp3Reader();
+        readerWithoutDefaultEntities.setAddDefaultEntities(false);
+
+        assertThat(readerWithoutDefaultEntities.getAddDefaultEntities()).isFalse();
+        assertThrows(XmlPullParserException.class,
+                () -> readerWithoutDefaultEntities.read(new StringReader(pomXml)));
+    }
+
+    @Test
     void writesProgrammaticModelAndReadsItBack() throws Exception {
         Model model = new Model();
         model.setModelEncoding("UTF-8");
