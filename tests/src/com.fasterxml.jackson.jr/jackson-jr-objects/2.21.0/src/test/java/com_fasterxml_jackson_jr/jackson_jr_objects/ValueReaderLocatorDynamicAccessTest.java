@@ -7,6 +7,7 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import com.fasterxml.jackson.jr.ob.JacksonJrExtension;
 import com.fasterxml.jackson.jr.ob.JSON;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.jr.ob.api.MapBuilder;
 import com.fasterxml.jackson.jr.ob.api.ReaderWriterModifier;
 import com.fasterxml.jackson.jr.ob.api.ValueReader;
 import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
 import com.fasterxml.jackson.jr.ob.impl.JSONReader;
 import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import com.fasterxml.jackson.jr.ob.impl.ValueReaderLocator;
@@ -46,6 +48,27 @@ public class ValueReaderLocatorDynamicAccessTest {
         ValueReader reader = locator.findReader(Direction.class);
 
         assertThat(reader).isNotNull();
+    }
+
+    @Test
+    void createsEnumReadersFromDefinitionFields() {
+        ExposedValueReaderLocator locator = new ExposedValueReaderLocator(new EnumDefinitionModifier());
+
+        ValueReader reader = locator.enumReaderFor(Direction.class);
+
+        assertThat(reader.valueType()).isEqualTo(Direction.class);
+    }
+
+    @Test
+    void deserializesRecordPropertiesFromDefinitionOriginalNames() throws Exception {
+        JSON json = JSON.builder()
+                .register(new RecordDefinitionExtension())
+                .build();
+
+        RecordWithExternalNames item = json.beanFrom(RecordWithExternalNames.class,
+                "{\"item_id\":\"A-1\",\"stock_count\":3}");
+
+        assertThat(item).isEqualTo(new RecordWithExternalNames("A-1", 3));
     }
 
     @Test
@@ -82,10 +105,48 @@ public class ValueReaderLocatorDynamicAccessTest {
     public record InventoryItem(String id, int quantity, boolean available) {
     }
 
+    public record RecordWithExternalNames(String id, int quantity) {
+    }
+
+    private static POJODefinition.Prop recordProp(String externalName, String originalName) {
+        return new POJODefinition.Prop(externalName, originalName, null, null, null, null, null);
+    }
+
+    public static class ExposedValueReaderLocator extends ValueReaderLocator {
+        ExposedValueReaderLocator(ReaderWriterModifier modifier) {
+            super(null, modifier);
+        }
+
+        ValueReader enumReaderFor(Class<?> enumType) {
+            return enumReader(enumType);
+        }
+    }
+
     public static class EnumDefinitionExtension extends JacksonJrExtension {
         @Override
         protected void register(ExtensionContext ctxt) {
             ctxt.insertModifier(new EnumDefinitionModifier());
+        }
+    }
+
+    public static class RecordDefinitionExtension extends JacksonJrExtension {
+        @Override
+        protected void register(ExtensionContext ctxt) {
+            ctxt.insertModifier(new RecordDefinitionModifier());
+        }
+    }
+
+    public static class RecordDefinitionModifier extends ReaderWriterModifier {
+        @Override
+        public POJODefinition pojoDefinitionForDeserialization(JSONReader readContext, Class<?> pojoType) {
+            if (pojoType != RecordWithExternalNames.class) {
+                return null;
+            }
+            POJODefinition base = BeanPropertyIntrospector.instance()
+                    .pojoDefinitionForDeserialization(readContext, pojoType);
+            return base.withProperties(List.of(
+                    recordProp("item_id", "id"),
+                    recordProp("stock_count", "quantity")));
         }
     }
 
