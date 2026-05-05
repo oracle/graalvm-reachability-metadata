@@ -32,21 +32,11 @@ public class ClassLoadersKtTest {
     @Test
     fun `embedded server development startup inspects non URL class loader class path`(): Unit {
         val discoveredRoot: URL = temporaryDirectory.toUri().toURL()
-        val classLoader: FallbackResourceClassLoader = FallbackResourceClassLoader(discoveredRoot)
-        val environment: ApplicationEnvironment = applicationEnvironment {
-            this.classLoader = classLoader
-        }
-        val rootConfig: ServerConfig = serverConfig(environment) {
-            developmentMode = true
-            watchPaths = listOf("dynamic-access-watch-pattern")
-        }
-        val server: EmbeddedServer<StubEngine, ApplicationEngine.Configuration> = embeddedServer(
-            StubEngineFactory,
-            rootConfig
-        ) {
-            shutdownGracePeriod = 0
-            shutdownTimeout = 1_000
-        }
+        val classLoader: FallbackResourceClassLoader = FallbackResourceClassLoader(
+            discoveredRoot,
+            failOnUrlAccess = true
+        )
+        val server: EmbeddedServer<StubEngine, ApplicationEngine.Configuration> = serverFor(classLoader)
 
         try {
             server.start(wait = false)
@@ -57,24 +47,74 @@ public class ClassLoadersKtTest {
             server.stop(gracePeriodMillis = 0, timeoutMillis = 1_000)
         }
     }
+
+    @Test
+    fun `embedded server development startup invokes URL class path accessor`(): Unit {
+        val discoveredRoot: URL = temporaryDirectory.toUri().toURL()
+        val classLoader: FallbackResourceClassLoader = FallbackResourceClassLoader(
+            discoveredRoot,
+            failOnUrlAccess = false
+        )
+        val server: EmbeddedServer<StubEngine, ApplicationEngine.Configuration> = serverFor(classLoader)
+
+        try {
+            server.start(wait = false)
+
+            assertThat(classLoader.urlAccessCount).isPositive()
+        } finally {
+            server.stop(gracePeriodMillis = 0, timeoutMillis = 1_000)
+        }
+    }
+
+    private fun serverFor(classLoader: ClassLoader): EmbeddedServer<StubEngine, ApplicationEngine.Configuration> {
+        val environment: ApplicationEnvironment = applicationEnvironment {
+            this.classLoader = classLoader
+        }
+        val rootConfig: ServerConfig = serverConfig(environment) {
+            developmentMode = true
+            watchPaths = listOf("dynamic-access-watch-pattern")
+        }
+        return embeddedServer(
+            StubEngineFactory,
+            rootConfig
+        ) {
+            shutdownGracePeriod = 0
+            shutdownTimeout = 1_000
+        }
+    }
+
+    public class URLClassPath(
+        private val discoveredRoot: URL,
+        private val failOnAccess: Boolean
+    ) {
+        public var accessCount: Int = 0
+            private set
+
+        public fun getURLs(): Array<URL> {
+            accessCount++
+            if (failOnAccess) {
+                throw IllegalStateException("Force Ktor to use the package-resource class path fallback")
+            }
+            return arrayOf(discoveredRoot)
+        }
+    }
 }
 
 private class FallbackResourceClassLoader(
-    private val discoveredRoot: URL
+    private val discoveredRoot: URL,
+    failOnUrlAccess: Boolean
 ) : ClassLoader(null) {
     @Suppress("unused")
-    private val ucp: URLClassPath = URLClassPath()
+    private val ucp: ClassLoadersKtTest.URLClassPath = ClassLoadersKtTest.URLClassPath(
+        discoveredRoot,
+        failOnUrlAccess
+    )
     val requestedResources: MutableList<String> = mutableListOf()
+    val urlAccessCount: Int get() = ucp.accessCount
 
     override fun getResources(name: String): Enumeration<URL> {
         requestedResources.add(name)
         return Collections.enumeration(listOf(discoveredRoot))
-    }
-}
-
-private class URLClassPath {
-    fun getURLs(): Array<URL> {
-        throw IllegalStateException("Force Ktor to use the package-resource class path fallback")
     }
 }
 
