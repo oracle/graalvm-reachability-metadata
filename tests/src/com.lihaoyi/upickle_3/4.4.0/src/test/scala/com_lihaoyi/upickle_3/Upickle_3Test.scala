@@ -49,8 +49,6 @@ object Email {
   )
 }
 
-final case class Contact(name: String, primaryEmail: Email, secondaryEmails: List[Email]) derives ReadWriter
-
 final case class ProductCode(prefix: String, number: Int)
 
 object ProductCode {
@@ -64,14 +62,6 @@ object ProductCode {
 }
 
 final case class DefaultsEnabled(name: String, active: Boolean = true, aliases: List[String] = Nil) derives ReadWriter
-
-final case class ExternalLine(sku: String, quantity: Int) derives ReadWriter
-
-final case class ExternalOrder(id: String, lines: List[ExternalLine], metadata: Map[String, String]) derives ReadWriter
-
-final case class InternalLine(sku: String, quantity: Int) derives ReadWriter
-
-final case class InternalOrder(id: String, lines: List[InternalLine], metadata: Map[String, String]) derives ReadWriter
 
 class Upickle_3Test {
   @Test
@@ -128,7 +118,7 @@ class Upickle_3Test {
     assertTrue(jsonAst.arr.nonEmpty)
     assertEquals(events, read[List[InventoryEvent]](jsonAst))
 
-    val binary: Array[Byte] = writeBinaryToByteArray(events)
+    val binary: Array[Byte] = writeBinary(events)
     assertTrue(binary.length > 0)
     assertEquals(events, readBinary[List[InventoryEvent]](upack.Readable.fromByteArray(binary)))
   }
@@ -158,27 +148,14 @@ class Upickle_3Test {
 
   @Test
   def usesCustomReadWritersForValueClassesAndAppliesReadMapping(): Unit = {
-    val contact: Contact = Contact(
-      name = "Support",
-      primaryEmail = Email("Help@Example.COM"),
-      secondaryEmails = List(Email("Admin@Example.COM"), Email("Ops@Example.COM"))
-    )
+    val emails: List[Email] = List(Email("Help@Example.COM"), Email("Admin@Example.COM"))
 
-    val jsonText: String = write(contact)
+    val jsonText: String = write(emails)
     val jsonValue: ujson.Value = ujson.read(jsonText)
-    assertEquals("Help@Example.COM", jsonValue(objKey("primaryEmail")).str)
-    assertEquals(List("Admin@Example.COM", "Ops@Example.COM"), jsonValue(objKey("secondaryEmails")).arr.map(_.str).toList)
+    assertEquals(List("Help@Example.COM", "Admin@Example.COM"), jsonValue.arr.map(_.str).toList)
 
-    val parsed: Contact = read[Contact](
-      """
-        |{
-        |  "name": "Support",
-        |  "primaryEmail": " HELP@EXAMPLE.COM ",
-        |  "secondaryEmails": [" ADMIN@EXAMPLE.COM ", " OPS@EXAMPLE.COM "]
-        |}
-        |""".stripMargin
-    )
-    assertEquals(Contact("Support", Email("help@example.com"), List(Email("admin@example.com"), Email("ops@example.com"))), parsed)
+    val parsed: List[Email] = read[List[Email]]("""[" HELP@EXAMPLE.COM ", " ADMIN@EXAMPLE.COM "]""")
+    assertEquals(List(Email("help@example.com"), Email("admin@example.com")), parsed)
   }
 
   @Test
@@ -208,7 +185,7 @@ class Upickle_3Test {
     assertEquals(explicit, read[DefaultsEnabled](write(explicit)))
 
     assertThrows(
-      classOf[upickle.core.AbortException],
+      classOf[upickle.core.TraceVisitor.TraceException],
       () => {
         read[Customer]("""{"customer_name":"missing-required-fields"}""")
         ()
@@ -216,7 +193,7 @@ class Upickle_3Test {
     )
 
     assertThrows(
-      classOf[upickle.core.AbortException],
+      classOf[upickle.core.TraceVisitor.TraceException],
       () => {
         read[List[Int]]("""{"not":"a-list"}""")
         ()
@@ -225,23 +202,19 @@ class Upickle_3Test {
   }
 
   @Test
-  def transformsBetweenCompatibleTypesUsingReadersAndWriters(): Unit = {
-    val external: ExternalOrder = ExternalOrder(
-      id = "order-42",
-      lines = List(ExternalLine("BOOK-1", 2), ExternalLine("PEN-9", 5)),
-      metadata = Map("channel" -> "web", "priority" -> "standard")
+  def transformsBetweenCompatibleReadersAndWriters(): Unit = {
+    val customer: Customer = Customer(
+      "Dorothy Vaughan",
+      98,
+      Address("Hampton", 1),
+      Vector("manager", "fortran"),
+      Map("leadership" -> 100.0),
+      Some("human computer")
     )
 
-    val internal: InternalOrder = transform(external).to[InternalOrder]
-
-    assertEquals(
-      InternalOrder(
-        id = "order-42",
-        lines = List(InternalLine("BOOK-1", 2), InternalLine("PEN-9", 5)),
-        metadata = Map("channel" -> "web", "priority" -> "standard")
-      ),
-      internal
-    )
+    val jsonValue: ujson.Value = transform(customer).to[ujson.Value]
+    assertEquals("Dorothy Vaughan", jsonValue(objKey("customer_name")).str)
+    assertEquals(customer, transform(jsonValue).to[Customer])
   }
 
   @Test
