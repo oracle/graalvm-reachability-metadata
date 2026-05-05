@@ -18,8 +18,17 @@ import io.ktor.util.reflect.typeInfo
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import kotlinx.serialization.protobuf.ProtoBuf
 import kotlinx.serialization.protobuf.ProtoNumber
 import org.assertj.core.api.Assertions.assertThat
@@ -134,6 +143,25 @@ public class KtorSerializationKotlinxProtobufJvmTest {
 
             assertThat(bytes).isNotEmpty()
             assertThat(decoded).isEqualTo(valueWithOnlyDefaults)
+        }
+    }
+
+    @Test
+    public fun customSerializersModuleSupportsContextualProtoFields(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val module = SerializersModule {
+                contextual(TrackingCode::class, TrackingCodeSerializer)
+            }
+            val configuration = RecordingConfiguration()
+            configuration.protobuf(protobuf = ProtoBuf { serializersModule = module })
+            val converter = configuration.singleRegistration().converter
+            val original = ContextualProtoEnvelope(code = TrackingCode("shipment-17"))
+
+            val bytes = converter.serializeToByteArray(original)
+            val decoded = converter.deserializeFromByteArray<ContextualProtoEnvelope>(bytes)
+
+            assertThat(bytes).isNotEmpty()
+            assertThat(decoded).isEqualTo(original)
         }
     }
 
@@ -257,3 +285,24 @@ private data class DefaultedProtoMessage(
     @ProtoNumber(2) val count: Int = 0,
     @ProtoNumber(3) val enabled: Boolean = false
 )
+
+@Serializable
+private data class ContextualProtoEnvelope(
+    @ProtoNumber(1) @Contextual val code: TrackingCode
+)
+
+private data class TrackingCode(
+    val value: String
+)
+
+private object TrackingCodeSerializer : KSerializer<TrackingCode> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("TrackingCode", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: TrackingCode) {
+        encoder.encodeString(value.value)
+    }
+
+    override fun deserialize(decoder: Decoder): TrackingCode {
+        return TrackingCode(decoder.decodeString())
+    }
+}
