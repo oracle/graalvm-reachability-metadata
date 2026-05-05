@@ -96,6 +96,13 @@ class PreparedSourceContext:
 
 
 @dataclass(frozen=True)
+class ArtifactUrlPopulationValidation:
+    needs_population: bool
+    overwrite_existing: bool
+    reasons: list[str]
+
+
+@dataclass(frozen=True)
 class TestSourceLayout:
     language: str
     source_dir_name: str
@@ -132,7 +139,13 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
     return normalized
 
 
-def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND) -> None:
+def populate_artifact_urls(
+        reachability_repo_path: str,
+        coordinate: str,
+        agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND,
+        overwrite_existing: bool = False,
+        verify_artifact_sources: bool = False,
+) -> None:
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("populate-artifact-urls", coordinate, "populate_artifact_urls.log")
     log_path_display = display_log_path(log_path)
@@ -143,6 +156,10 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
         f"--coordinates={coordinate}",
         f"--agent-command={agent_command}",
     ]
+    if overwrite_existing:
+        command.append("--overwrite-existing")
+    if verify_artifact_sources:
+        command.append("--verify-artifact-sources")
     result = subprocess.run(
         command,
         cwd=reachability_repo_path,
@@ -160,6 +177,51 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
         )
         raise SystemExit(1)
     log_stage("populate-artifact-urls", f"Artifact URLs populated for {coordinate}")
+
+
+def populate_artifact_urls_if_needed(
+        reachability_repo_path: str,
+        coordinate: str,
+        agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND,
+) -> ArtifactUrlPopulationValidation:
+    validation = validate_artifact_url_templates(reachability_repo_path, coordinate)
+    if not validation.needs_population:
+        log_stage("populate-artifact-urls", f"Existing artifact URLs are usable for {coordinate}; skipping population")
+        return validation
+
+    log_stage(
+        "populate-artifact-urls",
+        "Artifact URL population required for {coordinate}: {reasons}".format(
+            coordinate=coordinate,
+            reasons="; ".join(validation.reasons),
+        ),
+    )
+    populate_artifact_urls(
+        reachability_repo_path=reachability_repo_path,
+        coordinate=coordinate,
+        agent_command=agent_command,
+        overwrite_existing=validation.overwrite_existing,
+        verify_artifact_sources=True,
+    )
+    return validation
+
+
+def validate_artifact_url_templates(reachability_repo_path: str, coordinate: str) -> ArtifactUrlPopulationValidation:
+    index_entry = load_index_entry(reachability_repo_path, coordinate)
+    missing_fields = _missing_artifact_metadata_fields(index_entry)
+    reasons: list[str] = []
+    if missing_fields:
+        reasons.append("missing fields: " + ", ".join(missing_fields))
+
+    broken_templates = _broken_artifact_url_templates(coordinate, index_entry)
+    if broken_templates:
+        reasons.append("broken URL templates: " + ", ".join(broken_templates))
+
+    return ArtifactUrlPopulationValidation(
+        needs_population=bool(reasons),
+        overwrite_existing=bool(broken_templates),
+        reasons=reasons,
+    )
 
 
 def discover_artifact_metadata(
@@ -323,6 +385,38 @@ def render_url_template(url: str | None, version: str) -> str | None:
     if url is None:
         return None
     return url.replace(VERSION_PLACEHOLDER, version)
+
+
+def _missing_artifact_metadata_fields(index_entry: dict[str, Any]) -> list[str]:
+    required_fields = [
+        "source-code-url",
+        "repository-url",
+        "test-code-url",
+        "documentation-url",
+        "description",
+    ]
+    return [field_name for field_name in required_fields if normalize_url_value(index_entry.get(field_name)) is None]
+
+
+def _broken_artifact_url_templates(coordinate: str, index_entry: dict[str, Any]) -> list[str]:
+    _, _, version = _coordinate_parts(coordinate)
+    validation_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "local_repositories",
+        "source_context_validation",
+        *_coordinate_parts(coordinate),
+    )
+    os.makedirs(validation_dir, exist_ok=True)
+
+    broken_fields: list[str] = []
+    for source_type, field_name in SOURCE_CONTEXT_FIELD_BY_TYPE.items():
+        url = render_url_template(normalize_url_value(index_entry.get(field_name)), version)
+        if url is None:
+            continue
+        artifact = download_source_artifact(validation_dir, source_type, url)
+        if not artifact.available:
+            broken_fields.append(f"{field_name} ({artifact.reason or 'unavailable'})")
+    return broken_fields
 
 
 def download_source_artifact(base_dir: str, source_type: str, url: str) -> SourceArtifactContext:

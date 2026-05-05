@@ -43,7 +43,7 @@ from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
     normalize_source_context_types,
-    populate_artifact_urls,
+    populate_artifact_urls_if_needed,
     prepare_source_contexts,
     resolve_test_source_layout,
 )
@@ -295,7 +295,7 @@ def main(argv=None) -> int:
         json.dump(baseline_snapshot, f, indent=2)
     log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
 
-    populate_artifact_urls(reachability_repo_path, library)
+    populate_artifact_urls_if_needed(reachability_repo_path, library)
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     prepared_source_context = prepare_source_contexts(
