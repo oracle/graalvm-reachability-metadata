@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import org.codehaus.commons.compiler.AbstractCompilerFactory;
 import org.codehaus.commons.compiler.AbstractJavaSourceClassLoader;
 import org.codehaus.commons.compiler.CompilerFactoryFactory;
+import org.codehaus.commons.compiler.IClassBodyEvaluator;
 import org.codehaus.commons.compiler.ICompiler;
 import org.codehaus.commons.compiler.ICompilerFactory;
 import org.junit.jupiter.api.Test;
@@ -76,6 +77,11 @@ public class CompilerFactoryFactoryTest {
         @Override
         public ICompiler newCompiler() {
             throw new UnsupportedOperationException(getId() + ": newCompiler");
+        }
+
+        @Override
+        public IClassBodyEvaluator newClassBodyEvaluator() {
+            return new ClassBodyDemoTest.TestClassBodyEvaluator();
         }
 
         @Override
