@@ -225,7 +225,7 @@ public class Maven_modelTest {
         Model model = reader.read(new StringReader(pomXml));
 
         assertThat(reader.getAddDefaultEntities()).isTrue();
-        assertThat(model.getDescription()).isEqualTo("Copyright © Example — all rights reserved");
+        assertThat(model.getDescription()).isEqualTo("Copyright \u00A9 Example \u2014 all rights reserved");
 
         MavenXpp3Reader readerWithoutDefaultEntities = new MavenXpp3Reader();
         readerWithoutDefaultEntities.setAddDefaultEntities(false);
