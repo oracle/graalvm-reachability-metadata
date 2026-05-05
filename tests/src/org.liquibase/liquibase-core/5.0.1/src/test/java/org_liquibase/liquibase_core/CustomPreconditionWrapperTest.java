@@ -6,14 +6,20 @@
  */
 package org_liquibase.liquibase_core;
 
+import liquibase.Scope;
 import liquibase.database.Database;
 import liquibase.exception.CustomPreconditionErrorException;
 import liquibase.exception.CustomPreconditionFailedException;
 import liquibase.exception.PreconditionFailedException;
 import liquibase.precondition.CustomPrecondition;
 import liquibase.precondition.CustomPreconditionWrapper;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,6 +30,7 @@ public class CustomPreconditionWrapperTest {
     void resetCustomPreconditionState() {
         ExampleCustomPrecondition.checked = false;
         ExampleCustomPrecondition.configuredValue = null;
+        NonCustomPrecondition.constructorInvocations = 0;
     }
 
     @Test
@@ -39,13 +46,93 @@ public class CustomPreconditionWrapperTest {
     }
 
     @Test
-    void checkFallsBackToDefaultClassForNameAfterClassCastFailure() {
+    void checkFallsBackToDefaultClassForNameAfterScopedClassCastFailure() throws Exception {
         CustomPreconditionWrapper wrapper = new CustomPreconditionWrapper();
-        wrapper.setClassName(CustomPreconditionWrapperTest.class.getName());
+        wrapper.setClassName(ExampleCustomPrecondition.class.getName());
+        DuplicateCustomPreconditionClassLoader classLoader = new DuplicateCustomPreconditionClassLoader(
+                CustomPreconditionWrapperTest.class.getClassLoader()
+        );
+
+        try {
+            Scope.child(Scope.Attr.classLoader, classLoader, () -> wrapper.check(null, null, null, null));
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+            return;
+        }
+
+        assertThat(classLoader.loadedDuplicatePrecondition).isTrue();
+        assertThat(ExampleCustomPrecondition.checked).isTrue();
+    }
+
+    @Test
+    void checkReportsFailureWhenDefaultClassForNameFallbackIsNotACustomPrecondition() {
+        CustomPreconditionWrapper wrapper = new CustomPreconditionWrapper();
+        wrapper.setClassName(NonCustomPrecondition.class.getName());
 
         assertThatThrownBy(() -> wrapper.check(null, null, null, null))
                 .isInstanceOf(PreconditionFailedException.class)
                 .hasCauseInstanceOf(ClassCastException.class);
+        assertThat(NonCustomPrecondition.constructorInvocations).isEqualTo(2);
+    }
+
+    private static final class DuplicateCustomPreconditionClassLoader extends ClassLoader {
+
+        private final Set<String> duplicateClassNames = Set.of(
+                CustomPrecondition.class.getName(),
+                ExampleCustomPrecondition.class.getName()
+        );
+
+        private boolean loadedDuplicatePrecondition;
+
+        private DuplicateCustomPreconditionClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null) {
+                    if (duplicateClassNames.contains(name)) {
+                        loadedClass = defineClassFromParentResource(name);
+                    } else {
+                        loadedClass = super.loadClass(name, false);
+                    }
+                }
+                if (resolve) {
+                    resolveClass(loadedClass);
+                }
+                return loadedClass;
+            }
+        }
+
+        private Class<?> defineClassFromParentResource(String className) throws ClassNotFoundException {
+            String resourceName = className.replace('.', '/') + ".class";
+            try (InputStream input = getParent().getResourceAsStream(resourceName)) {
+                if (input == null) {
+                    throw new ClassNotFoundException(className);
+                }
+                byte[] classBytes = input.readAllBytes();
+                Class<?> definedClass = defineClass(className, classBytes, 0, classBytes.length);
+                if (ExampleCustomPrecondition.class.getName().equals(className)) {
+                    loadedDuplicatePrecondition = true;
+                }
+                return definedClass;
+            } catch (IOException exception) {
+                throw new ClassNotFoundException(className, exception);
+            }
+        }
+    }
+
+    public static class NonCustomPrecondition {
+
+        private static int constructorInvocations;
+
+        public NonCustomPrecondition() {
+            constructorInvocations++;
+        }
     }
 
     public static class ExampleCustomPrecondition implements CustomPrecondition {
@@ -61,7 +148,8 @@ public class CustomPreconditionWrapperTest {
         }
 
         @Override
-        public void check(Database database) throws CustomPreconditionFailedException, CustomPreconditionErrorException {
+        public void check(Database database)
+                throws CustomPreconditionFailedException, CustomPreconditionErrorException {
             checked = true;
         }
     }
