@@ -1,0 +1,1884 @@
+Starting a Gradle Daemon, 5 busy and 2 incompatible and 248 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df575-8967-7182-b736-3f51437c546b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: commons-beanutils:commons-beanutils-core:1.8.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.0" when "$version$" is replaced with "1.8.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+- Set "coordinates" to "commons-beanutils:commons-beanutils-core:1.8.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.8.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven metadata and the upstream Apache project, then patch the JSON directly with version-tokenized URLs where they resolve for `1.8.0`.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+{
+  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-sources.jar && curl -I -L https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-test-sources.jar && curl -sL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 442ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Tue, 05 May 2026 00:07:01 GMT
+content-type: text/html
+cf-ray: 9f6b80aa5c43bc60-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 404 
+date: Tue, 05 May 2026 00:07:01 GMT
+content-type: text/html
+cf-ray: 9f6b80abacebdc8b-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>4</version>
+  </parent>
+  <groupId>commons-beanutils</groupId>
+  <artifactId>commons-beanutils-core</artifactId>
+  <version>1.8.0</version>
+  <name>Commons BeanUtils Core</name>
+  <url>http://commons.apache.org/beanutils/</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+web search: 
+web search: commons-beanutils-core 1.8.0 source tag
+codex
+Maven Central does not publish `commons-beanutils-core-1.8.0-sources.jar` or `-test-sources.jar`, so I’m falling back to upstream tag URLs rather than inventing Maven artifact links that 404.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/commons-beanutils.git | rg '1[._-]8[._-]0|BEANUTILS|beanutils'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+exec
+/usr/bin/bash -lc "curl -sL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>11</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>commons-beanutils</groupId>
+  <artifactId>commons-beanutils</artifactId>
+  <version>1.8.0</version>
+  <name>Commons BeanUtils</name>
+
+  <inceptionYear>2000</inceptionYear>
+  <description>BeanUtils provides an easy-to-use but flexible wrapper around reflection and introspection.</description>
+
+  <url>http://commons.apache.org/beanutils/</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/jira/browse/BEANUTILS</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/beanutils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/beanutils/trunk/</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/beanutils/trunk/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Robert Burrell Donkin</name>
+      <id>rdonkin</id>
+      <email>rdonkin@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>dIon Gillard</name>
+      <id>dion</id>
+      <email>dion@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Craig McClanahan</name>
+      <id>craigmcc</id>
+      <email>craigmcc@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Geir Magnusson Jr.</name>
+      <id>geirm</id>
+      <email>geirm@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Scott Sanders</name>
+      <id>sanders</id>
+      <email>sanders@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>James Strachan</name>
+      <id>jstrachan</id>
+      <email>jstrachan@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Rodney Waldhoff</name>
+      <id>rwaldhoff</id>
+      <email>rwaldhoff@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Martin van den Bemt</name>
+      <id>mvdb</id>
+      <email>mvdb@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Yoav Shapira</name>
+      <id>yoavs</id>
+      <email>yoavs@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Niall Pemberton</name>
+      <id>niallp</id>
+      <email>niallp at apache dot org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Simon Kitching</name>
+      <id>skitching</id>
+      <email>skitching@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>James Carman</name>
+      <id>jcarman</id>
+      <email>jcarman@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Paul Jack</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Stephen Colebourne</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Berin Loritsch</name>
+      <email></email>
+    </contributor>    
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId> 
+      <version>3.2.1</version> 
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections-testframework</artifactId> 
+      <version>3.2.1</version> 
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <testSourceDirectory>src/test</testSourceDirectory>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <forkMode>pertest</forkMode>
+              <!-- limit memory size see BEANUTILS-291 -->
+              <argLine>-Xmx25M</argLine>
+              <includes>
+                <include>**/*TestCase.java</include>
+              </includes>
+              <excludes>
+                <!-- This test case is known to fail, and there isn't any proposed fix
+                  -  so we will just exclude it until someone comes up with a solution.
+                -->
+                <exclude>**/*MemoryTestCase.java</exclude>
+              </excludes>
+
+              <!-- Configure Logging -->
+              <systemProperties>
+                  <property>
+                      <name>org.apache.commons.logging.LogFactory</name>
+                      <value>org.apache.commons.logging.impl.LogFactoryImpl</value>
+                  </property>
+                  <property>
+                      <name>org.apache.commons.logging.Log</name>
+                      <value>org.apache.commons.logging.impl.SimpleLog</value>
+                  </property>
+                  <property>
+                      <name>org.apache.commons.logging.simplelog.defaultlog</name>
+                      <value>WARN</value>
+                  </property>
+              </systemProperties>
+
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <configuration>
+                <tasks>
+                  <ant antfile="build-other-jars.xml" target="other-jars">
+                    <property name="component.version"    value="${project.version}"/>
+                    <property name="build.home"           value="${project.build.directory}"/>
+                    <property name="dist.home"            value="${project.build.directory}"/>
+                    <property name="maven.compile.source" value="${maven.compile.source}"/>
+                    <property name="maven.compile.target" value="${maven.compile.target}"/>
+                  </ant>
+                </tasks>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+                <descriptors>
+                    <descriptor>src/main/assembly/bin.xml</descriptor>
+                    <descriptor>src/main/assembly/src.xml</descriptor>
+                </descriptors>
+                <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+        </plugin>
+      </plugins>
+    </build>
+
+    <properties>
+        <maven.compile.source>1.3</maven.compile.source>
+        <maven.compile.target>1.3</maven.compile.target>
+        <commons.componentid>beanutils</commons.componentid>
+        <commons.release.version>1.8.0</commons.release.version>
+        <commons.jira.id>BEANUTILS</commons.jira.id>
+        <commons.jira.pid>12310460</commons.jira.pid>
+        <commons.osgi.export>
+             !org.apache.commons.collections,
+              org.apache.commons.beanutils.*;version=${pom.version}
+        </commons.osgi.export>
+    </properties> 
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <configLocation>${basedir}/checkstyle.xml</configLocation>
+                    <enableRulesSummary>false</enableRulesSummary>
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: commons-beanutils/commons-beanutils-core/1.8.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>commons-beanutils/commons-beanutils-core/1.8.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-beanutils-core-1.8.0.jar" title="commons-beanutils-core-1.8.0.jar">commons-beanutils-core-1.8.0.jar</a>                  2008-08-31 18:13    206035      
+<a href="commons-beanutils-core-1.8.0.jar.asc" title="commons-beanutils-core-1.8.0.jar.asc">commons-beanutils-core-1.8.0.jar.asc</a>              2008-08-31 18:13       226      
+<a href="commons-beanutils-core-1.8.0.jar.asc.md5" title="commons-beanutils-core-1.8.0.jar.asc.md5">commons-beanutils-core-1.8.0.jar.asc.md5</a>          2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.jar.asc.sha1" title="commons-beanutils-core-1.8.0.jar.asc.sha1">commons-beanutils-core-1.8.0.jar.asc.sha1</a>         2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.jar.md5" title="commons-beanutils-core-1.8.0.jar.md5">commons-beanutils-core-1.8.0.jar.md5</a>              2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.jar.sha1" title="commons-beanutils-core-1.8.0.jar.sha1">commons-beanutils-core-1.8.0.jar.sha1</a>             2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.pom" title="commons-beanutils-core-1.8.0.pom">commons-beanutils-core-1.8.0.pom</a>                  2008-08-31 18:13      1639      
+<a href="commons-beanutils-core-1.8.0.pom.asc" title="commons-beanutils-core-1.8.0.pom.asc">commons-beanutils-core-1.8.0.pom.asc</a>              2008-08-31 18:13       226      
+<a href="commons-beanutils-core-1.8.0.pom.asc.md5" title="commons-beanutils-core-1.8.0.pom.asc.md5">commons-beanutils-core-1.8.0.pom.asc.md5</a>          2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.pom.asc.sha1" title="commons-beanutils-core-1.8.0.pom.asc.sha1">commons-beanutils-core-1.8.0.pom.asc.sha1</a>         2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.pom.md5" title="commons-beanutils-core-1.8.0.pom.md5">commons-beanutils-core-1.8.0.pom.md5</a>              2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.pom.sha1" title="commons-beanutils-core-1.8.0.pom.sha1">commons-beanutils-core-1.8.0.pom.sha1</a>             2008-08-31 18:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -sL https://api.github.com/repos/apache/commons-beanutils/tags?per_page=100 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 274ms:
+7f91597309404aeb89fe00d89fea8b5cbca380a3	refs/tags/BEANUTILS_1_0
+41f492e7eaed0a9d3f32ee02ca8aa284472d526a	refs/tags/BEANUTILS_1_0^{}
+dbfc119d0b2c29348117b3c4a64aa9f0d6debd4b	refs/tags/BEANUTILS_1_1
+f4dd0a42d9d642dfc231c1290044fafd281c3fa3	refs/tags/BEANUTILS_1_1^{}
+2e21aeec579e809a64b682bebeb61a128819bf9a	refs/tags/BEANUTILS_1_2
+a55d81e2b2b47d73c8dbf5e1de7f0394322290bd	refs/tags/BEANUTILS_1_2^{}
+d2d8b506ba0120f7ee4000673d4d9d3587364212	refs/tags/BEANUTILS_1_3
+227e5d2d4dd00ebbdf49004447e016431648d735	refs/tags/BEANUTILS_1_3^{}
+bb40b966a74672d020646b6a8444b58e4b07ac11	refs/tags/BEANUTILS_1_4
+dc0f63ae7af19f7897e03d746038882c92d63c4a	refs/tags/BEANUTILS_1_4^{}
+166edb4ca8af23a95a3b93880399ef56e9d827cd	refs/tags/BEANUTILS_1_4_1
+4f1072a008e803bb59fd11fc108232f73b5c94ae	refs/tags/BEANUTILS_1_4_1^{}
+c83547095a42ae1ec9be9645027a993c22ed06f3	refs/tags/BEANUTILS_1_5
+b72aa9e97b85714aad2951b9ff4e2be90a2940a7	refs/tags/BEANUTILS_1_5^{}
+f5337c10c964ee6deb050c4fa1ff93b61a704f7a	refs/tags/BEANUTILS_1_6
+2bc65c91d0c8ac5fac03c41625d10ddee6af7f27	refs/tags/BEANUTILS_1_6^{}
+b028b282689fef1f7b6ff302929d3f0d1670e7c1	refs/tags/BEANUTILS_1_6_1
+3e7ecf18305b8cd8dd7f03e718f172a7502f82a8	refs/tags/BEANUTILS_1_6_1^{}
+ccb3b058af77ee25dd271282cc17b520cf516e8e	refs/tags/BEANUTILS_1_6_1_RC1
+466c4e353cba49638d9849ed283e29649bff8771	refs/tags/BEANUTILS_1_6_1_RC1^{}
+a996eb84fab961104b1da800394fd9f91c58eb0e	refs/tags/BEANUTILS_1_7_0
+cbdadd2011983734383a785466cdc16c06f99fe9	refs/tags/BEANUTILS_1_7_0^{}
+5cda1f6a310ea9e200486c9d9db29ca047ee0f14	refs/tags/BEANUTILS_1_7_0_RC1
+d3627747d2e07822dfec06ab8cee522b0b401cd5	refs/tags/BEANUTILS_1_7_0_RC1^{}
+bd202800f2e6f548a34250bb0992b18da7fa1239	refs/tags/BEANUTILS_1_8_0
+8fb2285efd72d72a359d9012216260a75bec09b7	refs/tags/BEANUTILS_1_8_0^{}
+0bc9c0c19cc8c8ffbb006334ad8a0263f4d50283	refs/tags/BEANUTILS_1_8_0_BETA
+ab66d0d0921ebdd3f25d23c6be05ebf2c1c4e083	refs/tags/BEANUTILS_1_8_0_BETA^{}
+f8d46b423247c909f63b66795c5c13fe09aad770	refs/tags/BEANUTILS_1_8_0_RC1
+64f381f16fc67ba00bde865baa56c6ec25e4af05	refs/tags/BEANUTILS_1_8_0_RC1^{}
+ce7cd66ba525c4ce31e54abcd009d1837034da12	refs/tags/BEANUTILS_1_8_0_RC2
+399093f15dc0b7a63e85ade89dde8a5541936f07	refs/tags/BEANUTILS_1_8_0_RC2^{}
+0cdd12a17837f154a8472e9eece9d162c2ae422e	refs/tags/BEANUTILS_1_8_0_RC3
+0ee997ae7e1fa7e9f3bb0f27e3c3e5090399be05	refs/tags/BEANUTILS_1_8_0_RC3^{}
+57e129c648662612bc423a208f2fdc62a2c3c510	refs/tags/BEANUTILS_1_8_1
+7b6ba82ec6a50d3ff79e347c7544d69a7f154f20	refs/tags/BEANUTILS_1_8_1^{}
+8642c8b4d1eee985f55b6566107a6a26194236e1	refs/tags/BEANUTILS_1_8_1_RC1
+6431d58814e69423c3a0b0db61d1c18fd9eb4ed7	refs/tags/BEANUTILS_1_8_1_RC1^{}
+8a9a413677db565427a94792c5b5f3975014f1ee	refs/tags/BEANUTILS_1_8_1_RC2
+0f355bc8275cf2b92dfaa5c3b014cbee85d48db7	refs/tags/BEANUTILS_1_8_1_RC2^{}
+d48038711d7018c7f692427a8f0af2a67260ab77	refs/tags/BEANUTILS_1_8_2
+74f39c4b65845364e6778a60c2498067dae98b0b	refs/tags/BEANUTILS_1_8_2^{}
+f5ae89052fb152a37ba89028e7e9ea099daeac55	refs/tags/BEANUTILS_1_8_2_RC1
+87c8f9085a0507f78bfd34f3df481cd76c505188	refs/tags/BEANUTILS_1_8_2_RC1^{}
+6d8be18d480bc1ae634e6dda2f574f853dbbb194	refs/tags/BEANUTILS_1_8_3
+bcd28bd06687c9e7441c061572e5474e2151ff14	refs/tags/BEANUTILS_1_8_3^{}
+bf2179ff32c0460ba37b1fc3004f5a69f06f1289	refs/tags/BEANUTILS_1_8_3_RC1
+b94fc97dc6c2bf12cb8168ceb66e800b7c44e434	refs/tags/BEANUTILS_1_8_3_RC1^{}
+a686513a2022ada49b165a8fd105d66bce497ff0	refs/tags/BEANUTILS_1_9_0
+9c047b74f426e40b28f497c39572abcf48263650	refs/tags/BEANUTILS_1_9_0^{}
+29df67fabeda7c538c5e1025d4774957ed893701	refs/tags/BEANUTILS_1_9_0_RC1
+ccfc1a23128705db70f688828a99655127332a9b	refs/tags/BEANUTILS_1_9_0_RC1^{}
+86af6fb079f60a631abfb3e7cfbfb1cea3c1bf7c	refs/tags/BEANUTILS_1_9_1
+8897e1b7497fe9a134b1a2cd0fc1dadc280710f7	refs/tags/BEANUTILS_1_9_1^{}
+06acdea9cbf7a7ab6c9c16fafd484d72ccb1f5fc	refs/tags/BEANUTILS_1_9_1_RC1
+3d8855b12577fde3ac72c8aa1b4babddc045e4da	refs/tags/BEANUTILS_1_9_1_RC1^{}
+1ce1a282366d9a6acb8af448a3a7228c8dd83718	refs/tags/BEANUTILS_1_9_2
+0dbc77a2e036c5aa0ef48107f8e7b1e69bceab41	refs/tags/BEANUTILS_1_9_2^{}
+84fb65f601aeacd8a6f4435bd345fdf701e22b06	refs/tags/BEANUTILS_1_9_2_RC1
+c8414f03fbcd221f6d83d608ea9c5f809d85e389	refs/tags/BEANUTILS_1_9_2_RC1^{}
+b1004d219fc761a8502ad331a0a187dca52fdcee	refs/tags/BEANUTILS_1_9_3
+a83c1eae04c9c99360c3ba4e6a46fd89dc5407ef	refs/tags/BEANUTILS_1_9_3^{}
+3d10fbdd2aa5d6533ccec5cd3d286ecf19faf1f7	refs/tags/BEANUTILS_1_9_3_RC1
+253e02731665b17c525e1ccdd7590953ca724807	refs/tags/BEANUTILS_1_9_3_RC1^{}
+d156506192f6a10d97e52902565efd85ed9cab2b	refs/tags/BEANUTILS_1_9_3_RC2
+9da44a00067bb8282ecad34a3febffd1ea29444f	refs/tags/BEANUTILS_1_9_3_RC2^{}
+ab1e4e9fe5c5717d7f7651864f70db4a3f7f2f13	refs/tags/BEANUTILS_1_9_3_RC3
+7f27eb3ee202fe48cf67469603d72c541af9b5c5	refs/tags/BEANUTILS_1_9_3_RC3^{}
+83fb5074688f2b678c0865e6cb8a835990cd002c	refs/tags/RELEASE_BEANUTILS_1_7_0_START
+c6e4426c300fd9cd0ff0f32f2238d2cc9170e8b3	refs/tags/RELEASE_BEANUTILS_1_7_0_START^{}
+febd88df030443fe7740cb2a05e176c8369a8424	refs/tags/beanutils-1.9.3-RC1
+bd11a002782dd899ab735557f74a3ad9ea9afcc6	refs/tags/beanutils-1.9.3-RC1^{}
+d9981cd25435a302f9f9b1d76810ad8ab64651d6	refs/tags/commons-beanutils-1.10.0-RC1
+1a57099612f32e771943b26ff4407c0261ccf78a	refs/tags/commons-beanutils-1.10.0-RC1^{}
+f2b0b7b8d11c01d3f138d965b673a9aa80e496ea	refs/tags/commons-beanutils-1.10.1-RC1
+92dfc6cef8fadd7616f1fa97dfab57bc206aff23	refs/tags/commons-beanutils-1.10.1-RC1^{}
+741718994a528360330ea04cc5250794d8cbb298	refs/tags/commons-beanutils-1.11.0-RC1
+9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3	refs/tags/commons-beanutils-1.11.0-RC1^{}
+17da1a01d52459b44d5f51d37455540318988685	refs/tags/commons-beanutils-1.9.4
+32ceb2c92512d44f97638805e2f3fd9d70dfcfc6	refs/tags/commons-beanutils-1.9.4^{}
+c8260db6a5d277cff84562f1473dd4103194a928	refs/tags/commons-beanutils-1.9.4-RC1
+e55b3db346c3ae3c78a4622bb1141db381049911	refs/tags/commons-beanutils-1.9.4-RC1^{}
+8c8da385651920ee8aa2a9bc8c934c9dfbd3aa04	refs/tags/commons-beanutils-1.9.4-RC2
+32ceb2c92512d44f97638805e2f3fd9d70dfcfc6	refs/tags/commons-beanutils-1.9.4-RC2^{}
+d8ebff4d949b2353cad4aaebb9fe48b2f9413358	refs/tags/commons-beanutils-2.0.0-M1-RC1
+e4eb3568ab6076585cb51b4a6d3f329ae04d2efb	refs/tags/commons-beanutils-2.0.0-M1-RC1^{}
+a9320fb202e4458f8e26e60ab1921c34dfe1439e	refs/tags/commons-beanutils-2.0.0-M2-RC1
+5d09ef79376511519b0b4aafcb5bbe79a70bd3c7	refs/tags/commons-beanutils-2.0.0-M2-RC1^{}
+2169fb243d9bdd364e855de83c74d2c96cc1cf82	refs/tags/rel/commons-beanutils-1.10.0
+1a57099612f32e771943b26ff4407c0261ccf78a	refs/tags/rel/commons-beanutils-1.10.0^{}
+f45463d3bfc34dfd3b08a9b64b2f95acd64bd037	refs/tags/rel/commons-beanutils-1.10.1
+e124bdf7dc5d2f27ea2ea81702ff0bba227cb0d9	refs/tags/rel/commons-beanutils-1.10.1^{}
+de75acbfed7c343dd32c0a0cf522a176681ae1a6	refs/tags/rel/commons-beanutils-1.11.0
+9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3	refs/tags/rel/commons-beanutils-1.11.0^{}
+4b7bd5f714e21bef56d97f9c75480bcd86501e72	refs/tags/rel/commons-beanutils-2.0.0-M1
+e4eb3568ab6076585cb51b4a6d3f329ae04d2efb	refs/tags/rel/commons-beanutils-2.0.0-M1^{}
+534006d4358809e313f872ef75dfb386ffb8dc3f	refs/tags/rel/commons-beanutils-2.0.0-M2
+5d09ef79376511519b0b4aafcb5bbe79a70bd3c7	refs/tags/rel/commons-beanutils-2.0.0-M2^{}
+
+ succeeded in 262ms:
+[
+  {
+    "name": "rel/commons-beanutils-2.0.0-M2",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/rel/commons-beanutils-2.0.0-M2",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/rel/commons-beanutils-2.0.0-M2",
+    "commit": {
+      "sha": "5d09ef79376511519b0b4aafcb5bbe79a70bd3c7",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/5d09ef79376511519b0b4aafcb5bbe79a70bd3c7"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL3JlbC9jb21tb25zLWJlYW51dGlscy0yLjAuMC1NMg=="
+  },
+  {
+    "name": "rel/commons-beanutils-2.0.0-M1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/rel/commons-beanutils-2.0.0-M1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/rel/commons-beanutils-2.0.0-M1",
+    "commit": {
+      "sha": "e4eb3568ab6076585cb51b4a6d3f329ae04d2efb",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/e4eb3568ab6076585cb51b4a6d3f329ae04d2efb"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL3JlbC9jb21tb25zLWJlYW51dGlscy0yLjAuMC1NMQ=="
+  },
+  {
+    "name": "rel/commons-beanutils-1.11.0",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/rel/commons-beanutils-1.11.0",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/rel/commons-beanutils-1.11.0",
+    "commit": {
+      "sha": "9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL3JlbC9jb21tb25zLWJlYW51dGlscy0xLjExLjA="
+  },
+  {
+    "name": "rel/commons-beanutils-1.10.1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/rel/commons-beanutils-1.10.1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/rel/commons-beanutils-1.10.1",
+    "commit": {
+      "sha": "e124bdf7dc5d2f27ea2ea81702ff0bba227cb0d9",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/e124bdf7dc5d2f27ea2ea81702ff0bba227cb0d9"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL3JlbC9jb21tb25zLWJlYW51dGlscy0xLjEwLjE="
+  },
+  {
+    "name": "rel/commons-beanutils-1.10.0",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/rel/commons-beanutils-1.10.0",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/rel/commons-beanutils-1.10.0",
+    "commit": {
+      "sha": "1a57099612f32e771943b26ff4407c0261ccf78a",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/1a57099612f32e771943b26ff4407c0261ccf78a"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL3JlbC9jb21tb25zLWJlYW51dGlscy0xLjEwLjA="
+  },
+  {
+    "name": "jwsdp_10_ea2_01",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/jwsdp_10_ea2_01",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/jwsdp_10_ea2_01",
+    "commit": {
+      "sha": "db84c0ed4e3498624f1df5ec00bebd34508d17af",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/db84c0ed4e3498624f1df5ec00bebd34508d17af"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2p3c2RwXzEwX2VhMl8wMQ=="
+  },
+  {
+    "name": "commons-beanutils-2.0.0-M2-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-2.0.0-M2-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-2.0.0-M2-RC1",
+    "commit": {
+      "sha": "5d09ef79376511519b0b4aafcb5bbe79a70bd3c7",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/5d09ef79376511519b0b4aafcb5bbe79a70bd3c7"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTIuMC4wLU0yLVJDMQ=="
+  },
+  {
+    "name": "commons-beanutils-2.0.0-M1-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-2.0.0-M1-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-2.0.0-M1-RC1",
+    "commit": {
+      "sha": "e4eb3568ab6076585cb51b4a6d3f329ae04d2efb",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/e4eb3568ab6076585cb51b4a6d3f329ae04d2efb"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTIuMC4wLU0xLVJDMQ=="
+  },
+  {
+    "name": "commons-beanutils-1.11.0-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-1.11.0-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-1.11.0-RC1",
+    "commit": {
+      "sha": "9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTEuMTEuMC1SQzE="
+  },
+  {
+    "name": "commons-beanutils-1.10.1-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-1.10.1-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-1.10.1-RC1",
+    "commit": {
+      "sha": "92dfc6cef8fadd7616f1fa97dfab57bc206aff23",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/92dfc6cef8fadd7616f1fa97dfab57bc206aff23"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTEuMTAuMS1SQzE="
+  },
+  {
+    "name": "commons-beanutils-1.10.0-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-1.10.0-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-1.10.0-RC1",
+    "commit": {
+      "sha": "1a57099612f32e771943b26ff4407c0261ccf78a",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/1a57099612f32e771943b26ff4407c0261ccf78a"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTEuMTAuMC1SQzE="
+  },
+  {
+    "name": "commons-beanutils-1.9.4",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-1.9.4",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-1.9.4",
+    "commit": {
+      "sha": "32ceb2c92512d44f97638805e2f3fd9d70dfcfc6",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/32ceb2c92512d44f97638805e2f3fd9d70dfcfc6"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTEuOS40"
+  },
+  {
+    "name": "commons-beanutils-1.9.4-RC2",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-1.9.4-RC2",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-1.9.4-RC2",
+    "commit": {
+      "sha": "32ceb2c92512d44f97638805e2f3fd9d70dfcfc6",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/32ceb2c92512d44f97638805e2f3fd9d70dfcfc6"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTEuOS40LVJDMg=="
+  },
+  {
+    "name": "commons-beanutils-1.9.4-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/commons-beanutils-1.9.4-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/commons-beanutils-1.9.4-RC1",
+    "commit": {
+      "sha": "e55b3db346c3ae3c78a4622bb1141db381049911",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/e55b3db346c3ae3c78a4622bb1141db381049911"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2NvbW1vbnMtYmVhbnV0aWxzLTEuOS40LVJDMQ=="
+  },
+  {
+    "name": "beanutils-1.9.3-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/beanutils-1.9.3-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/beanutils-1.9.3-RC1",
+    "commit": {
+      "sha": "bd11a002782dd899ab735557f74a3ad9ea9afcc6",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/bd11a002782dd899ab735557f74a3ad9ea9afcc6"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL2JlYW51dGlscy0xLjkuMy1SQzE="
+  },
+  {
+    "name": "STRUTS_1_1_RC1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/STRUTS_1_1_RC1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/STRUTS_1_1_RC1",
+    "commit": {
+      "sha": "237fe9feb03bced91f980a9040f7083d4cbc2687",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/237fe9feb03bced91f980a9040f7083d4cbc2687"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL1NUUlVUU18xXzFfUkMx"
+  },
+  {
+    "name": "STRUTS_1_1_B3",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/STRUTS_1_1_B3",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/STRUTS_1_1_B3",
+    "commit": {
+      "sha": "71193cf5dcee23fcc8121c857c8c811511cc1d0d",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/71193cf5dcee23fcc8121c857c8c811511cc1d0d"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL1NUUlVUU18xXzFfQjM="
+  },
+  {
+    "name": "STRUTS_1_1_B2",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/STRUTS_1_1_B2",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/STRUTS_1_1_B2",
+    "commit": {
+      "sha": "3f21ca68b04ebab5dd0e56959e71d25160435247",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/3f21ca68b04ebab5dd0e56959e71d25160435247"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL1NUUlVUU18xXzFfQjI="
+  },
+  {
+    "name": "STRUTS_1_1_B1",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/STRUTS_1_1_B1",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/STRUTS_1_1_B1",
+    "commit": {
+      "sha": "c6513231b7559406bf789876b4f758f5a7800046",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/c6513231b7559406bf789876b4f758f5a7800046"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL1NUUlVUU18xXzFfQjE="
+  },
+  {
+    "name": "RELEASE_BEANUTILS_1_7_0_START",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/RELEASE_BEANUTILS_1_7_0_START",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/RELEASE_BEANUTILS_1_7_0_START",
+    "commit": {
+      "sha": "c6e4426c300fd9cd0ff0f32f2238d2cc9170e8b3",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/c6e4426c300fd9cd0ff0f32f2238d2cc9170e8b3"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL1JFTEVBU0VfQkVBTlVUSUxTXzFfN18wX1NUQVJU"
+  },
+  {
+    "name": "BEANUTILS_1_9_3",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_9_3",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_9_3",
+    "commit": {
+      "sha": "a83c1eae04c9c99360c3ba4e6a46fd89dc5407ef",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/a83c1eae04c9c99360c3ba4e6a46fd89dc5407ef"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL0JFQU5VVElMU18xXzlfMw=="
+  },
+  {
+    "name": "BEANUTILS_1_9_3_RC3",
+    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_9_3_RC3",
+    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_9_3_RC3",
+    "commit": {
+      "sha": "7f27eb3ee202fe48cf67469603d72c541af9b5c5",
+      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/7f27eb3ee202fe48cf67469603d72c541af9b5c5"
+    },
+    "node_id": "MDM6UmVmMTA2Mzc4OTI6cmVmcy90YWdzL0JFQU5VVElMU18xXzlfM19SQzM="
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0.pom | sed -n '261,520p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+                    <headerFile>${basedir}/license-header.txt</headerFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <comparisonVersion>1.8.0-BETA</comparisonVersion>
+                    <minSeverity>info</minSeverity>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <linksource>true</linksource>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.4.2/docs/api/</link>
+                        <link>http://commons.apache.org/collections/api-release/</link>
+                    </links>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
+
+exec
+/usr/bin/bash -lc "rg -n 'commons-beanutils|BEANUTILS_1_8_0|commons.apache.org/proper/commons-beanutils|archive.apache.org/dist/commons/beanutils' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url' metadata/commons-* build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+metadata/commons-net/commons-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/$version$/commons-net-$version$-sources.jar",
+metadata/commons-net/commons-net/index.json:7:    "test-code-url" : "https://github.com/apache/commons-net/tree/NET_3_1/src/test",
+metadata/commons-net/commons-net/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/$version$/commons-net-$version$-javadoc.jar",
+metadata/commons-logging/commons-logging-api/index.json:5:    "source-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/java",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-daemon/commons-daemon/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/$version$/commons-daemon-$version$-sources.jar",
+metadata/commons-daemon/commons-daemon/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/$version$/commons-daemon-$version$-src.zip",
+metadata/commons-daemon/commons-daemon/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/$version$/commons-daemon-$version$-javadoc.jar",
+metadata/commons-logging/commons-logging/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/$version$/commons-logging-$version$-sources.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/$version$/commons-logging-$version$-test-sources.jar",
+metadata/commons-logging/commons-logging/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/$version$/commons-logging-$version$-javadoc.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-sources.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-test-sources.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-javadoc.jar",
+metadata/commons-codec/commons-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-sources.jar",
+metadata/commons-codec/commons-codec/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-test-sources.jar",
+metadata/commons-codec/commons-codec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-javadoc.jar",
+
+ succeeded in 0ms:
+build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json:2:  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.tar.gz && curl -I -L https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.zip && curl -I -L https://archive.apache.org/dist/commons/beanutils/binaries/commons-beanutils-1.8.0-bin.tar.gz' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+exec
+/usr/bin/bash -lc 'curl -I -L https://commons.apache.org/proper/commons-beanutils/javadocs/v1.8.0/apidocs/ && curl -I -L https://commons.apache.org/proper/commons-beanutils/apidocs/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 151ms:
+
+  0  8107    0     0    0     0  HTTP/2 200 
+server: Apache
+last-modified: Tue, 27 May 2025 23:38:29 GMT
+etag: "1fab-636268fccb4a7"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html; charset=utf-8
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 4704
+date: Tue, 05 May 2026 00:07:22 GMT
+x-served-by: cache-hel1410021-HEL, cache-fra-eddf8230169-FRA
+x-cache: HIT, HIT
+x-cache-hits: 12, 0
+x-timer: S1777939643.684822,VS0,VE29
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8107
+
+    0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 440ms:
+
+  0  370k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Tue, 05 May 2026 00:07:22 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "5cac2-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 379586
+Content-Type: application/x-gzip
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  636k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Tue, 05 May 2026 00:07:22 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "9f0a7-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 651431
+Content-Type: application/zip
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 2656k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Tue, 05 May 2026 00:07:22 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "2980af-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 2719919
+Content-Type: application/x-gzip
+
+
+exec
+/usr/bin/bash -lc "rg -n 'archive\\.apache\\.org|src\\.tar\\.gz|src\\.zip|javadocs/v\\"'$version'"\\"'$|/tree/.+'"\\"'$version'"\\"'$'"' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/core/src/test",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/ws/src/test",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/org.apache.camel/camel-util-json/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+metadata/org.apache.camel/apt/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/apt/src/test",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.apache.camel/camel-util/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:6:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-xml-jaxp-util/src/test",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:22:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-xml-jaxp-util/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:130:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/magnolia/tree/scala3-v$version$/test/src/test",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:40:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/com.twitter/hpack/index.json:7:    "test-code-url" : "https://github.com/twitter/hpack/tree/hpack-parent-$version$/hpack/src/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:6:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:25:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/android-extensions/android-extensions-compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/testData/codegen/box/reflection",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/parcelize/parcelize-compiler/tests",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-json/src/test/java",
+metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-reader/index.json:48:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/jdk8/test",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jvm/src/test",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/common/test",
+metadata/io.dropwizard.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/org.jline/jline-native/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/native/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/jdk7/test",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-graphite/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/common/test",
+metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+metadata/org.mockito/mockito-core/index.json:52:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:32:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:15:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:30:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:21:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/org.slf4j/slf4j-ext/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v$version$/slf4j-ext/src/test",
+metadata/org.slf4j/jul-to-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/jul-to-slf4j/src/test",
+metadata/org.slf4j/log4j-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/log4j-over-slf4j/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:47:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:65:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:8:    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:21:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:84:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$_FINAL/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:110:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/jcl-over-slf4j/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:7:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-jdk14/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:23:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$_FINAL/slf4j-jdk14/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:38:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-jdk14/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:7:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-$version$/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/com.codahale.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/org.jboss.resteasy/resteasy-client/index.json:7:    "test-code-url" : "https://github.com/resteasy/resteasy/tree/v$version$/resteasy-client/src/test",
+metadata/com.github.jknack/handlebars-helpers/index.json:22:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v$version$/handlebars-helpers/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:84:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.squareup.okio/okio-jvm/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/parent-$version$/okio/src/jvmTest",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:7:    "test-code-url" : "https://github.com/codehaus/jackson/tree/1.8/$version$/src/test",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json/classic/src/test",
+metadata/com.ibm.async/asyncutil/index.json:7:    "test-code-url" : "https://github.com/IBM/java-async-util/tree/v$version$/asyncutil/src/test",
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-hpack/src/test",
+metadata/org.tpolecat/sourcepos_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+metadata/org.apache.kerby/kerby-util/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-util/src/test/java",
+metadata/org.apache.kerby/kerby-pkix/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-pkix/src/test/java",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.apache.kerby/kerby-asn1/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-asn1/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/org.apache.kerby/kerby-config/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-config/src/test/java",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
+metadata/org.apache.kerby/kerby-xdr/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-xdr/src/test",
+metadata/org.apache.kerby/kerby-xdr/index.json:24:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-xdr/src/test",
+metadata/org.apache-extras.beanshell/bsh/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-src.zip",
+metadata/org.hamcrest/hamcrest/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/v$version$/hamcrest/src/test",
+metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/args4j/args4j/index.json:7:    "test-code-url" : "https://github.com/kohsuke/args4j/tree/args4j-site-$version$/args4j/test",
+metadata/at.yawk.lz4/lz4-java/index.json:7:    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
+metadata/org.parboiled/parboiled_3/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.8.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: commons-beanutils/commons-beanutils/1.8.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>commons-beanutils/commons-beanutils/1.8.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-beanutils-1.8.0-javadoc.jar" title="commons-beanutils-1.8.0-javadoc.jar">commons-beanutils-1.8.0-javadoc.jar</a>               2008-08-28 16:21   1324396      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc" title="commons-beanutils-1.8.0-javadoc.jar.asc">commons-beanutils-1.8.0-javadoc.jar.asc</a>           2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc.md5" title="commons-beanutils-1.8.0-javadoc.jar.asc.md5">commons-beanutils-1.8.0-javadoc.jar.asc.md5</a>       2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc.sha1" title="commons-beanutils-1.8.0-javadoc.jar.asc.sha1">commons-beanutils-1.8.0-javadoc.jar.asc.sha1</a>      2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-javadoc.jar.md5" title="commons-beanutils-1.8.0-javadoc.jar.md5">commons-beanutils-1.8.0-javadoc.jar.md5</a>           2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-javadoc.jar.sha1" title="commons-beanutils-1.8.0-javadoc.jar.sha1">commons-beanutils-1.8.0-javadoc.jar.sha1</a>          2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-sources.jar" title="commons-beanutils-1.8.0-sources.jar">commons-beanutils-1.8.0-sources.jar</a>               2008-08-28 16:21    295368      
+<a href="commons-beanutils-1.8.0-sources.jar.asc" title="commons-beanutils-1.8.0-sources.jar.asc">commons-beanutils-1.8.0-sources.jar.asc</a>           2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0-sources.jar.asc.md5" title="commons-beanutils-1.8.0-sources.jar.asc.md5">commons-beanutils-1.8.0-sources.jar.asc.md5</a>       2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-sources.jar.asc.sha1" title="commons-beanutils-1.8.0-sources.jar.asc.sha1">commons-beanutils-1.8.0-sources.jar.asc.sha1</a>      2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-sources.jar.md5" title="commons-beanutils-1.8.0-sources.jar.md5">commons-beanutils-1.8.0-sources.jar.md5</a>           2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-sources.jar.sha1" title="commons-beanutils-1.8.0-sources.jar.sha1">commons-beanutils-1.8.0-sources.jar.sha1</a>          2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.jar" title="commons-beanutils-1.8.0.jar">commons-beanutils-1.8.0.jar</a>                       2008-08-28 16:21    231320      
+<a href="commons-beanutils-1.8.0.jar.asc" title="commons-beanutils-1.8.0.jar.asc">commons-beanutils-1.8.0.jar.asc</a>                   2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0.jar.asc.md5" title="commons-beanutils-1.8.0.jar.asc.md5">commons-beanutils-1.8.0.jar.asc.md5</a>               2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.jar.asc.sha1" title="commons-beanutils-1.8.0.jar.asc.sha1">commons-beanutils-1.8.0.jar.asc.sha1</a>              2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.jar.md5" title="commons-beanutils-1.8.0.jar.md5">commons-beanutils-1.8.0.jar.md5</a>                   2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.jar.sha1" title="commons-beanutils-1.8.0.jar.sha1">commons-beanutils-1.8.0.jar.sha1</a>                  2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.pom" title="commons-beanutils-1.8.0.pom">commons-beanutils-1.8.0.pom</a>                       2008-08-28 16:21     10786      
+<a href="commons-beanutils-1.8.0.pom.asc" title="commons-beanutils-1.8.0.pom.asc">commons-beanutils-1.8.0.pom.asc</a>                   2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0.pom.asc.md5" title="commons-beanutils-1.8.0.pom.asc.md5">commons-beanutils-1.8.0.pom.asc.md5</a>               2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.pom.asc.sha1" title="commons-beanutils-1.8.0.pom.asc.sha1">commons-beanutils-1.8.0.pom.asc.sha1</a>              2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.pom.md5" title="commons-beanutils-1.8.0.pom.md5">commons-beanutils-1.8.0.pom.md5</a>                   2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.pom.sha1" title="commons-beanutils-1.8.0.pom.sha1">commons-beanutils-1.8.0.pom.sha1</a>                  2008-08-28 16:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -sL https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.tar.gz | tar -tzf - | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+exec
+/usr/bin/bash -lc "curl -sL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar > /tmp/commons-beanutils-core-1.8.0.jar && jar tf /tmp/commons-beanutils-core-1.8.0.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+exec
+/usr/bin/bash -lc "curl -sL https://commons.apache.org/proper/commons-beanutils/javadocs/v1.8.0/apidocs/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc on Sun Aug 31 17:33:53 BST 2008-->
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<TITLE>
+Commons BeanUtils 1.8.0 API
+</TITLE>
+<SCRIPT type="text/javascript">
+    targetPage = "" + window.location.search;
+    if (targetPage != "" && targetPage != "undefined")
+       targetPage = targetPage.substring(1);
+    if (targetPage != "" && !validURL(targetPage))
+        targetPage = "undefined";
+    function validURL(url) {
+        var pos = url.indexOf(".html");
+        if (pos == -1 || pos != url.length - 5)
+            return false;
+        var allowNumber = false;
+        var allowSep = false;
+        var seenDot = false;
+        for (var i = 0; i < url.length - 5; i++) {
+            var ch = url.charAt(i);
+            if ('a' <= ch && ch <= 'z' ||
+                    'A' <= ch && ch <= 'Z' ||
+                    ch == '$' ||
+                    ch == '_') {
+                allowNumber = true;
+                allowSep = true;
+            } else if ('0' <= ch && ch <= '9'
+                    || ch == '-') {
+                if (!allowNumber)
+                     return false;
+            } else if (ch == '/' || ch == '.') {
+                if (!allowSep)
+                    return false;
+                allowNumber = false;
+                allowSep = false;
+                if (ch == '.')
+                     seenDot = true;
+                if (ch == '/' && seenDot)
+                     return false;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    function loadFrames() {
+        if (targetPage != "" && targetPage != "undefined")
+             top.classFrame.location = top.targetPage;
+    }
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+</HEAD>
+<FRAMESET cols="20%,80%" title="" onLoad="top.loadFrames()">
+<FRAMESET rows="30%,70%" title="" onLoad="top.loadFrames()">
+<FRAME src="overview-frame.html" name="packageListFrame" title="All Packages">
+<FRAME src="allclasses-frame.html" name="packageFrame" title="All classes and interfaces (except non-static nested types)">
+</FRAMESET>
+<FRAME src="overview-summary.html" name="classFrame" title="Package, class and interface descriptions" scrolling="yes">
+<NOFRAMES>
+<H2>
+Frame Alert</H2>
+
+<P>
+This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client.
+<BR>
+Link to<A HREF="overview-summary.html">Non-frame version.</A>
+</NOFRAMES>
+</FRAMESET>
+</HTML>
+
+ succeeded in 108ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/
+org/apache/
+org/apache/commons/
+org/apache/commons/beanutils/
+org/apache/commons/beanutils/BasicDynaBean.class
+org/apache/commons/beanutils/BasicDynaClass.class
+org/apache/commons/beanutils/BeanAccessLanguageException.class
+org/apache/commons/beanutils/BeanUtils.class
+org/apache/commons/beanutils/BeanUtilsBean$1.class
+org/apache/commons/beanutils/BeanUtilsBean.class
+org/apache/commons/beanutils/BeanUtilsBean2.class
+org/apache/commons/beanutils/ConstructorUtils.class
+org/apache/commons/beanutils/ContextClassLoaderLocal.class
+org/apache/commons/beanutils/ConversionException.class
+org/apache/commons/beanutils/ConvertUtils.class
+org/apache/commons/beanutils/ConvertUtilsBean.class
+org/apache/commons/beanutils/ConvertUtilsBean2.class
+org/apache/commons/beanutils/Converter.class
+org/apache/commons/beanutils/ConvertingWrapDynaBean.class
+org/apache/commons/beanutils/DynaBean.class
+org/apache/commons/beanutils/DynaBeanMapDecorator$MapEntry.class
+org/apache/commons/beanutils/DynaBeanMapDecorator.class
+org/apache/commons/beanutils/DynaClass.class
+org/apache/commons/beanutils/DynaProperty.class
+org/apache/commons/beanutils/JDBCDynaClass.class
+org/apache/commons/beanutils/LazyDynaBean.class
+org/apache/commons/beanutils/LazyDynaClass.class
+org/apache/commons/beanutils/LazyDynaList.class
+org/apache/commons/beanutils/LazyDynaMap.class
+org/apache/commons/beanutils/MappedPropertyDescriptor$MappedMethodReference.class
+org/apache/commons/beanutils/MappedPropertyDescriptor.class
+org/apache/commons/beanutils/MethodUtils$MethodDescriptor.class
+org/apache/commons/beanutils/MethodUtils.class
+org/apache/commons/beanutils/MutableDynaClass.class
+org/apache/commons/beanutils/NestedNullException.class
+org/apache/commons/beanutils/PropertyUtils.class
+org/apache/commons/beanutils/PropertyUtilsBean.class
+org/apache/commons/beanutils/ResultSetDynaClass.class
+org/apache/commons/beanutils/ResultSetIterator.class
+org/apache/commons/beanutils/RowSetDynaClass.class
+org/apache/commons/beanutils/WeakFastHashMap$1.class
+org/apache/commons/beanutils/WeakFastHashMap$CollectionView$CollectionViewIterator.class
+org/apache/commons/beanutils/WeakFastHashMap$CollectionView.class
+org/apache/commons/beanutils/WeakFastHashMap$EntrySet.class
+org/apache/commons/beanutils/WeakFastHashMap$KeySet.class
+org/apache/commons/beanutils/WeakFastHashMap$Values.class
+org/apache/commons/beanutils/WeakFastHashMap.class
+org/apache/commons/beanutils/WrapDynaBean.class
+org/apache/commons/beanutils/WrapDynaClass$1.class
+org/apache/commons/beanutils/WrapDynaClass$2.class
+org/apache/commons/beanutils/WrapDynaClass.class
+org/apache/commons/beanutils/converters/
+org/apache/commons/beanutils/converters/AbstractArrayConverter.class
+org/apache/commons/beanutils/converters/AbstractConverter.class
+org/apache/commons/beanutils/converters/ArrayConverter.class
+org/apache/commons/beanutils/converters/BigDecimalConverter.class
+org/apache/commons/beanutils/converters/BigIntegerConverter.class
+org/apache/commons/beanutils/converters/BooleanArrayConverter.class
+org/apache/commons/beanutils/converters/BooleanConverter.class
+org/apache/commons/beanutils/converters/ByteArrayConverter.class
+org/apache/commons/beanutils/converters/ByteConverter.class
+org/apache/commons/beanutils/converters/CalendarConverter.class
+org/apache/commons/beanutils/converters/CharacterArrayConverter.class
+org/apache/commons/beanutils/converters/CharacterConverter.class
+org/apache/commons/beanutils/converters/ClassConverter.class
+org/apache/commons/beanutils/converters/ConverterFacade.class
+org/apache/commons/beanutils/converters/DateConverter.class
+org/apache/commons/beanutils/converters/DateTimeConverter.class
+org/apache/commons/beanutils/converters/DoubleArrayConverter.class
+org/apache/commons/beanutils/converters/DoubleConverter.class
+org/apache/commons/beanutils/converters/FileConverter.class
+org/apache/commons/beanutils/converters/FloatArrayConverter.class
+org/apache/commons/beanutils/converters/FloatConverter.class
+org/apache/commons/beanutils/converters/IntegerArrayConverter.class
+org/apache/commons/beanutils/converters/IntegerConverter.class
+org/apache/commons/beanutils/converters/LongArrayConverter.class
+org/apache/commons/beanutils/converters/LongConverter.class
+org/apache/commons/beanutils/converters/NumberConverter.class
+org/apache/commons/beanutils/converters/ShortArrayConverter.class
+org/apache/commons/beanutils/converters/ShortConverter.class
+org/apache/commons/beanutils/converters/SqlDateConverter.class
+org/apache/commons/beanutils/converters/SqlTimeConverter.class
+org/apache/commons/beanutils/converters/SqlTimestampConverter.class
+org/apache/commons/beanutils/converters/StringArrayConverter.class
+org/apache/commons/beanutils/converters/StringConverter.class
+org/apache/commons/beanutils/converters/URLConverter.class
+org/apache/commons/beanutils/expression/
+org/apache/commons/beanutils/expression/DefaultResolver.class
+org/apache/commons/beanutils/expression/Resolver.class
+org/apache/commons/beanutils/locale/
+org/apache/commons/beanutils/locale/BaseLocaleConverter.class
+org/apache/commons/beanutils/locale/LocaleBeanUtils$Descriptor.class
+org/apache/commons/beanutils/locale/LocaleBeanUtils.class
+org/apache/commons/beanutils/locale/LocaleBeanUtilsBean$1.class
+org/apache/commons/beanutils/locale/LocaleBeanUtilsBean$Descriptor.class
+org/apache/commons/beanutils/locale/LocaleBeanUtilsBean.class
+org/apache/commons/beanutils/locale/LocaleConvertUtils.class
+org/apache/commons/beanutils/locale/LocaleConvertUtilsBean$1.class
+org/apache/commons/beanutils/locale/LocaleConvertUtilsBean$DelegateFastHashMap.class
+org/apache/commons/beanutils/locale/LocaleConvertUtilsBean.class
+org/apache/commons/beanutils/locale/LocaleConverter.class
+org/apache/commons/beanutils/locale/converters/
+org/apache/commons/beanutils/locale/converters/BigDecimalLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/BigIntegerLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/ByteLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/DateLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/DecimalLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/DoubleLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/FloatLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/IntegerLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/LongLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/ShortLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/SqlDateLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/SqlTimeLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/SqlTimestampLocaleConverter.class
+org/apache/commons/beanutils/locale/converters/StringLocaleConverter.class
+
+ succeeded in 637ms:
+commons-beanutils-1.8.0-src/src/
+commons-beanutils-1.8.0-src/src/java/
+commons-beanutils-1.8.0-src/src/java/org/
+commons-beanutils-1.8.0-src/src/java/org/apache/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/expression/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/
+commons-beanutils-1.8.0-src/src/main/
+commons-beanutils-1.8.0-src/src/main/assembly/
+commons-beanutils-1.8.0-src/src/media/
+commons-beanutils-1.8.0-src/src/site/
+commons-beanutils-1.8.0-src/src/site/resources/
+commons-beanutils-1.8.0-src/src/site/resources/images/
+commons-beanutils-1.8.0-src/src/test/
+commons-beanutils-1.8.0-src/src/test/org/
+commons-beanutils-1.8.0-src/src/test/org/apache/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/expression/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/locale/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/locale/converters/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/memoryleaktests/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/memoryleaktests/pojotests/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/priv/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/collections/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/collections/keyvalue/
+commons-beanutils-1.8.0-src/xdocs/
+commons-beanutils-1.8.0-src/xdocs/style/
+commons-beanutils-1.8.0-src/build-other-jars.xml
+commons-beanutils-1.8.0-src/build.properties.sample
+commons-beanutils-1.8.0-src/build.xml
+commons-beanutils-1.8.0-src/checkstyle.xml
+commons-beanutils-1.8.0-src/license-header.txt
+commons-beanutils-1.8.0-src/LICENSE.txt
+commons-beanutils-1.8.0-src/maven.xml
+commons-beanutils-1.8.0-src/NOTICE.txt
+commons-beanutils-1.8.0-src/pom.xml
+commons-beanutils-1.8.0-src/project.properties
+commons-beanutils-1.8.0-src/project.xml
+commons-beanutils-1.8.0-src/README.txt
+commons-beanutils-1.8.0-src/RELEASE-NOTES.txt
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BasicDynaBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BasicDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanAccessLanguageException.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanComparator.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanMap.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanPredicate.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanPropertyValueChangeClosure.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanPropertyValueEqualsPredicate.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanToPropertyValueTransformer.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtilsBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtilsBean2.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConstructorUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ContextClassLoaderLocal.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConversionException.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/Converter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/AbstractArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/AbstractConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BigDecimalConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BigIntegerConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BooleanArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BooleanConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ByteArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ByteConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/CalendarConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/CharacterArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/CharacterConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ClassConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ConverterFacade.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DateConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DateTimeConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DoubleArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DoubleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/FileConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/FloatArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/FloatConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/IntegerArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/IntegerConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/LongArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/LongConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/NumberConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/package.html
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ShortArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ShortConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/SqlDateConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/SqlTimeConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/SqlTimestampConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/StringArrayConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/StringConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/URLConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConvertingWrapDynaBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConvertUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConvertUtilsBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConvertUtilsBean2.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/DynaBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/DynaBeanMapDecorator.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/DynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/DynaProperty.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/expression/DefaultResolver.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/expression/package.html
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/expression/Resolver.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/JDBCDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/LazyDynaBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/LazyDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/LazyDynaList.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/LazyDynaMap.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/BaseLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/BigDecimalLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/BigIntegerLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/ByteLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/DateLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/DecimalLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/DoubleLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/FloatLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/IntegerLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/LongLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/package.html
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/ShortLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/SqlDateLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/SqlTimeLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/SqlTimestampLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/StringLocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/LocaleBeanUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/LocaleBeanUtilsBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/LocaleConverter.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/LocaleConvertUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/LocaleConvertUtilsBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/package.html
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/MappedPropertyDescriptor.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/MethodUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/MutableDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/NestedNullException.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/package.html
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/PropertyUtils.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/PropertyUtilsBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ResultSetDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ResultSetIterator.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/RowSetDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/WeakFastHashMap.java
+commotar: A lone zero block at 5890
+ns-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/WrapDynaBean.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/WrapDynaClass.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/ArrayStack.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/Buffer.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/BufferUnderflowException.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/FastHashMap.java
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/package.html
+commons-beanutils-1.8.0-src/src/java/overview.html
+commons-beanutils-1.8.0-src/src/main/assembly/bin.xml
+commons-beanutils-1.8.0-src/src/main/assembly/src.xml
+commons-beanutils-1.8.0-src/src/media/logo.xcf
+commons-beanutils-1.8.0-src/src/site/resources/images/logo.png
+
+codex
+The upstream release tag exists as `BEANUTILS_1_8_0`, and Apache’s archived `commons-beanutils-$version$-src` distribution resolves for `1.8.0` and contains both `src/java` and `src/test`. I’m going to use that archive for source and tests because the target artifact’s own Maven directory has no sources or test-sources classifiers.
+exec
+/usr/bin/bash -lc "rg -n '\"description\"' build/discovered-artifact-metadata metadata/commons-* -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+metadata/commons-io/commons-io/index.json:9:    "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, paths, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, and convenience methods for common I/O tasks such as copying, reading, writing, and deleting.",
+metadata/commons-io/commons-io/index.json:28:    "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, paths, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, monitors, and convenience methods for common I/O operations such as copying, reading, writing, and deleting.",
+metadata/commons-daemon/commons-daemon/index.json:9:    "description" : "Apache Commons Daemon provides APIs and native launchers for running Java applications with daemon-style lifecycle control. It supports Unix service execution through jsvc and Windows service execution through procrun.",
+metadata/commons-codec/commons-codec/index.json:9:    "description" : "Apache Commons Codec provides implementations of common encoders and decoders such as Base64, hexadecimal, phonetic, and digest utilities. It helps Java applications transform binary and text data using standard encoding, hashing, and checksum algorithms.",
+metadata/commons-cli/commons-cli/index.json:22:    "description" : "Apache Commons CLI provides a simple API for defining, processing, and validating command-line options in Java applications. It helps applications parse arguments, enforce option rules, and generate usage information."
+metadata/commons-logging/commons-logging/index.json:10:    "description": "Apache Commons Logging is a thin logging bridge for Java that provides a simple wrapper API over multiple logging implementations. It lets libraries use a common logging API while deferring the choice of concrete logging backend to runtime.",
+metadata/commons-logging/commons-logging-api/index.json:9:    "description" : "Commons Logging API provides the public interfaces and factory classes used by Java code to log through an implementation-neutral abstraction. It lets libraries avoid depending directly on Log4J, JDK logging, LogKit, or another backend while allowing the application to choose the actual logging system at runtime.",
+metadata/commons-fileupload/commons-fileupload/index.json:9:    "description" : "Apache Commons FileUpload provides reusable Java APIs for handling multipart file uploads in servlets and web applications. It parses incoming upload requests, exposes uploaded files and form fields, and supports disk- or memory-backed storage strategies.",
+metadata/commons-net/commons-net/index.json:9:    "description" : "Apache Commons Net provides network protocol clients and utilities for Java applications. It includes implementations for FTP, FTPS, SMTP, SMTPS, POP3, POP3S, IMAP, NNTP, Telnet, TFTP, NTP, Whois, and related socket utilities.",
+
+exec
+/usr/bin/bash -lc "rg -n 'not-for-native-image|language\"' build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json metadata/commons-* -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find . -name '*schema*' -o -name '*metadata*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+./stats/schemas
+./stats/schemas/run-metrics-output-schema-v1.0.1.json
+./stats/schemas/library-stats-schema-v1.0.2.json
+./stats/dev.zio/zio-schema-macros_3
+./stats/dev.zio/zio-schema-derivation_3
+./stats/dev.zio/zio-schema_3
+./metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-ee/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+./metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+./metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+./metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+./metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+./metadata/jakarta.authentication/jakarta.authentication-api/3.0.0/reachability-metadata.json
+./metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+./metadata/org.springframework/spring-aspects/5.3.31/reachability-metadata.json
+./metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+./metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.14.3/reachability-metadata.json
+./metadata/net.postgis/postgis-jdbc/2.5.0/reachability-metadata.json
+./metadata/net.postgis/postgis-geometry/2.5.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_otel/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_common/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_caffeine/0.16.0/reachability-metadata.json
+./metadata/org.wildfly.openssl/wildfly-openssl-java/2.0.0.Alpha1/reachability-metadata.json
+./metadata/org.wildfly.openssl/wildfly-openssl-java/1.0.7.Final/reachability-metadata.json
+./metadata/com.google.re2j/re2j/1.1/reachability-metadata.json
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/reachability-metadata.json
+./metadata/jakarta.json/jakarta.json-api/2.1.0/reachability-metadata.json
+./metadata/com.github.ben-manes.caffeine/caffeine/3.1.2/reachability-metadata.json
+./metadata/com.github.ben-manes.caffeine/caffeine/2.9.3/reachability-metadata.json
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/1.2.2/reachability-metadata.json
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/1.2.2/reachability-metadata.json
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/1.2.2/reachability-metadata.json
+./metadata/org.openjfx/javafx-base/13-ea/reachability-metadata.json
+./metadata/org.openjfx/javafx-base/11.0.2/reachability-metadata.json
+./metadata/org.apache.directory.api/api-util/1.0.0/reachability-metadata.json
+./metadata/org.apache.directory.api/api-i18n/2.0.0/reachability-metadata.json
+./metadata/org.apache.directory.api/api-i18n/1.0.0/reachability-metadata.json
+./metadata/org.glassfish.hk2/hk2-utils/2.5.0/reachability-metadata.json
+./metadata/org.glassfish.hk2/hk2-utils/2.5.0-b05/reachability-metadata.json
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/3.0.2/reachability-metadata.json
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/3.0.2/reachability-metadata.json
+./metadata/com.thoughtworks.paranamer/paranamer/2.3/reachability-metadata.json
+./metadata/com.thoughtworks.paranamer/paranamer/2.8.1/reachability-metadata.json
+./metadata/log4j/log4j/1.2.17/reachability-metadata.json
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json
+./metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json
+./metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json
+./metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json
+./metadata/io.zipkin.zipkin2/zipkin/2.23.2/reachability-metadata.json
+./metadata/com.github.mwiede/jsch/2.27.7/reachability-metadata.json
+./metadata/org.datanucleus/javax.jdo/3.2.0-m13/reachability-metadata.json
+./metadata/org.playframework/play-build-link/3.0.0/reachability-metadata.json
+./metadata/org.playframework/play-exceptions/3.0.0/reachability-metadata.json
+./metadata/io.opencensus/opencensus-contrib-grpc-util/0.31.1/reachability-metadata.json
+./metadata/io.opencensus/opencensus-api/0.31.1/reachability-metadata.json
+./metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json
+./metadata/org.jvnet.staxex/stax-ex/1.8/reachability-metadata.json
+./metadata/org.jvnet.staxex/stax-ex/2.0.0/reachability-metadata.json
+./metadata/org.jvnet.staxex/stax-ex/1.8.2/reachability-metadata.json
+./metadata/org.jline/jline-native/3.27.1/reachability-metadata.json
+./metadata/org.jline/jline/3.21.0/reachability-metadata.json
+./metadata/org.jline/jline-reader/3.19.0/reachability-metadata.json
+./metadata/org.jline/jline-reader/3.22.0/reachability-metadata.json
+./metadata/org.jline/jline-console/3.28.0/reachability-metadata.json
+./metadata/org.jline/jline-console/3.21.0/reachability-metadata.json
+./metadata/org.jline/jline-console/3.22.0/reachability-metadata.json
+./metadata/org.jline/jline-terminal-jna/3.20.0/reachability-metadata.json
+./metadata/org.jline/jline-terminal-jni/3.27.1/reachability-metadata.json
+./metadata/org.jline/jline-terminal-jni/3.30.7/reachability-metadata.json
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/reachability-metadata.json
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/reachability-metadata.json
+./metadata/com.diffplug.durian/durian-swt.os/4.2.2/reachability-metadata.json
+./metadata/com.github.stephenc.jcip/jcip-annotations/1.0-1/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-openwire-legacy/5.18.1/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-log-annotation-processor/2.28.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-log-annotation-processor/2.39.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-log-annotation-processor/2.40.0/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-broker/6.0.0/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-broker/5.18.1/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-client/6.0.0/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-client/5.18.1/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.28.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json
+./metadata/javax.validation/validation-api/1.1.0.Final/reachability-metadata.json
+./metadata/javax.validation/validation-api/1.0.0.GA/reachability-metadata.json
+./metadata/javax.validation/validation-api/2.0.0.Final/reachability-metadata.json
+./metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json
+./metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json
+./metadata/org.yaml/snakeyaml/2.0/reachability-metadata.json
+./metadata/org.yaml/snakeyaml/1.32/reachability-metadata.json
+./metadata/com.itextpdf/io/8.0.3/reachability-metadata.json
+./metadata/com.itextpdf/svg/8.0.3/reachability-metadata.json
+./metadata/com.itextpdf/layout/8.0.3/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -5 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+{
+  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
+}
+
+exec
+/usr/bin/bash -lc "curl -sL https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.tar.gz | tar -xzOf - commons-beanutils-1.8.0-src/build-other-jars.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 886ms:
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project name="Bean Utilities (Other jars)" default="other-jars" basedir=".">
+
+
+<!--
+        $Id: build-other-jars.xml 557855 2007-07-20 03:00:49Z niallp $
+-->
+
+
+<!-- ========== Component Declarations ==================================== -->
+
+
+  <!-- The current version number of this component -->
+  <property name="component.version"       value=""/>
+
+  <!-- The base directory for compilation targets -->
+  <property name="build.home"              value="target"/>
+
+  <!-- The base directory for distribution targets -->
+  <property name="dist.home"               value="dist"/>
+
+  <!-- JDK versions -->
+  <property name="maven.compile.source"    value=""/>
+  <property name="maven.compile.target"    value=""/>
+
+
+<!-- ========== Executable Targets ======================================== -->
+
+  <target name="other-jars" depends="core-jar,bean-collections-jar">
+  </target>
+
+  <target name="core-jar" description="Create BeanUtils Core jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="LICENSE.txt" tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <copy      file="NOTICE.txt"  tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
+    <jar    jarfile="${dist.home}/commons-beanutils-core-${component.version}.jar">
+        <manifest>
+            <attribute name="Specification-Title" value="Commons BeanUtils Core"/>
+            <attribute name="Specification-Version" value="${component.version}"/>
+            <attribute name="Specification-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Title" value="Commons BeanUtils Core"/>
+            <attribute name="Implementation-Version" value="${component.version}"/> 
+            <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Vendor-Id" value="org.apache"/>
+            <attribute name="X-Compile-Source-JDK" value="${maven.compile.source}"/>
+            <attribute name="X-Compile-Target-JDK" value="${maven.compile.target}"/>
+        </manifest>
+        <fileset dir="${build.home}/classes">
+            <include name="**/*.class"/>
+            <include name="**/LICENSE.txt"/>
+            <include name="**/NOTICE.txt"/>
+            <exclude name="**/BeanComparator*.class"/>
+            <exclude name="**/BeanMap*.class"/>
+            <exclude name="**/BeanPredicate*.class"/>
+            <exclude name="**/BeanPropertyValueChangeClosure*.class"/>
+            <exclude name="**/BeanPropertyValueEqualsPredicate*.class"/>
+            <exclude name="**/BeanToPropertyValueTransformer*.class"/>
+        </fileset>
+    </jar>
+  </target>
+
+  <target name="bean-collections-jar" description="Create Bean Collections jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="LICENSE.txt" tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <copy      file="NOTICE.txt"  tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
+    <jar    jarfile="${dist.home}/commons-beanutils-bean-collections-${component.version}.jar">
+        <manifest>
+            <attribute name="Specification-Title" valutar: A lone zero block at 5890
+e="Commons BeanUtils Bean Collections"/>
+            <attribute name="Specification-Version" value="${component.version}"/>
+            <attribute name="Specification-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Title" value="Commons BeanUtils Bean Collections"/>
+            <attribute name="Implementation-Version" value="${component.version}"/> 
+            <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Vendor-Id" value="org.apache"/>
+            <attribute name="X-Compile-Source-JDK" value="${maven.compile.source}"/>
+            <attribute name="X-Compile-Target-JDK" value="${maven.compile.target}"/>
+        </manifest>
+        <fileset dir="${build.home}/classes">
+            <include name="**/LICENSE.txt"/>
+            <include name="**/NOTICE.txt"/>
+            <include name="**/BeanComparator*.class"/>
+            <include name="**/BeanMap*.class"/>
+            <include name="**/BeanPredicate*.class"/>
+            <include name="**/BeanPropertyValueChangeClosure*.class"/>
+            <include name="**/BeanPropertyValueEqualsPredicate*.class"/>
+            <include name="**/BeanToPropertyValueTransformer*.class"/>
+        </fileset>
+    </jar>
+  </target>
+
+</project>
+
+codex
+I have enough evidence now: the `commons-beanutils-core` jar is a normal JVM jar with class files, and it is built from the Apache Commons BeanUtils source distribution as the “core” subset. I’m patching only the discovered metadata JSON and leaving `language` and `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..e55c799c9d03d0e32724c41fd9d31563eb14bce2
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.tar.gz",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Apache Commons BeanUtils Core provides Java reflection and introspection utilities for reading, writing, copying, and converting JavaBean properties. It supplies the core BeanUtils, ConvertUtils, PropertyUtils, DynaBean, and related APIs without the optional bean-collections helpers that depend on Commons Collections."
+ }
+
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..e55c799c9d03d0e32724c41fd9d31563eb14bce2
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.tar.gz",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Apache Commons BeanUtils Core provides Java reflection and introspection utilities for reading, writing, copying, and converting JavaBean properties. It supplies the core BeanUtils, ConvertUtils, PropertyUtils, DynaBean, and related APIs without the optional bean-collections helpers that depend on Commons Collections."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+{
+  "coordinates": "commons-beanutils:commons-beanutils-core:1.8.0",
+  "repository-url": "https://github.com/apache/commons-beanutils",
+  "source-code-url": "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
+  "test-code-url": "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.tar.gz",
+  "documentation-url": "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
+  "description": "Apache Commons BeanUtils Core provides Java reflection and introspection utilities for reading, writing, copying, and converting JavaBean properties. It supplies the core BeanUtils, ConvertUtils, PropertyUtils, DynaBean, and related APIs without the optional bean-collections helpers that depend on Commons Collections."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-sources.jar && curl -I -L https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.tar.gz && curl -I -L https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..e55c799c9d03d0e32724c41fd9d31563eb14bce2
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.tar.gz",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Apache Commons BeanUtils Core provides Java reflection and introspection utilities for reading, writing, copying, and converting JavaBean properties. It supplies the core BeanUtils, ConvertUtils, PropertyUtils, DynaBean, and related APIs without the optional bean-collections helpers that depend on Commons Collections."
+ }
+
+ succeeded in 241ms:
+
+  0  370k    0     0    0     0      0  HTTP/1.1 200 OK
+Date: Tue, 05 May 2026 00:08:21 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "5cac2-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 379586
+Content-Type: application/x-gzip
+
+    0 --:--:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Tue, 05 May 2026 00:08:21 GMT
+content-type: application/java-archive
+content-length: 1324396
+cf-ray: 9f6b82a0bbbc9808-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1480368
+etag: "875d249e75934aa34600ed00c21ddd4c"
+last-modified: Thu, 28 Aug 2008 16:21:24 GMT
+x-checksum-md5: 875d249e75934aa34600ed00c21ddd4c
+x-checksum-sha1: a36b1b41ebcdb0b098e80d3d0e1a28cc08d58613
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 1293k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'git ls-files -- build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json && git check-ignore -v build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..e55c799c9d03d0e32724c41fd9d31563eb14bce2
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.tar.gz",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Apache Commons BeanUtils Core provides Java reflection and introspection utilities for reading, writing, copying, and converting JavaBean properties. It supplies the core BeanUtils, ConvertUtils, PropertyUtils, DynaBean, and related APIs without the optional bean-collections helpers that depend on Commons Collections."
+ }
+
+ succeeded in 120ms:
+codex
+Updated [commons-beanutils-commons-beanutils-core-1.8.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json).
+
+I set the repository, source, test, documentation, and two-sentence description fields. I left `language` absent and did not set `not-for-native-image` because this is a JVM jar with class files. Verified the JSON parses and the tokenized URLs resolve for `1.8.0`.
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..e55c799c9d03d0e32724c41fd9d31563eb14bce2
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.tar.gz",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Apache Commons BeanUtils Core provides Java reflection and introspection utilities for reading, writing, copying, and converting JavaBean properties. It supplies the core BeanUtils, ConvertUtils, PropertyUtils, DynaBean, and related APIs without the optional bean-collections helpers that depend on Commons Collections."
+ }
+
+tokens used
+64,268
+Updated [commons-beanutils-commons-beanutils-core-1.8.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json).
+
+I set the repository, source, test, documentation, and two-sentence description fields. I left `language` absent and did not set `not-for-native-image` because this is a JVM jar with class files. Verified the JSON parses and the tokenized URLs resolve for `1.8.0`.
+Ran agent for commons-beanutils:commons-beanutils-core:1.8.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273/build/agent-artifact-discovery-logs/commons-beanutils-commons-beanutils-core-1.8.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-62048273/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 49s
+9 actionable tasks: 4 executed, 5 from cache
