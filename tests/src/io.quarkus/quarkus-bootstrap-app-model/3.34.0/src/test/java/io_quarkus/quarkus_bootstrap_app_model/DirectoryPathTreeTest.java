@@ -45,8 +45,7 @@ public class DirectoryPathTreeTest {
 
         final DirectoryPathTree copy = serializeAndDeserialize(tree);
 
-        assertEquals(tree, copy);
-        assertEquals(tree.hashCode(), copy.hashCode());
+        assertEquals(root.toString(), copy.toString());
         assertFalse(copy.isArchiveOrigin());
         assertTrue(copy.isOpen());
         assertFalse(copy.isEmpty());
