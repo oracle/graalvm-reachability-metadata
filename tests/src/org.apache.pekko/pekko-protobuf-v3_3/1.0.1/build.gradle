@@ -25,6 +25,11 @@ java {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--initialize-at-run-time=org.apache.pekko.protobufv3.internal.ByteBufferWriter')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
