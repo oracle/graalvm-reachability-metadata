@@ -1,0 +1,118 @@
+Starting a Gradle Daemon, 6 busy and 4 incompatible and 293 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.zaxxer:HikariCP:7.0.2
+Command: `/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-c6f894d4/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 7 busy and 4 incompatible and 293 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test FAILED
+
+HikariPoolTest > dataSourceRegistersConfiguredDropwizardHealthChecks() FAILED
+    java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+        at com.zaxxer.hikari.pool.HikariPool.setHealthCheckRegistry(HikariPool.java:330)
+        at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:106)
+        at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:80)
+        at com.zaxxer.hikaricp.test.HikariPoolTest.dataSourceRegistersConfiguredDropwizardHealthChecks(HikariPoolTest.java:31)
+
+        Caused by:
+        java.lang.reflect.InvocationTargetException
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:119)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at com.zaxxer.hikari.pool.HikariPool.setHealthCheckRegistry(HikariPool.java:328)
+            ... 3 more
+
+            Caused by:
+
+            java.lang.NoClassDefFoundError: com/codahale/metrics/MetricRegistry
+15 tests completed, 1 failed
+                at com.zaxxer.hikari.metrics.dropwizard.CodahaleHealthChecker.registerHealthChecks(CodahaleHealthChecker.java:59)
+
+                at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+FAILURE: Build failed with an exception.
+                ... 5 more
+
+
+* What went wrong:
+                Caused by:
+Execution failed for task ':test'.
+                java.lang.ClassNotFoundException: com.codahale.metrics.MetricRegistry
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-c6f894d4/tests/src/com.zaxxer/HikariCP/6.0.0/build/reports/tests/test/index.html
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+
+                    at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+* Try:
+                    ... 7 more
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-c6f894d4/tests/src/com.zaxxer/HikariCP/6.0.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+15 actionable tasks: 3 executed, 12 up-to-date
+BUILD FAILED in 9s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-c6f894d4/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.zaxxer:HikariCP:7.0.2 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 15s
+9 actionable tasks: 1 executed, 8 up-to-date
