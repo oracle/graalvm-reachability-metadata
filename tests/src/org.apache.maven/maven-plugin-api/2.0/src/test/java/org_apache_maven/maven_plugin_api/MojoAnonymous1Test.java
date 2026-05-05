@@ -6,11 +6,14 @@
  */
 package org_apache_maven.maven_plugin_api;
 
+import org.apache.maven.plugin.Mojo;
 import org.junit.jupiter.api.Test;
 
-public class Maven_plugin_apiTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class MojoAnonymous1Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void roleInitializesThroughClassLiteralHelper() {
+        assertThat(Mojo.ROLE).isEqualTo(Mojo.class.getName());
     }
 }
