@@ -1,0 +1,45 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.tasks.TaskProvider
+
+plugins {
+    id "org.graalvm.internal.tck"
+    id "com.gradleup.shadow" version "9.4.1"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+configurations {
+    relocatedGuava
+}
+
+// graphql-java 19.7 bytecode references relocated Guava classes that are not present in the published jar.
+TaskProvider relocatedGuavaJar = tasks.register("relocatedGuavaJar", ShadowJar) {
+    archiveClassifier = "relocated-guava"
+    configurations = [project.configurations.relocatedGuava]
+    relocate "com.google.common", "graphql.com.google.common"
+}
+
+dependencies {
+    testImplementation "com.graphql-java:graphql-java:$libraryVersion"
+    testRuntimeOnly files(relocatedGuavaJar).builtBy(relocatedGuavaJar)
+    relocatedGuava 'com.google.guava:guava:32.0.0-jre'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
