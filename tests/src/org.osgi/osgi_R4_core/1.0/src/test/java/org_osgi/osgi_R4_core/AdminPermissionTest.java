@@ -9,9 +9,11 @@ package org_osgi.osgi_R4_core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Base64;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
@@ -37,6 +39,70 @@ public class AdminPermissionTest {
         assertThat(bundlePermission.getName()).isEqualTo("(id=7)");
         assertThat(bundlePermission.getActions()).isEqualTo(AdminPermission.EXECUTE);
         assertThat(filteredPermission.implies(bundlePermission)).isTrue();
+    }
+
+    @Test
+    void isolatedClassLoadingRunsLegacyClassLiteralHelper() throws Exception {
+        System.setProperty("org.osgi.vendor.framework", "org_osgi.osgi_R4_core.vendor");
+
+        try {
+            FreshAdminPermissionClassLoader classLoader = new FreshAdminPermissionClassLoader();
+            classLoader.verifyRuntimeClassDefinitionSupported();
+            Class<?> adminPermissionClass = Class.forName(AdminPermission.class.getName(), true, classLoader);
+
+            assertThat(adminPermissionClass.getName()).isEqualTo(AdminPermission.class.getName());
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
+    private static final class FreshAdminPermissionClassLoader extends ClassLoader {
+        private FreshAdminPermissionClassLoader() {
+            super(AdminPermissionTest.class.getClassLoader());
+        }
+
+        private void verifyRuntimeClassDefinitionSupported() {
+            byte[] classBytes = Base64.getDecoder().decode(
+                    "yv66vgAAADQACgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ"
+                            + "+AQADKClWBwAIAQAwb3JnX29zZ2kvb3NnaV9SNF9jb3JlL0FkbWluUGVybWlzc2lvbkRlZmluZVByb2JlAQAEQ29kZQAhAAcAAgAAAAAAAQABAAUABgABAAkAAAARAAEAAQAAAAUqtwABsQAAAAAAAA==");
+            defineClass(classBytes, 0, classBytes.length);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null) {
+                    loadedClass = isIsolatedClass(name) ? findClass(name) : super.loadClass(name, false);
+                }
+                if (resolve) {
+                    resolveClass(loadedClass);
+                }
+                return loadedClass;
+            }
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream input = getParent().getResourceAsStream(resourceName)) {
+                if (input == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                byte[] classBytes = input.readAllBytes();
+                return defineClass(name, classBytes, 0, classBytes.length);
+            } catch (IOException exception) {
+                throw new ClassNotFoundException(name, exception);
+            }
+        }
+
+        private static boolean isIsolatedClass(String name) {
+            return AdminPermission.class.getName().equals(name)
+                    || "org.osgi.framework.AdminPermission$1".equals(name)
+                    || org_osgi.osgi_R4_core.vendor.AdminPermission.class.getName().equals(name);
+        }
     }
 
     private static final class TestBundle implements Bundle {
