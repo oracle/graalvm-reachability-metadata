@@ -31,6 +31,26 @@ class Scala_collection_compat_3Test {
   }
 
   @Test
+  def arrayFactoriesCreateTypedArraysFromBuilders(): Unit = {
+    val intFactory: Factory[Int, Array[Int]] = Factory.arrayFactory[Int]
+    val intBuilder: scala.collection.mutable.Builder[Int, Array[Int]] = intFactory.newBuilder
+    intBuilder ++= List(2, 4, 6, 8)
+
+    val stringBuildFrom: BuildFrom[Array[String], String, Array[String]] = BuildFrom.buildFromArray[String]
+    val stringBuilder: scala.collection.mutable.Builder[String, Array[String]] = stringBuildFrom.newBuilder(Array("seed"))
+    stringBuilder += "alpha"
+    stringBuilder ++= Vector("beta", "gamma")
+
+    val intArray: Array[Int] = intBuilder.result()
+    val stringArray: Array[String] = stringBuilder.result()
+
+    assertArrayEquals(Array(2, 4, 6, 8), intArray)
+    assertEquals(classOf[Int], intArray.getClass.getComponentType)
+    assertEquals(Vector("alpha", "beta", "gamma"), stringArray.toVector)
+    assertEquals(classOf[String], stringArray.getClass.getComponentType)
+  }
+
+  @Test
   def buildFromAliasCreatesBuildersForStringsIterablesAndMaps(): Unit = {
     val stringBuildFrom: BuildFrom[String, Char, String] = BuildFrom.buildFromString
     val stringBuilder: scala.collection.mutable.Builder[Char, String] = stringBuildFrom.newBuilder("seed")
