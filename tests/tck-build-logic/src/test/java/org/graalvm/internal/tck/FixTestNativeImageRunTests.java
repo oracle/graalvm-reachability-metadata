@@ -44,7 +44,8 @@ class FixTestNativeImageRunTests {
         assertThat(Files.readString(indexFile(), StandardCharsets.UTF_8)).isEqualTo(originalIndex);
         assertThat(metadataFile(NEW_VERSION)).doesNotExist();
         assertThat(readGradlewInvocations())
-                .contains("4.2.2.Final|-Pagent test")
+                .contains("4.2.2.Final|")
+                .contains("-Pagent test")
                 .doesNotContain("metadataCopy")
                 .doesNotContain("test -Pcoordinates=" + NEW_COORDINATES);
     }
@@ -64,9 +65,10 @@ class FixTestNativeImageRunTests {
                 .contains("\"test-version\" : \"4.1.74.Final\"")
                 .contains("\"tested-versions\" : [\n      \"4.2.2.Final\"\n    ]");
         assertThat(readGradlewInvocations())
-                .contains("4.2.2.Final|-Pagent test")
-                .contains("4.2.2.Final|metadataCopy --task test --dir " + metadataDirectory(NEW_VERSION))
-                .contains("4.2.2.Final|test -Pcoordinates=" + NEW_COORDINATES);
+                .contains("4.2.2.Final|")
+                .contains("-Pagent test")
+                .contains("metadataCopy --task test --dir " + metadataDirectory(NEW_VERSION))
+                .contains("test -Pcoordinates=" + NEW_COORDINATES);
     }
 
     private Project createProject() {
@@ -137,10 +139,13 @@ class FixTestNativeImageRunTests {
                 """
                 #!/bin/sh
                 printf '%%s|%%s|%%s\\n' "$PWD" "$GVM_TCK_LV" "$*" >> '%s'
-                if [ "$1" = "-Pagent" ]; then
+                case "$*" in
+                  *"-Pagent test"*)
                 %s
-                fi
-                if [ "$1" = "metadataCopy" ]; then
+                  ;;
+                esac
+                case "$*" in
+                  *"metadataCopy"*)
                   while [ "$#" -gt 0 ]; do
                     if [ "$1" = "--dir" ]; then
                       mkdir -p "$2"
@@ -150,10 +155,13 @@ class FixTestNativeImageRunTests {
                     shift
                   done
                   exit 0
-                fi
-                if [ "$1" = "test" ]; then
+                  ;;
+                esac
+                case "$*" in
+                  *"test -Pcoordinates="*)
                   exit 0
-                fi
+                  ;;
+                esac
                 exit 0
                 """.formatted(logFile, failureBlock),
                 StandardCharsets.UTF_8

@@ -1,0 +1,1074 @@
+Starting a Gradle Daemon, 12 busy and 5 incompatible and 321 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df651-ecc7-7671-a67c-529e7a7832f1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.smallrye:jandex:3.0.5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.5" when "$version$" is replaced with "3.0.5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+- Set "coordinates" to "io.smallrye:jandex:3.0.5".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.5".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/GitHub first, then patch the JSON directly with the version-tokenized URLs and the Native Image applicability fields only if there is clear evidence.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json && sed -n '1,200p' build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+-rw-rw-r-- 1 vjovanov vjovanov 49 May  5 06:07 build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+{
+  "coordinates" : "io.smallrye:jandex:3.0.5"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'io.smallrye.*jandex|smallrye-jandex|\"jandex\"' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json:2:  "coordinates" : "io.smallrye:jandex:3.0.5"
+
+web search: 
+web search: Maven io.smallrye jandex 3.0.5 scm url sources jar
+codex
+The Maven Central listing confirms this release publishes both `sources.jar` and `javadoc.jar`, so I’m checking the POM and repository tag naming before choosing the test-suite URL.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' -maxdepth 1 | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+{
+  "coordinates" : "io.smallrye:jandex:3.0.5"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*repo1.maven|\"documentation-url\".*javadoc|\"test-code-url\".*github' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:73:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.smallrye</groupId>
+        <artifactId>jandex-parent</artifactId>
+        <version>3.0.5</version>
+    </parent>
+
+    <artifactId>jandex</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Jandex: Core</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.smallrye</groupId>
+            <artifactId>jandex-test-data</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <breakiterator>true</breakiterator>
+                    <version>true</version>
+                    <author>true</author>
+                    <keywords>true</keywords>
+                    <additionalOptions>
+                        --allow-script-in-comments
+                    </additionalOptions>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <top><![CDATA[
+                         <script src="doc-files/addSyntax.js" type="text/javascript"></script>
+                         <script src="doc-files/shCore.js" type="text/javascript"></script>
+                         <script src="doc-files/shBrushJava.js" type="text/javascript"></script>
+                    ]]></top>
+                    <bottom><![CDATA[
+                         <script type="text/javascript">
+                           SyntaxHighlighter.defaults["auto-links"] = false;
+                           SyntaxHighlighter.defaults["gutter"] = false;
+                           SyntaxHighlighter.defaults["toolbar"] = false;
+                           SyntaxHighlighter.all();
+                         </script>
+                    ]]></bottom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${version.maven-bundle-plugin}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <mainClass>org.jboss.jandex.Main</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Automatic-Module-Name>org.jboss.jandex</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Export-Package>
+                            org.jboss.jandex;version="${project.version}"
+                        </Export-Package>
+                        <Import-Package>
+                            org.apache.tools.ant;resolution:=optional,
+                            org.apache.tools.ant.types;resolution:=optional,
+                            *
+                        </Import-Package>
+                        <!-- Without the -nouses BND directive, the org.jboss.jandex export will get the optional
+                        ant packages in a "uses" clause. -->
+                        <_nouses>true</_nouses>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jboss.bridger</groupId>
+                <artifactId>bridger</artifactId>
+                <version>${version.bridger}</version>
+                <executions>
+                    <execution>
+                        <id>weave</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>ecj</id>
+            <activation>
+                <property>
+                    <name>compiler</name>
+                    <value>ecj</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <compilerId>eclipse</compilerId>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-compiler-eclipse</artifactId>
+                                <version>${version.plexus-compiler-eclipse}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>parameters</id>
+            <activation>
+                <property>
+                    <name>parameters</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <maven.compiler.parameters>true</maven.compiler.parameters>
+            </properties>
+        </profile>
+    </profiles>
+</project>
+
+web search: 
+web search: 
+web search: 
+web search: io.smallrye:jandex 3.0.5 Maven Central SCM GitHub
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex-parent/3.0.5/jandex-parent-3.0.5.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-build-parent</artifactId>
+        <version>31</version>
+    </parent>
+
+    <groupId>io.smallrye</groupId>
+    <artifactId>jandex-parent</artifactId>
+    <version>3.0.5</version>
+    <packaging>pom</packaging>
+
+    <name>Jandex: Parent</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <version.ant>1.10.11</version.ant>
+        <version.bridger>1.6.Final</version.bridger>
+        <version.bytebuddy>1.11.13</version.bytebuddy>
+        <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
+        <version.junit>5.8.2</version.junit>
+        <version.maven>3.8.1</version.maven>
+        <version.maven-bundle-plugin>5.1.2</version.maven-bundle-plugin>
+        <version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
+        <version.maven-dependency-plugin>3.3.0</version.maven-dependency-plugin>
+        <version.maven-invoker-plugin>3.2.2</version.maven-invoker-plugin>
+        <version.maven-plugin-tools>3.6.1</version.maven-plugin-tools>
+        <version.maven-shade-plugin>3.3.0</version.maven-shade-plugin>
+        <version.nexus-staging-maven-plugin>1.6.13</version.nexus-staging-maven-plugin>
+        <version.mvn-jlink-wrapper>1.1.1</version.mvn-jlink-wrapper>
+        <version.plexus-compiler-eclipse>2.11.1</version.plexus-compiler-eclipse>
+        <version.plexus-utils>3.4.1</version.plexus-utils>
+    </properties>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/smallrye/jandex/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:smallrye/jandex.git</connection>
+        <developerConnection>scm:git:git@github.com:smallrye/jandex.git</developerConnection>
+        <url>https://github.com/smallrye/jandex/</url>
+        <tag>3.0.5</tag>
+    </scm>
+
+    <modules>
+        <module>core</module>
+        <module>maven-plugin</module>
+        <module>test-data</module>
+
+        <module>benchmarks</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex-test-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${version.bytebuddy}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${version.ant}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${version.maven}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${version.maven}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${version.maven-plugin-tools}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${version.plexus-utils}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${version.junit}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${version.maven-compiler-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${version.nexus-staging-maven-plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>compiler-release-option</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <!-- setting this in a profile because the Java 8 compiler doesn't know the `release` option -->
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>!release.maven.bug.always.be.active</name>
+                </property>
+            </activation>
+            <modules>
+                <module>release</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5-test.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/smallrye/jandex/tree/3.0.5/src/test || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5-tests.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 255ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 04:08:01 GMT
+content-type: text/html
+cf-ray: 9f6ce1b21b3c985f-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 293ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 04:08:01 GMT
+content-type: text/html
+cf-ray: 9f6ce1b27efb31a4-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5-test.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 449ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 04:08:02 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=kCOsGiPS97BhtGRH9Cb5e0eZTda5VxiIkIFJcQ8A2ShXN%2Ft7JNrX7N1f2tE%2Fs4rfFALH4d5X2GOxAtUulD%2BVzPimm9zafHfqtFc4F52WVg9ZZ42YjXUTJM6rYgYWy3g8qWuLs8GY1VAGHO241P46R2xYyEAGRj3%2Fo9gPoqR%2BTm2mdFt9esvgnUFaHbisRUJ10uZO2ZztVhZOXSwPDuymfn0GCAW782MaY5JAlTRMQzR3imeetUbLx3RA%2Fxf8IaayRtR7%2BIHLGUVKu39q49kPXQ%3D%3D--34ptMCMtrsGBUSSn--Hiqvb5hZ2FBrOyPFlgyvSQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1457786988.1777954081; expires=Wed, 05 May 2027 04:08:01 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 04:08:01 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:1680C:ACFB9F:8AE528:69F96D21
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/smallrye/jandex/3.0.5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/smallrye/jandex/3.0.5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jandex-3.0.5-javadoc.jar" title="jandex-3.0.5-javadoc.jar">jandex-3.0.5-javadoc.jar</a>                          2022-12-02 15:07    567962      
+<a href="jandex-3.0.5-javadoc.jar.asc" title="jandex-3.0.5-javadoc.jar.asc">jandex-3.0.5-javadoc.jar.asc</a>                      2022-12-02 15:07       870      
+<a href="jandex-3.0.5-javadoc.jar.md5" title="jandex-3.0.5-javadoc.jar.md5">jandex-3.0.5-javadoc.jar.md5</a>                      2022-12-02 15:07        32      
+<a href="jandex-3.0.5-javadoc.jar.sha1" title="jandex-3.0.5-javadoc.jar.sha1">jandex-3.0.5-javadoc.jar.sha1</a>                     2022-12-02 15:07        40      
+<a href="jandex-3.0.5-sources.jar" title="jandex-3.0.5-sources.jar">jandex-3.0.5-sources.jar</a>                          2022-12-02 15:07    181255      
+<a href="jandex-3.0.5-sources.jar.asc" title="jandex-3.0.5-sources.jar.asc">jandex-3.0.5-sources.jar.asc</a>                      2022-12-02 15:07       870      
+<a href="jandex-3.0.5-sources.jar.md5" title="jandex-3.0.5-sources.jar.md5">jandex-3.0.5-sources.jar.md5</a>                      2022-12-02 15:07        32      
+<a href="jandex-3.0.5-sources.jar.sha1" title="jandex-3.0.5-sources.jar.sha1">jandex-3.0.5-sources.jar.sha1</a>                     2022-12-02 15:07        40      
+<a href="jandex-3.0.5.jar" title="jandex-3.0.5.jar">jandex-3.0.5.jar</a>                                  2022-12-02 15:07    292585      
+<a href="jandex-3.0.5.jar.asc" title="jandex-3.0.5.jar.asc">jandex-3.0.5.jar.asc</a>                              2022-12-02 15:07       870      
+<a href="jandex-3.0.5.jar.md5" title="jandex-3.0.5.jar.md5">jandex-3.0.5.jar.md5</a>                              2022-12-02 15:07        32      
+<a href="jandex-3.0.5.jar.sha1" title="jandex-3.0.5.jar.sha1">jandex-3.0.5.jar.sha1</a>                             2022-12-02 15:07        40      
+<a href="jandex-3.0.5.pom" title="jandex-3.0.5.pom">jandex-3.0.5.pom</a>                                  2022-12-02 15:07      6902      
+<a href="jandex-3.0.5.pom.asc" title="jandex-3.0.5.pom.asc">jandex-3.0.5.pom.asc</a>                              2022-12-02 15:07       870      
+<a href="jandex-3.0.5.pom.md5" title="jandex-3.0.5.pom.md5">jandex-3.0.5.pom.md5</a>                              2022-12-02 15:07        32      
+<a href="jandex-3.0.5.pom.sha1" title="jandex-3.0.5.pom.sha1">jandex-3.0.5.pom.sha1</a>                             2022-12-02 15:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/smallrye/jandex/tree/3.0.5/core/src/test || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/jandex/git/ref/tags/3.0.5' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/jandex/contents/core/src/test?ref=3.0.5' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 153ms:
+[
+  {
+    "name": "java",
+    "path": "core/src/test/java",
+    "sha": "a74e0fa64fad589b420e1059b2c6dd904ca7afef",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java?ref=3.0.5",
+    "html_url": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java",
+    "git_url": "https://api.github.com/repos/smallrye/jandex/git/trees/a74e0fa64fad589b420e1059b2c6dd904ca7afef",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java?ref=3.0.5",
+      "git": "https://api.github.com/repos/smallrye/jandex/git/trees/a74e0fa64fad589b420e1059b2c6dd904ca7afef",
+      "html": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java"
+    }
+  }
+]
+
+ succeeded in 195ms:
+{
+  "ref": "refs/tags/3.0.5",
+  "node_id": "MDM6UmVmODIwMDM5OnJlZnMvdGFncy8zLjAuNQ==",
+  "url": "https://api.github.com/repos/smallrye/jandex/git/refs/tags/3.0.5",
+  "object": {
+    "sha": "666564ad1a69acb7f3bf9526612ea83abc654571",
+    "type": "tag",
+    "url": "https://api.github.com/repos/smallrye/jandex/git/tags/666564ad1a69acb7f3bf9526612ea83abc654571"
+  }
+}
+
+ succeeded in 663ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 04:08:07 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0f12002ba5d1becc9d342d0cd0784873"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=o0mtQVkVv6IeCEBHbrlc6eDhe2yFFCcePr1JIgqEaahLOex3XUT4Kru%2BX3bfd0vPFCYEbp2f83yDGCVOZ03GWGPI%2F8knVCtLiLe%2FO9SKDEr1xOhKxN92HAoI4dlCHDUGZtr3%2BLmjN7%2FIWFN6Fts%2BYRy9gx1r3qUE9IuUyhOKyBPn175b0rYrBW4uRfLfrFnID0w2tSFC3iKW6klR2dxBqQqR3n1HZti6gFnLmKqOYw5W%2F82AcY641sSYBwPf7b4EBf1AI3%2FHlJC%2FDOS6Lx0G8Q%3D%3D--vztLtiwZYVceoxHk--s9fcjWDULvn4R1dvo6lmOA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.904938098.1777954086; expires=Wed, 05 May 2027 04:08:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 04:08:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5105:14FE68:A5D320:8503D6:69F96D26
+
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org maven2 io smallrye jandex 3.0.5 jandex-3.0.5.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/jandex/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/jandex/3.0.5/
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/io/smallrye/jandex-parent/3.0.5 jandex-parent-3.0.5.pom scm tag
+codex
+There is no Maven test artifact for `jandex-3.0.5`, and the published POM points to the `smallrye/jandex` GitHub repository with tag `3.0.5`. I’m going to use Maven Central for sources and Javadoc, and the tagged `core/src/test/java` directory for tests.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/["'^"/]+/[''^"/]+/?"'"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/io.r2dbc/r2dbc-spi/index.json:6:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/io.r2dbc/r2dbc-spi/index.json:20:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/org.antlr/antlr4-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/org.antlr/antlr-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr3",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:6:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:24:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/org.antlr/ST4/index.json:6:    "repository-url" : "https://github.com/antlr/stringtemplate4",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.camel/camel-util-json/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/apt/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-api/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-management-api/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-util/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:5:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:21:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.jetbrains/annotations-java5/index.json:6:    "repository-url" : "https://github.com/JetBrains/java-annotations",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:6:    "repository-url" : "https://github.com/eclipse/eclipse-collections",
+metadata/org.crac/crac/index.json:6:    "repository-url" : "https://github.com/CRaC/org.crac",
+metadata/commons-io/commons-io/index.json:6:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/commons-io/commons-io/index.json:25:    "repository-url" : "https://github.com/apache/commons-io",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5.jar -o /tmp/jandex-3.0.5.jar && jar tf /tmp/jandex-3.0.5.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java?ref=3.0.5 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 187ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/io.smallrye/
+META-INF/maven/io.smallrye/jandex/
+META-INF/maven/io.smallrye/jandex/pom.properties
+META-INF/maven/io.smallrye/jandex/pom.xml
+org/
+org/jboss/
+org/jboss/jandex/
+org/jboss/jandex/AnnotationInstance$1.class
+org/jboss/jandex/AnnotationInstance$2.class
+org/jboss/jandex/AnnotationInstance$NameComparator.class
+org/jboss/jandex/AnnotationInstance.class
+org/jboss/jandex/AnnotationInstanceBuilder.class
+org/jboss/jandex/AnnotationTarget$Kind.class
+org/jboss/jandex/AnnotationTarget.class
+org/jboss/jandex/AnnotationValue$ArrayValue.class
+org/jboss/jandex/AnnotationValue$BooleanValue.class
+org/jboss/jandex/AnnotationValue$ByteValue.class
+org/jboss/jandex/AnnotationValue$CharacterValue.class
+org/jboss/jandex/AnnotationValue$ClassValue.class
+org/jboss/jandex/AnnotationValue$DoubleValue.class
+org/jboss/jandex/AnnotationValue$EnumValue.class
+org/jboss/jandex/AnnotationValue$FloatValue.class
+org/jboss/jandex/AnnotationValue$IntegerValue.class
+org/jboss/jandex/AnnotationValue$Kind.class
+org/jboss/jandex/AnnotationValue$LongValue.class
+org/jboss/jandex/AnnotationValue$NestedAnnotation.class
+org/jboss/jandex/AnnotationValue$ShortValue.class
+org/jboss/jandex/AnnotationValue$StringValue.class
+org/jboss/jandex/AnnotationValue.class
+org/jboss/jandex/ArrayType.class
+org/jboss/jandex/ClassExtendsTypeTarget.class
+org/jboss/jandex/ClassInfo$1.class
+org/jboss/jandex/ClassInfo$EnclosingMethodInfo.class
+org/jboss/jandex/ClassInfo$NestingInfo.class
+org/jboss/jandex/ClassInfo$NestingType.class
+org/jboss/jandex/ClassInfo.class
+org/jboss/jandex/ClassSummary.class
+org/jboss/jandex/ClassType.class
+org/jboss/jandex/CompositeIndex.class
+org/jboss/jandex/DotName$1.class
+org/jboss/jandex/DotName$IndexState.class
+org/jboss/jandex/DotName.class
+org/jboss/jandex/EmptyTypeTarget.class
+org/jboss/jandex/EquivalenceKey$1.class
+org/jboss/jandex/EquivalenceKey$ArrayTypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$ClassEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$ClassTypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$DeclarationEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$FieldEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$MethodEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$MethodParameterEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$ParameterizedTypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$PrimitiveTypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$RecordComponentEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$TypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$TypeVariableEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$TypeVariableReferenceEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$UnresolvedTypeVariableEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$VoidTypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey$WildcardTypeEquivalenceKey.class
+org/jboss/jandex/EquivalenceKey.class
+org/jboss/jandex/FieldInfo.class
+org/jboss/jandex/FieldInfoGenerator.class
+org/jboss/jandex/FieldInternal$NameComparator.class
+org/jboss/jandex/FieldInternal.class
+org/jboss/jandex/GenericSignatureParser$1.class
+org/jboss/jandex/GenericSignatureParser$ClassSignature.class
+org/jboss/jandex/GenericSignatureParser$MethodSignature.class
+org/jboss/jandex/GenericSignatureParser.class
+org/jboss/jandex/Index$1.class
+org/jboss/jandex/Index.class
+org/jboss/jandex/IndexReader.class
+org/jboss/jandex/IndexReaderImpl.class
+org/jboss/jandex/IndexReaderV1.class
+org/jboss/jandex/IndexReaderV2$1.class
+org/jboss/jandex/IndexReaderV2.class
+org/jboss/jandex/IndexView.class
+
+ succeeded in 178ms:
+[
+  {
+    "name": "$delimiters$",
+    "path": "core/src/test/java/$delimiters$",
+    "sha": "f68e73e6aa41b544ae2c4093afbdf67d7f35bb61",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java/$delimiters$?ref=3.0.5",
+    "html_url": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java/$delimiters$",
+    "git_url": "https://api.github.com/repos/smallrye/jandex/git/trees/f68e73e6aa41b544ae2c4093afbdf67d7f35bb61",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java/$delimiters$?ref=3.0.5",
+      "git": "https://api.github.com/repos/smallrye/jandex/git/trees/f68e73e6aa41b544ae2c4093afbdf67d7f35bb61",
+      "html": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java/$delimiters$"
+    }
+  },
+  {
+    "name": "$pkg",
+    "path": "core/src/test/java/$pkg",
+    "sha": "ab975d56398fb499351f7c05c14394014e9ec7bf",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java/$pkg?ref=3.0.5",
+    "html_url": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java/$pkg",
+    "git_url": "https://api.github.com/repos/smallrye/jandex/git/trees/ab975d56398fb499351f7c05c14394014e9ec7bf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java/$pkg?ref=3.0.5",
+      "git": "https://api.github.com/repos/smallrye/jandex/git/trees/ab975d56398fb499351f7c05c14394014e9ec7bf",
+      "html": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java/$pkg"
+    }
+  },
+  {
+    "name": "org",
+    "path": "core/src/test/java/org",
+    "sha": "cb0315e846a42ab3ac0efd373bc296a564864a04",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java/org?ref=3.0.5",
+    "html_url": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java/org",
+    "git_url": "https://api.github.com/repos/smallrye/jandex/git/trees/cb0315e846a42ab3ac0efd373bc296a564864a04",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jandex/contents/core/src/test/java/org?ref=3.0.5",
+      "git": "https://api.github.com/repos/smallrye/jandex/git/trees/cb0315e846a42ab3ac0efd373bc296a564864a04",
+      "html": "https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java/org"
+    }
+  }
+]
+
+codex
+I’m patching the JSON now. The artifact is a JVM JAR with `.class` files, so I’m leaving the language and `not-for-native-image` fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+diff --git a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+index 2dc13289bc9a9295e69b0cd25ac966cb7cd96fea..950ec5354a89a52a41196d6e243b73fbc8980192
+--- a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
++++ b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye:jandex:3.0.5"
++  "coordinates" : "io.smallrye:jandex:3.0.5",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
++  "repository-url" : "https://github.com/smallrye/jandex",
++  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
++  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+index 2dc13289bc9a9295e69b0cd25ac966cb7cd96fea..950ec5354a89a52a41196d6e243b73fbc8980192
+--- a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
++++ b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye:jandex:3.0.5"
++  "coordinates" : "io.smallrye:jandex:3.0.5",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
++  "repository-url" : "https://github.com/smallrye/jandex",
++  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
++  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+ }
+
+codex
+The file is updated. I’m doing a quick JSON parse plus URL existence check for the substituted `3.0.5` URLs before I wrap up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+{
+  "coordinates": "io.smallrye:jandex:3.0.5",
+  "source-code-url": "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
+  "repository-url": "https://github.com/smallrye/jandex",
+  "test-code-url": "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
+  "description": "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 04:08:36 GMT
+content-type: application/java-archive
+content-length: 181255
+cf-ray: 9f6ce28a5933bac2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 234719
+etag: "6ed4ec944e05521092981a8df5eeb90b"
+last-modified: Fri, 02 Dec 2022 15:07:05 GMT
+x-checksum-md5: 6ed4ec944e05521092981a8df5eeb90b
+x-checksum-sha1: 0cdd9471c65c9cfce10f82004799b414ccc5c15c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/io/smallrye/jandex/3.0.5/jandex-3.0.5-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 04:08:36 GMT
+content-type: application/java-archive
+content-length: 567962
+cf-ray: 9f6ce28a7f2b0d25-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 248344
+etag: "9469b28157dc006178025d78714cb2ca"
+last-modified: Fri, 02 Dec 2022 15:07:05 GMT
+x-checksum-md5: 9469b28157dc006178025d78714cb2ca
+x-checksum-sha1: bacbc8563917ce3c73585cbdc0f238e88fbb40f7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+diff --git a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+index 2dc13289bc9a9295e69b0cd25ac966cb7cd96fea..950ec5354a89a52a41196d6e243b73fbc8980192
+--- a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
++++ b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye:jandex:3.0.5"
++  "coordinates" : "io.smallrye:jandex:3.0.5",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
++  "repository-url" : "https://github.com/smallrye/jandex",
++  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
++  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+ }
+
+ succeeded in 669ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 04:08:36 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"cc432849b6acd04b4e33c640d3d54579"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=trMR3xKBcqBNZlNA2%2FivMPcEvQdVSunIB9jBlYJWf6iH9HF5Y35OtPPWd60u7Tq6Sn3UMDmXP3pP59%2BS7a%2BF1rGjCOmoSKKeh6B%2Fc%2BzPD6gKssb2t%2FGi9t4I4ztfkVhFak2v4SB0kZAfsCjt99%2B3vdtKRv9hmkO2G3ad9BHgbWTFJ5EyOhbH2Flf0RUiHr7G9Sm9vea34o4AGdQG2kw3V4nbJzSSOlq0sVhiE8t%2BEo15sXIINFRd7fjV9TOMvTifMwP%2Fot8B67PyXb1gMPAsOg%3D%3D--4aqpQKPwKyQE3Izc--9%2FrUQeF817zAYGwHzyE5Zg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.819286642.1777954116; expires=Wed, 05 May 2027 04:08:36 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 04:08:36 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5105:14FE68:A6C120:85BB32:69F96D44
+
+
+web search: 
+web search: https://github.com/smallrye/jandex
+web search: 
+web search: https://github.com/smallrye/jandex/tree/3.0.5/core/src/test/java
+web search: 
+web search: "jandex-3.0.5-sources.jar"
+web search: 
+web search: https://www.javadoc.io/doc/org.jboss/jandex/2.1.4.Final/index.html
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+index 2dc13289bc9a9295e69b0cd25ac966cb7cd96fea..950ec5354a89a52a41196d6e243b73fbc8980192
+--- a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
++++ b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye:jandex:3.0.5"
++  "coordinates" : "io.smallrye:jandex:3.0.5",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
++  "repository-url" : "https://github.com/smallrye/jandex",
++  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
++  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json && sed -n '1,120p' build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215
+diff --git a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+index 2dc13289bc9a9295e69b0cd25ac966cb7cd96fea..950ec5354a89a52a41196d6e243b73fbc8980192
+--- a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
++++ b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye:jandex:3.0.5"
++  "coordinates" : "io.smallrye:jandex:3.0.5",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
++  "repository-url" : "https://github.com/smallrye/jandex",
++  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
++  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+ }
+
+ succeeded in 179ms:
+{
+  "coordinates" : "io.smallrye:jandex:3.0.5",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
+  "repository-url" : "https://github.com/smallrye/jandex",
+  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
+  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+}
+
+codex
+Updated [io.smallrye-jandex-3.0.5.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json:1) with the repository, Maven Central sources/Javadoc URLs, tagged GitHub test URL, and two-sentence description.
+
+I left `language` absent because it is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with `.class` files. Validation passed with `jq`, and the substituted source, documentation, and test URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+index 2dc13289bc9a9295e69b0cd25ac966cb7cd96fea..950ec5354a89a52a41196d6e243b73fbc8980192
+--- a/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
++++ b/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye:jandex:3.0.5"
++  "coordinates" : "io.smallrye:jandex:3.0.5",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
++  "repository-url" : "https://github.com/smallrye/jandex",
++  "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-javadoc.jar",
++  "description" : "Jandex is a space-efficient Java class file indexer and offline reflection library that scans compiled bytecode and stores annotation, type, class, field, and method metadata in an index. It lets frameworks and build tools query that index quickly at runtime or build time without loading application classes through standard reflection."
+ }
+
+tokens used
+79,542
+Updated [io.smallrye-jandex-3.0.5.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215/build/discovered-artifact-metadata/io.smallrye-jandex-3.0.5.json:1) with the repository, Maven Central sources/Javadoc URLs, tagged GitHub test URL, and two-sentence description.
+
+I left `language` absent because it is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with `.class` files. Validation passed with `jq`, and the substituted source, documentation, and test URLs all returned HTTP 200.
+Ran agent for io.smallrye:jandex:3.0.5 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215/build/agent-artifact-discovery-logs/io.smallrye-jandex-3.0.5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1410-7254b215/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 4 executed, 5 from cache

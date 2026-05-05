@@ -58,8 +58,9 @@ class GenerateMetadataTaskTests {
                 .contains("agent")
                 .contains("userCodeFilterPath = \"user-code-filter.json\"");
         assertThat(readGradlewInvocations())
-                .contains("tests/src/org.lz4/lz4-java/1.8.0|-Pagent test")
-                .contains("tests/src/org.lz4/lz4-java/1.8.0|metadataCopy --task test --dir " + tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0"));
+                .contains("tests/src/org.lz4/lz4-java/1.8.0|")
+                .contains("-Pagent test")
+                .contains("metadataCopy --task test --dir " + tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0"));
     }
 
     @Test
@@ -198,7 +199,8 @@ class GenerateMetadataTaskTests {
                 """
                 #!/bin/sh
                 printf '%%s|%%s\n' "$PWD" "$*" >> '%s'
-                if [ "$1" = "metadataCopy" ]; then
+                case "$*" in
+                  *"metadataCopy"*)
                   while [ "$#" -gt 0 ]; do
                     if [ "$1" = "--dir" ]; then
                       mkdir -p "$2"
@@ -207,7 +209,8 @@ class GenerateMetadataTaskTests {
                     fi
                     shift
                   done
-                fi
+                  ;;
+                esac
                 exit 0
                 """.formatted(logFile),
                 StandardCharsets.UTF_8

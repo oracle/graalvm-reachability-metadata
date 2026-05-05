@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Gradle task to fix test failures during native-image runs.
@@ -144,10 +145,12 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
             String version,
             ByteArrayOutputStream execOutput
     ) {
+        List<String> args = GeneralUtils.withNestedGradleJavaHomeArgs(List.of("test", "-Pcoordinates=" + coords));
+        Map<String, String> env = GeneralUtils.withNestedGradleJavaHomeEnv(Map.of("GVM_TCK_LV", version));
         return getExecOperations().exec(execSpec -> {
             execSpec.setExecutable(gradlewPath.toString());
-            execSpec.setArgs(List.of("test", "-Pcoordinates=" + coords));
-            execSpec.environment("GVM_TCK_LV", version);
+            execSpec.setArgs(args);
+            execSpec.environment(env);
             execSpec.setStandardOutput(execOutput);
             execSpec.setErrorOutput(execOutput);
             execSpec.setIgnoreExitValue(true);

@@ -15,7 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +96,52 @@ public final class GeneralUtils {
 
     public static void printInfo(String message) {
         ColoredOutput.println("[INFO] " + message + "...", ColoredOutput.OUTPUT_COLOR.BLUE);
+    }
+
+    /**
+     * Resolves the Java home that nested Gradle invocations should use.
+     * Prefer GraalVM when available so agent/native-image tasks do not get redirected
+     * by user-level Gradle JVM overrides.
+     */
+    public static String resolveNestedGradleJavaHome() {
+        for (String envVar : List.of("GRAALVM_HOME", "JAVA_HOME")) {
+            String javaHome = System.getenv(envVar);
+            if (javaHome != null && !javaHome.isBlank()) {
+                return javaHome;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adds an explicit Gradle JVM override for nested wrapper invocations when a Java home is available.
+     */
+    public static List<String> withNestedGradleJavaHomeArgs(List<String> args) {
+        String javaHome = resolveNestedGradleJavaHome();
+        if (javaHome == null) {
+            return args;
+        }
+        List<String> effectiveArgs = new ArrayList<>(args.size() + 1);
+        effectiveArgs.add("-Dorg.gradle.java.home=" + javaHome);
+        effectiveArgs.addAll(args);
+        return effectiveArgs;
+    }
+
+    /**
+     * Ensures nested Gradle invocations inherit the same GraalVM/JAVA_HOME selection as the outer build.
+     */
+    public static Map<String, String> withNestedGradleJavaHomeEnv(Map<String, String> env) {
+        String javaHome = resolveNestedGradleJavaHome();
+        if (javaHome == null) {
+            return env;
+        }
+        Map<String, String> effectiveEnv = new HashMap<>();
+        if (env != null && !env.isEmpty()) {
+            effectiveEnv.putAll(env);
+        }
+        effectiveEnv.put("JAVA_HOME", javaHome);
+        effectiveEnv.put("GRAALVM_HOME", javaHome);
+        return effectiveEnv;
     }
 
 }

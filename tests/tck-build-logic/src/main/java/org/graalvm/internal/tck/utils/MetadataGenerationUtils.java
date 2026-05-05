@@ -189,12 +189,15 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        List<String> generateArgs = GeneralUtils.withNestedGradleJavaHomeArgs(List.of("-Pagent", "test"));
+        List<String> metadataCopyArgs = GeneralUtils.withNestedGradleJavaHomeArgs(List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()));
+        Map<String, String> env = GeneralUtils.withNestedGradleJavaHomeEnv(null);
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), generateArgs, env, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), metadataCopyArgs, env, "Cannot perform metadata copy", testsDirectory);
     }
 
     /**
@@ -204,13 +207,15 @@ public final class MetadataGenerationUtils {
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
 
-        Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
+        Map<String, String> env = GeneralUtils.withNestedGradleJavaHomeEnv(Map.of("GVM_TCK_LV", gvmTckLv));
+        List<String> generateArgs = GeneralUtils.withNestedGradleJavaHomeArgs(List.of("-Pagent", "test"));
+        List<String> metadataCopyArgs = GeneralUtils.withNestedGradleJavaHomeArgs(List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()));
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), generateArgs, env, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), metadataCopyArgs, env, "Cannot perform metadata copy", testsDirectory);
     }
 
     /**
