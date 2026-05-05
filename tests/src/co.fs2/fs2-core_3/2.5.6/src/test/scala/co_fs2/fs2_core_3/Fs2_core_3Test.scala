@@ -16,6 +16,7 @@ import fs2.Stream
 import fs2.compression
 import fs2.concurrent.Queue
 import fs2.concurrent.Signal
+import fs2.concurrent.Topic
 import fs2.hash
 import fs2.text
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -312,6 +313,24 @@ class Fs2_core_3Test {
     assertEquals(4, queueResult._6)
     assertEquals(5, queueResult._7)
     assertEquals(Vector("alpha", "beta"), terminated)
+  }
+
+  @Test
+  @Timeout(value = 60, unit = TimeUnit.SECONDS)
+  def topicPublishesUpdatesToMultipleSubscribers(): Unit = {
+    val observed: (Vector[String], Vector[String]) = (for {
+      topic <- Topic[IO, String]("initial")
+      firstSubscriber <- topic.subscribe(8).take(3).compile.toVector.start
+      secondSubscriber <- topic.subscribe(8).take(3).compile.toVector.start
+      _ <- topic.subscribers.dropWhile(_ < 2).take(1).compile.drain
+      _ <- topic.publish1("alpha")
+      _ <- topic.publish1("beta")
+      firstValues <- firstSubscriber.join
+      secondValues <- secondSubscriber.join
+    } yield (firstValues, secondValues)).unsafeRunSync()
+
+    assertEquals(Vector("initial", "alpha", "beta"), observed._1)
+    assertEquals(Vector("initial", "alpha", "beta"), observed._2)
   }
 
   @Test
