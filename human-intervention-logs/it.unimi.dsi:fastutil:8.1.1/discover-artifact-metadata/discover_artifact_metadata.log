@@ -1,0 +1,1217 @@
+Starting a Gradle Daemon, 8 busy and 4 incompatible and 255 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df57e-796f-7413-918b-6d268e5aeecf
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: it.unimi.dsi:fastutil:8.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "8.1.1" when "$version$" is replaced with "8.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+- Set "coordinates" to "it.unimi.dsi:fastutil:8.1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "8.1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then update the JSON in place. I’ll also check whether the artifact contains JVM classes so the Native Image applicability fields are only added if there’s clear evidence.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json && sed -n '1,200p' build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+-rw-rw-r-- 1 vjovanov vjovanov 52 May  5 02:16 build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+{
+  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'it\\.unimi\\.dsi.*fastutil|fastutil' metadata tests build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:2:  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
+
+web search: 
+web search: it.unimi.dsi fastutil 8.1.1 Maven sources tests javadoc
+codex
+The existing file only has coordinates. I found Maven Central publishes the main JAR plus source and Javadoc artifacts for `8.1.1`; next I’m checking the POM and upstream tags to pin the repository and tests to the right release.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: it/unimi/dsi/fastutil/8.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>it/unimi/dsi/fastutil/8.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="fastutil-8.1.1-javadoc.jar" title="fastutil-8.1.1-javadoc.jar">fastutil-8.1.1-javadoc.jar</a>                        2017-11-21 23:45  21352792      
+<a href="fastutil-8.1.1-javadoc.jar.asc" title="fastutil-8.1.1-javadoc.jar.asc">fastutil-8.1.1-javadoc.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-javadoc.jar.asc.md5" title="fastutil-8.1.1-javadoc.jar.asc.md5">fastutil-8.1.1-javadoc.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.asc.sha1" title="fastutil-8.1.1-javadoc.jar.asc.sha1">fastutil-8.1.1-javadoc.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-javadoc.jar.md5" title="fastutil-8.1.1-javadoc.jar.md5">fastutil-8.1.1-javadoc.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.sha1" title="fastutil-8.1.1-javadoc.jar.sha1">fastutil-8.1.1-javadoc.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar" title="fastutil-8.1.1-sources.jar">fastutil-8.1.1-sources.jar</a>                        2017-11-21 23:45   8979447      
+<a href="fastutil-8.1.1-sources.jar.asc" title="fastutil-8.1.1-sources.jar.asc">fastutil-8.1.1-sources.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-sources.jar.asc.md5" title="fastutil-8.1.1-sources.jar.asc.md5">fastutil-8.1.1-sources.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.asc.sha1" title="fastutil-8.1.1-sources.jar.asc.sha1">fastutil-8.1.1-sources.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar.md5" title="fastutil-8.1.1-sources.jar.md5">fastutil-8.1.1-sources.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.sha1" title="fastutil-8.1.1-sources.jar.sha1">fastutil-8.1.1-sources.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar" title="fastutil-8.1.1.jar">fastutil-8.1.1.jar</a>                                2017-11-21 23:45  18827847      
+<a href="fastutil-8.1.1.jar.asc" title="fastutil-8.1.1.jar.asc">fastutil-8.1.1.jar.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.jar.asc.md5" title="fastutil-8.1.1.jar.asc.md5">fastutil-8.1.1.jar.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.asc.sha1" title="fastutil-8.1.1.jar.asc.sha1">fastutil-8.1.1.jar.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar.md5" title="fastutil-8.1.1.jar.md5">fastutil-8.1.1.jar.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.sha1" title="fastutil-8.1.1.jar.sha1">fastutil-8.1.1.jar.sha1</a>                           2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom" title="fastutil-8.1.1.pom">fastutil-8.1.1.pom</a>                                2017-11-21 23:45      1400      
+<a href="fastutil-8.1.1.pom.asc" title="fastutil-8.1.1.pom.asc">fastutil-8.1.1.pom.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.pom.asc.md5" title="fastutil-8.1.1.pom.asc.md5">fastutil-8.1.1.pom.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.asc.sha1" title="fastutil-8.1.1.pom.asc.sha1">fastutil-8.1.1.pom.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom.md5" title="fastutil-8.1.1.pom.md5">fastutil-8.1.1.pom.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.sha1" title="fastutil-8.1.1.pom.sha1">fastutil-8.1.1.pom.sha1</a>                           2017-11-21 23:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.unimi.dsi</groupId>
+  <artifactId>fastutil</artifactId>
+  <packaging>jar</packaging>
+  <name>fastutil</name>
+  <version>8.1.1</version>
+  <description>fastutil extends the Java Collections Framework by providing type-specific maps, sets, lists and priority queues with a small memory footprint and fast access and insertion; provides also big (64-bit) arrays, sets and lists, and fast, practical I/O classes for binary and text files.</description>
+  <url>http://fasutil.di.unimi.it/</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git://github.com/vigna/fastutil.git</connection>
+    <url>https://github.com/vigna/fastutil</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>vigna</id>
+      <name>Sebastiano Vigna</name>
+      <email>vigna@di.unimi.it</email>
+    </developer>
+  </developers>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/tags?per_page=100 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 204ms:
+[
+  {
+    "name": "8.5.16",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.16",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.16",
+    "commit": {
+      "sha": "aa30fa7d93bf06fec45c4f6f572a1f6a38047d9f",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/aa30fa7d93bf06fec45c4f6f572a1f6a38047d9f"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4xNg=="
+  },
+  {
+    "name": "8.5.15",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.15",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.15",
+    "commit": {
+      "sha": "355d8ebfaf2bcc4032cc1c25bec9f3fe827f8175",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/355d8ebfaf2bcc4032cc1c25bec9f3fe827f8175"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4xNQ=="
+  },
+  {
+    "name": "8.5.14",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.14",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.14",
+    "commit": {
+      "sha": "5eaffbbd849ec8b034046e4a8b1a0cc410457778",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/5eaffbbd849ec8b034046e4a8b1a0cc410457778"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4xNA=="
+  },
+  {
+    "name": "8.5.13",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.13",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.13",
+    "commit": {
+      "sha": "1197d8e2b5e1ae70d222f4ce7e0cefae4386278f",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/1197d8e2b5e1ae70d222f4ce7e0cefae4386278f"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4xMw=="
+  },
+  {
+    "name": "8.5.12",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.12",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.12",
+    "commit": {
+      "sha": "3edb5bcda8dad247188c11d3e6b6185848b2c2a0",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/3edb5bcda8dad247188c11d3e6b6185848b2c2a0"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4xMg=="
+  },
+  {
+    "name": "8.5.11",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.11",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.11",
+    "commit": {
+      "sha": "7944e1da4cb9d24e4d451b9b0924746271794be1",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/7944e1da4cb9d24e4d451b9b0924746271794be1"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4xMQ=="
+  },
+  {
+    "name": "8.5.9",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.9",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.9",
+    "commit": {
+      "sha": "0b8b49000fe189377d72c6549c3ce15eb8ae4ead",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/0b8b49000fe189377d72c6549c3ce15eb8ae4ead"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS45"
+  },
+  {
+    "name": "8.5.8",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.8",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.8",
+    "commit": {
+      "sha": "dc909bb15d7cb0b9d40d7382bf7bb0a5c6c517e0",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/dc909bb15d7cb0b9d40d7382bf7bb0a5c6c517e0"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS44"
+  },
+  {
+    "name": "8.5.7",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.7",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.7",
+    "commit": {
+      "sha": "df4adf6860363aaf59f297e31693ae5e6987e6ca",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/df4adf6860363aaf59f297e31693ae5e6987e6ca"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS43"
+  },
+  {
+    "name": "8.5.6",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.6",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.6",
+    "commit": {
+      "sha": "9231bf90bda53caec355f5e61196a0c036bc7c45",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/9231bf90bda53caec355f5e61196a0c036bc7c45"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS42"
+  },
+  {
+    "name": "8.5.5",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.5",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.5",
+    "commit": {
+      "sha": "79ea195f2a243843adb222ed958e97a4fcd6fa70",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/79ea195f2a243843adb222ed958e97a4fcd6fa70"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS41"
+  },
+  {
+    "name": "8.5.4",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.4",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.4",
+    "commit": {
+      "sha": "be37f85c0c4ca0f5d69500c59e972a843edd3c31",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/be37f85c0c4ca0f5d69500c59e972a843edd3c31"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS40"
+  },
+  {
+    "name": "8.5.3",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.3",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.3",
+    "commit": {
+      "sha": "fde599b835a506652694af800ead688a55d96b83",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/fde599b835a506652694af800ead688a55d96b83"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4z"
+  },
+  {
+    "name": "8.5.2",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.2",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.2",
+    "commit": {
+      "sha": "ac007b1221f8a4b8f3c093e95f34237a09623b95",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/ac007b1221f8a4b8f3c093e95f34237a09623b95"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4y"
+  },
+  {
+    "name": "8.5.1",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.1",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.1",
+    "commit": {
+      "sha": "8e4db6044cdfe47cf1b30e470fb2cfaff4523981",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/8e4db6044cdfe47cf1b30e470fb2cfaff4523981"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4x"
+  },
+  {
+    "name": "8.5.0",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.5.0",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.5.0",
+    "commit": {
+      "sha": "b53b1e479fe793f44285d182d813342296edd38e",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/b53b1e479fe793f44285d182d813342296edd38e"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNS4w"
+  },
+  {
+    "name": "8.4.4",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.4.4",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.4.4",
+    "commit": {
+      "sha": "898d1683abc3c466c438a3447ecbe713772b7c16",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/898d1683abc3c466c438a3447ecbe713772b7c16"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNC40"
+  },
+  {
+    "name": "8.4.3",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.4.3",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.4.3",
+    "commit": {
+      "sha": "1658087b09488101e0137a3168ae76306c91f2ad",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/1658087b09488101e0137a3168ae76306c91f2ad"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNC4z"
+  },
+  {
+    "name": "8.4.2",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.4.2",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.4.2",
+    "commit": {
+      "sha": "ff855d74ec7eb9bc7f13b7d2c631044de0f5e2a4",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/ff855d74ec7eb9bc7f13b7d2c631044de0f5e2a4"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNC4y"
+  },
+  {
+    "name": "8.4.1",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.4.1",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.4.1",
+    "commit": {
+      "sha": "bc7f36da93e0482016edb81a3b250e0d58959fc8",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/bc7f36da93e0482016edb81a3b250e0d58959fc8"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNC4x"
+  },
+  {
+    "name": "8.4.0",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.4.0",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.4.0",
+    "commit": {
+      "sha": "6e390a2360ae506a4fe0dadd759f6aff9f54ef71",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/6e390a2360ae506a4fe0dadd759f6aff9f54ef71"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguNC4w"
+  },
+  {
+    "name": "8.3.1",
+    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.3.1",
+    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.3.1",
+    "commit": {
+      "sha": "67d5a7b1ae847b4921cbb2d3f7a771f8d9637ec9",
+      "url": "https://api.github.com/repos/vigna/fastutil/commits/67d5a7b1ae847b4921cbb2d3f7a771f8d9637ec9"
+    },
+    "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguMy4x"
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/vigna/fastutil/git/ref/tags/8.1.1'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/contents/test?ref=8.1.1 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 184ms:
+{
+  "ref": "refs/tags/8.1.1",
+  "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguMS4x",
+  "url": "https://api.github.com/repos/vigna/fastutil/git/refs/tags/8.1.1",
+  "object": {
+    "sha": "902a91a955deabb09e8a524d49cc09a56d05852d",
+    "type": "commit",
+    "url": "https://api.github.com/repos/vigna/fastutil/git/commits/902a91a955deabb09e8a524d49cc09a56d05852d"
+  }
+}
+
+ succeeded in 148ms:
+[
+  {
+    "name": "it",
+    "path": "test/it",
+    "sha": "2f2826bfc703dad1ce1e09e69972999d12de38dd",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/test/it",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/trees/2f2826bfc703dad1ce1e09e69972999d12de38dd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/trees/2f2826bfc703dad1ce1e09e69972999d12de38dd",
+      "html": "https://github.com/vigna/fastutil/tree/8.1.1/test/it"
+    }
+  }
+]
+
+ succeeded in 231ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 00:16:58 GMT
+content-type: text/html
+cf-ray: 9f6b8f3a6cc7504e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 248ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 00:16:58 GMT
+content-type: text/html
+cf-ray: 9f6b8f3a6e13bab6-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:73:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-sources.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/$version$/jackson-core-asl-$version$-sources.jar",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:7:    "test-code-url" : "https://github.com/codehaus/jackson/tree/1.8/$version$/src/test",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-javadoc.jar",
+metadata/dom4j/dom4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dom4j/dom4j/$version$/dom4j-$version$-sources.jar",
+metadata/dom4j/dom4j/index.json:7:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/src/test",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:22:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json/classic/src/test",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-javadoc.jar",
+metadata/org.quartz-scheduler/quartz/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/$version$/quartz-$version$-sources.jar",
+metadata/org.quartz-scheduler/quartz/index.json:10:    "test-code-url": "https://github.com/quartz-scheduler/quartz/tree/v$version$/quartz/src/test",
+metadata/org.quartz-scheduler/quartz/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/$version$/quartz-$version$-javadoc.jar",
+metadata/org.apache.velocity/velocity-engine-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/$version$/velocity-engine-core-$version$-sources.jar",
+metadata/org.apache.velocity/velocity-engine-core/index.json:7:    "test-code-url" : "https://github.com/apache/velocity-engine/tree/$version$/velocity-engine-core/src/test",
+metadata/org.apache.velocity/velocity-engine-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/$version$/velocity-engine-core-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/$version$/jboss-interceptors-api_1.2_spec-$version$-source-release.zip",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/$version$/jboss-interceptors-api_1.2_spec-$version$-javadoc.jar",
+metadata/org.json4s/json4s-native-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-native-core_3/$version$/json4s-native-core_3-$version$-sources.jar",
+metadata/org.json4s/json4s-native-core_3/index.json:7:    "test-code-url" : "https://github.com/json4s/json4s/tree/v$version$/native-core/shared/src/test",
+metadata/org.json4s/json4s-native-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-native-core_3/$version$/json4s-native-core_3-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/$version$/logback-json-core-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:8:    "test-code-url": "N/A",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/$version$/logback-json-core-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.1_spec/$version$/jboss-interceptors-api_1.1_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/$version$/index.html",
+metadata/com.intellij/annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/intellij/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.intellij/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.intellij/annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/intellij/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/org.json4s/json4s-ast_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-ast_3/$version$/json4s-ast_3-$version$-sources.jar",
+metadata/org.json4s/json4s-ast_3/index.json:7:    "test-code-url" : "https://github.com/json4s/json4s/tree/v$version$/ast/shared/src/test",
+metadata/org.json4s/json4s-ast_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-ast_3/$version$/json4s-ast_3-$version$-javadoc.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag-sisu/$version$/smallrye-beanbag-sisu-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag-sisu/$version$/smallrye-beanbag-sisu-$version$-javadoc.jar",
+metadata/org.json4s/json4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-core_3/$version$/json4s-core_3-$version$-sources.jar",
+metadata/org.json4s/json4s-core_3/index.json:7:    "test-code-url" : "https://github.com/json4s/json4s/tree/v$version$/core/src/test",
+metadata/org.json4s/json4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-core_3/$version$/json4s-core_3-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/contents?ref=8.1.1 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/fastutil-8.1.1.jar" https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1.jar; jar tf "$tmp/fastutil-8.1.1.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 194ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "4046a704e885a68ccc7c6763903d56c777167a47",
+    "size": 131,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/.gitignore?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/.gitignore",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/4046a704e885a68ccc7c6763903d56c777167a47",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/.gitignore?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/4046a704e885a68ccc7c6763903d56c777167a47",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/.gitignore"
+    }
+  },
+  {
+    "name": ".svnignore",
+    "path": ".svnignore",
+    "sha": "130d65cb3290748119d3ac71db8ebdd965e320d6",
+    "size": 200,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/.svnignore?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/.svnignore",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/130d65cb3290748119d3ac71db8ebdd965e320d6",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/.svnignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/.svnignore?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/130d65cb3290748119d3ac71db8ebdd965e320d6",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/.svnignore"
+    }
+  },
+  {
+    "name": "CHANGES",
+    "path": "CHANGES",
+    "sha": "d345a0d31b88ab4d3857e0fdfcdb2213ed2d7cc3",
+    "size": 43176,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/CHANGES?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/CHANGES",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/d345a0d31b88ab4d3857e0fdfcdb2213ed2d7cc3",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/CHANGES",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/CHANGES?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/d345a0d31b88ab4d3857e0fdfcdb2213ed2d7cc3",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/CHANGES"
+    }
+  },
+  {
+    "name": "LICENSE-2.0",
+    "path": "LICENSE-2.0",
+    "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "size": 11358,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/LICENSE-2.0?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/LICENSE-2.0",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/LICENSE-2.0",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/LICENSE-2.0?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/LICENSE-2.0"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "df335de8f6738dbe1103aac2faaa906157bbdb46",
+    "size": 1448,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/README.md?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/README.md",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/df335de8f6738dbe1103aac2faaa906157bbdb46",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/README.md?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/df335de8f6738dbe1103aac2faaa906157bbdb46",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/README.md"
+    }
+  },
+  {
+    "name": "REVISION.md",
+    "path": "REVISION.md",
+    "sha": "81ca88184a32b22d56052cbd15d7d7955ea6d18f",
+    "size": 2598,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/REVISION.md?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/REVISION.md",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/81ca88184a32b22d56052cbd15d7d7955ea6d18f",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/REVISION.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/REVISION.md?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/81ca88184a32b22d56052cbd15d7d7955ea6d18f",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/REVISION.md"
+    }
+  },
+  {
+    "name": "TODO",
+    "path": "TODO",
+    "sha": "e4e37196ca507904eab2879166adbff115eaaef7",
+    "size": 1025,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/TODO?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/TODO",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/e4e37196ca507904eab2879166adbff115eaaef7",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/TODO",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/TODO?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/e4e37196ca507904eab2879166adbff115eaaef7",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/TODO"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "build.properties",
+    "sha": "8e0b188557a384dd92f61f7857f42ba6e14f18d2",
+    "size": 348,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/build.properties?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/build.properties",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/8e0b188557a384dd92f61f7857f42ba6e14f18d2",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/build.properties?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/8e0b188557a384dd92f61f7857f42ba6e14f18d2",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/build.properties"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "12fafa755bbc6a2e475e7e4095ea09858b84b93a",
+    "size": 7517,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/build.xml?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/build.xml",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/12fafa755bbc6a2e475e7e4095ea09858b84b93a",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/build.xml?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/12fafa755bbc6a2e475e7e4095ea09858b84b93a",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/build.xml"
+    }
+  },
+  {
+    "name": "drv",
+    "path": "drv",
+    "sha": "60114d28bc6f17aab85e230f6ced2a2394438655",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/drv?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/drv",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/trees/60114d28bc6f17aab85e230f6ced2a2394438655",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/drv?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/trees/60114d28bc6f17aab85e230f6ced2a2394438655",
+      "html": "https://github.com/vigna/fastutil/tree/8.1.1/drv"
+    }
+  },
+  {
+    "name": "fastutil.bnd",
+    "path": "fastutil.bnd",
+    "sha": "e75c366098a9fad8933595958ee7fe4c5f87dc8e",
+    "size": 145,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/fastutil.bnd?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/fastutil.bnd",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/e75c366098a9fad8933595958ee7fe4c5f87dc8e",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/fastutil.bnd",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/fastutil.bnd?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/e75c366098a9fad8933595958ee7fe4c5f87dc8e",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/fastutil.bnd"
+    }
+  },
+  {
+    "name": "gencsource.sh",
+    "path": "gencsource.sh",
+    "sha": "bf5d156fd51aa8426060b24bfac066a72127c62a",
+    "size": 32078,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/gencsource.sh?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/gencsource.sh",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/bf5d156fd51aa8426060b24bfac066a72127c62a",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/gencsource.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/gencsource.sh?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/bf5d156fd51aa8426060b24bfac066a72127c62a",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/gencsource.sh"
+    }
+  },
+  {
+    "name": "ivy.xml",
+    "path": "ivy.xml",
+    "sha": "b9d9ebaae259bea3b9c430052c94129885fda91b",
+    "size": 267,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/ivy.xml?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/ivy.xml",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/b9d9ebaae259bea3b9c430052c94129885fda91b",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/ivy.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/ivy.xml?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/b9d9ebaae259bea3b9c430052c94129885fda91b",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/ivy.xml"
+    }
+  },
+  {
+    "name": "makefile",
+    "path": "makefile",
+    "sha": "7cd3f44eed740018a4444545d63f9813940de9d1",
+    "size": 24878,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/makefile?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/makefile",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/7cd3f44eed740018a4444545d63f9813940de9d1",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/makefile",
+    "type": "file",
+    "_links": {
+
+ succeeded in 1193ms:
+META-INF/MANIFEST.MF
+it/
+it/unimi/
+it/unimi/dsi/
+it/unimi/dsi/fastutil/
+it/unimi/dsi/fastutil/AbstractIndirectPriorityQueue.class
+it/unimi/dsi/fastutil/AbstractPriorityQueue.class
+it/unimi/dsi/fastutil/AbstractStack.class
+it/unimi/dsi/fastutil/Arrays$ForkJoinGenericQuickSort.class
+it/unimi/dsi/fastutil/Arrays.class
+it/unimi/dsi/fastutil/BidirectionalIterator.class
+it/unimi/dsi/fastutil/BigArrays.class
+it/unimi/dsi/fastutil/BigList.class
+it/unimi/dsi/fastutil/BigListIterator.class
+it/unimi/dsi/fastutil/BigSwapper.class
+it/unimi/dsi/fastutil/Function.class
+it/unimi/dsi/fastutil/Hash$Strategy.class
+it/unimi/dsi/fastutil/Hash.class
+it/unimi/dsi/fastutil/HashCommon.class
+it/unimi/dsi/fastutil/IndirectPriorityQueue.class
+it/unimi/dsi/fastutil/IndirectPriorityQueues$EmptyIndirectPriorityQueue.class
+it/unimi/dsi/fastutil/IndirectPriorityQueues$SynchronizedIndirectPriorityQueue.class
+it/unimi/dsi/fastutil/IndirectPriorityQueues.class
+it/unimi/dsi/fastutil/PriorityQueue.class
+it/unimi/dsi/fastutil/PriorityQueues$EmptyPriorityQueue.class
+it/unimi/dsi/fastutil/PriorityQueues$SynchronizedPriorityQueue.class
+it/unimi/dsi/fastutil/PriorityQueues.class
+it/unimi/dsi/fastutil/SafeMath.class
+it/unimi/dsi/fastutil/Size64.class
+it/unimi/dsi/fastutil/Stack.class
+it/unimi/dsi/fastutil/Swapper.class
+it/unimi/dsi/fastutil/booleans/
+it/unimi/dsi/fastutil/booleans/AbstractBooleanBidirectionalIterator.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanBigList$1.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanBigList$BooleanSubList$1.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanBigList$BooleanSubList.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanBigList.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanBigListIterator.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanCollection.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanIterator.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanList$1.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanList$BooleanSubList$1.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanList$BooleanSubList.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanList.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanListIterator.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanSet.class
+it/unimi/dsi/fastutil/booleans/AbstractBooleanStack.class
+it/unimi/dsi/fastutil/booleans/BooleanArrayList$1.class
+it/unimi/dsi/fastutil/booleans/BooleanArrayList.class
+it/unimi/dsi/fastutil/booleans/BooleanArraySet$1.class
+it/unimi/dsi/fastutil/booleans/BooleanArraySet.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays$1.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays$ArrayHashStrategy.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays$ForkJoinQuickSort.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays$ForkJoinQuickSort2.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays$ForkJoinQuickSortComp.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays$ForkJoinQuickSortIndirect.class
+it/unimi/dsi/fastutil/booleans/BooleanArrays.class
+it/unimi/dsi/fastutil/booleans/BooleanBidirectionalIterable.class
+it/unimi/dsi/fastutil/booleans/BooleanBidirectionalIterator.class
+it/unimi/dsi/fastutil/booleans/BooleanBigArrayBigList$1.class
+it/unimi/dsi/fastutil/booleans/BooleanBigArrayBigList.class
+it/unimi/dsi/fastutil/booleans/BooleanBigArrays$1.class
+it/unimi/dsi/fastutil/booleans/BooleanBigArrays$BigArrayHashStrategy.class
+it/unimi/dsi/fastutil/booleans/BooleanBigArrays.class
+it/unimi/dsi/fastutil/booleans/BooleanBigList.class
+it/unimi/dsi/fastutil/booleans/BooleanBigListIterator.class
+it/unimi/dsi/fastutil/booleans/BooleanBigListIterators$BigListIteratorListIterator.class
+it/unimi/dsi/fastutil/booleans/BooleanBigListIterators$EmptyBigListIterator.class
+it/unimi/dsi/fastutil/booleans/BooleanBigListIterators$SingletonBigListIterator.class
+it/unimi/dsi/fastutil/booleans/BooleanBigListIterators$UnmodifiableBigListIterator.class
+it/unimi/dsi/fastutil/booleans/BooleanBigListIterators.class
+it/unimi/dsi/fastutil/booleans/BooleanBigLists$EmptyBigList.class
+it/unimi/dsi/fastutil/booleans/BooleanBigLists$ListBigList.class
+it/unimi/dsi/fastutil/booleans/BooleanBigLists$Singleton.class
+it/unimi/dsi/fastutil/booleans/BooleanBigLists$SynchronizedBigList.class
+it/unimi/dsi/fastutil/booleans/BooleanBigLists$UnmodifiableBigList.class
+it/unimi/dsi/fastutil/booleans/BooleanBigLists.class
+it/unimi/dsi/fastutil/booleans/BooleanCollection.class
+it/unimi/dsi/fastutil/booleans/BooleanCollections$EmptyCollection.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/vigna/fastutil/8.1.1/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil?ref=8.1.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar | sed -n '1,16p'; curl -fsSI https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar | sed -n '1,16p'; curl -fsSI https://github.com/vigna/fastutil/tree/8.1.1/test | sed -n '1,16p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 178ms:
+Welcome to fastutil.
+--------------------
+
+[fastutil](http://fastutil.di.unimi.it/) is a collection of type-specific
+Java classes that extend the Java Collections Framework by providing
+several containers, such as maps, sets, lists and prority queues,
+implementing the interfaces of the java.util package; it provides also big
+(64-bit) arrays, sets and lists, and fast, practical I/O classes for
+binary and text files.
+
+fastutil provides a huge collection of specialized classes generated
+starting from a parameterized version; the classes are much more compact
+and much faster than the general ones. Please read the package
+documentation for more information.
+
+Note that the jar file is huge, due to the large number of classes: if you
+plan to ship your own jar with some fastutil classes included, you should
+look at AutoJar or similar tools to extract automatically the necessary
+classes.
+
+You have to "make sources" to get the actual Java sources; finally, "ant
+jar" and "ant javadoc" will generate the jar file and the API
+documentation.
+
+The Java sources are generated using a C preprocessor. The gencsource.sh
+script reads in a driver file, that is, a Java source that uses some
+preprocessor-defined symbols and some conditional compilation, and
+produces a (fake) C source, which includes the driver code and some
+definitions that customize the environment.
+
+
+* seba (<mailto:sebastiano.vigna@unimi.it>)
+* <mailto:fastutil@googlegroups.com>
+
+ succeeded in 214ms:
+[
+  {
+    "name": "ArraysTest.java",
+    "path": "test/it/unimi/dsi/fastutil/ArraysTest.java",
+    "sha": "a17c5bc94173adf280b8d3a89a4bb6c61529ec18",
+    "size": 4437,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/ArraysTest.java?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/test/it/unimi/dsi/fastutil/ArraysTest.java",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/a17c5bc94173adf280b8d3a89a4bb6c61529ec18",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/test/it/unimi/dsi/fastutil/ArraysTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/ArraysTest.java?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/a17c5bc94173adf280b8d3a89a4bb6c61529ec18",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/test/it/unimi/dsi/fastutil/ArraysTest.java"
+    }
+  },
+  {
+    "name": "BigArraysTest.java",
+    "path": "test/it/unimi/dsi/fastutil/BigArraysTest.java",
+    "sha": "8f96b0aa9ffa232ffbc7d0f31331ac5374adc4c1",
+    "size": 2054,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/BigArraysTest.java?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/test/it/unimi/dsi/fastutil/BigArraysTest.java",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/8f96b0aa9ffa232ffbc7d0f31331ac5374adc4c1",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/test/it/unimi/dsi/fastutil/BigArraysTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/BigArraysTest.java?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/8f96b0aa9ffa232ffbc7d0f31331ac5374adc4c1",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/test/it/unimi/dsi/fastutil/BigArraysTest.java"
+    }
+  },
+  {
+    "name": "HashCommonTest.java",
+    "path": "test/it/unimi/dsi/fastutil/HashCommonTest.java",
+    "sha": "69dd9956933fdfbe520b7838024dad5fd485fe46",
+    "size": 1650,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/HashCommonTest.java?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/blob/8.1.1/test/it/unimi/dsi/fastutil/HashCommonTest.java",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/blobs/69dd9956933fdfbe520b7838024dad5fd485fe46",
+    "download_url": "https://raw.githubusercontent.com/vigna/fastutil/8.1.1/test/it/unimi/dsi/fastutil/HashCommonTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/HashCommonTest.java?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/blobs/69dd9956933fdfbe520b7838024dad5fd485fe46",
+      "html": "https://github.com/vigna/fastutil/blob/8.1.1/test/it/unimi/dsi/fastutil/HashCommonTest.java"
+    }
+  },
+  {
+    "name": "bytes",
+    "path": "test/it/unimi/dsi/fastutil/bytes",
+    "sha": "1d639e14b199886f0d0b26d143978a3437ce03ef",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/bytes?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/bytes",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/trees/1d639e14b199886f0d0b26d143978a3437ce03ef",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/bytes?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/trees/1d639e14b199886f0d0b26d143978a3437ce03ef",
+      "html": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/bytes"
+    }
+  },
+  {
+    "name": "chars",
+    "path": "test/it/unimi/dsi/fastutil/chars",
+    "sha": "7d71161187c999026a83f73a158ca9aec84d3d28",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/chars?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/chars",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/trees/7d71161187c999026a83f73a158ca9aec84d3d28",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/chars?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/trees/7d71161187c999026a83f73a158ca9aec84d3d28",
+      "html": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/chars"
+    }
+  },
+  {
+    "name": "doubles",
+    "path": "test/it/unimi/dsi/fastutil/doubles",
+    "sha": "9d768be39381e08cc0b4fc1b390f8f414506489c",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/doubles?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/doubles",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/trees/9d768be39381e08cc0b4fc1b390f8f414506489c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/doubles?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/trees/9d768be39381e08cc0b4fc1b390f8f414506489c",
+      "html": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/doubles"
+    }
+  },
+  {
+    "name": "floats",
+    "path": "test/it/unimi/dsi/fastutil/floats",
+    "sha": "dafdd049ab7f7b3c5bdd044a68d741d3151c2e02",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/floats?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/floats",
+    "git_url": "https://api.github.com/repos/vigna/fastutil/git/trees/dafdd049ab7f7b3c5bdd044a68d741d3151c2e02",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/floats?ref=8.1.1",
+      "git": "https://api.github.com/repos/vigna/fastutil/git/trees/dafdd049ab7f7b3c5bdd044a68d741d3151c2e02",
+      "html": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/floats"
+    }
+  },
+  {
+    "name": "ints",
+    "path": "test/it/unimi/dsi/fastutil/ints",
+    "sha": "a35a9f0dd87567fb431b488f49c5313e4f5aa483",
+    "size": 0,
+    "url": "https://api.github.com/repos/vigna/fastutil/contents/test/it/unimi/dsi/fastutil/ints?ref=8.1.1",
+    "html_url": "https://github.com/vigna/fastutil/tree/8.1.1/test/it/unimi/dsi/fastutil/ints",
+
+ succeeded in 635ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:17:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b53664c24e6f06da61efcf78dd6c855c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=dQJHwRtaGcNUsCzsW0uaGHjVRERLnvwXou%2F%2F65YO4PG0xZD3CfqWMrwWXwm8iiGuvwoFfyW7JFdG84htPiUl0Sv62criEpodMrW4ln8ynU0GwFbTvqXiniqIG%2FLE9qDtzd3sXxGP282vQI7oYihoxQD45y86%2BzgQX%2BARcdvNpMVqSBMVxxQuvCyDHtk23QO6NIkctjcM9Hd8h2Tjg2tu%2F2X0hBu49SiivL%2BHRzh0AwhuUaVG4RLaJssGK%2BWVtZ%2FpBsx1oKZgmsdf5X%2FX9GAKPw%3D%3D--XOidta%2BVcF3Y979i--9LsynT4%2Fg9R5AxMPu7aqHA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1280846584.1777940236; expires=Wed, 05 May 2027 00:17:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+codex
+The artifact is a normal JVM JAR with `.class` files, so I’m leaving the Native Image exclusion fields absent. I’m using Maven Central for sources and Javadoc because those artifacts are published, and GitHub’s `8.1.1` tag for the test suite because Maven has no tests or test-sources artifact for this version.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a0f39d5e65098ad4e5b6c35e0da62cc0d49372c5
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil is a Java collections library that extends the Java Collections Framework with type-specific maps, sets, lists, stacks, and priority queues. It also provides memory-efficient big collections for 64-bit indexes and practical I/O utilities for binary and text files."
+ }
+
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a0f39d5e65098ad4e5b6c35e0da62cc0d49372c5
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil is a Java collections library that extends the Java Collections Framework with type-specific maps, sets, lists, stacks, and priority queues. It also provides memory-efficient big collections for 64-bit indexes and practical I/O utilities for binary and text files."
+ }
+
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1/test
+web search: 
+web search: repo1.maven.org fastutil 8.1.1 sources javadoc jar
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+{
+  "coordinates": "it.unimi.dsi:fastutil:8.1.1",
+  "repository-url": "https://github.com/vigna/fastutil",
+  "source-code-url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
+  "test-code-url": "https://github.com/vigna/fastutil/tree/$version$/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
+  "description": "fastutil is a Java collections library that extends the Java Collections Framework with type-specific maps, sets, lists, stacks, and priority queues. It also provides memory-efficient big collections for 64-bit indexes and practical I/O utilities for binary and text files."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a0f39d5e65098ad4e5b6c35e0da62cc0d49372c5
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil is a Java collections library that extends the Java Collections Framework with type-specific maps, sets, lists, stacks, and priority queues. It also provides memory-efficient big collections for 64-bit indexes and practical I/O utilities for binary and text files."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a0f39d5e65098ad4e5b6c35e0da62cc0d49372c5
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil is a Java collections library that extends the Java Collections Framework with type-specific maps, sets, lists, stacks, and priority queues. It also provides memory-efficient big collections for 64-bit indexes and practical I/O utilities for binary and text files."
+ }
+
+ succeeded in 170ms:
+web search: 
+web search: fastutil 8.1.1 Maven Central sources javadoc POM SCM GitHub
+web search: 
+web search: https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1/test
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar
+codex
+Updated [it.unimi.dsi-fastutil-8.1.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json).
+
+I set the repository root from the Maven POM SCM entry, used Maven Central source/Javadoc URL templates, and used the upstream `8.1.1` test tree because no Maven test artifact exists for this version. Maven Central identifies this as a Java JAR artifact and lists the upstream SCM URL; GitHub’s `8.1.1` tree contains the test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Validation: `jq` parsed the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a0f39d5e65098ad4e5b6c35e0da62cc0d49372c5
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil is a Java collections library that extends the Java Collections Framework with type-specific maps, sets, lists, stacks, and priority queues. It also provides memory-efficient big collections for 64-bit indexes and practical I/O utilities for binary and text files."
+ }
+
+tokens used
+71,240
+Updated [it.unimi.dsi-fastutil-8.1.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json).
+
+I set the repository root from the Maven POM SCM entry, used Maven Central source/Javadoc URL templates, and used the upstream `8.1.1` test tree because no Maven test artifact exists for this version. Maven Central identifies this as a Java JAR artifact and lists the upstream SCM URL; GitHub’s `8.1.1` tree contains the test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Validation: `jq` parsed the JSON successfully.
+Ran agent for it.unimi.dsi:fastutil:8.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4/build/agent-artifact-discovery-logs/it.unimi.dsi-fastutil-8.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-742073e4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 29s
+9 actionable tasks: 4 executed, 5 from cache
