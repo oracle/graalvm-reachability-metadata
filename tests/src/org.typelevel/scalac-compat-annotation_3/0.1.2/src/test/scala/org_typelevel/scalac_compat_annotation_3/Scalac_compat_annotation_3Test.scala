@@ -88,6 +88,14 @@ final class Scalac_compat_annotation_3Test {
     assertThat(widened.current).isEqualTo("stored")
   }
 
+  @Test
+  def targetNameAliasAllowsOverloadsThatWouldOtherwiseEraseToTheSameSignature(): Unit = {
+    val formatter = ErasureSafeFormatter()
+
+    assertThat(formatter.format(List(1, 2, 3))).isEqualTo("6")
+    assertThat(formatter.format(List("one", "two"))).isEqualTo("one,two")
+  }
+
   private def assertSameType[A, B]()(using evidence: A =:= B): Unit = {
     assertThat(evidence).isNotNull()
   }
@@ -98,6 +106,13 @@ final class Scalac_compat_annotation_3Test {
 
     @targetName3("unaryMinusCompat")
     def unary_- : TargetNamedNumber = TargetNamedNumber(-value)
+  }
+
+  private final class ErasureSafeFormatter {
+    @targetName3("formatStrings")
+    def format(values: List[String]): String = values.mkString(",")
+
+    def format(values: List[Int]): String = values.sum.toString
   }
 
   private trait CovariantReader[+A] {
