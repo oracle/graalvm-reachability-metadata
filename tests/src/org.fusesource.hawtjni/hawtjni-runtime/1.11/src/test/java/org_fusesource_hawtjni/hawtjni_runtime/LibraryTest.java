@@ -28,6 +28,7 @@ public class LibraryTest {
 
         assertThat(error).hasMessageContaining("Could not load library");
         assertThat(classLoader.resourceNames()).containsExactly(
+                library.getArchSpecifcResourcePath(),
                 library.getPlatformSpecifcResourcePath(),
                 library.getOperatingSystemSpecifcResourcePath(),
                 library.getResorucePath());
