@@ -16,6 +16,14 @@ dependencies {
 	testImplementation("org.assertj:assertj-core:3.22.0")
 }
 
+tasks.named("test") {
+    systemProperty "h2.nioCleanerHack", "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dh2.nioCleanerHack=true")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
