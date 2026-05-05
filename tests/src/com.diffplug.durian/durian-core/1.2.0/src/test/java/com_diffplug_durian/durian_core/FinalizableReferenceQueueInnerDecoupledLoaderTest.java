@@ -31,9 +31,7 @@ public class FinalizableReferenceQueueInnerDecoupledLoaderTest {
             ClassLoader finalizerLoader = finalizerClass.getClassLoader();
             try {
                 assertThat(finalizerClass.getName()).isEqualTo(FINALIZER_CLASS_NAME);
-                assertThat(finalizerLoader)
-                        .isInstanceOf(URLClassLoader.class)
-                        .isNotSameAs(ClassLoader.getSystemClassLoader());
+                assertExpectedFinalizerLoader(finalizerLoader);
             } finally {
                 if (finalizerLoader instanceof URLClassLoader urlClassLoader) {
                     urlClassLoader.close();
@@ -61,5 +59,24 @@ public class FinalizableReferenceQueueInnerDecoupledLoaderTest {
         Method loadFinalizer = decoupledLoaderClass.getMethod("loadFinalizer");
         loadFinalizer.setAccessible(true);
         return (Class<?>) loadFinalizer.invoke(decoupledLoader);
+    }
+
+    private static void assertExpectedFinalizerLoader(final ClassLoader finalizerLoader) {
+        if (isNativeImageRuntime()) {
+            assertThat(finalizerLoader)
+                    .matches(
+                            loader -> loader instanceof URLClassLoader || loader == ClassLoader.getSystemClassLoader(),
+                            "be an isolated URLClassLoader or the system loader in native image"
+                    );
+            return;
+        }
+
+        assertThat(finalizerLoader)
+                .isInstanceOf(URLClassLoader.class)
+                .isNotSameAs(ClassLoader.getSystemClassLoader());
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }

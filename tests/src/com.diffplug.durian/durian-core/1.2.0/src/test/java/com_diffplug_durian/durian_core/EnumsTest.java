@@ -22,7 +22,8 @@ public class EnumsTest {
 
         assertThat(field.getDeclaringClass()).isEqualTo(FeatureFlag.class);
         assertThat(field.getName()).isEqualTo("ENABLED");
-        assertThat(field.getAnnotation(Label.class).value()).isEqualTo("enabled flag");
+        Field fieldAnnotationAccess = field;
+        assertThat(fieldAnnotationAccess.getAnnotation(Label.class).value()).isEqualTo("enabled flag");
     }
 
     private enum FeatureFlag {
