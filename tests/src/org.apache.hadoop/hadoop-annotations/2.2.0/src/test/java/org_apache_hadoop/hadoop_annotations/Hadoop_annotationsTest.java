@@ -84,6 +84,14 @@ public class Hadoop_annotationsTest {
     }
 
     @Test
+    void recordComponentAnnotationsCanClassifyStructuredApiFields() {
+        ComponentAnnotatedEndpoint endpoint = new ComponentAnnotatedEndpoint("nn", 8020);
+
+        assertThat(endpoint.endpoint()).isEqualTo("nn:8020");
+        assertThat(endpoint.withPort(9870).endpoint()).isEqualTo("nn:9870");
+    }
+
+    @Test
     void limitedPrivateLiteralFollowsAnnotationValueEqualityRules() {
         InterfaceAudience.LimitedPrivate hdfsAndYarn = new LimitedPrivateAudienceLiteral("HDFS", "YARN");
         InterfaceAudience.LimitedPrivate sameAudience = new LimitedPrivateAudienceLiteral("HDFS", "YARN");
@@ -224,6 +232,18 @@ public class Hadoop_annotationsTest {
     private record PublicRecord(String host, int port) {
         private String endpoint() {
             return host + ":" + port;
+        }
+    }
+
+    private record ComponentAnnotatedEndpoint(
+            @InterfaceAudience.Public @InterfaceStability.Stable String host,
+            @InterfaceAudience.LimitedPrivate("Tests") @InterfaceStability.Evolving int port) {
+        private String endpoint() {
+            return host + ":" + port;
+        }
+
+        private ComponentAnnotatedEndpoint withPort(int newPort) {
+            return new ComponentAnnotatedEndpoint(host, newPort);
         }
     }
 
