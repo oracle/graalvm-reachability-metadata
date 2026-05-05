@@ -1,0 +1,435 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df7cb-2211-7452-961b-afd81a296202
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.parquet:parquet-common:1.12.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.12.2" when "$version$" is replaced with "1.12.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+- Set "coordinates" to "org.apache.parquet:parquet-common:1.12.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.12.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this from Maven Central and the upstream project metadata, then update the JSON in place. The key details to pin down are whether Maven publishes sources/tests/docs for this exact artifact version and what tag naming Apache used for `1.12.2`.
+web search: 
+web search: Maven Central org.apache.parquet parquet-common 1.12.2 sources javadoc test-sources
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/
+codex
+Maven Central publishes `sources`, `tests`, and `javadoc` artifacts for `parquet-common:1.12.2`, so I’m going to use those versioned Maven URLs for the three artifact-level fields. The upstream GitHub tag also resolves under Apache’s current `parquet-java` repository, which gives the repository root.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
+}
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+ succeeded in 0ms:
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.apache.parquet</groupId>
+    <artifactId>parquet</artifactId>
+    <relativePath>../pom.xml</relativePath>
+    <version>1.12.2</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>parquet-common</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Apache Parquet Common</name>
+  <url>https://parquet.apache.org</url>
+
+  <properties>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-format-structures</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.semver</groupId>
+      <artifactId>api</artifactId>
+      <version>${semver.api.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.yetus</groupId>
+      <artifactId>audience-annotations</artifactId>
+      <version>0.12.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-generator</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.apache.parquet.version.Generator</mainClass>
+          <includePluginDependencies>true</includePluginDependencies>
+          <arguments>
+            <argument>${basedir}/target/generated-src</argument>
+          </arguments>
+          <sourceRoot>${basedir}/target/generated-src</sourceRoot>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/bin/bash -lc 'curl -I -L -s https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-common && curl -I -s https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+ succeeded in 753ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 10:59:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"72aaadd45d7e17fd8ca226d90e2bc681"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=pRKKumtU1%2Br6Yxchqi3EWxKtX%2FRzm9HQrlmtst3T47aABedh5fr44NnTfIan0ieXOVHLLwO3j2FATch%2FfKQy5FLOgrtR0IzzlPdXfo%2Fz0Ax0MxO%2FYe%2F%2Fx%2FtWjh5qsT2nYKTUzSErYeGDMZ5pERmg%2Fqm0m82QkjQhb1rNkHmBj4%2FX%2BFXJjKVgBDSZAgO8bWKtpfhHaTEowW7XbmuVrN2R%2FOfuLP7zi7Ajq57%2FbjLFWRWNDGqn%2F4wpyHbV0VLgfd8CJ5vpD4U7MgxzYBFp5AlAtA%3D%3D--gnzEORteroE12Itl--G%2FcELHTJsYybinVuySVOKA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1810554923.1777978797; expires=Wed, 05 May 2027 10:59:57 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 10:59:57 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: DD9E:21EF98:5E9C8E:4AF84C:69F9CDAD
+
+HTTP/2 200 
+date: Tue, 05 May 2026 10:59:57 GMT
+content-type: application/java-archive
+content-length: 96569
+cf-ray: 9f6f3d1e6c8cc687-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1183536
+etag: "8d660f18769f2774e1f5778a4671b839"
+last-modified: Thu, 30 Sep 2021 12:13:42 GMT
+x-checksum-md5: 8d660f18769f2774e1f5778a4671b839
+x-checksum-sha1: 368e65719c3a73139020d21655c418ec33c7dcb7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com org.apache.parquet parquet-common 1.12.2
+web search: 
+web search: https://github.com/apache/parquet-java
+codex
+I’m editing the metadata with Maven Central URLs for the published source, tests, and Javadoc jars. I’m leaving `language` and `not-for-native-image` out because this is a JVM jar with class files and it is not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..59e7096800d5d919b883506274cdcd06207eee1c
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..59e7096800d5d919b883506274cdcd06207eee1c
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.parquet:parquet-common:1.12.2",
+  "repository-url": "https://github.com/apache/parquet-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
+  "description": "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+}
+
+exec
+/bin/bash -lc 'curl -I -s https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-sources.jar && curl -I -s https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-tests.jar && curl -I -s https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+exec
+/bin/bash -lc "jar tf ~/.m2/repository/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2.jar 2>/dev/null | rg '\\.class"'$'"' | head || true" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..59e7096800d5d919b883506274cdcd06207eee1c
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+ }
+
+ succeeded in 273ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 11:00:16 GMT
+content-type: application/java-archive
+content-length: 44582
+cf-ray: 9f6f3d918801c687-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 290240
+etag: "24786e3960a3f27be7817af8d432d8e3"
+last-modified: Thu, 30 Sep 2021 12:13:43 GMT
+x-checksum-md5: 24786e3960a3f27be7817af8d432d8e3
+x-checksum-sha1: 83d04c0c127957827250291cabfa8cd5a4e67fb5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 05 May 2026 11:00:16 GMT
+content-type: application/java-archive
+content-length: 735629
+cf-ray: 9f6f3d924e213267-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 98661
+etag: "a7cbadcbeda35dff4307cd19f93a2db9"
+last-modified: Thu, 30 Sep 2021 12:13:43 GMT
+x-checksum-md5: a7cbadcbeda35dff4307cd19f93a2db9
+x-checksum-sha1: cbdfe8b535f64b000bf1e9ea43652cbaa5fa9b45
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The metadata file is valid JSON, and Maven returned `200` for the three substituted `1.12.2` URLs. I’m doing one last local check against the jar contents so the Native Image applicability decision is backed by the artifact itself.
+exec
+/bin/bash -lc 'tmp_jar=$(mktemp /tmp/parquet-common-1.12.2.XXXXXX.jar); curl -fsSL -o "$tmp_jar" https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/parquet-common-1.12.2.jar; jar tf "$tmp_jar" | rg '"'\\.class"'$'"' | head; rm -f \""'$tmp_jar"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..59e7096800d5d919b883506274cdcd06207eee1c
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+ }
+
+ succeeded in 196ms:
+org/apache/parquet/bytes/BytesInput$BAOS.class
+org/apache/parquet/bytes/BytesInput$StreamBytesInput.class
+org/apache/parquet/bytes/BytesInput$SequenceBytesIn.class
+org/apache/parquet/bytes/BytesInput$IntBytesInput.class
+org/apache/parquet/bytes/BytesInput$UnsignedVarIntBytesInput.class
+org/apache/parquet/bytes/BytesInput$UnsignedVarLongBytesInput.class
+org/apache/parquet/bytes/BytesInput$EmptyBytesInput.class
+org/apache/parquet/bytes/BytesInput$CapacityBAOSBytesInput.class
+org/apache/parquet/bytes/BytesInput$BAOSBytesInput.class
+org/apache/parquet/bytes/BytesInput$ByteArrayBytesInput.class
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..59e7096800d5d919b883506274cdcd06207eee1c
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+ }
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/
+codex
+Updated [org.apache.parquet-parquet-common-1.12.2.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json) with repository, source, tests, Javadoc, and a two-sentence description.
+
+Maven Central lists the `sources`, `tests`, `javadoc`, and main jar artifacts for `1.12.2`, and the matching upstream tag resolves under `apache/parquet-java`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/)) I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM jar with `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+index 525fdae6e7985318d947dee0fd267bfd2d5a4921..59e7096800d5d919b883506274cdcd06207eee1c
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-common:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-common:1.12.2",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/$version$/parquet-common-$version$-javadoc.jar",
++  "description" : "Apache Parquet Common provides shared Java utilities, data structures, and support code used across the Apache Parquet Java modules. It includes common abstractions for schema and path handling, error reporting, versioning, and I/O helpers that support reading and writing Parquet data."
+ }
+
+tokens used
+43,936
+Updated [org.apache.parquet-parquet-common-1.12.2.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/build/discovered-artifact-metadata/org.apache.parquet-parquet-common-1.12.2.json) with repository, source, tests, Javadoc, and a two-sentence description.
+
+Maven Central lists the `sources`, `tests`, `javadoc`, and main jar artifacts for `1.12.2`, and the matching upstream tag resolves under `apache/parquet-java`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-common/1.12.2/)) I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM jar with `.class` files.
+Ran agent for org.apache.parquet:parquet-common:1.12.2 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/build/agent-artifact-discovery-logs/org.apache.parquet-parquet-common-1.12.2.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3152-280e564b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 23s
+9 actionable tasks: 9 executed
