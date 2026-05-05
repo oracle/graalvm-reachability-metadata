@@ -39,7 +39,7 @@ Workflows testing metadata using [ci.json](../ci.json):
   - Triggers: PRs to master that change exploded stats files under [stats/](../stats/), [stats/schemas/library-stats-schema-v1.0.2.json](../stats/schemas/library-stats-schema-v1.0.2.json), or mirrored files under [metadata/](../metadata/).
   - Uses: [`validateLibraryStats`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to enforce schema compliance and normalized sorting.
 - Verify new library version compatibility ([.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml))
-  - Triggers: every 4 hours and manual ([`workflow_dispatch`](../.github/workflows/verify-new-library-version-compatibility.yml)).
+  - Triggers: daily and manual ([`workflow_dispatch`](../.github/workflows/verify-new-library-version-compatibility.yml)).
   - Uses: [`fetchExistingLibrariesWithNewerVersions`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) plus [`generateNewLibraryVersionCompatibilityMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to build a [`ci.json`](../ci.json)-driven matrix. The matrix generator limits the number of libraries per run, limits each library to at most 30 newer versions per run before expanding across the configured GraalVM JDK/OS combinations, records tested versions only after they pass on every required environment, and creates a single aggregated failure issue per failed library version while preserving the prior failure issue format with added OS and JDK lines.
 
 Workflows for style and security:
