@@ -1,0 +1,573 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df67c-e5b2-7970-9c26-f9be16f557db
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scala-lang:scala-library:2.11.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.11.8" when "$version$" is replaced with "2.11.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+- Set "coordinates" to "org.scala-lang:scala-library:2.11.8".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.11.8".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata patterns first, then verify the Scala 2.11.8 artifact URLs against Maven and the upstream tag before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scala-lang:scala-library:2.11.8"
+}
+
+exec
+/usr/bin/bash -lc "rg --files build/discovered-artifact-metadata | rg 'scala|org.scala-lang'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+
+exec
+/usr/bin/bash -lc "rg '\"language\"|\"not-for-native-image\"|\"source-code-url\"' build/discovered-artifact-metadata -n | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+web search: 
+web search: org.scala-lang scala-library 2.11.8 Maven Central sources jar
+web search: 
+web search: site:repo1.maven.org/maven2/org/scala-lang scala-library 2.11.8 tests jar scala-library-test
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.11.8/
+codex
+Maven Central has both the main JAR and `-sources`/`-javadoc` JARs for `2.11.8`; I’m checking whether a test artifact exists there before choosing the test URL, since the repo asks to prefer Maven-hosted test material when available.
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -n metadata build | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:24:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:38:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/commons-io/commons-io/index.json:6:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/commons-io/commons-io/index.json:25:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/org.lz4/lz4-java/index.json:7:    "repository-url": "https://github.com/lz4/lz4-java",
+metadata/com.google.errorprone/error_prone_annotations/index.json:6:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:72:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:86:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:100:    "repository-url" : "https://github.com/google/error-prone",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.crac/crac/index.json:6:    "repository-url" : "https://github.com/CRaC/org.crac",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:31:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/org.springframework.security/spring-security-crypto/index.json:49:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:101:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+metadata/org.osgi/org.osgi.framework/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.tpolecat/sourcepos_3/index.json:6:    "repository-url" : "https://github.com/typelevel/SourcePos",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:14:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:29:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/org.osgi/org.osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:22:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/org.threeten/threetenbp/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threetenbp",
+metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+metadata/org.threeten/threeten-extra/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threeten-extra",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/com.github.package-url/packageurl-java/index.json:6:    "repository-url" : "https://github.com/package-url/packageurl-java",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.osgi/org.osgi.util.tracker/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.osgi/org.osgi.service.repository/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/io.r2dbc/r2dbc-spi/index.json:6:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/io.r2dbc/r2dbc-spi/index.json:20:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/org.hdrhistogram/HdrHistogram/index.json:14:    "repository-url": "https://github.com/HdrHistogram/HdrHistogram",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+metadata/com.google.guava/listenablefuture/index.json:7:    "repository-url": "https://github.com/google/guava",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/com.google.guava/failureaccess/index.json:6:    "repository-url" : "https://github.com/google/guava",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+metadata/org.osgi/osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.core/index.json:20:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.core/index.json:34:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.google.guava/guava-bootstrap/index.json:6:    "repository-url" : "https://github.com/google/guava",
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' -n . | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+./forge/utility_scripts/source_context.py:27:    "documentation": "documentation-url",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+./metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+./metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+./metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+./metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:57:            "documentation-url"
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:363:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:372:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:379:                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:380:                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:174:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:259:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:52:                        .contains("documentation-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+./metadata/com.softwaremill.sttp.shared/core_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-javadoc.jar",
+./metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+./metadata/com.softwaremill.sttp.shared/ws_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/ws_3/$version$/ws_3-$version$-javadoc.jar",
+./metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:23:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+./metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+./metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+./metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+./metadata/javax.el/el-api/index.json:8:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+./metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+./metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+
+exec
+/usr/bin/bash -lc "find . -path '*artifact-metadata*' -type f | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/io.suzaku/boopickle_3/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/suzaku-io/boopickle",
+    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.4.0",
+      "1.5.0"
+    ],
+    "allowed-packages" : [
+      "boopickle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' metadata -n | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:51:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:69:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/sqlite-driver/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+
+web search: 
+web search: 
+web search: 
+web search: org.scala-lang scala-library 2.11.8 maven central sources javadoc
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8
+codex
+The artifact is a JVM Scala 2 standard library JAR, so I’m going to add the Scala language marker and leave the Native Image exclusion fields absent. I’ll use Maven Central for sources and Scaladoc/Javadoc, and the upstream `v2.11.8` repository tag for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..1b112174cf7b33ac0afce5153c370ec6f81ced8e
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..1b112174cf7b33ac0afce5153c370ec6f81ced8e
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8/test
+web search: 
+web search: repo.maven.apache.org maven2 org scala-lang scala-library 2.11.8 sources javadoc
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+{
+  "coordinates": "org.scala-lang:scala-library:2.11.8",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
+  "repository-url": "https://github.com/scala/scala",
+  "test-code-url": "https://github.com/scala/scala/tree/v$version$/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
+  "description": "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-sources.jar | head -1' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-javadoc.jar | head -1' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/scala/scala/tree/v2.11.8/test | head -1' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..1b112174cf7b33ac0afce5153c370ec6f81ced8e
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 407ms:
+HTTP/2 200 
+
+web search: 
+web search: Maven Central org.scala-lang scala-library 2.11.8 scala-library-2.11.8-sources.jar javadoc.jar
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8/test
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..1b112174cf7b33ac0afce5153c370ec6f81ced8e
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 283ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-03f5d71f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scala-lang:scala-library:2.11.8",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
+  "repository-url" : "https://github.com/scala/scala",
+  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
+  "description" : "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..1b112174cf7b33ac0afce5153c370ec6f81ced8e
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "scala-library is the Scala 2 standard library for JVM applications, providing the core types, collections, concurrency utilities, and runtime support used by Scala programs. It supplies the runtime APIs that compiled Scala code depends on when running on the JVM and interoperating with Java.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: scala-library 2.11.8 maven central
+web search: 
+web search: site:github.com/scala/scala/tree/v2.11.8/test scala v2.11.8 test
+web search: 
+web search: https://github.com/scala/scala
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
