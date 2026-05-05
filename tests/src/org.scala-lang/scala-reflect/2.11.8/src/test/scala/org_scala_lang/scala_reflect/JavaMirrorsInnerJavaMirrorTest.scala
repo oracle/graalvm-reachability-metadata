@@ -61,6 +61,14 @@ class JavaMirrorsInnerJavaMirrorTest {
       singleMethod(nestedType, newTermName("packageScopedMethod"))
     )
     assertThat(packageScopedMethod("suffix").asInstanceOf[String]).isEqualTo("changed-suffix")
+
+    val privateField = instanceMirror.reflectField(singleTerm(nestedType, newTermName("privateValue")))
+    assertThat(privateField.get.asInstanceOf[String]).isEqualTo("private-alpha")
+    privateField.set("updated-private")
+    assertThat(nested.privateSnapshot).isEqualTo("updated-private")
+
+    val privateMethod = instanceMirror.reflectMethod(singleMethod(nestedType, newTermName("privateMethod")))
+    assertThat(privateMethod("token").asInstanceOf[String]).isEqualTo("updated-private-token")
   }
 
   private def singleTerm(ownerType: Type, name: TermName): TermSymbol =
@@ -73,12 +81,17 @@ class JavaMirrorsInnerJavaMirrorTest {
 object JavaMirrorsInnerJavaMirrorFixtures {
   class Nested(var publicValue: String, val count: Int) {
     private[scala_reflect] var packageScopedValue: String = s"package-$publicValue"
+    private var privateValue: String = s"private-$publicValue"
 
     def combine(prefix: String): String = s"$prefix:$publicValue:$count"
 
     private[scala_reflect] def packageScopedMethod(suffix: String): String =
       s"$packageScopedValue-$suffix"
 
+    private def privateMethod(suffix: String): String = s"$privateValue-$suffix"
+
     def packageScopedSnapshot: String = packageScopedValue
+
+    def privateSnapshot: String = privateValue
   }
 }
