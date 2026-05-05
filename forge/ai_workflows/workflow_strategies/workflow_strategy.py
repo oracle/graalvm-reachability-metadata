@@ -29,6 +29,7 @@ RUN_STATUS_SUCCESS = "success"
 RUN_STATUS_FAILURE = "failure"
 SUCCESS_WITH_INTERVENTION_STATUS = "success_with_intervention"
 RUN_STATUS_CHUNK_READY = "chunk_ready"
+DEFAULT_RUNTIME_ENVIRONMENT_SUMMARY = "- Runtime environment facts were not collected for this workflow."
 
 class WorkflowStrategy(ABC):
     """Base class for workflow strategy implementations.
@@ -93,7 +94,7 @@ class WorkflowStrategy(ABC):
         self.context = context
         self.context.setdefault(
             "runtime_environment_summary",
-            "- Runtime environment facts were not collected for this workflow.",
+            DEFAULT_RUNTIME_ENVIRONMENT_SUMMARY,
         )
         self.context.setdefault(
             "classpath_guidance_summary",

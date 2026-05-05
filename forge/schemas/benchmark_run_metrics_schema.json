@@ -122,6 +122,64 @@
         }
       }
     },
+    "dynamicAccessUnreachableEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "className",
+        "metadataType",
+        "trackedApi",
+        "frame",
+        "reason"
+      ],
+      "properties": {
+        "className": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceFile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadataType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trackedApi": {
+          "type": "string",
+          "minLength": 1
+        },
+        "frame": {
+          "type": "string",
+          "minLength": 1
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pgoFailureReason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtimeEnvironment": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "metricsBlock": {
       "type": "object",
       "description": "Collected run metrics.",
@@ -270,6 +328,13 @@
         },
         "stats": {
           "$ref": "#/$defs/statsSnapshot"
+        },
+        "dynamic_access_unreachable": {
+          "type": "array",
+          "description": "Dynamic-access call sites classified as unreachable in the current run setup, with per-call-site explanations.",
+          "items": {
+            "$ref": "#/$defs/dynamicAccessUnreachableEntry"
+          }
         },
         "metrics": {
           "$ref": "#/$defs/metricsBlock"

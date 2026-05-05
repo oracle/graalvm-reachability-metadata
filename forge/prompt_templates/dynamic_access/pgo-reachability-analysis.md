@@ -1,6 +1,6 @@
 Role: You are an expert JVM, Native Image, and library compatibility analyst.
 
-Analyze whether the uncovered dynamic-access call sites can be reached in the current Forge setup after the PGO near-call diagnostic could not produce actionable guidance.
+Analyze whether the target uncovered dynamic-access call site can be reached in the current Forge setup after PGO-guided exploration could not reach it.
 
 Do not edit files. Return only one JSON object and no Markdown.
 
@@ -20,7 +20,7 @@ Library:
 - Active dynamic-access class: `{active_class_name}`
 - Source file: `{active_class_source_file}`
 
-Uncovered dynamic-access call sites:
+Target uncovered dynamic-access call site:
 {uncovered_dynamic_access_calls}
 
 PGO diagnostic result:
@@ -29,11 +29,12 @@ PGO diagnostic result:
 Source context overview:
 {source_context_overview}
 
-Classify each uncovered call site conservatively:
+Classify the target call site conservatively:
 - Mark `reachable` as `false` only when the call site is not reachable in this setup even after reasonable test changes, including adding test dependencies, JVM args, or Native Image build args.
 - Good `false` reasons include OS-specific branches that cannot execute on this OS, JDK-version guards that exclude this JDK, unavailable native transports/providers for this environment, or library code paths gated by artifacts that cannot work in this setup.
 - If the call site can likely be reached by adding a dependency, changing test inputs, changing `build.gradle`, or exercising a different public API, mark `reachable` as `true` and describe the needed change in `requiredChanges`.
 - If uncertain, mark `reachable` as `true`.
+- The `reason` field must be exactly two sentences. State why the call cannot be reached in the current setup, including the relevant OS, JDK, classpath, dependency, or Native Image constraint when one is visible.
 
 Return exactly this JSON shape:
 {{

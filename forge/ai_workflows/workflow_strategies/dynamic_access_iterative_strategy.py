@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import json
 import os
 import subprocess
 
@@ -75,6 +76,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self.chunk_class_limit = int(self.context.get("chunk_class_limit") or 0)
         self.chunk_call_limit = int(self.context.get("chunk_call_limit") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
+        self._dynamic_access_phase_prompt_iterations: int = 0
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
             "tests",
@@ -87,6 +89,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             "dynamic-access",
             "dynamic-access-coverage.json",
         )
+        self._last_dynamic_access_report_output = ""
 
     def run(self, agent, checkpoint_commit_hash):
         initial_report = self._generate_dynamic_access_report()
@@ -123,6 +126,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     def _run_dynamic_access_phase(self, agent, current_report=None) -> tuple[bool, int]:
         if current_report is None:
             current_report = self._generate_dynamic_access_report()
+        self._dynamic_access_phase_prompt_iterations = 0
         if self._should_fallback_to_basic_flow(current_report):
             return True, 0
         self._maybe_activate_large_library_series(current_report)
@@ -215,9 +219,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 agent.send_prompt(dynamic_prompt)
                 self._print_dynamic_access_detail("agent: complete", indent_level=2)
                 prompt_iterations += 1
+                self._dynamic_access_phase_prompt_iterations = prompt_iterations
                 class_attempts += 1
 
-                reached_native_test = False
+                refreshed_report = None
                 last_test_output = ""
                 last_failed_task = None
                 for test_iteration in range(self.max_class_test_iterations):
@@ -239,23 +244,54 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         ),
                         indent_level=2,
                     )
-                    if failed_task in {"nativeTest", None}:
-                        reached_native_test = True
+                    if failed_task not in {"nativeTest", None}:
+                        self._print_dynamic_access_detail(
+                            "agent: test failed before nativeTest; sending failure output back to agent",
+                            indent_level=2,
+                        )
+                        agent.send_prompt(
+                            "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n"
+                            "{error_output}".format(
+                                library=self.library,
+                                error_output=test_output,
+                            )
+                        )
+                        self._print_dynamic_access_detail("agent: complete", indent_level=2)
+                        prompt_iterations += 1
+                        self._dynamic_access_phase_prompt_iterations = prompt_iterations
+                        continue
+
+                    previous_report = current_report
+                    refreshed_report = self._generate_dynamic_access_report(indent_level=2)
+                    if refreshed_report is not None:
                         break
+
                     self._print_dynamic_access_detail(
-                        "agent: test failed before nativeTest; sending failure output back to agent",
+                        "agent: dynamic-access report unavailable after native execution; "
+                        "sending failure output back to agent",
                         indent_level=2,
                     )
                     agent.send_prompt(
-                        "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
+                        "The generated tests reached native execution, but Forge could not refresh the "
+                        "dynamic-access coverage report for `{library}`.\n\n"
+                        "Fix the generated tests so `./gradlew test -Pcoordinates={library}` and "
+                        "`./gradlew generateDynamicAccessCoverageReport -Pcoordinates={library}` can complete "
+                        "far enough to produce a loadable dynamic-access report. Do not skip native-image "
+                        "execution and do not remove meaningful assertions.\n\n"
+                        "`./gradlew test -Pcoordinates={library}` output:\n"
+                        "{test_output}\n\n"
+                        "`./gradlew generateDynamicAccessCoverageReport -Pcoordinates={library}` output:\n"
+                        "{report_output}".format(
                             library=self.library,
-                            error_output=test_output,
+                            test_output=self._trim_for_agent_prompt(test_output),
+                            report_output=self._trim_for_agent_prompt(self._last_dynamic_access_report_output),
                         )
                     )
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                     prompt_iterations += 1
+                    self._dynamic_access_phase_prompt_iterations = prompt_iterations
 
-                if not reached_native_test:
+                if refreshed_report is None and last_failed_task not in {"nativeTest", None}:
                     # Tests failed for this class, roll back to before this class
                     # was attempted so previous successful classes are preserved.
                     self._print_dynamic_access_detail("result: failed, reverting to checkpoint", indent_level=2)
@@ -270,9 +306,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_failed = True
                     break
 
-                previous_report = current_report
-                current_report = self._generate_dynamic_access_report(indent_level=2)
-                if current_report is None:
+                if refreshed_report is None:
                     self._print_dynamic_access_detail(
                         "result: dynamic-access report unavailable after test run",
                         indent_level=2,
@@ -284,6 +318,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         class_name=class_name,
                     )
                     return False, prompt_iterations
+                current_report = refreshed_report
 
                 updated_class = current_report.get_class(class_name)
                 if updated_class is None:
@@ -738,12 +773,31 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             ),
             indent_level=indent_level,
         )
+        previous_report_mtime = self._dynamic_access_report_mtime()
         result = self._run_gradle_command_with_output([
             "./gradlew",
             "generateDynamicAccessCoverageReport",
             f"-Pcoordinates={self.library}",
         ])
+        self._last_dynamic_access_report_output = result.stdout
         if result.returncode != 0:
+            refreshed_report = self._load_fresh_dynamic_access_report(previous_report_mtime)
+            if refreshed_report is not None:
+                self._last_dynamic_access_report_issue = "ok"
+                self._print_dynamic_access_detail(
+                    "report: loaded refreshed coverage JSON despite nonzero Gradle exit",
+                    indent_level=indent_level,
+                )
+                self._print_dynamic_access_detail(
+                    "report: {library} -> {covered}/{total} covered".format(
+                        library=self.library,
+                        covered=refreshed_report.covered_calls,
+                        total=refreshed_report.total_calls,
+                    ),
+                    indent_level=indent_level,
+                )
+                return refreshed_report
+
             self._last_dynamic_access_report_issue = "gradle_task_failed"
             self._print_dynamic_access_detail(
                 "Coverage report refresh failed:",
@@ -823,6 +877,38 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         else:
             self._last_dynamic_access_report_issue = "ok"
         return report
+
+    def _dynamic_access_report_mtime(self) -> float | None:
+        try:
+            return os.path.getmtime(self.dynamic_access_report_path)
+        except OSError:
+            return None
+
+    def _load_fresh_dynamic_access_report(self, previous_mtime: float | None):
+        current_mtime = self._dynamic_access_report_mtime()
+        if current_mtime is None:
+            return None
+        if previous_mtime is not None and current_mtime <= previous_mtime:
+            return None
+        try:
+            return load_dynamic_access_coverage_report(
+                self.dynamic_access_report_path,
+                source_context_files=self.context.get("source_context_files") or [],
+            )
+        except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _trim_for_agent_prompt(output: str, max_chars: int = 60000) -> str:
+        if len(output) <= max_chars:
+            return output
+        head_chars = max_chars // 2
+        tail_chars = max_chars - head_chars
+        return (
+            output[:head_chars]
+            + "\n\n... <output trimmed for prompt> ...\n\n"
+            + output[-tail_chars:]
+        )
 
     def _current_dynamic_access_status(self) -> str:
         try:

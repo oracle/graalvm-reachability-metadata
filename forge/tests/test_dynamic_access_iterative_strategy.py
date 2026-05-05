@@ -6,6 +6,7 @@
 import io
 import json
 import os
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -13,7 +14,7 @@ from unittest.mock import patch
 from ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy import IncreaseDynamicAccessCoverageStrategy
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY
-from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
+from utility_scripts.dynamic_access_report import DynamicAccessCallSite, DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.large_library_progress import LargeLibraryProgressState, find_progress_state_path
 
 
@@ -394,6 +395,148 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 ChunkReadyDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_CHUNK_READY, 3))
+
+    def test_report_refresh_failure_after_native_test_is_sent_back_to_agent(self) -> None:
+        class RecordingAgent:
+            def __init__(self) -> None:
+                self.prompts = []
+                self.test_outputs = [
+                    "> Task :nativeTest FAILED\nnative assertion failed",
+                    "BUILD SUCCESSFUL",
+                ]
+                self.cleared = False
+
+            def send_prompt(self, prompt: str) -> None:
+                self.prompts.append(prompt)
+
+            def run_test_command(self, command: str) -> str:
+                del command
+                return self.test_outputs.pop(0)
+
+            def clear_context(self) -> None:
+                self.cleared = True
+
+        call_site = DynamicAccessCallSite(
+            metadata_type="reflection",
+            tracked_api="java.lang.Class#getConstructor(java.lang.Class[])",
+            frame="org.example.Target.init(Target.java:12)",
+            line=12,
+            covered=False,
+        )
+        initial_report = DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=1,
+            covered_calls=0,
+            classes=[
+                DynamicAccessClass(
+                    class_name="org.example.Target",
+                    source_file=None,
+                    resolved_source_file=None,
+                    total_calls=1,
+                    covered_calls=0,
+                    call_sites=[call_site],
+                )
+            ],
+        )
+        covered_report = DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=1,
+            covered_calls=1,
+            classes=[
+                DynamicAccessClass(
+                    class_name="org.example.Target",
+                    source_file=None,
+                    resolved_source_file=None,
+                    total_calls=1,
+                    covered_calls=1,
+                    call_sites=[
+                        DynamicAccessCallSite(
+                            metadata_type=call_site.metadata_type,
+                            tracked_api=call_site.tracked_api,
+                            frame=call_site.frame,
+                            line=call_site.line,
+                            covered=True,
+                        )
+                    ],
+                )
+            ],
+        )
+        strategy = DynamicAccessIterativeStrategy(
+            {
+                "model": "test-model",
+                "prompts": {"dynamic-access-iteration": "unused"},
+                "parameters": {
+                    "max-iterations": 1,
+                    "max-class-test-iterations": 2,
+                },
+            },
+            library="org.example:lib:1.0.0",
+            reachability_repo_path="/tmp/reachability",
+            test_version="1.0.0",
+        )
+        agent = RecordingAgent()
+
+        def generate_report(indent_level: int = 0):
+            del indent_level
+            strategy._last_dynamic_access_report_output = "> Task :nativeTest FAILED\nnative assertion failed"
+            if not hasattr(generate_report, "called"):
+                generate_report.called = True
+                return None
+            return covered_report
+
+        with patch("subprocess.check_output", return_value="checkpoint\n"), \
+                patch.object(strategy, "_render_dynamic_access_prompt", return_value="dynamic prompt"), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch.object(strategy, "_generate_dynamic_access_report", side_effect=generate_report), \
+                patch.object(strategy, "_commit_test_sources"), \
+                patch.object(strategy, "_run_native_test_verification_gate", return_value=True), \
+                patch.object(strategy, "_refresh_report_after_gate", return_value=covered_report):
+            phase_ok, prompt_iterations = strategy._run_dynamic_access_phase(agent, initial_report)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(prompt_iterations, 2)
+        self.assertEqual(agent.prompts[0], "dynamic prompt")
+        self.assertIn("could not refresh the dynamic-access coverage report", agent.prompts[1])
+        self.assertIn("generateDynamicAccessCoverageReport", agent.prompts[1])
+        self.assertTrue(agent.cleared)
+
+    def test_generate_dynamic_access_report_loads_fresh_report_after_nonzero_gradle_exit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(
+                reachability_repo_path=tmpdir,
+                test_version="1.0.0",
+            )
+            os.makedirs(os.path.dirname(strategy.dynamic_access_report_path), exist_ok=True)
+
+            def fake_gradle(command: list[str]) -> subprocess.CompletedProcess[str]:
+                del command
+                with open(strategy.dynamic_access_report_path, "w", encoding="utf-8") as report_file:
+                    json.dump(
+                        {
+                            "coordinate": "org.example:lib:1.0.0",
+                            "hasDynamicAccess": True,
+                            "totals": {
+                                "totalCalls": 1,
+                                "coveredCalls": 1,
+                            },
+                            "classes": [],
+                        },
+                        report_file,
+                    )
+                return subprocess.CompletedProcess(
+                    args=["./gradlew"],
+                    returncode=1,
+                    stdout="Gradle build daemon has been stopped: stop command received",
+                )
+
+            with patch.object(strategy, "_run_gradle_command_with_output", side_effect=fake_gradle):
+                report = strategy._generate_dynamic_access_report()
+
+        self.assertIsNotNone(report)
+        self.assertEqual(report.covered_calls, 1)
+        self.assertEqual(strategy._last_dynamic_access_report_issue, "ok")
 
     @staticmethod
     def _class_coverage(class_name: str, total_calls: int, covered_calls: int) -> DynamicAccessClass:

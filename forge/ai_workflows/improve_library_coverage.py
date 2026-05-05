@@ -387,6 +387,7 @@ def main(argv=None) -> int:
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
+            dynamic_access_unreachable=getattr(strategy_obj, "dynamic_access_unreachable", None),
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
@@ -407,6 +408,7 @@ def main(argv=None) -> int:
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            dynamic_access_unreachable=getattr(strategy_obj, "dynamic_access_unreachable", None),
         )
 
     write_metrics(run_metrics, metrics_repo_dir, metrics_repo_root)
