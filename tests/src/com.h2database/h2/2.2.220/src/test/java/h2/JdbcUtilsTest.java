@@ -11,13 +11,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
+import java.sql.DriverPropertyInfo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.Name;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
+import org.h2.Driver;
 import org.h2.api.JavaObjectSerializer;
 import org.h2.jdbcx.JdbcDataSource;
 import org.h2.util.JdbcUtils;
@@ -44,7 +48,7 @@ public class JdbcUtilsTest {
     @Test
     void opensConnectionWithExplicitJdbcDriver() throws SQLException {
         try (Connection connection = JdbcUtils.getConnection(
-                "org.h2.Driver", "jdbc:h2:mem:jdbc-utils-explicit-driver", "sa", "")) {
+                DelegatingDriver.class.getName(), "jdbc:jdbc-utils:delegating-driver", "sa", "")) {
             assertThat(connection.isValid(1)).isTrue();
         }
     }
@@ -97,6 +101,46 @@ public class JdbcUtilsTest {
             try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
                 return input.readObject();
             }
+        }
+    }
+
+    public static class DelegatingDriver implements java.sql.Driver {
+        @Override
+        public Connection connect(String url, Properties info) throws SQLException {
+            if (!acceptsURL(url)) {
+                return null;
+            }
+            return new Driver().connect("jdbc:h2:mem:jdbc-utils-delegating-driver", info);
+        }
+
+        @Override
+        public boolean acceptsURL(String url) {
+            return "jdbc:jdbc-utils:delegating-driver".equals(url);
+        }
+
+        @Override
+        public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) {
+            return new DriverPropertyInfo[0];
+        }
+
+        @Override
+        public int getMajorVersion() {
+            return 1;
+        }
+
+        @Override
+        public int getMinorVersion() {
+            return 0;
+        }
+
+        @Override
+        public boolean jdbcCompliant() {
+            return false;
+        }
+
+        @Override
+        public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+            throw new SQLFeatureNotSupportedException();
         }
     }
 
