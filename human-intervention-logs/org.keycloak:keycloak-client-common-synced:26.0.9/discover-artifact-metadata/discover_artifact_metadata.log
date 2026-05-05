@@ -1,0 +1,1538 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df802-75db-7651-9f09-646a9d450719
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.keycloak:keycloak-client-common-synced:26.0.9
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "26.0.9" when "$version$" is replaced with "26.0.9".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+- Set "coordinates" to "org.keycloak:keycloak-client-common-synced:26.0.9".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "26.0.9".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Keycloak sources, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+{
+  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.keycloak-keycloak-client-common-synced-26\\.0\\.9\\.json"'$'"'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+
+web search: 
+web search: org.keycloak keycloak-client-common-synced 26.0.9 Maven Central
+web search: 
+web search: https://github.com/keycloak/keycloak-client
+codex
+The upstream repository is the newer `keycloak/keycloak-client` repo, and its README explicitly calls `client-common-synced` a Java common module used by the other client libraries. I’m checking Maven Central now because this repo prefers Maven-hosted sources or tests when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-client-parent</artifactId>
+        <version>26.0.9</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>keycloak-client-common-synced</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Keycloak Client Common Synced</name>
+    <description>Keycloak Client Common Synced</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>commons-logging-jboss-logging</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>sync</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>${project.build.directory}/unpacked-resources</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-keycloak-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-core</artifactId>
+                                            <version>${keycloak.version}</version>
+                                            <type>jar</type>
+                                            <classifier>sources</classifier>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/unpacked</outputDirectory>
+                                            <includes>
+                                                org/keycloak/OAuth2Constants.java,
+                                                org/keycloak/TokenCategory.java,
+                                                org/keycloak/Token.java,
+                                                org/keycloak/TokenIdGenerator.java,
+                                                org/keycloak/AuthorizationContext.java,
+
+                                                org/keycloak/json/*.java,
+
+                                                org/keycloak/representations/adapters/action/GlobalRequestResult.java,
+                                                org/keycloak/representations/dpop/**/*.java,
+                                                org/keycloak/representations/idm/**/*.java,
+                                                org/keycloak/representations/info/*.java,
+                                                org/keycloak/representations/userprofile/config/*.java,
+                                                org/keycloak/representations/workflows/*.java,
+                                                org/keycloak/representations/AccessToken.java,
+                                                org/keycloak/representations/AccessTokenResponse.java,
+                                                org/keycloak/representations/AddressClaimSet.java,
+                                                org/keycloak/representations/AuthorizationDetailsJSONRepresentation.java,
+                                                org/keycloak/representations/IDToken.java,
+                                                org/keycloak/representations/JsonWebToken.java,
+                                                org/keycloak/representations/KeyStoreConfig.java,
+                                                org/keycloak/representations/adapters/config/*.java,
+                                                org/keycloak/representations/RefreshToken.java,
+
+                                                org/keycloak/util/AuthorizationDetailsParser.java,
+                                                org/keycloak/util/BasicAuthHelper.java,
+                                                org/keycloak/util/DPoPGenerator.java,
+                                                org/keycloak/util/EnumWithStableIndex.java,
+                                                org/keycloak/util/JsonSerialization.java,
+                                                org/keycloak/util/JWKSUtils.java,
+                                                org/keycloak/util/KeyWrapperUtil.java,
+                                                org/keycloak/util/SystemPropertiesJsonParserFactory.java,
+                                                org/keycloak/util/TokenUtil.java,
+
+                                                org/keycloak/jose/JOSE.java,
+                                                org/keycloak/jose/JOSEHeader.java,
+                                                org/keycloak/jose/jwe/**/*.java,
+                                                org/keycloak/jose/jws/**/*.java,
+                                                org/keycloak/jose/jwk/**/*.java,
+
+                                                org/keycloak/crypto/**/*.java,
+
+                                                org/keycloak/protocol/oidc/client/authentication/*.java,
+
+                                                org/keycloak/protocol/oidc/representations/**/*.java,
+
+                                                org/keycloak/constants/ServiceUrlConstants.java,
+
+                                                org/keycloak/exceptions/*.java,
+
+                                                org/keycloak/TokenVerifier.java,
+
+                                            </includes>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-core</artifactId>
+                                            <version>${keycloak.version}</version>
+                                            <type>jar</type>
+                                            <classifier>sources</classifier>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/unpacked-resources</outputDirectory>
+                                            <includes>
+                                                META-INF/services/**/*
+                                            </includes>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-common</artifactId>
+                                            <version>${keycloak.version}</version>
+                                            <type>jar</type>
+                                            <classifier>sources</classifier>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/unpacked</outputDirectory>
+                                            <includes>
+                                                org/keycloak/common/**/*.java
+                                            </includes>
+                                            <excludes>
+                                                org/keycloak/common/Version.java,
+                                                org/keycloak/common/util/MimeTypeUtil.java
+                                            </excludes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.build.directory}/unpacked</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jdk-15</id>
+            <activation>
+                <jdk>[15,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-java15</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <includes>
+                                        <include>org/keycloak/jose/jwk/EdECUtilsImpl.java</include>
+                                    </includes>
+                                    <excludes combine.self="override" />
+                                    <release>15</release>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>org/keycloak/jose/jwk/EdECUtilsImpl.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/keycloak/keycloak-client-common-synced/26.0.9</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/keycloak/keycloak-client-common-synced/26.0.9</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="keycloak-client-common-synced-26.0.9-javadoc.jar" title="keycloak-client-common-synced-26.0.9-javadoc.jar">keycloak-client-common-synced-26.0.9-javadoc....</a>  2026-04-17 05:11      3490      
+<a href="keycloak-client-common-synced-26.0.9-javadoc.jar.asc" title="keycloak-client-common-synced-26.0.9-javadoc.jar.asc">keycloak-client-common-synced-26.0.9-javadoc....</a>  2026-04-17 05:11       228      
+<a href="keycloak-client-common-synced-26.0.9-javadoc.jar.md5" title="keycloak-client-common-synced-26.0.9-javadoc.jar.md5">keycloak-client-common-synced-26.0.9-javadoc....</a>  2026-04-17 05:11        32      
+<a href="keycloak-client-common-synced-26.0.9-javadoc.jar.sha1" title="keycloak-client-common-synced-26.0.9-javadoc.jar.sha1">keycloak-client-common-synced-26.0.9-javadoc....</a>  2026-04-17 05:11        40      
+<a href="keycloak-client-common-synced-26.0.9-javadoc.jar.sha256" title="keycloak-client-common-synced-26.0.9-javadoc.jar.sha256">keycloak-client-common-synced-26.0.9-javadoc....</a>  2026-04-17 05:11        64      
+<a href="keycloak-client-common-synced-26.0.9-javadoc.jar.sha512" title="keycloak-client-common-synced-26.0.9-javadoc.jar.sha512">keycloak-client-common-synced-26.0.9-javadoc....</a>  2026-04-17 05:11       128      
+<a href="keycloak-client-common-synced-26.0.9-sources.jar" title="keycloak-client-common-synced-26.0.9-sources.jar">keycloak-client-common-synced-26.0.9-sources....</a>  2026-04-17 05:11    433758      
+<a href="keycloak-client-common-synced-26.0.9-sources.jar.asc" title="keycloak-client-common-synced-26.0.9-sources.jar.asc">keycloak-client-common-synced-26.0.9-sources....</a>  2026-04-17 05:11       228      
+<a href="keycloak-client-common-synced-26.0.9-sources.jar.md5" title="keycloak-client-common-synced-26.0.9-sources.jar.md5">keycloak-client-common-synced-26.0.9-sources....</a>  2026-04-17 05:11        32      
+<a href="keycloak-client-common-synced-26.0.9-sources.jar.sha1" title="keycloak-client-common-synced-26.0.9-sources.jar.sha1">keycloak-client-common-synced-26.0.9-sources....</a>  2026-04-17 05:11        40      
+<a href="keycloak-client-common-synced-26.0.9-sources.jar.sha256" title="keycloak-client-common-synced-26.0.9-sources.jar.sha256">keycloak-client-common-synced-26.0.9-sources....</a>  2026-04-17 05:11        64      
+<a href="keycloak-client-common-synced-26.0.9-sources.jar.sha512" title="keycloak-client-common-synced-26.0.9-sources.jar.sha512">keycloak-client-common-synced-26.0.9-sources....</a>  2026-04-17 05:11       128      
+<a href="keycloak-client-common-synced-26.0.9.jar" title="keycloak-client-common-synced-26.0.9.jar">keycloak-client-common-synced-26.0.9.jar</a>          2026-04-17 05:11    577124      
+<a href="keycloak-client-common-synced-26.0.9.jar.asc" title="keycloak-client-common-synced-26.0.9.jar.asc">keycloak-client-common-synced-26.0.9.jar.asc</a>      2026-04-17 05:11       228      
+<a href="keycloak-client-common-synced-26.0.9.jar.md5" title="keycloak-client-common-synced-26.0.9.jar.md5">keycloak-client-common-synced-26.0.9.jar.md5</a>      2026-04-17 05:11        32      
+<a href="keycloak-client-common-synced-26.0.9.jar.sha1" title="keycloak-client-common-synced-26.0.9.jar.sha1">keycloak-client-common-synced-26.0.9.jar.sha1</a>     2026-04-17 05:11        40      
+<a href="keycloak-client-common-synced-26.0.9.jar.sha256" title="keycloak-client-common-synced-26.0.9.jar.sha256">keycloak-client-common-synced-26.0.9.jar.sha2...</a>  2026-04-17 05:11        64      
+<a href="keycloak-client-common-synced-26.0.9.jar.sha512" title="keycloak-client-common-synced-26.0.9.jar.sha512">keycloak-client-common-synced-26.0.9.jar.sha5...</a>  2026-04-17 05:11       128      
+<a href="keycloak-client-common-synced-26.0.9.pom" title="keycloak-client-common-synced-26.0.9.pom">keycloak-client-common-synced-26.0.9.pom</a>          2026-04-17 05:11     12597      
+<a href="keycloak-client-common-synced-26.0.9.pom.asc" title="keycloak-client-common-synced-26.0.9.pom.asc">keycloak-client-common-synced-26.0.9.pom.asc</a>      2026-04-17 05:11       228      
+<a href="keycloak-client-common-synced-26.0.9.pom.md5" title="keycloak-client-common-synced-26.0.9.pom.md5">keycloak-client-common-synced-26.0.9.pom.md5</a>      2026-04-17 05:11        32      
+<a href="keycloak-client-common-synced-26.0.9.pom.sha1" title="keycloak-client-common-synced-26.0.9.pom.sha1">keycloak-client-common-synced-26.0.9.pom.sha1</a>     2026-04-17 05:11        40      
+<a href="keycloak-client-common-synced-26.0.9.pom.sha256" title="keycloak-client-common-synced-26.0.9.pom.sha256">keycloak-client-common-synced-26.0.9.pom.sha2...</a>  2026-04-17 05:11        64      
+<a href="keycloak-client-common-synced-26.0.9.pom.sha512" title="keycloak-client-common-synced-26.0.9.pom.sha512">keycloak-client-common-synced-26.0.9.pom.sha5...</a>  2026-04-17 05:11       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/keycloak/keycloak-client.git | rg '26\\.0\\.9|26\\.0'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 414ms:
+f35f766c8f4cca85522d91e848972427ad0ae9db	refs/tags/26.0.0
+e33c03d68862be8a36b93a4c2df5f92fd0b77cc6	refs/tags/26.0.0-alpha1
+c6476c65eb41f614ef5ffc3e35fcd933c83c2f75	refs/tags/26.0.0-alpha2
+1095cc8cfaf0db060b1ec7aa3bf0dee8b4778f0d	refs/tags/26.0.1
+e7264432efee0d209fcc5803f1800fa0ee1aab32	refs/tags/26.0.2
+e05800967c033e64749bae0a8aa1724022dc4fef	refs/tags/26.0.3
+a0960ea8846379d0073d1eab9d4559810fe2187f	refs/tags/26.0.4
+e39f24afbd9bf1b60c951e4a778817180b551da9	refs/tags/26.0.5
+e8d1790d024965ba27ce0fb0a6e23d1feec8553a	refs/tags/26.0.6
+b4140c7dc3765836bc363e551e0542c9d4b80963	refs/tags/26.0.7
+c280a64e8ce671cdd5fbcfffd073e5a7c788504b	refs/tags/26.0.8
+0d4e126942b73ca9dcf38caffe1c883447bf6ee4	refs/tags/26.0.9
+
+web search: 
+web search: site:github.com/keycloak/keycloak-client keycloak-client-common-synced 26.0.9
+web search: 
+web search: https://github.com/keycloak/keycloak-client
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9.pom
+codex
+Maven Central has the main JAR, sources JAR, and javadoc JAR for `26.0.9`; I don’t see a test JAR for this artifact. The upstream repository has a version tag named `26.0.9`, so I’ll point source/tests/docs at that tag where Maven does not provide the artifact-specific asset.
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"|\"documentation-url\"|\"source-code-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/keycloak/keycloak-client/26.0.9/client-common-synced/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/keycloak/keycloak-client/git/trees/26.0.9?recursive=1 | rg 'client-common-synced|testsuite|docs' | head -200" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 392ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-client-parent</artifactId>
+        <version>26.0.9</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>keycloak-client-common-synced</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Keycloak Client Common Synced</name>
+    <description>Keycloak Client Common Synced</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>commons-logging-jboss-logging</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>sync</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>${project.build.directory}/unpacked-resources</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-keycloak-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-core</artifactId>
+                                            <version>${keycloak.version}</version>
+                                            <type>jar</type>
+                                            <classifier>sources</classifier>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/unpacked</outputDirectory>
+                                            <includes>
+                                                org/keycloak/OAuth2Constants.java,
+                                                org/keycloak/TokenCategory.java,
+                                                org/keycloak/Token.java,
+                                                org/keycloak/TokenIdGenerator.java,
+                                                org/keycloak/AuthorizationContext.java,
+
+                                                org/keycloak/json/*.java,
+
+                                                org/keycloak/representations/adapters/action/GlobalRequestResult.java,
+                                                org/keycloak/representations/dpop/**/*.java,
+                                                org/keycloak/representations/idm/**/*.java,
+                                                org/keycloak/representations/info/*.java,
+                                                org/keycloak/representations/userprofile/config/*.java,
+                                                org/keycloak/representations/workflows/*.java,
+                                                org/keycloak/representations/AccessToken.java,
+                                                org/keycloak/representations/AccessTokenResponse.java,
+                                                org/keycloak/representations/AddressClaimSet.java,
+                                                org/keycloak/representations/AuthorizationDetailsJSONRepresentation.java,
+                                                org/keycloak/representations/IDToken.java,
+                                                org/keycloak/representations/JsonWebToken.java,
+                                                org/keycloak/representations/KeyStoreConfig.java,
+                                                org/keycloak/representations/adapters/config/*.java,
+                                                org/keycloak/representations/RefreshToken.java,
+
+                                                org/keycloak/util/AuthorizationDetailsParser.java,
+                                                org/keycloak/util/BasicAuthHelper.java,
+                                                org/keycloak/util/DPoPGenerator.java,
+                                                org/keycloak/util/EnumWithStableIndex.java,
+                                                org/keycloak/util/JsonSerialization.java,
+                                                org/keycloak/util/JWKSUtils.java,
+                                                org/keycloak/util/KeyWrapperUtil.java,
+                                                org/keycloak/util/SystemPropertiesJsonParserFactory.java,
+                                                org/keycloak/util/TokenUtil.java,
+
+                                                org/keycloak/jose/JOSE.java,
+                                                org/keycloak/jose/JOSEHeader.java,
+                                                org/keycloak/jose/jwe/**/*.java,
+                                                org/keycloak/jose/jws/**/*.java,
+                                                org/keycloak/jose/jwk/**/*.java,
+
+                                                org/keycloak/crypto/**/*.java,
+
+                                                org/keycloak/protocol/oidc/client/authentication/*.java,
+
+                                                org/keycloak/protocol/oidc/representations/**/*.java,
+
+                                                org/keycloak/constants/ServiceUrlConstants.java,
+
+                                                org/keycloak/exceptions/*.java,
+
+                                                org/keycloak/TokenVerifier.java,
+
+                                            </includes>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-core</artifactId>
+                                            <version>${keycloak.version}</version>
+                                            <type>jar</type>
+                                            <classifier>sources</classifier>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/unpacked-resources</outputDirectory>
+                                            <includes>
+                                                META-INF/services/**/*
+                                            </includes>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-common</artifactId>
+                                            <version>${keycloak.version}</version>
+                                            <type>jar</type>
+                                            <classifier>sources</classifier>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/unpacked</outputDirectory>
+                                            <includes>
+                                                org/keycloak/common/**/*.java
+                                            </includes>
+                                            <excludes>
+                                                org/keycloak/common/Version.java,
+                                                org/keycloak/common/util/MimeTypeUtil.java
+                                            </excludes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.build.directory}/unpacked</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jdk-15</id>
+            <activation>
+                <jdk>[15,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-java15</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <includes>
+                                        <include>org/keycloak/jose/jwk/EdECUtilsImpl.java</include>
+                                    </includes>
+                                    <excludes combine.self="override" />
+
+ succeeded in 394ms:
+      "path": "client-common-synced",
+      "path": "client-common-synced/pom.xml",
+      "path": "client-common-synced/src",
+      "path": "client-common-synced/src/main",
+      "path": "client-common-synced/src/main/java",
+      "path": "client-common-synced/src/main/java/org",
+      "path": "client-common-synced/src/main/java/org/keycloak",
+      "path": "client-common-synced/src/main/java/org/keycloak/AuthorizationContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/OAuth2Constants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/Token.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/TokenCategory.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/TokenIdGenerator.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/TokenVerifier.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/ClientConnection.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/Profile.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/VerificationException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/constants",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/constants/GenericConstants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/constants/KerberosConstants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/constants/ServiceAccountConstants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/CertificateUtilsProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/CryptoConstants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/CryptoIntegration.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/CryptoProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/ECDSACryptoProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/FipsMode.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/PemUtilsProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/UserIdentityExtractor.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/crypto/UserIdentityExtractorProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/enums",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/enums/AccountRestApiVersion.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/enums/HostnameVerificationPolicy.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/enums/RelativeUrlsUsed.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/enums/SslRequired.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/profile",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/profile/CommaSeparatedListProfileConfigResolver.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/profile/ProfileConfigResolver.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/profile/ProfileException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/profile/PropertiesProfileConfigResolver.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/profile/SingleProfileConfigResolver.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Base64.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Base64Url.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/BouncyIntegration.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/CertificateUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/CollectionUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/ConcurrentMultivaluedHashMap.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/DelegatingSerializationFilter.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/DerUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/DurationConverter.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Encode.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/EnvUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Environment.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/FindFile.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/HostUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/HtmlUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/HttpPostRedirect.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/IoUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/KerberosJdkProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/KerberosSerializationUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/KeyUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/KeycloakUriBuilder.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/KeystoreUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/MultiSiteUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/MultivaluedHashMap.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/MultivaluedMap.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/NetworkUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/ObjectUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/PaddingUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/PathHelper.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/PathMatcher.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/PemException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/PemUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Resteasy.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Retry.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/SecretGenerator.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/StackUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/StreamUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/StringPropertyReplacer.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/StringSerialization.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/SystemEnvProperties.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Throwables.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/Time.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/TriConsumer.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/TriFunction.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/UriUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/reflections",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/reflections/Reflections.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/reflections/SetAccessiblePrivilegedAction.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/reflections/Types.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/common/util/reflections/UnSetAccessiblePrivilegedAction.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/constants",
+      "path": "client-common-synced/src/main/java/org/keycloak/constants/ServiceUrlConstants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/Algorithm.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/AsymmetricSignatureSignerContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/AsymmetricSignatureVerifierContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/ECDSAAlgorithm.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/ECDSASignatureSignerContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/ECDSASignatureVerifierContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/HashException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/JavaAlgorithm.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/KeyStatus.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/KeyType.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/KeyUse.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/KeyWrapper.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/MacSignatureSignerContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/MacSignatureVerifierContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/PublicKeysWrapper.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/SignatureException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/SignatureSignerContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/crypto/SignatureVerifierContext.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/exceptions",
+      "path": "client-common-synced/src/main/java/org/keycloak/exceptions/TokenNotActiveException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/exceptions/TokenSignatureInvalidException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/exceptions/TokenVerificationException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/JOSE.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/JOSEHeader.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWE.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWEConstants.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWEException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWEHeader.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWEKeyStorage.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWERegistry.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/JWEUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/alg",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/alg/DirectAlgorithmProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/alg/JWEAlgorithmProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/enc",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/enc/AesCbcHmacShaEncryptionProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/enc/AesCbcHmacShaJWEEncryptionProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/enc/AesGcmEncryptionProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/enc/AesGcmJWEEncryptionProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwe/enc/JWEEncryptionProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/AKPPublicJWK.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/AKPUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/ECPublicJWK.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/EdECUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/EdECUtilsImpl.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/EdECUtilsUnsupportedImpl.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/JSONWebKeySet.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/JWK.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/JWKBuilder.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/JWKParser.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/JWKUtil.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/OKPPublicJWK.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jwk/RSAPublicJWK.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/Algorithm.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/AlgorithmType.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/JWSBuilder.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/JWSHeader.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/JWSInput.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/JWSInputException.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/crypto",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/crypto/HMACProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/crypto/HashUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/crypto/RSAProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/jose/jws/crypto/SignatureProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/json",
+      "path": "client-common-synced/src/main/java/org/keycloak/json/StringListMapDeserializer.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/json/StringOrArrayDeserializer.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/json/StringOrArraySerializer.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client/authentication",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client/authentication/ClientCredentialsProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client/authentication/ClientCredentialsProviderUtils.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client/authentication/ClientIdAndSecretCredentialsProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client/authentication/JWTClientCredentialsProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/client/authentication/JWTClientSecretCredentialsProvider.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/representations",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/representations/MTLSEndpointAliases.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/protocol/oidc/representations/OIDCConfigurationRepresentation.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/AccessToken.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/AccessTokenResponse.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/AddressClaimSet.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/AuthorizationDetailsJSONRepresentation.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/IDToken.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/JsonWebToken.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/KeyStoreConfig.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/RefreshToken.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/action",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/action/GlobalRequestResult.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/config",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/config/AdapterConfig.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/config/AdapterHttpClientConfig.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/config/BaseAdapterConfig.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/config/BaseRealmConfig.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/adapters/config/PolicyEnforcerConfig.java",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/dpop",
+      "path": "client-common-synced/src/main/java/org/keycloak/representations/dpop/DPoP.java",
+curl: (23) Failure writing output to destination
+
+codex
+The local metadata directory search produced no useful schema surprise: this file currently only has coordinates, and the expected keys are straightforward. I’ve got enough evidence to edit the metadata now.
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-tests.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-test-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/keycloak/keycloak-client/git/trees/26.0.9?recursive=1 | jq -r '.tree[].path' | rg '("'^|/)src/test|Test'"\\.java"'$|IT'"\\.java"'$|testsuite|test'"' | head -200" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/keycloak/keycloak-client/26.0.9/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 224ms:
+.github/actions/test-setup
+.github/actions/test-setup/action.yml
+.github/workflows/run-tests.yml
+testsuite
+testsuite/admin-client-tests
+testsuite/admin-client-tests/pom.xml
+testsuite/admin-client-tests/src
+testsuite/admin-client-tests/src/test
+testsuite/admin-client-tests/src/test/java
+testsuite/admin-client-tests/src/test/java/org
+testsuite/admin-client-tests/src/test/java/org/keycloak
+testsuite/admin-client-tests/src/test/java/org/keycloak/client
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/AbstractAdminClientTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/AdminClientTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/Assert.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/ClasspathJakartaTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/ClientTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/RealmRolesTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/RealmTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/UserTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/UsersTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/AbstractAuthenticationTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/AuthenticatorConfigTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/ExecutionTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/FlowTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/ProvidersTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/RegistrationFlowTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/RequiredActionsTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/ShiftExecutionTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/authentication/ShiftRequiredActionTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client/AbstractClientTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client/AbstractProtocolMapperTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client/ClientProtocolMapperTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client/ClientRolesTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client/ClientScopeProtocolMapperTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/client/ClientScopeTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/group
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/group/AbstractGroupTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/group/GroupMappersTest.java
+testsuite/admin-client-tests/src/test/java/org/keycloak/client/testsuite/group/GroupTest.java
+testsuite/admin-client-tests/src/test/resources
+testsuite/admin-client-tests/src/test/resources/admin-test
+testsuite/admin-client-tests/src/test/resources/admin-test/testrealm.json
+testsuite/admin-client-tests/src/test/resources/client-descriptions
+testsuite/admin-client-tests/src/test/resources/client-descriptions/client-oidc.json
+testsuite/admin-client-tests/src/test/resources/client-descriptions/saml-entity-descriptor.xml
+testsuite/admin-client-tests/src/test/resources/import
+testsuite/admin-client-tests/src/test/resources/import/import-without-clients.json
+testsuite/admin-client-tests/src/test/resources/import/import-without-roles.json
+testsuite/admin-client-tests/src/test/resources/import/partial-authentication-flows-import.json
+testsuite/admin-client-tests/src/test/resources/import/partial-import.json
+testsuite/admin-client-tests/src/test/resources/import/sample-authz-partial-import.json
+testsuite/admin-client-tests/src/test/resources/import/testrealm-authenticator-config-null.json
+testsuite/admin-client-tests/src/test/resources/import/testrealm-keycloak-6146-error.json
+testsuite/admin-client-tests/src/test/resources/import/testrealm-keycloak-6146.json
+testsuite/admin-client-tests/src/test/resources/import/testrealm-user-null-attr.json
+testsuite/admin-client-tests/src/test/resources/testrealm.json
+testsuite/authz-tests
+testsuite/authz-tests/pom.xml
+testsuite/authz-tests/src
+testsuite/authz-tests/src/test
+testsuite/authz-tests/src/test/java
+testsuite/authz-tests/src/test/java/org
+testsuite/authz-tests/src/test/java/org/keycloak
+testsuite/authz-tests/src/test/java/org/keycloak/client
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/AbstractAuthzTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/AbstractResourceServerTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/AuthorizationAPITest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/AuthorizationTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/AuthzClientCredentialsTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/AuthzClientTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/ClientScopePolicyTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/ConflictingScopePermissionTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/EntitlementAPITest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/GroupNamePolicyTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/GroupPathPolicyTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/GroupPathWithoutGroupClaimPolicyTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/MyCustomCIPFactory.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/PermissionClaimTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/PermissionEqualsTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/PermissionManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/PolicyEvaluationCompositeRoleTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/PolicyEvaluationTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/RegexPolicyTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/RolePolicyTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/UmaGrantTypeTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/UmaPermissionTicketPushedClaimsTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/UmaRepresentationTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/UserManagedAccessTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/UserManagedPermissionServiceTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/AbstractAuthorizationTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/AbstractPolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/AggregatePolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/AuthorizationTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ClientPolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ExportAuthorizationSettingsTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/GenericPolicyManagementAdminEventTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/GenericPolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/GroupPolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ImportAuthorizationSettingsTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/JSPolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ResourceManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ResourceManagementWithAuthzClientTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ResourcePermissionManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ResourceServerManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/RolePolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ScopeManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/ScopePermissionManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/TimePolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/authz/admin/UserPolicyManagementTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/policyenforcer
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/policyenforcer/ClaimInformationPointProviderTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/policyenforcer/EnforcerConfigTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/policyenforcer/PolicyEnforcerClaimsTest.java
+testsuite/authz-tests/src/test/java/org/keycloak/client/testsuite/policyenforcer/PolicyEnforcerTest.java
+testsuite/authz-tests/src/test/resources
+testsuite/authz-tests/src/test/resources/META-INF
+testsuite/authz-tests/src/test/resources/META-INF/services
+testsuite/authz-tests/src/test/resources/META-INF/services/org.keycloak.adapters.authorization.cip.spi.ClaimInformationPointProviderFactory
+testsuite/authz-tests/src/test/resources/authorization-test
+testsuite/authz-tests/src/test/resources/authorization-test/client-with-authz-settings.json
+testsuite/authz-tests/src/test/resources/authorization-test/default-keycloak-pairwise.json
+testsuite/authz-tests/src/test/resources/authorization-test/default-keycloak-public-client.json
+testsuite/authz-tests/src/test/resources/authorization-test/default-keycloak-uma2.json
+testsuite/authz-tests/src/test/resources/authorization-test/default-keycloak.json
+testsuite/authz-tests/src/test/resources/authorization-test/default-session-keycloak-no-rt.json
+testsuite/authz-tests/src/test/resources/authorization-test/default-session-keycloak.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-bearer-only-with-cip.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-bearer-only.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-config-claims-provider.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-config-path-cip.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-config-paths-same-name.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-disabled-enforce-mode-path.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-disabled-enforce-mode.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-disabled-path-nocache.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-entitlement-claims-test.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-lazyload-with-paths.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-lazyload.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-match-http-verbs-scopes.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-max-entries.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-no-lazyload.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-on-deny-redirect.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-paths-use-method-config.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-paths.json
+testsuite/authz-tests/src/test/resources/authorization-test/enforcer-uma-claims-test.json
+testsuite/authz-tests/src/test/resources/authorization-test/import-authorization-unordered-settings.json
+testsuite/authz-tests/src/test/resources/authorization-test/keycloak-with-invalid-keys-jwt-authentication.json
+testsuite/authz-tests/src/test/resources/authorization-test/keycloak-with-jwt-Ed25519-authentication.json
+testsuite/authz-tests/src/test/resources/authorization-test/keycloak-with-jwt-authentication.json
+testsuite/authz-tests/src/test/resources/authorization-test/keycloak-with-jwt-es512-authentication.json
+testsuite/authz-tests/src/test/resources/authorization-test/keycloak-with-jwt-hs512-authentication.json
+testsuite/authz-tests/src/test/resources/authorization-test/keycloak-with-jwt-rs512-authentication.json
+testsuite/authz-tests/src/test/resources/authorization-test/test-authz-realm.json
+testsuite/authz-tests/src/test/resources/client-auth-test
+testsuite/authz-tests/src/test/resources/client-auth-test/keystore-client1.jks
+testsuite/authz-tests/src/test/resources/client-auth-test/keystore-client2.jks
+testsuite/authz-tests/src/test/resources/client-auth-test/keystore-client3.jks
+testsuite/authz-tests/src/test/resources/client-auth-test/keystore-client4.jks
+testsuite/framework
+testsuite/framework/pom.xml
+testsuite/framework/src
+testsuite/framework/src/main
+testsuite/framework/src/main/java
+testsuite/framework/src/main/java/org
+testsuite/framework/src/main/java/org/keycloak
+testsuite/framework/src/main/java/org/keycloak/client
+testsuite/framework/src/main/java/org/keycloak/client/testsuite
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/TestConstants.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/AdminClientFactory.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/Creator.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/HttpClientFactory.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/OAuthClient.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/OAuthClientFactory.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/RealmImporter.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/RealmImporterFactory.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/RealmRepsSupplier.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/common/TestEnvironment.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/events
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/events/EventType.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/Inject.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/KeycloakClientTestExtension.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/KeycloakVersion.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/LifeCycle.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/PairwiseHttpServerExtension.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/TestProviderFactory.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/framework/TestRegistry.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/models
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/models/AccountRoles.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/models/CibaConfig.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/models/Constants.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/models/OAuth2DeviceConfig.java
+testsuite/framework/src/main/java/org/keycloak/client/testsuite/models/ParConfig.java
+
+ succeeded in 223ms:
+# Keycloak-client libraries
+
+Keycloak-client is a set of Java libraries, which can be used in the client applications to invoke Keycloak server public 
+APIs. This include Keycloak admin REST API and API for calling authorization services or enforcing access decisions by using 
+policy enforcer.
+
+The core functionality is in the modules:
+* [admin-client](admin-client) - Java library for invoke Keycloak Admin REST API
+* [authorization-client](authz-client) - Java library for invoke Authorization API
+* [policy-enforcer](policy-enforcer) - Java library for enforce authorization decisions. It consumes the authorization-client
+* [common module](client-common-synced) - Common classes and JSON representation mapping classes, which are used by other 
+  libraries from above 
+* [documentation](docs) - Documentation
+* [testsuite](testsuite) - Testsuite
+
+The client libraries have release lifecycle independent of Keycloak server releases. The libraries don't have any direct 
+dependency on Keycloak server libraries.  
+
+## Synchronized modules
+
+The files in the modules:
+
+* [client-common-synced](client-common-synced)
+* [admin-client](admin-client)
+* [authz-client](authz-client)
+
+are not "owned" by this repository and hence the Java files should ideally not be directly updated. Those files are "owned" by the [main Keycloak server repository](https://github.com/keycloak/keycloak)
+and hence are supposed to be updated there (whenever needed) and synced into this repository by the bash script [sync-keycloak-sources.sh](.github/scripts/sync-keycloak-sources.sh)
+
+The reason is, that for better interoperability and to avoid issues with the transitive dependencies, we want Keycloak-client libraries to not be
+dependent on the Keycloak server and, at the same time, Keycloak server not to be dependent on Keycloak-client libraries. But still have a way to
+re-use some of those classes between both Keycloak and Keycloak-client libraries.
+
+> [!NOTE] 
+> **client-common-synced** module will be synced from Keycloak Main repository for the future and is a dependency of rest of the modules in this repository. Modules **admin-client** and **authz-client** may move to this repository in the future, therefore they are separated.
+
+### Syncing the files from Keycloak repository
+
+Syncing can be done by triggering the [Sync workflow](.github/workflows/sync-and-send-pr.yml) (permissions required). If it needs to be done by manually, then those steps might be needed: 
+
+* Fetch [main Keycloak server repository](https://github.com/keycloak/keycloak) and checkout the last `release/X.Y` branch (For example `git checkout release/26.0`). Note that we usually cannot
+sync from the server `main` branch as it is under development and there is still a chance that some things being developed here would be later updated/removed. Which could be an issue as for client, we
+want to preserve backwards compatibility.
+
+* build it on your laptop to make sure latest Keycloak stuff available in your local maven repository.
+
+* Run [sync-keycloak-sources.sh](.github/scripts/sync-keycloak-sources.sh)
+
+* Send PR with the changes to update corresponding branch (usually `main`) of [Keycloak client repository](https://github.com/keycloak/keycloak-client)
+
+## Building the project
+
+```
+mvn clean install -DskipTests=true
+```
+
+## Running the testsuite
+
+```
+cd testsuite
+mvn clean install
+```
+
+By default testsuite starts Keycloak server inside docker image, which is based on testcontainers. So it uses white-box testing from the point of view of the Keycloak server. 
+
+When running with the argument `keycloak.lifecycle` like:
+
+```
+mvn clean install -Dkeycloak.lifecycle=remote
+```
+
+The testsuite won't start the Keycloak server, but instead tests will try to use Keycloak server, which is already started on this laptop where testsuite is running.
+
+It is also possible to use different version of Keycloak server. By default, it uses `nightly` docker image, but can be overriden by the parameter like this:
+
+```
+mvn clean install -Dkeycloak.version.docker.image=24.0
+```
+
+## Building the documentation
+
+Documentation is in the module [docs](docs). It is automatically build when you build the project. For reviewing the 
+build documentation, you can check the file `docs/guides/target/generated-docs/securing-apps/index.html`. After the 
+release of the particular keycloak-client version, the documentation can be seen inside [the guides on the Keycloak web page](https://www.keycloak.org/guides#securing-apps).
+
+## Reporting the bug or feature request
+
+Please create new issue [here](https://github.com/keycloak/keycloak-client/issues) if it does not yet exists.
+
+ succeeded in 278ms:
+cHTTP/2 404 
+date: Tue, 05 May 2026 12:00:42 GMT
+content-type: text/html
+cf-ray: 9f6f96164cfea625-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+url: (22) The requested URL returned error: 404
+
+ succeeded in 354ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 12:00:42 GMT
+content-type: text/html
+cf-ray: 9f6f961698d0c4a5-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://raw.githubusercontent.com/keycloak/keycloak-client/26.0.9/README.md
+web search: 
+web search: org.keycloak:keycloak-client-common-synced:26.0.9 Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/org.keycloak/keycloak-client-common-synced
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "rg -n 'repo.maven.apache.org.*/.*-sources\\.jar|\"source-code-url\".*maven|\"test-code-url\".*testsuite|\"documentation-url\".*javadoc' . | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+./metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+./metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+./metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+./metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+./metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+./metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:29:                    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+./metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+./metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+./metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+./metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 12:00:58 GMT
+content-type: application/java-archive
+content-length: 433758
+cf-ray: 9f6f967a9fc0be81-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1578678
+etag: "066c65dc72eccbca9b4796dbcc20a7a3"
+last-modified: Fri, 17 Apr 2026 05:11:21 GMT
+x-checksum-md5: 066c65dc72eccbca9b4796dbcc20a7a3
+x-checksum-sha1: 5d7b388f981cb1af4b30f7da87906b37c6b8dec1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 12:00:58 GMT
+content-type: application/java-archive
+content-length: 3490
+cf-ray: 9f6f967adb54cb74-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 345371
+etag: "be77efe92b3c6a37dd4ee58fa978eaaf"
+last-modified: Fri, 17 Apr 2026 05:11:20 GMT
+x-checksum-md5: be77efe92b3c6a37dd4ee58fa978eaaf
+x-checksum-sha1: 0471ede12d05046161ea788324b3572d55fb42be
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’ll write Maven Central source/javadoc URLs because both artifacts exist for `26.0.9`, and use the tagged upstream `testsuite` directory because Maven does not publish test artifacts for this coordinate. The artifact is a normal Java JAR, so I’m leaving `language` and `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+diff --git a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+index 4d53f948c719ef3bbea9c78f17972e71b003b4e6..7d4a9066d928e02f0560f575d1351d420d622784
+--- a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
++++ b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
++  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9",
++  "repository-url" : "https://github.com/keycloak/keycloak-client",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
++  "test-code-url" : "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
++  "description" : "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+index 4d53f948c719ef3bbea9c78f17972e71b003b4e6..7d4a9066d928e02f0560f575d1351d420d622784
+--- a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
++++ b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
++  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9",
++  "repository-url" : "https://github.com/keycloak/keycloak-client",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
++  "test-code-url" : "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
++  "description" : "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+{
+  "coordinates": "org.keycloak:keycloak-client-common-synced:26.0.9",
+  "repository-url": "https://github.com/keycloak/keycloak-client",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
+  "test-code-url": "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
+  "description": "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 12:01:11 GMT
+content-type: application/java-archive
+content-length: 3490
+cf-ray: 9f6f96ce4dc823bc-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 345384
+etag: "be77efe92b3c6a37dd4ee58fa978eaaf"
+last-modified: Fri, 17 Apr 2026 05:11:20 GMT
+x-checksum-md5: be77efe92b3c6a37dd4ee58fa978eaaf
+x-checksum-sha1: 0471ede12d05046161ea788324b3572d55fb42be
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/26.0.9/keycloak-client-common-synced-26.0.9-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 12:01:11 GMT
+content-type: application/java-archive
+content-length: 433758
+cf-ray: 9f6f96ce28f703a3-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1578691
+etag: "066c65dc72eccbca9b4796dbcc20a7a3"
+last-modified: Fri, 17 Apr 2026 05:11:21 GMT
+x-checksum-md5: 066c65dc72eccbca9b4796dbcc20a7a3
+x-checksum-sha1: 5d7b388f981cb1af4b30f7da87906b37c6b8dec1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/keycloak/keycloak-client/tree/26.0.9/testsuite' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+diff --git a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+index 4d53f948c719ef3bbea9c78f17972e71b003b4e6..7d4a9066d928e02f0560f575d1351d420d622784
+--- a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
++++ b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
++  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9",
++  "repository-url" : "https://github.com/keycloak/keycloak-client",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
++  "test-code-url" : "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
++  "description" : "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+ }
+
+ succeeded in 573ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 12:01:11 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e9ad0899082f19ddd17168a3b666d484"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=VB6Owgl11qlRve393Dy2yOTm1PiGl2VaBAkWLlB%2BGZHfM7pJH3ikbbM%2BTWdvnhQzWh5upmVabmxbvAKSWSQdy1gVAzwjUfNIySuJq3egvL26Hvouf%2BADjTfhwd2lcTx52fYXxtkLbX4BSXSDHFjxoDGHtfy3yISRDzmQaHCvy6%2B1Kq7xN8IzJkKxJlrvzZ%2BXshQpSrDyMfNrpyJYQoLe0fpdR6t5Q8lRp8CxkODZIGpDpKP7hi8S6Ibii0aPr3c1dBxHXMorzCgLmVcBiePK3g%3D%3D--7oUeYKM4%2BKvEoS8w--QSggqfvalq%2BN6cQosoCCww%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.300317229.1777982471; expires=Wed, 05 May 2027 12:01:11 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 12:01:11 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5114:16B459:1421B61:1005082:69F9DC07
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+index 4d53f948c719ef3bbea9c78f17972e71b003b4e6..7d4a9066d928e02f0560f575d1351d420d622784
+--- a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
++++ b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
++  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9",
++  "repository-url" : "https://github.com/keycloak/keycloak-client",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
++  "test-code-url" : "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
++  "description" : "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855
+diff --git a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+index 4d53f948c719ef3bbea9c78f17972e71b003b4e6..7d4a9066d928e02f0560f575d1351d420d622784
+--- a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
++++ b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
++  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9",
++  "repository-url" : "https://github.com/keycloak/keycloak-client",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
++  "test-code-url" : "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
++  "description" : "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+ }
+
+ succeeded in 319ms:
+web search: 
+web search: Keycloak-client libraries client-common-synced common module testsuite documentation README
+web search: 
+web search: 
+web search: 
+web search: "keycloak-client-common-synced-26.0.9-sources.jar"
+web search: 
+web search: https://github.com/keycloak/keycloak-client
+web search: 
+web search: central.sonatype.com/artifact/org.keycloak/keycloak-client-common-synced/26.0.9
+codex
+Updated [org.keycloak-keycloak-client-common-synced-26.0.9.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json).
+
+I set the repository to `keycloak/keycloak-client`, used Maven Central sources and javadoc URLs, and used the tagged upstream `testsuite` URL because no Maven test artifact exists for this coordinate. The Keycloak README describes this as a Java client-library repo and `client-common-synced` as the shared common module used by the other client libraries, with dedicated `docs` and `testsuite` modules. ([github.com](https://github.com/keycloak/keycloak-client))
+
+Validation done:
+- JSON parses with `jq`.
+- Substituted source, documentation, and test URLs for `26.0.9` return HTTP 200.
+- Left `language` absent.
+- Left `not-for-native-image` absent because this is a JVM JAR artifact.
+diff --git a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+index 4d53f948c719ef3bbea9c78f17972e71b003b4e6..7d4a9066d928e02f0560f575d1351d420d622784
+--- a/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
++++ b/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9"
++  "coordinates" : "org.keycloak:keycloak-client-common-synced:26.0.9",
++  "repository-url" : "https://github.com/keycloak/keycloak-client",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-sources.jar",
++  "test-code-url" : "https://github.com/keycloak/keycloak-client/tree/$version$/testsuite",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/keycloak/keycloak-client-common-synced/$version$/keycloak-client-common-synced-$version$-javadoc.jar",
++  "description" : "Keycloak Client Common Synced provides shared Java classes for Keycloak client libraries, including token, cryptography, JOSE/JWK/JWS/JWE, utility, and JSON representation types synchronized from Keycloak server sources. It is used by the Keycloak admin client, authorization client, and policy enforcer modules to invoke Keycloak APIs without depending directly on server libraries."
+ }
+
+tokens used
+103,848
+Updated [org.keycloak-keycloak-client-common-synced-26.0.9.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/build/discovered-artifact-metadata/org.keycloak-keycloak-client-common-synced-26.0.9.json).
+
+I set the repository to `keycloak/keycloak-client`, used Maven Central sources and javadoc URLs, and used the tagged upstream `testsuite` URL because no Maven test artifact exists for this coordinate. The Keycloak README describes this as a Java client-library repo and `client-common-synced` as the shared common module used by the other client libraries, with dedicated `docs` and `testsuite` modules. ([github.com](https://github.com/keycloak/keycloak-client))
+
+Validation done:
+- JSON parses with `jq`.
+- Substituted source, documentation, and test URLs for `26.0.9` return HTTP 200.
+- Left `language` absent.
+- Left `not-for-native-image` absent because this is a JVM JAR artifact.
+Ran agent for org.keycloak:keycloak-client-common-synced:26.0.9 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/build/agent-artifact-discovery-logs/org.keycloak-keycloak-client-common-synced-26.0.9.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3313-23c03855/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 45s
+9 actionable tasks: 9 executed
