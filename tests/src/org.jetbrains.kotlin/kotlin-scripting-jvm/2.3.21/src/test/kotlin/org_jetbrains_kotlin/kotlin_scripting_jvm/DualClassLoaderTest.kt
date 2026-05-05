@@ -6,6 +6,7 @@
  */
 package org_jetbrains_kotlin.kotlin_scripting_jvm
 
+import example.FallbackOnly
 import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
@@ -17,15 +18,15 @@ import org.junit.jupiter.api.Test
 public class DualClassLoaderTest {
     @Test
     fun loadsClassFromFallbackLoaderWhenBaseLoaderCannotFindIt(): Unit {
-        val fallbackOnlyClassName: String = "example.FallbackOnly"
-        val moduleClassLoader: ClassLoader = FallbackClassLoader(fallbackOnlyClassName, FallbackOnlyClass::class.java)
+        val fallbackOnlyClassName: String = FallbackOnly::class.java.name
+        val moduleClassLoader: ClassLoader = FallbackClassLoader(fallbackOnlyClassName, FallbackOnly::class.java)
         val baseClassLoader: ClassLoader = EmptyClassLoader()
         val scriptClassLoader: ClassLoader = KJvmCompiledModuleFromClassLoader(moduleClassLoader)
             .createClassLoader(baseClassLoader)
 
         val loadedClass: Class<*> = scriptClassLoader.loadClass(fallbackOnlyClassName)
 
-        assertThat(loadedClass).isSameAs(FallbackOnlyClass::class.java)
+        assertThat(loadedClass).isSameAs(FallbackOnly::class.java)
     }
 
     @Test
@@ -43,9 +44,6 @@ public class DualClassLoaderTest {
 
         assertThat(actualContent).isEqualTo(resourceContent)
     }
-
-    private class FallbackOnlyClass
-
     private class EmptyClassLoader : ClassLoader(null)
 
     private class FallbackClassLoader(
