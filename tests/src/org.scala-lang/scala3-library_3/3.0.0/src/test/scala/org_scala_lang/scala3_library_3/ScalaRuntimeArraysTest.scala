@@ -9,6 +9,7 @@ package org_scala_lang.scala3_library_3
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+import scala.reflect.Selectable.reflectiveSelectable
 import scala.runtime.Arrays
 
 class ScalaRuntimeArraysTest {
@@ -24,6 +25,25 @@ class ScalaRuntimeArraysTest {
       classOf[Array[Array[String]]],
       Array(2, 3)
     )
+    assertEquals(2, matrix.length)
+    assertEquals(3, matrix(0).length)
+  }
+
+  @Test
+  def createsMultidimensionalArrayThroughRuntimeMethod(): Unit = {
+    val matrix: Array[Array[String]] = reflectiveSelectable(Arrays)
+      .applyDynamic(
+        "newArray",
+        classOf[Class[?]],
+        classOf[Class[?]],
+        classOf[Array[Int]]
+      )(
+        classOf[String],
+        classOf[Array[Array[String]]],
+        Array(2, 3)
+      )
+      .asInstanceOf[Array[Array[String]]]
+
     assertEquals(2, matrix.length)
     assertEquals(3, matrix(0).length)
   }
