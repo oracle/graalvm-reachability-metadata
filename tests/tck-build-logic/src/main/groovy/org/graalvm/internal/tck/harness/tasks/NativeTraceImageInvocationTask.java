@@ -29,11 +29,4 @@ public abstract class NativeTraceImageInvocationTask extends AllCoordinatesExecT
     protected String errorMessageFor(String coordinates, int exitCode) {
         return "Native trace image compilation failed for " + coordinates + " with exit code " + exitCode + ".";
     }
-
-    private void appendProperty(List<String> command, String propertyName) {
-        Object propertyValue = getProject().findProperty(propertyName);
-        if (propertyValue != null) {
-            command.add("-P" + propertyName + "=" + propertyValue);
-        }
-    }
 }

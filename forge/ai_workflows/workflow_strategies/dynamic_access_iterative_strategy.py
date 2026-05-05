@@ -675,13 +675,20 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         subprocess.run(
             ["git", "add", "-A", metadata_dir],
-            cwd=self.reachability_repo_path, check=False,
-        )
-        subprocess.run(
-            ["git", "diff", "--cached", "--quiet"],
             cwd=self.reachability_repo_path,
-        ).returncode != 0 and subprocess.run(
-            ["git", "commit", "-m", message],
+            capture_output=True, check=False,
+        )
+        # `git diff --cached --quiet -- <path>` exits non-zero iff <path> has staged changes.
+        # Restricting to <metadata_dir> ensures unrelated staged files don't trigger a commit.
+        diff_rc = subprocess.run(
+            ["git", "diff", "--cached", "--quiet", "--", metadata_dir],
+            cwd=self.reachability_repo_path,
+            capture_output=True, check=False,
+        ).returncode
+        if diff_rc == 0:
+            return
+        subprocess.run(
+            ["git", "commit", "-m", message, "--", metadata_dir],
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         )

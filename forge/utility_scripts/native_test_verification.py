@@ -892,15 +892,12 @@ def _merge_metadata(base: dict, addition: dict) -> dict:
     return merged
 
 
-def _merge_metadata_value(base_value, addition_value):
+def _merge_metadata_value(base_value: object, addition_value: object) -> object:
     if isinstance(base_value, list) and isinstance(addition_value, list):
         merged = list(base_value)
-        seen_entries = {
-            json.dumps(entry, sort_keys=True, separators=(",", ":"))
-            for entry in merged
-        }
+        seen_entries = {_canonical_metadata_key(entry) for entry in merged}
         for entry in addition_value:
-            entry_key = json.dumps(entry, sort_keys=True, separators=(",", ":"))
+            entry_key = _canonical_metadata_key(entry)
             if entry_key not in seen_entries:
                 merged.append(entry)
                 seen_entries.add(entry_key)
@@ -910,6 +907,29 @@ def _merge_metadata_value(base_value, addition_value):
     if base_value == addition_value:
         return base_value
     return addition_value
+
+
+def _canonical_metadata_key(value: object) -> str:
+    """Stable string key for an entry, treating nested arrays as unordered sets.
+
+    Reachability metadata leaf arrays (`methods`, `fields`, `queriedMethods`, …)
+    are semantic sets, so two entries that differ only in inner-array order
+    must dedup as one. Sorting recursively makes the JSON dump invariant under
+    those reorderings.
+    """
+    return json.dumps(_canonicalize(value), sort_keys=True, separators=(",", ":"))
+
+
+def _canonicalize(value: object) -> object:
+    if isinstance(value, list):
+        canonical_items = [_canonicalize(item) for item in value]
+        return sorted(
+            canonical_items,
+            key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":")),
+        )
+    if isinstance(value, dict):
+        return {key: _canonicalize(val) for key, val in value.items()}
+    return value
 
 
 def _reset_directory(path: str) -> None:

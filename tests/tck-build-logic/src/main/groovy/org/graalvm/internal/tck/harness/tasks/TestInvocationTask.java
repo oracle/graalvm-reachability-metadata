@@ -47,13 +47,6 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
         return "Test for " + coordinates + " failed with exit code " + exitCode + ".";
     }
 
-    private void appendProperty(List<String> command, String propertyName) {
-        Object propertyValue = getProject().findProperty(propertyName);
-        if (propertyValue != null) {
-            command.add("-P" + propertyName + "=" + propertyValue);
-        }
-    }
-
     @Override
     protected void beforeEach(String coordinates, List<String> command) {
         String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");

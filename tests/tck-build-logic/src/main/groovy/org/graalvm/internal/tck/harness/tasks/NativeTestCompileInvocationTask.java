@@ -29,11 +29,4 @@ public abstract class NativeTestCompileInvocationTask extends AllCoordinatesExec
     protected String errorMessageFor(String coordinates, int exitCode) {
         return "Native test compilation failed";
     }
-
-    private void appendProperty(List<String> command, String propertyName) {
-        Object propertyValue = getProject().findProperty(propertyName);
-        if (propertyValue != null) {
-            command.add("-P" + propertyName + "=" + propertyValue);
-        }
-    }
 }
