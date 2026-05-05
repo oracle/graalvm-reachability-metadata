@@ -8,6 +8,7 @@ package org_jetbrains_kotlin.kotlin_main_kts
 
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.google.common.collect.ArrayListMultimap
+import org.jetbrains.kotlin.com.google.common.collect.HashBiMap
 import org.jetbrains.kotlin.com.google.common.collect.HashMultiset
 import org.jetbrains.kotlin.com.google.common.collect.ImmutableListMultimap
 import org.jetbrains.kotlin.com.google.common.collect.ImmutableSetMultimap
@@ -18,6 +19,20 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 public class SerializationTest {
+    @Test
+    fun serializesMutableBiMapEntries(): Unit {
+        val biMap: HashBiMap<String, Int> = HashBiMap.create()
+        biMap["compiler"] = 1
+        biMap["script"] = 2
+
+        val copy: HashBiMap<String, Int> = roundTrip(biMap)
+
+        assertThat(copy).containsEntry("compiler", 1)
+        assertThat(copy).containsEntry("script", 2)
+        assertThat(copy.inverse()).containsEntry(1, "compiler")
+        assertThat(copy.inverse()).containsEntry(2, "script")
+    }
+
     @Test
     fun serializesMutableMultisetEntries(): Unit {
         val multiset: HashMultiset<String> = HashMultiset.create()
