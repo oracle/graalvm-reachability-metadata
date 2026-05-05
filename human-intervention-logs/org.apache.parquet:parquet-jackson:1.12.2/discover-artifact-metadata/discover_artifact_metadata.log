@@ -1,0 +1,1916 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df58e-73c1-7371-9530-671ee9fc814d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.parquet:parquet-jackson:1.12.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.12.2" when "$version$" is replaced with "1.12.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+- Set "coordinates" to "org.apache.parquet:parquet-jackson:1.12.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.12.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream Apache Parquet repository, then patch the metadata JSON directly with version-tokenized URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+-rw-rw-r-- 1 vjovanov vjovanov 66 May  5 02:34 build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+{
+  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|parquet-jackson|apache/parquet' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json:2:  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:24:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:38:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/net.postgis/postgis-jdbc/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/org.threeten/threetenbp/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threetenbp",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.threeten/threeten-extra/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threeten-extra",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/com.github.package-url/packageurl-java/index.json:6:    "repository-url" : "https://github.com/package-url/packageurl-java",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/com.google.guava/listenablefuture/index.json:7:    "repository-url": "https://github.com/google/guava",
+metadata/com.google.guava/failureaccess/index.json:6:    "repository-url" : "https://github.com/google/guava",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.google.guava/guava-bootstrap/index.json:6:    "repository-url" : "https://github.com/google/guava",
+metadata/com.github.javaparser/javaparser-core/index.json:7:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/org.yaml/snakeyaml/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+metadata/org.yaml/snakeyaml/index.json:20:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+metadata/org.apache.commons/commons-pool2/index.json:9:    "repository-url": "https://github.com/apache/commons-pool",
+metadata/com.diffplug.durian/durian-swt.os/index.json:6:    "repository-url" : "https://github.com/diffplug/durian-swt",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:6:    "repository-url" : "https://github.com/akka/akka-core",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/io.lettuce/lettuce-core/index.json:6:    "repository-url" : "https://github.com/redis/lettuce",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/com.google.android/annotations/index.json:7:    "repository-url": "https://android.googlesource.com/platform/sdk",
+metadata/org.apache.commons/commons-lang3/index.json:6:    "repository-url" : "https://github.com/apache/commons-lang",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:45:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/org.apache.commons/commons-collections4/index.json:6:    "repository-url" : "https://github.com/apache/commons-collections",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.ning/compress-lzf/index.json:6:    "repository-url" : "https://github.com/ning/compress",
+metadata/org.springframework/spring-aspects/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:7:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:22:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:37:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.jline/jline-terminal-jni/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jni/index.json:39:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:48:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.jline/jline-terminal-jna/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.apache.activemq/artemis-jms-client/index.json:6:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:33:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:51:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:66:    "repository-url" : "https://github.com/apache/artemis",
+metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/com.itextpdf/io/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/io.swagger/swagger-annotations/index.json:6:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-exec/index.json:6:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-exec/index.json:22:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/org.example/library/index.json:10:    "repository-url": "N/A",
+metadata/org.apache.commons/commons-configuration2/index.json:6:    "repository-url" : "https://github.com/apache/commons-configuration",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/org.apache.activemq/activemq-client/index.json:6:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-client/index.json:36:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.commons/commons-text/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:38:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:31:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:26:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:40:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/io.smallrye.common/smallrye-common-io/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:24:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:6:    "repository-url": "https://github.com/googleapis/sdk-platform-java",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/io.smallrye.common/smallrye-common-os/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-os/index.json:23:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.apache.commons/commons-math/index.json:6:    "repository-url" : "https://github.com/apache/commons-math",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/io.smallrye.common/smallrye-common-process/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/org.apache.commons/commons-dbcp2/index.json:9:    "repository-url": "https://github.com/apache/commons-dbcp",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/org.jline/jline-reader/index.json:7:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-reader/index.json:47:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/org.apache.activemq/activemq-broker/index.json:5:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-broker/index.json:28:    "repository-url" : "https://github.com/apache/activemq",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/org.jetbrains/annotations-java5/index.json:6:    "repository-url" : "https://github.com/JetBrains/java-annotations",
+metadata/io.smallrye.common/smallrye-common-function/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-function/index.json:40:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.r2dbc/r2dbc-spi/index.json:6:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/io.r2dbc/r2dbc-spi/index.json:20:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/org.jetbrains/annotations/index.json:7:    "repository-url": "https://github.com/JetBrains/intellij-community",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:6:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:24:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/org.openjfx/javafx-base/index.json:6:    "repository-url": "https://github.com/openjdk/jfx",
+metadata/org.openjfx/javafx-base/index.json:22:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+metadata/javax.el/javax.el-api/index.json:6:    "repository-url" : "https://github.com/javaee/el-spec",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/javax.el/el-api/index.json:6:    "repository-url" : "https://github.com/javaee/uel-ri",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:129:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/org.jline/jline/index.json:10:    "repository-url": "https://github.com/jline/jline3",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:6:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:28:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:42:    "repository-url" : "https://github.com/apache/activemq-artemis",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common/",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/com.github.jnr/jnr-x86asm/index.json:6:    "repository-url" : "https://github.com/jnr/jnr-x86asm",
+metadata/com.ongres.stringprep/stringprep/index.json:6:    "repository-url" : "https://github.com/ongres/stringprep",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/com.ongres.stringprep/saslprep/index.json:6:    "repository-url" : "https://github.com/ongres/stringprep",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.hibernate.models/hibernate-models/index.json:6:    "repository-url" : "https://github.com/hibernate/hibernate-models",
+metadata/org.slf4j/log4j-over-slf4j/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-nop/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-nop/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/com.android.databinding/baseLibrary/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+metadata/com.android.databinding/baseLibrary/index.json:20:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:7:    "repository-url": "https://github.com/rnorth/duct-tape",
+metadata/org.jline/jline-native/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:6:    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+metadata/org.slf4j/jcl-over-slf4j/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/jcl-over-slf4j/index.json:83:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/jcl-over-slf4j/index.json:109:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.mockito/mockito-core/index.json:9:    "repository-url": "https://github.com/mockito/mockito",
+metadata/org.mockito/mockito-core/index.json:51:    "repository-url": "https://github.com/mockito/mockito",
+metadata/org.jline/jline-console/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-console/index.json:51:    "repository-url" : "https://github.com/jline/jline3",
+metadata/com.twitter/hpack/index.json:6:    "repository-url" : "https://github.com/twitter/hpack",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:6:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.slf4j/slf4j-jdk14/index.json:6:    "repository-url": "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-jdk14/index.json:22:    "repository-url": "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-jdk14/index.json:37:    "repository-url": "https://github.com/qos-ch/slf4j",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/commons-io/commons-io/index.json:6:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/commons-io/commons-io/index.json:25:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:6:    "repository-url" : "https://github.com/stephenc/jcip-annotations",
+metadata/org.slf4j/jul-to-slf4j/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/io.dropwizard.metrics/metrics-json/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics/",
+metadata/org.crac/crac/index.json:6:    "repository-url" : "https://github.com/CRaC/org.crac",
+metadata/com.squareup.okio/okio/index.json:6:    "repository-url" : "https://github.com/square/okio",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics/",
+metadata/org.slf4j/slf4j-api/index.json:5:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:14:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:29:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.slf4j/slf4j-simple/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-simple/index.json:46:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-simple/index.json:64:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/io.dropwizard.metrics/metrics-core/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/magnolia",
+metadata/org.w3c.css/sac/index.json:6:    "repository-url" : "https://www.w3.org/Style/CSS/SAC/",
+metadata/org.slf4j/slf4j-ext/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.antlr/antlr4-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/org.apache.camel/camel-util-json/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.antlr/ST4/index.json:6:    "repository-url" : "https://github.com/antlr/stringtemplate4",
+metadata/org.apache.camel/camel-util/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/apt/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.antlr/antlr-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr3",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:57:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:72:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:5:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:21:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-management-api/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+metadata/org.apache.camel/spi-annotations/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/spi-annotations/index.json:96:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/spi-annotations/index.json:112:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:6:    "repository-url" : "https://github.com/lemire/javaewah",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/sangria",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:6:    "repository-url" : "https://github.com/barchart/barchart-udt",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:24:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:63:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.sangria-graphql/sangria-parser_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/sangria",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/sangria-streaming-api",
+metadata/com.sun.xml.bind.external/rngom/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+metadata/org.jboss.resteasy/resteasy-client/index.json:6:    "repository-url" : "https://github.com/resteasy/resteasy",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:6:    "repository-url" : "https://github.com/abego/treelayout",
+metadata/org.eclipse.jetty/jetty-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:26:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:56:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-ee/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:25:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/com.github.jknack/handlebars/index.json:6:    "repository-url" : "https://github.com/jknack/handlebars.java",
+metadata/com.github.jknack/handlebars/index.json:21:    "repository-url" : "https://github.com/jknack/handlebars.java",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/com.github.jknack/handlebars-helpers/index.json:6:    "repository-url" : "https://github.com/jknack/handlebars.java",
+metadata/com.github.jknack/handlebars-helpers/index.json:21:    "repository-url" : "https://github.com/jknack/handlebars.java",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf/zookeeper.git",
+metadata/com.graphql-java/java-dataloader/index.json:6:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:21:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:36:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:51:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:65:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:83:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/org.jooq/jooq/index.json:7:    "repository-url" : "https://github.com/jOOQ/jOOQ",
+metadata/org.jooq/jooq/index.json:37:    "repository-url" : "https://github.com/jOOQ/jOOQ",
+metadata/org.jooq/jooq/index.json:113:    "repository-url" : "https://github.com/jOOQ/jOOQ",
+metadata/com.sun.istack/istack-commons-runtime/index.json:5:    "repository-url" : "https://github.com/javaee/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:6:    "repository-url" : "https://github.com/lukas-krecan/JsonUnit",
+metadata/org.apache.zookeeper/zookeeper/index.json:6:    "repository-url" : "https://github.com/apache/zookeeper",
+metadata/com.graphql-java/graphql-java/index.json:6:    "repository-url" : "https://github.com/graphql-java/graphql-java",
+metadata/com.graphql-java/graphql-java/index.json:53:    "repository-url" : "https://github.com/graphql-java/graphql-java",
+metadata/org.immutables/value/index.json:7:    "repository-url" : "https://github.com/immutables/immutables",
+metadata/org.immutables/value/index.json:22:    "repository-url" : "https://github.com/immutables/immutables",
+metadata/org.immutables/value/index.json:39:    "repository-url" : "https://github.com/immutables/immutables",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:6:    "repository-url" : "https://github.com/codehaus/jackson",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:6:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:22:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+metadata/commons-cli/commons-cli/index.json:6:    "repository-url" : "https://github.com/apache/commons-cli",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java-extended-validation",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.opengauss/opengauss-jdbc/index.json:9:    "repository-url": "https://gitee.com/opengauss/openGauss-connector-jdbc",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:7:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/org.hamcrest/hamcrest-library/index.json:6:    "repository-url" : "https://github.com/hamcrest/JavaHamcrest",
+metadata/com.ibm.async/asyncutil/index.json:6:    "repository-url" : "https://github.com/IBM/java-async-util",
+metadata/org.hamcrest/hamcrest-core/index.json:6:    "repository-url" : "https://github.com/hamcrest/JavaHamcrest",
+metadata/com.codahale.metrics/metrics-core/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:34:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:48:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/ch.qos.cal10n/cal10n-api/index.json:6:    "repository-url" : "https://github.com/qos-ch/cal10n",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/javax.portlet/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/junit/junit/index.json:6:    "repository-url" : "https://github.com/junit-team/junit4",
+metadata/org.lz4/lz4-java/index.json:7:    "repository-url": "https://github.com/lz4/lz4-java",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:6:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.springframework.security/spring-security-crypto/index.json:49:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:101:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/org.tpolecat/sourcepos_3/index.json:6:    "repository-url" : "https://github.com/typelevel/SourcePos",
+metadata/com.google.errorprone/error_prone_annotations/index.json:6:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:72:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:86:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:100:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/org.glassfish.hk2.external/jakarta.inject/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.kerby/kerby-util/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.json/json/index.json:6:    "repository-url" : "https://github.com/stleary/JSON-java",
+metadata/org.attoparser/attoparser/index.json:6:    "repository-url" : "https://github.com/attoparser/attoparser",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:6:    "repository-url": "https://github.com/googleapis/google-cloud-java",
+metadata/org.apache.kerby/kerby-pkix/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/org.apache.kerby/kerby-asn1/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-xdr/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-xdr/index.json:23:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.ecwid.consul/consul-api/index.json:12:    "repository-url": "https://github.com/Ecwid/consul-api/tree/v1.4.5",
+metadata/org.apache.kerby/kerby-config/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.github.albfernandez/juniversalchardet/index.json:6:    "repository-url" : "https://github.com/albfernandez/juniversalchardet",
+metadata/javax.cache/cache-api/index.json:5:    "repository-url" : "https://github.com/jsr107/jsr107spec",
+metadata/javax.cache/cache-api/index.json:20:    "repository-url" : "https://github.com/jsr107/jsr107spec",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/org.apache.httpcomponents/httpcore/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:34:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:48:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:62:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:76:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:90:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:104:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:118:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpmime/index.json:18:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/com.github.virtuald/curvesapi/index.json:6:    "repository-url" : "https://github.com/virtuald/curvesapi",
+metadata/ru.vyarus/generics-resolver/index.json:6:    "repository-url" : "https://github.com/xvik/generics-resolver",
+metadata/org.iq80.leveldb/leveldb-api/index.json:6:    "repository-url" : "https://github.com/dain/leveldb",
+metadata/commons-codec/commons-codec/index.json:6:    "repository-url" : "https://github.com/apache/commons-codec",
+metadata/dev.zio/zio-config_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-config",
+metadata/org.apache.lucene/lucene-core/index.json:6:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:20:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:38:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:54:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:68:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.parboiled/parboiled_3/index.json:6:    "repository-url" : "https://github.com/sirthias/parboiled2",
+metadata/dev.zio/zio-stacktracer_3/index.json:5:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-stacktracer_3/index.json:25:    "repository-url" : "https://github.com/zio/zio",
+metadata/net.java.dev.jna/jna/index.json:9:    "repository-url": "https://github.com/java-native-access/jna",
+metadata/org.eclipse.parsson/parsson/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/parsson",
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:6:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:33:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:34:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/at.yawk.lz4/lz4-java/index.json:6:    "repository-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+metadata/portlet-api/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/dev.zio/zio-http_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-http",
+metadata/org.scala-lang/scala3-interfaces/index.json:6:    "repository-url" : "https://github.com/scala/scala3",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-datetime",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-io",
+metadata/org.fusesource.jansi/jansi/index.json:6:    "repository-url" : "https://github.com/fusesource/jansi",
+metadata/org.fusesource.jansi/jansi/index.json:33:    "repository-url" : "https://github.com/fusesource/jansi",
+metadata/org.fusesource.jansi/jansi/index.json:51:    "repository-url" : "https://github.com/fusesource/jansi",
+metadata/dev.zio/zio-internal-macros_3/index.json:5:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-internal-macros_3/index.json:24:    "repository-url" : "https://github.com/zio/zio",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:6:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/com.mchange/mchange-commons-java/index.json:6:    "repository-url" : "https://github.com/swaldman/mchange-commons-java",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/dev.zio/zio-schema_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/io.github.java-diff-utils/java-diff-utils/index.json:6:    "repository-url" : "https://github.com/java-diff-utils/java-diff-utils",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/dev.zio/izumi-reflect_3/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:7:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:86:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.ant/ant-antlr/index.json:6:    "repository-url" : "https://github.com/apache/ant",
+metadata/dev.zio/zio-schema-derivation_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/com.univocity/univocity-parsers/index.json:6:    "repository-url" : "https://github.com/univocity/univocity-parsers",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/dev.zio/zio-prelude_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-prelude",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-atomicfu",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/dom4j/dom4j/index.json:6:    "repository-url" : "https://github.com/dom4j/dom4j",
+metadata/com.github.luben/zstd-jni/index.json:5:    "repository-url" : "https://github.com/luben/zstd-jni/tree/c1.5.2-5",
+metadata/com.github.luben/zstd-jni/index.json:20:    "repository-url" : "https://github.com/luben/zstd-jni",
+metadata/com.github.luben/zstd-jni/index.json:35:    "repository-url" : "https://github.com/luben/zstd-jni",
+metadata/com.github.luben/zstd-jni/index.json:48:    "repository-url" : "https://github.com/luben/zstd-jni",
+metadata/dev.zio/zio-schema-macros_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.collections.immutable",
+metadata/dev.zio/zio-prelude-macros_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-prelude",
+metadata/org.osgi/org.osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:22:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/org.json4s/json4s-native-core_3/index.json:6:    "repository-url" : "https://github.com/json4s/json4s",
+metadata/dev.zio/zio-config-typesafe_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-config",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/dev.zio/zio-interop-tracer_3/index.json:6:    "repository-url" : "https://github.com/zio/interop-cats",
+metadata/org.json4s/json4s-ast_3/index.json:6:    "repository-url" : "https://github.com/json4s/json4s",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/net.sf.py4j/py4j/index.json:6:    "repository-url" : "https://github.com/py4j/py4j",
+metadata/org.json4s/json4s-core_3/index.json:6:    "repository-url" : "https://github.com/json4s/json4s",
+metadata/org.scalatra/scalatra-common_3/index.json:6:    "repository-url" : "https://github.com/scalatra/scalatra",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-io",
+metadata/org.osgi/org.osgi.service.repository/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.json4s/json4s-scalap_3/index.json:6:    "repository-url" : "https://github.com/json4s/json4s",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.html",
+metadata/jakarta.jms/jakarta.jms-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/messaging",
+metadata/jakarta.jms/jakarta.jms-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/messaging",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:9:    "repository-url": "https://github.com/microsoft/mssql-jdbc",
+metadata/org.osgi/osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.core/index.json:20:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.core/index.json:34:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.typesafe.play/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/org.osgi/org.osgi.util.function/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logging-tools",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:28:    "repository-url" : "https://github.com/jboss-logging/jboss-logging-tools",
+metadata/com.typesafe.play/play-configuration_3/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/commons-logging/commons-logging-api/index.json:6:    "repository-url" : "https://github.com/apache/commons-logging",
+metadata/org.osgi/org.osgi.resource/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.typesafe.play/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:30:    "repository-url" : "https://github.com/apache/arrow",
+metadata/commons-logging/commons-logging/index.json:7:    "repository-url": "https://github.com/apache/commons-logging",
+metadata/org.osgi/org.osgi.namespace.service/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.jboss.logging/jboss-logging/index.json:16:    "repository-url" : "https://github.com/jboss-logging/jboss-logging",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.osgi/org.osgi.dto/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/io.nats/jnats/index.json:9:    "repository-url": "https://github.com/nats-io/nats.java",
+metadata/com.typesafe.play/play-functional_2.13/index.json:6:    "repository-url" : "https://github.com/playframework/play-json",
+metadata/org.jboss.logging/jboss-logging-annotations/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logging-tools",
+metadata/org.javamoney.moneta/moneta-core/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/org.javamoney.moneta/moneta-core/index.json:20:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/com.typesafe.play/play-functional_3/index.json:6:    "repository-url" : "https://github.com/playframework/play-json",
+metadata/org.osgi/org.osgi.util.promise/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:7:    "repository-url": "https://github.com/findbugsproject/findbugs",
+metadata/org.jboss.logging/commons-logging-jboss-logging/index.json:6:    "repository-url" : "https://github.com/jboss-logging/commons-logging-jboss-logging",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/dev.failsafe/failsafe/index.json:6:    "repository-url" : "https://github.com/failsafe-lib/failsafe",
+metadata/org.osgi/org.osgi.compendium/index.json:7:    "repository-url": "https://github.com/osgi/osgi",
+metadata/com.google.code.findbugs/annotations/index.json:6:    "repository-url" : "https://github.com/findbugsproject/findbugs/",
+metadata/org.osgi/osgi.annotation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.annotation/index.json:20:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/nekohtml/xercesMinimal/index.json:6:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:5:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/com.google.code.findbugs/jsr305/index.json:5:    "repository-url" : "http://findbugs.googlecode.com/svn/trunk/",
+metadata/com.google.code.findbugs/jsr305/index.json:20:    "repository-url" : "https://code.google.com/p/jsr-305/",
+metadata/com.zaxxer/SparseBitSet/index.json:6:    "repository-url" : "https://github.com/brettwooldridge/SparseBitSet",
+metadata/xpp3/xpp3/index.json:6:    "repository-url" : "http://www.extreme.indiana.edu/viewcvs/~checkout~/XPP3/java/",
+metadata/org.aspectj/aspectjweaver/index.json:6:    "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
+metadata/javax.transaction/transaction-api/index.json:6:    "repository-url" : "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.apache-extras.beanshell/bsh/index.json:6:    "repository-url" : "https://github.com/beanshell/beanshell",
+metadata/org.rocksdb/rocksdbjni/index.json:6:    "repository-url" : "https://github.com/facebook/rocksdb",
+metadata/org.rocksdb/rocksdbjni/index.json:30:    "repository-url" : "https://github.com/facebook/rocksdb",
+metadata/org.rocksdb/rocksdbjni/index.json:44:    "repository-url" : "https://github.com/facebook/rocksdb",
+metadata/com.zaxxer/HikariCP/index.json:5:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+metadata/com.zaxxer/HikariCP/index.json:19:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+metadata/com.zaxxer/HikariCP/index.json:35:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+metadata/javax.transaction/jta/index.json:6:    "repository-url" : "https://github.com/javaee/jta-spec",
+metadata/com.zaxxer/HikariCP-java7/index.json:7:    "repository-url": "https://github.com/brettwooldridge/HikariCP",
+metadata/com.google.api/gax/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/javax.persistence/javax.persistence-api/index.json:7:    "repository-url": "https://github.com/javaee/jpa-spec",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/interceptors",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:23:    "repository-url" : "https://github.com/jakartaee/interceptors",
+metadata/com.google.api/gax-httpjson/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/org.apache.openejb/javaee-api/index.json:6:    "repository-url": "https://github.com/apache/openejb",
+metadata/antlr/antlr/index.json:6:    "repository-url" : "https://www.antlr2.org",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:6:    "repository-url" : "https://github.com/scala-js/scala-js",
+metadata/com.google.api/api-common/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/org.sangria-graphql/macro-visit_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/macro-visit",
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:6:    "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
+metadata/org.sangria-graphql/sangria-core_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/sangria",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/com.typesafe.netty/netty-reactive-streams/index.json:6:    "repository-url" : "https://github.com/playframework/netty-reactive-streams",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:5:    "repository-url" : "https://github.com/open-telemetry/semantic-conventions-java",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:20:    "repository-url" : "https://github.com/open-telemetry/semantic-conventions-java",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:6:    "repository-url" : "https://github.com/arrow-kt/arrow",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:6:    "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:6:    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:6:    "repository-url" : "https://github.com/arrow-kt/arrow",
+metadata/com.softwaremill.sttp.model/core_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-model",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:20:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:37:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/org.apache.velocity/velocity-engine-core/index.json:6:    "repository-url" : "https://github.com/apache/velocity-engine",
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:6:    "repository-url" : "https://github.com/arrow-kt/arrow",
+metadata/io.opentelemetry/opentelemetry-sdk-common/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/io.reactivex.rxjava3/rxjava/index.json:6:    "repository-url" : "https://github.com/ReactiveX/RxJava",
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:6:    "repository-url" : "https://github.com/arrow-kt/arrow",
+metadata/joda-time/joda-time/index.json:6:    "repository-url" : "https://github.com/JodaOrg/joda-time",
+metadata/io.opentelemetry/opentelemetry-sdk/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/findbugs/annotations/index.json:6:    "repository-url" : "https://sourceforge.net/p/findbugs/cvs/",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/org.brotli/dec/index.json:6:    "repository-url" : "https://github.com/google/brotli",
+metadata/ch.qos.logback/logback-core/index.json:5:    "repository-url" : "https://github.com/qos-ch/logback",
+metadata/ch.qos.logback/logback-core/index.json:20:    "repository-url" : "https://github.com/qos-ch/logback",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:23:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:40:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/org.apache.kafka/kafka-clients/index.json:9:    "repository-url": "https://github.com/apache/kafka",
+metadata/org.junit.platform/junit-platform-suite-api/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:24:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/com.github.docker-java/docker-java-transport/index.json:6:    "repository-url" : "https://github.com/docker-java/docker-java",
+metadata/ch.qos.logback/logback-classic/index.json:6:    "repository-url" : "https://github.com/qos-ch/logback",
+metadata/ch.qos.logback/logback-classic/index.json:43:    "repository-url" : "https://github.com/qos-ch/logback",
+metadata/ch.qos.logback/logback-classic/index.json:71:    "repository-url" : "https://github.com/qos-ch/logback",
+metadata/ch.qos.logback/logback-classic/index.json:86:    "repository-url" : "https://github.com/qos-ch/logback",
+metadata/io.opentelemetry/opentelemetry-api-incubator/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/org.junit.platform/junit-platform-launcher/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/org.apache.kafka/kafka-streams/index.json:20:    "repository-url" : "https://github.com/apache/kafka",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/com.mysql/mysql-connector-j/index.json:6:    "repository-url" : "https://github.com/mysql/mysql-connector-j",
+metadata/org.junit.platform/junit-platform-engine/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/org.junit.platform/junit-platform-engine/index.json:21:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:38:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/org.roaringbitmap/shims/index.json:6:    "repository-url" : "https://github.com/RoaringBitmap/RoaringBitmap",
+metadata/com.google.jsinterop/jsinterop-annotations/index.json:6:    "repository-url" : "https://github.com/gwtproject/gwt",
+metadata/org.junit.platform/junit-platform-commons/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:6:    "repository-url" : "https://source.mysema.com/svn/mysema/projects/commons/lang",
+metadata/org.junit.platform/junit-platform-reporting/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:25:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:41:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:58:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:74:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.micrometer/micrometer-observation/index.json:6:    "repository-url" : "https://github.com/micrometer-metrics/micrometer",
+metadata/io.micrometer/micrometer-observation/index.json:25:    "repository-url" : "https://github.com/micrometer-metrics/micrometer",
+metadata/org.jboss.narayana.jta/jta/index.json:6:    "repository-url" : "https://github.com/jbosstm/narayana",
+metadata/org.jboss.narayana.jta/jta/index.json:23:    "repository-url" : "https://github.com/jbosstm/narayana",
+metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+metadata/io.micrometer/micrometer-commons/index.json:6:    "repository-url" : "https://github.com/micrometer-metrics/micrometer",
+metadata/io.micrometer/micrometer-commons/index.json:29:    "repository-url" : "https://github.com/micrometer-metrics/micrometer",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:38:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:6:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:26:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+metadata/javax.xml.bind/jaxb-api/index.json:6:    "repository-url" : "https://github.com/javaee/jaxb-spec",
+metadata/io.opentelemetry/opentelemetry-api/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/io.opentelemetry/opentelemetry-extension-incubator/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:6:    "repository-url" : "https://github.com/fusesource/hawtjni",
+metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:26:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:7:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:22:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:42:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/javax.enterprise/cdi-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+metadata/org.clojure/google-closure-library-third-party/index.json:6:    "repository-url" : "https://github.com/google/closure-library",
+metadata/org.clojure/google-closure-library-third-party/index.json:20:    "repository-url" : "https://github.com/google/closure-library",
+metadata/io.opentelemetry/opentelemetry-common/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/com.google.code.gson/gson/index.json:6:    "repository-url" : "https://github.com/google/gson",
+metadata/io.opentelemetry/opentelemetry-exporter-common/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/org.liquibase/liquibase-core/index.json:13:    "repository-url": "https://github.com/liquibase/liquibase",
+metadata/org.liquibase/liquibase-core/index.json:30:    "repository-url": "https://github.com/liquibase/liquibase",
+metadata/org.liquibase/liquibase-core/index.json:47:    "repository-url": "https://github.com/liquibase/liquibase",
+metadata/org.liquibase/liquibase-core/index.json:65:    "repository-url": "https://github.com/liquibase/liquibase",
+metadata/org.liquibase/liquibase-core/index.json:88:    "repository-url": "https://github.com/liquibase/liquibase",
+metadata/org.liquibase/liquibase-core/index.json:104:    "repository-url": "https://github.com/liquibase/liquibase",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:9:    "repository-url": "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:25:    "repository-url": "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:45:    "repository-url": "https://github.com/jwtk/jjwt",
+metadata/io.projectreactor/reactor-core/index.json:6:    "repository-url" : "https://github.com/reactor/reactor-core",
+metadata/io.opentelemetry/opentelemetry-context/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/org.postgresql/postgresql/index.json:6:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+metadata/org.postgresql/postgresql/index.json:28:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+metadata/org.glassfish.jaxb/xsom/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+metadata/org.quartz-scheduler/quartz/index.json:9:    "repository-url": "https://github.com/quartz-scheduler/quartz",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:21:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.jsonwebtoken/jjwt-api/index.json:5:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-api/index.json:20:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/org.glassfish.jaxb/txw2/index.json:6:    "repository-url" : "https://github.com/javaee/jaxb-v2",
+metadata/javax.servlet/servlet-api/index.json:6:    "repository-url" : "https://github.com/apache/tomcat55",
+metadata/javax.servlet/servlet-api/index.json:23:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/javax.servlet/servlet-api/index.json:37:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-beanbag",
+metadata/org.glassfish.jaxb/jaxb-runtime/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/jaxb-ri",
+metadata/io.opentelemetry/opentelemetry-exporter-otlp/index.json:7:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-beanbag",
+metadata/com.android.tools/annotations/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:38:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.jsonwebtoken/jjwt-impl/index.json:6:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-impl/index.json:28:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/commons-net/commons-net/index.json:6:    "repository-url" : "https://github.com/apache/commons-net",
+metadata/software.amazon.awssdk/http-client-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.eclipse.aether/aether-util/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+metadata/software.amazon.awssdk/profiles/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:28:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:45:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:62:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+metadata/jline/jline/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/jline/jline/index.json:22:    "repository-url" : "https://github.com/jline/jline2",
+metadata/org.eclipse.aether/aether-api/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+metadata/software.amazon.awssdk/metrics-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.eclipse.aether/aether-spi/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/com.hazelcast/hazelcast/index.json:8:    "repository-url": "https://github.com/hazelcast/hazelcast",
+metadata/com.hazelcast/hazelcast/index.json:27:    "repository-url": "https://github.com/hazelcast/hazelcast",
+metadata/com.esotericsoftware/minlog/index.json:6:    "repository-url" : "https://github.com/EsotericSoftware/minlog",
+metadata/org.codehaus.plexus/plexus-xml/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-xml",
+metadata/org.codehaus.plexus/plexus-xml/index.json:26:    "repository-url" : "https://github.com/codehaus-plexus/plexus-xml",
+metadata/org.eclipse.aether/aether-impl/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+metadata/software.amazon.awssdk/retries/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/annotations/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-containers",
+metadata/software.amazon.awssdk/utils/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+metadata/software.amazon.awssdk/http-auth/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
+metadata/software.amazon.awssdk/checksums/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+metadata/io.perfmark/perfmark-api/index.json:6:    "repository-url" : "https://github.com/perfmark/perfmark",
+metadata/software.amazon.awssdk/utils-lite/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.skyscreamer/jsonassert/index.json:6:    "repository-url" : "https://github.com/skyscreamer/JSONassert",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:6:    "repository-url" : "svn://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/",
+metadata/xmlpull/xmlpull/index.json:6:    "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
+metadata/org.hdrhistogram/HdrHistogram/index.json:14:    "repository-url": "https://github.com/HdrHistogram/HdrHistogram",
+metadata/software.amazon.awssdk/identity-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/org.dom4j/dom4j/index.json:6:    "repository-url" : "https://github.com/dom4j/dom4j",
+metadata/software.amazon.awssdk/retries-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/jakarta.inject/jakarta.inject-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/injection-api",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:23:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:56:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/org.latencyutils/LatencyUtils/index.json:6:    "repository-url" : "https://github.com/LatencyUtils/LatencyUtils",
+metadata/net.sf.jopt-simple/jopt-simple/index.json:6:    "repository-url" : "https://github.com/jopt-simple/jopt-simple",
+metadata/commons-fileupload/commons-fileupload/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.jboss.jdeparser/jdeparser/index.json:6:    "repository-url" : "https://github.com/jdeparser/jdeparser2",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:7:    "repository-url": "https://github.com/jetty/jetty-alpn-api",
+metadata/org.testcontainers/testcontainers/index.json:6:    "repository-url" : "https://github.com/testcontainers/testcontainers-java",
+metadata/org.testcontainers/testcontainers/index.json:37:    "repository-url" : "https://github.com/testcontainers/testcontainers-java",
+metadata/com.typesafe/config/index.json:6:    "repository-url" : "https://github.com/lightbend/config",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+metadata/eu.timepit/refined_3/index.json:6:    "repository-url" : "https://github.com/fthomas/refined",
+metadata/org.testcontainers/junit-jupiter/index.json:6:    "repository-url" : "https://github.com/testcontainers/testcontainers-java",
+metadata/net.sf.proguard/proguard-base/index.json:6:    "repository-url" : "https://github.com/Guardsquare/proguard",
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/colormath",
+metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/com.google.auto.service/auto-service-annotations/index.json:6:    "repository-url" : "https://github.com/google/auto",
+metadata/org.scala-sbt/util-interface/index.json:6:    "repository-url" : "https://github.com/sbt/util",
+metadata/org.iq80.snappy/snappy/index.json:6:    "repository-url" : "https://github.com/dain/snappy",
+metadata/org.iq80.snappy/snappy/index.json:20:    "repository-url" : "https://github.com/dain/snappy",
+metadata/org.scala-sbt/test-interface/index.json:6:    "repository-url" : "https://github.com/sbt/test-interface",
+metadata/redis.clients/jedis/index.json:6:    "repository-url" : "https://github.com/redis/jedis",
+metadata/redis.clients/jedis/index.json:30:    "repository-url" : "https://github.com/redis/jedis",
+metadata/redis.clients/jedis/index.json:52:    "repository-url" : "https://github.com/redis/jedis",
+metadata/redis.clients/jedis/index.json:75:    "repository-url" : "https://github.com/redis/jedis",
+metadata/org.scala-sbt/compiler-interface/index.json:6:    "repository-url" : "https://github.com/sbt/zinc",
+metadata/org.scala-sbt/compiler-interface/index.json:47:    "repository-url" : "https://github.com/sbt/zinc",
+metadata/org.scala-sbt/compiler-interface/index.json:65:    "repository-url" : "https://github.com/sbt/zinc",
+metadata/info.picocli/picocli/index.json:6:    "repository-url" : "https://github.com/remkop/picocli",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:6:    "repository-url" : "https://github.com/lightbend-labs/scala-logging",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:        "repository-url": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:221:        "repository-url": "https://github.com/example/project",
+metadata/io.ous/jtoml/index.json:6:    "repository-url" : "https://github.com/asafh/jtoml",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:6:    "repository-url" : "https://github.com/jboss/jboss-interceptors-api_spec",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:9:    "repository-url": "https://github.com/eclipse-paho/paho.mqtt.java",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/specs",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:9:    "repository-url": "https://github.com/eclipse-paho/paho.mqtt.java",
+metadata/org.http4s/http4s-dsl_3/index.json:6:    "repository-url" : "https://github.com/http4s/http4s",
+metadata/org.http4s/http4s-circe_3/index.json:6:    "repository-url" : "https://github.com/http4s/http4s",
+metadata/org.jboss.weld/weld-api/index.json:6:    "repository-url" : "https://github.com/weld/api",
+metadata/org.jboss.weld/weld-api/index.json:33:    "repository-url" : "https://github.com/weld/api",
+metadata/org.jboss.weld/weld-api/index.json:47:    "repository-url" : "https://github.com/weld/api",
+metadata/org.jboss.weld/weld-api/index.json:70:    "repository-url" : "https://github.com/weld/api",
+metadata/com.android.tools.build/builder-model/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:21:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:36:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.github.curious-odd-man/rgxgen/index.json:6:    "repository-url" : "https://github.com/curious-odd-man/RgxGen",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+metadata/com.google.cloud/grpc-gcp/index.json:6:    "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
+metadata/dev.langchain4j/langchain4j/index.json:6:    "repository-url" : "https://github.com/langchain4j/langchain4j",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquery",
+metadata/com.google.cloud/google-cloud-core-grpc/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:6:    "repository-url" : "https://github.com/sangria-graphql/sangria",
+metadata/org.json4s/json4s-native_3/index.json:6:    "repository-url" : "https://github.com/json4s/json4s",
+metadata/org.cache2k/cache2k-core/index.json:6:    "repository-url" : "https://github.com/cache2k/cache2k",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:6:    "repository-url" : "https://github.com/wildfly/jboss-classfilewriter",
+metadata/org.mongodb/mongo-java-driver/index.json:6:    "repository-url" : "https://github.com/mongodb/mongo-java-driver",
+metadata/org.mongodb/mongo-java-driver/index.json:44:    "repository-url" : "https://github.com/mongodb/mongo-java-driver",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:9:    "repository-url": "https://github.com/hibernate/hibernate-reactive",
+metadata/org.freemarker/freemarker/index.json:10:    "repository-url": "https://github.com/apache/freemarker",
+metadata/com.googlecode.concurrent-trees/concurrent-trees/index.json:6:    "repository-url" : "https://github.com/npgall/concurrent-trees",
+metadata/io.undertow/undertow-parser-generator/index.json:6:    "repository-url" : "https://github.com/undertow-io/undertow",
+metadata/net.i2p.crypto/eddsa/index.json:7:    "repository-url": "https://github.com/str4d/ed25519-java",
+metadata/io.undertow/undertow-core/index.json:6:    "repository-url" : "https://github.com/undertow-io/undertow",
+metadata/io.undertow/undertow-core/index.json:44:    "repository-url" : "https://github.com/undertow-io/undertow",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:23:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:38:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/avalon-framework/avalon-framework/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/io.smallrye.common/smallrye-common-net/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/com.google.cloud/google-cloud-core/index.json:5:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.cloud/google-cloud-core/index.json:20:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:6:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/com.google.auto.value/auto-value-annotations/index.json:6:    "repository-url" : "https://github.com/google/auto",
+metadata/com.google.auto.value/auto-value-annotations/index.json:26:    "repository-url" : "https://github.com/google/auto",
+metadata/org.hibernate.validator/hibernate-validator/index.json:10:    "repository-url": "https://github.com/hibernate/hibernate-validator",
+metadata/org.jsoup/jsoup/index.json:6:    "repository-url" : "https://github.com/jhy/jsoup",
+metadata/org.jsoup/jsoup/index.json:36:    "repository-url" : "https://github.com/jhy/jsoup",
+metadata/org.apache.pdfbox/fontbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:6:    "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
+metadata/org.eclipse.angus/jakarta.mail/index.json:9:    "repository-url": "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.apache.pdfbox/pdfbox-io/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/javax.inject/javax.inject/index.json:6:    "repository-url" : "https://github.com/javax-inject/javax-inject",
+metadata/com.squareup/javawriter/index.json:6:    "repository-url" : "https://github.com/square/javapoet",
+metadata/org.jspecify/jspecify/index.json:6:    "repository-url" : "https://github.com/jspecify/jspecify",
+metadata/org.ow2.asm/asm-debug-all/index.json:6:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:7:    "repository-url": "https://github.com/javaee/metro-fi",
+metadata/werken-xpath/werken-xpath/index.json:6:    "repository-url" : "https://sourceforge.net/p/werken-xpath/code/",
+metadata/org.ow2.asm/asm-tree/index.json:6:    "repository-url" : "https://gitlab.ow2.org/asm/asm/",
+metadata/org.jboss.netty/netty/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.ow2.asm/asm-analysis/index.json:6:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+metadata/org.asynchttpclient/async-http-client/index.json:6:    "repository-url" : "https://github.com/AsyncHttpClient/async-http-client",
+metadata/org.asynchttpclient/async-http-client/index.json:29:    "repository-url" : "https://github.com/AsyncHttpClient/async-http-client",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.ow2.asm/asm/index.json:5:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+metadata/org.ow2.asm/asm/index.json:20:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:6:    "repository-url" : "https://github.com/AsyncHttpClient/async-http-client",
+metadata/org.ow2.asm/asm-util/index.json:6:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:37:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.objenesis/objenesis/index.json:6:    "repository-url" : "https://github.com/easymock/objenesis",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:67:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/javax.servlet.jsp/jsp-api/index.json:6:    "repository-url" : "N/A",
+metadata/mysql/mysql-connector-java/index.json:9:    "repository-url": "https://github.com/mysql/mysql-connector-j",
+metadata/org.apache.tomcat/tomcat-juli/index.json:6:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat/tomcat-juli/index.json:38:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.atteo.classindex/classindex/index.json:6:    "repository-url" : "https://github.com/atteo/classindex",
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:6:    "repository-url" : "https://github.com/scala/scala-parallel-collections",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:6:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:38:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:6:    "repository-url" : "https://github.com/hibernate/hibernate-orm",
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json:7:    "repository-url": "https://github.com/jetty/jetty-toolchain",
+metadata/org.apache.tomcat/annotations-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:6:    "repository-url" : "https://github.com/sqldelight/sqldelight",
+metadata/com.intellij/annotations/index.json:6:    "repository-url" : "https://github.com/JetBrains/intellij-community",
+metadata/org.hibernate/hibernate-core/index.json:17:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate/hibernate-core/index.json:41:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/app.cash.sqldelight/runtime-jvm/index.json:6:    "repository-url" : "https://github.com/sqldelight/sqldelight",
+metadata/org.hibernate/hibernate-spatial/index.json:10:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate/hibernate-spatial/index.json:28:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:49:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/app.cash.sqldelight/sqlite-driver/index.json:6:    "repository-url" : "https://github.com/sqldelight/sqldelight",
+metadata/com.fasterxml/classmate/index.json:6:    "repository-url" : "https://github.com/FasterXML/java-classmate",
+metadata/app.cash.sqldelight/jdbc-driver/index.json:6:    "repository-url" : "https://github.com/sqldelight/sqldelight",
+metadata/com.fasterxml/aalto-xml/index.json:6:    "repository-url" : "https://github.com/FasterXML/aalto-xml",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:6:    "repository-url" : "https://github.com/jboss/jboss-transaction-api_spec",
+metadata/com.sun.activation/jakarta.activation/index.json:6:    "repository-url" : "https://github.com/jakartaee/jaf-api",
+metadata/com.h2database/h2/index.json:6:    "repository-url" : "https://github.com/h2database/h2database",
+metadata/commons-daemon/commons-daemon/index.json:6:    "repository-url" : "https://github.com/apache/commons-daemon",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:6:    "repository-url" : "https://github.com/jakartaee/cdi",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:24:    "repository-url" : "https://github.com/jakartaee/cdi",
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:6:    "repository-url" : "https://github.com/pdvrieze/xmlutil",
+metadata/io.netty/netty-pkitesting/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:6:    "repository-url" : "https://github.com/ethauvin/urlencoder",
+metadata/io.netty/netty-codec-stomp/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:6:    "repository-url" : "https://github.com/SeleniumHQ/selenium/",
+metadata/io.netty/netty-codec-mqtt/index.json:7:    "repository-url": "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-mqtt/index.json:22:    "repository-url": "https://github.com/netty/netty",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:6:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:22:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+metadata/io.netty/netty-codec/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.flywaydb/flyway-core/index.json:7:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-core/index.json:25:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-core/index.json:95:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-core/index.json:112:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-core/index.json:129:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-core/index.json:146:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-core/index.json:163:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/io.netty/netty-transport-native-epoll/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-smtp/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-smtp/index.json:21:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.flywaydb/flyway-sqlserver/index.json:7:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-sqlserver/index.json:44:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-sqlserver/index.json:69:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.thymeleaf/thymeleaf/index.json:6:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/org.thymeleaf/thymeleaf/index.json:21:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/org.thymeleaf/thymeleaf/index.json:38:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:6:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/io.netty/netty-tcnative-classes/index.json:6:    "repository-url" : "https://github.com/netty/netty-tcnative",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:7:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:44:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:69:    "repository-url" : "https://github.com/flyway/flyway",
+metadata/tools.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/io.netty/netty-codec-haproxy/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-haproxy/index.json:76:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.netty/netty-codec-dns/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-dns/index.json:76:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/io.quarkus/quarkus-value-registry/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.netty/netty-handler-proxy/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.netty/netty-codec-socks/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-socks/index.json:76:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs",
+metadata/io.quarkus/quarkus-fs-util/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus-fs-util",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/io.netty/netty-codec-xml/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/io.netty/netty-codec-memcache/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-memcache/index.json:75:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.mariadb/r2dbc-mariadb/index.json:9:    "repository-url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc",
+metadata/com.thoughtworks.proxytoys/proxytoys/index.json:6:    "repository-url" : "https://github.com/proxytoys/proxytoys",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-transport-classes-epoll/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/com.google.protobuf/protobuf-java-util/index.json:6:    "repository-url" : "https://github.com/protocolbuffers/protobuf",
+metadata/com.google.protobuf/protobuf-java-util/index.json:23:    "repository-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0",
+metadata/com.google.protobuf/protobuf-java-util/index.json:47:    "repository-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12",
+metadata/com.google.protobuf/protobuf-java/index.json:6:    "repository-url" : "https://github.com/protocolbuffers/protobuf",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.james/apache-mime4j-storage/index.json:6:    "repository-url" : "https://github.com/apache/james-mime4j",
+metadata/io.netty/netty-transport-native-unix-common/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.james/apache-mime4j-core/index.json:6:    "repository-url" : "https://github.com/apache/james-mime4j",
+metadata/io.netty/netty-transport-udt/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.eclipse.jdt/ecj/index.json:7:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt/ecj/index.json:23:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt/ecj/index.json:38:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt/ecj/index.json:53:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt/ecj/index.json:68:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt/ecj/index.json:82:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.apache.james/apache-mime4j-dom/index.json:6:    "repository-url" : "https://github.com/apache/james-mime4j",
+metadata/logkit/logkit/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/com.android.tools.jack/jack-api/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.google.cloud.opentelemetry/detector-resources-support/index.json:6:    "repository-url" : "https://github.com/GoogleCloudPlatform/opentelemetry-operations-java",
+metadata/com.google.cloud.opentelemetry/shared-resourcemapping/index.json:6:    "repository-url" : "https://github.com/GoogleCloudPlatform/opentelemetry-operations-java",
+metadata/net.razorvine/serpent/index.json:6:    "repository-url" : "https://github.com/irmen/Serpent",
+metadata/net.razorvine/serpent/index.json:21:    "repository-url" : "https://github.com/irmen/Serpent",
+metadata/org.unbescape/unbescape/index.json:7:    "repository-url": "https://github.com/unbescape/unbescape",
+metadata/net.razorvine/pyrolite/index.json:6:    "repository-url" : "https://github.com/irmen/Pyrolite",
+metadata/net.razorvine/pyrolite/index.json:21:    "repository-url" : "https://github.com/irmen/Pyrolite",
+metadata/com.shapesecurity/salvation2/index.json:6:    "repository-url" : "https://github.com/shapesecurity/salvation",
+metadata/org.xerial/sqlite-jdbc/index.json:7:    "repository-url" : "https://github.com/xerial/sqlite-jdbc",
+metadata/org.xerial/sqlite-jdbc/index.json:27:    "repository-url" : "https://github.com/xerial/sqlite-jdbc",
+metadata/org.xerial/sqlite-jdbc/index.json:41:    "repository-url" : "https://github.com/xerial/sqlite-jdbc",
+metadata/org.apache.maven/maven-api-di/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/com.vaadin.external.google/android-json/index.json:6:    "repository-url" : "http://developer.android.com/sdk/",
+metadata/com.github.ghik/silencer-lib_2.13/index.json:6:    "repository-url" : "https://github.com/ghik/silencer",
+metadata/org.hamcrest/hamcrest/index.json:6:    "repository-url" : "https://github.com/hamcrest/JavaHamcrest",
+metadata/com.github.scopt/scopt_3/index.json:6:    "repository-url" : "https://github.com/scopt/scopt",
+metadata/org.apache.maven/maven-api-meta/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.glassfish/javax.ejb/index.json:6:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.ejb/index.json:22:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/io.netty/netty-transport-native-kqueue/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.jboss.weld/weld-spi/index.json:6:    "repository-url" : "https://github.com/weld/api",
+metadata/org.jboss.weld/weld-spi/index.json:22:    "repository-url" : "https://github.com/weld/api",
+metadata/org.jboss.weld/weld-spi/index.json:36:    "repository-url" : "https://github.com/weld/api",
+metadata/org.jboss.weld/weld-spi/index.json:50:    "repository-url" : "https://github.com/weld/api",
+metadata/net.jcip/jcip-annotations/index.json:6:    "repository-url" : "http://jcip.net/",
+metadata/org.apache.camel/camel-api/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/net.sf.kxml/kxml2/index.json:6:    "repository-url" : "https://sourceforge.net/p/kxml/code/",
+metadata/io.netty/netty-common/index.json:5:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-common/index.json:21:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-common/index.json:37:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.glassfish/javax.servlet/index.json:6:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.annotation/index.json:12:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.annotation/index.json:20:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:6:    "repository-url" : "https://github.com/jmurty/java-xmlbuilder",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:22:    "repository-url" : "https://github.com/jmurty/java-xmlbuilder",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:37:    "repository-url" : "https://github.com/jmurty/java-xmlbuilder",
+metadata/io.netty/netty-transport-sctp/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation",
+metadata/com.datastax.oss/native-protocol/index.json:6:    "repository-url" : "https://github.com/datastax/native-protocol",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.glassfish/javax.transaction/index.json:6:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.jboss/jandex/index.json:6:    "repository-url" : "https://github.com/smallrye/jandex",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+metadata/xalan/xalan/index.json:6:    "repository-url" : "https://github.com/apache/xalan-java",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/com.google.cloud/proto-google-cloud-firestore-bundle-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+metadata/com.clickhouse/org.roaringbitmap/index.json:6:    "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
+metadata/com.datastax.oss/java-driver-shaded-guava/index.json:6:    "repository-url" : "https://github.com/datastax/java-driver-shaded-guava",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:6:    "repository-url" : "https://github.com/orchestr7/ktoml",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:6:    "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin-reporter-java",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:26:    "repository-url" : "https://github.com/openzipkin/zipkin-reporter-java",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:47:    "repository-url" : "https://github.com/openzipkin/zipkin-reporter-java",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/javax.money/money-api/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-api",
+metadata/org.tukaani/xz/index.json:6:    "repository-url" : "https://github.com/tukaani-project/xz-java",
+metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:7:    "repository-url": "https://github.com/GoogleContainerTools/jib",
+metadata/javax.jcr/jcr/index.json:6:    "repository-url" : "N/A",
+metadata/org.sonatype.aether/aether-util/index.json:6:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-util/index.json:25:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/com.auth0/jwks-rsa/index.json:6:    "repository-url" : "https://github.com/auth0/jwks-rsa-java",
+metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/com.auth0/java-jwt/index.json:6:    "repository-url" : "https://github.com/auth0/java-jwt",
+metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+metadata/org.sonatype.aether/aether-api/index.json:6:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:20:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:39:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:54:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/javax.annotation/javax.annotation-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.annotation",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:27:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.xmlunit/xmlunit-placeholders/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+metadata/org.sonatype.aether/aether-spi/index.json:6:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-spi/index.json:20:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.xmlunit/xmlunit-core/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+metadata/com.github.java-json-tools/btf/index.json:6:    "repository-url" : "https://github.com/java-json-tools/btf",
+metadata/com.github.java-json-tools/msg-simple/index.json:6:    "repository-url" : "https://github.com/java-json-tools/msg-simple",
+metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:6:    "repository-url" : "https://github.com/microprofile/microprofile-open-api",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:5:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:41:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:6:    "repository-url" : "https://github.com/java-json-tools/jackson-coreutils",
+metadata/javax.interceptor/javax.interceptor-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.interceptor",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:6:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/com.baomidou/mybatis-plus/index.json:6:    "repository-url" : "https://github.com/baomidou/mybatis-plus",
+metadata/com.ongres.scram/client/index.json:6:    "repository-url" : "https://github.com/ongres/scram",
+metadata/io.javaslang/javaslang-match/index.json:6:    "repository-url" : "https://github.com/vavr-io/vavr",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:6:    "repository-url" : "https://github.com/hibernate/hibernate-orm",
+metadata/com.ongres.scram/common/index.json:6:    "repository-url" : "https://gitlab.com/ongresinc/scram",
+metadata/org.hibernate.orm/hibernate-envers/index.json:18:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/com.lihaoyi/geny_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/geny",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/com.lihaoyi/fansi_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/fansi",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/com.lihaoyi/upack_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/upickle",
+metadata/org.opentest4j/opentest4j/index.json:6:    "repository-url" : "https://github.com/ota4j-team/opentest4j",
+metadata/io.github.x-stream/mxparser/index.json:6:    "repository-url" : "https://github.com/x-stream/mxparser",
+metadata/com.lihaoyi/fastparse_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/fastparse",
+metadata/com.lihaoyi/upickle-implicits_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/upickle",
+metadata/io.grpc/grpc-context/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-context/index.json:64:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/com.lihaoyi/scalatags_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/scalatags",
+metadata/io.grpc/grpc-googleapis/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-opentelemetry/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/com.lihaoyi/os-zip/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/os-lib",
+metadata/com.lihaoyi/ujson_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/upickle",
+metadata/io.grpc/grpc-grpclb/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/com.lihaoyi/unroll-annotation_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/unroll",
+metadata/io.netty/netty-transport-classes-io_uring/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.hibernate.orm/hibernate-core/index.json:20:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:45:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:71:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:105:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:138:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:163:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:186:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:210:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/org.hibernate.orm/hibernate-core/index.json:233:    "repository-url": "https://github.com/hibernate/hibernate-orm",
+metadata/io.netty/netty-resolver/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-resolver/index.json:20:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-transport/index.json:10:    "repository-url": "https://github.com/netty/netty",
+metadata/io.netty/netty-transport/index.json:42:    "repository-url": "https://github.com/netty/netty",
+metadata/com.lihaoyi/upickle-core_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/upickle",
+metadata/com.lihaoyi/pprint_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/PPrint",
+metadata/net.razorvine/pickle/index.json:6:    "repository-url" : "https://github.com/irmen/pickle",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:6:    "repository-url" : "https://code.google.com/archive/p/juniversalchardet/",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:6:    "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
+metadata/berkeleydb/je/index.json:8:    "repository-url": "https://download.oracle.com/berkeley-db/je-$version$.zip",
+metadata/org.checkerframework/checker-qual/index.json:5:    "repository-url" : "https://github.com/typetools/checker-framework",
+metadata/org.checkerframework/checker-qual/index.json:20:    "repository-url" : "https://github.com/typetools/checker-framework",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation",
+metadata/org.checkerframework/checker-compat-qual/index.json:6:    "repository-url" : "https://github.com/typetools/checker-framework",
+metadata/io.grpc/grpc-core/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-rls/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-inprocess/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/com.lihaoyi/sourcecode_3/index.json:6:    "repository-url" : "https://github.com/com-lihaoyi/sourcecode",
+metadata/io.netty.incubator/netty-incubator-transport-classes-io_uring/index.json:6:    "repository-url" : "https://github.com/netty/netty-incubator-transport-io_uring",
+metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:6:    "repository-url" : "https://github.com/netty/netty-incubator-codec-quic",
+metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:21:    "repository-url" : "https://github.com/netty/netty-incubator-codec-quic",
+metadata/io.grpc/grpc-netty/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/com.atomikos/transactions/index.json:6:    "repository-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development",
+metadata/com.atomikos/transactions-api/index.json:6:    "repository-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development",
+metadata/org.reactivestreams/reactive-streams/index.json:6:    "repository-url" : "https://github.com/reactive-streams/reactive-streams-jvm",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:21:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/com.google.flatbuffers/flatbuffers-java/index.json:6:    "repository-url" : "https://github.com/google/flatbuffers",
+
+web search: 
+web search: Maven Central org.apache.parquet parquet-jackson 1.12.2 source jar tests jar pom scm url
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/
+web search: 
+web search: 
+codex
+Maven Central has both a `sources.jar` and a `tests.jar` for `parquet-jackson:1.12.2`, so I’m using those for the source and test URLs. I’m checking the POM and upstream tag next to pick a repository root and documentation URL with confidence.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>parquet</artifactId>
+    <groupId>org.apache.parquet</groupId>
+    <version>1.12.2</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>parquet-jackson</artifactId>
+  <name>Apache Parquet Jackson</name>
+  <url>https://parquet.apache.org</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>false</minimizeJar>
+              <createSourcesJar>${shade.createSourcesJar}</createSourcesJar>
+              <artifactSet>
+                <includes>
+                  <include>${jackson.groupId}:*</include>
+                </includes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>${jackson.groupId}:*</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>${jackson.package}</pattern>
+                  <shadedPattern>${shade.prefix}.${jackson.package}</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <properties>
+        <shade.createSourcesJar>true</shade.createSourcesJar>
+      </properties>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>objenesis</artifactId>
+          <groupId>org.objenesis</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <properties>
+    <shade.createSourcesJar>false</shade.createSourcesJar>
+  </properties>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet/1.12.2/parquet-1.12.2.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>16</version>
+  </parent>
+
+  <groupId>org.apache.parquet</groupId>
+  <artifactId>parquet</artifactId>
+  <version>1.12.2</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Parquet MR</name>
+  <url>https://parquet.apache.org</url>
+  <description>Parquet is a columnar storage format that supports nested data. This provides the java implementation.</description>
+
+  <scm>
+    <connection>scm:git:git@github.com:apache/parquet-mr.git</connection>
+    <url>scm:git:git@github.com:apache/parquet-mr.git</url>
+    <developerConnection>scm:git:git@github.com:apache/parquet-mr.git</developerConnection>
+    <tag>apache-parquet-1.12.2-rc0</tag>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/PARQUET</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Dev Mailing List</name>
+      <post>dev@parquet.apache.org</post>
+      <subscribe>dev-subscribe@parquet.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@parquet.apache.org</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Commits Mailing List</name>
+      <post>commits@parquet.apache.org</post>
+      <subscribe>commits-subscribe@parquet.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@parquet.apache.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+      <name>Jitpack.io repository</name>
+      <!-- needed for brotli-codec -->
+    </repository>
+  </repositories>
+
+  <developers>
+    <developer>
+      <name>Julien Le Dem</name>
+      <email>julien@twitter.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <targetJavaVersion>1.8</targetJavaVersion>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>${targetJavaVersion}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <github.global.server>github</github.global.server>
+    <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+    <jackson.groupId>com.fasterxml.jackson.core</jackson.groupId>
+    <jackson.package>com.fasterxml.jackson</jackson.package>
+    <jackson.version>2.11.4</jackson.version>
+    <jackson-databind.version>${jackson.version}</jackson-databind.version>
+    <japicmp.version>0.14.2</japicmp.version>
+    <shade.prefix>shaded.parquet</shade.prefix>
+    <hadoop.version>2.10.1</hadoop.version>
+    <cascading.version>2.7.1</cascading.version>
+    <cascading3.version>3.1.2</cascading3.version>
+    <parquet.format.version>2.8.0</parquet.format.version>
+    <previous.version>1.11.0</previous.version>
+    <thrift.executable>thrift</thrift.executable>
+    <format.thrift.executable>thrift</format.thrift.executable>
+    <scala.version>2.12.8</scala.version>
+    <!-- scala.binary.version is used for projects that fetch dependencies that are in scala -->
+    <scala.binary.version>2.12</scala.binary.version>
+    <scala.maven.test.skip>false</scala.maven.test.skip>
+    <scrooge.verion>19.10.0</scrooge.verion>
+    <pig.version>0.16.0</pig.version>
+    <pig.classifier>h2</pig.classifier>
+    <thrift-maven-plugin.version>0.10.0</thrift-maven-plugin.version>
+    <thrift.version>0.13.0</thrift.version>
+    <format.thrift.version>0.13.0</format.thrift.version>
+    <fastutil.version>8.4.2</fastutil.version>
+    <semver.api.version>0.9.33</semver.api.version>
+    <slf4j.version>1.7.22</slf4j.version>
+    <avro.version>1.10.1</avro.version>
+    <guava.version>27.0.1-jre</guava.version>
+    <brotli-codec.version>0.1.1</brotli-codec.version>
+    <mockito.version>1.10.19</mockito.version>
+    <net.openhft.version>0.9</net.openhft.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+
+    <!-- parquet-cli dependencies -->
+    <opencsv.version>2.3</opencsv.version>
+    <jcommander.version>1.72</jcommander.version>
+    <zstd-jni.version>1.4.9-1</zstd-jni.version>
+    <commons-text.version>1.8</commons-text.version>
+
+    <!-- properties for the profiles -->
+    <surefire.logLevel>INFO</surefire.logLevel>
+  </properties>
+
+  <modules>
+    <module>parquet-arrow</module>
+    <module>parquet-avro</module>
+    <module>parquet-benchmarks</module>
+    <module>parquet-cascading-deprecated</module>
+    <module>parquet-cascading3-deprecated</module>
+    <module>parquet-cli</module>
+    <module>parquet-column</module>
+    <module>parquet-common</module>
+    <module>parquet-encoding</module>
+    <module>parquet-format-structures</module>
+    <module>parquet-generator</module>
+    <module>parquet-hadoop</module>
+    <module>parquet-jackson</module>
+    <module>parquet-pig</module>
+    <module>parquet-pig-bundle</module>
+    <module>parquet-protobuf</module>
+    <module>parquet-scala</module>
+    <module>parquet-scrooge-deprecated</module>
+    <module>parquet-thrift</module>
+    <module>parquet-hadoop-bundle</module>
+    <module>parquet-tools-deprecated</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <reportSets>
+          <reportSet><!-- by default, id = "default" -->
+            <reports><!-- select non-aggregate reports -->
+              <report>javadoc</report>
+              <report>test-javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet><!-- aggregate reportSet, to define in poms having modules -->
+            <id>aggregate</id>
+            <inherited>false</inherited><!-- don't run aggregate in child modules -->
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/generated-sources/**/*.java</sourceFileExclude>
+          </sourceFileExcludes>
+          <source>8</source>
+          <quiet>true</quiet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.5.2</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+          </formats>
+          <aggregate>true</aggregate>
+          <instrumentation>
+            <ignores>
+              <ignore>java.lang.UnsupportedOperationException.*</ignore>
+            </ignores>
+            <excludes>
+              <exclude>parquet/Log.class</exclude>
+              <exclude>**/*Exception.class</exclude>
+              <exclude>parquet/example/**/*.class</exclude>
+            </excludes>
+          </instrumentation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- Disable the source artifact from ASF parent -->
+          <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>source-release-assembly</id>
+              <phase>none</phase>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.3.1</version>
+         <executions>
+           <execution>
+            <id>enforce-banned-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>org.slf4j:slf4j-log4j12</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+         </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <minimizeJar>true</minimizeJar>
+                <artifactSet>
+                  <includes>
+                    <include>${jackson.groupId}:*</include>
+                    <include>it.unimi.dsi:fastutil</include>
+                    <include>net.openhft:*</include>
+                  </includes>
+                </artifactSet>
+                <!-- Shade jackson but do not include any class. Let parquet-jackson handle this -->
+                <filters>
+                  <filter>
+                    <artifact>${jackson.groupId}:*</artifact>
+                    <excludes>
+                      <exclude>**</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
+                <relocations>
+                  <relocation>
+                    <pattern>${jackson.package}</pattern>
+                    <shadedPattern>${shade.prefix}.${jackson.package}</shadedPattern>
+                  </relocation>
+                  <relocation>
+                    <pattern>it.unimi.dsi</pattern>
+                    <shadedPattern>${shade.prefix}.it.unimi.dsi</shadedPattern>
+                  </relocation>
+                  <relocation>
+                    <pattern>net.openhft</pattern>
+                    <shadedPattern>${shade.prefix}.net.openhft</shadedPattern>
+                  </relocation>
+                </relocations>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <git-SHA-1>${buildNumber}</git-SHA-1>
+              </manifestEntries>
+            </archive>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/generated-sources/**/*.java</sourceFileExclude>
+          </sourceFileExcludes>
+          <source>8</source>
+          <quiet>true</quiet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.10.b1</version>
+        <configuration>
+          <header>src/license.txt</header>
+          <strictCheck>true</strictCheck>
+        </configuration>
+        <!--executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions-->
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+      </plugin>
+
+      <plugin>
+        <!-- Override source and target from the ASF parent -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <argLine>-XX:MaxPermSize=256m</argLine>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.10</version>
+        <configuration>
+          <argLine>${surefire.argLine}</argLine>
+          <systemPropertyVariables>
+            <!-- Configure Parquet logging during tests
+                 See http://www.slf4j.org/api/org/slf4j/impl/SimpleLogger.html
+                 -->
+            <org.slf4j.simpleLogger.defaultLogLevel>${surefire.logLevel}</org.slf4j.simpleLogger.defaultLogLevel>
+            <org.slf4j.simpleLogger.showDateTime>true</org.slf4j.simpleLogger.showDateTime>
+            <org.slf4j.simpleLogger.dateTimeFormat>YYYY-MM-dd HH:mm:ss</org.slf4j.simpleLogger.dateTimeFormat>
+            <org.slf4j.simpleLogger.showThreadName>false</org.slf4j.simpleLogger.showThreadName>
+            <org.slf4j.simpleLogger.showShortLogName>true</org.slf4j.simpleLogger.showShortLogName>
+
+            <!-- Configure log level for Hadoop -->
+            <hadoop.logLevel>${surefire.logLevel}</hadoop.logLevel>
+          </systemPropertyVariables>
+          <excludes>
+            <exclude>**/benchmark/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+         </execution>
+       </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.12</version>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <consoleOutput>true</consoleOutput>
+          <excludes>
+            <exclude>.github/PULL_REQUEST_TEMPLATE.md</exclude>
+            <exclude>**/*.parquet</exclude>
+            <exclude>**/*.avro</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/names.txt</exclude> <!-- parquet-cascading test data -->
+            <exclude>**/*.avsc</exclude>
+            <exclude>**/*.iml</exclude>
+            <exclude>**/*.log</exclude>
+            <exclude>**/*.md.vm</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/build/**</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>.gitmodules</exclude>
+            <exclude>.idea/**</exclude>
+            <exclude>*/jdiff/*.xml</exclude>
+            <exclude>licenses/**</exclude>
+            <exclude>protobuf_install/**</exclude>
+            <exclude>thrift-${thrift.version}/**</exclude>
+            <exclude>thrift-${thrift.version}.tar.gz</exclude>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <version>${japicmp.version}</version>
+        <configuration>
+          <parameter>
+            <oldVersionPattern>${previous.version}</oldVersionPattern>
+            <breakBuildOnSourceIncompatibleModifications>true</breakBuildOnSourceIncompatibleModifications>
+            <onlyModified>true</onlyModified>
+            <overrideCompatibilityChangeParameters>
+              <!-- Adding a new method with default implementation to an interface should be a compatible change.
+                That's why they invented it. -->
+              <overrideCompatibilityChangeParameter>
+                <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
+                <semanticVersionLevel>MINOR</semanticVersionLevel>
+                <binaryCompatible>true</binaryCompatible>
+                <sourceCompatible>true</sourceCompatible>
+              </overrideCompatibilityChangeParameter>
+            </overrideCompatibilityChangeParameters>
+            <excludeModules>
+              <!-- Excluding the following modules because they are not part of the parquet public API -->
+              <excludeModule>parquet-benchmarks</excludeModule>
+              <excludeModule>parquet-cli</excludeModule>
+              <excludeModule>parquet-tools-deprecated</excludeModule>
+              <excludeModule>parquet-format-structures</excludeModule>
+
+              <!-- Excluding the following modules because bundles do not contain any java classes while they still fail the
+                compatibility check because of missing dependencies -->
+              <excludeModule>parquet-hadoop-bundle</excludeModule>
+              <excludeModule>parquet-pig-bundle</excludeModule>
+            </excludeModules>
+            <excludes>
+              <exclude>${shade.prefix}</exclude>
+              <!-- In PARQUET-2052 this field is changed from int to long which is a minor API
+                change to fix a integer overflow issue.
+                TODO: remove this after Parquet 1.13 release -->
+              <exclude>org.apache.parquet.column.values.dictionary.DictionaryValuesWriter#dictionaryByteSize</exclude>
+            </excludes>
+          </parameter>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>cmp</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>update-github-site</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.7</version>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>index</report>
+                  <report>mailing-list</report>
+                  <report>dependency-info</report>
+                  <report>project-team</report>
+                  <report>dependencies</report>
+                  <report>license</report>
+                  <report>scm</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+      <distributionManagement>
+        <site>
+          <id>github-pages-site</id>
+          <name>Deployment through GitHub's site deployment plugin</name>
+          <url>site/${project.version}</url>
+        </site>
+      </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.3</version>
+            <configuration>
+              <skipDeploy>true</skipDeploy>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>0.8</version>
+            <configuration>
+              <message>Creating site for ${project.version}</message>
+              <path>${project.distributionManagement.site.url}</path>
+              <merge>true</merge>
+            </configuration>
+            <executions>
+              <execution>
+                <id>github-site</id>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <phase>site-deploy</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>thrift9</id>
+      <properties>
+        <thrift.version>0.9.0</thrift.version>
+      </properties>
+    </profile>
+
+    <!-- Profile for CI tests to have less output -->
+    <profile>
+      <id>ci-test</id>
+      <properties>
+        <surefire.logLevel>WARN</surefire.logLevel>
+        <surefire.argLine>-XX:MaxJavaStackTraceDepth=10</surefire.argLine>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>jdk9+</id>
+      <activation>
+        <jdk>[1.9,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <release>8</release>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-javadoc.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://www.javadoc.io/doc/org.apache.parquet/parquet-jackson/1.12.2/index.html || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-33fe28d7
+ succeeded in 160ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:34:30 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.apache.parquet/parquet-jackson/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=eJwmERDo2EMCbCFZI1UuvKPvQ9RFxMiOQDnwi6LP8DuenEL5Gfxv%2BmxaRNKi32%2Bw8ZiTwPFsaUMJth0wYpT6XqO%2Fd4iS0ggt5OwBbWuwvMcWuZK84%2Fj2PZVT631CRg2o4zDuAqEIMHqBXB0lJQ%3D%3D"}]}
+server: cloudflare
+cf-ray: 9f6ba8eb3faa3b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 224ms:
+curl: (22) The reHTTP/2 404 
+date: Tue, 05 May 2026 00:34:30 GMT
+content-type: text/html
+cf-ray: 9f6ba8eada81be5f-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+quested URL returned error: 404
+
+web search: 
+web search: Apache Parquet 1.12.2 parquet-jackson javadoc documentation
+web search: 
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
