@@ -28,6 +28,13 @@ tasks.withType(Test).configureEach {
     jvmArgs += ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
 }
 
+tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach {
+    // ChromeTrace's PID initializer is synthetic in Scala bytecode, so include only the targeted line shim.
+    additionalClassDirs.from(fileTree(layout.buildDirectory.dir("classes/scala/test").get().asFile) {
+        include "scala/reflect/internal/util/ChromeTraceCoverageShim*.class"
+    })
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
