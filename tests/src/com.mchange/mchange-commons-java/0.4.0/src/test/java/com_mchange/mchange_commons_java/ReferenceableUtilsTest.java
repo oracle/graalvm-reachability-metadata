@@ -15,6 +15,7 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import java.util.Hashtable;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +28,13 @@ public class ReferenceableUtilsTest {
             Hashtable<>();
         environment.put("prefix", "resolved");
 
-        Object resolved = ReferenceableUtils.referenceToObject(reference, null, null, environment);
+        Object resolved = ReferenceableUtils.referenceToObject(
+            reference,
+            null,
+            null,
+            environment,
+            Set.of(CapturingObjectFactory.class.getName())
+        );
 
         assertThat(resolved).isEqualTo("resolved:alpha");
     }
