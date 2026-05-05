@@ -9,7 +9,6 @@ package jakarta_xml_bind.jakarta_xml_bind_api;
 import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.PropertiesContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import org.junit.jupiter.api.Test;
 
@@ -19,13 +18,14 @@ public class ModuleUtilTest {
     private static final String CONTEXT_PATH =
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.properties"
                     + ":jakarta_xml_bind.jakarta_xml_bind_api.contextpath.indexed";
+    private static final String PROPERTIES_CONTEXT_FACTORY = "DefaultPropertiesContextFactory";
 
     @Test
     public void resolvesObjectFactoryAndJaxbIndexEntriesFromTheContextPath() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 CONTEXT_PATH,
                 getClass().getClassLoader(),
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, PropertiesContextFactory.class.getName()));
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, PROPERTIES_CONTEXT_FACTORY));
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("properties-context-path-factory");

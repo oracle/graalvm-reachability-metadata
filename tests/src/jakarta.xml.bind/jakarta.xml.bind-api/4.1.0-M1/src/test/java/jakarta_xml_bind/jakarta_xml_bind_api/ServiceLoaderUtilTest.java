@@ -28,6 +28,7 @@ public class ServiceLoaderUtilTest {
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.osgi";
     private static final String JAXB_CONTEXT_FACTORY_SERVICE_RESOURCE =
             "META-INF/services/jakarta.xml.bind.JAXBContextFactory";
+    private static final String DEFAULT_FACTORY_BACKED_CONTEXT_FACTORY = "DefaultFactoryBackedContextFactory";
 
     @Test
     public void loadsProviderClassUsingContextClassLoader() throws Exception {
@@ -54,6 +55,17 @@ public class ServiceLoaderUtilTest {
                 ServiceLoaderUtilInvoker::instantiateFactoryBackedContextFactory);
 
         assertThat(provider).isInstanceOf(FactoryBackedContextFactory.class);
+    }
+
+    @Test
+    public void loadsSystemPropertyProviderWithoutContextClassLoader() throws Exception {
+        JAXBContext context = withSystemProperty(
+                JAXBContext.JAXB_CONTEXT_FACTORY,
+                DEFAULT_FACTORY_BACKED_CONTEXT_FACTORY,
+                () -> withContextClassLoader(null, () -> JAXBContext.newInstance(ServiceBoundType.class)));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("factory-backed-classes-factory");
     }
 
     @Test
@@ -123,6 +135,23 @@ public class ServiceLoaderUtilTest {
             return supplier.get();
         } finally {
             currentThread.setContextClassLoader(previousClassLoader);
+        }
+    }
+
+    private static <T> T withSystemProperty(
+            String name,
+            String value,
+            ThrowingSupplier<T> supplier) throws Exception {
+        String previousValue = System.getProperty(name);
+        System.setProperty(name, value);
+        try {
+            return supplier.get();
+        } finally {
+            if (previousValue == null) {
+                System.clearProperty(name);
+            } else {
+                System.setProperty(name, previousValue);
+            }
         }
     }
 
