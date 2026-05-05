@@ -40,12 +40,17 @@ import io.ktor.server.auth.digest
 import io.ktor.server.auth.expectedDigest
 import io.ktor.server.auth.form
 import io.ktor.server.auth.principal
+import io.ktor.server.auth.session
 import io.ktor.server.auth.toDigestCredential
 import io.ktor.server.auth.verifier
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import io.ktor.server.sessions.SessionSerializer
+import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.cookie
+import io.ktor.server.sessions.sessions
 import io.ktor.server.testing.testApplication
 import io.ktor.util.NonceManager
 import io.ktor.util.hex
@@ -313,6 +318,69 @@ public class KtorServerAuthJvmTest {
     }
 
     @Test
+    fun sessionAuthenticationValidatesTypedSessionsAndRunsChallenge() = testApplication {
+        application {
+            install(Sessions) {
+                cookie<UserIdPrincipal>(SessionCookieName) {
+                    serializer = UserIdPrincipalSessionSerializer
+                }
+            }
+            install(Authentication) {
+                session<UserIdPrincipal>("account-session") {
+                    validate { session ->
+                        if (session.name.startsWith(MemberSessionPrefix)) {
+                            UserIdPrincipal(session.name.removePrefix(MemberSessionPrefix))
+                        } else {
+                            null
+                        }
+                    }
+                    challenge { session ->
+                        call.respondText(
+                            "session-denied:${session?.name ?: "missing"}",
+                            status = HttpStatusCode.Unauthorized
+                        )
+                    }
+                }
+            }
+            routing {
+                get("/login/member") {
+                    call.sessions.set(SessionCookieName, UserIdPrincipal("${MemberSessionPrefix}carol"))
+                    call.respondText("logged-in")
+                }
+                get("/login/guest") {
+                    call.sessions.set(SessionCookieName, UserIdPrincipal("guest:dave"))
+                    call.respondText("logged-in")
+                }
+                authenticate("account-session") {
+                    get("/session") {
+                        call.respondText("session:${call.principal<UserIdPrincipal>()?.name}")
+                    }
+                }
+            }
+        }
+
+        val missingResponse = client.get("/session")
+        assertThat(missingResponse.status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(missingResponse.bodyAsText()).isEqualTo("session-denied:missing")
+
+        val memberLoginResponse = client.get("/login/member")
+        val memberSessionCookie: String = requireSessionCookie(memberLoginResponse.headers[HttpHeaders.SetCookie])
+        val authenticatedResponse = client.get("/session") {
+            header(HttpHeaders.Cookie, memberSessionCookie)
+        }
+        assertThat(authenticatedResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(authenticatedResponse.bodyAsText()).isEqualTo("session:carol")
+
+        val guestLoginResponse = client.get("/login/guest")
+        val guestSessionCookie: String = requireSessionCookie(guestLoginResponse.headers[HttpHeaders.SetCookie])
+        val rejectedResponse = client.get("/session") {
+            header(HttpHeaders.Cookie, guestSessionCookie)
+        }
+        assertThat(rejectedResponse.status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(rejectedResponse.bodyAsText()).isEqualTo("session-denied:missing")
+    }
+
+    @Test
     fun authenticationConfigRejectsDuplicateProviderNamesAndExposesProviders() {
         val config = AuthenticationConfig()
         config.basic("configured-basic", description = "HTTP basic credentials") {
@@ -393,6 +461,9 @@ public class KtorServerAuthJvmTest {
         }
     )
 
+    private fun requireSessionCookie(setCookieHeader: String?): String =
+        (setCookieHeader ?: error("Session cookie was not set")).substringBefore(';')
+
     private fun digestBytes(value: String): ByteArray {
         val digester: MessageDigest = MessageDigest.getInstance("MD5")
         digester.update(value.toByteArray(Charsets.ISO_8859_1))
@@ -405,7 +476,15 @@ public class KtorServerAuthJvmTest {
         override suspend fun verifyNonce(nonce: String): Boolean = nonce == DigestNonce
     }
 
+    private object UserIdPrincipalSessionSerializer : SessionSerializer<UserIdPrincipal> {
+        override fun serialize(session: UserIdPrincipal): String = session.name
+
+        override fun deserialize(text: String): UserIdPrincipal = UserIdPrincipal(text)
+    }
+
     private companion object {
+        private const val SessionCookieName: String = "AUTH_SESSION"
+        private const val MemberSessionPrefix: String = "member:"
         private const val DigestRealm: String = "testrealm@host.com"
         private const val DigestNonce: String = "dcd98b7102dd2f0e8b11d0f600bfb0c093"
         private const val RfcDigestAuthorizationHeader: String = "Digest " +
