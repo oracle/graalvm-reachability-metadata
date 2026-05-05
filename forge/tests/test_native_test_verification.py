@@ -288,6 +288,28 @@ class GateRoutingTests(unittest.TestCase):
                     )
                 # Gradle-side exit is always 0 (Exec uses ignoreExitValue).
                 return subprocess.CompletedProcess(cmd, 0)
+            if "mergeNativeTraceMetadata" in cmd:
+                input_dirs = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("-PinputDirs=")),
+                    "",
+                ).split(",")
+                output_dir = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("-PoutputDir=")),
+                    None,
+                )
+                if output_dir:
+                    merged_reflection = []
+                    for input_dir in input_dirs:
+                        metadata_path = Path(input_dir) / "reachability-metadata.json"
+                        if metadata_path.is_file():
+                            payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+                            merged_reflection.extend(payload.get("reflection", []))
+                    Path(output_dir).mkdir(parents=True, exist_ok=True)
+                    Path(output_dir, "reachability-metadata.json").write_text(
+                        json.dumps({"reflection": merged_reflection}),
+                        encoding="utf-8",
+                    )
+                return subprocess.CompletedProcess(cmd, 0)
             # mergeNativeTraceMetadata or anything else — succeeds.
             return subprocess.CompletedProcess(cmd, 0)
 
@@ -388,6 +410,36 @@ class GateRoutingTests(unittest.TestCase):
         self.assertIn(
             os.path.join(self.output_dir, "reachability-metadata.json"),
             output.getvalue(),
+        )
+
+    def test_aggregates_trace_metadata_into_durable_library_metadata(self) -> None:
+        metadata_dir = Path(self.repo) / "metadata" / "g" / "a" / "1.0"
+        metadata_dir.mkdir(parents=True)
+        durable_metadata_path = metadata_dir / "reachability-metadata.json"
+        durable_metadata_path.write_text(
+            json.dumps({"reflection": [{"type": "com.example.Existing"}]}),
+            encoding="utf-8",
+        )
+        fake, _calls = self._fake_run_factory([172, 0])
+
+        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        durable_metadata = json.loads(durable_metadata_path.read_text(encoding="utf-8"))
+        reflected_types = {
+            entry["type"]
+            for entry in durable_metadata["reflection"]
+        }
+        self.assertIn("com.example.Existing", reflected_types)
+        self.assertTrue(
+            any(entry.startswith("com.example.Generated") for entry in reflected_types),
+            durable_metadata,
         )
 
     def test_merges_final_passing_run_when_it_collected_metadata(self) -> None:

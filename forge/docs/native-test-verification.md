@@ -248,7 +248,9 @@ A `verify_native_test_passes(...)` invocation is correct iff:
    "exit value N" log line and routed:
    - `0` → run `mergeNativeTraceMetadata` once with all accepted run
      dirs as `-PinputDirs=` and the caller's `output_dir` as
-     `-PoutputDir=`, then return `PASSED`.
+     `-PoutputDir=`, merge the resulting reachability metadata into
+     `metadata/<group>/<artifact>/<version>/reachability-metadata.json`,
+     then return `PASSED`.
    - `172` with new trace metadata entries → append
      `runs_dir/cycle-<i>` to the running config dirs and continue to the
      next outer cycle. Codex is **not** invoked.

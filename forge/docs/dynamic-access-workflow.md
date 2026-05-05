@@ -223,10 +223,10 @@ failed tracing to Codex. Pi is not part of this gate.
 
 Effects within this workflow:
 
-1. The contents of the gate's `output_dir`, if any trace-backed metadata
-   was merged there, are added to the agent's read-only context for
-   subsequent class iterations. The directory may remain empty when
-   JVM-agent metadata alone made the native tests pass.
+1. The gate keeps metadata cumulative. JVM-agent output is written to the
+   durable `metadata/<group>/<artifact>/<version>/` directory; if native
+   tracing was needed, the merged trace output is also folded into that
+   durable metadata file before the next class starts.
 2. The dynamic-access coverage report is regenerated **after** the gate so
    that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.

@@ -458,6 +458,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
             indent_level=2,
         )
+        self._commit_library_metadata(f"Native metadata for {class_name}")
         return True
 
     def _refresh_report_after_gate(self, class_name: str):
@@ -650,6 +651,24 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         subprocess.run(
             ["git", "add", "-A", tests_dir],
+            cwd=self.reachability_repo_path, check=False,
+        )
+        subprocess.run(
+            ["git", "diff", "--cached", "--quiet"],
+            cwd=self.reachability_repo_path,
+        ).returncode != 0 and subprocess.run(
+            ["git", "commit", "-m", message],
+            cwd=self.reachability_repo_path,
+            capture_output=True, check=False,
+        )
+
+    def _commit_library_metadata(self, message: str) -> None:
+        """Stage and commit durable library metadata created by the class gate."""
+        metadata_dir = os.path.join(
+            self.reachability_repo_path, "metadata", self.group, self.artifact, self.version,
+        )
+        subprocess.run(
+            ["git", "add", "-A", metadata_dir],
             cwd=self.reachability_repo_path, check=False,
         )
         subprocess.run(

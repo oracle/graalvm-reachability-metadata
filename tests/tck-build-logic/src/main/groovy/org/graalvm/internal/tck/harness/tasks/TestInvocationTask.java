@@ -37,6 +37,7 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
             defaultArgs.add("-Porg.gradle.java.installations.auto-detect=false");
             defaultArgs.add("-Porg.gradle.java.installations.paths=" + installPathsProperty.get());
         }
+        appendProperty(defaultArgs, "metadataConfigDirs");
         return defaultArgs;
     }
 
@@ -44,6 +45,13 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
         return "Test for " + coordinates + " failed with exit code " + exitCode + ".";
+    }
+
+    private void appendProperty(List<String> command, String propertyName) {
+        Object propertyValue = getProject().findProperty(propertyName);
+        if (propertyValue != null) {
+            command.add("-P" + propertyName + "=" + propertyValue);
+        }
     }
 
     @Override

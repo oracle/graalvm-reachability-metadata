@@ -154,6 +154,8 @@ boolean informationalTaskRequested = isTaskRequested("help") || isTaskRequested(
 boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTraceImage") || isTaskRequested("runNativeTraceImage"))
 boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
+boolean nativeTestTaskRequested = !informationalTaskRequested &&
+        (isTaskRequested("nativeTest") || isTaskRequested("nativeTestCompile"))
 
 Closure<String> requiredGradleProperty = { String propertyName ->
     String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
@@ -339,7 +341,9 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
         buildArgs.add("-H:-UnlockExperimentalVMOptions")
     }
     List<String> metadataConfigDirs = commaSeparatedGradleProperty("metadataConfigDirs")
-    if (nativeTraceImageTaskRequested && !metadataConfigDirs.isEmpty()) {
+    boolean metadataConfigDirsRequested = project.hasProperty("metadataConfigDirs") &&
+            (nativeTraceImageTaskRequested || nativeTestTaskRequested)
+    if (metadataConfigDirsRequested && !metadataConfigDirs.isEmpty()) {
         buildArgs.add("-H:ConfigurationFileDirectories=${metadataConfigDirs.join(",")}")
     }
     if (runNativeTraceImageTaskRequested) {
