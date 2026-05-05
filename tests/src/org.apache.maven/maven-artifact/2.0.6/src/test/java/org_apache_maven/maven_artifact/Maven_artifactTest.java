@@ -8,7 +8,7 @@ package org_apache_maven.maven_artifact;
 
 import org.junit.jupiter.api.Test;
 
-class Maven_artifactTest {
+public class Maven_artifactTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
