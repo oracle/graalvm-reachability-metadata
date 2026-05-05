@@ -33,9 +33,9 @@ public class TreeInnerNodeInnerSerializationProxyTest {
         assertThat(roundTripped).isNotSameAs(tree);
         assertThat(roundTripped.draw()).isEqualTo("""
                 root
-                ├──left
-                │  └──left.leaf
-                └──right""");
+                \u251c\u2500\u2500left
+                \u2502  \u2514\u2500\u2500left.leaf
+                \u2514\u2500\u2500right""");
     }
 
     private static byte[] serialize(Tree.Node<String> tree) throws IOException {
