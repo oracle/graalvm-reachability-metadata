@@ -12,6 +12,7 @@ import shapeless.CNil
 import shapeless.Coproduct
 import shapeless.Generic
 import shapeless.HList
+import shapeless.HMap
 import shapeless.HNil
 import shapeless.Inl
 import shapeless.Inr
@@ -101,6 +102,21 @@ class Shapeless_2_13Test {
     assertThat(strings.unsized).isEqualTo(Vector("a", "b", "c"))
     assertThat(strings.head).isEqualTo("a")
     assertThat(strings.last).isEqualTo("c")
+  }
+
+  @Test
+  def heterogeneousMapsUseTypeIndexedRelationsForSafeLookups(): Unit = {
+    trait Conversion[K, V]
+    implicit val intToStringConversion: Conversion[Int, String] = new Conversion[Int, String] {}
+    implicit val stringToBooleanConversion: Conversion[String, Boolean] = new Conversion[String, Boolean] {}
+
+    val conversions = HMap[Conversion](23 -> "twenty-three", "enabled" -> true)
+    val extended = conversions + (7 -> "seven")
+
+    assertThat(conversions.get(23)).isEqualTo(Some("twenty-three"))
+    assertThat(conversions.get("enabled")).isEqualTo(Some(true))
+    assertThat(conversions.get(99)).isEqualTo(None)
+    assertThat(extended.get(7)).isEqualTo(Some("seven"))
   }
 
   @Test
