@@ -73,6 +73,20 @@ public class ConfigurationFromTemplateKtTest {
             .containsExactly("from base aware host")
     }
 
+    @Test
+    fun createsDefinitionFromTemplateUsingJavaConfigurationClasses(): Unit {
+        val definition = createScriptDefinitionFromTemplate(
+            KotlinType(JavaBackedScriptTemplate::class),
+            scriptLoadingHostConfiguration(),
+        )
+
+        assertThat(definition.compilationConfiguration[ScriptCompilationConfiguration.displayName])
+            .isEqualTo("java backed script")
+        assertThat(definition.compilationConfiguration[ScriptCompilationConfiguration.fileExtension])
+            .isEqualTo("java-backed.kts")
+        assertThat(definition.evaluationConfiguration).isNotNull()
+    }
+
     private fun scriptLoadingHostConfiguration(): ScriptingHostConfiguration = ScriptingHostConfiguration {
         ScriptingHostConfiguration.getScriptingClass.put(
             object : GetScriptingClass {
@@ -109,6 +123,15 @@ public abstract class ConstructorBackedScriptTemplate
     hostConfiguration = DefaultConstructedHostConfiguration::class,
 )
 public abstract class DefaultConstructedHostScriptTemplate
+
+@KotlinScript(
+    displayName = "java backed script",
+    fileExtension = "java-backed.kts",
+    compilationConfiguration = JavaBackedCompilationConfiguration::class,
+    evaluationConfiguration = JavaBackedEvaluationConfiguration::class,
+    hostConfiguration = JavaBackedHostConfiguration::class,
+)
+public abstract class JavaBackedScriptTemplate
 
 public class ConstructorBackedCompilationConfiguration : ScriptCompilationConfiguration({
     defaultImports("java.time.Instant")
