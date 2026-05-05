@@ -1,0 +1,1414 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df90f-5821-76a0-9b75-8086dd9d0ede
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: dev.zio:zio-interop-cats_3:23.1.0.13
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "23.1.0.13" when "$version$" is replaced with "23.1.0.13".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+- Set "coordinates" to "dev.zio:zio-interop-cats_3:23.1.0.13".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "23.1.0.13".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream project/tag, then update the JSON in place using the repo’s existing field conventions.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json && sed -n '1,200p' build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+-rw-rw-r-- 1 jovan jovan 61 May  5 18:53 build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+{
+  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
+}
+
+exec
+/bin/bash -lc 'rg -n "source-code-url|test-code-url|documentation-url|language|not-for-native-image" build/discovered-artifact-metadata | head -80' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+web search: 
+web search: dev.zio zio-interop-cats_3 23.1.0.13 Maven Central POM scm tag
+web search: 
+web search: https://github.com/zio/interop-cats
+web search: 
+web search: https://ipv6.repo1.maven.org/maven2/dev/zio/zio-interop-cats_3/
+codex
+Maven Central confirms this is a `jar` artifact and the `_3` suffix plus `scala3-library_3` dependency make it a Scala 3 JVM artifact, so it should keep Native Image metadata eligibility. I’m checking whether Maven has source and test artifacts for the exact version before falling back to GitHub tag URLs.
+exec
+/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' . | head -120" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/$version$",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/$version$",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./forge/utility_scripts/source_context.py:26:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:27:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:28:    "documentation": "documentation-url",
+./forge/utility_scripts/source_context.py:295:    language_value = index_entry.get("language")
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-$version$/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+./metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/thauvin/erik/urlencoder/urlencoder-lib-jvm/$version$/urlencoder-lib-jvm-$version$-sources.jar",
+./metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:7:    "test-code-url" : "https://github.com/ethauvin/urlencoder/tree/$version$/urlencoder-lib/src",
+./metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/thauvin/erik/urlencoder/urlencoder-lib-jvm/$version$/urlencoder-lib-jvm-$version$-javadoc.jar",
+./metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+./metadata/io.netty/netty-codec-memcache/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:74:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:76:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:77:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-javadoc.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-sources.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-tests.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-javadoc.jar",
+./metadata/io.netty/netty-transport-classes-io_uring/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-sources.jar",
+./metadata/io.netty/netty-transport-classes-io_uring/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-tests.jar",
+./metadata/io.netty/netty-transport-classes-io_uring/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-sources.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-tests.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:76:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-sources.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:78:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-tests.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:79:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-javadoc.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-sources.jar",
+./metadata/io.netty/netty-codec-xml/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-xml/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-javadoc.jar",
+./metadata/io.netty/netty-transport-classes-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-sources.jar",
+./metadata/io.netty/netty-transport-classes-kqueue/index.json:7:    "test-code-url" : "https://github.com/netty/netty/tree/netty-$version$/transport-native-kqueue/src/test/java/io/netty/channel/kqueue",
+./metadata/io.netty/netty-transport-classes-kqueue/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-javadoc.jar",
+./metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+./metadata/io.netty/netty-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+./metadata/io.netty/netty-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-javadoc.jar",
+./metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+./metadata/io.netty/netty-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+./metadata/io.netty/netty-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-javadoc.jar",
+./metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+./metadata/io.netty/netty-common/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+./metadata/io.netty/netty-common/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-javadoc.jar",
+./metadata/net.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+./metadata/net.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+./metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+./metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-sources.jar",
+./metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/relaxng-datatype/src/test",
+./metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-javadoc.jar",
+./metadata/io.netty/netty-resolver-dns-classes-macos/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-sources.jar",
+./metadata/io.netty/netty-resolver-dns-classes-macos/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-tests.jar",
+./metadata/io.netty/netty-resolver-dns-classes-macos/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-javadoc.jar",
+./metadata/com.sun.xml.bind.external/rngom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-sources.jar",
+./metadata/com.sun.xml.bind.external/rngom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/rngom/src/test",
+./metadata/com.sun.xml.bind.external/rngom/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+./metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+./metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-haproxy/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-sources.jar",
+./metadata/io.netty/netty-codec-haproxy/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-haproxy/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-javadoc.jar",
+./metadata/io.netty/netty-codec-haproxy/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-sources.jar",
+./metadata/io.netty/netty-codec-haproxy/index.json:77:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-test-sources.jar",
+./metadata/io.netty/netty-codec-haproxy/index.json:78:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-javadoc.jar",
+./metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-sources.jar",
+./metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-javadoc.jar",
+./metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+./metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+./metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:46:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/$version$/mariadb-java-client-$version$-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/$version$/mariadb-java-client-$version$-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/$version$/mariadb-java-client-$version$-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/$version$/mariadb-java-client-$version$-javadoc.jar",
+./metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection/$version$/neo4j-bolt-connection-$version$-sources.jar",
+./metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection/src/test",
+./metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection/$version$/neo4j-bolt-connection-$version$-javadoc.jar",
+./metadata/io.netty/netty-transport-udt/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar",
+./metadata/io.netty/netty-transport-udt/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar",
+./metadata/io.netty/netty-transport-udt/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar",
+./metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+./metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+./metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+./metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+./metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+./metadata/io.netty/netty-transport/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-sources.jar",
+./metadata/io.netty/netty-transport/index.json:11:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-test-sources.jar",
+./metadata/io.netty/netty-transport/index.json:12:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-javadoc.jar",
+./metadata/io.netty/netty-transport/index.json:41:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-sources.jar",
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats-tests_3/23.1.0.13/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 265ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: dev/zio/zio-interop-cats_3/23.1.0.13</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>dev/zio/zio-interop-cats_3/23.1.0.13</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="zio-interop-cats_3-23.1.0.13-javadoc.jar" title="zio-interop-cats_3-23.1.0.13-javadoc.jar">zio-interop-cats_3-23.1.0.13-javadoc.jar</a>          2025-12-19 18:56   3047181      
+<a href="zio-interop-cats_3-23.1.0.13-javadoc.jar.asc" title="zio-interop-cats_3-23.1.0.13-javadoc.jar.asc">zio-interop-cats_3-23.1.0.13-javadoc.jar.asc</a>      2025-12-19 18:56       228      
+<a href="zio-interop-cats_3-23.1.0.13-javadoc.jar.asc.md5" title="zio-interop-cats_3-23.1.0.13-javadoc.jar.asc.md5">zio-interop-cats_3-23.1.0.13-javadoc.jar.asc....</a>  2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13-javadoc.jar.asc.sha1" title="zio-interop-cats_3-23.1.0.13-javadoc.jar.asc.sha1">zio-interop-cats_3-23.1.0.13-javadoc.jar.asc....</a>  2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13-javadoc.jar.md5" title="zio-interop-cats_3-23.1.0.13-javadoc.jar.md5">zio-interop-cats_3-23.1.0.13-javadoc.jar.md5</a>      2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13-javadoc.jar.sha1" title="zio-interop-cats_3-23.1.0.13-javadoc.jar.sha1">zio-interop-cats_3-23.1.0.13-javadoc.jar.sha1</a>     2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13-sources.jar" title="zio-interop-cats_3-23.1.0.13-sources.jar">zio-interop-cats_3-23.1.0.13-sources.jar</a>          2025-12-19 18:56     39925      
+<a href="zio-interop-cats_3-23.1.0.13-sources.jar.asc" title="zio-interop-cats_3-23.1.0.13-sources.jar.asc">zio-interop-cats_3-23.1.0.13-sources.jar.asc</a>      2025-12-19 18:56       228      
+<a href="zio-interop-cats_3-23.1.0.13-sources.jar.asc.md5" title="zio-interop-cats_3-23.1.0.13-sources.jar.asc.md5">zio-interop-cats_3-23.1.0.13-sources.jar.asc....</a>  2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13-sources.jar.asc.sha1" title="zio-interop-cats_3-23.1.0.13-sources.jar.asc.sha1">zio-interop-cats_3-23.1.0.13-sources.jar.asc....</a>  2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13-sources.jar.md5" title="zio-interop-cats_3-23.1.0.13-sources.jar.md5">zio-interop-cats_3-23.1.0.13-sources.jar.md5</a>      2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13-sources.jar.sha1" title="zio-interop-cats_3-23.1.0.13-sources.jar.sha1">zio-interop-cats_3-23.1.0.13-sources.jar.sha1</a>     2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13.jar" title="zio-interop-cats_3-23.1.0.13.jar">zio-interop-cats_3-23.1.0.13.jar</a>                  2025-12-19 18:56    614232      
+<a href="zio-interop-cats_3-23.1.0.13.jar.asc" title="zio-interop-cats_3-23.1.0.13.jar.asc">zio-interop-cats_3-23.1.0.13.jar.asc</a>              2025-12-19 18:56       228      
+<a href="zio-interop-cats_3-23.1.0.13.jar.asc.md5" title="zio-interop-cats_3-23.1.0.13.jar.asc.md5">zio-interop-cats_3-23.1.0.13.jar.asc.md5</a>          2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13.jar.asc.sha1" title="zio-interop-cats_3-23.1.0.13.jar.asc.sha1">zio-interop-cats_3-23.1.0.13.jar.asc.sha1</a>         2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13.jar.md5" title="zio-interop-cats_3-23.1.0.13.jar.md5">zio-interop-cats_3-23.1.0.13.jar.md5</a>              2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13.jar.sha1" title="zio-interop-cats_3-23.1.0.13.jar.sha1">zio-interop-cats_3-23.1.0.13.jar.sha1</a>             2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13.pom" title="zio-interop-cats_3-23.1.0.13.pom">zio-interop-cats_3-23.1.0.13.pom</a>                  2025-12-19 18:56      3496      
+<a href="zio-interop-cats_3-23.1.0.13.pom.asc" title="zio-interop-cats_3-23.1.0.13.pom.asc">zio-interop-cats_3-23.1.0.13.pom.asc</a>              2025-12-19 18:56       228      
+<a href="zio-interop-cats_3-23.1.0.13.pom.asc.md5" title="zio-interop-cats_3-23.1.0.13.pom.asc.md5">zio-interop-cats_3-23.1.0.13.pom.asc.md5</a>          2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13.pom.asc.sha1" title="zio-interop-cats_3-23.1.0.13.pom.asc.sha1">zio-interop-cats_3-23.1.0.13.pom.asc.sha1</a>         2025-12-19 18:56        40      
+<a href="zio-interop-cats_3-23.1.0.13.pom.md5" title="zio-interop-cats_3-23.1.0.13.pom.md5">zio-interop-cats_3-23.1.0.13.pom.md5</a>              2025-12-19 18:56        32      
+<a href="zio-interop-cats_3-23.1.0.13.pom.sha1" title="zio-interop-cats_3-23.1.0.13.pom.sha1">zio-interop-cats_3-23.1.0.13.pom.sha1</a>             2025-12-19 18:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 261ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dev.zio</groupId>
+    <artifactId>zio-interop-cats_3</artifactId>
+    <packaging>jar</packaging>
+    <description>zio-interop-cats</description>
+    <url>https://zio.dev/interop-cats</url>
+    <version>23.1.0.13</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>zio-interop-cats</name>
+    <organization>
+        <name>dev.zio</name>
+        <url>https://zio.dev/interop-cats</url>
+    </organization>
+    <scm>
+        <url>https://github.com/zio/interop-cats/</url>
+        <connection>scm:git:git@github.com:zio/interop-cats.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>jdegoes</id>
+            <name>John De Goes</name>
+            <url>http://degoes.net</url>
+            <email>john@degoes.net</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>dev.zio</groupId>
+            <artifactId>zio-interop-tracer_3</artifactId>
+            <version>23.1.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jcstress</groupId>
+            <artifactId>jcstress-core</artifactId>
+            <version>0.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jopt-simple</groupId>
+            <artifactId>jopt-simple</artifactId>
+            <version>4.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_3</artifactId>
+            <version>1.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.zio</groupId>
+            <artifactId>zio_3</artifactId>
+            <version>2.1.23</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.zio</groupId>
+            <artifactId>zio-managed_3</artifactId>
+            <version>2.1.23</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.zio</groupId>
+            <artifactId>zio-streams_3</artifactId>
+            <version>2.1.23</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect-std_3</artifactId>
+            <version>3.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-mtl_3</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>co.fs2</groupId>
+            <artifactId>fs2-core_3</artifactId>
+            <version>3.12.2</version>
+        </dependency>
+        <dependency>
+            <groupId>co.fs2</groupId>
+            <artifactId>fs2-io_3</artifactId>
+            <version>3.12.2</version>
+        </dependency>
+    </dependencies>
+</project>
+ exited 22 in 252ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: site:mvnrepository.com/artifact/dev.zio/zio-interop-cats_3/23.1.0.13
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13.pom
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/zio/interop-cats.git | rg '23\\.1\\.0\\.13|refs/tags/v?23\\.1|refs/tags/series|refs/tags' | tail -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-test-sources.jar || true
+curl -fsSL -I https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-tests.jar || true
+curl -fsSL -I https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats-tests_3/23.1.0.13/zio-interop-cats-tests_3-23.1.0.13-sources.jar || true' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13.jar -o /tmp/zio-interop-cats_3-23.1.0.13.jar && jar tf /tmp/zio-interop-cats_3-23.1.0.13.jar | head -60' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-sources.jar -o /tmp/zio-interop-cats_3-23.1.0.13-sources.jar && jar tf /tmp/zio-interop-cats_3-23.1.0.13-sources.jar | head -80' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 457ms:
+888a1e79a553571297a9106b2ed0dbd0a41d436b	refs/tags/v1.3.1.0-RC1
+882c57c161c973637fe630eca9c9b00c8210f70f	refs/tags/v1.3.1.0-RC2
+a8cb061d4dfaaba2fb1a665a1f6c44f9503ce4fe	refs/tags/v1.3.1.0-RC3
+a8cb061d4dfaaba2fb1a665a1f6c44f9503ce4fe	refs/tags/v1.3.1.1-RC1
+1cf63c95ecabd4f3ee9c9f6768baf741d16997bc	refs/tags/v12.0.0.0
+5f7731639fdcc7e917afc9056e0d6b1d8b94893a	refs/tags/v13.0.0.0
+a9c25d12d418f724c76cbc12a9f192904df41a20	refs/tags/v13.0.0.1
+c92e37764bc20f09714995e23dbe565218831de6	refs/tags/v13.0.0.2
+9e7cda6272891b0364350b898dd27a4cd268ef43	refs/tags/v2.0.0.0-RC1
+16a0cb5a472df862046029b113a9c4d516bbd6b8	refs/tags/v2.0.0.0-RC10
+3823dcaa54e17af6fbbd9b4e68724a7a05bb8988	refs/tags/v2.0.0.0-RC11
+f60e2d0627b6b2cdda57adc35238471dbfbab017	refs/tags/v2.0.0.0-RC12
+f58ade9bffda9e7197d09b754a0c272e7955866a	refs/tags/v2.0.0.0-RC13
+f51d40d59fb9859f80f72ae03b7e33b221c0eb9c	refs/tags/v2.0.0.0-RC14
+ba3b53a60f65fc97d3b346ce84ac522815c15e15	refs/tags/v2.0.0.0-RC2
+d4ce92b339ec7468f7f2f59c6fcd3635383f5f31	refs/tags/v2.0.0.0-RC3
+fd468e5d1990c8b81bbac8c0fc282ab88b9c2d35	refs/tags/v2.0.0.0-RC4
+e040ae26368a287d0de4504a9e2e265cc59f4fc1	refs/tags/v2.0.0.0-RC5
+ed4674945fb01fd570949e62fdab74ae68e8c223	refs/tags/v2.0.0.0-RC6
+df151f99d85a2fafced1083321b68983b1a73538	refs/tags/v2.0.0.0-RC7
+c2a2cd8027308d201660c35c8099241a70c4dfbd	refs/tags/v2.0.0.0-RC8
+cd27432afc0ddba43004f01e080cb0f86c961119	refs/tags/v2.0.0.0-RC9
+d2e21048c6409439a3e37de2a6317ecc66f0f8d0	refs/tags/v2.1.3.0-RC15
+332c7ea4debeeb70caae66850e785af86f655dad	refs/tags/v2.1.3.0-RC16
+50b2cd02c4dbb6089471b0067c41cf60eb04934a	refs/tags/v2.1.4.0
+8ebd453e25959ed65193f9dfd044b5f7fcb53c54	refs/tags/v2.1.4.0-RC17
+41bcee71f55a06589506bfb84a39a416211ac99f	refs/tags/v2.1.4.1
+5627893d83ec82bc75661e9b9049a9d418399503	refs/tags/v2.2.0.0
+95567c8f1d19c2445c74ce07355dc2a2bf1b19fa	refs/tags/v2.2.0.1
+28732aa3a618e09d962d581e4861cd7e961e3a8f	refs/tags/v2.3.1.0
+47326a70556f312e70eb3a054b442f5e3ed187c8	refs/tags/v2.4.0.0
+053b9b468fda3217c8e5c17760e6690c56e3f85d	refs/tags/v2.4.1.0
+be12dc9abd450595339b6da8abe4996deeda869f	refs/tags/v2.5.1.0
+22b23587ab96b38806a08a02ed48111ee2227e73	refs/tags/v2.5.1.1
+0c5c92029b8cd1d279c1a8bf958e308e0b7c14ea	refs/tags/v22.0.0.0
+687b46a76b21f8ce5c63b162cb48ba4e6512c8bf	refs/tags/v23.0.0.0
+0a43ed4ee73b67c8b56df7f6645cdb1e8b589f6e	refs/tags/v23.0.0.1
+692e7bbebb7fb44d7d8e39e0915a2e79ce3fee89	refs/tags/v23.0.0.2
+c677f882f32675297ba02a102d242fd73c6d5cb3	refs/tags/v23.0.0.3
+6f836a72b03930fa4a32ec50a14590266a9cd3fa	refs/tags/v23.0.0.4
+db15eda0883a0775ba1627a15f6819406e963e62	refs/tags/v23.0.0.5
+c46cc092e1d026a962379c5ed8060c855d106ce2	refs/tags/v23.0.0.6
+f5112531e9b43554b9f47c056cc68ba0cae85f74	refs/tags/v23.0.0.7
+b120f74c36f7de40d425e715674b2f4279402627	refs/tags/v23.0.0.8
+e196bb6cf2973557eb762823a6ebcc1f4f417f9d	refs/tags/v23.1.0.0
+660c3b77d1c1ecad1f75d58c28542dd7773e62f2	refs/tags/v23.1.0.1
+9cf577f3b9dadd0aa85ba23152a70bb883a88b64	refs/tags/v23.1.0.10
+9a8474d64f04422ef4034e9d4277793497c50da6	refs/tags/v23.1.0.11
+421d5f1160c16b8459423f2211e041026b628622	refs/tags/v23.1.0.12
+9cce25a9e6228d68624b18d21cac9617fee68ca6	refs/tags/v23.1.0.13
+772233b52227f2508d118c700fcb09f4b719b8cf	refs/tags/v23.1.0.2
+bf24db580870f23ef1a8493335b340ac43ba0e71	refs/tags/v23.1.0.3
+c521ef54f6b28974aca8069ae833588d28ddbf6c	refs/tags/v23.1.0.4
+673c211742dfc1065ff3e4008afb1799effa9a5e	refs/tags/v23.1.0.5
+e92fb43cc64dd03ab82725b4529b5cd5cb615656	refs/tags/v23.1.0.6
+978842d2d256c20ba9186466a6bcf5e351f8bb02	refs/tags/v23.1.0.7
+978842d2d256c20ba9186466a6bcf5e351f8bb02	refs/tags/v23.1.0.8
+8a60a3aafe8283bfb13d169c169d2ab1bd495a15	refs/tags/v23.1.0.9
+27f5410458e843e38f3ad5cbc55ec7c9bbf664b5	refs/tags/v3.0.2.0
+4d312b6725a1b0b24b8aa12446ef411791e0ec83	refs/tags/v3.1.1.0
+8db8e7781f1874fe829e3b663df535004fb5c416	refs/tags/v3.2.9.0
+4cd2db5547fb63327ecb9362ce725cd628890c1e	refs/tags/v3.2.9.1
+4cd2db5547fb63327ecb9362ce725cd628890c1e	refs/tags/v3.2.9.2
+78cc6ded1a5f3bc1f1985ee9b3a704faded149a6	refs/tags/v3.3.0
+fdd9caac0b6c60403844243e26f37642a8bb0987	refs/tags/v3.3.0-RC1
+5a813cf1e8acebda320e8cafdabec77aad377fd3	refs/tags/v3.3.0-RC2
+5e028e9e3579c20af7d96b0bece22e01e598cfbc	refs/tags/v3.3.0-RC3
+5e028e9e3579c20af7d96b0bece22e01e598cfbc	refs/tags/v3.3.0-RC3-1
+2d303cca1364d3b8fc9231326f3dfa582afde16c	refs/tags/v3.3.0-RC3-2
+757c8756ee1ef78ac1910c187832310d4996b833	refs/tags/v3.3.0-RC4
+9117f44fdfbe8229bd824c63749f625d7fb24b2f	refs/tags/v3.3.0-RC5
+bfb51e6b0eb0a5a721f88eacc3b5835d07548b24	refs/tags/v3.3.0-RC6
+59cbaef3953aa837581a37c53cd828be278146d5	refs/tags/v3.3.0-RC7
+
+ succeeded in 479ms:
+META-INF/MANIFEST.MF
+zio/
+zio/interop/
+zio/interop/console/
+zio/interop/stm/
+zio/stream/
+zio/stream/interop/
+zio/BuildInfoInteropCats$.class
+zio/BuildInfoInteropCats.class
+zio/BuildInfoInteropCats.tasty
+zio/interop/CatsChunkInstances$$anon$1.class
+zio/interop/CatsChunkInstances.class
+zio/interop/CatsChunkInstances.tasty
+zio/interop/CatsChunkInstances1.class
+zio/interop/CatsChunkInstances1.tasty
+zio/interop/CatsEffectInstances.class
+zio/interop/CatsEffectInstances.tasty
+zio/interop/CatsEffectInstancesCause$$anon$1.class
+zio/interop/CatsEffectInstancesCause.class
+zio/interop/CatsEffectInstancesCause.tasty
+zio/interop/CatsEffectPlatform$CatsApp.class
+zio/interop/CatsEffectPlatform.class
+zio/interop/CatsEffectPlatform.tasty
+zio/interop/CatsEffectZManagedInstances.class
+zio/interop/CatsEffectZManagedInstances.tasty
+zio/interop/CatsIOResourceSyntax$$anon$1.class
+zio/interop/CatsIOResourceSyntax$.class
+zio/interop/CatsIOResourceSyntax.class
+zio/interop/CatsIOResourceSyntax.tasty
+zio/interop/CatsMtlInstances$$anon$1.class
+zio/interop/CatsMtlInstances$$anon$2.class
+zio/interop/CatsMtlInstances$$anon$3.class
+zio/interop/CatsMtlInstances$$anon$4.class
+zio/interop/CatsMtlInstances$$anon$5.class
+zio/interop/CatsMtlInstances.class
+zio/interop/CatsMtlInstances.tasty
+zio/interop/CatsMtlInstances1$$anon$6.class
+zio/interop/CatsMtlInstances1$$anon$7.class
+zio/interop/CatsMtlInstances1.class
+zio/interop/CatsMtlInstances1.tasty
+zio/interop/CatsMtlPlatform.class
+zio/interop/CatsMtlPlatform.tasty
+zio/interop/CatsNonEmptyChunkInstances$$anon$1.class
+zio/interop/CatsNonEmptyChunkInstances.class
+zio/interop/CatsNonEmptyChunkInstances.tasty
+zio/interop/CatsNonEmptyChunkInstances1.class
+zio/interop/CatsNonEmptyChunkInstances1.tasty
+zio/interop/CatsPlatform.class
+zio/interop/CatsPlatform.tasty
+zio/interop/CatsZManagedInstances.class
+zio/interop/CatsZManagedInstances.tasty
+zio/interop/CatsZManagedInstances1.class
+zio/interop/CatsZManagedInstances1.tasty
+zio/interop/CatsZManagedSyntax.class
+zio/interop/CatsZManagedSyntax.tasty
+zio/interop/CatsZioInstances.class
+zio/interop/CatsZioInstances.tasty
+zio/interop/CatsZioInstances1.class
+zio/interop/CatsZioInstances1.tasty
+zio/interop/CatsZioInstances2$$anon$2.class
+
+ succeeded in 518ms:
+META-INF/MANIFEST.MF
+sbt-buildinfo/
+zio/
+zio/interop/
+zio/interop/console/
+zio/interop/stm/
+zio/stream/
+zio/stream/interop/
+sbt-buildinfo/BuildInfoInteropCats.scala
+zio/interop/Dequeue.scala
+zio/interop/Enqueue.scala
+zio/interop/Hub.scala
+zio/interop/Queue.scala
+zio/interop/Schedule.scala
+zio/interop/ZioAsync.scala
+zio/interop/ZioBlockingPlatformSpecific.scala
+zio/interop/cats.scala
+zio/interop/catschunk.scala
+zio/interop/catsmtl.scala
+zio/interop/catsnechunk.scala
+zio/interop/catszmanaged.scala
+zio/interop/console/cats.scala
+zio/interop/package.scala
+zio/interop/stm/STM.scala
+zio/interop/stm/TPromise.scala
+zio/interop/stm/TQueue.scala
+zio/interop/stm/TRef.scala
+zio/interop/stm/TSemaphore.scala
+zio/stream/interop/FS2StreamSyntax.scala
+zio/stream/interop/cats.scala
+zio/stream/interop/fs2z.scala
+
+ succeeded in 1035ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 16:54:21 GMT
+content-type: text/html
+cf-ray: 9f71443c1cceb311-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 16:54:21 GMT
+content-type: text/html
+cf-ray: 9f71443e8cbbdfc0-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 05 May 2026 16:54:21 GMT
+content-type: text/html
+cf-ray: 9f7144407cf20a8e-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/dev/zio/zio-interop-cats-tests_3/23.1.0.13/zio-interop-cats-tests_3-23.1.0.13-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/bin/bash -lc "rm -rf /tmp/interop-cats-v23.1.0.13 && git clone --filter=blob:none --depth 1 --branch v23.1.0.13 https://github.com/zio/interop-cats.git /tmp/interop-cats-v23.1.0.13 && find /tmp/interop-cats-v23.1.0.13 -maxdepth 4 -type d | sort | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/zio/interop-cats/v23.1.0.13/README.md | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-javadoc.jar -o /tmp/zio-interop-cats_3-23.1.0.13-javadoc.jar && jar tf /tmp/zio-interop-cats_3-23.1.0.13-javadoc.jar | head -40' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 278ms:
+[//]: # (This file was autogenerated using `zio-sbt-website` plugin via `sbt generateReadme` command.)
+[//]: # (So please do not edit it manually. Instead, change "docs/index.md" file or sbt setting keys)
+[//]: # (e.g. "readmeDocumentation" and "readmeSupport".)
+
+# ZIO Interop Cats
+
+## Installation
+
+```sbt
+libraryDependencies += "dev.zio" %% "zio-interop-cats" % "<latest-version>"
+```
+
+## `ZIO` Cats Effect 3 instances
+
+**ZIO** integrates with Typelevel libraries by providing an instance of `Concurrent`, `Temporal` and `Async` for `Task`
+as required, for instance, by `fs2`, `doobie` and `http4s`.
+
+For convenience, the ZIO library defines an alias as follows:
+
+```scala
+type Task[A] = ZIO[Any, Throwable, A]
+```
+
+Therefore, we provide Cats Effect instances based on this specific datatype.
+
+## `Concurrent`
+
+In order to get a `Concurrent[Task]` or `Concurrent[RIO[R, *]]` (note `*` is kind-projector notation) we need to import `zio.interop.catz._`:
+
+```scala
+import cats.effect._
+import zio._
+import zio.interop.catz._
+
+def ceConcurrentForTaskExample = {
+  val F: cats.effect.Concurrent[Task] = implicitly
+  F.racePair(F.unit, F.unit)
+}
+```
+
+## `Temporal`
+
+```scala
+import cats.effect._
+import zio._
+import zio.interop.catz._
+
+def ceTemporal = {
+  val F: cats.effect.Temporal[Task] = implicitly
+  F.sleep(1.second) *> F.unit
+}
+```
+
+## `Async`
+
+```scala
+import cats.effect._
+import zio._
+import zio.interop.catz._
+
+def ceAsync = {
+  val F: cats.effect.Async[Task] = implicitly
+  F.racePair(F.unit, F.sleep(1.second) *> F.unit)
+}
+```
+
+## Other typeclasses
+
+There are many other typeclasses and useful conversions that this library provides implementations for:
+* See `zio/interop/cats.scala` file to see all available typeclass implementations for the Cats Effect 3 typeclasses
+* See `zio/stream/interop/cats.scala` for ZStream typeclass implementations
+* See `zio/stream/interop/FS2StreamSyntax.scala` for FS2 <-> ZStream conversions
+
+
+### cats-core
+
+If you only need instances for `cats-core` typeclasses, not `cats-effect` import `zio.interop.catz.core._`:
+
+```scala
+import zio.interop.catz.core._
+```
+
+Note that this library only has an `Optional` dependency on cats-effect – if you or your libraries don't depend on it, this library will not add it to the classpath.
+
+### Example
+
+The following example shows how to use ZIO with Doobie (a library for JDBC access) and FS2 (a streaming library), which both rely on Cats Effect instances (`cats.effect.Async` and `cats.effect.Temporal`):
+
+```scala
+import zio.{durationInt as _, *}
+import zio.interop.catz.*
+import doobie.*
+import doobie.implicits.*
+import scala.concurrent.duration.*
+
+object Example extends ZIOAppDefault:
+  val run = {
+    val xa: Transactor[Task] =
+      Transactor.fromDriverManager[Task]("org.h2.Driver", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "user", "", None)
+
+    sql"SELECT 42"
+      .query[Int]
+      .stream
+      .transact(xa)
+      .delayBy(1.second)
+      .evalTap(i => Console.printLine(i))
+      .compile
+      .drain
+      .exitCode
+  }
+```
+
+## Links
+
+- [Guide: How to Interop with Cats Effect?](https://zio.dev/guides/interop/with-cats-effect)
+
+## Documentation
+
+Learn more on the [ZIO Interop Cats homepage](https://zio.dev/interop-cats)!
+
+## Contributing
+
+For the general guidelines, see ZIO [contributor's guide](https://zio.dev/contributor-guidelines).
+
+## Code of Conduct
+
+See the [Code of Conduct](https://zio.dev/code-of-conduct)
+
+## Support
+
+Come chat with us on [![Badge-Discord]][Link-Discord].
+
+[Badge-Discord]: https://img.shields.io/discord/629491597070827530?logo=discord "chat on discord"
+[Link-Discord]: https://discord.gg/2ccFBr4 "Discord"
+
+## License
+
+[License](LICENSE)
+
+ succeeded in 895ms:
+META-INF/MANIFEST.MF
+fonts/
+hljs/
+images/
+images/banner-icons/
+images/bulb/
+images/bulb/dark/
+images/bulb/light/
+images/footer-icon/
+images/footer-icon/dark/
+images/footer-icon/light/
+images/icon-buttons/
+images/icon-buttons/arrow-down/
+images/icon-buttons/arrow-down/dark/
+images/icon-buttons/arrow-down/light/
+images/icon-buttons/arrow-right/
+images/icon-buttons/arrow-right/dark/
+images/icon-buttons/arrow-right/light/
+images/icon-buttons/close/
+images/icon-buttons/close/dark/
+images/icon-buttons/close/light/
+images/icon-buttons/copy/
+images/icon-buttons/copy/dark/
+images/icon-buttons/copy/light/
+images/icon-buttons/discord/
+images/icon-buttons/discord/dark/
+images/icon-buttons/discord/light/
+images/icon-buttons/gh/
+images/icon-buttons/gh/dark/
+images/icon-buttons/gh/light/
+images/icon-buttons/gitter/
+images/icon-buttons/gitter/dark/
+images/icon-buttons/gitter/light/
+images/icon-buttons/hamburger/
+images/icon-buttons/hamburger/dark/
+images/icon-buttons/hamburger/light/
+images/icon-buttons/link/
+images/icon-buttons/link/dark/
+images/icon-buttons/link/light/
+images/icon-buttons/menu-animated-open/
+
+ succeeded in 1417ms:
+Note: switching to '9cce25a9e6228d68624b18d21cac9617fee68ca6'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+/tmp/interop-cats-v23.1.0.13
+/tmp/interop-cats-v23.1.0.13/.git
+/tmp/interop-cats-v23.1.0.13/.git/branches
+/tmp/interop-cats-v23.1.0.13/.git/hooks
+/tmp/interop-cats-v23.1.0.13/.git/info
+/tmp/interop-cats-v23.1.0.13/.git/logs
+/tmp/interop-cats-v23.1.0.13/.git/objects
+/tmp/interop-cats-v23.1.0.13/.git/objects/info
+/tmp/interop-cats-v23.1.0.13/.git/objects/pack
+/tmp/interop-cats-v23.1.0.13/.git/refs
+/tmp/interop-cats-v23.1.0.13/.git/refs/heads
+/tmp/interop-cats-v23.1.0.13/.git/refs/tags
+/tmp/interop-cats-v23.1.0.13/.github
+/tmp/interop-cats-v23.1.0.13/.github/workflows
+/tmp/interop-cats-v23.1.0.13/core-only-test
+/tmp/interop-cats-v23.1.0.13/core-only-test/shared
+/tmp/interop-cats-v23.1.0.13/core-only-test/shared/src
+/tmp/interop-cats-v23.1.0.13/core-only-test/shared/src/test
+/tmp/interop-cats-v23.1.0.13/docs
+/tmp/interop-cats-v23.1.0.13/project
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/js
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/js/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/js/src/main
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/jvm
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/jvm/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/jvm/src/main
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer/js
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer/js/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer/js/src/main
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer/jvm
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer/jvm/src
+/tmp/interop-cats-v23.1.0.13/zio-interop-tracer/jvm/src/main
+/tmp/interop-cats-v23.1.0.13/zio-test-interop-cats
+/tmp/interop-cats-v23.1.0.13/zio-test-interop-cats/shared
+/tmp/interop-cats-v23.1.0.13/zio-test-interop-cats/shared/src
+/tmp/interop-cats-v23.1.0.13/zio-test-interop-cats/shared/src/main
+/tmp/interop-cats-v23.1.0.13/zio-test-interop-cats/shared/src/test
+
+exec
+/bin/bash -lc "find /tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests -type f | sort | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala/zio/internal/stacktracer/InteropTracerSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala/zio/interop/CatsInteropSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala/zio/interop/CatsZManagedSyntaxSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala/zio/interop/Fs2ZioSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala/zio/interop/catzQueueSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala/zio/interop/fs2StreamSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/CatsChunkSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/CatsMtlSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/CatsNonEmptyChunkSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/CatsSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/CatsSpecBase.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/CustomFunSuiteDiscipline.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/ExtraMonadLaws.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/ExtraMonadTests.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/GenIOInteropCats.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/interop/ZioSpecBase.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/stream/interop/GenStreamInteropCats.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/stream/interop/ZStreamSpec.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala/zio/stream/interop/ZStreamSpecBase.scala
+
+exec
+/bin/bash -lc "rg -n '\"language\"\\s*:\\s*\\{|\"name\"\\s*:\\s*\"scala\"|zio-interop|_3/.*documentation-url|javadoc.io/doc/dev.zio|repo.maven.apache.org/maven2/dev/zio' metadata build/discovered-artifact-metadata | head -120" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json:2:  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:11:      "name" : "scala",
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:11:      "name" : "scala",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:11:      "name" : "scala",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:11:      "name" : "scala",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:11:      "name" : "scala",
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:11:      "name" : "scala",
+metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+metadata/com.github.scopt/scopt_3/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13.16/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13.16/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:11:      "name" : "scala",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/com.lihaoyi/pprint_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/pprint_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/ujson_3/index.json:31:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:32:      "name" : "scala",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-prelude-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/zio-internal-macros_3/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:10:      "name" : "scala",
+metadata/dev.zio/zio-internal-macros_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:29:      "name" : "scala",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-sources.jar",
+metadata/dev.zio/zio-prelude_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/izumi-reflect_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-sources.jar",
+metadata/dev.zio/izumi-reflect_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-javadoc.jar",
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/upickle_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/upickle_3/index.json:31:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:32:      "name" : "scala",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/zio-config-typesafe_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-sources.jar",
+metadata/dev.zio/zio-config-typesafe_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:11:      "name" : "scala",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/upickle-core_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-core_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:10:      "name" : "scala",
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:30:      "name" : "scala",
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/os-lib_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/os-lib_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+
+exec
+/bin/bash -lc "find /tmp/interop-cats-v23.1.0.13/zio-interop-cats -type f | sort | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/js/src/main/scala/zio/interop/ZioBlockingPlatformSpecific.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/jvm/src/main/scala/zio/interop/ZioBlockingPlatformSpecific.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/Dequeue.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/Enqueue.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/Hub.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/Queue.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/Schedule.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/ZioAsync.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/cats.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/catschunk.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/catsmtl.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/catsnechunk.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/catszmanaged.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/console/cats.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/package.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/stm/STM.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/stm/TPromise.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/stm/TQueue.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/stm/TRef.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/interop/stm/TSemaphore.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/stream/interop/FS2StreamSyntax.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/stream/interop/cats.scala
+/tmp/interop-cats-v23.1.0.13/zio-interop-cats/shared/src/main/scala/zio/stream/interop/fs2z.scala
+
+exec
+/bin/bash -lc 'curl -fsSL -I https://github.com/zio/interop-cats/tree/v23.1.0.13/zio-interop-cats-tests && curl -fsSL -I https://github.com/zio/interop-cats/tree/v23.1.0.13/zio-interop-cats-tests/shared/src/test/scala && curl -fsSL -I https://github.com/zio/interop-cats/tree/v23.1.0.13/zio-interop-cats-tests/jvm/src/test/scala' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 2238ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:54:46 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e9f13e6c76c458ad836837e8a321bf2e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2FQ26LVVMFLKuv2BeKLYd4Pw060k0oEgbHY%2FNBmJ3EHCCDjxIknlk5xf6gH5o%2BbWDJwnkp1IZw4mJ0AhdeGU4XLQivgghONYWdWLeFiTSwff4rDee9%2FnJn8uEA56Kqa5HesKCsnGKPChqRKflIbTw0zNv7Lim%2BvL%2B0dwsu9ziOBHSMLBlULiJJFGACgCW9Np0i%2FXeDYW9kSoguxeP3wsqP8qhoBdPddSsEdxpvTq5xRuq4SKe9ZfMd1FBUJziRSeCzWIH%2BiT1w5TRZyyjySHqzA%3D%3D--20D3Ez57k9sP1%2BN%2B--hQnfRU0vY8P0myXOMuMKcw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.415926443.1778000085; expires=Wed, 05 May 2027 16:54:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 16:54:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9B72:20885C:36F08D1:2B3EF31:69FA20D5
+
+HTTP/2 200 
+date: Tue, 05 May 2026 16:54:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0b3549c5aaf8aa23d3ebb1e75c093c78"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ZJNZQJZi3LYMkTH2rdCXXduo3R%2F76JzyNzRDY51%2F6xyR0iMBbSp6ZYCxxU%2F%2Bh7YObEqgvW0d79GA2n8ODNPAeTspecPS2X58%2FuZdK7cDVLrDKSc7yRn6BMdkEgCEKqxQoPnobq4GhY2eZBFNdv7YgtfOYnmrgvJAhS7qH3htVPivG%2BbW%2Bwbs89R84SO7vFvHB3U78L0PQkVP5tPf9kjfuCytZixVoH1XE9rM5P6FLhKEcr6ghFJrULkpypbzOIEchOE8Q990DEzlQeuDMmqoCA%3D%3D--8ihtxTGGVZXqZI8g--1oZaDuoj0bXYz%2Bik%2FcEX8Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1018141808.1778000086; expires=Wed, 05 May 2027 16:54:46 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 16:54:46 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9B7C:3CD8E:38C761C:2CB6952:69FA20D6
+
+HTTP/2 200 
+date: Tue, 05 May 2026 16:54:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c2c47ac46385297204c346cfb52fcd87"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=o7RTmYvZORKxk76OTM1wD6PQhzZ6MRSdeMsehVMF58p7a2FRYO9x8CrsbiTwYHxf61kBs2WpF32uPvyLMG%2BkWPYs41Yv7mNxmFRTrZ4PlvFQ2lwT%2FnNjjYfMDykQpaseCeQdjr3%2FV4p7GNuARykIMEYe8OhH6LU6n3X9mhpMk5RbfLXWKfaMHX3w%2BZcYoTrehF%2Fp3VR1WnzyIzc7tsMGIU8YUESiDC8oxHLlMkW19t6SuT6VZrvsiMF8A4B%2F2YWehViVA1itLB8HSfDswwEcaQ%3D%3D--vVuY5SMu2HAC5SN%2F--%2FEdjlTvX7hAwMXD1WmJ52A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1108728001.1778000087; expires=Wed, 05 May 2027 16:54:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 16:54:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9B80:626B5:36B343A:2B26FE6:69FA20D7
+
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/dev.zio/zio-prelude_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0-RC39",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio-prelude",
+    "test-code-url" : "https://github.com/zio/zio-prelude/tree/v$version$/core-tests",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-javadoc.jar",
+    "description" : "ZIO Prelude is a Scala library of functional data types and algebraic abstractions with tight integration with ZIO. It provides data types such as Validation and NonEmptyList, newtypes and subtypes, and composition patterns for values and type constructors to model domains and combine data safely.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.0.0-RC39",
+      "1.0.0-RC40",
+      "1.0.0-RC41",
+      "1.0.0-RC42",
+      "1.0.0-RC43",
+      "1.0.0-RC44",
+      "1.0.0-RC45",
+      "1.0.0-RC46",
+      "1.0.0-RC47"
+    ],
+    "allowed-packages" : [
+      "zio.prelude"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/org.parboiled/parboiled_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.5.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/sirthias/parboiled2",
+    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-javadoc.jar",
+    "description" : "parboiled2 is a Scala macro-based parser generator for Parsing Expression Grammars that turns an internal Scala DSL for grammar rules into JVM bytecode at compile time. It provides a concise type-safe API for building fast parsers with parse-error reporting, suitable for replacing regular expressions or parser-combinator code for structured text.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.5.1"
+    ],
+    "allowed-packages" : [
+      "org.parboiled2"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "sed -n '1,60p' metadata/dev.zio/zio-stacktracer_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "2.1.15",
+    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio",
+    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+    "description" : "ZIO Stacktracer provides Scala 3 compile-time tracing support used by ZIO to capture source locations and encode call-site traces. It exposes tracer macros, source-location derivation, trace parsing, and opt-out implicits that help ZIO report useful execution diagnostics without manually passing trace data.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.1.15"
+    ],
+    "allowed-packages" : [
+      "zio.internal.stacktracer",
+      "zio.stacktracer"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "2.1.19",
+    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio",
+    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+    "description" : "ZIO Stacktracer provides Scala 3 compile-time tracing support used by ZIO to capture source locations and encode call-site traces. It exposes tracer macros, source-location derivation, trace parsing, and opt-out implicits that help ZIO report useful execution diagnostics without manually passing trace data.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.1.19",
+      "2.1.20",
+      "2.1.21",
+      "2.1.22",
+      "2.1.23",
+      "2.1.24",
+      "2.1.25"
+    ],
+    "allowed-packages" : [
+      "zio.internal.stacktracer",
+      "zio.stacktracer"
+    ]
+  }
+]
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13 zio-interop-cats_3-23.1.0.13-sources.jar javadoc jar
+web search: 
+web search: https://ipv6.repo1.maven.org/maven2/dev/zio/zio-interop-cats_3/
+web search: 
+web search: github zio interop-cats README Typelevel libraries Concurrent Temporal Async Task fs2 doobie http4s
+codex
+I found no published Maven test-sources or tests classifier for `23.1.0.13`, so the test URL will use the tagged upstream `zio-interop-cats-tests` directory. I’m keeping Maven URLs for sources and javadocs because those artifacts exist for the exact version.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+diff --git a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+index 27f474c22bf6b8e164b040c4903133ef01530825..ef98e3b4ace3b04a747aa40021237df95e47f7f5
+--- a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
++++ b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
++  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/interop-cats",
++  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
++  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+index 27f474c22bf6b8e164b040c4903133ef01530825..ef98e3b4ace3b04a747aa40021237df95e47f7f5
+--- a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
++++ b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
++  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/interop-cats",
++  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
++  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+{
+  "coordinates": "dev.zio:zio-interop-cats_3:23.1.0.13",
+  "source-code-url": "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
+  "repository-url": "https://github.com/zio/interop-cats",
+  "test-code-url": "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
+  "description": "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+exec
+/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-sources.jar \\
+  https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/23.1.0.13/zio-interop-cats_3-23.1.0.13-javadoc.jar \\
+  https://github.com/zio/interop-cats/tree/v23.1.0.13/zio-interop-cats-tests \\
+  https://github.com/zio/interop-cats; do
+  curl -fsSI \""'$url" | sed -n '"'1p'
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+diff --git a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+index 27f474c22bf6b8e164b040c4903133ef01530825..ef98e3b4ace3b04a747aa40021237df95e47f7f5
+--- a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
++++ b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
++  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/interop-cats",
++  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
++  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1102ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+index 27f474c22bf6b8e164b040c4903133ef01530825..ef98e3b4ace3b04a747aa40021237df95e47f7f5
+--- a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
++++ b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
++  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/interop-cats",
++  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
++  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json && sed -n '1,120p' build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6
+ succeeded in 0ms:
+{
+  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
+  "repository-url" : "https://github.com/zio/interop-cats",
+  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
+  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+diff --git a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+index 27f474c22bf6b8e164b040c4903133ef01530825..ef98e3b4ace3b04a747aa40021237df95e47f7f5
+--- a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
++++ b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
++  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/interop-cats",
++  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
++  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Maven Central dev.zio zio-interop-cats_3 23.1.0.13 sources javadoc
+web search: 
+web search: site:github.com/zio/interop-cats/tree/v23.1.0.13/zio-interop-cats-tests
+codex
+Updated [dev.zio-zio-interop-cats_3-23.1.0.13.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json).
+
+I set Maven source/javadoc URLs, the GitHub repository and tagged test-suite URL, the two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because this is a JVM `jar` artifact with class files, not a JS/Native/Android-only artifact; Maven Central lists the exact `23.1.0.13` version, and the ZIO GitHub org identifies `interop-cats` as a Scala project for Cats Effect type class instances. ([ipv6.repo1.maven.org](https://ipv6.repo1.maven.org/maven2/dev/zio/zio-interop-cats_3/?utm_source=openai))
+
+Validated with `jq`, and the resolved source, documentation, test, and repository URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+index 27f474c22bf6b8e164b040c4903133ef01530825..ef98e3b4ace3b04a747aa40021237df95e47f7f5
+--- a/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
++++ b/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13"
++  "coordinates" : "dev.zio:zio-interop-cats_3:23.1.0.13",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/interop-cats",
++  "test-code-url" : "https://github.com/zio/interop-cats/tree/v$version$/zio-interop-cats-tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
++  "description" : "ZIO Interop Cats provides type class instances and syntax that let ZIO effects, streams, queues, STM, and related data types work with Cats, Cats Effect, Cats MTL, and FS2 APIs. It helps Scala applications use ZIO with Typelevel libraries while preserving ZIO's typed errors, environments, resources, and concurrency abstractions.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+100,593
+Updated [dev.zio-zio-interop-cats_3-23.1.0.13.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/build/discovered-artifact-metadata/dev.zio-zio-interop-cats_3-23.1.0.13.json).
+
+I set Maven source/javadoc URLs, the GitHub repository and tagged test-suite URL, the two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because this is a JVM `jar` artifact with class files, not a JS/Native/Android-only artifact; Maven Central lists the exact `23.1.0.13` version, and the ZIO GitHub org identifies `interop-cats` as a Scala project for Cats Effect type class instances. ([ipv6.repo1.maven.org](https://ipv6.repo1.maven.org/maven2/dev/zio/zio-interop-cats_3/?utm_source=openai))
+
+Validated with `jq`, and the resolved source, documentation, test, and repository URLs all returned HTTP 200.
+Ran agent for dev.zio:zio-interop-cats_3:23.1.0.13 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/build/agent-artifact-discovery-logs/dev.zio-zio-interop-cats_3-23.1.0.13.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5357-4fe91de6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 2s
+9 actionable tasks: 9 executed
