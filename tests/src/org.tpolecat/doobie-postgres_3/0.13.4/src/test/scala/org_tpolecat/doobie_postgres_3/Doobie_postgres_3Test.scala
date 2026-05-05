@@ -9,7 +9,7 @@ package org_tpolecat.doobie_postgres_3
 import cats.~>
 import cats.effect.IO
 import doobie.Meta
-import doobie.free.connection.ConnectionOp
+import doobie.free.connection.{ConnectionIO, ConnectionOp}
 import doobie.implicits._
 import doobie.postgres.Text
 import doobie.postgres.implicits._
@@ -159,6 +159,17 @@ class Doobie_postgres_3Test {
   }
 
   @Test
+  def postgresExplainSyntaxPrefixesQueriesAndUpdatesWithExplainStatements(): Unit = {
+    val explainedQuerySql: String = capturePreparedSql(sql"select 1".query[Int].explain)
+    val analyzedUpdateSql: String = capturePreparedSql(
+      sql"update target_table set processed = true".update.explainAnalyze
+    )
+
+    assertEquals("EXPLAIN select 1", explainedQuerySql)
+    assertEquals("EXPLAIN ANALYZE update target_table set processed = true", analyzedUpdateSql)
+  }
+
+  @Test
   def postgresSqlStateSyntaxRecoversOnlyMatchingSqlExceptions(): Unit = {
     val recovered: String = IO
       .raiseError[String](new SQLException("duplicate key", sqlstate.class23.UNIQUE_VIOLATION.value))
@@ -190,6 +201,28 @@ class Doobie_postgres_3Test {
     assertNotNull(meta)
   }
 
+  private def capturePreparedSql[A](program: ConnectionIO[A]): String = {
+    val capturedSql: CapturedPreparedSql = assertThrows(classOf[CapturedPreparedSql], () => {
+      program.foldMap(capturePreparedStatementSql).unsafeRunSync()
+      ()
+    })
+
+    capturedSql.sql
+  }
+
+  private val capturePreparedStatementSql: ConnectionOp ~> IO =
+    new (ConnectionOp ~> IO) {
+      override def apply[A](operation: ConnectionOp[A]): IO[A] =
+        operation match {
+          case ConnectionOp.BracketCase(acquire, _, _) =>
+            acquire
+              .foldMap(this)
+              .flatMap(_ => IO.raiseError(new AssertionError(s"unexpected completed bracket: $operation")))
+          case ConnectionOp.PrepareStatement(sql) => IO.raiseError(new CapturedPreparedSql(sql))
+          case _ => IO.raiseError(new AssertionError(s"unexpected connection operation: $operation"))
+        }
+    }
+
   private val failOnConnectionAccess: ConnectionOp ~> IO =
     new (ConnectionOp ~> IO) {
       override def apply[A](operation: ConnectionOp[A]): IO[A] =
@@ -200,6 +233,9 @@ class Doobie_postgres_3Test {
     val Monday: Value = Value("monday")
     val Tuesday: Value = Value("tuesday")
   }
+
+  private final class CapturedPreparedSql(val sql: String)
+    extends RuntimeException(s"captured prepared SQL: $sql")
 
   private sealed trait TrafficLight {
     def databaseValue: String
