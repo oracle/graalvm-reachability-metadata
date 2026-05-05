@@ -156,6 +156,34 @@ public class Ktor_client_content_negotiation_jvmTest {
     }
 
     @Test
+    fun `unit request body is sent as empty content without content type`(): Unit = runBlocking {
+        val engine = MockEngine { request ->
+            assertThat(request.headers[HttpHeaders.Accept]).contains(MessageContentType.toString())
+            assertThat(request.headers[HttpHeaders.ContentType]).isNull()
+            assertThat(request.body.contentType).isNull()
+            assertThat(request.body.readText()).isEmpty()
+
+            respond(content = "", status = HttpStatusCode.OK)
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                register(MessageContentType, MessageConverter()) { }
+            }
+        }
+
+        try {
+            val response = client.post("https://example.test/empty") {
+                contentType(MessageContentType)
+                setBody(Unit)
+            }
+
+            assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
     fun `removed ignored type lets converter handle string request bodies`(): Unit = runBlocking {
         val engine = MockEngine { request ->
             assertThat(request.body.contentType?.withoutParameters()).isEqualTo(MessageContentType)
