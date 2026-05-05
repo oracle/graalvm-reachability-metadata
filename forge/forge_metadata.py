@@ -123,6 +123,7 @@ GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
 PRIORITY_BLOCKING_LIBRARY_THRESHOLD = 10
 PRIORITY_BLOCKING_ISSUE_QUERY_CHUNK_SIZE = 25
+DEFAULT_TAKE_BLOCKED_ISSUES = True
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
 ISSUE_CLAIM_CACHE_VERSION = 1
@@ -692,8 +693,11 @@ def is_assigned_only_to_authenticated_user(
 def cached_skip_blocks_authenticated_user(
         cached_skip: CachedIssueClaimSkip,
         authenticated_user: str | None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> bool:
     """Return True when a cached negative observation should still block this worker."""
+    if take_blocked_issues and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
+        return False
     if cached_skip.reason != ISSUE_CLAIM_CACHE_REASON_ASSIGNED:
         return True
     return not is_assigned_only_to_authenticated_user(cached_skip.assignees, authenticated_user)
@@ -4043,6 +4047,7 @@ def claim_issue_for_processing(
         canonical_metrics_repo_path: str,
         authenticated_user: str,
         large_library_resume_artifact_override: str | None = None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
@@ -4069,7 +4074,7 @@ def claim_issue_for_processing(
         )
         return None
 
-    item_id = try_claim_issue(issue, authenticated_user, label)
+    item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
     if not item_id:
         return None
 
@@ -4773,6 +4778,7 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
 def get_cached_issue_claim_skips(
         issues: list[dict],
         authenticated_user: str | None = None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> dict[int, CachedIssueClaimSkip]:
     """Return fresh cached skips for the given issue payloads."""
     cache = read_issue_claim_cache()
@@ -4787,7 +4793,7 @@ def get_cached_issue_claim_skips(
         issue_number: cached_skip
         for issue_number, cached_skip in cache.items()
         if issue_number in issue_numbers
-        and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user)
+        and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
     }
 
 
@@ -4885,6 +4891,7 @@ def should_skip_issue_from_preflight(
         preflight: IssueClaimPreflight | None,
         cached_skip: CachedIssueClaimSkip | None = None,
         authenticated_user: str | None = None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> bool:
     number = issue["number"]
 
@@ -4896,7 +4903,7 @@ def should_skip_issue_from_preflight(
     if (
             cached_skip is not None
             and not cached_large_library_continuation
-            and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user)
+            and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
     ):
         return True
 
@@ -4906,7 +4913,7 @@ def should_skip_issue_from_preflight(
     if preflight.assignees and not is_assigned_only_to_authenticated_user(preflight.assignees, authenticated_user):
         return True
 
-    if preflight.open_blockers:
+    if preflight.open_blockers and not take_blocked_issues:
         return True
 
     if not preflight.item_id:
@@ -4955,6 +4962,7 @@ def try_claim_issue(
         issue: dict,
         authenticated_user: str,
         required_label: str | None = None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> Optional[str]:
     """
     Attempt to exclusively claim an issue.
@@ -4977,27 +4985,31 @@ def try_claim_issue(
     try:
         if not refresh_issue_payload_for_claim(issue, required_label, authenticated_user):
             return None
-        return try_claim_issue_with_local_lock(issue, authenticated_user)
+        return try_claim_issue_with_local_lock(issue, authenticated_user, take_blocked_issues)
     finally:
         claim_lock.release()
 
 
-def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Optional[str]:
+def try_claim_issue_with_local_lock(
+        issue: dict,
+        authenticated_user: str,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
+) -> Optional[str]:
     """Attempt the remote optimistic claim while holding the local per-issue lock."""
     number = issue["number"]
 
-    # Skip if blocked by another issue
-    open_blockers = get_open_blocking_issue_numbers(number)
-    if open_blockers:
-        try_mark_issue_numbers_blocking_many_libraries_as_priority(open_blockers)
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_BLOCKED,
-                open_blockers=tuple(open_blockers),
-            )
-        ])
-        return None
+    if not take_blocked_issues:
+        open_blockers = get_open_blocking_issue_numbers(number)
+        if open_blockers:
+            try_mark_issue_numbers_blocking_many_libraries_as_priority(open_blockers)
+            record_issue_claim_cache_observations([
+                IssueClaimCacheObservation(
+                    issue_number=number,
+                    reason=ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                    open_blockers=tuple(open_blockers),
+                )
+            ])
+            return None
 
     # The issue-list payload can be stale when another local runner just claimed
     # the same issue as the same GitHub user, so always re-read after the lock.
@@ -5175,6 +5187,7 @@ def process_issues_with_label(
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str | None,
         parallelism: int,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
         environment_already_validated: bool = False,
 ) -> int:
     """
@@ -5247,7 +5260,21 @@ def process_issues_with_label(
                                 exhausted = True
                                 break
 
-                        cached_skips = get_cached_issue_claim_skips(issues, authenticated_user)
+                        payload_cache_observations = [
+                            observation
+                            for observation in (
+                                get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
+                                for issue in issues
+                            )
+                            if observation is not None
+                        ]
+                        record_issue_claim_cache_observations(payload_cache_observations)
+
+                        cached_skips = get_cached_issue_claim_skips(
+                            issues,
+                            authenticated_user,
+                            take_blocked_issues,
+                        )
                         unresolved_candidates.extend(
                             (issue, cached_skips.get(issue["number"]))
                             for issue in issues
@@ -5270,14 +5297,24 @@ def process_issues_with_label(
                 while pending_issues and processed_count < limit and len(active_futures) < parallelism:
                     raise_if_shutdown_requested()
                     issue, preflight, cached_skip = pending_issues.pop(0)
-                    if should_skip_issue_from_preflight(issue, preflight, cached_skip, authenticated_user):
+                    if should_skip_issue_from_preflight(
+                            issue,
+                            preflight,
+                            cached_skip,
+                            authenticated_user,
+                            take_blocked_issues,
+                    ):
                         continue
+                    claim_kwargs: dict[str, bool] = {}
+                    if not take_blocked_issues:
+                        claim_kwargs["take_blocked_issues"] = False
                     claimed_issue = claim_issue_for_processing(
                         issue,
                         label,
                         base_reachability_metadata_path,
                         canonical_metrics_repo_path,
                         authenticated_user,
+                        **claim_kwargs,
                     )
                     if not claimed_issue:
                         continue
@@ -5535,6 +5572,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_PARALLELISM,
         help=f"Number of workflows to run in parallel (1-{MAX_PARALLELISM}).",
     )
+    parser.add_argument(
+        "--take-blocked-issues",
+        dest="take_blocked_issues",
+        action="store_true",
+        default=DEFAULT_TAKE_BLOCKED_ISSUES,
+        help="Claim issues even when GitHub shows open blocking issues. Defaults to enabled.",
+    )
 
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
@@ -5553,6 +5597,7 @@ def process_single_issue(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> bool:
     """Fetch, claim, and process a single issue by number."""
     validate_issue_processing_environment()
@@ -5561,12 +5606,16 @@ def process_single_issue(
     print()
     log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
 
+    claim_kwargs: dict[str, bool] = {}
+    if not take_blocked_issues:
+        claim_kwargs["take_blocked_issues"] = False
     claimed_issue = claim_issue_for_processing(
         issue,
         label,
         base_reachability_metadata_path,
         canonical_metrics_repo_path,
         authenticated_user,
+        **claim_kwargs,
     )
     if not claimed_issue:
         log_failure_banner(f"Could not claim issue #{issue_number}.", file=sys.stderr)
@@ -5587,6 +5636,7 @@ def process_large_library_continuation(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> bool:
     """Resume a large-library issue from a durable progress artifact."""
     state = LargeLibraryProgressState.load(resume_artifact)
@@ -5594,6 +5644,9 @@ def process_large_library_continuation(
         raise ValueError("Large-library continuation requires `issueNumber` in the progress state")
     verify_large_library_previous_part_merged(state)
     issue, label = get_issue_by_number(state.issue_number)
+    claim_kwargs: dict[str, bool] = {}
+    if not take_blocked_issues:
+        claim_kwargs["take_blocked_issues"] = False
     claimed_issue = claim_issue_for_processing(
         issue,
         label,
@@ -5601,6 +5654,7 @@ def process_large_library_continuation(
         canonical_metrics_repo_path,
         authenticated_user,
         large_library_resume_artifact_override=resume_artifact,
+        **claim_kwargs,
     )
     if not claimed_issue:
         log_failure_banner(f"Could not claim issue #{state.issue_number}.", file=sys.stderr)
@@ -5635,7 +5689,6 @@ def main() -> None:
         if not PROJECT_NUMBER:
             print("ERROR: GITHUB_PROJECT_NUMBER env var is not set.", file=sys.stderr)
             sys.exit(1)
-
         if args.run_work_queues:
             process_work_queues(
                 reachability_metadata_path,
@@ -5665,6 +5718,7 @@ def main() -> None:
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
+                args.take_blocked_issues,
             )
         elif args.continue_large_library_artifact is not None:
             authenticated_user = resolve_authenticated_user()
@@ -5675,6 +5729,7 @@ def main() -> None:
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
+                args.take_blocked_issues,
             )
         else:
             authenticated_user = resolve_authenticated_user()
@@ -5693,6 +5748,7 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
                 args.parallelism,
+                take_blocked_issues=args.take_blocked_issues,
             )
     except KeyboardInterrupt:
         if is_shutdown_requested():
