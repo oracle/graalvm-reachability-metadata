@@ -112,6 +112,18 @@ class Mockito_5_12_3Test extends MockitoSugar {
       Mockito.verifyNoMoreInteractions(sink)
     }
 
+  @Test
+  def companionObjectMembersCanBeImportedWithoutMixingInTrait(): Unit = exerciseMockitoDynamicClassGeneration {
+    val repository: LookupRepositoryForMockito_5_12_3Test =
+      new ImportedMockitoSugarFactoryForMockito_5_12_3Test().createRepository()
+
+    Mockito.when(repository.lookup("imported-id")).thenReturn("imported-result")
+
+    assertEquals("imported-result", repository.lookup("imported-id"))
+    Mockito.verify(repository).lookup("imported-id")
+    Mockito.verifyNoMoreInteractions(repository)
+  }
+
   private def exerciseMockitoDynamicClassGeneration(body: => Unit): Unit = {
     try {
       body
@@ -138,6 +150,14 @@ trait ResettableForMockito_5_12_3Test {
 
 trait AuditSinkForMockito_5_12_3Test {
   def publish(event: AuditEventForMockito_5_12_3Test): Unit
+}
+
+final class ImportedMockitoSugarFactoryForMockito_5_12_3Test {
+  def createRepository(): LookupRepositoryForMockito_5_12_3Test = {
+    import org.scalatestplus.mockito.MockitoSugar.mock
+
+    mock[LookupRepositoryForMockito_5_12_3Test]
+  }
 }
 
 final case class AuditEventForMockito_5_12_3Test(name: String, revision: Int)
