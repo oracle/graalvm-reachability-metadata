@@ -49,13 +49,16 @@ public class ReflectorTest {
     }
 
     @Test
-    void locatesBeanAccessorBeforeFailingOnKnownObjectPropertyFieldLookup() {
+    void objectPropertyCannotReachAccessorInvocationInVersion104() {
         Reflector reflector = new Reflector();
         ReflectorFixture fixture = new ReflectorFixture("property-value");
 
+        // `getObjectProperty` finds `getValue`, but then looks for `value` on `Class.class`
+        // before invoking the accessor. `Class` exposes no public fields, so version 1.0.4
+        // always fails at that field lookup before the final `Method.invoke` call site.
         assertThatThrownBy(() -> reflector.getObjectProperty(fixture, "value"))
                 .isInstanceOf(ReflectorException.class)
-                .hasMessageContaining("value");
+                .hasCauseInstanceOf(NoSuchFieldException.class);
     }
 
     public static class ReflectorFixture {
