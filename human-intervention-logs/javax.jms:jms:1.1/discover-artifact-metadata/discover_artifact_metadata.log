@@ -1,0 +1,1900 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df902-6f62-7342-a6e8-b1b7d25f482c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.jms:jms:1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1" when "$version$" is replaced with "1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+- Set "coordinates" to "javax.jms:jms:1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream project sources, then update the JSON in place with version-tokenized URLs.
+web search: 
+web search: Maven Central javax.jms jms 1.1 sources jar
+web search: 
+web search: https://central.sonatype.com/artifact/javax.jms/jms/1.1
+web search: 
+web search: https://repo1.maven.org/maven2/javax/jms/jms/1.1/
+codex
+The Maven Central entry only exposes the POM for `javax.jms:jms:1.1`; mirrors list the binary jar but no sources or javadoc jars. I’m checking local metadata conventions now so the fallback values match this repository’s expectations.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/javax.jms-jms-1.1.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.jms:jms:1.1"
+}
+
+exec
+/bin/bash -lc "rg '\"not-for-native-image\"|\"source-code-url\"|\"language\"' build/discovered-artifact-metadata -n | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+
+web search: 
+web search: "javax.jms" "jms" "1.1" "source"
+web search: 
+web search: 
+exec
+/bin/bash -lc "curl -sSfL https://repo1.maven.org/maven2/javax/jms/jms/1.1/jms-1.1.pom | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/jms/1.1/jms-1.1-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/jms/1.1/jms-1.1-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/jms/1.1/jms-1.1.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 264ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.jms</groupId>
+  <artifactId>jms</artifactId>
+  <version>1.1</version>
+  <name>Java Message Service</name>
+  <description>
+    The Java Message Service (JMS) API is a messaging standard that allows application components based on the Java 2 Platform, Enterprise Edition (J2EE) to create, send, receive, and read messages. It enables distributed communication that is loosely coupled, reliable, and asynchronous.
+  </description>
+  <url>http://java.sun.com/products/jms</url>
+  <distributionManagement>
+    <downloadUrl>http://java.sun.com/products/jms/docs.html</downloadUrl>
+  </distributionManagement>
+</project>
+ succeeded in 287ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 16:40:05 GMT
+content-type: text/html
+cf-ray: 9f712f58acf7a8bc-BEG
+cf-cache-status: HIT
+age: 2353
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jms/jms/1.1/jms-1.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 308ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 16:40:05 GMT
+content-type: text/html
+cf-ray: 9f712f59af40aeaa-BEG
+cf-cache-status: HIT
+age: 706
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jms/jms/1.1/jms-1.1.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 391ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 16:40:05 GMT
+content-type: text/html
+cf-ray: 9f712f58f844c239-BEG
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jms/jms/1.1/jms-1.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc "rg '\"repository-url\"\\s*:' -n metadata tests build | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+metadata/javax.interceptor/javax.interceptor-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.interceptor",
+metadata/com.ongres.stringprep/stringprep/index.json:6:    "repository-url" : "https://github.com/ongres/stringprep",
+metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+metadata/com.ongres.stringprep/saslprep/index.json:6:    "repository-url" : "https://github.com/ongres/stringprep",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:6:    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:6:    "repository-url" : "https://code.google.com/archive/p/juniversalchardet/",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:5:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:41:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/net.jcip/jcip-annotations/index.json:6:    "repository-url" : "http://jcip.net/",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/com.google.android/annotations/index.json:7:    "repository-url": "https://android.googlesource.com/platform/sdk",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/findbugs/annotations/index.json:6:    "repository-url" : "https://sourceforge.net/p/findbugs/cvs/",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:6:    "repository-url" : "https://github.com/eclipse/eclipse-collections",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:26:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:45:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:6:    "repository-url" : "https://github.com/lightbend-labs/scala-logging",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:6:    "repository-url" : "https://github.com/ethauvin/urlencoder",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:6:    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
+metadata/org.opengauss/opengauss-jdbc/index.json:9:    "repository-url": "https://gitee.com/opengauss/openGauss-connector-jdbc",
+metadata/antlr/antlr/index.json:6:    "repository-url" : "https://www.antlr2.org",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:6:    "repository-url" : "https://github.com/barchart/barchart-udt",
+metadata/io.netty/netty-codec-memcache/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-memcache/index.json:75:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.attoparser/attoparser/index.json:6:    "repository-url" : "https://github.com/attoparser/attoparser",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:6:    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/org.tpolecat/sourcepos_3/index.json:6:    "repository-url" : "https://github.com/typelevel/SourcePos",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+metadata/io.netty/netty-transport-classes-epoll/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.springframework.security/spring-security-crypto/index.json:49:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:101:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/com.sun.xml.bind.external/rngom/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/org.objenesis/objenesis/index.json:6:    "repository-url" : "https://github.com/easymock/objenesis",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/magnolia",
+metadata/io.mockk/mockk-agent-api-jvm/index.json:6:    "repository-url" : "https://github.com/mockk/mockk",
+metadata/io.netty/netty-transport-classes-io_uring/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:257:                    "repository-url": "https://example.com/repository-a",
+metadata/com.google.auto.service/auto-service-annotations/index.json:6:    "repository-url" : "https://github.com/google/auto",
+metadata/io.mockk/mockk-core-jvm/index.json:6:    "repository-url" : "https://github.com/mockk/mockk",
+metadata/io.netty/netty-codec-mqtt/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-mqtt/index.json:77:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.httpcomponents/httpcore/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:34:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:48:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:62:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:76:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:90:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:104:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:118:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.mockito/mockito-core/index.json:9:    "repository-url": "https://github.com/mockito/mockito",
+metadata/org.mockito/mockito-core/index.json:51:    "repository-url": "https://github.com/mockito/mockito",
+metadata/io.netty/netty-codec-smtp/index.json:7:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-codec-smtp/index.json:21:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.apache.httpcomponents/httpmime/index.json:18:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:25:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-containers",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.codehaus.plexus/plexus-utils/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
+metadata/com.google.protobuf/protobuf-java/index.json:6:    "repository-url" : "https://github.com/protocolbuffers/protobuf",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:6:    "repository-url" : "https://github.com/orchestr7/ktoml",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/io.grpc/grpc-inprocess/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/com.android.tools.build/builder-model/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:22:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:37:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:52:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+
+exec
+/bin/bash -lc "rg '\"description\"\\s*:' -n metadata build | head -60" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+metadata/antlr/antlr/index.json:9:    "description" : "ANTLR 2 is a parser generator and runtime for building lexers, parsers, tree parsers, compilers, and translators from grammar files. The antlr artifact provides the Java tool and runtime classes used to generate and run parsers, with code generation support for Java, C++, C#, and Python.",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:9:    "description" : "Barchart UDT Bundle packages the Barchart Java bindings for the UDP-based Data Transfer protocol together with native libraries for multiple platforms. It lets JVM applications use UDT sockets and channels for high-throughput network communication without assembling the core JAR and native NAR artifacts separately.",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "description" : "Caffeine is a high-performance Java caching library that provides an in-memory cache with a Guava-inspired API. It supports automatic loading, size-based eviction, time-based expiration, refresh, reference-based entries, removal notifications, and cache statistics.",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "description" : "Caffeine is a high-performance Java caching library that provides an in-memory cache with a Guava-inspired API. It supports automatic loading, size-based eviction, time-based expiration, refresh, reference-based entries, removal notifications, and cache statistics.",
+metadata/org.apache.directory.api/api-util/index.json:9:    "description" : "Apache Directory LDAP API Utilities provides shared helper classes for the Apache Directory LDAP API, including string and Unicode processing, hexadecimal and Base64 handling, generalized time parsing, collections, reflection, and OSGi helpers. It is a Java utility module used by the broader Directory API components rather than a standalone LDAP client or server.",
+metadata/org.apache.directory.api/api-i18n/index.json:9:    "description" : "Apache Directory LDAP API I18n provides the internationalized message and error-code resources used by the Apache Directory LDAP API modules. It exposes the I18n enum and resource bundles that format localized diagnostics for LDAP, ASN1, DSML, and related Directory API components.",
+metadata/org.apache.directory.api/api-i18n/index.json:37:    "description" : "Apache Directory LDAP API I18n provides the internationalized message and error-code resources used by the Apache Directory LDAP API modules. It exposes the I18n enum and resource bundles that format localized diagnostics for LDAP, ASN1, DSML, and related Directory API components.",
+metadata/org.apache.thrift/libthrift/index.json:9:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.thrift/libthrift/index.json:29:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:9:    "description" : "Eclipse Collections API defines the public interfaces, primitive collection types, factories, and functional contracts for Eclipse Collections, a Java collections framework. It lets JVM applications program against rich mutable, immutable, lazy, parallel, and primitive collection abstractions while using implementation artifacts such as eclipse-collections at runtime.",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:9:    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+metadata/com.google.re2j/re2j/index.json:9:    "description" : "RE2/J is a Java implementation of the RE2 regular expression engine that provides predictable linear-time matching. It exposes a Java-style regular expression API for compiling patterns and matching strings without backtracking behavior that can lead to exponential runtime.",
+metadata/javax.interceptor/javax.interceptor-api/index.json:9:    "description" : "This library defines the Java Interceptors API in the `javax.interceptor` package, including interceptor bindings, interceptor declarations, and the invocation context contract. It is used by Java EE containers and compatible frameworks to apply cross-cutting behavior such as lifecycle, method, and timeout interception around application code.",
+metadata/com.google.android/annotations/index.json:10:    "description": "This library provides the Android platform annotation types used by tools and code, including annotations such as @SuppressLint and @TargetApi. It supplies compile-time metadata for Android APIs without adding runtime implementation behavior.",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:9:    "description" : "juniversalchardet is a Java port of Mozilla's universalchardet character encoding detector. It inspects byte streams and guesses charset names for text encoded in common Chinese, Cyrillic, Greek, Hebrew, Japanese, Korean, Unicode, and Western encodings.",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:9:    "description" : "Neo4j Bolt Connection provides Java APIs for creating and using Neo4j Bolt protocol connections. This artifact contains the provider SPI used by Neo4j drivers and related Neo4j solutions rather than an end-user driver.",
+metadata/com.mysql/mysql-connector-j/index.json:9:    "description" : "MySQL Connector/J is the JDBC Type 4 driver for connecting Java applications to MySQL databases. It implements the JDBC API and provides connection, authentication, and data access support for MySQL servers.",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:9:    "description" : "OpenTelemetry Instrumentation API provides reusable Java APIs for building library instrumentation that creates telemetry and manages context around instrumented operations. It includes instrumenter builders, attribute extractors, span naming and status helpers, semantic-convention utilities, and virtual-field support for integrating instrumented libraries with OpenTelemetry.",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:8:    "description" : "MariaDB Connector/J is a JDBC 4.2 compatible driver for connecting Java applications to MariaDB and MySQL databases. It provides the client library needed for standard JDBC access from Java code.",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:44:    "description" : "MariaDB Connector/J is a JDBC 4.2 compatible driver for connecting Java applications to MariaDB and MySQL databases. It provides the client library needed for standard JDBC access from Java code.",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:9:    "description" : "OpenTelemetry Instrumentation API Incubator provides experimental Java APIs used by instrumentation libraries to extract semantic-convention attributes, build span names, and collect domain-specific metrics before those helpers become stable. It includes incubating helpers for logs, code, database, HTTP, messaging, network, and RPC telemetry so JVM instrumentation can consistently describe instrumented operations.",
+metadata/org.parboiled/parboiled_3/index.json:9:    "description" : "parboiled2 is a Scala macro-based parser generator for Parsing Expression Grammars that turns an internal Scala DSL for grammar rules into JVM bytecode at compile time. It provides a concise type-safe API for building fast parsers with parse-error reporting, suitable for replacing regular expressions or parser-combinator code for structured text.",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:9:    "description" : "Arquillian Container Test API provides annotations and helper APIs used to declare deployments, target containers, run modes, and protocols for Arquillian-managed integration tests. It lets tests coordinate container startup, deployment, and client-vs-container execution through contracts such as Deployment, RunAsClient, TargetsContainer, Deployer, and ContainerController.",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:48:    "description" : "Arquillian Container Test API provides annotations and helper APIs used to declare deployments, target containers, run modes, and protocols for Arquillian-managed integration tests. It lets tests coordinate container startup, deployment, and client-vs-container execution through contracts such as Deployment, RunAsClient, TargetsContainer, Deployer, and ContainerController.",
+metadata/org.latencyutils/LatencyUtils/index.json:9:    "description" : "LatencyUtils provides Java utilities for recording, tracking, and reporting latency measurements, including latency statistics and interval estimation. It also includes pause-detection support for compensating coordinated omission effects in latency measurements.",
+metadata/com.github.jnr/jnr-x86asm/index.json:9:    "description" : "jnr-x86asm provides Java APIs for assembling x86 and x86-64 instructions into machine-code buffers. It is a pure-Java port of asmjit for JVM applications that need to generate x86-family native code.",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:9:    "description" : "Maven Resolver Transport Apache provides an HTTP and HTTPS repository transport implementation for Maven Artifact Resolver using Apache HttpClient. It lets resolver-based applications transfer artifacts and metadata from remote Maven repositories through the resolver transport SPI.",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:9:    "description" : "Maven Resolver API defines the core Java interfaces and domain types used by Maven Artifact Resolver to collect dependencies, resolve artifacts, and interact with repositories. It is the public contract implemented by resolver components and consumed by Maven and tools that need repository-system services.",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:39:    "description" : "Maven Resolver API defines the core Java interfaces and domain types used by Maven Artifact Resolver to collect dependencies, resolve artifacts, and interact with repositories. It is the public contract implemented by resolver components and consumed by Maven and tools that need repository-system services.",
+metadata/com.graphql-java/java-dataloader/index.json:9:    "description" : "Java DataLoader is a pure Java 8 port of Facebook's DataLoader that batches and caches asynchronous data-loading calls. It helps GraphQL Java applications avoid duplicate backend fetches and N+1 query overhead by collecting keys and dispatching them in bulk.",
+metadata/com.graphql-java/java-dataloader/index.json:24:    "description" : "Java DataLoader is a pure Java 8 port of Facebook's DataLoader that batches and caches asynchronous data-loading calls. It helps GraphQL Java applications avoid duplicate backend fetches and N+1 query overhead by collecting keys and dispatching them in bulk.",
+metadata/com.graphql-java/java-dataloader/index.json:39:    "description" : "Java DataLoader is a pure Java 8 port of Facebook's DataLoader that batches and caches asynchronous data-loading calls. It helps GraphQL Java applications avoid duplicate backend fetches and N+1 query overhead by collecting keys and dispatching them in bulk.",
+metadata/com.graphql-java/java-dataloader/index.json:54:    "description" : "Java DataLoader is a pure Java 8 port of Facebook's DataLoader that batches and caches asynchronous data-loading calls. It helps GraphQL Java applications avoid duplicate backend fetches and N+1 query overhead by collecting keys and dispatching them in bulk.",
+metadata/com.graphql-java/java-dataloader/index.json:68:    "description" : "Java DataLoader is a pure Java 11 port of Facebook's DataLoader that batches and caches data-loading calls behind a small API. It helps reduce duplicate backend requests and GraphQL N+1 query overhead by collecting keys and dispatching them in bulk.",
+metadata/com.graphql-java/java-dataloader/index.json:86:    "description" : "Java DataLoader is a Java 8 port of Facebook's DataLoader that batches and caches data-fetching operations behind a simple API. It is commonly used to reduce N+1 fetch overhead, especially in GraphQL Java applications.",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:9:    "description" : "Maven Resolver Connector Basic provides the standard repository connector implementation for Maven Artifact Resolver repositories that use URI-based layouts. It coordinates artifact and metadata transfers through the Resolver connector SPI and configured transport implementations.",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:30:    "description" : "Maven Resolver Connector Basic provides the standard repository connector implementation for Maven Artifact Resolver repositories that use URI-based layouts. It coordinates artifact and metadata transfers through the Resolver connector SPI and configured transport implementations.",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:9:    "description" : "Surefire Logger API provides dependency-free logging interfaces and utility classes used internally by Apache Maven Surefire components. It centralizes console logging levels, decorators, null logging, and print-stream-backed logging for Surefire and Failsafe runtime code.",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:9:    "description" : "Maven Resolver Util provides utility classes that simplify working with Maven's repository system. It includes helpers for artifacts, dependency filters, dependency graph management, version handling, repository policies, and related resolver support tasks.",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:39:    "description" : "Maven Resolver Util provides utility classes that simplify working with Maven's repository system. It includes helpers for artifacts, dependency filters, dependency graph management, version handling, repository policies, and related resolver support tasks.",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:12:    "description": "This library adds extended validation for fields, arguments, and input values in graphql-java schemas. It provides directive-based constraints and validation rules that enforce allowable values during GraphQL execution.",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:9:    "description" : "Maven Resolver Impl provides the default implementation of Maven Artifact Resolver's repository system. It coordinates dependency collection, artifact and metadata resolution, session handling, update checks, and related services used by Maven and resolver-based tools.",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:9:    "description" : "Jakarta WebSocket Client API provides the standard client-side API for opening and interacting with WebSocket connections from Jakarta and Java applications. It defines annotations and interfaces for endpoints, sessions, message handling, encoders, decoders, and container access while leaving the runtime implementation to a compatible WebSocket provider.",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:9:    "description" : "Maven Artifact Resolver Transport File is a transport implementation that lets Maven Resolver access repositories addressed with file:// URLs. It integrates with the Resolver API and SPI so artifact and metadata transfers can be performed against local filesystem-backed repositories.",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:9:    "description" : "Maven Resolver SPI defines service-provider interfaces for repository system implementations, repository connectors, transporters, checksum policies, local repository managers, and related extension points. It is used by Maven Artifact Resolver components and integrations to plug in artifact transfer, repository layout, logging, file processing, synchronization, and post-resolution behavior.",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:39:    "description" : "Maven Resolver SPI defines service-provider interfaces for repository system implementations, repository connectors, transporters, checksum policies, local repository managers, and related extension points. It is used by Maven Artifact Resolver components and integrations to plug in artifact transfer, repository layout, logging, file processing, synchronization, and post-resolution behavior.",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:9:    "description" : "Jakarta WebSocket API provides the standard server-side WebSocket contract for declaring endpoints and configuring WebSocket handshakes in Java and Jakarta applications. It defines server annotations and interfaces such as ServerEndpoint, ServerContainer, ServerEndpointConfig, HandshakeRequest, and PathParam while leaving runtime behavior to a compatible implementation.",
+metadata/com.graphql-java/graphql-java/index.json:8:    "description" : "GraphQL Java is a Java implementation of the GraphQL specification for building and executing GraphQL schemas. It provides APIs for schema definition, validation, parsing, and query execution against application data.",
+metadata/com.graphql-java/graphql-java/index.json:23:    "description" : "GraphQL Java is a Java implementation of GraphQL. It provides APIs to define schemas and execute GraphQL queries against application data.",
+metadata/com.graphql-java/graphql-java/index.json:70:    "description" : "GraphQL Java is a Java implementation of GraphQL. It provides APIs to define a schema and execute GraphQL queries against it.",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:9:    "description" : "Maven Artifact Resolver Transport HTTP provides an HTTP and HTTPS transport implementation for Maven Resolver repositories. It lets Maven Resolver clients transfer artifacts and metadata over HTTP-based repository URLs.",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:24:    "description" : "Maven Artifact Resolver Transport HTTP provides an HTTP and HTTPS transport implementation for Maven Resolver repositories. It lets Maven Resolver clients transfer artifacts and metadata over HTTP-based repository URLs.",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:9:    "description" : "Maven Resolver Named Locks provides synchronization primitives for named lock coordination within Maven Artifact Resolver. It includes local, file-based, and no-op named lock factories used to guard concurrent access to shared resolver resources.",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:39:    "description" : "Maven Resolver Named Locks provides synchronization primitives for named lock coordination within Maven Artifact Resolver. It includes local, file-based, and no-op named lock factories used to guard concurrent access to shared resolver resources.",
+metadata/org.jline/jline-terminal-jna/index.json:9:    "description" : "This module adds a JNA-backed terminal provider for JLine. It uses native platform APIs to manage terminals and pseudoterminals on supported operating systems.",
+metadata/org.jline/jline-reader/index.json:10:    "description" : "JLine Reader provides the line-editing, history, completion, key binding, and prompt-reading APIs used to build interactive command-line interfaces on the JVM. It sits on top of JLine terminal abstractions so Java applications can implement shell-like input behavior across supported consoles and terminal backends.",
+metadata/org.jline/jline-reader/index.json:51:    "description" : "JLine Reader provides the line-editing, history, completion, key binding, and prompt-reading APIs used to build interactive command-line interfaces on the JVM. It sits on top of JLine terminal abstractions so Java applications can implement shell-like input behavior across supported consoles and terminal backends.",
+metadata/io.grpc/grpc-core/index.json:10:    "description" : "Core runtime classes for gRPC Java, including channels, calls, name resolution, load balancing, deadlines, and transport abstractions. It provides the foundational client and server behavior that higher-level gRPC Java transports and stubs build on.",
+metadata/io.grpc/grpc-context/index.json:9:    "description" : "grpc-context provides gRPC Java's context propagation API for carrying scoped values, deadlines, and cancellation state across API boundaries and threads. It lets applications bind request-scoped state to the current execution and propagate that state through asynchronous work.",
+metadata/io.grpc/grpc-context/index.json:67:    "description" : "grpc-context provides gRPC's context propagation API for carrying scoped values and cancellation state across API boundaries and threads. It lets applications associate request-scoped data with the current execution and propagate that state through asynchronous work.",
+
+exec
+/bin/bash -lc "find . -name '*artifact-metadata*' -o -name '*metadata*.json' | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 249ms:
+./tests/src/com.sun.xml.bind.external/relaxng-datatype/4.0.6/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache.directory.api/api-util/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.eclipse.collections/eclipse-collections-api/11.1.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache.thrift/libthrift/0.17.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache.thrift/libthrift/0.13.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.graphql-java/graphql-java/2018-06-27T00-18-28-1e12da9/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.graphql-java/graphql-java/19.7/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/javax.persistence/javax.persistence-api/2.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jline/jline-console/3.22.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jline/jline-console/3.28.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/antlr/antlr/2.7.6/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.objenesis/objenesis/3.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/javax.portlet/portlet-api/2.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/io.mockk/mockk-core-jvm/1.14.9/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/io.mockk/mockk-agent-api-jvm/1.14.9/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache-extras.beanshell/bsh/2.0b6/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/commons-logging/commons-logging/1.2/metadata-user-code-filter.json
+./tests/src/commons-logging/commons-logging/1.2/metadata-extra-filter.json
+./tests/src/com.fasterxml.jackson.module/jackson-module-paranamer/2.11.4/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.fasterxml.jackson.module/jackson-module-paranamer/2.19.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.fasterxml.jackson.module/jackson-module-kotlin/2.17.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jooq/jooq/3.17.7/metadata-user-code-filter.json
+./tests/src/org.jooq/jooq/3.18.2/metadata-user-code-filter.json
+./tests/src/org.xerial/sqlite-jdbc/3.36.0.3/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jboss.classfilewriter/jboss-classfilewriter/1.2.4.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.fasterxml/classmate/1.5.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/javax.enterprise/cdi-api/1.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/jakarta.persistence/jakarta.persistence-api/4.0.0-M2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/jakarta.persistence/jakarta.persistence-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/jakarta.persistence/jakarta.persistence-api/4.0.0-M1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/jakarta.persistence/jakarta.persistence-api/3.2.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache.activemq/artemis-jms-client/2.28.0/metadata-user-code-filter.json
+./tests/src/org.apache.activemq/artemis-jms-client/2.28.0/metadata-extra-filter.json
+./tests/src/org.apache.activemq/activemq-broker/6.0.0/metadata-user-code-filter.json
+./tests/src/org.apache.activemq/activemq-broker/6.0.0/metadata-extra-filter.json
+./tests/src/org.apache.activemq/activemq-broker/5.18.1/metadata-user-code-filter.json
+./tests/src/org.apache.activemq/activemq-broker/5.18.1/metadata-extra-filter.json
+./tests/src/org.apache.activemq/activemq-client/6.0.0/metadata-user-code-filter.json
+./tests/src/org.apache.activemq/activemq-client/6.0.0/metadata-extra-filter.json
+./tests/src/org.apache.activemq/activemq-client/5.18.1/metadata-user-code-filter.json
+./tests/src/org.apache.activemq/activemq-client/5.18.1/metadata-extra-filter.json
+./tests/src/org.jboss.resteasy/resteasy-client/6.2.12.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.lihaoyi/os-lib_3/0.11.5/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.lihaoyi/upickle_3/4.4.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jctools/jctools-core/2.1.2/metadata-user-code-filter.json
+./tests/src/org.jctools/jctools-core/2.1.2/metadata-extra-filter.json
+./tests/src/javax.activation/javax.activation-api/1.2.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jboss.shrinkwrap/shrinkwrap-impl-base/1.2.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jboss.shrinkwrap/shrinkwrap-api/1.2.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.springframework/spring-aspects/5.3.31/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.univocity/univocity-parsers/2.9.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/xmlpull/xmlpull/1.1.3.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.microsoft.sqlserver/mssql-jdbc/12.2.0.jre11/metadata-user-code-filter.json
+./tests/src/com.microsoft.sqlserver/mssql-jdbc/12.2.0.jre11/metadata-extra-filter.json
+./tests/src/org.eclipse.jetty/jetty-util-ajax/10.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.eclipse.jetty/jetty-session/12.0.10/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.glassfish.jaxb/txw2/2.3.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.jetbrains.kotlin/kotlin-scripting-jvm/2.3.21/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.osgi/osgi_R4_core/1.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.osgi/org.osgi.dto/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.osgi/osgi.core/7.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.osgi/osgi.core/6.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.osgi/osgi.core/8.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/io.github.dmlloyd/jdk-classfile-backport/25.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.google.guava/guava-bootstrap/11.0.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.google.guava/guava/r06/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/org.hibernate.reactive/hibernate-reactive-core/2.0.0.Final/metadata-user-code-filter.json
+./tests/src/org.hibernate.reactive/hibernate-reactive-core/2.0.0.Final/metadata-extra-filter.json
+./tests/src/org.rxtx/rxtx/2.1.7/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/io.nats/jnats/2.16.11/metadata-user-code-filter.json
+./tests/src/io.nats/jnats/2.16.11/metadata-extra-filter.json
+./tests/src/org.jboss.narayana.jta/jta/7.3.1.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/javax.interceptor/javax.interceptor-api/index.json && sed -n '1,80p' metadata/net.jcip/jcip-annotations/index.json && sed -n '1,80p' metadata/javax.portlet/portlet-api/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/javax.interceptor",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-javadoc.jar",
+    "description" : "This library defines the Java Interceptors API in the `javax.interceptor` package, including interceptor bindings, interceptor declarations, and the invocation context contract. It is used by Java EE containers and compatible frameworks to apply cross-cutting behavior such as lifecycle, method, and timeout interception around application code.",
+    "tested-versions" : [
+      "1.2",
+      "1.2.1",
+      "1.2.2"
+    ],
+    "allowed-packages" : [
+      "javax.interceptor"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+    "repository-url" : "http://jcip.net/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+    "description" : "JCIP Annotations provides marker annotations from Java Concurrency in Practice to document thread-safety contracts such as @ThreadSafe, @NotThreadSafe, @Immutable, and @GuardedBy. The library contains only annotation types and adds no runtime behavior, helping tools and developers reason about concurrent code.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "net.jcip.annotations"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-javadoc.jar",
+    "description" : "Portlet API 2.0 defines the standard Java interfaces, classes, and annotations from JSR 286 for building portal portlets. It specifies the portable contracts for portlet requests, responses, sessions, preferences, filters, events, and resource serving that portlet containers and applications use to interact.",
+    "tested-versions" : [
+      "2.0"
+    ],
+    "allowed-packages" : [
+      "javax.portlet"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "rg '\"N/A\"' -n metadata build/discovered-artifact-metadata tests | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:99:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:101:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:102:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:103:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:131:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:133:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:134:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:135:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:165:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:167:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:168:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:169:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:199:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:201:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:202:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:203:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:234:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:236:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:237:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:238:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:319:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:352:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:398:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:400:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:401:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:402:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:448:                      "dynamicAccess": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:450:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:451:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateLibraryStatsTaskTests.java:452:                        "method": "N/A"
+metadata/net.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:86:                        "instruction": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:87:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:88:                        "method": "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:118:                        "line": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:70:                    "dynamicAccess" : "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:72:                      "instruction" : "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:73:                      "line" : "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:74:                      "method" : "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:198:                    "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:213:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:239:                    "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:275:                    "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:277:                    "N/A"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:309:                    "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:310:                    "N/A"
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:234:        if (!hasText(currentUrl) || "N/A".equals(currentUrl)) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/LibraryStatsModels.java:84:        private static final String NOT_AVAILABLE = "N/A";
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/LibraryStatsModels.java:177:        private static final String NOT_AVAILABLE = "N/A";
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.plexus/plexus-utils/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.portlet/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.mockk/mockk-agent-api-jvm/index.json:7:    "test-code-url" : "N/A",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupport.java:989:            return "N/A";
+metadata/javax.persistence/javax.persistence-api/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.ous/jtoml/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.jnr/jnr-x86asm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:299:                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:176:                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+metadata/xalan/xalan/index.json:7:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:8:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:26:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:96:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:113:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:130:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:147:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:164:    "test-code-url" : "N/A",
+metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:7:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:8:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/bin/bash -lc 'curl -sI https://download.java.net/maven/2/javax/jms/jms/1.1/jms-1.1-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://download.java.net/maven/2/javax/jms/jms/1.1/jms-1.1-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://download.java.net/maven/2/javax/jms/jms/1.1/jms-1.1.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://javadoc.io/doc/javax.jms/jms/1.1/index.html' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 185ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:40:25 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.jms/jms/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Rq485pxvq87NtDsefksRyWCV2ji89Ks7roFzdBwVz%2BEqVAlkDT6rENEpqyWbTGikwsv97UhIDt1mDC9n6TuFJexkDGe0O9B5J6J9dO31ryM6it43SlHGVmeaQ8Av"}]}
+server: cloudflare
+cf-ray: 9f712fd8e89fe291-BEG
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 629ms:
+HTTP/1.1 404 Not Found
+Accept-Ranges: bytes
+Content-Length: 7073
+Content-Type: text/html
+ETag: "477d9862374177c810b0b7d73b4f1e53:1531792454.541174"
+Last-Modified: Wed, 31 Aug 2011 20:28:54 GMT
+Server: AkamaiNetStorage
+Date: Tue, 05 May 2026 16:40:26 GMT
+Connection: keep-alive
+
+
+ succeeded in 1158ms:
+HTTP/1.1 404 Not Found
+Accept-Ranges: bytes
+Content-Length: 7073
+Content-Type: text/html
+ETag: "477d9862374177c810b0b7d73b4f1e53:1531792454.541174"
+Last-Modified: Wed, 31 Aug 2011 20:28:54 GMT
+Server: AkamaiNetStorage
+Date: Tue, 05 May 2026 16:40:26 GMT
+Connection: keep-alive
+
+
+ succeeded in 1380ms:
+HTTP/1.1 404 Not Found
+Accept-Ranges: bytes
+Content-Length: 7073
+Content-Type: text/html
+ETag: "477d9862374177c810b0b7d73b4f1e53:1531792454.541174"
+Last-Modified: Wed, 31 Aug 2011 20:28:54 GMT
+Server: AkamaiNetStorage
+Date: Tue, 05 May 2026 16:40:26 GMT
+Connection: keep-alive
+
+
+web search: 
+web search: javax.jms jms 1.1 Maven POM Java Message Service url
+web search: 
+web search: https://central.sonatype.com/artifact/javax.jms/jms/1.1
+web search: 
+web search: site:javadoc.io/doc/javax.jms/jms/1.1 javax.jms jms 1.1 javadoc
+web search: 
+web search: "jms-spec.java.net" "JMS 1.1" source repository
+codex
+This artifact is unusual: the canonical Central coordinate is POM-only, while replacement API JARs exist under adjacent coordinates. I’m checking whether there is an obvious same-era JVM replacement before deciding whether to mark it outside Native Image scope.
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/javax.jms-api/2.0.1/javax.jms-api-2.0.1.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc "curl -sSfL https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1.pom | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.1/geronimo-jms_1.1_spec-1.1.1.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 288ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:40:55 GMT
+content-type: application/java-archive
+content-length: 39117
+cf-ray: 9f713090ba750db0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 27392
+etag: "46fd15408024d6f4ee0ed9a4f0c941cf"
+last-modified: Thu, 17 Apr 2008 00:09:45 GMT
+x-checksum-md5: 46fd15408024d6f4ee0ed9a4f0c941cf
+x-checksum-sha1: af256c6e1b77f1599c33b61c730fb1ff591cbfb0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 260ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/* 
+* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER. 
+* 
+* Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved. 
+* 
+* The contents of this file are subject to the terms of either the GNU 
+* General Public License Version 2 only ("GPL") or the Common Development 
+* and Distribution License("CDDL") (collectively, the "License").  You 
+* may not use this file except in compliance with the License. You can obtain 
+* a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html 
+* or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific 
+* language governing permissions and limitations under the License. 
+* 
+* When distributing the software, include this License Header Notice in each 
+* file and include the License file at glassfish/bootstrap/legal/LICENSE.txt. 
+* Sun designates this particular file as subject to the "Classpath" exception 
+* as provided by Sun in the GPL Version 2 section of the License file that 
+* accompanied this code.  If applicable, add the following below the License 
+* Header, with the fields enclosed by brackets [] replaced by your own 
+* identifying information: "Portions Copyrighted [year] 
+* [name of copyright owner]" 
+* 
+* Contributor(s): 
+* 
+* If you wish your version of this file to be governed by only the CDDL or 
+* only the GPL Version 2, indicate your decision by adding "[Contributor] 
+* elects to include this software in this distribution under the [CDDL or GPL 
+* Version 2] license."  If you don't indicate a single choice of license, a 
+* recipient has the option to distribute your version of this file under 
+* either the CDDL, the GPL Version 2 or to extend the choice of license to 
+* its licensees as provided above.  However, if you add GPL Version 2 code 
+* and therefore, elected the GPL Version 2 license, then the option applies 
+* only if the new code is made subject to such option by the copyright 
+* holder. 
+*/ 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.glassfish.api</groupId>
+		<artifactId>api</artifactId>
+		<version>1</version>
+		<relativePath>../pom.xml</relativePath>    
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>javax.jms</groupId>
+	<artifactId>jms-api</artifactId>
+	<version>1.1-rev-1</version>
+    <packaging>jar</packaging>
+	<name>Java EE JMS API</name>
+	<url>http://jcp.org/en/jsr/detail?id=914</url>
+
+	<developers>
+		<developer>
+			<id>thakaran</id>
+			<name>George Thakaran</name>
+			<organization>Sun Microsystems, Inc.</organization>
+			<roles>
+				<role>lead</role>
+			</roles>
+		</developer>
+	</developers>
+
+  <scm>
+    <connection>scm:svn:https://kohsuke@svn.dev.java.net/svn/glassfish-svn/tags/jms-api-1.1-rev-1</connection>
+    <developerConnection>scm:svn:https://kohsuke@svn.dev.java.net/svn/glassfish-svn/tags/jms-api-1.1-rev-1</developerConnection>
+  </scm>
+</project>
+
+ succeeded in 258ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:40:55 GMT
+content-type: application/java-archive
+content-length: 32359
+cf-ray: 9f713090cf36e296-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 581881
+etag: "d80ce71285696d36c1add1989b94f084"
+last-modified: Thu, 07 Feb 2008 01:26:55 GMT
+x-checksum-md5: d80ce71285696d36c1add1989b94f084
+x-checksum-sha1: c872b46c601d8dc03633288b81269f9e42762cea
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 388ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:40:55 GMT
+content-type: application/java-archive
+content-length: 64009
+cf-ray: 9f7130914c7ce298-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1465203
+etag: "d69d2e02910e97b2478c0105e9b2caab"
+last-modified: Wed, 11 Mar 2015 18:43:36 GMT
+x-checksum-md5: d69d2e02910e97b2478c0105e9b2caab
+x-checksum-sha1: 5faaa3864ff6025ce69809b60d65bda3e358610c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: "tags/jms" "1.1" "glassfish-svn" "javax.jms"
+web search: 
+web search: Maven Central javax.jms jms 1.1 POM only Files pom
+exec
+/bin/bash -lc 'curl -sI https://repository.jboss.org/nexus/content/groups/public-jboss/javax/jms/jms/1.1/jms-1.1-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repository.jboss.org/nexus/content/groups/public-jboss/javax/jms/jms/1.1/jms-1.1-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc "curl -sSfL https://repository.jboss.org/nexus/content/groups/public-jboss/javax/jms/jms/1.1/ | sed -n '1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 206ms:
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1-javadoc.jar
+expires: Tue, 05 May 2026 16:41:09 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Tue, 05 May 2026 16:41:09 GMT
+x-rh-edge-request-id: 2e83263f
+x-rh-edge-reference-id: 0.8c792617.1777999269.2e83263f
+x-rh-edge-cache-status: NotCacheable from child
+
+
+ succeeded in 206ms:
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1-sources.jar
+expires: Tue, 05 May 2026 16:41:09 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Tue, 05 May 2026 16:41:09 GMT
+x-rh-edge-request-id: 51fe5cf
+x-rh-edge-reference-id: 0.89792617.1777999269.51fe5cf
+x-rh-edge-cache-status: NotCacheable from child
+
+
+ succeeded in 755ms:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Index of /javax/jms/jms/1.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+
+    <link rel="icon" type="image/png" href="../../../../../../../../../static/rapture/resources/safari-favicon-32x32.png?3.77.2-02" sizes="32x32">
+    <link rel="mask-icon" href="../../../../../../../../../static/rapture/resources/favicon-white.svg?3.77.2-02" color="#00bb6c">
+    <link rel="icon" type="image/png" href="../../../../../../../../../static/rapture/resources/favicon.svg?3.77.2-02" sizes="16x16">
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../../../../static/css/nexus-content.css?3.77.2-02"/>
+</head>
+<body class="htmlIndex">
+<h1>Index of /javax/jms/jms/1.1</h1>
+
+
+<table cellspacing="10">
+    <tr>
+        <th align="left">Name</th>
+        <th>Last Modified</th>
+        <th>Size</th>
+        <th>Description</th>
+    </tr>
+        <tr>
+            <td><a href="../">Parent Directory</a></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.jar">jms-1.1.jar</a></td>
+            <td>
+                    Tue Apr 27 16:48:13 Z 2010
+            </td>
+            <td align="right">
+                    26257
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.jar.md5">jms-1.1.jar.md5</a></td>
+            <td>
+                    Mon Jul 23 15:35:35 Z 2012
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.jar.sha1">jms-1.1.jar.sha1</a></td>
+            <td>
+                    Mon Jul 23 15:35:35 Z 2012
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.pom">jms-1.1.pom</a></td>
+            <td>
+                    Tue Apr 27 16:48:16 Z 2010
+            </td>
+            <td align="right">
+                    678
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.pom.md5">jms-1.1.pom.md5</a></td>
+            <td>
+                    Mon Jul 23 15:35:35 Z 2012
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.pom.sha1">jms-1.1.pom.sha1</a></td>
+            <td>
+                    Mon Jul 23 15:35:35 Z 2012
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+</table>
+</body>
+</html>
+
+exec
+/bin/bash -lc 'curl -sIL https://repository.jboss.org/nexus/content/groups/public-jboss/javax/jms/jms/1.1/jms-1.1-sources.jar | tail -30' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sIL https://repository.jboss.org/nexus/content/groups/public-jboss/javax/jms/jms/1.1/jms-1.1-javadoc.jar | tail -30' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sIL https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.jar | tail -20' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+HTTP/2 200 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+etag: "5e106d07e523fb6d40cf086b9b413268f6302f26"
+content-disposition: inline
+last-modified: Thu, 03 Jul 2025 16:57:58 GMT
+content-type: application/java-archive
+content-length: 26257
+cache-control: max-age=127182
+expires: Thu, 07 May 2026 04:00:57 GMT
+date: Tue, 05 May 2026 16:41:15 GMT
+x-rh-edge-request-id: 2e834a63
+x-rh-edge-reference-id: 0.8c792617.1777999275.2e834a63
+x-rh-edge-cache-status: Hit from child
+x-rh-edge-repository-cache-type: mixed
+x-rh-edge-repository-type: mixed
+
+
+ succeeded in 279ms:
+content-length: 0
+location: https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1-javadoc.jar
+expires: Tue, 05 May 2026 16:41:15 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Tue, 05 May 2026 16:41:15 GMT
+x-rh-edge-request-id: 2e834a4f
+x-rh-edge-reference-id: 0.8c792617.1777999275.2e834a4f
+x-rh-edge-cache-status: NotCacheable from child
+
+HTTP/2 404 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+pragma: no-cache
+x-frame-options: DENY
+content-type: text/html
+content-length: 1
+cache-control: no-cache, no-store, must-revalidate, post-check=0, pre-check=0
+expires: Tue, 05 May 2026 16:41:15 GMT
+date: Tue, 05 May 2026 16:41:15 GMT
+x-rh-edge-request-id: 2e834a79
+x-rh-edge-reference-id: 0.8c792617.1777999275.2e834a79
+x-rh-edge-cache-status: Miss from child, Miss from parent
+x-rh-edge-repository-cache-type: mixed
+x-rh-edge-repository-type: mixed
+age: -1
+
+
+ succeeded in 380ms:
+content-length: 0
+location: https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1-sources.jar
+expires: Tue, 05 May 2026 16:41:15 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Tue, 05 May 2026 16:41:15 GMT
+x-rh-edge-request-id: 5200b97
+x-rh-edge-reference-id: 0.89792617.1777999275.5200b97
+x-rh-edge-cache-status: NotCacheable from child
+
+HTTP/2 404 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+pragma: no-cache
+x-frame-options: DENY
+content-type: text/html
+content-length: 1
+cache-control: no-cache, no-store, must-revalidate, post-check=0, pre-check=0
+expires: Tue, 05 May 2026 16:41:15 GMT
+date: Tue, 05 May 2026 16:41:15 GMT
+x-rh-edge-request-id: 5200bb4
+x-rh-edge-reference-id: 0.89792617.1777999275.5200bb4
+x-rh-edge-cache-status: Miss from child, Miss from parent
+x-rh-edge-repository-cache-type: mixed
+x-rh-edge-repository-type: mixed
+age: -1
+
+
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'curl -sI https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:41:22 GMT
+content-type: application/java-archive
+content-length: 151385
+cf-ray: 9f71313a299fa8bc-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 786962
+etag: "2357b0f6507a52e1266c4832f9427f11"
+last-modified: Thu, 17 Apr 2008 00:09:45 GMT
+x-checksum-md5: 2357b0f6507a52e1266c4832f9427f11
+x-checksum-sha1: 1b7776a0d1e1ba2d5b7d1832f6eb5cc59a86de3a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc "curl -sSfL https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/ | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/jms/jms-api/1.1-rev-1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/jms/jms-api/1.1-rev-1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jms-api-1.1-rev-1-javadoc.jar" title="jms-api-1.1-rev-1-javadoc.jar">jms-api-1.1-rev-1-javadoc.jar</a>                     2008-04-17 00:09    381023      
+<a href="jms-api-1.1-rev-1-javadoc.jar.asc" title="jms-api-1.1-rev-1-javadoc.jar.asc">jms-api-1.1-rev-1-javadoc.jar.asc</a>                 2008-04-17 00:09       189      
+<a href="jms-api-1.1-rev-1-javadoc.jar.md5" title="jms-api-1.1-rev-1-javadoc.jar.md5">jms-api-1.1-rev-1-javadoc.jar.md5</a>                 2008-04-17 00:09        32      
+<a href="jms-api-1.1-rev-1-javadoc.jar.sha1" title="jms-api-1.1-rev-1-javadoc.jar.sha1">jms-api-1.1-rev-1-javadoc.jar.sha1</a>                2008-04-17 00:09        40      
+<a href="jms-api-1.1-rev-1-sources.jar" title="jms-api-1.1-rev-1-sources.jar">jms-api-1.1-rev-1-sources.jar</a>                     2008-04-17 00:09    151385      
+<a href="jms-api-1.1-rev-1-sources.jar.asc" title="jms-api-1.1-rev-1-sources.jar.asc">jms-api-1.1-rev-1-sources.jar.asc</a>                 2008-04-17 00:09       189      
+<a href="jms-api-1.1-rev-1-sources.jar.md5" title="jms-api-1.1-rev-1-sources.jar.md5">jms-api-1.1-rev-1-sources.jar.md5</a>                 2008-04-17 00:09        32      
+<a href="jms-api-1.1-rev-1-sources.jar.sha1" title="jms-api-1.1-rev-1-sources.jar.sha1">jms-api-1.1-rev-1-sources.jar.sha1</a>                2008-04-17 00:09        40      
+<a href="jms-api-1.1-rev-1.jar" title="jms-api-1.1-rev-1.jar">jms-api-1.1-rev-1.jar</a>                             2008-04-17 00:09     39117      
+<a href="jms-api-1.1-rev-1.jar.asc" title="jms-api-1.1-rev-1.jar.asc">jms-api-1.1-rev-1.jar.asc</a>                         2008-04-17 00:09       189      
+<a href="jms-api-1.1-rev-1.jar.md5" title="jms-api-1.1-rev-1.jar.md5">jms-api-1.1-rev-1.jar.md5</a>                         2008-04-17 00:09        32      
+<a href="jms-api-1.1-rev-1.jar.sha1" title="jms-api-1.1-rev-1.jar.sha1">jms-api-1.1-rev-1.jar.sha1</a>                        2008-04-17 00:09        40      
+<a href="jms-api-1.1-rev-1.pom" title="jms-api-1.1-rev-1.pom">jms-api-1.1-rev-1.pom</a>                             2008-04-17 00:09      3068      
+<a href="jms-api-1.1-rev-1.pom.asc" title="jms-api-1.1-rev-1.pom.asc">jms-api-1.1-rev-1.pom.asc</a>                         2008-04-17 00:09       189      
+<a href="jms-api-1.1-rev-1.pom.md5" title="jms-api-1.1-rev-1.pom.md5">jms-api-1.1-rev-1.pom.md5</a>                         2008-04-17 00:09        32      
+<a href="jms-api-1.1-rev-1.pom.sha1" title="jms-api-1.1-rev-1.pom.sha1">jms-api-1.1-rev-1.pom.sha1</a>                        2008-04-17 00:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 259ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:41:22 GMT
+content-type: application/java-archive
+content-length: 381023
+cf-ray: 9f71313a186afa43-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "4d7d8ccf8a7744c61026edfa6dc602c0"
+last-modified: Thu, 17 Apr 2008 00:09:46 GMT
+x-checksum-md5: 4d7d8ccf8a7744c61026edfa6dc602c0
+x-checksum-sha1: 6fd0fc3e397984f36e4cffb7008b55f660e4c88e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -sSfL https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1.jar -o "$tmp/jms-api.jar"; jar tf "$tmp/jms-api.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -sSfL https://repository.jboss.org/nexus/repository/public-jboss/javax/jms/jms/1.1/jms-1.1.jar -o "$tmp/jms.jar"; jar tf "$tmp/jms.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -sSfL https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1-sources.jar -o "$tmp/src.jar"; jar tf "$tmp/src.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 160ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/jms/
+javax/jms/JMSException.class
+javax/jms/XAConnectionFactory.class
+javax/jms/Connection.class
+javax/jms/MessageConsumer.class
+javax/jms/TopicRequestor.class
+javax/jms/ObjectMessage.class
+javax/jms/Topic.class
+javax/jms/QueueBrowser.class
+javax/jms/QueueSender.class
+javax/jms/Message.class
+javax/jms/MessageFormatException.class
+javax/jms/Session.class
+javax/jms/ResourceAllocationException.class
+javax/jms/QueueConnectionFactory.class
+javax/jms/TemporaryQueue.class
+javax/jms/Destination.class
+javax/jms/ConnectionConsumer.class
+javax/jms/XAConnection.class
+javax/jms/TopicPublisher.class
+javax/jms/XASession.class
+javax/jms/TopicConnectionFactory.class
+javax/jms/XATopicConnection.class
+javax/jms/XAQueueConnection.class
+javax/jms/ServerSession.class
+javax/jms/MapMessage.class
+javax/jms/QueueRequestor.class
+javax/jms/ExceptionListener.class
+javax/jms/TextMessage.class
+javax/jms/MessageListener.class
+javax/jms/InvalidSelectorException.class
+javax/jms/MessageNotReadableException.class
+javax/jms/IllegalStateException.class
+javax/jms/XAQueueConnectionFactory.class
+javax/jms/ConnectionMetaData.class
+javax/jms/DeliveryMode.class
+javax/jms/InvalidDestinationException.class
+javax/jms/TransactionInProgressException.class
+javax/jms/MessageProducer.class
+javax/jms/TopicSession.class
+javax/jms/Queue.class
+javax/jms/StreamMessage.class
+javax/jms/TemporaryTopic.class
+javax/jms/QueueSession.class
+javax/jms/TopicSubscriber.class
+javax/jms/XATopicConnectionFactory.class
+javax/jms/ConnectionFactory.class
+javax/jms/JMSSecurityException.class
+javax/jms/TransactionRolledBackException.class
+javax/jms/MessageEOFException.class
+javax/jms/TopicConnection.class
+javax/jms/QueueConnection.class
+javax/jms/XATopicSession.class
+javax/jms/BytesMessage.class
+javax/jms/ServerSessionPool.class
+javax/jms/MessageNotWriteableException.class
+javax/jms/QueueReceiver.class
+javax/jms/XAQueueSession.class
+javax/jms/InvalidClientIDException.class
+META-INF/LICENSE.txt
+META-INF/maven/
+META-INF/maven/javax.jms/
+META-INF/maven/javax.jms/jms-api/
+META-INF/maven/javax.jms/jms-api/pom.xml
+META-INF/maven/javax.jms/jms-api/pom.properties
+
+ succeeded in 204ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/jms/
+META-INF/LICENSE.txt
+javax/jms/QueueSender.java
+javax/jms/Queue.java
+javax/jms/QueueReceiver.java
+javax/jms/Connection.java
+javax/jms/XATopicConnection.java
+javax/jms/MessageNotReadableException.java
+javax/jms/TopicSession.java
+javax/jms/TopicSubscriber.java
+javax/jms/TopicConnection.java
+javax/jms/MessageNotWriteableException.java
+javax/jms/Topic.java
+javax/jms/TemporaryQueue.java
+javax/jms/MessageListener.java
+javax/jms/JMSSecurityException.java
+javax/jms/ServerSessionPool.java
+javax/jms/XAQueueSession.java
+javax/jms/InvalidClientIDException.java
+javax/jms/Message.java
+javax/jms/ResourceAllocationException.java
+javax/jms/DeliveryMode.java
+javax/jms/MessageProducer.java
+javax/jms/TemporaryTopic.java
+javax/jms/QueueRequestor.java
+javax/jms/TransactionInProgressException.java
+javax/jms/JMSException.java
+javax/jms/MessageConsumer.java
+javax/jms/TopicRequestor.java
+javax/jms/Session.java
+javax/jms/TopicPublisher.java
+javax/jms/XASession.java
+javax/jms/XAQueueConnection.java
+javax/jms/MapMessage.java
+javax/jms/QueueConnection.java
+javax/jms/MessageFormatException.java
+javax/jms/QueueConnectionFactory.java
+javax/jms/Destination.java
+javax/jms/XAQueueConnectionFactory.java
+javax/jms/ConnectionMetaData.java
+javax/jms/ConnectionFactory.java
+javax/jms/XATopicSession.java
+javax/jms/XAConnection.java
+javax/jms/TopicConnectionFactory.java
+javax/jms/InvalidDestinationException.java
+javax/jms/XATopicConnectionFactory.java
+javax/jms/XAConnectionFactory.java
+javax/jms/QueueBrowser.java
+javax/jms/IllegalStateException.java
+javax/jms/StreamMessage.java
+javax/jms/QueueSession.java
+javax/jms/ObjectMessage.java
+javax/jms/ConnectionConsumer.java
+javax/jms/InvalidSelectorException.java
+javax/jms/TransactionRolledBackException.java
+javax/jms/BytesMessage.java
+javax/jms/package.html
+javax/jms/ServerSession.java
+javax/jms/ExceptionListener.java
+javax/jms/TextMessage.java
+javax/jms/MessageEOFException.java
+
+ succeeded in 208ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/jms/
+javax/jms/BytesMessage.class
+javax/jms/Connection.class
+javax/jms/ConnectionConsumer.class
+javax/jms/ConnectionFactory.class
+javax/jms/ConnectionMetaData.class
+javax/jms/DeliveryMode.class
+javax/jms/Destination.class
+javax/jms/ExceptionListener.class
+javax/jms/IllegalStateException.class
+javax/jms/InvalidClientIDException.class
+javax/jms/InvalidDestinationException.class
+javax/jms/InvalidSelectorException.class
+javax/jms/JMSException.class
+javax/jms/JMSSecurityException.class
+javax/jms/MapMessage.class
+javax/jms/Message.class
+javax/jms/MessageConsumer.class
+javax/jms/MessageEOFException.class
+javax/jms/MessageFormatException.class
+javax/jms/MessageListener.class
+javax/jms/MessageNotReadableException.class
+javax/jms/MessageNotWriteableException.class
+javax/jms/MessageProducer.class
+javax/jms/ObjectMessage.class
+javax/jms/Queue.class
+javax/jms/QueueBrowser.class
+javax/jms/QueueConnection.class
+javax/jms/QueueConnectionFactory.class
+javax/jms/QueueReceiver.class
+javax/jms/QueueRequestor.class
+javax/jms/QueueSender.class
+javax/jms/QueueSession.class
+javax/jms/ResourceAllocationException.class
+javax/jms/ServerSession.class
+javax/jms/ServerSessionPool.class
+javax/jms/Session.class
+javax/jms/StreamMessage.class
+javax/jms/TemporaryQueue.class
+javax/jms/TemporaryTopic.class
+javax/jms/TextMessage.class
+javax/jms/Topic.class
+javax/jms/TopicConnection.class
+javax/jms/TopicConnectionFactory.class
+javax/jms/TopicPublisher.class
+javax/jms/TopicRequestor.class
+javax/jms/TopicSession.class
+javax/jms/TopicSubscriber.class
+javax/jms/TransactionInProgressException.class
+javax/jms/TransactionRolledBackException.class
+javax/jms/XAConnection.class
+javax/jms/XAConnectionFactory.class
+javax/jms/XAQueueConnection.class
+javax/jms/XAQueueConnectionFactory.class
+javax/jms/XAQueueSession.class
+javax/jms/XASession.class
+javax/jms/XATopicConnection.class
+javax/jms/XATopicConnectionFactory.class
+javax/jms/XATopicSession.class
+
+web search: 
+web search: "jms-api-1.1-rev-1" GitHub
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/javax.persistence/javax.persistence-api/index.json && sed -n '1,80p' metadata/javax.enterprise/cdi-api/index.json && sed -n '1,80p' metadata/javax.activation/javax.activation-api/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.persistence" ],
+    "metadata-version": "2.2",
+    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+    "repository-url": "https://github.com/javaee/jpa-spec",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+    "tested-versions": [
+      "2.2"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+    "description" : "CDI API provides the Java EE Contexts and Dependency Injection annotations and service provider interfaces defined by JSR-299. It lets applications and containers describe injectable beans, scopes, qualifiers, events, interceptors, decorators, and extension points without depending on a particular CDI implementation.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "javax.decorator",
+      "javax.enterprise"
+    ]
+  }
+]
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.activation" ],
+    "metadata-version": "1.2.0",
+    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+    "repository-url": "https://github.com/javaee/activation",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+    "tested-versions": [
+      "1.2.0"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "rg 'javax.jms|jms-api|javax.jms:jms' -n metadata tests build | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javax.jms-jms-1.1.json:2:  "coordinates" : "javax.jms:jms:1.1"
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json:281:      "type": "javax.jms.ConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json:287:      "type": "javax.jms.XAConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.28.0/reachability-metadata.json:426:      "type": "javax.jms.ConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.28.0/reachability-metadata.json:432:      "type": "javax.jms.XAConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json:503:      "type": "javax.jms.ConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json:509:      "type": "javax.jms.XAConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json:467:      "type": "javax.jms.ConnectionFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json:473:      "type": "javax.jms.XAConnectionFactory"
+metadata/org.apache.openejb/javaee-api/index.json:4:    "allowed-packages": [ "javax.activation", "javax.annotation", "javax.ejb", "javax.enterprise.deploy", "javax.interceptor", "javax.jms", "javax.jws", "javax.mail", "javax.management.j2ee", "javax.persistence", "javax.resource", "javax.security.jacc", "javax.servlet", "javax.transaction", "javax.xml", "org.apache.geronimo.mail" ],
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:29:      "javax.jms"
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:21:import javax.jms.Connection;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:22:import javax.jms.DeliveryMode;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:23:import javax.jms.Destination;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:24:import javax.jms.JMSException;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:25:import javax.jms.Message;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:26:import javax.jms.MessageConsumer;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:27:import javax.jms.MessageProducer;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:28:import javax.jms.Session;
+tests/src/org.apache.activemq/activemq-client/5.18.1/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java:29:import javax.jms.TextMessage;
+tests/src/org.apache.activemq/activemq-client/6.0.0/build.gradle:18:    testImplementation 'javax.jms:javax.jms-api:2.0.1'
+tests/src/org.apache.activemq/activemq-broker/5.18.1/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java:13:import javax.jms.Connection;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:21:import javax.jms.Connection;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:22:import javax.jms.DeliveryMode;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:23:import javax.jms.Destination;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:24:import javax.jms.Message;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:25:import javax.jms.MessageConsumer;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:26:import javax.jms.MessageProducer;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:27:import javax.jms.Session;
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java:28:import javax.jms.TextMessage;
+tests/src/org.apache.openejb/javaee-api/5.0-2/user-code-filter.json:22:      "includeClasses" : "javax.jms.**"
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/build.gradle:14:    testImplementation "jakarta.jms:jakarta.jms-api:$libraryVersion"
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/settings.gradle:20:rootProject.name = 'jakarta.jms.jakarta.jms-api_tests'
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/gradle.properties:4:library.coordinates = jakarta.jms:jakarta.jms-api:2.0.3
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/gradle.properties:6:metadata.dir = jakarta.jms/jakarta.jms-api/2.0.3/
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/user-code-filter.json:7:      "includeClasses" : "javax.jms.**"
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:19:import javax.jms.BytesMessage;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:20:import javax.jms.CompletionListener;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:21:import javax.jms.DeliveryMode;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:22:import javax.jms.Destination;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:23:import javax.jms.ExceptionListener;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:24:import javax.jms.InvalidDestinationException;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:25:import javax.jms.JMSException;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:26:import javax.jms.JMSRuntimeException;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:27:import javax.jms.MapMessage;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:28:import javax.jms.Message;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:29:import javax.jms.MessageConsumer;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:30:import javax.jms.MessageFormatException;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:31:import javax.jms.MessageListener;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:32:import javax.jms.MessageProducer;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:33:import javax.jms.ObjectMessage;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:34:import javax.jms.Queue;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:35:import javax.jms.QueueBrowser;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:36:import javax.jms.QueueReceiver;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:37:import javax.jms.QueueRequestor;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:38:import javax.jms.QueueSender;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:39:import javax.jms.QueueSession;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:40:import javax.jms.Session;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:41:import javax.jms.StreamMessage;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:42:import javax.jms.TemporaryQueue;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:43:import javax.jms.TemporaryTopic;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:44:import javax.jms.TextMessage;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:45:import javax.jms.Topic;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:46:import javax.jms.TopicPublisher;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:47:import javax.jms.TopicRequestor;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:48:import javax.jms.TopicSession;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:49:import javax.jms.TopicSubscriber;
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:68:        assertThat(javax.jms.JMSContext.SESSION_TRANSACTED).isEqualTo(Session.SESSION_TRANSACTED);
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:69:        assertThat(javax.jms.JMSContext.AUTO_ACKNOWLEDGE).isEqualTo(Session.AUTO_ACKNOWLEDGE);
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:70:        assertThat(javax.jms.JMSContext.CLIENT_ACKNOWLEDGE).isEqualTo(Session.CLIENT_ACKNOWLEDGE);
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:71:        assertThat(javax.jms.JMSContext.DUPS_OK_ACKNOWLEDGE).isEqualTo(Session.DUPS_OK_ACKNOWLEDGE);
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:89:        assertCheckedException(new javax.jms.IllegalStateException("bad state"), "bad state", null);
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:90:        assertCheckedException(new javax.jms.IllegalStateException("bad state", "JMS-1000"), "bad state", "JMS-1000");
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:91:        assertCheckedException(new javax.jms.InvalidClientIDException("bad client", "JMS-1001"), "bad client", "JMS-1001");
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:93:        assertCheckedException(new javax.jms.InvalidSelectorException("bad selector", "JMS-1003"), "bad selector", "JMS-1003");
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/src/test/java/jakarta_jms/jakarta_jms_api/Jakarta_jms_apiTest.java:94:        assertCheckedException(new javax.jms.JMSSecurityException("access denied", "JMS-1004"), "access denied", "JMS-1004");
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/jakarta.jms/jakarta.jms-api/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/messaging",
+    "test-code-url" : "https://download.eclipse.org/jakartaee/messaging/3.0/jakarta-messaging-tck-$version$.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+    "description" : "Jakarta Messaging API defines interfaces and annotations for Java applications to create, send, receive, and read messages through messaging providers. It standardizes loosely coupled, reliable asynchronous communication while leaving the concrete broker or provider implementation to separate runtimes.",
+    "tested-versions" : [
+      "3.0.0",
+      "3.1.0"
+    ],
+    "allowed-packages" : [
+      "jakarta.jms"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/messaging",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+    "description" : "Jakarta Messaging API defines interfaces for creating, sending, receiving, and reading messages between Java applications and messaging providers. It standardizes loosely coupled asynchronous communication semantics without providing a concrete messaging implementation.",
+    "tested-versions" : [
+      "2.0.3"
+    ],
+    "allowed-packages" : [
+      "javax.jms"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "rg 'mavenCentral|repo1.maven|repository.jboss|repositories' -n settings.gradle build.gradle gradle tests tck-build-logic 2>/dev/null | head -100" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+settings.gradle:9:    repositories {
+build.gradle:24:    repositories {
+build.gradle:25:        mavenCentral()
+build.gradle:98:        targetExclude(*noHeaderDirs, '**/.venv/**', 'forge/local_repositories/**')
+tests/tck-build-logic/build.gradle:12:repositories {
+tests/tck-build-logic/build.gradle:13:    mavenCentral()
+tests/tck-build-logic/build.gradle:26:    repositories {
+tests/tck-build-logic/settings.gradle:8:    repositories {
+tests/tck-build-logic/settings.gradle:9:        mavenCentral()
+tests/tck-build-logic/settings.gradle:24:    repositories {
+tests/tck-build-logic/settings.gradle:25:        mavenCentral()
+tests/tck-test-support/build.gradle:18:repositories {
+tests/tck-test-support/build.gradle:19:    mavenCentral()
+tests/tck-build-logic/src/main/resources/contributing/questions.json:5:    "help": "Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". For more information visit: https://maven.apache.org/repositories/artifacts.html"
+tests/tck-build-logic/src/main/resources/contributing/questions.json:30:    "help": "Enter the additional dependencies (press enter after each dependency) you want to include use in tests. Provide dependencies in form of Maven coordinates. Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". For more information visit: https://maven.apache.org/repositories/artifacts.html When you finish adding dependencies, type \"-\" to terminate the inclusion process."
+tests/src/org.jline/jline/3.21.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:29:                    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+tests/src/com.typesafe.scala-logging/scala-logging_3/3.9.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/tck-build-logic/src/main/resources/scaffold/settings.gradle.template:7:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-api/1.9.25/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.android/annotations/4.1.1.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/findbugs/annotations/1.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.re2j/re2j/1.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-terminal-jni/3.30.7/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.12/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-reader/3.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-terminal-jna/3.20.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-api/2.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.googlecode.juniversalchardet/juniversalchardet/1.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.xml.bind.external/relaxng-datatype/4.0.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-terminal-jni/3.27.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.ongres.stringprep/stringprep/1.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/harness/tasks/FetchExistingLibrariesWithNewerVersionsTask.java:85:        String baseUrl = "https://repo1.maven.org/maven2";
+tests/src/org.jline/jline-console/3.28.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.collections/eclipse-collections-api/11.1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.13/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.ben-manes.caffeine/caffeine/3.1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.mysql/mysql-connector-j/8.0.31/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-util/1.9.25/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.ongres.stringprep/saslprep/1.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.opengauss/opengauss-jdbc/3.1.0-og/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-native/3.27.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-console/3.21.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.ben-manes.caffeine/caffeine/2.9.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.10/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.snakeyaml/snakeyaml-engine/3.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-util/2.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/CheckDocLinksTask.java:46:            "metadata", "tests", "local_repositories", "native-build-tools"
+tests/src/org.apache.directory.api/api-util/1.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-console/3.22.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.latencyutils/LatencyUtils/2.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.xml.bind.external/rngom/4.0.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.parboiled/parboiled_3/2.5.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.interceptor/javax.interceptor-api/1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/antlr/antlr/2.7.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.persistence/javax.persistence-api/2.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-spi/1.9.25/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.directory.api/api-i18n/1.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/net.jcip/jcip-annotations/1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.16/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/1.6.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.jnr/jnr-x86asm/1.0.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.surefire/surefire-logger-api/2.22.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.websocket/jakarta.websocket-client-api/2.1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/2.1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.directory.api/api-i18n/2.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/log4j/log4j/1.2.17/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-spi/2.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.barchart.udt/barchart-udt-bundle/2.3.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.15/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.codehaus.plexus/plexus-component-annotations/1.5.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.websocket/jakarta.websocket-api/2.1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-inprocess/1.68.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:60:            "repo1.maven.org",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:231:                    String renderedMavenVersion = mavenCentralArtifactVersion(renderedUrl, groupPath, artifact);
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:262:    private static String mavenCentralArtifactVersion(String renderedUrl, String groupPath, String artifact) {
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.5.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/2.1.0-alpha/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.thrift/libthrift/0.13.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/java-dataloader/3.2.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.codehaus.plexus/plexus-component-annotations/1.5.4/src/test/java/org_codehaus_plexus/plexus_component_annotations/Plexus_component_annotationsTest.java:117:        Requirement requirement = MultiRepositoryHolder.class.getDeclaredField("repositories").getAnnotation(Requirement.class);
+tests/src/org.codehaus.plexus/plexus-component-annotations/1.5.4/src/test/java/org_codehaus_plexus/plexus_component_annotations/Plexus_component_annotationsTest.java:203:        public PluginRepository repositories;
+tests/src/io.netty/netty-codec-memcache/4.1.74.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-transport-http/1.9.25/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.codehaus.plexus/plexus-utils/1.0.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.0.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.9/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.14/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-context/1.57.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-rls/1.80.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.thrift/libthrift/0.17.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/java-dataloader/2021-06-27T00-42-24-11a7348/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.maven.resolver/maven-resolver-transport-http/2.0.0-alpha-1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-transport-classes-epoll/4.1.99.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-context/1.27.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:25:repositories {
+
+exec
+/bin/bash -lc "sed -n '210,285p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+                    ? entry.path("metadata-version").asText()
+                    : "<unknown>";
+            List<String> testedVersions = testedVersions(entry);
+            if (testedVersions.size() <= 1) {
+                continue;
+            }
+
+            Set<String> testedVersionSet = new LinkedHashSet<>(testedVersions);
+            for (String fieldName : URL_TEMPLATE_FIELDS) {
+                JsonNode urlNode = entry.get(fieldName);
+                if (urlNode == null || !urlNode.isTextual()) {
+                    continue;
+                }
+
+                String template = urlNode.asText();
+                if (!template.contains(VERSION_TOKEN)) {
+                    continue;
+                }
+
+                for (String testedVersion : testedVersions) {
+                    String renderedUrl = template.replace(VERSION_TOKEN, testedVersion);
+                    String renderedMavenVersion = mavenCentralArtifactVersion(renderedUrl, groupPath, artifact);
+                    if (renderedMavenVersion == null || testedVersion.equals(renderedMavenVersion)) {
+                        continue;
+                    }
+                    if (!testedVersionSet.contains(renderedMavenVersion)) {
+                        failures.add("❌ " + filePath + ": " + fieldName
+                                + " template under metadata-version " + metadataVersion
+                                + " renders tested-version " + testedVersion
+                                + " to Maven artifact version " + renderedMavenVersion
+                                + ", which is not listed in tested-versions. Split the entry or use an alias-safe URL.");
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<String> testedVersions(JsonNode entry) {
+        JsonNode testedVersionsNode = entry.get("tested-versions");
+        if (testedVersionsNode == null || !testedVersionsNode.isArray()) {
+            return Collections.emptyList();
+        }
+
+        List<String> testedVersions = new ArrayList<>();
+        for (JsonNode testedVersionNode : testedVersionsNode) {
+            if (testedVersionNode != null && testedVersionNode.isTextual()) {
+                testedVersions.add(testedVersionNode.asText());
+            }
+        }
+        return testedVersions;
+    }
+
+    private static String mavenCentralArtifactVersion(String renderedUrl, String groupPath, String artifact) {
+        URI uri;
+        try {
+            uri = URI.create(renderedUrl);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
+        String host = uri.getHost();
+        if (host == null || !MAVEN_CENTRAL_HOSTS.contains(host.toLowerCase(Locale.ROOT))) {
+            return null;
+        }
+
+        String expectedPrefix = "/maven2/" + groupPath + "/" + artifact + "/";
+        String path = uri.getPath();
+        if (path == null || !path.startsWith(expectedPrefix)) {
+            return null;
+        }
+
+        String remainder = path.substring(expectedPrefix.length());
+        int separator = remainder.indexOf('/');
+        if (separator <= 0 || separator == remainder.length() - 1) {
+            return null;
+        }
+
+exec
+/bin/bash -lc "rg 'not-for-native-image|replacement|\"reason\"' -n metadata build/discovered-artifact-metadata tests | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:89:                    "reason": "Scala.js artifact; not a JVM library consumed by native-image."
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:120:                    "reason": "Scala.js artifact; not a JVM library consumed by native-image."
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:442:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:454:                List.of(replacement),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:458:        assertThat(merged.versions()).containsExactly(replacement);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:481:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:493:                List.of(replacement),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:497:        assertThat(merged.versions()).containsExactly(replacement, untouchedVersion);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:498:        assertThat(LibraryStatsSupport.requireVersionStats(merged, "com.example:demo:1.0.0")).isEqualTo(replacement);
+metadata/com.google.protobuf/protobuf-java-util/index.json:37:        "reason" : "Published POM for com.google.protobuf:protobuf-java-util:3.22.1 is malformed: dependency com.google.protobuf:protobuf-java uses invalid groupId '$com.google.protobuf' and omits the version."
+tests/src/io.netty/netty-codec-memcache/4.1.74.Final/src/test/java/io_netty/netty_codec_memcache/Netty_codec_memcacheTest.java:307:        MemcacheContent replacement = content.replace(ascii("replacement"));
+tests/src/io.netty/netty-codec-memcache/4.1.74.Final/src/test/java/io_netty/netty_codec_memcache/Netty_codec_memcacheTest.java:312:            assertThat(replacement.content().toString(CharsetUtil.UTF_8)).isEqualTo("replacement");
+tests/src/io.netty/netty-codec-memcache/4.1.74.Final/src/test/java/io_netty/netty_codec_memcache/Netty_codec_memcacheTest.java:315:            replacement.release();
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:4:    "reason": "The root multiplatform artifact publishes a non-JVM Kotlin metadata jar with no JVM class files; JVM consumers resolve the separate JVM variant.",
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm:0.4.16"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:4:    "reason": "The default and macOS classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:5:    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:233:        properties.putObject("reason").put("$ref", "#/$defs/reason");
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrent-collections-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrent-collections/index.json:5:    "replacement": "co.touchlab:stately-concurrent-collections-jvm:2.1.0"
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrency-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrency/index.json:5:    "replacement": "co.touchlab:stately-concurrency-jvm:2.1.0"
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-strict-jvm:2.1.0.",
+metadata/co.touchlab/stately-strict/index.json:5:    "replacement": "co.touchlab:stately-strict-jvm:2.1.0"
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:352:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:354:                null // replacement
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:472:                entry.replacement()
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:495:                entry.replacement()
+tests/src/io.netty/netty-codec-mqtt/4.1.74.Final/src/test/java/io_netty/netty_codec_mqtt/Netty_codec_mqttTest.java:208:        MqttPublishMessage replacement = publish.replace(Unpooled.copiedBuffer("23.0\u00b0C", UTF_8));
+tests/src/io.netty/netty-codec-mqtt/4.1.74.Final/src/test/java/io_netty/netty_codec_mqtt/Netty_codec_mqttTest.java:213:            assertThat(replacement.variableHeader().topicName()).isEqualTo("sensors/temperature");
+tests/src/io.netty/netty-codec-mqtt/4.1.74.Final/src/test/java/io_netty/netty_codec_mqtt/Netty_codec_mqttTest.java:214:            assertThat(replacement.payload().toString(UTF_8)).isEqualTo("23.0\u00b0C");
+tests/src/io.netty/netty-codec-mqtt/4.1.74.Final/src/test/java/io_netty/netty_codec_mqtt/Netty_codec_mqttTest.java:220:            replacement.release();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:349:                null // replacement
+tests/src/io.netty/netty-codec-smtp/4.1.74.Final/src/test/java/io_netty/netty_codec_smtp/Netty_codec_smtpTest.java:274:            replaced = content.replace(copiedBuffer("replacement"));
+tests/src/io.netty/netty-codec-smtp/4.1.74.Final/src/test/java/io_netty/netty_codec_smtp/Netty_codec_smtpTest.java:285:            assertThat(replaced.content().toString(CharsetUtil.US_ASCII)).isEqualTo("replacement");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:30:        @JsonProperty("reason")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:32:        @JsonProperty("replacement")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:33:        String replacement
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:49:        @JsonProperty("reason")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:51:        @JsonProperty("replacement")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:52:        String replacement
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:4:    "reason": "The default JAR contains only Maven metadata plus META-INF/versions/11/module-info.class, not application/library JVM classes for Native Image metadata; Java classes are published separately.",
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:5:    "replacement": "io.netty:netty-tcnative-classes:2.0.73.Final"
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-transport-native-io_uring/index.json:4:    "reason": "The main JAR contains only module metadata, and platform classifier JARs carry native libraries; the JVM io_uring transport classes are published separately.",
+metadata/io.netty/netty-transport-native-io_uring/index.json:5:    "replacement": "io.netty:netty-transport-classes-io_uring:4.2.1.Final"
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-transport-classes-io_uring:0.0.26.Final"
+
+exec
+/bin/bash -lc "sed -n '1,80p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+web search: 
+web search: https://repo1.maven.org/maven2/javax/jms/jms/1.1/
+web search: 
+web search: https://central.sonatype.com/artifact/javax.jms/jms/1.1
+codex
+I found Maven-hosted source and javadoc jars for the equivalent Java EE JMS API publication `javax.jms:jms-api:1.1-rev-1`; those match the `javax.jms` API classes and can be tokenized as `$version$-rev-1`. I’m going to use those for source and documentation, keep tests as `N/A`, and leave language and `not-for-native-image` absent because the API is Java/JVM-usable rather than a Kotlin/Groovy/Scala or non-JVM artifact.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+diff --git a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+index c7b9334b820543712bb15bc6386f8a40797d8361..b9290ac2c26931ef415a9fb86fbb501669e53fd5
+--- a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
++++ b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.jms:jms:1.1"
++  "coordinates" : "javax.jms:jms:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-sources.jar",
++  "repository-url" : "http://java.sun.com/products/jms",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-javadoc.jar",
++  "description" : "Java Message Service 1.1 defines the standard Java API for creating, sending, receiving, and reading messages through messaging providers. It specifies loosely coupled, reliable, asynchronous communication contracts for Java EE and JVM applications while leaving the concrete broker implementation to separate runtime libraries."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+index c7b9334b820543712bb15bc6386f8a40797d8361..b9290ac2c26931ef415a9fb86fbb501669e53fd5
+--- a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
++++ b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.jms:jms:1.1"
++  "coordinates" : "javax.jms:jms:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-sources.jar",
++  "repository-url" : "http://java.sun.com/products/jms",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-javadoc.jar",
++  "description" : "Java Message Service 1.1 defines the standard Java API for creating, sending, receiving, and reading messages through messaging providers. It specifies loosely coupled, reliable, asynchronous communication contracts for Java EE and JVM applications while leaving the concrete broker implementation to separate runtime libraries."
+ }
+
+exec
+/bin/bash -lc "python3 -m json.tool build/discovered-artifact-metadata/javax.jms-jms-1.1.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/javax.jms-jms-1.1.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.jms:jms:1.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-sources.jar",
+  "repository-url" : "http://java.sun.com/products/jms",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-javadoc.jar",
+  "description" : "Java Message Service 1.1 defines the standard Java API for creating, sending, receiving, and reading messages through messaging providers. It specifies loosely coupled, reliable, asynchronous communication contracts for Java EE and JVM applications while leaving the concrete broker implementation to separate runtime libraries."
+}
+
+exec
+/bin/bash -lc "curl -sI https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1-javadoc.jar | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+exec
+/bin/bash -lc "curl -sI https://repo1.maven.org/maven2/javax/jms/jms-api/1.1-rev-1/jms-api-1.1-rev-1-sources.jar | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:42:28 GMT
+content-type: application/java-archive
+content-length: 381023
+cf-ray: 9f7132da4aa0dfc0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 121460
+etag: "4d7d8ccf8a7744c61026edfa6dc602c0"
+last-modified: Thu, 17 Apr 2008 00:09:46 GMT
+x-checksum-md5: 4d7d8ccf8a7744c61026edfa6dc602c0
+x-checksum-sha1: 6fd0fc3e397984f36e4cffb7008b55f660e4c88e
+
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 16:42:28 GMT
+content-type: application/java-archive
+content-length: 151385
+cf-ray: 9f7132da4aa1dfc0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 787028
+etag: "2357b0f6507a52e1266c4832f9427f11"
+last-modified: Thu, 17 Apr 2008 00:09:45 GMT
+x-checksum-md5: 2357b0f6507a52e1266c4832f9427f11
+x-checksum-sha1: 1b7776a0d1e1ba2d5b7d1832f6eb5cc59a86de3a
+
+diff --git a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+index c7b9334b820543712bb15bc6386f8a40797d8361..b9290ac2c26931ef415a9fb86fbb501669e53fd5
+--- a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
++++ b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.jms:jms:1.1"
++  "coordinates" : "javax.jms:jms:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-sources.jar",
++  "repository-url" : "http://java.sun.com/products/jms",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-javadoc.jar",
++  "description" : "Java Message Service 1.1 defines the standard Java API for creating, sending, receiving, and reading messages through messaging providers. It specifies loosely coupled, reliable, asynchronous communication contracts for Java EE and JVM applications while leaving the concrete broker implementation to separate runtime libraries."
+ }
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.jms-jms-1.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/javax.jms-jms-1.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995
+diff --git a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+index c7b9334b820543712bb15bc6386f8a40797d8361..b9290ac2c26931ef415a9fb86fbb501669e53fd5
+--- a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
++++ b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.jms:jms:1.1"
++  "coordinates" : "javax.jms:jms:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-sources.jar",
++  "repository-url" : "http://java.sun.com/products/jms",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-javadoc.jar",
++  "description" : "Java Message Service 1.1 defines the standard Java API for creating, sending, receiving, and reading messages through messaging providers. It specifies loosely coupled, reliable, asynchronous communication contracts for Java EE and JVM applications while leaving the concrete broker implementation to separate runtime libraries."
+ }
+
+ succeeded in 221ms:
+web search: 
+web search: repo1.maven.org javax/jms/jms-api/1.1-rev-1 jms-api-1.1-rev-1-sources.jar javadoc.jar
+codex
+Updated [javax.jms-jms-1.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/build/discovered-artifact-metadata/javax.jms-jms-1.1.json).
+
+I used the Maven-hosted `jms-api:1.1-rev-1` source and javadoc artifacts because the original `javax.jms:jms:1.1` Central entry is POM-only, while `jms-api:1.1-rev-1` publishes the matching source, javadoc, and JVM jar artifacts. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/jms/jms/1.1/?utm_source=openai))
+
+Validation done: JSON parses, and the rendered source/documentation URLs for `1.1` return HTTP 200. No `language` or `not-for-native-image` fields were added.
+diff --git a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+index c7b9334b820543712bb15bc6386f8a40797d8361..b9290ac2c26931ef415a9fb86fbb501669e53fd5
+--- a/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
++++ b/build/discovered-artifact-metadata/javax.jms-jms-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.jms:jms:1.1"
++  "coordinates" : "javax.jms:jms:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-sources.jar",
++  "repository-url" : "http://java.sun.com/products/jms",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/jms/jms-api/$version$-rev-1/jms-api-$version$-rev-1-javadoc.jar",
++  "description" : "Java Message Service 1.1 defines the standard Java API for creating, sending, receiving, and reading messages through messaging providers. It specifies loosely coupled, reliable, asynchronous communication contracts for Java EE and JVM applications while leaving the concrete broker implementation to separate runtime libraries."
+ }
+
+tokens used
+128,566
+Updated [javax.jms-jms-1.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/build/discovered-artifact-metadata/javax.jms-jms-1.1.json).
+
+I used the Maven-hosted `jms-api:1.1-rev-1` source and javadoc artifacts because the original `javax.jms:jms:1.1` Central entry is POM-only, while `jms-api:1.1-rev-1` publishes the matching source, javadoc, and JVM jar artifacts. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/jms/jms/1.1/?utm_source=openai))
+
+Validation done: JSON parses, and the rendered source/documentation URLs for `1.1` return HTTP 200. No `language` or `not-for-native-image` fields were added.
+Ran agent for javax.jms:jms:1.1 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/build/agent-artifact-discovery-logs/javax.jms-jms-1.1.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3040-dc036995/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 50s
+9 actionable tasks: 9 executed
