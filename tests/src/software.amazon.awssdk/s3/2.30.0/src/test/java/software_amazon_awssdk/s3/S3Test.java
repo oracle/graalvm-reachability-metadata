@@ -44,6 +44,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.S3Uri;
+import software.amazon.awssdk.services.s3.model.ChecksumAlgorithm;
 import software.amazon.awssdk.services.s3.model.ChecksumMode;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
@@ -66,14 +67,13 @@ import software.amazon.awssdk.services.s3.model.S3Error;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.UploadPartResponse;
 
-class S3Test {
+public class S3Test {
 
     @Test
     void configurationAndUtilitiesSupportPathStyleUrlsAndUriParsing() {
         S3Configuration configuration = S3Configuration.builder()
             .pathStyleAccessEnabled(true)
             .chunkedEncodingEnabled(false)
-            .checksumValidationEnabled(false)
             .multiRegionEnabled(true)
             .build();
 
@@ -83,7 +83,6 @@ class S3Test {
 
         assertThat(configuration.pathStyleAccessEnabled()).isTrue();
         assertThat(configuration.chunkedEncodingEnabled()).isFalse();
-        assertThat(configuration.checksumValidationEnabled()).isFalse();
         assertThat(configuration.multiRegionEnabled()).isTrue();
         assertThat(copiedConfiguration.multiRegionEnabled()).isFalse();
 
@@ -303,6 +302,7 @@ class S3Test {
         })) {
             DeleteObjectsResponse deleteResponse = client.deleteObjects(request -> request
                 .bucket("docs-bucket")
+                .checksumAlgorithm(ChecksumAlgorithm.SHA256)
                 .delete(Delete.builder()
                     .objects(List.of(
                         ObjectIdentifier.builder()
@@ -337,7 +337,8 @@ class S3Test {
             assertThat(deleteRequest.method()).isEqualTo(SdkHttpMethod.POST);
             assertThat(deleteRequest.encodedPath()).isEqualTo("/docs-bucket");
             assertThat(deleteRequest.queryParameters().containsKey("delete")).isTrue();
-            assertThat(deleteRequest.headerValue("Content-MD5")).hasValue(md5Base64(deleteRequest.body()));
+            assertThat(deleteRequest.headerValue("x-amz-sdk-checksum-algorithm")).hasValue("SHA256");
+            assertThat(deleteRequest.headerValue("x-amz-checksum-sha256")).hasValue(sha256Base64(deleteRequest.body()));
             assertThat(deleteRequest.bodyUtf8()).contains("<Delete xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">")
                 .contains("<Quiet>true</Quiet>")
                 .contains("<Key>docs/quarterly-report.txt</Key>")
@@ -483,8 +484,7 @@ class S3Test {
     ) {
         S3Configuration.Builder configurationBuilder = S3Configuration.builder()
             .pathStyleAccessEnabled(true)
-            .chunkedEncodingEnabled(false)
-            .checksumValidationEnabled(false);
+            .chunkedEncodingEnabled(false);
         configurationCustomizer.accept(configurationBuilder);
 
         return S3Client.builder()
@@ -612,11 +612,11 @@ class S3Test {
             .findFirst();
     }
 
-    private static String md5Base64(byte[] content) {
+    private static String sha256Base64(byte[] content) {
         try {
-            return Base64.getEncoder().encodeToString(MessageDigest.getInstance("MD5").digest(content));
+            return Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(content));
         } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("MD5 digest is unavailable", exception);
+            throw new IllegalStateException("SHA-256 digest is unavailable", exception);
         }
     }
 
