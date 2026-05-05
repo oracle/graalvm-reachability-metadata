@@ -44,6 +44,16 @@ public class ExceptionUtilsTest {
         assertThat(cause).isSameAs(root);
     }
 
+    @Test
+    public void getCauseUsesExplicitCustomAccessorMethodName() {
+        IllegalArgumentException root = new IllegalArgumentException("explicit accessor");
+        CustomCauseException wrapper = new CustomCauseException("wrapper", root);
+
+        Throwable cause = ExceptionUtils.getCause(wrapper, new String[] {"getSourceException"});
+
+        assertThat(cause).isSameAs(root);
+    }
+
     public static class DetailBackedException extends Exception {
         public Throwable detail;
 
