@@ -10,6 +10,10 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+tasks.withType(Test).configureEach {
+    systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$CountingJavaObjectSerializer'
+}
+
 dependencies {
 	testImplementation("com.h2database:h2:$libraryVersion")
 	testImplementation("org.assertj:assertj-core:3.22.0")
