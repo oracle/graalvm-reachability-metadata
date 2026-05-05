@@ -17,6 +17,18 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -73,6 +85,28 @@ public class Ktor_serialization_kotlinx_cbor_jvmTest {
         }
     }
 
+    @Test
+    fun defaultCborConfigurationSerializesDefaultValuedProperties(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val cbor: Cbor = Cbor(from = DefaultCbor) {
+                serializersModule = SerializersModule {
+                    contextual(DefaultedPayload::class, DefaultedPayloadSerializer)
+                }
+            }
+            val configuration = CapturingConfiguration()
+
+            configuration.cbor(cbor)
+
+            val registration = configuration.singleRegistration()
+            val payload = DefaultedPayload()
+            val bytes = registration.converter.serializeToBytes(payload)
+            val decoded: DefaultedPayload = registration.converter.deserializeFromBytes(bytes)
+
+            assertThat(registration.contentType).isEqualTo(ContentType.Application.Cbor)
+            assertThat(decoded).isEqualTo(payload)
+        }
+    }
+
     private fun registeredDefaultConverter(): ContentConverter {
         val configuration = CapturingConfiguration()
         configuration.cbor()
@@ -103,6 +137,55 @@ public class Ktor_serialization_kotlinx_cbor_jvmTest {
         val contentType: ContentType,
         val converter: ContentConverter,
     )
+
+    private data class DefaultedPayload(
+        val name: String = "primary",
+        val retryCount: Int = 3,
+    )
+
+    private object DefaultedPayloadSerializer : KSerializer<DefaultedPayload> {
+        private const val NAME_INDEX: Int = 0
+        private const val RETRY_COUNT_INDEX: Int = 1
+        private const val MISSING_NAME: String = "missing"
+        private const val MISSING_RETRY_COUNT: Int = -1
+
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.DefaultedPayload") {
+            element<String>("name")
+            element<Int>("retryCount")
+        }
+
+        override fun serialize(encoder: Encoder, value: DefaultedPayload): Unit {
+            encoder.encodeStructure(descriptor) {
+                if (value.name != DefaultedPayload().name || shouldEncodeElementDefault(descriptor, NAME_INDEX)) {
+                    encodeStringElement(descriptor, NAME_INDEX, value.name)
+                }
+                if (
+                    value.retryCount != DefaultedPayload().retryCount ||
+                    shouldEncodeElementDefault(descriptor, RETRY_COUNT_INDEX)
+                ) {
+                    encodeIntElement(descriptor, RETRY_COUNT_INDEX, value.retryCount)
+                }
+            }
+        }
+
+        override fun deserialize(decoder: Decoder): DefaultedPayload {
+            return decoder.decodeStructure(descriptor) {
+                var name = MISSING_NAME
+                var retryCount = MISSING_RETRY_COUNT
+
+                decodeLoop@ while (true) {
+                    when (val index = decodeElementIndex(descriptor)) {
+                        NAME_INDEX -> name = decodeStringElement(descriptor, NAME_INDEX)
+                        RETRY_COUNT_INDEX -> retryCount = decodeIntElement(descriptor, RETRY_COUNT_INDEX)
+                        CompositeDecoder.DECODE_DONE -> break@decodeLoop
+                        else -> error("Unexpected element index: $index")
+                    }
+                }
+
+                DefaultedPayload(name, retryCount)
+            }
+        }
+    }
 
     private class CapturingConfiguration : Configuration {
         private val registrations: MutableList<ConverterRegistration> = mutableListOf()
