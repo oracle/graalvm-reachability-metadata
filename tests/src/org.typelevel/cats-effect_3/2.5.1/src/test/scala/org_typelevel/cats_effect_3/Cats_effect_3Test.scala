@@ -22,6 +22,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext
@@ -198,6 +201,35 @@ class Cats_effect_3Test {
     val result: (Int, Boolean) = await(program)
 
     assertThat(result).isEqualTo((99, true))
+  }
+
+  @Test
+  @Timeout(value = 10, unit = TimeUnit.SECONDS)
+  def contextShiftEvaluatesEffectsOnSpecifiedExecutionContext(): Unit = {
+    val executor: ExecutorService = Executors.newSingleThreadExecutor(new ThreadFactory {
+      override def newThread(runnable: Runnable): Thread = {
+        val thread: Thread = new Thread(runnable)
+        thread.setDaemon(true)
+        thread.setName("cats-effect-eval-on-test")
+        thread
+      }
+    })
+    val dedicatedExecutionContext: ExecutionContext = ExecutionContext.fromExecutor(executor)
+
+    try {
+      val program: IO[(String, String)] = for {
+        shiftedThreadName <- contextShift.evalOn(dedicatedExecutionContext)(IO(Thread.currentThread().getName))
+        resumedThreadName <- IO(Thread.currentThread().getName)
+      } yield (shiftedThreadName, resumedThreadName)
+
+      val result: (String, String) = await(program)
+
+      assertThat(result._1).startsWith("cats-effect-eval-on-test")
+      assertThat(result._2).doesNotStartWith("cats-effect-eval-on-test")
+    } finally {
+      executor.shutdownNow()
+      executor.awaitTermination(1, TimeUnit.SECONDS)
+    }
   }
 
   @Test
