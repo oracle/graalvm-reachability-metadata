@@ -1,0 +1,655 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df607-8161-7f03-badb-192eaea32919
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:annotations:2.36.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.36.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/metadata/software.amazon.awssdk/annotations/index.json
+- Entry selector: "metadata-version" = "2.36.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.36.1
+- Entry metadata-version: 2.36.1
+- Entry test-version: 2.36.1
+- Entry tested-versions: [2.36.1]
+codex
+I’ll verify the artifact metadata and versioned URLs first, then patch only the missing fields in the JSON entry. After that I’ll run a quick JSON check so the file stays valid.
+web search: 
+web search: software.amazon.awssdk annotations 2.36.1 Maven Central
+codex
+I found this is part of the AWS SDK for Java v2 repository, and the Maven entry for `annotations` exists at `2.36.1`. I’m checking whether Maven Central provides source/test/documentation artifacts before falling back to GitHub paths.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.36.1\")' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+{
+  "metadata-version": "2.36.1",
+  "tested-versions": [
+    "2.36.1"
+  ],
+  "allowed-packages": [
+    "software.amazon.awssdk.annotations"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|description|language' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+9:    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org/maven2|javadoc.io/doc/software.amazon.awssdk|aws-sdk-java-v2/tree' metadata/software.amazon.awssdk | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+metadata/software.amazon.awssdk/http-client-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-client-spi/src/test",
+metadata/software.amazon.awssdk/profiles/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/profiles/$version$/profiles-$version$-sources.jar",
+metadata/software.amazon.awssdk/profiles/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/profiles/src/test/java",
+metadata/software.amazon.awssdk/profiles/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/profiles/$version$/profiles-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/metrics-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/metrics-spi/src/test/java",
+metadata/software.amazon.awssdk/checksums-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/checksums-spi/$version$/checksums-spi-$version$-sources.jar",
+metadata/software.amazon.awssdk/checksums-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/checksums-spi/$version$/checksums-spi-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+metadata/software.amazon.awssdk/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/http-auth/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth/src/test",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth-spi/src/test/java",
+metadata/software.amazon.awssdk/retries-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries-spi/src/test/java",
+metadata/software.amazon.awssdk/identity-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/identity-spi/src/test/java",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/endpoints-spi/$version$/endpoints-spi-$version$-sources.jar",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/endpoints-spi/src/test",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/endpoints-spi/$version$/endpoints-spi-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-sources.jar",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/utils-lite/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/utils-lite/$version$/utils-lite-$version$-sources.jar",
+metadata/software.amazon.awssdk/utils-lite/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils-lite/src/test",
+metadata/software.amazon.awssdk/utils-lite/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/utils-lite/$version$/utils-lite-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/checksums/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/checksums/$version$/checksums-$version$-sources.jar",
+metadata/software.amazon.awssdk/checksums/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/checksums/src/test",
+metadata/software.amazon.awssdk/checksums/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/checksums/$version$/checksums-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/retries/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries/src/test/java",
+metadata/software.amazon.awssdk/utils/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-sources.jar && curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-test-sources.jar && curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ exited 22 in 326ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 02:46:34 GMT
+content-type: text/html
+cf-ray: 9f6c6a5f5d50c8a4-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+    "tested-versions" : [
+      "2.34.0",
+      "2.34.1",
+      "2.34.2",
+      "2.34.3",
+      "2.34.4",
+      "2.34.5",
+      "2.34.6",
+      "2.34.7",
+      "2.34.8",
+      "2.34.9",
+      "2.35.0",
+      "2.35.1",
+      "2.35.2",
+      "2.35.3",
+      "2.35.4",
+      "2.35.5",
+      "2.35.6",
+      "2.35.7",
+      "2.35.8",
+      "2.35.9",
+      "2.35.10",
+      "2.35.11",
+      "2.36.0"
+    ],
+    "allowed-packages" : [
+      "software.amazon.awssdk.annotations"
+    ]
+  },
+  {
+    "metadata-version" : "2.36.1",
+    "tested-versions" : [
+      "2.36.1"
+    ],
+    "allowed-packages" : [
+      "software.amazon.awssdk.annotations"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 02:46:39 GMT
+content-type: application/java-archive
+content-length: 356905
+cf-ray: 9f6c6a83b9e28822-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1796230
+etag: "8567a2e2e54d5313a53ac3da2013ded3"
+last-modified: Thu, 23 Oct 2025 22:51:57 GMT
+x-checksum-md5: 8567a2e2e54d5313a53ac3da2013ded3
+x-checksum-sha1: 8b6c3df834a44e8a0b72f8c1ec55bf1e76227178
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/test && curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/test/java && curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+exec
+/usr/bin/bash -lc 'curl -fsL https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations?ref=2.36.1' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 188ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "core/annotations/pom.xml",
+    "sha": "42129f7760f9d1b360aa3ac4d61fe8a910789725",
+    "size": 1684,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/pom.xml?ref=2.36.1",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/blob/2.36.1/core/annotations/pom.xml",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/blobs/42129f7760f9d1b360aa3ac4d61fe8a910789725",
+    "download_url": "https://raw.githubusercontent.com/aws/aws-sdk-java-v2/2.36.1/core/annotations/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/pom.xml?ref=2.36.1",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/blobs/42129f7760f9d1b360aa3ac4d61fe8a910789725",
+      "html": "https://github.com/aws/aws-sdk-java-v2/blob/2.36.1/core/annotations/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "core/annotations/src",
+    "sha": "3e1fab6172d455ca8a6102ed0b85217dbed81793",
+    "size": 0,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src?ref=2.36.1",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/3e1fab6172d455ca8a6102ed0b85217dbed81793",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src?ref=2.36.1",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/3e1fab6172d455ca8a6102ed0b85217dbed81793",
+      "html": "https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src"
+    }
+  }
+]
+
+ exited 22 in 399ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 02:46:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=ebdZSSUExvfS5tDJyUH5fFJFlSyG6loj%2Ftk1GOm%2BtOll%2BbCWt9%2BxBYkvC5rIODjwWcqjNTey5i9Vf9FvHP2TODCaPKvaSCpQFaVYO1euy8NvnpgtN52YOTSx52HtNPVdMmFfAzLUzFEQFmSqJE9ZT%2B1Jz%2BMcUOx%2FFhf%2F3MX331LV6wlIyBaUmwEO5LBHtz7r2ShGLHe7CIugtXZeLtf5oo9lL9eZZ3ngWe8Au1HAorlDGNskc0m9r4K1tr06TP9LiEqTX84BQQpKPiK%2FLt4STg%3D%3D--kcSwstdq36%2BHFw8F--qEdbKZV0Jo9dn5cRkqRhUQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.296138072.1777949199; expires=Wed, 05 May 2027 02:46:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 02:46:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:1680C:163462:1228BD:69F95A0F
+
+
+exec
+/usr/bin/bash -lc "curl -fsL https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ You may not use this file except in compliance with the License.
+  ~ A copy of the License is located at
+  ~
+  ~  http://aws.amazon.com/apache2.0
+  ~
+  ~ or in the "license" file accompanying this file. This file is distributed
+  ~ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  ~ express or implied. See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>core</artifactId>
+        <groupId>software.amazon.awssdk</groupId>
+        <version>2.36.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>annotations</artifactId>
+    <name>AWS Java SDK :: Annotations</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>software.amazon.awssdk.annotations</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsL https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src?ref=2.36.1' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/test/java' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/main/java' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 171ms:
+[
+  {
+    "name": "main",
+    "path": "core/annotations/src/main",
+    "sha": "650619f6ce53e24bf03ea7f12a8ca9911fb42f64",
+    "size": 0,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src/main?ref=2.36.1",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/main",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/650619f6ce53e24bf03ea7f12a8ca9911fb42f64",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src/main?ref=2.36.1",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/650619f6ce53e24bf03ea7f12a8ca9911fb42f64",
+      "html": "https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/main"
+    }
+  }
+]
+
+ exited 22 in 425ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 02:46:44 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=BPiDnPJleU0j4vz6dUpp5L1UZ12VOBqxeGyGissOtFzMXkLteTJHjHmHKD%2BmZNTMWkxIOgudv4FZlr6cQFMGFWvh4avyjZIyP37x4Sfz9cCbs1%2F5OXTTRAigCWqs7MIZbTW8%2B26pkK5gJCYHWflMAF9w2J4XLVvjrdreDNchkpVeA03S28IKJweJEzElnUpIbkay84E%2BrJ%2FVENb8O0yGYNuaLQqzuSgje3MlSAX9QHRisG7iUtgkwa59yhx4R6z4YT3LFNx4Hb5fFAxsw6UuBQ%3D%3D--XsauspjacVEczKqE--b%2BM7IbQFtsfs5NWqPdpLwA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.752303899.1777949204; expires=Wed, 05 May 2027 02:46:44 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 02:46:44 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5115:2CB0FF:163F1A:122BC8:69F95A14
+
+
+ succeeded in 506ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 02:46:44 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dbbfb8f74dbf8ebd89ee097dccdfcce3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=p8%2BFeZ9MPwsdnqWEQpmPg9IMKdqlo8OVHxTlv%2FkmeZxdVrW7lUPyySXWmRAlYRQc2b5Xg0NKTJL364twdONhoy2xOG%2B1AU2kCtC6E80MS0oSZ2jh8HIRrHrpw2BuCiYHzbkAfEhjHzznJGb40yE9kmWwivk5vduqVc8XHoB8IL69OC1swoPLVGkT11pfKKyA9wnjGISWyBozjBPfMeN3JE833nVxIWvfHEzhs2pYH%2BkTitM5hF5PvUPH7DtaC69jmMEBbBEv25NJBvFf%2FenKxQ%3D%3D--h9KHEy1zACupzijP--MXipqvovA4tnR1dhkscnQg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.515186946.1777949204; expires=Wed, 05 May 2027 02:46:44 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 02:46:44 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5119:2C3359:152E53:1140E4:69F95A14
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central software.amazon.awssdk annotations 2.36.1
+web search: 
+web search: https://central.sonatype.com/artifact/software.amazon.awssdk/annotations
+codex
+The artifact has Maven Central sources and Javadocs for `2.36.1`; Maven does not publish a test-sources jar for this module, and the tagged GitHub module only has `src/main`. I’m going to mirror the established metadata pattern already used by the previous `annotations` entry and leave `language` absent because this is not one of the Kotlin/Groovy/Scala-specific cases.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/metadata/software.amazon.awssdk/annotations/index.json
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38bada2e288ab6f19ca26e4903b472cb1..557a9a1d58896f8422203c824f4be18e7ed20958
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38bada2e288ab6f19ca26e4903b472cb1..557a9a1d58896f8422203c824f4be18e7ed20958
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.36.1\")' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+{
+  "metadata-version": "2.36.1",
+  "source-code-url": "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+  "repository-url": "https://github.com/aws/aws-sdk-java-v2",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+  "description": "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+  "tested-versions": [
+    "2.36.1"
+  ],
+  "allowed-packages": [
+    "software.amazon.awssdk.annotations"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+diff --git i/metadata/software.amazon.awssdk/annotations/index.json w/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38b..557a9a1d58 100644
+--- i/metadata/software.amazon.awssdk/annotations/index.json
++++ w/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-sources.jar >/dev/null && curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-javadoc.jar >/dev/null && curl -fsI https://github.com/aws/aws-sdk-java-v2 >/dev/null' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38bada2e288ab6f19ca26e4903b472cb1..557a9a1d58896f8422203c824f4be18e7ed20958
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+ succeeded in 805ms:
+codex
+The JSON patch is in place and the rendered Maven source/Javadoc URLs plus repository root returned HTTP 200. I’m running the targeted metadata validation now to catch any schema or formatting issue beyond raw JSON syntax.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=software.amazon.awssdk:annotations:2.36.1' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38bada2e288ab6f19ca26e4903b472cb1..557a9a1d58896f8422203c824f4be18e7ed20958
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+ exited 1 in 1883ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for software.amazon.awssdk:annotations:2.36.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/metadata/software.amazon.awssdk/annotations/2.36.1/
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - software.amazon.awssdk:annotations:2.36.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/metadata/software.amazon.awssdk/annotations/2.36.1/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Targeted metadata validation reached this entry but failed because `metadata/software.amazon.awssdk/annotations/2.36.1/reachability-metadata.json` is absent. That is outside the requested URL metadata fields, so I’m leaving the behavioral metadata untouched and doing one last diff/status check.
+exec
+/usr/bin/bash -lc 'find metadata/software.amazon.awssdk/annotations -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+metadata/software.amazon.awssdk/annotations/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/annotations/index.json
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/software.amazon.awssdk/annotations/index.json metadata/software.amazon.awssdk/annotations' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+ M metadata/software.amazon.awssdk/annotations/index.json
+
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f
+ succeeded in 0ms:
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38bada2e288ab6f19ca26e4903b472cb1..557a9a1d58896f8422203c824f4be18e7ed20958
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+web search: 
+web search: site:central.sonatype.com software.amazon.awssdk annotations 2.36.1
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-sources.jar
+web search: 
+web search: central.sonatype.com artifact software.amazon.awssdk annotations 2.36.1
+web search: 
+web search: github aws aws-sdk-java-v2 tree 2.36.1 core annotations src main
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/metadata/software.amazon.awssdk/annotations/index.json:38) for `metadata-version` `2.36.1` with Maven Central source/Javadoc templates, the canonical AWS SDK for Java v2 repository root, `test-code-url: "N/A"`, and the required two-sentence description. I left `language` absent because this artifact is not Kotlin, Groovy, or Scala-specific. ([central.sonatype.com](https://central.sonatype.com/artifact/software.amazon.awssdk/annotations?utm_source=openai))
+
+Verification:
+- `jq empty metadata/software.amazon.awssdk/annotations/index.json` passed.
+- Rendered source/Javadoc URLs and repository root returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=software.amazon.awssdk:annotations:2.36.1` failed because `metadata/software.amazon.awssdk/annotations/2.36.1/reachability-metadata.json` is missing, which is outside the requested URL metadata fields.
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index 8909ece38bada2e288ab6f19ca26e4903b472cb1..557a9a1d58896f8422203c824f4be18e7ed20958
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -38,6 +38,11 @@
+   },
+   {
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+tokens used
+57,722
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/metadata/software.amazon.awssdk/annotations/index.json:38) for `metadata-version` `2.36.1` with Maven Central source/Javadoc templates, the canonical AWS SDK for Java v2 repository root, `test-code-url: "N/A"`, and the required two-sentence description. I left `language` absent because this artifact is not Kotlin, Groovy, or Scala-specific. ([central.sonatype.com](https://central.sonatype.com/artifact/software.amazon.awssdk/annotations?utm_source=openai))
+
+Verification:
+- `jq empty metadata/software.amazon.awssdk/annotations/index.json` passed.
+- Rendered source/Javadoc URLs and repository root returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=software.amazon.awssdk:annotations:2.36.1` failed because `metadata/software.amazon.awssdk/annotations/2.36.1/reachability-metadata.json` is missing, which is outside the requested URL metadata fields.
+Ran agent for software.amazon.awssdk:annotations:2.36.1 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/build/agent-url-discovery-logs/software.amazon.awssdk-annotations-2.36.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-0b691c1f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 1 executed, 8 up-to-date
