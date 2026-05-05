@@ -75,10 +75,18 @@ def stage_and_commit(
         metadata_version: str,
         coordinates: str,
         repo_path: str,
-):
+) -> None:
     """Stage the expected files/directories and commit with the required message."""
     test_version_dir = os.path.join("tests", "src", group, artifact, test_version)
     test_sources_dir = os.path.join(test_version_dir, "src", "test", "java")
+    test_native_image_metadata_dir = os.path.join(
+        test_version_dir,
+        "src",
+        "test",
+        "resources",
+        "META-INF",
+        "native-image",
+    )
     candidate_paths = [
         str(os.path.join(test_version_dir, "build.gradle")),
         str(os.path.join("metadata", group, artifact, "index.json")),
@@ -88,6 +96,8 @@ def stage_and_commit(
 
     if os.path.exists(os.path.join(repo_path, test_sources_dir)):
         candidate_paths.append(str(test_sources_dir))
+    if os.path.exists(os.path.join(repo_path, test_native_image_metadata_dir)):
+        candidate_paths.append(str(test_native_image_metadata_dir))
 
     user_code_filter = os.path.join(test_version_dir, "user-code-filter.json")
     if os.path.exists(os.path.join(repo_path, user_code_filter)):
@@ -95,6 +105,27 @@ def stage_and_commit(
 
     commit_message = f"Generated metadata for {coordinates}"
     stage_and_commit_common(candidate_paths, commit_message, cwd=repo_path)
+
+
+def assert_no_tracked_worktree_changes(repo_path: str) -> None:
+    """Fail with actionable paths when expected staging left tracked changes behind."""
+    result = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=no"],
+        cwd=repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    status_output = result.stdout.strip()
+    if not status_output:
+        return
+
+    raise RuntimeError(
+        "Native-image-run PR finalization left tracked worktree changes before rebase. "
+        "Stage these paths in make_pr_ni_run_fix.py or discard them before finalization:\n"
+        f"{status_output}"
+    )
 
 
 def create_pull_request(
@@ -273,6 +304,7 @@ def push_current_branch_to_origin(
         coordinates=new_coordinates,
         repo_path=repo_path,
     )
+    assert_no_tracked_worktree_changes(repo_path)
     base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
     subprocess.run(["git", "rebase", base_ref], cwd=repo_path, check=True)
     local_ci_verification = run_local_ci_verification(
