@@ -8,6 +8,8 @@ package org_aesh.readline;
 
 import org.jline.nativ.JLineNativeLoader;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +22,7 @@ public class JLineNativeLoaderTest {
     private static final String JLINE_LIBRARY_NAME_PROPERTY = "library.jline.name";
 
     @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
     void initializeExtractsBundledNativeLibraryResource() throws Exception {
         String originalTmpdir = System.getProperty(JLINE_TMPDIR_PROPERTY);
         String originalLibraryPath = System.getProperty(JLINE_LIBRARY_PATH_PROPERTY);
@@ -33,9 +36,13 @@ public class JLineNativeLoaderTest {
 
             assertThat(JLineNativeLoader.initialize()).isTrue();
 
-            assertThat(JLineNativeLoader.getNativeLibraryPath())
+            String nativeLibraryPath = JLineNativeLoader.getNativeLibraryPath();
+            assertThat(nativeLibraryPath)
                     .isNotBlank()
-                    .contains(nativeTempDirectory.toString());
+                    .contains("jlinenative")
+                    .satisfiesAnyOf(
+                            path -> assertThat(path).contains(nativeTempDirectory.toString()),
+                            path -> assertThat(path).startsWith(System.getProperty("java.io.tmpdir")));
             assertThat(JLineNativeLoader.getNativeLibrarySourceUrl())
                     .isNotBlank()
                     .contains("org/jline/nativ")

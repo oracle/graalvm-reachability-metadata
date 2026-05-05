@@ -17,6 +17,7 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    jvmArgs "--add-opens=java.base/java.io=ALL-UNNAMED"
 }
 
 graalvmNative {
@@ -24,6 +25,7 @@ graalvmNative {
         all {
             buildArgs.add('--initialize-at-run-time=org.aesh.terminal.utils.OSUtils')
             buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
+            buildArgs.add('--add-opens=java.base/java.io=ALL-UNNAMED')
         }
     }
     agent {
