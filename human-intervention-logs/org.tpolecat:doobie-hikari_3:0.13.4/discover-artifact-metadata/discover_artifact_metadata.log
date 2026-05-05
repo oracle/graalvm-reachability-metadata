@@ -1,0 +1,1060 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfa47-a908-71e0-b224-536136bcf57f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.tpolecat:doobie-hikari_3:0.13.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.13.4" when "$version$" is replaced with "0.13.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+- Set "coordinates" to "org.tpolecat:doobie-hikari_3:0.13.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.13.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the published Maven metadata and upstream repo/tag before editing the JSON, because the Scala cross-build suffix and tag format matter here.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json && sed -n '1,200p' build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+-rw-rw-r-- 1 jovan jovan 60 May  6 00:34 build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+{
+  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
+}
+
+exec
+/bin/bash -lc "rg -n \"doobie-hikari|org.tpolecat\" metadata build/discovered-artifact-metadata -g '*.json'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json:2:  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
+metadata/org.tpolecat/sourcepos_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-sources.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-javadoc.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:18:      "org.tpolecat.sourcepos"
+
+web search: 
+web search: org.tpolecat doobie-hikari_3 0.13.4 Maven Central sources javadoc test jar
+web search: 
+web search: https://github.com/tpolecat/doobie/tree/v0.13.4
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4 doobie-hikari_3-0.13.4
+codex
+The artifact is a Scala 3 module: the `_3` suffix is the Scala binary version, and the upstream tag resolves under `typelevel/doobie` at `v0.13.4`. I’m checking Maven Central now for published sources, javadocs, and any test artifact before choosing GitHub fallbacks.
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/typelevel/doobie/v0.13.4/build.sbt | rg -n "hikari|doobie-hikari|Test|test" -C 2' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 236ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/tpolecat/doobie-hikari_3/0.13.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/tpolecat/doobie-hikari_3/0.13.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="doobie-hikari_3-0.13.4-javadoc.jar" title="doobie-hikari_3-0.13.4-javadoc.jar">doobie-hikari_3-0.13.4-javadoc.jar</a>                2021-05-23 19:09       189      
+<a href="doobie-hikari_3-0.13.4-javadoc.jar.asc" title="doobie-hikari_3-0.13.4-javadoc.jar.asc">doobie-hikari_3-0.13.4-javadoc.jar.asc</a>            2021-05-23 19:09       455      
+<a href="doobie-hikari_3-0.13.4-javadoc.jar.asc.md5" title="doobie-hikari_3-0.13.4-javadoc.jar.asc.md5">doobie-hikari_3-0.13.4-javadoc.jar.asc.md5</a>        2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4-javadoc.jar.asc.sha1" title="doobie-hikari_3-0.13.4-javadoc.jar.asc.sha1">doobie-hikari_3-0.13.4-javadoc.jar.asc.sha1</a>       2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4-javadoc.jar.md5" title="doobie-hikari_3-0.13.4-javadoc.jar.md5">doobie-hikari_3-0.13.4-javadoc.jar.md5</a>            2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4-javadoc.jar.sha1" title="doobie-hikari_3-0.13.4-javadoc.jar.sha1">doobie-hikari_3-0.13.4-javadoc.jar.sha1</a>           2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4-sources.jar" title="doobie-hikari_3-0.13.4-sources.jar">doobie-hikari_3-0.13.4-sources.jar</a>                2021-05-23 19:09      1832      
+<a href="doobie-hikari_3-0.13.4-sources.jar.asc" title="doobie-hikari_3-0.13.4-sources.jar.asc">doobie-hikari_3-0.13.4-sources.jar.asc</a>            2021-05-23 19:09       455      
+<a href="doobie-hikari_3-0.13.4-sources.jar.asc.md5" title="doobie-hikari_3-0.13.4-sources.jar.asc.md5">doobie-hikari_3-0.13.4-sources.jar.asc.md5</a>        2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4-sources.jar.asc.sha1" title="doobie-hikari_3-0.13.4-sources.jar.asc.sha1">doobie-hikari_3-0.13.4-sources.jar.asc.sha1</a>       2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4-sources.jar.md5" title="doobie-hikari_3-0.13.4-sources.jar.md5">doobie-hikari_3-0.13.4-sources.jar.md5</a>            2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4-sources.jar.sha1" title="doobie-hikari_3-0.13.4-sources.jar.sha1">doobie-hikari_3-0.13.4-sources.jar.sha1</a>           2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4.jar" title="doobie-hikari_3-0.13.4.jar">doobie-hikari_3-0.13.4.jar</a>                        2021-05-23 19:09     10421      
+<a href="doobie-hikari_3-0.13.4.jar.asc" title="doobie-hikari_3-0.13.4.jar.asc">doobie-hikari_3-0.13.4.jar.asc</a>                    2021-05-23 19:09       455      
+<a href="doobie-hikari_3-0.13.4.jar.asc.md5" title="doobie-hikari_3-0.13.4.jar.asc.md5">doobie-hikari_3-0.13.4.jar.asc.md5</a>                2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4.jar.asc.sha1" title="doobie-hikari_3-0.13.4.jar.asc.sha1">doobie-hikari_3-0.13.4.jar.asc.sha1</a>               2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4.jar.md5" title="doobie-hikari_3-0.13.4.jar.md5">doobie-hikari_3-0.13.4.jar.md5</a>                    2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4.jar.sha1" title="doobie-hikari_3-0.13.4.jar.sha1">doobie-hikari_3-0.13.4.jar.sha1</a>                   2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4.pom" title="doobie-hikari_3-0.13.4.pom">doobie-hikari_3-0.13.4.pom</a>                        2021-05-23 19:09      3576      
+<a href="doobie-hikari_3-0.13.4.pom.asc" title="doobie-hikari_3-0.13.4.pom.asc">doobie-hikari_3-0.13.4.pom.asc</a>                    2021-05-23 19:09       455      
+<a href="doobie-hikari_3-0.13.4.pom.asc.md5" title="doobie-hikari_3-0.13.4.pom.asc.md5">doobie-hikari_3-0.13.4.pom.asc.md5</a>                2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4.pom.asc.sha1" title="doobie-hikari_3-0.13.4.pom.asc.sha1">doobie-hikari_3-0.13.4.pom.asc.sha1</a>               2021-05-23 19:09        40      
+<a href="doobie-hikari_3-0.13.4.pom.md5" title="doobie-hikari_3-0.13.4.pom.md5">doobie-hikari_3-0.13.4.pom.md5</a>                    2021-05-23 19:09        32      
+<a href="doobie-hikari_3-0.13.4.pom.sha1" title="doobie-hikari_3-0.13.4.pom.sha1">doobie-hikari_3-0.13.4.pom.sha1</a>                   2021-05-23 19:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 218ms:
+8-lazy val fs2Version           = "2.5.6"
+9-lazy val h2Version            = "1.4.200"
+10:lazy val hikariVersion        = "4.0.3" // N.B. Hikari v4 introduces a breaking change via slf4j v2
+11-lazy val kindProjectorVersion = "0.11.2"
+12-lazy val monixVersion         = "3.4.0"
+--
+16-lazy val refinedVersion       = "0.9.25"
+17-lazy val scalaCheckVersion    = "1.15.4"
+18:lazy val scalatestVersion     = "3.2.9"
+19-lazy val munitVersion         = "0.7.26"
+20-lazy val shapelessVersion     = "2.3.7"
+--
+39-    "-Xfatal-warnings"
+40-  ),
+41:  scalacOptions in Test --= Seq(
+42-    "-Xfatal-warnings"
+43-  ),
+--
+81-    // MUnit
+82-    libraryDependencies ++= Seq(
+83:      "org.typelevel"     %% "scalacheck-effect-munit" % "1.0.2"  % Test,
+84:      "org.typelevel"     %% "munit-cats-effect-2"     % "1.0.3" % Test,
+85-    ),
+86:    testFrameworks += new TestFramework("munit.Framework"),
+87-
+88:    // For some reason tests started hanginging with docker-compose so let's disable parallelism.
+89:    Test / parallelExecution := false,
+90-
+91-    // We occasionally use snapshots.
+--
+103-    },
+104-
+105:    // Also for test
+106:    unmanagedSourceDirectories in Test ++= {
+107:      val sourceDir = (sourceDirectory in Test).value
+108-      CrossVersion.partialVersion(scalaVersion.value) match {
+109-        case Some((3, _))  => Seq(sourceDir / "scala-3")
+--
+148-  (publish / skip)    := (publish / skip).value || isDotty.value,
+149-  (Compile / sources) := { if (isDotty.value) Seq() else (Compile / sources).value },
+150:  (Test    / sources) := { if (isDotty.value) Seq() else (Test    / sources).value },
+151-  libraryDependencies := libraryDependencies.value.filterNot(_ => isDotty.value),
+152-)
+--
+164-    free,
+165-    h2,
+166:    hikari,
+167-    postgres,
+168-    `postgres-circe`,
+169-    quill,
+170-    refined,
+171:    scalatest,
+172-    munit,
+173-    specs2,
+--
+230-    ).filterNot(_ => isDotty.value) ++ Seq(
+231-      "org.tpolecat"   %% "typename"  % "1.0.0",
+232:      "com.h2database" %  "h2"        % h2Version % "test",
+233-    ),
+234-    scalacOptions += "-Yno-predef",
+--
+265-  .enablePlugins(AutomateHeaderPlugin)
+266-  .settings(doobieSettings ++ noPublishSettings)
+267:  .dependsOn(core, postgres, specs2, scalatest, hikari, h2)
+268-  .settings(
+269-    libraryDependencies ++= Seq(
+--
+275-  .in(file("modules/postgres"))
+276-  .enablePlugins(AutomateHeaderPlugin)
+277:  .dependsOn(core % "compile->compile;test->test")
+278-  .settings(doobieSettings)
+279-  .settings(publishSettings)
+--
+343-  .settings(doobieSettings)
+344-  .settings(publishSettings)
+345:  .dependsOn(core % "compile->compile;test->test")
+346-  .settings(
+347-    name  := "doobie-h2",
+--
+351-  )
+352-
+353:lazy val hikari = project
+354:  .in(file("modules/hikari"))
+355-  .enablePlugins(AutomateHeaderPlugin)
+356-  .dependsOn(core)
+357:  .dependsOn(postgres % "test")
+358-  .settings(doobieSettings)
+359-  .settings(publishSettings)
+360-  .settings(
+361:    name := "doobie-hikari",
+362-    description := "Hikari support for doobie.",
+363-    libraryDependencies ++= Seq(
+364-      //needs to be excluded, otherwise coursier may resolve slf4j-api 2 if > Java 11
+365:      "com.zaxxer"     % "HikariCP"   % hikariVersion exclude("org.slf4j", "slf4j-api"),
+366:      "com.h2database" % "h2"         % h2Version      % "test",
+367-      "org.slf4j"      % "slf4j-api"  % slf4jVersion,
+368:      "org.slf4j"      % "slf4j-nop"  % slf4jVersion   % "test"
+369-    )
+370-  )
+--
+374-  .enablePlugins(AutomateHeaderPlugin)
+375-  .dependsOn(core)
+376:  .dependsOn(h2 % "test")
+377-  .settings(doobieSettings)
+378-  .settings(publishSettings)
+--
+384-  .settings(noDottySettings)
+385-
+386:lazy val scalatest = project
+387:  .in(file("modules/scalatest"))
+388-  .enablePlugins(AutomateHeaderPlugin)
+389-  .dependsOn(core)
+--
+391-  .settings(publishSettings)
+392-  .settings(
+393:    name := s"doobie-scalatest",
+394:    description := "Scalatest support for doobie.",
+395-    libraryDependencies ++= Seq(
+396:      "org.scalatest"  %% "scalatest" % scalatestVersion,
+397:      "com.h2database" %  "h2"        % h2Version % "test"
+398-    )
+399-  )
+--
+409-    name := s"doobie-munit",
+410-    description := "MUnit support for doobie.",
+411:    testFrameworks += new TestFramework("munit.Framework"),
+412-    libraryDependencies ++= Seq(
+413-      "org.scalameta" %% "munit" % munitVersion,
+414:      "com.h2database"  %  "h2"  % h2Version % "test"
+415-    )
+416-  )
+--
+426-lazy val docs = project
+427-  .in(file("modules/docs"))
+428:  .dependsOn(core, postgres, specs2, munit, hikari, h2, scalatest, quill)
+429-  .enablePlugins(ParadoxPlugin)
+430-  .enablePlugins(ParadoxSitePlugin)
+--
+442-      "io.monix"    %% "monix-eval"    % monixVersion,
+443-    ),
+444:    fork in Test := true,
+445-
+446-    // postgis is `provided` dependency for users, and section from book of doobie needs it
+--
+487-    libraryDependencies ++= Seq(
+488-      "eu.timepit"     %% "refined" % refinedVersion,
+489:      "com.h2database" %  "h2"      % h2Version       % "test"
+490-    )
+491-  )
+--
+495-  .enablePlugins(AutomateHeaderPlugin)
+496-  .dependsOn(core)
+497:  .dependsOn(postgres % "test")
+498-  .settings(doobieSettings)
+499-  .settings(publishSettings)
+--
+503-    libraryDependencies ++= Seq(
+504-      "io.getquill" %% "quill-jdbc"   % quillVersion,
+505:      "org.slf4j"   %  "slf4j-simple" % slf4jVersion % "test"
+506-    ),
+507-  )
+
+ succeeded in 263ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.tpolecat</groupId>
+    <artifactId>doobie-hikari_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Hikari support for doobie.</description>
+    <url>https://github.com/tpolecat/doobie</url>
+    <version>0.13.4</version>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>doobie-hikari</name>
+    <organization>
+        <name>org.tpolecat</name>
+        <url>https://github.com/tpolecat/doobie</url>
+    </organization>
+    <scm>
+        <url>https://github.com/tpolecat/doobie</url>
+        <connection>scm:git:https://github.com/tpolecat/doobie.git</connection>
+        <developerConnection>scm:git:git@github.com:tpolecat/doobie.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>tpolecat</id>
+            <name>Rob Norris</name>
+            <url>http://www.tpolecat.org</url>
+            <email>rob_norris@mac.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.tpolecat</groupId>
+            <artifactId>doobie-core_3</artifactId>
+            <version>0.13.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tpolecat</groupId>
+            <artifactId>doobie-postgres_3</artifactId>
+            <version>0.13.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-collection-compat_3</artifactId>
+            <version>2.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalacheck-effect-munit_3</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>munit-cats-effect-2_3</artifactId>
+            <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.30</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/bin/bash -lc "curl -fsSI https://github.com/tpolecat/doobie/tree/v0.13.4 | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc "curl -fsSI https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test | sed -n '1,30p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-sources.jar; jar tf "$tmp/sources.jar"; rm -rf "$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/a.jar" https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4.jar; jar tf "$tmp/a.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 257ms:
+HTTP/2 301 
+date: Tue, 05 May 2026 22:35:28 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/typelevel/doobie/tree/v0.13.4
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=gZSJy9DpIjX8wHlWsCB0%2FrF%2BqHUtpcp1P0ZYA5pY1s1hQdAXAxI%2FQ%2FSVrtnkAqs1AzE2ZN5ZeZsEYiMQPIL6wUD2Bivo8YXugvSfImrdB3SJo%2Bl1dP9uUwAvGM1k43WZcjgu0PIWlQQx0VHuDbRS7mxFargOPhK1WAKhlOHSQBX2Y%2BMGmj5fWZJ9OtlxsNDxg3gHAOv90Eq6dbU%2B4iXCIyu%2BEvqrlapEZXIsWPHZck781ZSW6w1AMnwWQwY%2B3KHn69Bd%2FKrgUOtj0bJPWbFazg%3D%3D--ynYBjeG%2BbvHyKcp4--c1ccmpAHUAOhozeJt5UUHg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1182722477.1778020528; expires=Wed, 05 May 2027 22:35:28 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 22:35:28 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 91C0:1113DF:2A9E055:2084A66:69FA70B0
+
+
+ succeeded in 484ms:
+META-INF/MANIFEST.MF
+doobie/
+doobie/hikari/
+doobie/hikari/HikariTransactor.scala
+doobie/hikari/package.scala
+
+ succeeded in 502ms:
+META-INF/MANIFEST.MF
+doobie/
+doobie/hikari/
+doobie/hikari/HikariTransactor$.class
+doobie/hikari/HikariTransactor.class
+doobie/hikari/HikariTransactor.tasty
+doobie/hikari/package$.class
+doobie/hikari/package.class
+doobie/hikari/package.tasty
+
+ succeeded in 677ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 22:35:29 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"346c4e0bdf3551903de04da9e55b5804"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ng0JEoniS3f7WgQoynHnneq3X9Z4zRwRB6VqgvFGme0PWTXMEHe50Ov0m1t5mLjPnMkpuJSKz9MEAoB%2BTJmocwPu%2Bj%2F34JLrqhe1wUdkpTVHWf9730Bywz%2BU%2Bj9K33PCCNUxoa7yvXBwkHKVKYtfm6wDENm7S4tAMUBCbugrfB0ugp5e6%2BiBsJu6BOaK96j2dOznKSSINha9o2TbtW5excW78I%2FEl7tsxmnn3Er%2FpARzqqLPRcfQy70RdVsoop6pWMA0svZT%2BCUqsczL1KNmlQ%3D%3D--Nz3ct46MNi0s9sKi--jgXASRAH6%2FoJCmNRSDkq7g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.892627207.1778020528; expires=Wed, 05 May 2027 22:35:28 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 22:35:28 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 91B8:1E4D55:29E2075:1FEA833:69FA70B0
+
+
+exec
+/bin/bash -lc "rg -n '\"language\"|\"test-code-url\"|not-for-native-image|\"repository-url\" : \"https://github.com/typelevel/doobie|doobie_' metadata build/discovered-artifact-metadata -g '*.json' | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+metadata/com.ongres.stringprep/stringprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+metadata/com.ongres.stringprep/saslprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:7:    "test-code-url" : "https://github.com/lightbend-labs/scala-logging/tree/v$version$/src/test",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:7:    "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/25.1/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:8:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:28:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:42:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/3.36.0.3/src/test",
+metadata/net.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-$version$/src/test",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/relaxng-datatype/src/test",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/org.osgi/osgi.core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r8-core-final/osgi.ct",
+metadata/org.osgi/osgi.core/index.json:21:    "test-code-url" : "https://github.com/osgi/osgi/tree/r7-core-ri-ct-final/osgi.ct",
+metadata/org.osgi/osgi.core/index.json:35:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/osgi.ct",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.latencyutils/LatencyUtils/index.json:7:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-$version$/src/test",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+metadata/tools.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.sun.xml.bind.external/rngom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/rngom/src/test",
+metadata/org.osgi/org.osgi.service.repository/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.repository",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-reader/index.json:49:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/openapi/microprofile-openapi-tck/$version$/microprofile-openapi-tck-$version$-sources.jar",
+metadata/com.googlecode.concurrent-trees/concurrent-trees/index.json:7:    "test-code-url" : "https://github.com/npgall/concurrent-trees/tree/$version$/code/src/test",
+metadata/com.github.jnr/jnr-x86asm/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final/org.osgi.test.cases.framework",
+metadata/javax.persistence/javax.persistence-api/index.json:8:    "test-code-url": "N/A",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-$version$/src/test/java/",
+metadata/antlr/antlr/index.json:7:    "test-code-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:53:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/xml-apis/xml-apis/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.resource/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework/src/org/osgi/test/cases/framework/junit",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-tests.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:7:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-$version$/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:7:    "test-code-url" : "https://github.com/ethauvin/urlencoder/tree/$version$/urlencoder-lib/src",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v431-core-cmpn-spec-final/org.osgi.test.cases.framework",
+metadata/org.osgi/org.osgi.core/index.json:23:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/com.shapesecurity/salvation2/index.json:7:    "test-code-url" : "https://github.com/shapesecurity/salvation/tree/v$version$/src/test",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:41:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:7:    "test-code-url" : "N/A",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:52:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:84:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-inprocess/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/inprocess/src/test",
+metadata/org.jline/jline-native/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/native/src/test/java",
+metadata/net.sf.kxml/kxml2/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/kxml/files/kxml2/$version$/kxml2-src-$version$.zip/download",
+metadata/org.osgi/osgi.annotation/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/8.0.0.1/org.osgi.test.cases.bundle.annotations",
+metadata/org.osgi/osgi.annotation/index.json:21:    "test-code-url" : "https://github.com/osgi/osgi/tree/r7-cmpn-ri-ct-final/org.osgi.test.cases.bundle.annotations",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:37:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+metadata/io.grpc/grpc-rls/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/rls/src/test/java",
+metadata/io.netty/netty-codec-memcache/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:76:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-test-sources.jar",
+metadata/org.osgi/org.osgi.util.promise/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r8-cmpn-final/org.osgi.test.cases.promise/src/org/osgi/test/cases/promise/junit",
+metadata/io.grpc/grpc-services/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/services/src/test",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.util.function/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:23:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:38:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:53:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-grpclb/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/grpclb/src/test",
+metadata/org.parboiled/parboiled_3/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.graphql-java/graphql-java/index.json:6:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/1e12da93a692b8fff549e417906c899c9bf21345/src/test",
+metadata/com.graphql-java/graphql-java/index.json:21:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java/index.json:68:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/io.netty/netty-transport-classes-epoll/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-tests.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-opentelemetry/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/opentelemetry/src/test/java",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/io.grpc/grpc-googleapis/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/googleapis/src/test",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/core/src/test",
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:23:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/3decba9/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:37:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/5312ccd/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:51:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/io.netty/netty-transport-classes-io_uring/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-tests.jar",
+metadata/org.osgi/org.osgi.dto/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-spec-final/org.osgi.test.cases.framework/src/org/osgi/test/cases/framework/junit/dto",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/netty/src/test",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.serviceloader",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:34:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:28:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-connector-basic/src/test",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/8.0.0.1/org.osgi.test.cases.bundle.annotations",
+metadata/org.codehaus.plexus/plexus-utils/index.json:7:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+metadata/io.grpc/grpc-context/index.json:65:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/context/src/test",
+metadata/io.netty/netty-codec-mqtt/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-tests.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:78:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-tests.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/com.lihaoyi/fastparse_3/index.json:7:    "test-code-url" : "https://github.com/com-lihaoyi/fastparse/tree/$version$/fastparse/test",
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.osgi/org.osgi.util.tracker/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.test.cases.tracker/8.0.0/org.osgi.test.cases.tracker-8.0.0-sources.jar",
+metadata/com.lihaoyi/os-zip/index.json:7:    "test-code-url" : "https://github.com/com-lihaoyi/os-lib/tree/$version$/os/test",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/v$version$/instrumentation-api/src/test",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:7:    "test-code-url" : "https://github.com/orchestr7/ktoml/tree/v$version$/ktoml-core/src/commonTest",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/org.osgi/org.osgi.compendium/index.json:8:    "test-code-url": "https://github.com/osgi/osgi/tree/r5-cmpn-ri-ct-final",
+metadata/org.codehaus.plexus/plexus-xml/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-xml/index.json:27:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-source-release.zip",
+metadata/io.netty/netty-codec-smtp/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/formats/json-okio/commonTest",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-transport-file/src/test/java",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/javax.portlet/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/v2.1.0/instrumentation-api-incubator/src/test",
+
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/test?ref=v0.13.4' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/typelevel/doobie/v0.13.4/modules/hikari/src/test/scala/doobie/hikari/HikariTransactorSuite.scala | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src?ref=v0.13.4' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 175ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 230ms:
+[
+  {
+    "name": "scala",
+    "path": "modules/hikari/src/test/scala",
+    "sha": "38cb9dc57c012a65af16afd67030a9a3ac718bd9",
+    "size": 0,
+    "url": "https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/test/scala?ref=v0.13.4",
+    "html_url": "https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test/scala",
+    "git_url": "https://api.github.com/repos/typelevel/doobie/git/trees/38cb9dc57c012a65af16afd67030a9a3ac718bd9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/test/scala?ref=v0.13.4",
+      "git": "https://api.github.com/repos/typelevel/doobie/git/trees/38cb9dc57c012a65af16afd67030a9a3ac718bd9",
+      "html": "https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 230ms:
+[
+  {
+    "name": "main",
+    "path": "modules/hikari/src/main",
+    "sha": "729a19e1d168f8a1969db17938fda0995f0607b0",
+    "size": 0,
+    "url": "https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/main?ref=v0.13.4",
+    "html_url": "https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/main",
+    "git_url": "https://api.github.com/repos/typelevel/doobie/git/trees/729a19e1d168f8a1969db17938fda0995f0607b0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/main?ref=v0.13.4",
+      "git": "https://api.github.com/repos/typelevel/doobie/git/trees/729a19e1d168f8a1969db17938fda0995f0607b0",
+      "html": "https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "modules/hikari/src/test",
+    "sha": "5787ae54998d33c21f6d0f3298dafc64668d9c8b",
+    "size": 0,
+    "url": "https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/test?ref=v0.13.4",
+    "html_url": "https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test",
+    "git_url": "https://api.github.com/repos/typelevel/doobie/git/trees/5787ae54998d33c21f6d0f3298dafc64668d9c8b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/typelevel/doobie/contents/modules/hikari/src/test?ref=v0.13.4",
+      "git": "https://api.github.com/repos/typelevel/doobie/git/trees/5787ae54998d33c21f6d0f3298dafc64668d9c8b",
+      "html": "https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test"
+    }
+  }
+]
+
+codex
+Maven Central publishes the runtime jar, sources jar, and javadoc jar, but no tests jar for this artifact. The GitHub tag contains `modules/hikari/src/test`, so I’ll use Maven for source/docs and the tagged GitHub test directory for tests.
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.scala-logging/scala-logging_3/index.json && sed -n '1,80p' metadata/org.parboiled/parboiled_3/index.json && sed -n '1,80p' metadata/com.lihaoyi/fastparse_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.9.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/lightbend-labs/scala-logging",
+    "test-code-url" : "https://github.com/lightbend-labs/scala-logging/tree/v$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-javadoc.jar",
+    "description" : "Scala Logging is an idiomatic Scala facade around SLF4J that provides convenient logger wrappers, lazy and strict logging traits, and contextual logging helpers. It uses Scala macros to preserve efficient level checks while letting Scala code write concise interpolated log messages.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.9.5",
+      "3.9.6",
+      "4.0.0-RC1"
+    ],
+    "allowed-packages" : [
+      "com.typesafe.scalalogging"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.5.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/sirthias/parboiled2",
+    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-javadoc.jar",
+    "description" : "parboiled2 is a Scala macro-based parser generator for Parsing Expression Grammars that turns an internal Scala DSL for grammar rules into JVM bytecode at compile time. It provides a concise type-safe API for building fast parsers with parse-error reporting, suitable for replacing regular expressions or parser-combinator code for structured text.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.5.1"
+    ],
+    "allowed-packages" : [
+      "org.parboiled2"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/fastparse_3/$version$/fastparse_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/com-lihaoyi/fastparse",
+    "test-code-url" : "https://github.com/com-lihaoyi/fastparse/tree/$version$/fastparse/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/fastparse_3/$version$/fastparse_3-$version$-javadoc.jar",
+    "description" : "FastParse is a Scala parser-combinator library for building efficient parsers for structured text such as programming languages, data formats, and domain-specific languages. It provides composable parsing primitives, error reporting, and cross-platform support that let applications define readable parsers directly in Scala code.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.1.1"
+    ],
+    "allowed-packages" : [
+      "fastparse"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/doobie/git/trees/38cb9dc57c012a65af16afd67030a9a3ac718bd9?recursive=1' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-javadoc.jar -o /tmp/doobie-hikari-javadoc.jar && jar tf /tmp/doobie-hikari-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 290ms:
+{
+  "sha": "38cb9dc57c012a65af16afd67030a9a3ac718bd9",
+  "url": "https://api.github.com/repos/typelevel/doobie/git/trees/38cb9dc57c012a65af16afd67030a9a3ac718bd9",
+  "tree": [
+    {
+      "path": "doobie",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "864733c5b0e1df117010623327a6dcdb4b73de30",
+      "url": "https://api.github.com/repos/typelevel/doobie/git/trees/864733c5b0e1df117010623327a6dcdb4b73de30"
+    },
+    {
+      "path": "doobie/hikari",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c67ff311d6375076518b991ca97d9ed76308d73a",
+      "url": "https://api.github.com/repos/typelevel/doobie/git/trees/c67ff311d6375076518b991ca97d9ed76308d73a"
+    },
+    {
+      "path": "doobie/hikari/issue",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0054dbc6212b121cdd753e5f69c8a97669b1841d",
+      "url": "https://api.github.com/repos/typelevel/doobie/git/trees/0054dbc6212b121cdd753e5f69c8a97669b1841d"
+    },
+    {
+      "path": "doobie/hikari/issue/824.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79b017fc70549c5d38dc78bb085f8c4cbf660a23",
+      "size": 3042,
+      "url": "https://api.github.com/repos/typelevel/doobie/git/blobs/79b017fc70549c5d38dc78bb085f8c4cbf660a23"
+    },
+    {
+      "path": "doobie/postgres",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "67bb714868d80db5ca48000cb7d7231f9c16bb01",
+      "url": "https://api.github.com/repos/typelevel/doobie/git/trees/67bb714868d80db5ca48000cb7d7231f9c16bb01"
+    },
+    {
+      "path": "doobie/postgres/PGConcurrentSuite.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fb2f14b41b7f05b995c873f9eae7766b99bccbf",
+      "size": 1940,
+      "url": "https://api.github.com/repos/typelevel/doobie/git/blobs/9fb2f14b41b7f05b995c873f9eae7766b99bccbf"
+    }
+  ],
+  "truncated": false
+}
+
+ succeeded in 631ms:
+META-INF/MANIFEST.MF
+
+web search: 
+web search: https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-sources.jar
+codex
+I’m about to patch the metadata file with the discovered URLs, mark it as Scala 3, and leave `not-for-native-image` absent because the published jar contains JVM `.class` files.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+index e4d0b323146340f900c91af5d3891e4bfb955081..384bbf53694ea91ee516c197b9fb4b851bfc5813
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
++  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+index e4d0b323146340f900c91af5d3891e4bfb955081..384bbf53694ea91ee516c197b9fb4b851bfc5813
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
++  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+The JSON is updated. I’m doing a quick validation pass now: parse the file, verify the version-substituted URLs resolve, and confirm the diff is limited to the requested metadata file.
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+{
+  "coordinates": "org.tpolecat:doobie-hikari_3:0.13.4",
+  "repository-url": "https://github.com/typelevel/doobie",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
+  "description": "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+exec
+/bin/bash -lc "for url in \\
+  https://github.com/typelevel/doobie \\
+  https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-sources.jar \\
+  https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test \\
+  https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-javadoc.jar; do
+  code="'$(curl -fsSL -o /dev/null -w '"'%{http_code}' \""'$url") || code=ERR
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+index e4d0b323146340f900c91af5d3891e4bfb955081..384bbf53694ea91ee516c197b9fb4b851bfc5813
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
++  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1491ms:
+200 https://github.com/typelevel/doobie
+200 https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-sources.jar
+200 https://github.com/typelevel/doobie/tree/v0.13.4/modules/hikari/src/test
+200 https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/0.13.4/doobie-hikari_3-0.13.4-javadoc.jar
+
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+index e4d0b323146340f900c91af5d3891e4bfb955081..384bbf53694ea91ee516c197b9fb4b851bfc5813
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
++  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+{
+  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
+  "repository-url" : "https://github.com/typelevel/doobie",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
+  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+index e4d0b323146340f900c91af5d3891e4bfb955081..384bbf53694ea91ee516c197b9fb4b851bfc5813
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
++  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: doobie-hikari_3 0.13.4 Maven Central
+codex
+Updated [org.tpolecat-doobie-hikari_3-0.13.4.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json:1).
+
+Set the repository, Maven Central source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata. I left `not-for-native-image` absent because the artifact is a JVM jar with class files; doobie itself is a Scala functional JDBC layer and this module is the HikariCP transactor integration. ([typelevel.org](https://typelevel.org/doobie/?utm_source=openai))
+
+Validation done:
+- `jq .` parsed the JSON successfully.
+- All version-substituted URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+index e4d0b323146340f900c91af5d3891e4bfb955081..384bbf53694ea91ee516c197b9fb4b851bfc5813
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-hikari_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/hikari/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-hikari_3/$version$/doobie-hikari_3-$version$-javadoc.jar",
++  "description" : "doobie-hikari provides HikariCP integration for doobie, giving Scala applications a pooled JDBC transactor backed by HikariCP. It lets doobie programs acquire database connections through Cats Effect resource management while keeping the rest of doobie's functional JDBC API unchanged.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+58,385
+Updated [org.tpolecat-doobie-hikari_3-0.13.4.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/build/discovered-artifact-metadata/org.tpolecat-doobie-hikari_3-0.13.4.json:1).
+
+Set the repository, Maven Central source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata. I left `not-for-native-image` absent because the artifact is a JVM jar with class files; doobie itself is a Scala functional JDBC layer and this module is the HikariCP transactor integration. ([typelevel.org](https://typelevel.org/doobie/?utm_source=openai))
+
+Validation done:
+- `jq .` parsed the JSON successfully.
+- All version-substituted URLs returned HTTP 200.
+Ran agent for org.tpolecat:doobie-hikari_3:0.13.4 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/build/agent-artifact-discovery-logs/org.tpolecat-doobie-hikari_3-0.13.4.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5339-6917c757/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 37s
+9 actionable tasks: 9 executed
