@@ -6,6 +6,12 @@
  */
 package org_apache_curator.curator_client;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +34,7 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.RetrySleeper;
 import org.apache.curator.TimeTrace;
 import org.apache.curator.drivers.TracerDriver;
+import org.apache.curator.ensemble.exhibitor.DefaultExhibitorRestClient;
 import org.apache.curator.ensemble.exhibitor.ExhibitorEnsembleProvider;
 import org.apache.curator.ensemble.exhibitor.ExhibitorRestClient;
 import org.apache.curator.ensemble.exhibitor.Exhibitors;
@@ -203,6 +210,55 @@ public class Curator_clientTest {
         provider.setExhibitors(new Exhibitors(Collections.emptyList(), 8_080, () -> "backup1:3181,backup2:3181"));
         provider.pollForInitialEnsemble();
         assertThat(provider.getConnectionString()).isEqualTo("backup1:3181,backup2:3181");
+    }
+
+    @Test
+    void defaultExhibitorRestClientReadsHttpResponseAndSendsAcceptHeader() throws Exception {
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            ExecutorService serverExecutor = Executors.newSingleThreadExecutor(
+                    ThreadUtils.newThreadFactory("curator-exhibitor-rest"));
+            Future<List<String>> requestLines = serverExecutor.submit(() -> {
+                try (Socket socket = serverSocket.accept()) {
+                    socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(5));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(
+                            socket.getInputStream(), StandardCharsets.ISO_8859_1));
+                    List<String> lines = new ArrayList<>();
+                    String line;
+                    while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                        lines.add(line);
+                    }
+
+                    byte[] responseBody = "count=1&port=2181&server0=zk-one".getBytes(StandardCharsets.ISO_8859_1);
+                    byte[] responseHeader = ("HTTP/1.1 200 OK\r\n"
+                            + "Content-Type: text/plain\r\n"
+                            + "Content-Length: " + responseBody.length + "\r\n"
+                            + "Connection: close\r\n\r\n").getBytes(StandardCharsets.ISO_8859_1);
+                    OutputStream outputStream = socket.getOutputStream();
+                    outputStream.write(responseHeader);
+                    outputStream.write(responseBody);
+                    outputStream.flush();
+                    return lines;
+                }
+            });
+
+            try {
+                DefaultExhibitorRestClient restClient = new DefaultExhibitorRestClient();
+                String rawResponse = restClient.getRaw(
+                        "127.0.0.1",
+                        serverSocket.getLocalPort(),
+                        "/exhibitor/v1/cluster/list",
+                        "application/x-www-form-urlencoded");
+
+                assertThat(rawResponse).isEqualTo("count=1&port=2181&server0=zk-one");
+                assertThat(requestLines.get(5, TimeUnit.SECONDS))
+                        .contains("GET /exhibitor/v1/cluster/list HTTP/1.1")
+                        .anyMatch(header -> header.equalsIgnoreCase("Accept: application/x-www-form-urlencoded"));
+            } finally {
+                serverSocket.close();
+                serverExecutor.shutdownNow();
+                assertThat(serverExecutor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+            }
+        }
     }
 
     @Test
