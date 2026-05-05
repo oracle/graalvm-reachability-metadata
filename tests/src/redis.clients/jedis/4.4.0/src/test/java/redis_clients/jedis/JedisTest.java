@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import redis.clients.jedis.args.Rawable;
 import redis.clients.jedis.exceptions.JedisAskDataException;
 import redis.clients.jedis.exceptions.JedisBusyException;
 import redis.clients.jedis.exceptions.JedisClusterException;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisMovedDataException;
 import redis.clients.jedis.exceptions.JedisNoScriptException;
 import redis.clients.jedis.params.BitPosParams;
@@ -264,14 +266,33 @@ public class JedisTest {
         assertThat(config.isSsl()).isTrue();
 
         try (ServerSocket serverSocket = new ServerSocket(0)) {
-            CompletableFuture<Void> acceptedConnection = acceptSingleConnection(serverSocket);
+            CompletableFuture<List<List<String>>> acceptedConnection = acceptSingleConnection(serverSocket);
             URI redisUri = URI.create("redis://localhost:" + serverSocket.getLocalPort() + "/0");
+            DefaultJedisClientConfig uriConfig = DefaultJedisClientConfig.builder()
+                    .connectionTimeoutMillis(500)
+                    .socketTimeoutMillis(500)
+                    .clientName("uri-client")
+                    .build();
 
-            try (Jedis jedis = new Jedis(redisUri, 500)) {
+            try (Jedis jedis = new Jedis(redisUri, uriConfig)) {
                 assertThat(jedis.isConnected()).isTrue();
                 assertThat(jedis.toString()).contains("localhost").contains(String.valueOf(serverSocket.getLocalPort()));
             }
-            acceptedConnection.get(5, TimeUnit.SECONDS);
+            List<List<String>> initializationCommands = acceptedConnection.get(5, TimeUnit.SECONDS);
+            assertThat(initializationCommands)
+                    .anySatisfy(command -> assertThat(command)
+                            .containsExactly("CLIENT", "SETNAME", "uri-client"));
+
+            List<List<String>> clientInfoCommands = initializationCommands.stream()
+                    .filter(command -> command.size() > 1 && "SETINFO".equals(command.get(1)))
+                    .collect(Collectors.toList());
+            if (!clientInfoCommands.isEmpty()) {
+                assertThat(clientInfoCommands)
+                        .anySatisfy(command -> assertThat(command)
+                                .containsExactly("CLIENT", "SETINFO", "LIB-NAME", "jedis"))
+                        .anySatisfy(command -> assertThat(command)
+                                .startsWith("CLIENT", "SETINFO", "LIB-VER"));
+            }
         }
     }
 
@@ -295,16 +316,29 @@ public class JedisTest {
         assertThat(JedisClusterCRC16.getCRC16("123456789")).isEqualTo(12739);
     }
 
-    private static CompletableFuture<Void> acceptSingleConnection(ServerSocket serverSocket) {
-        CompletableFuture<Void> acceptedConnection = new CompletableFuture<>();
+    private static CompletableFuture<List<List<String>>> acceptSingleConnection(ServerSocket serverSocket) {
+        CompletableFuture<List<List<String>>> acceptedConnection = new CompletableFuture<>();
         Thread serverThread = new Thread(() -> {
+            List<List<String>> initializationCommands = new ArrayList<>();
             try (Socket socket = serverSocket.accept()) {
-                acceptedConnection.complete(null);
-                socket.getInputStream().read();
-            } catch (IOException exception) {
-                if (acceptedConnection.isDone() || serverSocket.isClosed()) {
-                    acceptedConnection.complete(null);
-                } else {
+                socket.setSoTimeout(2_000);
+                RedisInputStream inputStream = new RedisInputStream(socket.getInputStream());
+                RedisOutputStream outputStream = new RedisOutputStream(socket.getOutputStream());
+                while (true) {
+                    initializationCommands.add(redisCommand(inputStream));
+                    outputStream.write("+OK\r\n".getBytes(StandardCharsets.UTF_8));
+                    outputStream.flush();
+                }
+            } catch (SocketTimeoutException exception) {
+                if (!acceptedConnection.isDone()) {
+                    acceptedConnection.complete(initializationCommands);
+                }
+            } catch (JedisConnectionException exception) {
+                if (!acceptedConnection.isDone()) {
+                    acceptedConnection.complete(initializationCommands);
+                }
+            } catch (IOException | RuntimeException | AssertionError exception) {
+                if (!acceptedConnection.isDone() && !serverSocket.isClosed()) {
                     acceptedConnection.completeExceptionally(exception);
                 }
             }
@@ -312,6 +346,14 @@ public class JedisTest {
         serverThread.setDaemon(true);
         serverThread.start();
         return acceptedConnection;
+    }
+
+    private static List<String> redisCommand(RedisInputStream inputStream) {
+        Object command = Protocol.read(inputStream);
+        assertThat(command).isInstanceOf(List.class);
+        return ((List<?>) command).stream()
+                .map(part -> asString((byte[]) part))
+                .collect(Collectors.toList());
     }
 
     private static RedisInputStream input(String data) {
