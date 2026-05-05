@@ -9,6 +9,7 @@ package co_fs2.fs2_core_3
 import cats.effect.ContextShift
 import cats.effect.IO
 import cats.effect.Timer
+import cats.effect.concurrent.Deferred
 import fs2.Chunk
 import fs2.Pull
 import fs2.Stream
@@ -232,6 +233,42 @@ class Fs2_core_3Test {
     assertArrayEquals(expectedDigest, sha256.toArray)
     assertArrayEquals(payload, deflatedRoundTrip.toArray)
     assertArrayEquals(payload, gzipRoundTrip.toArray)
+  }
+
+  @Test
+  @Timeout(value = 60, unit = TimeUnit.SECONDS)
+  def mapAsyncRunsEffectsConcurrentlyWhilePreservingInputOrder(): Unit = {
+    val ordered: Vector[Int] = (for {
+      firstReady <- Deferred[IO, Unit]
+      secondReady <- Deferred[IO, Unit]
+      thirdReady <- Deferred[IO, Unit]
+      firstGate <- Deferred[IO, Unit]
+      secondGate <- Deferred[IO, Unit]
+      thirdGate <- Deferred[IO, Unit]
+      readyByValue: Map[Int, Deferred[IO, Unit]] = Map(1 -> firstReady, 2 -> secondReady, 3 -> thirdReady)
+      gateByValue: Map[Int, Deferred[IO, Unit]] = Map(1 -> firstGate, 2 -> secondGate, 3 -> thirdGate)
+      fiber <- Stream
+        .emits(List(1, 2, 3))
+        .covary[IO]
+        .mapAsync(3) { value =>
+          for {
+            _ <- readyByValue(value).complete(())
+            _ <- gateByValue(value).get
+          } yield value
+        }
+        .compile
+        .toVector
+        .start
+      _ <- firstReady.get
+      _ <- secondReady.get
+      _ <- thirdReady.get
+      _ <- thirdGate.complete(())
+      _ <- secondGate.complete(())
+      _ <- firstGate.complete(())
+      values <- fiber.join
+    } yield values).unsafeRunSync()
+
+    assertEquals(Vector(1, 2, 3), ordered)
   }
 
   @Test
