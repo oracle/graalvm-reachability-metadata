@@ -13,6 +13,7 @@ import cats.Parallel
 import cats.SemigroupK
 import cats.data.Ior
 import cats.effect.IO
+import cats.effect.Ref
 import cats.effect.Resource
 import cats.effect.kernel.Async
 import cats.effect.unsafe.implicits.global
@@ -80,6 +81,20 @@ class Zio_interop_cats_3Test {
       (value: Int) => value + 1
     ).either
     assertEquals("bad input", runZio(mapped).left.toOption.get.getMessage)
+  }
+
+  @Test
+  def catsEffectRefUsesZioRefSemanticsForAtomicUpdates(): Unit = {
+    val program = for {
+      ref <- Ref.of[Task, Int](1)
+      initial <- ref.get
+      previous <- ref.modify(current => (current + 4, current))
+      updated <- ref.get
+      tryUpdated <- ref.tryModify(current => (current * 2, s"saw-$current"))
+      finalValue <- ref.get
+    } yield (initial, previous, updated, tryUpdated, finalValue)
+
+    assertEquals((1, 1, 5, Some("saw-5"), 10), runZio(program))
   }
 
   @Test
