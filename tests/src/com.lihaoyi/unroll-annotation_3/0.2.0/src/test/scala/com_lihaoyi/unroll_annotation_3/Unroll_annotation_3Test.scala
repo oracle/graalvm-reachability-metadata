@@ -8,7 +8,8 @@ package com_lihaoyi.unroll_annotation_3
 
 import org.junit.jupiter.api.Assertions.{assertEquals, assertNotSame, assertTrue}
 import org.junit.jupiter.api.Test
-import scala.annotation.{Annotation, StaticAnnotation, unroll}
+import com.lihaoyi.unroll
+import scala.annotation.{Annotation, StaticAnnotation}
 
 class Unroll_annotation_3Test {
   @Test
