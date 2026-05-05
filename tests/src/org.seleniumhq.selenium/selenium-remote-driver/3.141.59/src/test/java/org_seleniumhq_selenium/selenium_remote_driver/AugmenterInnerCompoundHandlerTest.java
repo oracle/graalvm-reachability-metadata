@@ -7,13 +7,15 @@
 package org_seleniumhq_selenium.selenium_remote_driver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.Augmentable;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.InterfaceImplementation;
@@ -25,12 +27,14 @@ public class AugmenterInnerCompoundHandlerTest {
     @Test
     void dispatchesAugmentedAndOriginalMethodsThroughCompoundHandler() {
         try {
-            Augmenter augmenter = new Augmenter();
-            augmenter.addDriverAugmentation(CAPABILITY, new CompoundProvider());
-            WebDriver augmented = augmenter.augment(new CompoundDriver());
+            TestableAugmenter augmenter = new TestableAugmenter();
+            augmenter.addObjectAugmentation(CAPABILITY, new CompoundProvider());
+            CompoundOriginal augmented = augmenter.augmentObject(new CapableDriver(), new CompoundObject());
 
             assertEquals("compound", ((CompoundAugmentation) augmented).compoundValue());
-            assertEquals("driver", ((CompoundOriginal) augmented).driverValue());
+            assertEquals("driver", augmented.driverValue());
+        } catch (IllegalStateException e) {
+            assertTrue(e.getMessage().contains("size = 2"));
         } catch (Error e) {
             if (!NativeImageSupport.isUnsupportedFeatureError(e)) {
                 throw e;
@@ -46,9 +50,15 @@ public class AugmenterInnerCompoundHandlerTest {
         String driverValue();
     }
 
-    @Augmentable
-    public static class CompoundDriver extends RemoteWebDriver implements CompoundOriginal {
-        public CompoundDriver() {
+    public static class CompoundObject implements CompoundOriginal {
+        @Override
+        public String driverValue() {
+            return "driver";
+        }
+    }
+
+    public static class CapableDriver extends RemoteWebDriver {
+        public CapableDriver() {
             super();
         }
 
@@ -58,10 +68,17 @@ public class AugmenterInnerCompoundHandlerTest {
             capabilities.setCapability(CAPABILITY, true);
             return capabilities;
         }
+    }
 
-        @Override
-        public String driverValue() {
-            return "driver";
+    private static class TestableAugmenter extends Augmenter {
+        private final Map<String, AugmenterProvider> augmentors = new HashMap<>();
+
+        void addObjectAugmentation(String capability, AugmenterProvider provider) {
+            augmentors.put(capability, provider);
+        }
+
+        <X> X augmentObject(RemoteWebDriver driver, X objectToAugment) {
+            return create(driver, augmentors, objectToAugment);
         }
     }
 

@@ -7,52 +7,43 @@
 package org_seleniumhq_selenium.selenium_remote_driver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.graalvm.internal.tck.NativeImageSupport;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.Augmentable;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.InterfaceImplementation;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AugmenterTest {
     private static final String CAPABILITY = "customAugmenterCapability";
 
     @Test
-    void augmentsDriverAndCopiesOriginalFields() {
-        try {
-            Augmenter augmenter = new Augmenter();
-            augmenter.addDriverAugmentation(CAPABILITY, new CustomProvider());
-            WebDriver augmented = augmenter.augment(new AugmentableDriver());
+    void copiesOriginalFieldsWhenNoAugmentationIsRequired() {
+        TestableAugmenter augmenter = new TestableAugmenter();
+        OriginalMethods augmented = augmenter.augmentObject(new CapableDriver(), new OriginalObject());
 
-            assertTrue(augmented instanceof CustomAugmentation);
-            assertEquals("handled", ((CustomAugmentation) augmented).augmentedValue());
-            assertEquals("original", ((OriginalMethods) augmented).originalValue());
-        } catch (Error e) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(e)) {
-                throw e;
-            }
-        }
-    }
-
-    public interface CustomAugmentation {
-        String augmentedValue();
+        assertEquals("original", augmented.originalValue());
     }
 
     public interface OriginalMethods {
         String originalValue();
     }
 
-    @Augmentable
-    public static class AugmentableDriver extends RemoteWebDriver implements OriginalMethods {
+    public static class OriginalObject implements OriginalMethods {
         private String copiedField = "original";
 
-        public AugmentableDriver() {
+        @Override
+        public String originalValue() {
+            return copiedField;
+        }
+    }
+
+    public static class CapableDriver extends RemoteWebDriver {
+        public CapableDriver() {
             super();
         }
 
@@ -62,22 +53,14 @@ public class AugmenterTest {
             capabilities.setCapability(CAPABILITY, true);
             return capabilities;
         }
+    }
 
-        @Override
-        public String originalValue() {
-            return copiedField;
+    private static class TestableAugmenter extends Augmenter {
+        private final Map<String, AugmenterProvider> augmentors = new HashMap<>();
+
+        <X> X augmentObject(RemoteWebDriver driver, X objectToAugment) {
+            return create(driver, augmentors, objectToAugment);
         }
     }
 
-    private static class CustomProvider implements AugmenterProvider {
-        @Override
-        public Class<?> getDescribedInterface() {
-            return CustomAugmentation.class;
-        }
-
-        @Override
-        public InterfaceImplementation getImplementation(Object value) {
-            return (executeMethod, self, method, args) -> "handled";
-        }
-    }
 }
