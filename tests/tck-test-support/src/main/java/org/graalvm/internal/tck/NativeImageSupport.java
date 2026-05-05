@@ -9,6 +9,8 @@ package org.graalvm.internal.tck;
 /// Utilities for handling Native Image runtime behavior in tests.
 public final class NativeImageSupport {
 
+    private static final String NATIVE_IMAGE_CODE_PROPERTY =
+            "org.graalvm.nativeimage.imagecode";
     private static final String UNSUPPORTED_FEATURE_ERROR =
             "com.oracle.svm.core.jdk.UnsupportedFeatureError";
 
@@ -20,5 +22,10 @@ public final class NativeImageSupport {
     public static boolean isUnsupportedFeatureError(Error error) {
         return error != null
                 && UNSUPPORTED_FEATURE_ERROR.equals(error.getClass().getName());
+    }
+
+    /// Returns true when running inside a Native Image runtime executable.
+    public static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty(NATIVE_IMAGE_CODE_PROPERTY));
     }
 }

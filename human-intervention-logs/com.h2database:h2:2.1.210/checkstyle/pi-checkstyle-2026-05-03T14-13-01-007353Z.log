@@ -1,0 +1,15 @@
+=== Pi checkstyle attempt 1 ===
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Fixed the checkstyle violation in:
+
+- `tests/src/com.h2database/h2/2.1.210/src/test/java/h2/JdbcUtilsTest.java`
+
+Changed the JNDI environment backing field from direct `new Hashtable<>()` construction to `Properties`, which still satisfies the `Context#getEnvironment()` return type.
+
+Validation passed:
+
+```bash
+./gradlew checkstyle -Pcoordinates=com.h2database:h2:2.1.210
+```
+
+Build result: `BUILD SUCCESSFUL`

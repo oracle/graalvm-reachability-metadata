@@ -1,0 +1,119 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.h2database:h2:2.1.210
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-f0ad78bb/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 12 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::invokeCleaner has been called by org.h2.util.MemoryUnmapper (file:/tmp/metadata-forge-gradle/847afd43718f0edf/caches/modules-2/files-2.1/com.h2database/h2/2.1.210/a7395ae43062f9237eb441137b789c518c7d4c2f/h2-2.1.210.jar)
+WARNING: Please consider reporting this to the maintainers of class org.h2.util.MemoryUnmapper
+WARNING: sun.misc.Unsafe::invokeCleaner will be removed in a future release
+
+> Task :test FAILED
+
+SessionRemoteTest > remoteSessionInitializesConfiguredClientSideComponents() FAILED
+    org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database "mem:session-remote-c96571ad-e629-4a73-89c2-972f33a36f2a" not found, either pre-create it or allow remote database creation (not recommended in secure environments) [90149-210]
+    	at org.h2.message.DbException.getJdbcSQLException(DbException.java:697)
+    	at org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+    	at org.h2.message.DbException.get(DbException.java:227)
+    	at org.h2.message.DbException.get(DbException.java:203)
+    	at org.h2.engine.Engine.throwNotFound(Engine.java:189)
+    	at org.h2.engine.Engine.openSession(Engine.java:90)
+    	at org.h2.engine.Engine.openSession(Engine.java:222)
+    	at org.h2.engine.Engine.createSession(Engine.java:201)
+    	at org.h2.server.TcpServerThread.run(TcpServerThread.java:175)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:697)
+        at app//org.h2.engine.SessionRemote.readException(SessionRemote.java:637)
+        at app//org.h2.engine.SessionRemote.done(SessionRemote.java:606)
+        at app//org.h2.engine.SessionRemote.initTransfer(SessionRemote.java:163)
+        at app//org.h2.engine.SessionRemote.connectServer(SessionRemote.java:433)
+        at app//org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:325)
+        at app//org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+        at app//org.h2.Driver.connect(Driver.java:59)
+        at platform/java.sql@25.0.3/java.sql.DriverManager.getConnection(DriverManager.java:613)
+        at platform/java.sql@25.0.3/java.sql.DriverManager.getConnection(DriverManager.java:222)
+        at app//h2.SessionRemoteTest.remoteSessionInitializesConfiguredClientSideComponents(SessionRemoteTest.java:48)
+
+26 tests completed, 1 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-f0ad78bb/tests/src/com.h2database/h2/2.1.210/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-f0ad78bb/tests/src/com.h2database/h2/2.1.210/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-f0ad78bb/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.h2database:h2:2.1.210 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date
