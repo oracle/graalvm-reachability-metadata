@@ -167,6 +167,104 @@ class CollectEntriesTests(unittest.TestCase):
         self.assertNotEqual(nme._collect_entries(a), nme._collect_entries(b))
 
 
+class MetadataAggregationTests(unittest.TestCase):
+    """Durable trace aggregation is delegated to native-image-utils."""
+
+    def setUp(self) -> None:
+        self.repo = tempfile.mkdtemp(prefix="repo-")
+        self.addCleanup(_rmtree, self.repo)
+        _make_complete_reachability_repo(self.repo)
+        self.metadata_dir = Path(self.repo) / "metadata" / "g" / "a" / "1.0"
+        self.metadata_dir.mkdir(parents=True)
+        self.output_dir = tempfile.mkdtemp(prefix="native-trace-output-")
+        self.addCleanup(_rmtree, self.output_dir)
+
+    def test_uses_native_image_utils_to_preserve_order_sensitive_metadata(self) -> None:
+        durable_metadata_path = self.metadata_dir / "reachability-metadata.json"
+        durable_metadata_path.write_text(
+            json.dumps({
+                "reflection": [
+                    {
+                        "type": "com.example.Target",
+                        "methods": [
+                            {
+                                "name": "m",
+                                "parameterTypes": ["java.lang.String", "int"],
+                            }
+                        ],
+                    }
+                ]
+            }),
+            encoding="utf-8",
+        )
+        Path(self.output_dir, "reachability-metadata.json").write_text(
+            json.dumps({
+                "reflection": [
+                    {
+                        "type": "com.example.Target",
+                        "methods": [
+                            {
+                                "name": "m",
+                                "parameterTypes": ["int", "java.lang.String"],
+                            }
+                        ],
+                    }
+                ]
+            }),
+            encoding="utf-8",
+        )
+        merge_calls: list[list[str]] = []
+
+        with patch(
+            "utility_scripts.native_test_verification.subprocess.run",
+            side_effect=self._fake_native_image_utils_merge(merge_calls),
+        ):
+            self.assertTrue(ntv._aggregate_trace_metadata(self.repo, "g:a:1.0", self.output_dir))
+
+        durable_metadata = json.loads(durable_metadata_path.read_text(encoding="utf-8"))
+        methods = [
+            entry["methods"][0]["parameterTypes"]
+            for entry in durable_metadata["reflection"]
+        ]
+        self.assertIn(["java.lang.String", "int"], methods)
+        self.assertIn(["int", "java.lang.String"], methods)
+        self.assertEqual(len(methods), 2)
+        self.assertEqual(len(merge_calls), 1)
+        self.assertIn(str(self.metadata_dir), _command_property(" ".join(merge_calls[0]), "-PinputDirs"))
+        self.assertIn(self.output_dir, _command_property(" ".join(merge_calls[0]), "-PinputDirs"))
+
+    @staticmethod
+    def _fake_native_image_utils_merge(calls: list[list[str]]):
+        def _fake(cmd, **kwargs):  # type: ignore[no-untyped-def]
+            calls.append(list(cmd))
+            input_dirs = next(
+                (a.split("=", 1)[1] for a in cmd if a.startswith("-PinputDirs=")),
+                "",
+            ).split(",")
+            output_dir = next(
+                (a.split("=", 1)[1] for a in cmd if a.startswith("-PoutputDir=")),
+                None,
+            )
+            merged_reflection = []
+            for input_dir in input_dirs:
+                metadata_path = Path(input_dir) / "reachability-metadata.json"
+                if metadata_path.is_file():
+                    try:
+                        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+                    except json.JSONDecodeError:
+                        return subprocess.CompletedProcess(cmd, 1)
+                    merged_reflection.extend(payload.get("reflection", []))
+            if output_dir:
+                Path(output_dir).mkdir(parents=True, exist_ok=True)
+                Path(output_dir, "reachability-metadata.json").write_text(
+                    json.dumps({"reflection": merged_reflection}),
+                    encoding="utf-8",
+                )
+            return subprocess.CompletedProcess(cmd, 0)
+
+        return _fake
+
+
 class PrintCollectedMetadataTests(unittest.TestCase):
     """Readable logging of per-cycle trace metadata."""
 
@@ -308,7 +406,10 @@ class GateRoutingTests(unittest.TestCase):
                     for input_dir in input_dirs:
                         metadata_path = Path(input_dir) / "reachability-metadata.json"
                         if metadata_path.is_file():
-                            payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+                            try:
+                                payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+                            except json.JSONDecodeError:
+                                return subprocess.CompletedProcess(cmd, 1)
                             merged_reflection.extend(payload.get("reflection", []))
                     Path(output_dir).mkdir(parents=True, exist_ok=True)
                     Path(output_dir, "reachability-metadata.json").write_text(
@@ -559,9 +660,11 @@ class GateRoutingTests(unittest.TestCase):
             )
         self.assertEqual(result.status, ntv.STATUS_PASSED)
         merge_calls = [call for call in calls if "mergeNativeTraceMetadata" in call]
-        self.assertEqual(len(merge_calls), 1)
+        self.assertEqual(len(merge_calls), 2)
         input_dirs = next(arg for arg in merge_calls[0] if arg.startswith("-PinputDirs="))
         self.assertIn("cycle-0", input_dirs)
+        durable_input_dirs = next(arg for arg in merge_calls[1] if arg.startswith("-PinputDirs="))
+        self.assertIn(self.output_dir, durable_input_dirs)
 
     def test_routes_to_codex_and_prints_stacktrace_when_172_produces_no_metadata(self) -> None:
         fake, _calls = self._fake_run_factory(
