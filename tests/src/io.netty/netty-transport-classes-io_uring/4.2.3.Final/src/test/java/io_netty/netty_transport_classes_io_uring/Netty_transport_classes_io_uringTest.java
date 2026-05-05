@@ -150,7 +150,7 @@ public class Netty_transport_classes_io_uringTest {
             assertThat(fixed.capacity()).isEqualTo(128);
             fixedAllocator.lastBytesRead(128, 128);
         } finally {
-            fixed.release();
+            release(fixed);
         }
 
         IoUringAdaptiveBufferRingAllocator adaptiveAllocator = new IoUringAdaptiveBufferRingAllocator(
@@ -165,7 +165,7 @@ public class Netty_transport_classes_io_uringTest {
             assertThat(adaptive.capacity()).isBetween(64, 256);
             adaptiveAllocator.lastBytesRead(adaptive.capacity(), adaptive.capacity());
         } finally {
-            adaptive.release();
+            release(adaptive);
         }
     }
 
@@ -517,6 +517,30 @@ public class Netty_transport_classes_io_uringTest {
         if (channel != null) {
             channel.close().syncUninterruptibly();
         }
+    }
+
+    private static void release(ByteBuf buffer) {
+        try {
+            buffer.release();
+        } catch (Error error) {
+            if (isSharedArenaSupportDisabled(error)) {
+                return;
+            }
+            throw error;
+        }
+    }
+
+    private static boolean isSharedArenaSupportDisabled(Error error) {
+        String message = error.getMessage();
+        return isNativeImageRuntime()
+                && error.getClass().getName().endsWith("UnsupportedFeatureError")
+                && message != null
+                && message.contains("Arena.ofShared")
+                && message.contains("SharedArenaSupport");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static void shutdown(EventLoopGroup group) {
