@@ -9,6 +9,7 @@ package org_typelevel.cats_effect_3
 import cats.effect.Blocker
 import cats.effect.ConcurrentEffect
 import cats.effect.ContextShift
+import cats.effect.ExitCase
 import cats.effect.IO
 import cats.effect.Resource
 import cats.effect.SyncIO
@@ -150,6 +151,25 @@ class Cats_effect_3Test {
     val result: (Boolean, Boolean, String, Long) = await(program)
 
     assertThat(result).isEqualTo((false, true, "payload", 1L))
+  }
+
+  @Test
+  @Timeout(value = 10, unit = TimeUnit.SECONDS)
+  def cancelingFiberRunsBracketCaseFinalizerWithCanceledExitCase(): Unit = {
+    val program: IO[ExitCase[Throwable]] = for {
+      started <- Deferred[IO, Unit]
+      canceled <- Deferred[IO, ExitCase[Throwable]]
+      fiber <- started.complete(()).bracketCase(_ => IO.never) { (_, exitCase) =>
+        canceled.complete(exitCase)
+      }.start
+      _ <- started.get
+      _ <- fiber.cancel
+      exitCase <- canceled.get.timeoutTo(1.second, IO.raiseError(new AssertionError("cancellation finalizer did not run")))
+    } yield exitCase
+
+    val result: ExitCase[Throwable] = await(program)
+
+    assertThat(result).isEqualTo(ExitCase.Canceled)
   }
 
   @Test
