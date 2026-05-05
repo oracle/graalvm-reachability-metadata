@@ -232,7 +232,7 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                 delta = self._compute_single_call_delta(previous_report, current_report, active_class, target_key)
                 dynamic_prompt = self._render_dynamic_access_prompt(active_class, delta, call_attempts)
                 self._print_dynamic_access_detail("agent: running dynamic-access prompt", indent_level=2)
-                agent.send_prompt(dynamic_prompt)
+                self._send_pgo_prompt(agent, "dynamic-access", dynamic_prompt)
                 self._print_dynamic_access_detail("agent: complete", indent_level=2)
                 prompt_iterations += 1
                 self._dynamic_access_phase_prompt_iterations = prompt_iterations
@@ -265,12 +265,14 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                             "agent: test failed before nativeTest; sending failure output back to agent",
                             indent_level=2,
                         )
-                        agent.send_prompt(
+                        self._send_pgo_prompt(
+                            agent,
+                            "test-failure",
                             "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n"
                             "{error_output}".format(
                                 library=self.library,
                                 error_output=test_output,
-                            )
+                            ),
                         )
                         self._print_dynamic_access_detail("agent: complete", indent_level=2)
                         prompt_iterations += 1
@@ -287,7 +289,9 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                         "sending failure output back to agent",
                         indent_level=2,
                     )
-                    agent.send_prompt(
+                    self._send_pgo_prompt(
+                        agent,
+                        "dynamic-access-report-refresh-failure",
                         "The generated tests reached native execution, but Forge could not refresh the "
                         "dynamic-access coverage report for `{library}`.\n\n"
                         "Fix the generated tests so `./gradlew test -Pcoordinates={library}` and "
@@ -301,7 +305,7 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                             library=self.library,
                             test_output=self._trim_for_agent_prompt(test_output),
                             report_output=self._trim_for_agent_prompt(self._last_dynamic_access_report_output),
-                        )
+                        ),
                     )
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                     prompt_iterations += 1
@@ -400,6 +404,12 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                 )
                 return False, prompt_iterations
             if call_resolved:
+                self._print_call_completion_progress(
+                    active_class,
+                    min(len(exhausted_call_sites), initial_call_count),
+                    initial_call_count,
+                    current_report,
+                )
                 processed_calls_this_part += 1
                 if self._should_stop_for_large_library_chunk(
                         current_report,
@@ -491,7 +501,11 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
 
     def _run_reachability_analysis(self, agent, active_class, pgo_failure_reason: str) -> dict:
         self._print_dynamic_access_detail("agent: running PGO reachability analysis", indent_level=2)
-        response = agent.send_prompt(self._render_reachability_analysis_prompt(active_class, pgo_failure_reason))
+        response = self._send_pgo_prompt(
+            agent,
+            "reachability-analysis",
+            self._render_reachability_analysis_prompt(active_class, pgo_failure_reason),
+        )
         self._print_dynamic_access_detail("agent: PGO reachability analysis complete", indent_level=2)
         try:
             return self._parse_json_response(response)
@@ -516,6 +530,15 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
             pgo_failure_reason=pgo_failure_reason,
             source_context_overview=self.context.get("source_context_overview") or "- Source context not available.",
         )
+
+    @staticmethod
+    def _send_pgo_prompt(agent, prompt_name: str, prompt: str) -> str:
+        print("=" * 80, flush=True)
+        print(f"PGO exploration prompt before Pi agent: {prompt_name}", flush=True)
+        print("-" * 80, flush=True)
+        print(prompt, flush=True)
+        print("=" * 80, flush=True)
+        return agent.send_prompt(prompt)
 
     @classmethod
     def _next_uncovered_call_site(

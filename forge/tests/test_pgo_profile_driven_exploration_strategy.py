@@ -3,11 +3,13 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import io
 import json
 import os
 import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 from ai_workflows.workflow_strategies.pgo_profile_driven_exploration_strategy import PgoProfileDrivenExplorationStrategy
@@ -228,6 +230,71 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
         self.assertIn('"callSites": [', prompt)
         self.assertIn('"reachable": false', prompt)
         self.assertIn("generatePgoDynamicAccessNearCallReport failed", prompt)
+
+    def test_send_pgo_prompt_prints_full_prompt_before_agent_run(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.prompt = ""
+
+            def send_prompt(self, prompt: str) -> str:
+                self.prompt = prompt
+                return "response"
+
+        prompt = "first line\nsecond line\n" + ("x" * 500)
+        agent = FakeAgent()
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            response = PgoProfileDrivenExplorationStrategy._send_pgo_prompt(agent, "test-prompt", prompt)
+
+        printed = output.getvalue()
+        self.assertEqual(response, "response")
+        self.assertEqual(agent.prompt, prompt)
+        self.assertIn("PGO exploration prompt before Pi agent: test-prompt", printed)
+        self.assertIn(prompt, printed)
+
+    def test_call_completion_progress_prints_overall_coverage(self) -> None:
+        active_class = DynamicAccessClass(
+            class_name="example.TargetHolder",
+            source_file="TargetHolder.java",
+            resolved_source_file=None,
+            total_calls=1,
+            covered_calls=1,
+            call_sites=[
+                DynamicAccessCallSite(
+                    metadata_type="reflection",
+                    tracked_api="java.lang.Class#newInstance()",
+                    frame="example.TargetHolder.call(TargetHolder.java:41)",
+                    line=41,
+                    covered=True,
+                )
+            ],
+        )
+        report = DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=101,
+            covered_calls=25,
+            classes=[active_class],
+        )
+
+        output = io.StringIO()
+        with patch("sys.stdout", output):
+            PgoProfileDrivenExplorationStrategy._print_call_completion_progress(
+                active_class,
+                5,
+                77,
+                report,
+            )
+
+        self.assertEqual(
+            output.getvalue().strip(),
+            "[dynamic-access] ===================================================================================\n"
+            "[dynamic-access] Progress after target - [reflection] java.lang.Class#newInstance() "
+            "<- example.TargetHolder.call(TargetHolder.java:41) (line 41): calls 5/77 processed; "
+            "overall coverage 25/101 covered (76 remaining)\n"
+            "[dynamic-access] ===================================================================================",
+        )
 
     def test_refresh_returns_unavailable_guidance_when_formatter_has_no_actionable_guidance(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
