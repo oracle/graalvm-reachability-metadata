@@ -13,6 +13,7 @@ from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.source_context import populate_artifact_urls
+from utility_scripts.workflow_setup import build_graalvm_environment, resolve_graalvm_java_home
 
 
 def build_parser():
@@ -57,7 +58,7 @@ def run_fix_test_native_image_run(
     require_complete_reachability_repo(reachability_metadata_path)
     return subprocess.run(
         [
-            "./gradlew", "fixTestNativeImageRun",
+            "./gradlew", "--no-daemon", "fixTestNativeImageRun",
             f"-PtestLibraryCoordinates={current_coordinates}",
             f"-PnewLibraryVersion={new_version}",
         ],
@@ -73,7 +74,7 @@ def run_gradle_test(
     require_complete_reachability_repo(reachability_metadata_path)
     return subprocess.run(
         [
-            "./gradlew", "test",
+            "./gradlew", "--no-daemon", "test",
             f"-Pcoordinates={coordinates}",
         ],
         cwd=reachability_metadata_path,
@@ -101,6 +102,8 @@ def main(argv=None) -> int:
 
     current_coordinates = args.coordinates
     new_version = args.new_version
+    graalvm_home = resolve_graalvm_java_home()
+    os.environ.update(build_graalvm_environment(graalvm_home))
 
     group, artifact, _ = current_coordinates.split(":")
     branch = build_ai_branch_name(

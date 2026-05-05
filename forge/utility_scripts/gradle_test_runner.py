@@ -42,6 +42,7 @@ def run_gradle_test_command(
 ) -> str:
     """Run a Gradle test command and return output suitable for agent repair prompts."""
     require_complete_reachability_repo(working_dir)
+    test_cmd = _with_no_daemon(test_cmd)
     resolved_library = library or _extract_coordinates(test_cmd)
     resolved_timeout = timeout_seconds or _timeout_from_environment()
     log_path = build_timestamped_task_log_path("gradle-test", resolved_library, "gradle-test")
@@ -84,6 +85,19 @@ def run_gradle_test_command(
             )
 
     return _read_text(log_path)
+
+
+def _with_no_daemon(command: str) -> str:
+    """Run Gradle test commands without a daemon so JAVA_HOME changes take effect."""
+    stripped = command.lstrip()
+    prefix = command[:len(command) - len(stripped)]
+    if not stripped.startswith("./gradlew"):
+        return command
+    tokens = stripped.split(maxsplit=1)
+    if "--no-daemon" in stripped.split():
+        return command
+    suffix = f" {tokens[1]}" if len(tokens) > 1 else ""
+    return f"{prefix}./gradlew --no-daemon{suffix}"
 
 
 def _timeout_from_environment() -> int:

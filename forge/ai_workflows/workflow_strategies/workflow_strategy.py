@@ -147,6 +147,7 @@ class WorkflowStrategy(ABC):
         """Execute a shell command and return its combined stdout/stderr."""
         if cmd.startswith("./gradlew"):
             require_complete_reachability_repo(os.getcwd())
+            cmd = WorkflowStrategy._with_no_daemon(cmd)
         result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         return result.stdout
 
@@ -160,7 +161,7 @@ class WorkflowStrategy(ABC):
                 env=env,
             )
         result = subprocess.run(
-            cmd,
+            self._with_no_daemon(cmd),
             shell=True,
             cwd=getattr(self, "reachability_repo_path", None),
             env=env,
@@ -169,6 +170,19 @@ class WorkflowStrategy(ABC):
             text=True,
         )
         return result.stdout
+
+    @staticmethod
+    def _with_no_daemon(command: str) -> str:
+        """Run Gradle commands without a daemon so the selected GraalVM is honored."""
+        stripped = command.lstrip()
+        prefix = command[:len(command) - len(stripped)]
+        if not stripped.startswith("./gradlew"):
+            return command
+        tokens = stripped.split(maxsplit=1)
+        if "--no-daemon" in stripped.split():
+            return command
+        suffix = f" {tokens[1]}" if len(tokens) > 1 else ""
+        return f"{prefix}./gradlew --no-daemon{suffix}"
 
     @staticmethod
     def _get_first_failed_task(output: str):

@@ -59,6 +59,10 @@ class ScaffoldError(RuntimeError):
     """Raised when the Gradle scaffold task fails unexpectedly."""
 
 
+class ExistingTestsPreparationError(RuntimeError):
+    """Raised when an existing artifact cannot seed a missing tested version."""
+
+
 def get_repo_root():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -287,6 +291,68 @@ def run_scaffold(library: str) -> bool:
     raise ScaffoldError(scaffold_proc.stderr or scaffold_proc.stdout or "Gradle scaffold task failed")
 
 
+def run_add_tested_version(library: str, last_supported_version: str) -> None:
+    """Add a tested version by copying the previous supported version's tests."""
+    require_complete_reachability_repo(os.getcwd())
+    subprocess.run(
+        [
+            "./gradlew",
+            "--no-daemon",
+            "addTestedVersion",
+            f"-Pcoordinates={library}",
+            f"--lastSupportedVersion={last_supported_version}",
+        ],
+        check=True,
+    )
+
+
+def prepare_missing_version_from_existing_tests(
+        repo_path: str,
+        package: str,
+        artifact: str,
+        library_version: str,
+) -> bool:
+    """Prepare a missing version for an existing artifact using its latest tests."""
+    index_path = os.path.join(repo_path, "metadata", package, artifact, "index.json")
+    if not os.path.isfile(index_path):
+        return False
+
+    with open(index_path, "r", encoding="utf-8") as index_file:
+        metadata_entries = json.load(index_file)
+
+    tested_versions: list[str] = []
+    for metadata_entry in metadata_entries:
+        entry_versions = metadata_entry.get("tested-versions") or []
+        tested_versions.extend(str(version) for version in entry_versions)
+
+    if library_version in tested_versions:
+        return True
+    if not tested_versions:
+        raise ExistingTestsPreparationError(
+            f"No tested versions are available to seed {package}:{artifact}:{library_version}."
+        )
+
+    last_supported_version = tested_versions[-1]
+    previous_tests_dir = os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        package,
+        artifact,
+        last_supported_version,
+    )
+    if not os.path.isdir(previous_tests_dir):
+        raise ExistingTestsPreparationError(
+            "Existing metadata cannot seed {library}; missing previous tests at {path}.".format(
+                library=f"{package}:{artifact}:{library_version}",
+                path=previous_tests_dir,
+            )
+        )
+
+    run_add_tested_version(f"{package}:{artifact}:{library_version}", last_supported_version)
+    return True
+
+
 def collect_test_runtime_classpath_summary(library: str, max_entries: int = 200) -> str:
     """Collect current test runtime classpath facts for agent persistent instructions."""
     result = subprocess.run(
@@ -488,9 +554,19 @@ def main(argv=None):
                 f"Marked {package}:{artifact} as not-for-native-image in {os.path.relpath(marker_path, reachability_repo_path)}",
             )
             return 0
-        run_scaffold(library)
+        if not run_scaffold(library):
+            prepare_missing_version_from_existing_tests(
+                reachability_repo_path,
+                package,
+                artifact,
+                library_version,
+            )
     except ScaffoldError as exc:
         print(f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}", file=sys.stderr)
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    except ExistingTestsPreparationError as exc:
+        print(f"ERROR: Failed to prepare existing tests for coordinates: {library}", file=sys.stderr)
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     populate_artifact_urls(reachability_repo_path, library)

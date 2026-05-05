@@ -6,10 +6,18 @@
 import os
 import subprocess
 import tempfile
+from contextlib import ExitStack
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.java_fail_workflow import JAVAC_CONFIG, copy_and_prepare_project_dir, create_project_prep_checkpoint
+from ai_workflows.java_fail_workflow import (
+    JAVAC_CONFIG,
+    copy_and_prepare_project_dir,
+    create_project_prep_checkpoint,
+    run_java_fail_workflow,
+)
+from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE
 
 
 class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
@@ -61,3 +69,136 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
         self.assertEqual(run.call_count, 3)
         self.assertEqual(run.call_args_list[2].args[0], ["git", "diff", "--cached", "--quiet"])
         check_output.assert_called_once_with(["git", "rev-parse", "HEAD"], text=True)
+
+    def test_failed_workflow_preserves_generated_worktree_for_follow_up(self) -> None:
+        class FailingStrategy:
+            post_generation_intervention = None
+            persistent_instructions = None
+
+            def __init__(self, **_kwargs):
+                pass
+
+            def run(self, agent):
+                del agent
+                return RUN_STATUS_FAILURE, 2
+
+        class Agent:
+            total_tokens_sent = 0
+            total_tokens_received = 0
+            cached_input_tokens_used = 0
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_root = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "2.0.0",
+                "src",
+                "test",
+                "java",
+            )
+            os.makedirs(source_root)
+            parsed_flags = (
+                "org.example",
+                "demo",
+                "1.0.0",
+                "2.0.0",
+                None,
+                "test-strategy",
+                False,
+                temp_dir,
+                temp_dir,
+            )
+            source_context = SimpleNamespace(
+                to_prompt_overview=lambda: "",
+                is_available=False,
+                read_only_files=[],
+            )
+            test_layout = SimpleNamespace(
+                language="java",
+                display_language="Java",
+                source_dir_name="java",
+                source_root=source_root,
+            )
+            previous_cwd = os.getcwd()
+            try:
+                with ExitStack() as stack:
+                    stack.enter_context(
+                        patch("ai_workflows.java_fail_workflow.parse_flags", return_value=parsed_flags)
+                    )
+                    stack.enter_context(
+                        patch(
+                            "ai_workflows.java_fail_workflow.require_strategy_by_name",
+                            return_value={"workflow": "dummy", "parameters": {}, "model": "model"},
+                        )
+                    )
+                    stack.enter_context(
+                        patch(
+                            "ai_workflows.java_fail_workflow.resolve_repo_roots",
+                            return_value=(temp_dir, temp_dir),
+                        )
+                    )
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.ensure_gh_authenticated"))
+                    stack.enter_context(
+                        patch("ai_workflows.java_fail_workflow.resolve_graalvm_java_home", return_value="/graalvm")
+                    )
+                    stack.enter_context(
+                        patch("ai_workflows.java_fail_workflow.build_graalvm_environment", return_value={})
+                    )
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.validate_repo_paths"))
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.copy_and_prepare_project_dir"))
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.update_metadata_index_json"))
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.create_versioned_metadata_dir"))
+                    stack.enter_context(
+                        patch(
+                            "ai_workflows.java_fail_workflow.create_project_prep_checkpoint",
+                            return_value="checkpoint",
+                        )
+                    )
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.populate_artifact_urls"))
+                    stack.enter_context(
+                        patch("ai_workflows.java_fail_workflow.prepare_source_contexts", return_value=source_context)
+                    )
+                    stack.enter_context(
+                        patch("ai_workflows.java_fail_workflow.resolve_test_source_layout", return_value=test_layout)
+                    )
+                    stack.enter_context(
+                        patch(
+                            "ai_workflows.java_fail_workflow.WorkflowStrategy.get_class",
+                            return_value=FailingStrategy,
+                        )
+                    )
+                    stack.enter_context(patch("ai_workflows.java_fail_workflow.init_agent", return_value=Agent()))
+                    stack.enter_context(
+                        patch(
+                            "ai_workflows.java_fail_workflow.subprocess.check_output",
+                            return_value="candidate\n",
+                        )
+                    )
+                    create_metrics = stack.enter_context(
+                        patch(
+                            "ai_workflows.java_fail_workflow.metrics_writer.create_javac_fix_run_metrics_output_json",
+                            return_value={"status": "failure"},
+                        )
+                    )
+                    fallback_metrics = stack.enter_context(
+                        patch("ai_workflows.java_fail_workflow.create_failure_run_metrics_output")
+                    )
+                    write_metrics = stack.enter_context(patch("ai_workflows.java_fail_workflow.write_fix_metrics"))
+                    run = stack.enter_context(patch("ai_workflows.java_fail_workflow.subprocess.run"))
+                    result = run_java_fail_workflow(JAVAC_CONFIG, [])
+            finally:
+                os.chdir(previous_cwd)
+
+        self.assertEqual(result, 1)
+        reset_calls = [
+            call for call in run.call_args_list
+            if call.args and call.args[0] == ["git", "reset", "--hard", "checkpoint"]
+        ]
+        self.assertEqual(reset_calls, [])
+        create_metrics.assert_called_once()
+        self.assertEqual(create_metrics.call_args.kwargs["ending_commit"], "candidate")
+        fallback_metrics.assert_not_called()
+        write_metrics.assert_called_once()

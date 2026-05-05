@@ -314,11 +314,11 @@ def verify_native_test_passes(
 
 
 def _generate_metadata_command(coordinate: str) -> str:
-    return f"./gradlew generateMetadata -Pcoordinates={coordinate} --agentAllowedPackages=fromJar"
+    return f"./gradlew --no-daemon generateMetadata -Pcoordinates={coordinate} --agentAllowedPackages=fromJar"
 
 
 def _coordinate_test_command(coordinate: str) -> str:
-    return f"./gradlew test -Pcoordinates={coordinate}"
+    return f"./gradlew --no-daemon test -Pcoordinates={coordinate}"
 
 
 def _default_condition_packages(coordinate: str) -> list[str]:
@@ -333,6 +333,7 @@ def _run_generate_metadata(
     """Run JVM-agent metadata generation for the coordinate."""
     cmd = [
         "./gradlew",
+        "--no-daemon",
         "generateMetadata",
         f"-Pcoordinates={coordinate}",
         "--agentAllowedPackages=fromJar",
@@ -351,7 +352,7 @@ def _run_coordinate_test(
         timeout_seconds: int,
 ) -> tuple[int, str | None]:
     """Run normal coordinate tests and return the first failed Gradle task."""
-    cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}"]
+    cmd = ["./gradlew", "--no-daemon", "test", f"-Pcoordinates={coordinate}"]
     result = _run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
@@ -406,7 +407,7 @@ def _run_native_trace_image_command(
         metadata_config_dirs: list[str],
 ) -> str:
     parts = [
-        "./gradlew runNativeTraceImage",
+        "./gradlew --no-daemon runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
         f"-PtraceMetadataPath={run_dir}",
         f"-PtraceMetadataConditionPackages={','.join(condition_packages)}",
@@ -438,6 +439,7 @@ def _run_native_trace_image(
     exit_file = os.path.join(run_dir, "binary-exit-code")
     cmd = [
         "./gradlew",
+        "--no-daemon",
         "runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
         f"-PtraceMetadataPath={run_dir}",
@@ -717,6 +719,7 @@ def _merge_into_output(
         return True
     cmd = [
         "./gradlew",
+        "--no-daemon",
         "mergeNativeTraceMetadata",
         f"-PinputDirs={','.join(run_dirs)}",
         f"-PoutputDir={output_dir}",

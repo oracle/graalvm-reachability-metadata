@@ -15,32 +15,29 @@ from utility_scripts.stage_logger import log_stage
 
 def resolve_graalvm_java_home():
     """
-    Resolve GRAALV_HOME/JAVA_HOME from environment variables.
+    Resolve GRAALVM_HOME/JAVA_HOME from environment variables.
     Logic:
-    - If GRAALVM_HOME is set and contains bin/native-image, use it for both GRAALVM_HOME and JAVA_HOME.
-    - Else, if JAVA_HOME is set and contains bin/native-image, use it for both GRAALVM_HOME and JAVA_HOME.
+    - If GRAALVM_HOME is set and contains native-image tooling, use it for both GRAALVM_HOME and JAVA_HOME.
+    - Else, if JAVA_HOME is set and contains native-image tooling, use it for both GRAALVM_HOME and JAVA_HOME.
     - Otherwise, print an error and exit(1).
     """
 
-    def has_native_image(home: str):
-        native_image_path = os.path.join(home, "bin", "native-image")
-        return os.path.isfile(native_image_path)
-
     graalvm_home_env = os.environ.get("GRAALVM_HOME")
-    if graalvm_home_env and has_native_image(graalvm_home_env):
+    if graalvm_home_env and has_native_image_tooling(graalvm_home_env):
         os.environ["GRAALVM_HOME"] = graalvm_home_env
         os.environ["JAVA_HOME"] = graalvm_home_env
         return graalvm_home_env
 
     java_home_env = os.environ.get("JAVA_HOME")
-    if java_home_env and has_native_image(java_home_env):
+    if java_home_env and has_native_image_tooling(java_home_env):
         os.environ["GRAALVM_HOME"] = java_home_env
         os.environ["JAVA_HOME"] = java_home_env
         return java_home_env
 
     print(
-        "ERROR: Unable to locate a GraalVM Java home with native-image. "
-        "Please set GRAALVM_HOME or JAVA_HOME to a GraalVM distribution where bin/native-image exists."
+        "ERROR: Unable to locate a GraalVM Java home with native-image and native-image-agent. "
+        "Please set GRAALVM_HOME or JAVA_HOME to a GraalVM distribution where "
+        "bin/native-image and lib/libnative-image-agent.* exist."
     )
     sys.exit(1)
 
@@ -51,16 +48,37 @@ def has_native_image(home: str) -> bool:
     return os.path.isfile(native_image_path)
 
 
+def has_native_image_agent(home: str) -> bool:
+    """Return True when the provided GraalVM home contains the JVM native-image agent library."""
+    candidate_dirs = [os.path.join(home, "lib"), os.path.join(home, "bin")]
+    return any(
+        os.path.isfile(os.path.join(candidate_dir, library_name))
+        for candidate_dir in candidate_dirs
+        if os.path.isdir(candidate_dir)
+        for library_name in (
+            "libnative-image-agent.so",
+            "libnative-image-agent.dylib",
+            "native-image-agent.dll",
+        )
+    )
+
+
+def has_native_image_tooling(home: str) -> bool:
+    """Return True when native-image and the JVM agent library are both available."""
+    return has_native_image(home) and has_native_image_agent(home)
+
+
 def require_graalvm_home_env(env_var_name: str) -> str:
-    """Require a GraalVM home environment variable that contains native-image."""
+    """Require a GraalVM home environment variable that contains native-image tooling."""
     graalvm_home = os.environ.get(env_var_name)
     if not graalvm_home:
         print(f"ERROR: Required environment variable '{env_var_name}' is not set.", file=sys.stderr)
         sys.exit(1)
-    if not has_native_image(graalvm_home):
+    if not has_native_image_tooling(graalvm_home):
         print(
             f"ERROR: Environment variable '{env_var_name}' must point to a GraalVM distribution "
-            f"where {os.path.join('bin', 'native-image')} exists.",
+            f"where {os.path.join('bin', 'native-image')} and "
+            f"{os.path.join('lib', 'libnative-image-agent.*')} exist.",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -72,6 +90,15 @@ def build_graalvm_environment(graalvm_home: str, base_env: dict[str, str] | None
     env = dict(base_env or os.environ)
     env["GRAALVM_HOME"] = graalvm_home
     env["JAVA_HOME"] = graalvm_home
+    env["PATH"] = os.pathsep.join(
+        part for part in (os.path.join(graalvm_home, "bin"), env.get("PATH", "")) if part
+    )
+    graalvm_lib_dir = os.path.join(graalvm_home, "lib")
+    if os.path.isdir(graalvm_lib_dir):
+        for library_path_var in ("LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH"):
+            env[library_path_var] = os.pathsep.join(
+                part for part in (graalvm_lib_dir, env.get(library_path_var, "")) if part
+            )
     return env
 
 
@@ -79,7 +106,7 @@ def run_gradle_test_with_graalvm(repo_path: str, library: str, graalvm_home: str
     """Run the library test task with a specific GraalVM/JAVA_HOME."""
     require_complete_reachability_repo(repo_path)
     return subprocess.run(
-        ["./gradlew", "test", f"-Pcoordinates={library}"],
+        ["./gradlew", "--no-daemon", "test", f"-Pcoordinates={library}"],
         cwd=repo_path,
         env=build_graalvm_environment(graalvm_home),
         stdout=subprocess.PIPE,

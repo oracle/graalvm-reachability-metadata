@@ -744,6 +744,7 @@ def _run_recorded_command(
         env: dict[str, str] | None = None,
         failure_output_pattern: str | None = None,
 ) -> CommandRecord | None:
+    command = _with_no_daemon(command)
     command_env = dict(os.environ)
     display_env = dict(env or {})
     command_env.update(display_env)
@@ -797,6 +798,15 @@ def _run_recorded_command(
     if returncode != 0:
         return record
     return None
+
+
+def _with_no_daemon(command: list[str]) -> list[str]:
+    """Run Gradle wrapper commands without a daemon so per-check JAVA_HOME is respected."""
+    if not command or command[0] != "./gradlew":
+        return command
+    if "--no-daemon" in command[1:]:
+        return command
+    return [command[0], "--no-daemon", *command[1:]]
 
 
 def _remove_gradle_java_home_overrides(command_env: dict[str, str]) -> None:

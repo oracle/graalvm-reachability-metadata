@@ -85,6 +85,8 @@ class PiRpcClient:
             working_dir: str | None = None,
             timeout: int = 720,
             persistent_instructions: str | None = None,
+            max_toolcall_delta_events: int = 10_000,
+            max_toolcall_delta_chars: int = 1_000_000,
     ):
         self._pi_command = pi_command
         self._session_dir = os.path.abspath(session_dir) if session_dir else None
@@ -93,6 +95,8 @@ class PiRpcClient:
         self._working_dir = os.path.abspath(working_dir) if working_dir else None
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
+        self._max_toolcall_delta_events = max_toolcall_delta_events
+        self._max_toolcall_delta_chars = max_toolcall_delta_chars
 
     def run_prompt(
             self,
@@ -128,6 +132,7 @@ class PiRpcClient:
         text_chunks: list[str] = []
         rpc_transcript: list[dict[str, Any]] = []
         progress_event_count = 0
+        toolcall_delta_guard = {"events": 0, "chars": 0}
 
         try:
             process, stdout_reader, stderr_collector = self._start_process(command_flags)
@@ -177,6 +182,12 @@ class PiRpcClient:
 
                 if payload_type == "message_update":
                     delta = payload.get("assistantMessageEvent") or {}
+                    self._update_toolcall_delta_guard(
+                        delta,
+                        toolcall_delta_guard,
+                        stderr_collector,
+                        rpc_transcript,
+                    )
                     if delta.get("type") == "text_delta":
                         text_chunks.append(str(delta.get("delta") or ""))
                     continue
@@ -426,6 +437,40 @@ class PiRpcClient:
             message_event = payload.get("assistantMessageEvent") or {}
             return f"received message_update {message_event.get('type', 'unknown')}"
         return f"received {payload_type}"
+
+    def _update_toolcall_delta_guard(
+            self,
+            event: dict[str, Any],
+            guard: dict[str, int],
+            stderr_collector: _StderrCollector | None,
+            rpc_transcript: list[dict[str, Any]] | None,
+    ) -> None:
+        """Fail pathological tool-call delta streams before they can hang a run."""
+        event_type = event.get("type")
+        if event_type in {"toolcall_start", "toolcall_end"}:
+            guard["events"] = 0
+            guard["chars"] = 0
+            return
+        if event_type != "toolcall_delta":
+            return
+
+        delta = str(event.get("delta") or "")
+        guard["events"] += 1
+        guard["chars"] += len(delta)
+        if guard["events"] > self._max_toolcall_delta_events:
+            raise PiRpcError(
+                "Pi RPC emitted an excessive tool-call delta stream "
+                f"({guard['events']} events).",
+                rpc_transcript=rpc_transcript,
+                stderr_text=self._stderr_text(stderr_collector),
+            )
+        if guard["chars"] > self._max_toolcall_delta_chars:
+            raise PiRpcError(
+                "Pi RPC emitted an excessive tool-call delta stream "
+                f"({guard['chars']} chars).",
+                rpc_transcript=rpc_transcript,
+                stderr_text=self._stderr_text(stderr_collector),
+            )
 
     @staticmethod
     def _progress_message(payload: dict[str, Any]) -> str | None:

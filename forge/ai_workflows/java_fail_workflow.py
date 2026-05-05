@@ -15,6 +15,7 @@ import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.workflow_strategies.workflow_strategy import (
+    RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
@@ -31,7 +32,7 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
 )
 from utility_scripts.strategy_loader import require_strategy_by_name
-from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
+from utility_scripts.workflow_setup import build_graalvm_environment, resolve_graalvm_java_home, validate_repo_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt5"
 
@@ -229,7 +230,7 @@ def copy_and_prepare_project_dir(
 def run_gradle_task(task: str, coordinates: str) -> None:
     """Run a Gradle task for the provided dependency coordinates."""
     require_complete_reachability_repo(os.getcwd())
-    command = f"./gradlew {task} -Pcoordinates={coordinates}"
+    command = f"./gradlew --no-daemon {task} -Pcoordinates={coordinates}"
     subprocess.run(command, shell=True, check=True)
 
 
@@ -359,7 +360,8 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         explicit_metrics_repo_path,
     )
     ensure_gh_authenticated()
-    resolve_graalvm_java_home()
+    graalvm_home = resolve_graalvm_java_home()
+    os.environ.update(build_graalvm_environment(graalvm_home))
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
     os.chdir(reachability_repo_path)
 
@@ -371,16 +373,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         artifact,
         updated_library_version,
     )
-    metadata_dir = os.path.join(
-        reachability_repo_path,
-        "metadata",
-        group,
-        artifact,
-        updated_library_version,
-    )
-    tests_dir_preexisted = os.path.exists(tests_dir)
-    metadata_dir_preexisted = os.path.exists(metadata_dir)
-
     copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
     update_metadata_index_json(config, group, artifact, updated_library_version)
     create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
@@ -452,23 +444,40 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
 
     if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}:
         print("[Test fixing failed.]")
-        subprocess.run(["git", "reset", "--hard", commit_checkpoint], check=True)
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        if not tests_dir_preexisted:
-            shutil.rmtree(tests_dir, ignore_errors=True)
-        if not metadata_dir_preexisted:
-            shutil.rmtree(metadata_dir, ignore_errors=True)
-        run_metrics = create_failure_run_metrics_output(
-            package=group,
-            artifact=artifact,
-            library_version=updated_library_version,
-            agent=agent,
-            model_name=model_name,
-            global_iterations=iterations,
-            strategy_name=strategy_name,
-            starting_commit=commit_checkpoint,
-            ending_commit=ending_commit,
-        )
+        try:
+            run_metrics = metrics_writer.create_javac_fix_run_metrics_output_json(
+                repo_path=reachability_repo_path,
+                package=group,
+                artifact=artifact,
+                previous_library_version=old_library_version,
+                new_library_version=updated_library_version,
+                agent=agent,
+                model_name=model_name,
+                global_iterations=iterations,
+                tests_root=test_source_layout.source_root,
+                strategy_name=strategy_name,
+                status=RUN_STATUS_FAILURE,
+                starting_commit=commit_checkpoint,
+                ending_commit=ending_commit,
+                post_generation_intervention=strategy_obj.post_generation_intervention,
+            )
+        except Exception as exc:
+            print(
+                f"WARNING: Failed to collect failure artifacts for preserved work: {exc!r}",
+                file=sys.stderr,
+            )
+            run_metrics = create_failure_run_metrics_output(
+                package=group,
+                artifact=artifact,
+                library_version=updated_library_version,
+                agent=agent,
+                model_name=model_name,
+                global_iterations=iterations,
+                strategy_name=strategy_name,
+                starting_commit=commit_checkpoint,
+                ending_commit=ending_commit,
+            )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
             print("[Test fixing produced PR-eligible post-generation failure output.]")
