@@ -22,10 +22,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.smallrye.common.process.AbnormalExitException;
+import io.smallrye.common.process.Logging_$logger;
 import io.smallrye.common.process.PipelineExecutionException;
 import io.smallrye.common.process.ProcessBuilder;
 import io.smallrye.common.process.ProcessUtil;
 import io.smallrye.common.process.WaitableProcessHandle;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -37,6 +39,13 @@ public class Smallrye_common_processTest {
     private static final Path SHELL = requiredCommand("sh");
     private static final Path CAT = requiredCommand("cat");
     private static final Path GREP = requiredCommand("grep");
+
+    @Test
+    void generatedMessageLoggerIsReachableForProcessThreads() {
+        Logging_$logger logger = new Logging_$logger(Logger.getLogger("smallrye-common-process-test"));
+
+        assertThat(logger).isNotNull();
+    }
 
     @Test
     void processUtilitiesExposeNativeCharsetJavaCommandAndSearchPath() {
