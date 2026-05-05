@@ -16,6 +16,7 @@ import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
@@ -748,6 +749,7 @@ def _run_recorded_command(
     display_env = dict(env or {})
     command_env.update(display_env)
     _remove_gradle_java_home_overrides(command_env)
+    command_env = gradle_command_environment(repo_path, command_env)
     log_path = build_timestamped_task_log_path("local-ci", gate, Path(command[0]).name)
     sudo_reason = _sudo_usage_reason(repo_path, command)
     if sudo_reason:

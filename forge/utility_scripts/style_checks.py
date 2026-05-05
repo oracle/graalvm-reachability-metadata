@@ -6,6 +6,7 @@
 import subprocess
 import sys
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.pi_logs import build_pi_log_path
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.task_logs import display_log_path
@@ -22,6 +23,7 @@ def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
     result = subprocess.run(
         command,
         cwd=repo_path,
+        env=gradle_command_environment(repo_path),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
@@ -40,6 +42,7 @@ def _run_checkstyle(repo_path: str, coordinate_arg: str) -> subprocess.Completed
     return subprocess.run(
         ["./gradlew", "checkstyle", coordinate_arg],
         cwd=repo_path,
+        env=gradle_command_environment(repo_path),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
@@ -53,6 +56,7 @@ def _run_test(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProces
     return subprocess.run(
         ["./gradlew", "test", coordinate_arg],
         cwd=repo_path,
+        env=gradle_command_environment(repo_path),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,

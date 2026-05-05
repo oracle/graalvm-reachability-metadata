@@ -16,6 +16,7 @@ import time
 
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 
 
@@ -55,11 +56,12 @@ def run_gradle_test_command(
     )
 
     start_time = time.monotonic()
+    command_env = gradle_command_environment(working_dir, env)
     with open(log_path, "w", encoding="utf-8") as log_file:
         process = subprocess.Popen(
             test_cmd,
             cwd=working_dir,
-            env=env,
+            env=command_env,
             shell=True,
             stdout=log_file,
             stderr=subprocess.STDOUT,

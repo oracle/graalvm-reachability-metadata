@@ -21,6 +21,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -228,9 +229,10 @@ def copy_and_prepare_project_dir(
 
 def run_gradle_task(task: str, coordinates: str) -> None:
     """Run a Gradle task for the provided dependency coordinates."""
-    require_complete_reachability_repo(os.getcwd())
+    repo_path = os.getcwd()
+    require_complete_reachability_repo(repo_path)
     command = f"./gradlew {task} -Pcoordinates={coordinates}"
-    subprocess.run(command, shell=True, check=True)
+    subprocess.run(command, shell=True, env=gradle_command_environment(repo_path), check=True)
 
 
 def update_metadata_index_json(config, group, artifact, updated_library_version):
