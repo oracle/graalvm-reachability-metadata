@@ -72,7 +72,7 @@ public class HazelcastIMapAdapterTest {
     @SuppressWarnings("unchecked")
     private static <T> T proxy(Class<T> type, Map<String, Object> values) {
         InvocationHandler handler = new StubInvocationHandler(type, values);
-        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, handler);
+        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] {type}, handler);
     }
 
     private static Map<String, Object> values(Object... pairs) {
