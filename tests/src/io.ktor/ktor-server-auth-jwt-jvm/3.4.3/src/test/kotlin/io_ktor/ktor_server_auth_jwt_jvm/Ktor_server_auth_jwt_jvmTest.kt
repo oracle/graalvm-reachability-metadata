@@ -169,14 +169,73 @@ public class KtorServerAuthJwtJvmTest {
         assertThat(tokenSchemeResponse.bodyAsText()).isEqualTo("scheme:token-subject")
     }
 
+    @Test
+    fun verifierCallbackSelectsVerifierFromTokenKeyId(): Unit = testApplication {
+        val verifiers: Map<String, JWTVerifier> = mapOf(
+            PRIMARY_KEY_ID to jwtVerifier(ALGORITHM),
+            SECONDARY_KEY_ID to jwtVerifier(SECONDARY_ALGORITHM)
+        )
+
+        install(Authentication) {
+            jwt("key-id-jwt") {
+                realm = REALM
+                verifier { authHeader ->
+                    val token: String = (authHeader as? HttpAuthHeader.Single)?.blob ?: return@verifier null
+                    val keyId: String = JWT.decode(token).keyId ?: return@verifier null
+                    verifiers[keyId]
+                }
+                validate { credential -> JWTPrincipal(credential.payload) }
+            }
+        }
+        routing {
+            authenticate("key-id-jwt") {
+                get("/key-id") {
+                    val principal: JWTPrincipal = requireNotNull(call.principal<JWTPrincipal>())
+                    call.respondText("key-id:${principal.payload.subject}")
+                }
+            }
+        }
+
+        val primaryToken: String = jwtToken(subject = "primary-subject", keyId = PRIMARY_KEY_ID)
+        val secondaryToken: String = jwtToken(
+            subject = "secondary-subject",
+            keyId = SECONDARY_KEY_ID,
+            algorithm = SECONDARY_ALGORITHM
+        )
+        val mismatchedSignatureToken: String = jwtToken(
+            subject = "mismatched-subject",
+            keyId = SECONDARY_KEY_ID
+        )
+
+        val primaryResponse = client.get("/key-id") {
+            header(HttpHeaders.Authorization, "Bearer $primaryToken")
+        }
+        val secondaryResponse = client.get("/key-id") {
+            header(HttpHeaders.Authorization, "Bearer $secondaryToken")
+        }
+        val mismatchedSignatureResponse = client.get("/key-id") {
+            header(HttpHeaders.Authorization, "Bearer $mismatchedSignatureToken")
+        }
+
+        assertThat(primaryResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(primaryResponse.bodyAsText()).isEqualTo("key-id:primary-subject")
+        assertThat(secondaryResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(secondaryResponse.bodyAsText()).isEqualTo("key-id:secondary-subject")
+        assertThat(mismatchedSignatureResponse.status).isEqualTo(HttpStatusCode.Unauthorized)
+    }
+
     private companion object {
         private const val ISSUER: String = "https://issuer.example.test/"
         private const val AUDIENCE: String = "ktor-server-auth-jwt-tests"
         private const val REALM: String = "ktor jwt test realm"
         private const val SECRET: String = "native-image-friendly-test-secret-that-is-long-enough"
+        private const val SECONDARY_SECRET: String = "secondary-native-image-friendly-test-secret"
+        private const val PRIMARY_KEY_ID: String = "primary-key"
+        private const val SECONDARY_KEY_ID: String = "secondary-key"
         private val ALGORITHM: Algorithm = Algorithm.HMAC256(SECRET)
+        private val SECONDARY_ALGORITHM: Algorithm = Algorithm.HMAC256(SECONDARY_SECRET)
 
-        private fun jwtVerifier(): JWTVerifier = JWT.require(ALGORITHM)
+        private fun jwtVerifier(algorithm: Algorithm = ALGORITHM): JWTVerifier = JWT.require(algorithm)
             .withIssuer(ISSUER)
             .withAudience(AUDIENCE)
             .build()
@@ -185,13 +244,16 @@ public class KtorServerAuthJwtJvmTest {
             subject: String = "alice",
             issuer: String = ISSUER,
             audience: String = AUDIENCE,
-            expiresAt: Instant = Instant.now().plusSeconds(120)
+            expiresAt: Instant = Instant.now().plusSeconds(120),
+            keyId: String? = null,
+            algorithm: Algorithm = ALGORITHM
         ): String = JWT.create()
             .withIssuer(issuer)
             .withAudience(audience)
             .withSubject(subject)
             .withClaim("tenant", "tenant-one")
             .withExpiresAt(Date.from(expiresAt))
-            .sign(ALGORITHM)
+            .apply { keyId?.let { withKeyId(it) } }
+            .sign(algorithm)
     }
 }
