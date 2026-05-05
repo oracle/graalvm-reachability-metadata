@@ -442,6 +442,49 @@ class GateRoutingTests(unittest.TestCase):
             durable_metadata,
         )
 
+    def test_aggregates_trace_metadata_into_index_resolved_metadata_version(self) -> None:
+        metadata_root = Path(self.repo) / "metadata" / "g" / "a"
+        metadata_dir = metadata_root / "1.0"
+        metadata_dir.mkdir(parents=True)
+        (metadata_root / "index.json").write_text(
+            json.dumps([
+                {
+                    "metadata-version": "1.0",
+                    "tested-versions": ["1.0", "1.1"],
+                }
+            ]),
+            encoding="utf-8",
+        )
+        durable_metadata_path = metadata_dir / "reachability-metadata.json"
+        durable_metadata_path.write_text(
+            json.dumps({"reflection": [{"type": "com.example.Existing"}]}),
+            encoding="utf-8",
+        )
+        fake, _calls = self._fake_run_factory([172, 0])
+
+        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.1",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        durable_metadata = json.loads(durable_metadata_path.read_text(encoding="utf-8"))
+        reflected_types = {
+            entry["type"]
+            for entry in durable_metadata["reflection"]
+        }
+        self.assertIn("com.example.Existing", reflected_types)
+        self.assertTrue(
+            any(entry.startswith("com.example.Generated") for entry in reflected_types),
+            durable_metadata,
+        )
+        self.assertFalse(
+            (metadata_root / "1.1" / "reachability-metadata.json").exists(),
+        )
+
     def test_merges_final_passing_run_when_it_collected_metadata(self) -> None:
         fake, calls = self._fake_run_factory([0], metadata_exit_codes={0})
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):

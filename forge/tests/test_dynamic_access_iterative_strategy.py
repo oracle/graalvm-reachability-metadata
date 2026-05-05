@@ -6,6 +6,7 @@
 import io
 import json
 import os
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -63,6 +64,39 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 {"org.example.Exhausted"},
             ),
             2,
+        )
+
+    def test_commit_library_metadata_stages_index_resolved_metadata_version(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            metadata_root = os.path.join(repo, "metadata", "org.example", "lib")
+            os.makedirs(metadata_root)
+            with open(os.path.join(metadata_root, "index.json"), "w", encoding="utf-8") as index_file:
+                json.dump([
+                    {
+                        "metadata-version": "1.0.0",
+                        "tested-versions": ["1.0.0", "1.1.0"],
+                    }
+                ], index_file)
+            strategy = self._strategy(
+                library="org.example:lib:1.1.0",
+                reachability_repo_path=repo,
+            )
+            calls: list[list[str]] = []
+
+            def fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
+                calls.append(list(cmd))
+                return subprocess.CompletedProcess(cmd, 0)
+
+            with patch(
+                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.run",
+                    side_effect=fake_run,
+            ):
+                strategy._commit_library_metadata("Native metadata for org.example.Demo")
+
+        self.assertEqual(calls[0][:3], ["git", "add", "-A"])
+        self.assertEqual(
+            calls[0][3],
+            os.path.join(repo, "metadata", "org.example", "lib", "1.0.0"),
         )
 
     def test_first_large_library_part_uses_current_coverage_as_chunk_baseline(self) -> None:

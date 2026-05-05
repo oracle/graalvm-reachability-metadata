@@ -27,6 +27,7 @@ from dataclasses import dataclass, field
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
@@ -834,13 +835,19 @@ def _aggregate_trace_metadata(
         return True
 
     try:
-        group, artifact, version = coordinate.split(":", 2)
+        group, artifact, library_version = coordinate.split(":", 2)
+        metadata_version = resolve_metadata_version(
+            reachability_repo_path,
+            group,
+            artifact,
+            library_version,
+        )
         durable_metadata_path = os.path.join(
             reachability_repo_path,
             "metadata",
             group,
             artifact,
-            version,
+            metadata_version,
             _AGGREGATED_METADATA_FILE_NAME,
         )
         durable_metadata = _read_metadata_json(durable_metadata_path)

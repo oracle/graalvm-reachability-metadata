@@ -19,7 +19,7 @@ from utility_scripts.dynamic_access_report import (
     load_dynamic_access_coverage_report,
 )
 from utility_scripts.large_library_progress import LargeLibraryProgressState
-from utility_scripts.metadata_index import resolve_test_version
+from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     per_class_output_dir,
@@ -664,8 +664,14 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def _commit_library_metadata(self, message: str) -> None:
         """Stage and commit durable library metadata created by the class gate."""
+        metadata_version = resolve_metadata_version(
+            self.reachability_repo_path,
+            self.group,
+            self.artifact,
+            self.version,
+        )
         metadata_dir = os.path.join(
-            self.reachability_repo_path, "metadata", self.group, self.artifact, self.version,
+            self.reachability_repo_path, "metadata", self.group, self.artifact, metadata_version,
         )
         subprocess.run(
             ["git", "add", "-A", metadata_dir],

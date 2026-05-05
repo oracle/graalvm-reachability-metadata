@@ -6,6 +6,7 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,14 +17,23 @@ public abstract class NativeTestCompileInvocationTask extends AllCoordinatesExec
 
     @Override
     public List<String> commandFor(String coordinates) {
-        return List.of(
+        List<String> command = new ArrayList<>(List.of(
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "nativeTestCompile"
-        );
+        ));
+        appendProperty(command, "metadataConfigDirs");
+        return command;
     }
 
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
         return "Native test compilation failed";
+    }
+
+    private void appendProperty(List<String> command, String propertyName) {
+        Object propertyValue = getProject().findProperty(propertyName);
+        if (propertyValue != null) {
+            command.add("-P" + propertyName + "=" + propertyValue);
+        }
     }
 }
