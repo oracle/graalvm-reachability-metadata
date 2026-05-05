@@ -193,6 +193,60 @@ class IssueClaimPreflightTests(unittest.TestCase):
             with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
                 forge_metadata.gh("issue", "view", "2099")
 
+    def test_gh_retries_direct_transient_failure(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: HTTP 503",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="",
+            stderr="",
+        )
+
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                side_effect=[failed_process, successful_process],
+        ) as run, \
+                patch.object(forge_metadata.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            forge_metadata.gh("issue", "edit", "2099", "--add-label", "human-intervention")
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+        self.assertIn("GitHub API transient failure", stderr.getvalue())
+
+    def test_gh_retries_direct_transient_failure_with_check_false(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: HTTP 504",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                side_effect=[failed_process, successful_process],
+        ) as run, \
+                patch.object(forge_metadata.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            result = forge_metadata.gh("api", "/repos/example/repo/labels/demo", check=False)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+
     def test_gh_json_raises_typed_rate_limit_error_from_graphql_payload(self) -> None:
         completed_process = subprocess.CompletedProcess(
             ["gh"],
