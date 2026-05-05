@@ -15,6 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemoryUnmapperTest {
     @Test
+    void unmapsDirectByteBufferWhenCleanerHackIsEnabled() {
+        assertThat(System.getProperty("h2.nioCleanerHack")).isEqualTo("true");
+
+        ByteBuffer directBuffer = ByteBuffer.allocateDirect(16);
+        directBuffer.putInt(42);
+
+        MemoryUnmapper.unmap(directBuffer);
+    }
+
+    @Test
     void returnsFalseForHeapByteBufferWhenCleanerHackIsEnabled() {
         assertThat(System.getProperty("h2.nioCleanerHack")).isEqualTo("true");
 
