@@ -8,10 +8,8 @@ package com_squareup_okhttp3.okhttp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import javax.net.ssl.SSLSocket;
 import okhttp3.Protocol;
 import okhttp3.internal.platform.Platform;
 import org.eclipse.jetty.alpn.ALPN;
@@ -35,17 +33,18 @@ public class JdkWithJettyBootPlatformTest {
         assertThat(ALPN.get(socket)).isNull();
     }
 
+    @Test
+    void jettyBootPlatformBuildIfSupportedDiscoversAlpnProvider() throws Exception {
+        Platform platform = newJettyBootPlatform();
+
+        assertThat(platform).isNotNull();
+    }
+
     private static Platform newJettyBootPlatform() throws Exception {
         Class<?> platformClass = Class.forName(
                 "okhttp3.internal.platform.JdkWithJettyBootPlatform");
-        Constructor<?> constructor = platformClass.getDeclaredConstructor(Method.class,
-                Method.class, Method.class, Class.class, Class.class);
-        constructor.setAccessible(true);
-        return (Platform) constructor.newInstance(
-                ALPN.class.getMethod("put", SSLSocket.class, ALPN.Provider.class),
-                ALPN.class.getMethod("get", SSLSocket.class),
-                ALPN.class.getMethod("remove", SSLSocket.class),
-                ALPN.ClientProvider.class,
-                ALPN.ServerProvider.class);
+        Method buildIfSupported = platformClass.getDeclaredMethod("buildIfSupported");
+        buildIfSupported.setAccessible(true);
+        return (Platform) buildIfSupported.invoke(null);
     }
 }
