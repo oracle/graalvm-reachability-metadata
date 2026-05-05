@@ -8,7 +8,7 @@ package org_glassfish_web.javax_el;
 
 import org.junit.jupiter.api.Test;
 
-class Javax_elTest {
+public class Javax_elTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
