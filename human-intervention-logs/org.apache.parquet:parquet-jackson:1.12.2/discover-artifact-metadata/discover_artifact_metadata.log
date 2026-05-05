@@ -1,0 +1,1392 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df580-e947-7870-9024-eee8d20f0858
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.parquet:parquet-jackson:1.12.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.12.2" when "$version$" is replaced with "1.12.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+- Set "coordinates" to "org.apache.parquet:parquet-jackson:1.12.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.12.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream Parquet repository, then update the JSON in place with the tag-aware URLs.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+{
+  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "parquet-jackson|org.apache.parquet" libraries tests metadata build/discovered-artifact-metadata 2>/dev/null | head -100' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json:2:  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
+metadata/org.apache.parquet/parquet-format-structures/1.12.2/reachability-metadata.json:5:        "typeReached": "org.apache.parquet.format.event.TBaseStructConsumer"
+metadata/org.apache.parquet/parquet-format-structures/1.12.2/reachability-metadata.json:7:      "type": "org.apache.parquet.format.KeyValue",
+metadata/org.apache.parquet/parquet-format-structures/1.12.2/reachability-metadata.json:19:      "type": "org.apache.parquet.format.NullType",
+metadata/org.apache.parquet/parquet-format-structures/1.12.3/reachability-metadata.json:5:        "typeReached": "org.apache.parquet.format.event.TBaseStructConsumer"
+metadata/org.apache.parquet/parquet-format-structures/1.12.3/reachability-metadata.json:7:      "type": "org.apache.parquet.format.KeyValue",
+metadata/org.apache.parquet/parquet-format-structures/1.12.3/reachability-metadata.json:19:      "type": "org.apache.parquet.format.NullType",
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:26:      "org.apache.parquet.format",
+metadata/org.apache.parquet/parquet-format-structures/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:34:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:41:      "org.apache.parquet.format",
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/build.gradle:14:    testImplementation "org.apache.parquet:parquet-format-structures:$libraryVersion"
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/settings.gradle:20:rootProject.name = 'org.apache.parquet.parquet-format-structures_tests'
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/build.gradle:14:    testImplementation "org.apache.parquet:parquet-format-structures:$libraryVersion"
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/gradle.properties:4:library.coordinates = org.apache.parquet:parquet-format-structures:1.12.3
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/gradle.properties:6:metadata.dir = org.apache.parquet/parquet-format-structures/1.12.3/
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/settings.gradle:20:rootProject.name = 'org.apache.parquet.parquet-format-structures_tests'
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/user-code-filter.json:7:      "includeClasses" : "org.apache.parquet.format.**"
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/user-code-filter.json:7:      "includeClasses" : "org.apache.parquet.format.**"
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/gradle.properties:4:library.coordinates = org.apache.parquet:parquet-format-structures:1.12.2
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/gradle.properties:6:metadata.dir = org.apache.parquet/parquet-format-structures/1.12.2/
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/FieldMetaDataTest.java:7:package org_apache_parquet.parquet_format_structures;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/FieldMetaDataTest.java:13:import org.apache.parquet.format.NullType;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:7:package org_apache_parquet.parquet_format_structures;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:16:import org.apache.parquet.format.KeyValue;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:17:import org.apache.parquet.format.event.Consumers;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:18:import org.apache.parquet.format.event.EventBasedThriftReader;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/FieldMetaDataTest.java:7:package org_apache_parquet.parquet_format_structures;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/FieldMetaDataTest.java:13:import org.apache.parquet.format.NullType;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:7:package org_apache_parquet.parquet_format_structures;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:16:import org.apache.parquet.format.KeyValue;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:17:import org.apache.parquet.format.event.Consumers;
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/src/test/java/org_apache_parquet/parquet_format_structures/TBaseStructConsumerTest.java:18:import org.apache.parquet.format.event.EventBasedThriftReader;
+
+web search: 
+web search: Maven Central org.apache.parquet parquet-jackson 1.12.2 sources jar tests jar javadoc jar
+web search: 
+web search: https://github.com/apache/parquet-mr/tree/apache-parquet-1.12.2/parquet-jackson
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/
+web search: 
+web search: javadoc.io org.apache.parquet parquet-jackson 1.12.2
+web search: 
+web search: 
+codex
+The Maven directory confirms `parquet-jackson` 1.12.2 has both `-sources.jar` and `-tests.jar`; it does not list a `-javadoc.jar`, so I’m using the module README at the release tag for documentation.
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"|\"description\"|\"repository-url\"|\"source-code-url\"|\"test-code-url\"' metadata/org.apache.parquet build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:6:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:9:    "description" : "Apache Parquet Format Structures provides Java classes used by parquet-mr to work with the parquet-format Thrift structures. It packages generated model code for Parquet schema and metadata structures so Parquet Java components can read and write the format consistently.",
+metadata/org.apache.parquet/parquet-format-structures/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:33:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:34:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:36:    "description" : "Apache Parquet Format Structures provides Java classes used by parquet-mr to work with the parquet-format Thrift structures. It packages generated model code for Parquet schema and metadata structures so Parquet Java components can read and write the format consistently.",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>parquet</artifactId>
+    <groupId>org.apache.parquet</groupId>
+    <version>1.12.2</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>parquet-jackson</artifactId>
+  <name>Apache Parquet Jackson</name>
+  <url>https://parquet.apache.org</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>false</minimizeJar>
+              <createSourcesJar>${shade.createSourcesJar}</createSourcesJar>
+              <artifactSet>
+                <includes>
+                  <include>${jackson.groupId}:*</include>
+                </includes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>${jackson.groupId}:*</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>${jackson.package}</pattern>
+                  <shadedPattern>${shade.prefix}.${jackson.package}</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <properties>
+        <shade.createSourcesJar>true</shade.createSourcesJar>
+      </properties>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>objenesis</artifactId>
+          <groupId>org.objenesis</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <properties>
+    <shade.createSourcesJar>false</shade.createSourcesJar>
+  </properties>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-javadoc.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 189ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 00:19:49 GMT
+content-type: text/html
+cf-ray: 9f6b936afe4801fc-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 224ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet/1.12.2/parquet-1.12.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>16</version>
+  </parent>
+
+  <groupId>org.apache.parquet</groupId>
+  <artifactId>parquet</artifactId>
+  <version>1.12.2</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Parquet MR</name>
+  <url>https://parquet.apache.org</url>
+  <description>Parquet is a columnar storage format that supports nested data. This provides the java implementation.</description>
+
+  <scm>
+    <connection>scm:git:git@github.com:apache/parquet-mr.git</connection>
+    <url>scm:git:git@github.com:apache/parquet-mr.git</url>
+    <developerConnection>scm:git:git@github.com:apache/parquet-mr.git</developerConnection>
+    <tag>apache-parquet-1.12.2-rc0</tag>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/PARQUET</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Dev Mailing List</name>
+      <post>dev@parquet.apache.org</post>
+      <subscribe>dev-subscribe@parquet.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@parquet.apache.org</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Commits Mailing List</name>
+      <post>commits@parquet.apache.org</post>
+      <subscribe>commits-subscribe@parquet.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@parquet.apache.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+      <name>Jitpack.io repository</name>
+      <!-- needed for brotli-codec -->
+    </repository>
+  </repositories>
+
+  <developers>
+    <developer>
+      <name>Julien Le Dem</name>
+      <email>julien@twitter.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <targetJavaVersion>1.8</targetJavaVersion>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>${targetJavaVersion}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <github.global.server>github</github.global.server>
+    <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+    <jackson.groupId>com.fasterxml.jackson.core</jackson.groupId>
+    <jackson.package>com.fasterxml.jackson</jackson.package>
+    <jackson.version>2.11.4</jackson.version>
+    <jackson-databind.version>${jackson.version}</jackson-databind.version>
+    <japicmp.version>0.14.2</japicmp.version>
+    <shade.prefix>shaded.parquet</shade.prefix>
+    <hadoop.version>2.10.1</hadoop.version>
+    <cascading.version>2.7.1</cascading.version>
+    <cascading3.version>3.1.2</cascading3.version>
+    <parquet.format.version>2.8.0</parquet.format.version>
+    <previous.version>1.11.0</previous.version>
+    <thrift.executable>thrift</thrift.executable>
+    <format.thrift.executable>thrift</format.thrift.executable>
+    <scala.version>2.12.8</scala.version>
+    <!-- scala.binary.version is used for projects that fetch dependencies that are in scala -->
+    <scala.binary.version>2.12</scala.binary.version>
+    <scala.maven.test.skip>false</scala.maven.test.skip>
+    <scrooge.verion>19.10.0</scrooge.verion>
+    <pig.version>0.16.0</pig.version>
+    <pig.classifier>h2</pig.classifier>
+    <thrift-maven-plugin.version>0.10.0</thrift-maven-plugin.version>
+    <thrift.version>0.13.0</thrift.version>
+    <format.thrift.version>0.13.0</format.thrift.version>
+    <fastutil.version>8.4.2</fastutil.version>
+    <semver.api.version>0.9.33</semver.api.version>
+    <slf4j.version>1.7.22</slf4j.version>
+    <avro.version>1.10.1</avro.version>
+    <guava.version>27.0.1-jre</guava.version>
+    <brotli-codec.version>0.1.1</brotli-codec.version>
+    <mockito.version>1.10.19</mockito.version>
+    <net.openhft.version>0.9</net.openhft.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+
+    <!-- parquet-cli dependencies -->
+    <opencsv.version>2.3</opencsv.version>
+    <jcommander.version>1.72</jcommander.version>
+    <zstd-jni.version>1.4.9-1</zstd-jni.version>
+    <commons-text.version>1.8</commons-text.version>
+
+    <!-- properties for the profiles -->
+    <surefire.logLevel>INFO</surefire.logLevel>
+  </properties>
+
+  <modules>
+    <module>parquet-arrow</module>
+    <module>parquet-avro</module>
+    <module>parquet-benchmarks</module>
+    <module>parquet-cascading-deprecated</module>
+    <module>parquet-cascading3-deprecated</module>
+    <module>parquet-cli</module>
+    <module>parquet-column</module>
+    <module>parquet-common</module>
+    <module>parquet-encoding</module>
+    <module>parquet-format-structures</module>
+    <module>parquet-generator</module>
+    <module>parquet-hadoop</module>
+    <module>parquet-jackson</module>
+    <module>parquet-pig</module>
+    <module>parquet-pig-bundle</module>
+    <module>parquet-protobuf</module>
+    <module>parquet-scala</module>
+    <module>parquet-scrooge-deprecated</module>
+    <module>parquet-thrift</module>
+    <module>parquet-hadoop-bundle</module>
+    <module>parquet-tools-deprecated</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <reportSets>
+          <reportSet><!-- by default, id = "default" -->
+            <reports><!-- select non-aggregate reports -->
+              <report>javadoc</report>
+              <report>test-javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet><!-- aggregate reportSet, to define in poms having modules -->
+            <id>aggregate</id>
+            <inherited>false</inherited><!-- don't run aggregate in child modules -->
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/generated-sources/**/*.java</sourceFileExclude>
+          </sourceFileExcludes>
+          <source>8</source>
+          <quiet>true</quiet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.5.2</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+          </formats>
+          <aggregate>true</aggregate>
+          <instrumentation>
+            <ignores>
+              <ignore>java.lang.UnsupportedOperationException.*</ignore>
+            </ignores>
+            <excludes>
+              <exclude>parquet/Log.class</exclude>
+              <exclude>**/*Exception.class</exclude>
+              <exclude>parquet/example/**/*.class</exclude>
+            </excludes>
+          </instrumentation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- Disable the source artifact from ASF parent -->
+          <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>source-release-assembly</id>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/parquet/parquet-jackson/1.12.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/parquet/parquet-jackson/1.12.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="parquet-jackson-1.12.2-sources.jar" title="parquet-jackson-1.12.2-sources.jar">parquet-jackson-1.12.2-sources.jar</a>                2021-09-30 12:14      4190      
+<a href="parquet-jackson-1.12.2-sources.jar.asc" title="parquet-jackson-1.12.2-sources.jar.asc">parquet-jackson-1.12.2-sources.jar.asc</a>            2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2-sources.jar.md5" title="parquet-jackson-1.12.2-sources.jar.md5">parquet-jackson-1.12.2-sources.jar.md5</a>            2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2-sources.jar.sha1" title="parquet-jackson-1.12.2-sources.jar.sha1">parquet-jackson-1.12.2-sources.jar.sha1</a>           2021-09-30 12:14        40      
+<a href="parquet-jackson-1.12.2-tests.jar" title="parquet-jackson-1.12.2-tests.jar">parquet-jackson-1.12.2-tests.jar</a>                  2021-09-30 12:14      2602      
+<a href="parquet-jackson-1.12.2-tests.jar.asc" title="parquet-jackson-1.12.2-tests.jar.asc">parquet-jackson-1.12.2-tests.jar.asc</a>              2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2-tests.jar.md5" title="parquet-jackson-1.12.2-tests.jar.md5">parquet-jackson-1.12.2-tests.jar.md5</a>              2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2-tests.jar.sha1" title="parquet-jackson-1.12.2-tests.jar.sha1">parquet-jackson-1.12.2-tests.jar.sha1</a>             2021-09-30 12:14        40      
+<a href="parquet-jackson-1.12.2.jar" title="parquet-jackson-1.12.2.jar">parquet-jackson-1.12.2.jar</a>                        2021-09-30 12:14   1879996      
+<a href="parquet-jackson-1.12.2.jar.asc" title="parquet-jackson-1.12.2.jar.asc">parquet-jackson-1.12.2.jar.asc</a>                    2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2.jar.md5" title="parquet-jackson-1.12.2.jar.md5">parquet-jackson-1.12.2.jar.md5</a>                    2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2.jar.sha1" title="parquet-jackson-1.12.2.jar.sha1">parquet-jackson-1.12.2.jar.sha1</a>                   2021-09-30 12:14        40      
+<a href="parquet-jackson-1.12.2.pom" title="parquet-jackson-1.12.2.pom">parquet-jackson-1.12.2.pom</a>                        2021-09-30 12:14      2897      
+<a href="parquet-jackson-1.12.2.pom.asc" title="parquet-jackson-1.12.2.pom.asc">parquet-jackson-1.12.2.pom.asc</a>                    2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2.pom.md5" title="parquet-jackson-1.12.2.pom.md5">parquet-jackson-1.12.2.pom.md5</a>                    2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2.pom.sha1" title="parquet-jackson-1.12.2.pom.sha1">parquet-jackson-1.12.2.pom.sha1</a>                   2021-09-30 12:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/README.md || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 627ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:19:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/apache/parquet-java.git
+x-raw-download: https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/README.md
+etag: W/"b2ab132e6bb925d3ad76256b7e46fd99"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Jc%2BrqarTER7lDVtNrtOzm1DLOORfp2FZQwOhcvbeKLZ8d7F%2BpEjUzPk6mQqavKpeVwfnAO%2BQzt2U%2BEFtGmFSqXc3oOGnewQniTVYLxkZJDUZN0yp1%2Fyew7PgdgyWFqdmq8%2BLUP7rXlSmaeeqTnd81oVtZ4qqXFQnKYcGQoLp%2FEw%2F1QePzmdAT%2Fira0S4CnZ5czyOc62rlSVhh7tB0cvHmpR%2Bc%2F3kDJK7PmuF5jMvU%2Bikb3DBA5%2Bis34gkBlzAvNnuhJWoW6bOprT%2BVjs3XMiuQ%3D%3D--8FzcaFbIcA6bJPPS--iRpfoeoFYivEZjDSQDziIw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.350470274.1777940394; expires=Wed, 05 May 2027 00:19:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 00:19:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5112:23C581:52511B9:3F7FD0E:69F937AA
+
+
+ succeeded in 1050ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:19:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8f2235f09a8524121f7162706667d3f9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=OlZXeROCSLxd27ru0nzDXKaCNe890aqQq4aJr10ttrHqUm9qPGViMKUFQvxrgqRdFSFBTKdrpIAyii7bVo7XfEPqwkDcheyZUFLrkOlRKruZbiouQHk6UrjvULMRfm0p2U1aRr3zv1OE73CuW4FbcXoYzWIxdAndX7BgNM07c%2Fe25%2BYyBY9JXlketS3Mm9LXnooyRuTq81K19FlLXfCC5TdFhgQlvuUPSKCqa%2BWN8w%2BhItX17q9iP%2BqY8QaATgGaS%2FxvwKvqwOvxA4F0WHtqnA%3D%3D--dq4rUWs7QWhmuobw--9TSJ4YktVSiewQi9Hvmn2Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.344646178.1777940394; expires=Wed, 05 May 2027 00:19:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 00:19:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5118:1931C8:52296F9:3F6E12E:69F937AA
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/parquet-jackson/src/main/java/org/apache/parquet/jackson/ParquetReadContext.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/parquet-jackson/pom.xml | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc 'jar tf <(curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2.jar) | head -80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 164ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+ succeeded in 178ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 182ms:
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.apache.parquet</groupId>
+    <artifactId>parquet</artifactId>
+    <relativePath>../pom.xml</relativePath>
+    <version>1.12.2</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>parquet-jackson</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Apache Parquet Jackson</name>
+  <url>https://parquet.apache.org</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson-databind.version}</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <shade.createSourcesJar>false</shade.createSourcesJar>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration combine.self="override">
+              <minimizeJar>false</minimizeJar>
+              <createSourcesJar>${shade.createSourcesJar}</createSourcesJar>
+              <artifactSet>
+                <includes>
+                  <include>${jackson.groupId}:*</include>
+                </includes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>${jackson.groupId}:*</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>${jackson.package}</pattern>
+                  <shadedPattern>${shade.prefix}.${jackson.package}</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <properties>
+        <shade.createSourcesJar>true</shade.createSourcesJar>
+      </properties>
+    </profile>
+  </profiles>
+</project>
+
+ succeeded in 372ms:
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+Parquet MR [![Build Status](https://github.com/apache/parquet-mr/workflows/Test/badge.svg)](https://github.com/apache/parquet-mr/actions)
+======
+
+Parquet-MR contains the java implementation of the [Parquet format](https://github.com/apache/parquet-format).
+Parquet is a columnar storage format for Hadoop; it provides efficient storage and encoding of data.
+Parquet uses the [record shredding and assembly algorithm](https://github.com/julienledem/redelm/wiki/The-striping-and-assembly-algorithms-from-the-Dremel-paper) described in the Dremel paper to represent nested structures.
+
+You can find some details about the format and intended use cases in our [Hadoop Summit 2013 presentation](http://www.slideshare.net/julienledem/parquet-hadoop-summit-2013)
+
+## Building
+
+Parquet-MR uses Maven to build and depends on the thrift compiler (protoc is now managed by maven plugin).
+
+### Install Thrift
+
+To build and install the thrift compiler, run:
+
+```
+wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
+tar xzf thrift-0.13.0.tar.gz
+cd thrift-0.13.0
+chmod +x ./configure
+./configure --disable-libs
+sudo make install
+```
+
+If you're on OSX and use homebrew, you can instead install Thrift 0.13.0 with `brew` and ensure that it comes first in your `PATH`.
+
+```
+brew install thrift@0.13
+export PATH="/usr/local/opt/thrift@0.13.0/bin:$PATH"
+```
+
+### Build Parquet with Maven
+
+Once protobuf and thrift are available in your path, you can build the project by running:
+
+```
+LC_ALL=C mvn clean install
+```
+
+## Features
+
+Parquet is a very active project, and new features are being added quickly. Here are a few features:
+
+
+* Type-specific encoding
+* Hive integration (deprecated)
+* Pig integration
+* Cascading integration
+* Crunch integration
+* Apache Arrow integration
+* Apache Scrooge integration
+* Impala integration (non-nested)
+* Java Map/Reduce API
+* Native Avro support
+* Native Thrift support
+* Native Protocol Buffers support
+* Complex structure support
+* Run-length encoding (RLE)
+* Bit Packing
+* Adaptive dictionary encoding
+* Predicate pushdown
+* Column stats
+* Delta encoding
+* Index pages
+
+## Map/Reduce integration
+
+[Input](https://github.com/apache/parquet-mr/blob/master/parquet-hadoop/src/main/java/org/apache/parquet/hadoop/ParquetInputFormat.java) and [Output](https://github.com/apache/parquet-mr/blob/master/parquet-hadoop/src/main/java/org/apache/parquet/hadoop/ParquetOutputFormat.java) formats.
+Note that to use an Input or Output format, you need to implement a WriteSupport or ReadSupport class, which will implement the conversion of your object to and from a Parquet schema.
+
+We've implemented this for 2 popular data formats to provide a clean migration path as well:
+
+### Thrift
+Thrift integration is provided by the [parquet-thrift](https://github.com/apache/parquet-mr/tree/master/parquet-thrift) sub-project. If you are using Thrift through Scala, you may be using Twitter's [Scrooge](https://github.com/twitter/scrooge). If that's the case, not to worry -- we took care of the Scrooge/Apache Thrift glue for you in the [parquet-scrooge](https://github.com/apache/parquet-mr/tree/master/parquet-scrooge) sub-project.
+
+### Avro
+Avro conversion is implemented via the [parquet-avro](https://github.com/apache/parquet-mr/tree/master/parquet-avro) sub-project.
+
+### Create your own objects
+* The ParquetOutputFormat can be provided a WriteSupport to write your own objects to an event based RecordConsumer.
+* the ParquetInputFormat can be provided a ReadSupport to materialize your own objects by implementing a RecordMaterializer
+
+See the APIs:
+* [Record conversion API](https://github.com/apache/parquet-mr/tree/master/parquet-column/src/main/java/org/apache/parquet/io/api)
+* [Hadoop API](https://github.com/apache/parquet-mr/tree/master/parquet-hadoop/src/main/java/org/apache/parquet/hadoop/api)
+
+## Apache Pig integration
+A [Loader](https://github.com/apache/parquet-mr/blob/master/parquet-pig/src/main/java/org/apache/parquet/pig/ParquetLoader.java) and a [Storer](https://github.com/apache/parquet-mr/blob/master/parquet-pig/src/main/java/org/apache/parquet/pig/ParquetStorer.java) are provided to read and write Parquet files with Apache Pig
+
+Storing data into Parquet in Pig is simple:
+```
+-- options you might want to fiddle with
+SET parquet.page.size 1048576 -- default. this is your min read/write unit.
+SET parquet.block.size 134217728 -- default. your memory budget for buffering data
+SET parquet.compression lzo -- or you can use none, gzip, snappy
+STORE mydata into '/some/path' USING parquet.pig.ParquetStorer;
+```
+Reading in Pig is also simple:
+```
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/parquet-jackson.jar" https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2.jar; jar tf "$tmp/parquet-jackson.jar" | head -120; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src/main/java?ref=apache-parquet-1.12.2 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/tests.jar" https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-tests.jar; jar tf "$tmp/tests.jar" | head -120; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar; jar tf "$tmp/sources.jar" | head -120; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 158ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/org.apache.parquet/
+META-INF/maven/org.apache.parquet/parquet-jackson/
+META-INF/maven/org.apache.parquet/parquet-jackson/pom.xml
+META-INF/maven/org.apache.parquet/parquet-jackson/pom.properties
+
+ succeeded in 181ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 181ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE
+
+ succeeded in 398ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE
+META-INF/maven/
+META-INF/maven/org.apache.parquet/
+META-INF/maven/org.apache.parquet/parquet-jackson/
+META-INF/maven/org.apache.parquet/parquet-jackson/pom.xml
+META-INF/maven/org.apache.parquet/parquet-jackson/pom.properties
+META-INF/NOTICE
+META-INF/maven/com.fasterxml.jackson.core/
+META-INF/maven/com.fasterxml.jackson.core/jackson-core/
+META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.properties
+META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.xml
+META-INF/services/
+META-INF/services/com.fasterxml.jackson.core.JsonFactory
+shaded/
+shaded/parquet/
+shaded/parquet/com/
+shaded/parquet/com/fasterxml/
+shaded/parquet/com/fasterxml/jackson/
+shaded/parquet/com/fasterxml/jackson/core/
+shaded/parquet/com/fasterxml/jackson/core/Base64Variant.class
+shaded/parquet/com/fasterxml/jackson/core/Base64Variants.class
+shaded/parquet/com/fasterxml/jackson/core/FormatFeature.class
+shaded/parquet/com/fasterxml/jackson/core/FormatSchema.class
+shaded/parquet/com/fasterxml/jackson/core/JsonEncoding.class
+shaded/parquet/com/fasterxml/jackson/core/JsonFactory$Feature.class
+shaded/parquet/com/fasterxml/jackson/core/JsonFactory.class
+shaded/parquet/com/fasterxml/jackson/core/JsonFactoryBuilder.class
+shaded/parquet/com/fasterxml/jackson/core/JsonGenerationException.class
+shaded/parquet/com/fasterxml/jackson/core/JsonGenerator$1.class
+shaded/parquet/com/fasterxml/jackson/core/JsonGenerator$Feature.class
+shaded/parquet/com/fasterxml/jackson/core/JsonGenerator.class
+shaded/parquet/com/fasterxml/jackson/core/JsonLocation.class
+shaded/parquet/com/fasterxml/jackson/core/JsonParseException.class
+shaded/parquet/com/fasterxml/jackson/core/JsonParser$Feature.class
+shaded/parquet/com/fasterxml/jackson/core/JsonParser$NumberType.class
+shaded/parquet/com/fasterxml/jackson/core/JsonParser.class
+shaded/parquet/com/fasterxml/jackson/core/JsonPointer.class
+shaded/parquet/com/fasterxml/jackson/core/JsonProcessingException.class
+shaded/parquet/com/fasterxml/jackson/core/JsonStreamContext.class
+shaded/parquet/com/fasterxml/jackson/core/JsonToken.class
+shaded/parquet/com/fasterxml/jackson/core/JsonTokenId.class
+shaded/parquet/com/fasterxml/jackson/core/JsonpCharacterEscapes.class
+shaded/parquet/com/fasterxml/jackson/core/ObjectCodec.class
+shaded/parquet/com/fasterxml/jackson/core/PrettyPrinter.class
+shaded/parquet/com/fasterxml/jackson/core/SerializableString.class
+shaded/parquet/com/fasterxml/jackson/core/StreamReadFeature.class
+shaded/parquet/com/fasterxml/jackson/core/StreamWriteFeature.class
+shaded/parquet/com/fasterxml/jackson/core/TSFBuilder.class
+shaded/parquet/com/fasterxml/jackson/core/TokenStreamFactory.class
+shaded/parquet/com/fasterxml/jackson/core/TreeCodec.class
+shaded/parquet/com/fasterxml/jackson/core/TreeNode.class
+shaded/parquet/com/fasterxml/jackson/core/Version.class
+shaded/parquet/com/fasterxml/jackson/core/Versioned.class
+shaded/parquet/com/fasterxml/jackson/core/async/
+shaded/parquet/com/fasterxml/jackson/core/async/ByteArrayFeeder.class
+shaded/parquet/com/fasterxml/jackson/core/async/ByteBufferFeeder.class
+shaded/parquet/com/fasterxml/jackson/core/async/NonBlockingInputFeeder.class
+shaded/parquet/com/fasterxml/jackson/core/base/
+shaded/parquet/com/fasterxml/jackson/core/base/GeneratorBase.class
+shaded/parquet/com/fasterxml/jackson/core/base/ParserBase.class
+shaded/parquet/com/fasterxml/jackson/core/base/ParserMinimalBase.class
+shaded/parquet/com/fasterxml/jackson/core/exc/
+shaded/parquet/com/fasterxml/jackson/core/exc/InputCoercionException.class
+shaded/parquet/com/fasterxml/jackson/core/exc/StreamReadException.class
+shaded/parquet/com/fasterxml/jackson/core/filter/
+shaded/parquet/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.class
+shaded/parquet/com/fasterxml/jackson/core/filter/FilteringParserDelegate.class
+shaded/parquet/com/fasterxml/jackson/core/filter/JsonPointerBasedFilter.class
+shaded/parquet/com/fasterxml/jackson/core/filter/TokenFilter.class
+shaded/parquet/com/fasterxml/jackson/core/filter/TokenFilterContext.class
+shaded/parquet/com/fasterxml/jackson/core/format/
+shaded/parquet/com/fasterxml/jackson/core/format/DataFormatDetector.class
+shaded/parquet/com/fasterxml/jackson/core/format/DataFormatMatcher.class
+shaded/parquet/com/fasterxml/jackson/core/format/InputAccessor$Std.class
+shaded/parquet/com/fasterxml/jackson/core/format/InputAccessor.class
+shaded/parquet/com/fasterxml/jackson/core/format/MatchStrength.class
+shaded/parquet/com/fasterxml/jackson/core/io/
+shaded/parquet/com/fasterxml/jackson/core/io/CharTypes$AltEscapes.class
+shaded/parquet/com/fasterxml/jackson/core/io/CharTypes.class
+shaded/parquet/com/fasterxml/jackson/core/io/CharacterEscapes.class
+shaded/parquet/com/fasterxml/jackson/core/io/DataOutputAsStream.class
+shaded/parquet/com/fasterxml/jackson/core/io/IOContext.class
+shaded/parquet/com/fasterxml/jackson/core/io/InputDecorator.class
+shaded/parquet/com/fasterxml/jackson/core/io/JsonEOFException.class
+shaded/parquet/com/fasterxml/jackson/core/io/JsonStringEncoder.class
+shaded/parquet/com/fasterxml/jackson/core/io/MergedStream.class
+shaded/parquet/com/fasterxml/jackson/core/io/NumberInput.class
+shaded/parquet/com/fasterxml/jackson/core/io/NumberOutput.class
+shaded/parquet/com/fasterxml/jackson/core/io/OutputDecorator.class
+shaded/parquet/com/fasterxml/jackson/core/io/SegmentedStringWriter.class
+shaded/parquet/com/fasterxml/jackson/core/io/SerializedString.class
+shaded/parquet/com/fasterxml/jackson/core/io/UTF32Reader.class
+shaded/parquet/com/fasterxml/jackson/core/io/UTF8Writer.class
+shaded/parquet/com/fasterxml/jackson/core/json/
+shaded/parquet/com/fasterxml/jackson/core/json/ByteSourceJsonBootstrapper.class
+shaded/parquet/com/fasterxml/jackson/core/json/DupDetector.class
+shaded/parquet/com/fasterxml/jackson/core/json/JsonGeneratorImpl.class
+shaded/parquet/com/fasterxml/jackson/core/json/JsonReadContext.class
+shaded/parquet/com/fasterxml/jackson/core/json/JsonReadFeature.class
+shaded/parquet/com/fasterxml/jackson/core/json/JsonWriteContext.class
+shaded/parquet/com/fasterxml/jackson/core/json/JsonWriteFeature.class
+shaded/parquet/com/fasterxml/jackson/core/json/PackageVersion.class
+shaded/parquet/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.class
+shaded/parquet/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.class
+shaded/parquet/com/fasterxml/jackson/core/json/UTF8JsonGenerator.class
+shaded/parquet/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.class
+shaded/parquet/com/fasterxml/jackson/core/json/WriterBasedJsonGenerator.class
+shaded/parquet/com/fasterxml/jackson/core/json/async/
+shaded/parquet/com/fasterxml/jackson/core/json/async/NonBlockingJsonParser.class
+shaded/parquet/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.class
+shaded/parquet/com/fasterxml/jackson/core/sym/
+shaded/parquet/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer$TableInfo.class
+shaded/parquet/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.class
+shaded/parquet/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer$Bucket.class
+shaded/parquet/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer$TableInfo.class
+shaded/parquet/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.class
+shaded/parquet/com/fasterxml/jackson/core/sym/Name.class
+shaded/parquet/com/fasterxml/jackson/core/sym/Name1.class
+
+codex
+The artifact is a shaded JVM jar: the published jar contains relocated Jackson `.class` files, while the module itself has no direct Java source files in its own source jar. I’m keeping it as a Native Image metadata target because it is still a JVM artifact consumed from Java code.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2.jar.sha1 && printf '\\n'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+1c8c957d84d1ea3dcf74baa30a191bc0cf9a50ba
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson?ref=apache-parquet-1.12.2 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src?ref=apache-parquet-1.12.2 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc 'curl -fsSL https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src/test | rg -n "test|not found|Find code" -i | head -30' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 188ms:
+[
+  {
+    "name": "main",
+    "path": "parquet-jackson/src/main",
+    "sha": "509e22b1ba94fb084ae17816b9c4ea59ab93ab91",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src/main?ref=apache-parquet-1.12.2",
+    "html_url": "https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src/main",
+    "git_url": "https://api.github.com/repos/apache/parquet-java/git/trees/509e22b1ba94fb084ae17816b9c4ea59ab93ab91",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src/main?ref=apache-parquet-1.12.2",
+      "git": "https://api.github.com/repos/apache/parquet-java/git/trees/509e22b1ba94fb084ae17816b9c4ea59ab93ab91",
+      "html": "https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src/main"
+    }
+  }
+]
+
+ succeeded in 245ms:
+[
+  {
+    "name": "README.md",
+    "path": "parquet-jackson/README.md",
+    "sha": "3c3819f8d8961217045bb2001baef5359df40f83",
+    "size": 3074,
+    "url": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/README.md?ref=apache-parquet-1.12.2",
+    "html_url": "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md",
+    "git_url": "https://api.github.com/repos/apache/parquet-java/git/blobs/3c3819f8d8961217045bb2001baef5359df40f83",
+    "download_url": "https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/parquet-jackson/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/README.md?ref=apache-parquet-1.12.2",
+      "git": "https://api.github.com/repos/apache/parquet-java/git/blobs/3c3819f8d8961217045bb2001baef5359df40f83",
+      "html": "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "parquet-jackson/pom.xml",
+    "sha": "d0ec6da5eb836167157a2ce6fbca678c848f37bb",
+    "size": 3501,
+    "url": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/pom.xml?ref=apache-parquet-1.12.2",
+    "html_url": "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/parquet-java/git/blobs/d0ec6da5eb836167157a2ce6fbca678c848f37bb",
+    "download_url": "https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/parquet-jackson/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/pom.xml?ref=apache-parquet-1.12.2",
+      "git": "https://api.github.com/repos/apache/parquet-java/git/blobs/d0ec6da5eb836167157a2ce6fbca678c848f37bb",
+      "html": "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "parquet-jackson/src",
+    "sha": "7604e91af70b6c6161f5fa945d8c6c684eb7cd0d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src?ref=apache-parquet-1.12.2",
+    "html_url": "https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src",
+    "git_url": "https://api.github.com/repos/apache/parquet-java/git/trees/7604e91af70b6c6161f5fa945d8c6c684eb7cd0d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src?ref=apache-parquet-1.12.2",
+      "git": "https://api.github.com/repos/apache/parquet-java/git/trees/7604e91af70b6c6161f5fa945d8c6c684eb7cd0d",
+      "html": "https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src"
+    }
+  }
+]
+
+ succeeded in 526ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-tests.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:20:24 GMT
+content-type: application/java-archive
+content-length: 4190
+cf-ray: 9f6b944408a1bb0e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 837517
+etag: "87bf29b83e0ad2b9f15c4851d7d8ffea"
+last-modified: Thu, 30 Sep 2021 12:14:47 GMT
+x-checksum-md5: 87bf29b83e0ad2b9f15c4851d7d8ffea
+x-checksum-sha1: 5f2838d529fa3650526c45e96d1316f9484e6933
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 05 May 2026 00:20:24 GMT
+content-type: application/java-archive
+content-length: 2602
+cf-ray: 9f6b944428b2bb0e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 240089
+etag: "33bf184698cacf51c1e0247ee485f7e6"
+last-modified: Thu, 30 Sep 2021 12:14:47 GMT
+x-checksum-md5: 33bf184698cacf51c1e0247ee485f7e6
+x-checksum-sha1: f4eababdde833b488fa0603c4c0f52ee3aa9217a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/parquet-jackson/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src/main?ref=apache-parquet-1.12.2 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/parquet-java/git/trees/509e22b1ba94fb084ae17816b9c4ea59ab93ab91?recursive=1 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 157ms:
+[
+  {
+    "name": "resources",
+    "path": "parquet-jackson/src/main/resources",
+    "sha": "14a5f008e2f323eda815ab3db923a2bab872f033",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src/main/resources?ref=apache-parquet-1.12.2",
+    "html_url": "https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src/main/resources",
+    "git_url": "https://api.github.com/repos/apache/parquet-java/git/trees/14a5f008e2f323eda815ab3db923a2bab872f033",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/parquet-java/contents/parquet-jackson/src/main/resources?ref=apache-parquet-1.12.2",
+      "git": "https://api.github.com/repos/apache/parquet-java/git/trees/14a5f008e2f323eda815ab3db923a2bab872f033",
+      "html": "https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src/main/resources"
+    }
+  }
+]
+
+ succeeded in 173ms:
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+Parquet Jackson 
+======
+
+Parquet-Jackson is just a dummy module to shade [Jackson](https://github.com/FasterXML/jackson/) artifacts.
+
+## Rationale
+
+Parquet internally uses the well-known JSON processor Jackson. Because Apache Hadoop (amongst others) sometimes uses an older version of Jackson, Parquet "shades" its copy of Jackson to prevent any side-effect. 
+Originally a copy of Jackson was embedded in each Parquet artifact requiring Jackson, but to prevent duplication, a shared module "Parquet-Jackson" has been created.
+
+Note that this is not a fork of Jackson but the same classes as provided by Jackson artifacts, relocated under the *parquet.com.fasterxml.jackson.core* namespace.
+
+## Detailed explanations
+
+Shading is performed by the [Apache Maven Shade plugin](http://maven.apache.org/plugins/maven-shade-plugin/index.html). It is done during the *package* lifecycle phase, right after the original jar creation. The plugin will replace both the jar and the pom files with new versions with specified dependencies embedded and pom.xml file updated to not refer to those dependencies.
+
+parquet-jackson module will create a new jar artifact containing all Jackson classes, relocated under *parquet.com.fasterxml.jackson.core* package. The shade plugin will transform *pom.xml* too to remove any reference to Jackson dependency.
+
+Other Parquet modules which requires Jackson are configured to depend on parquet-jackson module and still perform shading. The difference is that all Jackson classes are excluded from inclusion, but references from Parquet to Jackson classes are still relocated. The shade plugin will also remove any reference to Jackson dependency but will preserve the parquet-jackson dependency which contains the relocated classes.
+
+### Why still referring directly to com.fasterxml.jackson:\* in Parquet modules
+
+Because of the way Maven handles multi-modules project. Let's assume that parquet-foo module uses Jackson. When executing *mvn package*, parquet-jackson module will be built first and artifact will be packaged, and a new pom.xml without Jackson dependency is created and used by parquet-foo module. Since Jackson dependencies have been removed by the shade plugin, compilation of parquet-foo will fail.
+
+
+ succeeded in 215ms:
+{
+  "sha": "509e22b1ba94fb084ae17816b9c4ea59ab93ab91",
+  "url": "https://api.github.com/repos/apache/parquet-java/git/trees/509e22b1ba94fb084ae17816b9c4ea59ab93ab91",
+  "tree": [
+    {
+      "path": "resources",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "14a5f008e2f323eda815ab3db923a2bab872f033",
+      "url": "https://api.github.com/repos/apache/parquet-java/git/trees/14a5f008e2f323eda815ab3db923a2bab872f033"
+    },
+    {
+      "path": "resources/META-INF",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e027d61b615a4e8f49b253ea7f79a111c6dde42a",
+      "url": "https://api.github.com/repos/apache/parquet-java/git/trees/e027d61b615a4e8f49b253ea7f79a111c6dde42a"
+    },
+    {
+      "path": "resources/META-INF/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e3e1ba5c625fd9a9baff99e68f8525201a33917",
+      "size": 10533,
+      "url": "https://api.github.com/repos/apache/parquet-java/git/blobs/7e3e1ba5c625fd9a9baff99e68f8525201a33917"
+    }
+  ],
+  "truncated": false
+}
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"N/A\"|\"source-code-url\" : \"N/A\"|\"documentation-url\" : \"N/A\"' metadata build/discovered-artifact-metadata | head -50" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/guava-bootstrap/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/io.swagger/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.jnr/jnr-x86asm/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:97:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:113:    "test-code-url" : "N/A",
+metadata/org.jetbrains/annotations-java5/index.json:7:    "test-code-url" : "N/A",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.crac/crac/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-functional_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-functional_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/org.w3c.css/sac/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n 'parquet-jackson|Jackson is just a dummy|shaded support module|dummy module' metadata build/discovered-artifact-metadata README.md . 2>/dev/null | head -50" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json:2:  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
+
+web search: 
+web search: https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md
+web search: 
+web search: repo.maven.apache.org maven2 org apache parquet parquet-jackson 1.12.2 parquet-jackson-1.12.2-sources.jar tests.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/
+web search: 
+web search: 
+codex
+I’m about to update the JSON with the Maven source/test artifacts, the Parquet Java repository root, and the tagged `parquet-jackson` README as documentation.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+index 71c9f30dadd2ce877881cef25c36460d799f53d7..70cb883571c60b54627c20852f9261c0a4381686
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-$version$/parquet-jackson/README.md",
++  "description" : "Apache Parquet Jackson is a shaded support module that packages Jackson classes under Parquet's relocated namespace. It lets Parquet modules share one embedded Jackson copy and avoid conflicts with older Jackson versions supplied by Hadoop or other dependencies."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+index 71c9f30dadd2ce877881cef25c36460d799f53d7..70cb883571c60b54627c20852f9261c0a4381686
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-$version$/parquet-jackson/README.md",
++  "description" : "Apache Parquet Jackson is a shaded support module that packages Jackson classes under Parquet's relocated namespace. It lets Parquet modules share one embedded Jackson copy and avoid conflicts with older Jackson versions supplied by Hadoop or other dependencies."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.parquet:parquet-jackson:1.12.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/parquet-java",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-tests.jar",
+  "documentation-url": "https://github.com/apache/parquet-java/blob/apache-parquet-$version$/parquet-jackson/README.md",
+  "description": "Apache Parquet Jackson is a shaded support module that packages Jackson classes under Parquet's relocated namespace. It lets Parquet modules share one embedded Jackson copy and avoid conflicts with older Jackson versions supplied by Hadoop or other dependencies."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-tests.jar \\
+  https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md; do \\
+  printf '%s ' \""'$url"; curl -o /dev/null -s -w '"'%{http_code}\\n' -L \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+index 71c9f30dadd2ce877881cef25c36460d799f53d7..70cb883571c60b54627c20852f9261c0a4381686
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-$version$/parquet-jackson/README.md",
++  "description" : "Apache Parquet Jackson is a shaded support module that packages Jackson classes under Parquet's relocated namespace. It lets Parquet modules share one embedded Jackson copy and avoid conflicts with older Jackson versions supplied by Hadoop or other dependencies."
+ }
+
+ succeeded in 773ms:
+200
+https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md 200
+
+codex
+The JSON parses cleanly, and the source, tests, and documentation URLs all return HTTP 200 after replacing `$version$` with `1.12.2`.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-bd7923ed
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-sources.jar",
+  "repository-url" : "https://github.com/apache/parquet-java",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-tests.jar",
+  "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-$version$/parquet-jackson/README.md",
+  "description" : "Apache Parquet Jackson is a shaded support module that packages Jackson classes under Parquet's relocated namespace. It lets Parquet modules share one embedded Jackson copy and avoid conflicts with older Jackson versions supplied by Hadoop or other dependencies."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+index 71c9f30dadd2ce877881cef25c36460d799f53d7..70cb883571c60b54627c20852f9261c0a4381686
+--- a/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
++++ b/build/discovered-artifact-metadata/org.apache.parquet-parquet-jackson-1.12.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2"
++  "coordinates" : "org.apache.parquet:parquet-jackson:1.12.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/parquet-java",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-jackson/$version$/parquet-jackson-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-$version$/parquet-jackson/README.md",
++  "description" : "Apache Parquet Jackson is a shaded support module that packages Jackson classes under Parquet's relocated namespace. It lets Parquet modules share one embedded Jackson copy and avoid conflicts with older Jackson versions supplied by Hadoop or other dependencies."
+ }
+
+web search: 
+web search: https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md
+web search: 
+web search: site:repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2 parquet-jackson-1.12.2-sources.jar parquet-jackson-1.12.2-tests.jar
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
