@@ -10,6 +10,7 @@ import arrow.core.Either
 import arrow.core.Ior
 import arrow.core.None
 import arrow.core.NonEmptyList
+import arrow.core.NonEmptySet
 import arrow.core.Option
 import arrow.core.Some
 import arrow.core.align
@@ -26,8 +27,10 @@ import arrow.core.flattenOrAccumulate
 import arrow.core.getOrElse
 import arrow.core.getOrNone
 import arrow.core.handleErrorWith
+import arrow.core.mapOrAccumulate
 import arrow.core.mapValuesNotNull
 import arrow.core.nonEmptyListOf
+import arrow.core.nonEmptySetOf
 import arrow.core.none
 import arrow.core.padZip
 import arrow.core.raise.either
@@ -38,6 +41,7 @@ import arrow.core.recover
 import arrow.core.rightIor
 import arrow.core.toEitherNel
 import arrow.core.toNonEmptyListOrNone
+import arrow.core.toNonEmptySetOrNone
 import arrow.core.toOption
 import arrow.core.unalign
 import arrow.core.unzip
@@ -172,6 +176,37 @@ public class ArrowCoreJvmTest {
         assertThat(padded.toList()).containsExactly("arrow" to 1, "core" to null, "jvm" to null)
         assertThat(fromIterable).isEqualTo(Some(nonEmptyListOf("one", "two")))
         assertThat(emptyFromIterable).isEqualTo(None)
+    }
+
+    @Test
+    fun nonEmptySetDeduplicatesValuesAndAccumulatesValidationFailures() {
+        val rawTags: NonEmptySet<String> = nonEmptySetOf("Arrow", "arrow", "Core")
+        val normalizedTags: Either<NonEmptyList<String>, NonEmptySet<String>> =
+            rawTags.mapOrAccumulate { tag: String ->
+                ensure(tag.isNotBlank()) { "blank tag" }
+                tag.lowercase()
+            }
+        val invalidTags: Either<NonEmptyList<String>, NonEmptySet<String>> = nonEmptySetOf(
+            "Arrow",
+            "",
+            " ",
+            "Native",
+        ).mapOrAccumulate { tag: String ->
+            val trimmedTag: String = tag.trim()
+            ensure(trimmedTag.isNotEmpty()) { "blank tag" }
+            trimmedTag.lowercase()
+        }
+        val fromIterable: Option<NonEmptySet<String>> =
+            listOf("left", "right", "left").toNonEmptySetOrNone()
+
+        assertThat(rawTags.toSet()).containsExactlyInAnyOrder("Arrow", "arrow", "Core")
+        assertThat((rawTags + "Native").toSet())
+            .containsExactlyInAnyOrder("Arrow", "arrow", "Core", "Native")
+        assertThat(normalizedTags.map { tags: NonEmptySet<String> -> tags.toSet() })
+            .isEqualTo(Either.Right(setOf("arrow", "core")))
+        assertThat(invalidTags).isEqualTo(Either.Left(nonEmptyListOf("blank tag", "blank tag")))
+        assertThat(fromIterable.map { tags: NonEmptySet<String> -> tags.toSet() })
+            .isEqualTo(Some(setOf("left", "right")))
     }
 
     @Test
