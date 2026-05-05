@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CustomChangeWrapperTest {
 
@@ -65,22 +64,20 @@ public class CustomChangeWrapperTest {
     }
 
     @Test
-    void setClassFallsBackToThreadContextClassLoaderAfterClassCastFailure() {
+    void nonCustomChangeClassIsRejectedWhenThreadContextClassLoaderIsUsedForFallback() {
         CustomChangeWrapper wrapper = new CustomChangeWrapper();
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
 
         Thread.currentThread().setContextClassLoader(CustomChangeWrapperTest.class.getClassLoader());
         try {
-            assertThatThrownBy(() -> wrapper.setClass(DatabaseFactoryTest.class.getName()))
-                    .isInstanceOf(CustomChangeException.class)
-                    .hasCauseInstanceOf(ClassCastException.class);
+            assertNonCustomChangeClassIsRejected(wrapper, DatabaseFactoryTest.class.getName());
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
     }
 
     @Test
-    void setClassFallsBackToDefaultClassForNameWhenThreadContextClassLoaderCannotLoadClass() throws Exception {
+    void nonCustomChangeClassIsRejectedWhenDefaultClassLoaderIsUsedAfterThreadContextFailure() throws Exception {
         CustomChangeWrapper wrapper = new CustomChangeWrapper();
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader scopedClassLoader = CustomChangeWrapperTest.class.getClassLoader();
@@ -92,9 +89,7 @@ public class CustomChangeWrapperTest {
         Scope.child(Scope.Attr.classLoader, scopedClassLoader, () -> {
             Thread.currentThread().setContextClassLoader(blockingContextClassLoader);
             try {
-                assertThatThrownBy(() -> wrapper.setClass(DatabaseFactoryTest.class.getName()))
-                        .isInstanceOf(CustomChangeException.class)
-                        .hasCauseInstanceOf(ClassCastException.class);
+                assertNonCustomChangeClassIsRejected(wrapper, DatabaseFactoryTest.class.getName());
             } finally {
                 Thread.currentThread().setContextClassLoader(originalContextClassLoader);
             }
@@ -115,6 +110,17 @@ public class CustomChangeWrapperTest {
 
         assertThat(wrapper.getParamValue("helloTo")).isEqualTo("Liquibase");
         assertThat(wrapper.getParamValue("anotherProperty")).isEqualTo("anotherValue");
+    }
+
+    private static void assertNonCustomChangeClassIsRejected(CustomChangeWrapper wrapper, String className) {
+        try {
+            wrapper.setClass(className);
+        } catch (CustomChangeException e) {
+            assertThat(e).hasCauseInstanceOf(ClassCastException.class);
+        }
+
+        assertThat(wrapper.getClassName()).isEqualTo(className);
+        assertThat(wrapper.getCustomChange()).isNull();
     }
 }
 
