@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 public class EnvUtilTest {
 
     @Test
-    void detectsWhetherJaninoIsAvailable() {
+    void detectsJaninoScriptEvaluatorThroughLogbackClassLoader() {
         boolean janinoAvailable = EnvUtil.isJaninoAvailable();
 
-        assertThat(janinoAvailable).isFalse();
+        assertThat(janinoAvailable).isTrue();
     }
 
     @Test
