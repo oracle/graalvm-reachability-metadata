@@ -1,0 +1,688 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfa40-38c4-7d32-8137-2f9be286b301
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.bytebuddy:byte-buddy:1.8.15
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.15" when "$version$" is replaced with "1.8.15".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+- Set "coordinates" to "net.bytebuddy:byte-buddy:1.8.15".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.8.15".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s published files and upstream tag before editing the JSON, then I’ll keep the change limited to the requested metadata file.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+{
+  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"net.bytebuddy:byte-buddy|net.bytebuddy-byte-buddy' build/discovered-artifact-metadata metadata tests -S" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central net.bytebuddy byte-buddy 1.8.15 sources javadoc test jar
+web search: 
+web search: https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/
+codex
+Maven Central has the main JAR, sources JAR, and Javadoc JAR for `1.8.15`, but no obvious test artifact in that listing, so I’m checking the upstream tag layout for the test-suite URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>byte-buddy-parent</artifactId>
+    <groupId>net.bytebuddy</groupId>
+    <version>1.8.15</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>byte-buddy</artifactId>
+  <name>Byte Buddy (without dependencies)</name>
+  <description>Byte Buddy is a Java library for creating Java classes at run time.
+        This artifact is a build of Byte Buddy with all ASM dependencies repackaged into its own name space.</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${version.plugin.shade}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <createSourcesJar>true</createSourcesJar>
+              <shadeSourcesContent>true</shadeSourcesContent>
+              <relocations>
+                <relocation>
+                  <pattern>${shade.source}</pattern>
+                  <shadedPattern>${shade.target}</shadedPattern>
+                </relocation>
+              </relocations>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>module-info.class</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>org.ow2.asm:asm-commons</artifact>
+                  <includes>
+                    <include>org/objectweb/asm/commons/Remapper.class</include>
+                    <include>org/objectweb/asm/commons/ClassRemapper.class</include>
+                    <include>org/objectweb/asm/commons/FieldRemapper.class</include>
+                    <include>org/objectweb/asm/commons/MethodRemapper.class</include>
+                    <include>org/objectweb/asm/commons/AnnotationRemapper.class</include>
+                    <include>org/objectweb/asm/commons/ModuleRemapper.class</include>
+                    <include>org/objectweb/asm/commons/SimpleRemapper.class</include>
+                  </includes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${version.asm}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>${version.asm}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>${version.plugin.pitest}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${version.plugin.jar}</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${version.plugin.bundle}</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Export-Package>net.bytebuddy,
+                            net.bytebuddy.agent.builder,
+                            net.bytebuddy.asm,
+                            net.bytebuddy.build,
+                            net.bytebuddy.description,
+                            net.bytebuddy.description.annotation,
+                            net.bytebuddy.description.enumeration,
+                            net.bytebuddy.description.field,
+                            net.bytebuddy.description.method,
+                            net.bytebuddy.description.modifier,
+                            net.bytebuddy.description.type,
+                            net.bytebuddy.dynamic,
+                            net.bytebuddy.dynamic.loading,
+                            net.bytebuddy.dynamic.scaffold,
+                            net.bytebuddy.dynamic.scaffold.inline,
+                            net.bytebuddy.dynamic.scaffold.subclass,
+                            net.bytebuddy.implementation,
+                            net.bytebuddy.implementation.attribute,
+                            net.bytebuddy.implementation.auxiliary,
+                            net.bytebuddy.implementation.bind,
+                            net.bytebuddy.implementation.bind.annotation,
+                            net.bytebuddy.implementation.bytecode,
+                            net.bytebuddy.implementation.bytecode.assign,
+                            net.bytebuddy.implementation.bytecode.assign.primitive,
+                            net.bytebuddy.implementation.bytecode.assign.reference,
+                            net.bytebuddy.implementation.bytecode.collection,
+                            net.bytebuddy.implementation.bytecode.constant,
+                            net.bytebuddy.implementation.bytecode.member,
+                            net.bytebuddy.matcher,
+                            net.bytebuddy.pool,
+                            net.bytebuddy.utility,
+                            net.bytebuddy.utility.privilege,
+                            net.bytebuddy.utility.visitor,
+                            ${shade.target}</Export-Package>
+            <Automatic-Module-Name>${project.groupId}</Automatic-Module-Name>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>extras</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.4</version>
+            <executions>
+              <execution>
+                <id>attach-javadoc</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <includeDependencySources>true</includeDependencySources>
+                  <dependencySourceIncludes>
+                    <dependencySourceInclude>net.bytebuddy:byte-buddy-dep</dependencySourceInclude>
+                  </dependencySourceIncludes>
+                  <detectJavaApiLink>true</detectJavaApiLink>
+                  <links>
+                    <link>http://asm.ow2.io/javadoc</link>
+                  </links>
+                </configuration>
+              </execution>
+              <execution>
+                <id>aggregate-javadoc</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+                <configuration>
+                  <doctitle>Byte Buddy (full API), version 1.8.15</doctitle>
+                  <failOnError>false</failOnError>
+                  <includeDependencySources>true</includeDependencySources>
+                  <dependencySourceIncludes>
+                    <dependencySourceInclude>net.bytebuddy:byte-buddy-dep</dependencySourceInclude>
+                  </dependencySourceIncludes>
+                  <detectJavaApiLink>true</detectJavaApiLink>
+                  <links>
+                    <link>http://asm.ow2.io/javadoc</link>
+                  </links>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <includeDependencySources>true</includeDependencySources>
+              <dependencySourceIncludes>
+                <dependencySourceInclude>net.bytebuddy:byte-buddy-dep</dependencySourceInclude>
+              </dependencySourceIncludes>
+              <detectJavaApiLink>true</detectJavaApiLink>
+              <links>
+                <link>http://asm.ow2.io/javadoc</link>
+              </links>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <version>3.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <properties>
+    <shade.source>org.objectweb.asm</shade.source>
+    <shade.target>net.bytebuddy.jar.asm</shade.target>
+  </properties>
+</project>
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/raphw/byte-buddy.git 'byte-buddy-1.8.15*' '1.8.15*'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/ | rg 'test|sources|javadoc|\\.jar|\\.pom'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+<a href="byte-buddy-1.8.15-javadoc.jar" title="byte-buddy-1.8.15-javadoc.jar">byte-buddy-1.8.15-javadoc.jar</a>                     2018-07-26 21:49  12228916      
+<a href="byte-buddy-1.8.15-javadoc.jar.asc" title="byte-buddy-1.8.15-javadoc.jar.asc">byte-buddy-1.8.15-javadoc.jar.asc</a>                 2018-07-26 21:49       195      
+<a href="byte-buddy-1.8.15-javadoc.jar.asc.md5" title="byte-buddy-1.8.15-javadoc.jar.asc.md5">byte-buddy-1.8.15-javadoc.jar.asc.md5</a>             2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15-javadoc.jar.asc.sha1" title="byte-buddy-1.8.15-javadoc.jar.asc.sha1">byte-buddy-1.8.15-javadoc.jar.asc.sha1</a>            2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15-javadoc.jar.asc.sha256" title="byte-buddy-1.8.15-javadoc.jar.asc.sha256">byte-buddy-1.8.15-javadoc.jar.asc.sha256</a>          2018-07-26 21:49        64      
+<a href="byte-buddy-1.8.15-javadoc.jar.asc.sha512" title="byte-buddy-1.8.15-javadoc.jar.asc.sha512">byte-buddy-1.8.15-javadoc.jar.asc.sha512</a>          2018-07-26 21:49       128      
+<a href="byte-buddy-1.8.15-javadoc.jar.md5" title="byte-buddy-1.8.15-javadoc.jar.md5">byte-buddy-1.8.15-javadoc.jar.md5</a>                 2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15-javadoc.jar.sha1" title="byte-buddy-1.8.15-javadoc.jar.sha1">byte-buddy-1.8.15-javadoc.jar.sha1</a>                2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15-sources.jar" title="byte-buddy-1.8.15-sources.jar">byte-buddy-1.8.15-sources.jar</a>                     2018-07-26 21:49    959229      
+<a href="byte-buddy-1.8.15-sources.jar.asc" title="byte-buddy-1.8.15-sources.jar.asc">byte-buddy-1.8.15-sources.jar.asc</a>                 2018-07-26 21:49       195      
+<a href="byte-buddy-1.8.15-sources.jar.asc.md5" title="byte-buddy-1.8.15-sources.jar.asc.md5">byte-buddy-1.8.15-sources.jar.asc.md5</a>             2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15-sources.jar.asc.sha1" title="byte-buddy-1.8.15-sources.jar.asc.sha1">byte-buddy-1.8.15-sources.jar.asc.sha1</a>            2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15-sources.jar.asc.sha256" title="byte-buddy-1.8.15-sources.jar.asc.sha256">byte-buddy-1.8.15-sources.jar.asc.sha256</a>          2018-07-26 21:49        64      
+<a href="byte-buddy-1.8.15-sources.jar.asc.sha512" title="byte-buddy-1.8.15-sources.jar.asc.sha512">byte-buddy-1.8.15-sources.jar.asc.sha512</a>          2018-07-26 21:49       128      
+<a href="byte-buddy-1.8.15-sources.jar.md5" title="byte-buddy-1.8.15-sources.jar.md5">byte-buddy-1.8.15-sources.jar.md5</a>                 2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15-sources.jar.sha1" title="byte-buddy-1.8.15-sources.jar.sha1">byte-buddy-1.8.15-sources.jar.sha1</a>                2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15.jar" title="byte-buddy-1.8.15.jar">byte-buddy-1.8.15.jar</a>                             2018-07-26 21:49   2987269      
+<a href="byte-buddy-1.8.15.jar.asc" title="byte-buddy-1.8.15.jar.asc">byte-buddy-1.8.15.jar.asc</a>                         2018-07-26 21:49       195      
+<a href="byte-buddy-1.8.15.jar.asc.md5" title="byte-buddy-1.8.15.jar.asc.md5">byte-buddy-1.8.15.jar.asc.md5</a>                     2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15.jar.asc.sha1" title="byte-buddy-1.8.15.jar.asc.sha1">byte-buddy-1.8.15.jar.asc.sha1</a>                    2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15.jar.asc.sha256" title="byte-buddy-1.8.15.jar.asc.sha256">byte-buddy-1.8.15.jar.asc.sha256</a>                  2018-07-26 21:49        64      
+<a href="byte-buddy-1.8.15.jar.asc.sha512" title="byte-buddy-1.8.15.jar.asc.sha512">byte-buddy-1.8.15.jar.asc.sha512</a>                  2018-07-26 21:49       128      
+<a href="byte-buddy-1.8.15.jar.md5" title="byte-buddy-1.8.15.jar.md5">byte-buddy-1.8.15.jar.md5</a>                         2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15.jar.sha1" title="byte-buddy-1.8.15.jar.sha1">byte-buddy-1.8.15.jar.sha1</a>                        2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15.pom" title="byte-buddy-1.8.15.pom">byte-buddy-1.8.15.pom</a>                             2018-07-26 21:49      9278      
+<a href="byte-buddy-1.8.15.pom.asc" title="byte-buddy-1.8.15.pom.asc">byte-buddy-1.8.15.pom.asc</a>                         2018-07-26 21:49       195      
+<a href="byte-buddy-1.8.15.pom.asc.md5" title="byte-buddy-1.8.15.pom.asc.md5">byte-buddy-1.8.15.pom.asc.md5</a>                     2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15.pom.asc.sha1" title="byte-buddy-1.8.15.pom.asc.sha1">byte-buddy-1.8.15.pom.asc.sha1</a>                    2018-07-26 21:49        40      
+<a href="byte-buddy-1.8.15.pom.asc.sha256" title="byte-buddy-1.8.15.pom.asc.sha256">byte-buddy-1.8.15.pom.asc.sha256</a>                  2018-07-26 21:49        64      
+<a href="byte-buddy-1.8.15.pom.asc.sha512" title="byte-buddy-1.8.15.pom.asc.sha512">byte-buddy-1.8.15.pom.asc.sha512</a>                  2018-07-26 21:49       128      
+<a href="byte-buddy-1.8.15.pom.md5" title="byte-buddy-1.8.15.pom.md5">byte-buddy-1.8.15.pom.md5</a>                         2018-07-26 21:49        32      
+<a href="byte-buddy-1.8.15.pom.sha1" title="byte-buddy-1.8.15.pom.sha1">byte-buddy-1.8.15.pom.sha1</a>                        2018-07-26 21:49        40      
+
+ succeeded in 372ms:
+d10479916fcb7d806c3f9a75c32fe196dd1f2a5c	refs/tags/byte-buddy-1.8.15
+382dba3eacc04f93c28068c71465c4cf280ea28f	refs/tags/byte-buddy-1.8.15^{}
+
+web search: 
+web search: https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1\\.maven\\.org/maven2/.+sources\\.jar|\"documentation-url\"\\s*:\\s*\"https://repo1\\.maven\\.org/maven2/.+javadoc\\.jar' metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/raphw/byte-buddy/contents/byte-buddy-dep/src/test/java?ref=byte-buddy-1.8.15 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/raphw/byte-buddy/contents/byte-buddy?ref=byte-buddy-1.8.15 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 185ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "byte-buddy/pom.xml",
+    "sha": "8f244ea3c560354336612b1ecf7a9adf48602d62",
+    "size": 10496,
+    "url": "https://api.github.com/repos/raphw/byte-buddy/contents/byte-buddy/pom.xml?ref=byte-buddy-1.8.15",
+    "html_url": "https://github.com/raphw/byte-buddy/blob/byte-buddy-1.8.15/byte-buddy/pom.xml",
+    "git_url": "https://api.github.com/repos/raphw/byte-buddy/git/blobs/8f244ea3c560354336612b1ecf7a9adf48602d62",
+    "download_url": "https://raw.githubusercontent.com/raphw/byte-buddy/byte-buddy-1.8.15/byte-buddy/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/raphw/byte-buddy/contents/byte-buddy/pom.xml?ref=byte-buddy-1.8.15",
+      "git": "https://api.github.com/repos/raphw/byte-buddy/git/blobs/8f244ea3c560354336612b1ecf7a9adf48602d62",
+      "html": "https://github.com/raphw/byte-buddy/blob/byte-buddy-1.8.15/byte-buddy/pom.xml"
+    }
+  }
+]
+
+ succeeded in 200ms:
+[
+  {
+    "name": "net",
+    "path": "byte-buddy-dep/src/test/java/net",
+    "sha": "620933737e39bcf5c4d60745e728001e367dcecf",
+    "size": 0,
+    "url": "https://api.github.com/repos/raphw/byte-buddy/contents/byte-buddy-dep/src/test/java/net?ref=byte-buddy-1.8.15",
+    "html_url": "https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test/java/net",
+    "git_url": "https://api.github.com/repos/raphw/byte-buddy/git/trees/620933737e39bcf5c4d60745e728001e367dcecf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/raphw/byte-buddy/contents/byte-buddy-dep/src/test/java/net?ref=byte-buddy-1.8.15",
+      "git": "https://api.github.com/repos/raphw/byte-buddy/git/trees/620933737e39bcf5c4d60745e728001e367dcecf",
+      "html": "https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test/java/net"
+    }
+  }
+]
+
+codex
+The upstream repository tag is `byte-buddy-1.8.15`; the `byte-buddy` module itself only contains its POM at that tag, while the actual project tests live under `byte-buddy-dep/src/test/java`. I’m going to use Maven URLs for the source and Javadoc artifacts, and the tagged GitHub test tree for tests.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jvnet.staxex/stax-ex/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -5 | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+{
+  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
+}
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+    "description" : "stax-ex extends the JSR-173 StAX API with support for parser reuse, non-text XML infosets, and improved namespace handling. It provides Java interfaces and helpers used by JAXB and Metro to stream XML data efficiently, including binary content.",
+    "tested-versions" : [
+      "2.0.0",
+      "2.0.1",
+      "2.1.0"
+    ],
+    "allowed-packages" : [
+      "org.jvnet.staxex"
+    ]
+  },
+  {
+    "metadata-version" : "1.8.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+    "description" : "stax-ex extends the JSR-173 StAX API with utilities for higher-performance XML streaming and parser reuse. It also improves handling of non-text XML infosets and namespace processing for JAXB and Metro use cases.",
+    "tested-versions" : [
+      "1.8.2",
+      "1.8.3"
+    ],
+    "allowed-packages" : [
+      "org.jvnet.staxex"
+    ]
+  },
+  {
+    "metadata-version" : "1.8",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+    "description" : "stax-ex provides extensions to the JSR-173 StAX API for handling binary and streaming XML content in Java. It adds XMLStreamReader and XMLStreamWriter support that enables efficient access to data such as base64-backed content without unnecessary copying.",
+    "tested-versions" : [
+      "1.8",
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "org.jvnet.staxex"
+    ]
+  }
+]
+
+codex
+I’m updating the JSON now with `metadata-version` matching the artifact version, Maven source/Javadoc URLs using `$version$`, and the tagged upstream test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+diff --git a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+index fc5b03bb12b301c18bdb57ecc12e2a9d578fdc16..f72dff594f85df31f6a5d5c49e90969d3913bb9e
+--- a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
++++ b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+@@ -1,3 +1,9 @@
+ {
+-  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
++  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15",
++  "metadata-version" : "1.8.15",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
++  "repository-url" : "https://github.com/raphw/byte-buddy",
++  "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
++  "description" : "Byte Buddy is a Java bytecode generation and manipulation library for creating and modifying classes at runtime without manually writing bytecode. The byte-buddy artifact packages Byte Buddy without external ASM dependencies by relocating its ASM classes into Byte Buddy's namespace."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+index fc5b03bb12b301c18bdb57ecc12e2a9d578fdc16..f72dff594f85df31f6a5d5c49e90969d3913bb9e
+--- a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
++++ b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+@@ -1,3 +1,9 @@
+ {
+-  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
++  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15",
++  "metadata-version" : "1.8.15",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
++  "repository-url" : "https://github.com/raphw/byte-buddy",
++  "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
++  "description" : "Byte Buddy is a Java bytecode generation and manipulation library for creating and modifying classes at runtime without manually writing bytecode. The byte-buddy artifact packages Byte Buddy without external ASM dependencies by relocating its ASM classes into Byte Buddy's namespace."
+ }
+
+codex
+The edit is in place. I’m doing a quick JSON parse and checking the resolved URLs for `1.8.15` so the placeholders are not just syntactically valid but actually point to existing targets.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+{
+  "coordinates": "net.bytebuddy:byte-buddy:1.8.15",
+  "metadata-version": "1.8.15",
+  "source-code-url": "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
+  "repository-url": "https://github.com/raphw/byte-buddy",
+  "test-code-url": "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
+  "description": "Byte Buddy is a Java bytecode generation and manipulation library for creating and modifying classes at runtime without manually writing bytecode. The byte-buddy artifact packages Byte Buddy without external ASM dependencies by relocating its ASM classes into Byte Buddy's namespace."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test/java | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 101ms:
+ succeeded in 122ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 22:27:43 GMT
+content-type: application/java-archive
+content-length: 12228916
+cf-ray: 9f732c925db09cec-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 251790
+
+diff --git a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+index fc5b03bb12b301c18bdb57ecc12e2a9d578fdc16..f72dff594f85df31f6a5d5c49e90969d3913bb9e
+--- a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
++++ b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+@@ -1,3 +1,9 @@
+ {
+-  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
++  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15",
++  "metadata-version" : "1.8.15",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
++  "repository-url" : "https://github.com/raphw/byte-buddy",
++  "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
++  "description" : "Byte Buddy is a Java bytecode generation and manipulation library for creating and modifying classes at runtime without manually writing bytecode. The byte-buddy artifact packages Byte Buddy without external ASM dependencies by relocating its ASM classes into Byte Buddy's namespace."
+ }
+
+ succeeded in 540ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 22:27:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"71c196c4979e259bdd0cee8008607ada"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+index fc5b03bb12b301c18bdb57ecc12e2a9d578fdc16..f72dff594f85df31f6a5d5c49e90969d3913bb9e
+--- a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
++++ b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+@@ -1,3 +1,9 @@
+ {
+-  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
++  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15",
++  "metadata-version" : "1.8.15",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
++  "repository-url" : "https://github.com/raphw/byte-buddy",
++  "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
++  "description" : "Byte Buddy is a Java bytecode generation and manipulation library for creating and modifying classes at runtime without manually writing bytecode. The byte-buddy artifact packages Byte Buddy without external ASM dependencies by relocating its ASM classes into Byte Buddy's namespace."
+ }
+
+web search: 
+web search: repo1.maven.org net bytebuddy byte-buddy 1.8.15 sources javadoc
+web search: 
+web search: https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test/java
+web search: 
+web search: https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/
+codex
+Updated [net.bytebuddy-byte-buddy-1.8.15.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json:1).
+
+I used Maven Central for the source and Javadoc artifacts because `1.8.15` publishes both `sources.jar` and `javadoc.jar`; the tagged GitHub tree provides the test-suite path under `byte-buddy-dep/src/test/java`. ([repo1.maven.org](https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/))
+
+I left `language` absent and did not set `not-for-native-image`: this is a JVM Java library/artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([github.com](https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15))
+
+Validation done: `jq` parsed the JSON, and the resolved source, documentation, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+index fc5b03bb12b301c18bdb57ecc12e2a9d578fdc16..f72dff594f85df31f6a5d5c49e90969d3913bb9e
+--- a/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
++++ b/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json
+@@ -1,3 +1,9 @@
+ {
+-  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15"
++  "coordinates" : "net.bytebuddy:byte-buddy:1.8.15",
++  "metadata-version" : "1.8.15",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
++  "repository-url" : "https://github.com/raphw/byte-buddy",
++  "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
++  "description" : "Byte Buddy is a Java bytecode generation and manipulation library for creating and modifying classes at runtime without manually writing bytecode. The byte-buddy artifact packages Byte Buddy without external ASM dependencies by relocating its ASM classes into Byte Buddy's namespace."
+ }
+
+tokens used
+56,241
+Updated [net.bytebuddy-byte-buddy-1.8.15.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/build/discovered-artifact-metadata/net.bytebuddy-byte-buddy-1.8.15.json:1).
+
+I used Maven Central for the source and Javadoc artifacts because `1.8.15` publishes both `sources.jar` and `javadoc.jar`; the tagged GitHub tree provides the test-suite path under `byte-buddy-dep/src/test/java`. ([repo1.maven.org](https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/))
+
+I left `language` absent and did not set `not-for-native-image`: this is a JVM Java library/artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([github.com](https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15))
+
+Validation done: `jq` parsed the JSON, and the resolved source, documentation, and test URLs returned HTTP 200.
+Ran agent for net.bytebuddy:byte-buddy:1.8.15 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/build/agent-artifact-discovery-logs/net.bytebuddy-byte-buddy-1.8.15.log
+
+> Task :discoverArtifactMetadata FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-8dd4f7dc/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':discoverArtifactMetadata'.
+> com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "metadata-version" (class org.graalvm.internal.tck.model.DiscoveredArtifactMetadata), not marked as ignorable (10 known properties: "source-code-url", "replacement", "not-for-native-image", "reason", "language", "test-code-url", "coordinates", "repository-url", "documentation-url", "description"])
+   at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 9, column: 2] (through reference chain: org.graalvm.internal.tck.model.DiscoveredArtifactMetadata["metadata-version"])
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 18s
+9 actionable tasks: 9 executed
