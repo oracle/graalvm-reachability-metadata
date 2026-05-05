@@ -1,0 +1,1133 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df591-e5eb-72f3-9b6c-0f8c90ba769e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.htrace:htrace-core:3.1.0-incubating
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.1.0-incubating" when "$version$" is replaced with "3.1.0-incubating".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+- Set "coordinates" to "org.apache.htrace:htrace-core:3.1.0-incubating".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.1.0-incubating".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/Apache sources first, then update the JSON in place with version-placeholder URLs that resolve for `3.1.0-incubating`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+-rw-rw-r-- 1 vjovanov vjovanov 71 May  5 02:37 build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+{
+  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache\\.htrace|htrace-core\" build/discovered-artifact-metadata metadata tests -S" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json:2:  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
+
+web search: 
+web search: Maven Central org.apache.htrace htrace-core 3.1.0-incubating pom scm source
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.htrace/htrace-core/3.1.0-incubating
+web search: 
+web search: site:github.com/apache/incubator-htrace 3.1.0-incubating htrace-core tag
+codex
+The Maven directory shows `sources`, `tests`, and `javadoc` JARs for this exact version, so I’ll prefer those URLs for the source/test/docs fields and use the project SCM only for the repository root.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>htrace</artifactId>
+    <groupId>org.apache.htrace</groupId>
+    <version>3.1.0-incubating</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>htrace-core</artifactId>
+  <name>htrace-core</name>
+  <url>http://incubator.apache.org/projects/htrace.html</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <skipAssembly>true</skipAssembly>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>org.apache.commons.logging</pattern>
+                  <shadedPattern>org.apache.htrace.commons.logging</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.fasterxml.jackson</pattern>
+                  <shadedPattern>org.apache.htrace.fasterxml.jackson</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>go_compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <exec>
+                  <env />
+                </exec>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>go_test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <exec>
+                  <arg />
+                  <arg />
+                  <env />
+                </exec>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>go_clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <exec>
+                  <arg />
+                  <arg />
+                </exec>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/htrace/htrace-core/3.1.0-incubating</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/htrace/htrace-core/3.1.0-incubating</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="htrace-core-3.1.0-incubating-javadoc.jar" title="htrace-core-3.1.0-incubating-javadoc.jar">htrace-core-3.1.0-incubating-javadoc.jar</a>          2015-01-15 19:37    202729      
+<a href="htrace-core-3.1.0-incubating-javadoc.jar.asc" title="htrace-core-3.1.0-incubating-javadoc.jar.asc">htrace-core-3.1.0-incubating-javadoc.jar.asc</a>      2015-01-15 19:37       487      
+<a href="htrace-core-3.1.0-incubating-javadoc.jar.asc.md5" title="htrace-core-3.1.0-incubating-javadoc.jar.asc.md5">htrace-core-3.1.0-incubating-javadoc.jar.asc....</a>  2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating-javadoc.jar.asc.sha1" title="htrace-core-3.1.0-incubating-javadoc.jar.asc.sha1">htrace-core-3.1.0-incubating-javadoc.jar.asc....</a>  2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating-javadoc.jar.md5" title="htrace-core-3.1.0-incubating-javadoc.jar.md5">htrace-core-3.1.0-incubating-javadoc.jar.md5</a>      2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating-javadoc.jar.sha1" title="htrace-core-3.1.0-incubating-javadoc.jar.sha1">htrace-core-3.1.0-incubating-javadoc.jar.sha1</a>     2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating-sources.jar" title="htrace-core-3.1.0-incubating-sources.jar">htrace-core-3.1.0-incubating-sources.jar</a>          2015-01-15 19:37     37546      
+<a href="htrace-core-3.1.0-incubating-sources.jar.asc" title="htrace-core-3.1.0-incubating-sources.jar.asc">htrace-core-3.1.0-incubating-sources.jar.asc</a>      2015-01-15 19:37       487      
+<a href="htrace-core-3.1.0-incubating-sources.jar.asc.md5" title="htrace-core-3.1.0-incubating-sources.jar.asc.md5">htrace-core-3.1.0-incubating-sources.jar.asc....</a>  2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating-sources.jar.asc.sha1" title="htrace-core-3.1.0-incubating-sources.jar.asc.sha1">htrace-core-3.1.0-incubating-sources.jar.asc....</a>  2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating-sources.jar.md5" title="htrace-core-3.1.0-incubating-sources.jar.md5">htrace-core-3.1.0-incubating-sources.jar.md5</a>      2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating-sources.jar.sha1" title="htrace-core-3.1.0-incubating-sources.jar.sha1">htrace-core-3.1.0-incubating-sources.jar.sha1</a>     2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating-tests.jar" title="htrace-core-3.1.0-incubating-tests.jar">htrace-core-3.1.0-incubating-tests.jar</a>            2015-01-15 19:37     23808      
+<a href="htrace-core-3.1.0-incubating-tests.jar.asc" title="htrace-core-3.1.0-incubating-tests.jar.asc">htrace-core-3.1.0-incubating-tests.jar.asc</a>        2015-01-15 19:37       487      
+<a href="htrace-core-3.1.0-incubating-tests.jar.asc.md5" title="htrace-core-3.1.0-incubating-tests.jar.asc.md5">htrace-core-3.1.0-incubating-tests.jar.asc.md...</a>  2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating-tests.jar.asc.sha1" title="htrace-core-3.1.0-incubating-tests.jar.asc.sha1">htrace-core-3.1.0-incubating-tests.jar.asc.sh...</a>  2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating-tests.jar.md5" title="htrace-core-3.1.0-incubating-tests.jar.md5">htrace-core-3.1.0-incubating-tests.jar.md5</a>        2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating-tests.jar.sha1" title="htrace-core-3.1.0-incubating-tests.jar.sha1">htrace-core-3.1.0-incubating-tests.jar.sha1</a>       2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating.jar" title="htrace-core-3.1.0-incubating.jar">htrace-core-3.1.0-incubating.jar</a>                  2015-01-15 19:37   1475955      
+<a href="htrace-core-3.1.0-incubating.jar.asc" title="htrace-core-3.1.0-incubating.jar.asc">htrace-core-3.1.0-incubating.jar.asc</a>              2015-01-15 19:37       487      
+<a href="htrace-core-3.1.0-incubating.jar.asc.md5" title="htrace-core-3.1.0-incubating.jar.asc.md5">htrace-core-3.1.0-incubating.jar.asc.md5</a>          2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating.jar.asc.sha1" title="htrace-core-3.1.0-incubating.jar.asc.sha1">htrace-core-3.1.0-incubating.jar.asc.sha1</a>         2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating.jar.md5" title="htrace-core-3.1.0-incubating.jar.md5">htrace-core-3.1.0-incubating.jar.md5</a>              2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating.jar.sha1" title="htrace-core-3.1.0-incubating.jar.sha1">htrace-core-3.1.0-incubating.jar.sha1</a>             2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating.pom" title="htrace-core-3.1.0-incubating.pom">htrace-core-3.1.0-incubating.pom</a>                  2015-01-15 19:37      4089      
+<a href="htrace-core-3.1.0-incubating.pom.asc" title="htrace-core-3.1.0-incubating.pom.asc">htrace-core-3.1.0-incubating.pom.asc</a>              2015-01-15 19:37       487      
+<a href="htrace-core-3.1.0-incubating.pom.asc.md5" title="htrace-core-3.1.0-incubating.pom.asc.md5">htrace-core-3.1.0-incubating.pom.asc.md5</a>          2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating.pom.asc.sha1" title="htrace-core-3.1.0-incubating.pom.asc.sha1">htrace-core-3.1.0-incubating.pom.asc.sha1</a>         2015-01-15 19:37        40      
+<a href="htrace-core-3.1.0-incubating.pom.md5" title="htrace-core-3.1.0-incubating.pom.md5">htrace-core-3.1.0-incubating.pom.md5</a>              2015-01-15 19:37        32      
+<a href="htrace-core-3.1.0-incubating.pom.sha1" title="htrace-core-3.1.0-incubating.pom.sha1">htrace-core-3.1.0-incubating.pom.sha1</a>             2015-01-15 19:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/incubator-htrace.git | rg \"3\\.1\\.0|htrace\"" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 370ms:
+0cabe569bc05a58c7a319a460eed5e50e136bae7	refs/tags/3.1.0
+bbfe67c410823b02406ab579199c2bf74786edc3	refs/tags/3.1.0RC0
+bc63ac8cc9f80c97a7a3e399f6861ee0c94fa7b6	refs/tags/3.1.0RC0^{}
+c1b50b746729403e18a60010e05d61d448081047	refs/tags/3.1.0RC1
+6b36b1aa677d1242ac850fdb05b6016842e881e3	refs/tags/3.1.0RC1^{}
+d59523f67c29728684c10a30a068c99489276540	refs/tags/3.1.0RC2
+bb0c683a5c4731890b9aeb0bab7971d0f5d395ab	refs/tags/3.1.0RC2^{}
+5166e56260d0b4945111a8518a0bf0c7bdc5342a	refs/tags/3.1.0RC3
+3dade85098feb3ecf740294f0bc5b9762bd1b493	refs/tags/3.1.0RC3^{}
+84f745f10056624f77c7bc581ba080517b3b4b95	refs/tags/3.1.0RC4
+796e2438fafac3510938c1f987fadd27eef6c063	refs/tags/3.1.0RC4^{}
+9534eff4db9988f44d8d9335236abc173a12bb43	refs/tags/3.1.0RC5
+40cb0fdea8e6b014c46f233640bad18fd8809e25	refs/tags/3.1.0RC6
+0dcbb22673b3e07b14f54c9030ec6101b9b005bc	refs/tags/3.1.0RC8
+0cabe569bc05a58c7a319a460eed5e50e136bae7	refs/tags/3.1.0RC9
+e813e5e1ef3dca7c8665a305754c3dda19ecac4d	refs/tags/htrace-1.0
+9718da8df5fcfe3df25f25d0f0908cb928051e30	refs/tags/htrace-1.0^{}
+fd09a12b9f2560f3c41807a235500b3b75572ea0	refs/tags/htrace-1.1
+9cf6bac226f67899848a63357c77a0b5014757c7	refs/tags/htrace-1.1^{}
+4535043869d7dc2a0fddf5866f25a40152ce9462	refs/tags/htrace-1.2
+529f5c5e2ad1c29ad585e118b476c923032b125d	refs/tags/htrace-1.2^{}
+b453510db4985e0428b0393f49386b71cfe7dab1	refs/tags/htrace-1.3
+551a3be71710a46890daddbbea462a59fd310328	refs/tags/htrace-1.3^{}
+f263fc6ddb751054deb0ac086f506581b946567b	refs/tags/htrace-1.4
+f117b8694a7e88a012a074b4c55a6a86f3a72c9d	refs/tags/htrace-1.4^{}
+eb193d722897d414bdd5c5db2ad5d90eb1fd4c40	refs/tags/htrace-1.43
+9ee93d03739a9d4e99c5a228732acfb3cf62f3c2	refs/tags/htrace-1.43^{}
+0fdb62ca84243a8804489cb901ce6892fb9f5097	refs/tags/htrace-1.44
+8fd5c99f1c8ad383a344484c351d0e1f126eba67	refs/tags/htrace-1.44^{}
+264aaf779c12cdf7a3b59fab80e4743dd9d8125c	refs/tags/htrace-1.45
+22ac4eaa67ac81a5d8314f350343c634c084b96a	refs/tags/htrace-1.45^{}
+e0314bac257ae68f4e9b67109278640308199dac	refs/tags/htrace-1.46
+871610853e37a295cbb241703389dc43361f6a67	refs/tags/htrace-1.46^{}
+f6f62af4cce69d230fc16a3cfc7c4db8ef7f9007	refs/tags/htrace-1.47
+e9a08084f34b30c61f77753fa60c29eae08321e9	refs/tags/htrace-1.47^{}
+fd4261ffb783fdcd2c9caca450c898c0dde5544d	refs/tags/htrace-1.48
+b12b8157eac81b09d81d13c903ceb6a73d01b697	refs/tags/htrace-1.48^{}
+ece1c097763b733b1199cdfe66ced0ea7374a54a	refs/tags/htrace-1.49
+f8cddebb80ea0d820db2c6e3489ae39775ba1995	refs/tags/htrace-1.49^{}
+63664784a0f6a535b18ee8c3bfc35fd0b104dc3a	refs/tags/htrace-1.50
+9f1b36c219e382a1a23b8a9a2810b91b81d81f4a	refs/tags/htrace-1.50^{}
+a2f42bddd195afd51701c7bccb49c0969807e75f	refs/tags/htrace-2.00
+ae3003326f65da13c0fc4aea163b3002e6c91c17	refs/tags/htrace-2.00^{}
+82b4fb04a763c31024dcc7aaea8e6d7a1a279ad3	refs/tags/htrace-2.01
+238eaf20d94c8009946709398a9c9bde20928721	refs/tags/htrace-2.01^{}
+19a590626727fc4949329d0c7d1030432383e81f	refs/tags/htrace-2.02
+ddf09829f7ac7bc545e0b51cd58bfcc8faba5574	refs/tags/htrace-2.02^{}
+a9d11df9858cfc1b5cef0e4cc87e08bf7ee91547	refs/tags/htrace-2.03
+7e8fe1aa4983469f46cbbc5e6dd8e31753ba85f0	refs/tags/htrace-2.03^{}
+ed4bb636ba4933ea4a19f65713056ab398638975	refs/tags/htrace-2.04
+c1f1ffea173e53670c9d7febf6627388d84e92d4	refs/tags/htrace-2.04^{}
+0d1082ddbefc50a6f2bc68f6b7ec61c3bafc95a3	refs/tags/htrace-2.05
+8d7fee5474f9a521ec4353f0aa129a35a79f0474	refs/tags/htrace-2.05^{}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/htrace/htrace/3.1.0-incubating/htrace-3.1.0-incubating.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements. See the NOTICE file distributed with this work for additional
+information regarding copyright ownership. The ASF licenses this file to
+You under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+by applicable law or agreed to in writing, software distributed under the
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+OF ANY KIND, either express or implied. See the License for the specific
+language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>12</version>
+    <relativePath/>
+    <!-- no parent resolution -->
+  </parent>
+
+  <groupId>org.apache.htrace</groupId>
+  <artifactId>htrace</artifactId>
+  <version>3.1.0-incubating</version>
+  <packaging>pom</packaging>
+  <name>Apache HTrace</name>
+  <description>A tracing framework for use with distributed systems written in java</description>
+  <url>http://htrace.incubator.apache.org</url>
+
+  <modules>
+    <module>htrace-core</module>
+    <module>htrace-zipkin</module>
+    <module>htrace-hbase</module>
+    <module>htrace-flume</module>
+  </modules>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:http://git-wip-us.apache.org/repos/asf/incubator-htrace.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-htrace.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf?p=incubator-htrace.git</url>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/HTRACE</url>
+  </issueManagement>
+  <ciManagement>
+    <system>hudson</system>
+    <url>https://builds.apache.org/view/H-L/view/HTrace/</url>
+  </ciManagement>
+  <mailingLists>
+    <mailingList>
+      <name>Developer List</name>
+      <subscribe>dev-subscribe@htrace.incubator.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@htrace.incubator.apache.org</unsubscribe>
+      <post>dev@htrace.incubator.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-htrace-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@htrace.incubator.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@htrace.incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-htrace-commits/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Issues List</name>
+      <subscribe>issues-subscribe@htrace.incubator.apache.org</subscribe>
+      <unsubscribe>issues-unsubscribe@htrace.incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-htrace-issues/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>jon</id>
+      <name>Jonathan Leavitt</name>
+      <email>jonathan.leavitt@cloudera.com</email>
+      <timezone>-7</timezone>
+      <organization>Cloudera</organization>
+      <organizationUrl>http://www.cloudera.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>eclark</id>
+      <name>Elliott Clark</name>
+      <email>eclark@apache.org</email>
+      <timezone>-7</timezone>
+      <organization>Cloudera</organization>
+      <organizationUrl>http://www.cloudera.com</organizationUrl>
+    </developer>
+  </developers>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.8.1</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.4</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.11</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <excludes>
+                <exclude>**/.settings/**</exclude>
+                <exclude>**/dependency-reduced-pom.xml</exclude>
+                <exclude>**/generated/**</exclude>
+                <exclude>*/.settings/*</exclude>
+                <exclude>*/generated/*</exclude>
+                <exclude>.git/**</exclude>
+                <exclue>**/README.md</exclue>
+                <exclude>**/src/go/bin/*</exclude>
+                <exclude>**/src/go/pkg/*</exclude>
+                <!-- external projects -->
+                <exclude>**/bootstrap-3.3.1/**</exclude>
+                <exclude>**/*.min.js</exclude>
+                <exclude>**/d3.min.js</exclude>
+                <!-- Pulled down sources -->
+                <exclude>**/gopkg.in/**</exclude>
+                <exclude>**/github.com/**</exclude>
+                <exclude>**/golang.org/**</exclude>
+                <exclude>**/Godeps/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.5.1</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+            <optimize>true</optimize>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.7</version>
+          <executions>
+            <execution>
+              <id>deploy</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>deploy</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.4</version>
+        <dependencies>
+          <dependency>
+            <!-- add support for ssh/scp -->
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>2.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.doxia</groupId>
+            <artifactId>doxia-module-markdown</artifactId>
+            <version>1.6</version>
+          </dependency>
+        <dependency>
+          <groupId>lt.velykis.maven.skins</groupId>
+          <artifactId>reflow-velocity-tools</artifactId>
+          <version>1.1.1</version>
+        </dependency>
+        <!-- Reflow skin requires Velocity >= 1.7  -->
+        <dependency>
+          <groupId>org.apache.velocity</groupId>
+          <artifactId>velocity</artifactId>
+          <version>1.7</version>
+        </dependency>
+        </dependencies>
+        <configuration>
+          <siteDirectory>${basedir}/src/main/site</siteDirectory>
+          <inputEncoding>UTF-8</inputEncoding>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <!--Do not attach assembly to project.-->
+          <attach>false</attach>
+          <tarLongFileMode>gnu</tarLongFileMode>
+          <finalName>htrace-${project.version}</finalName>
+          <descriptors>
+            <descriptor>src/main/assembly/src.xml</descriptor>
+          </descriptors>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <targetJdk>1.6</targetJdk>
+    <failIfNoTests>false</failIfNoTests>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>12.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.10</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <distributionManagement>
+    <site>
+      <id>htrace.incubator.apache.org</id>
+      <name>HTrace Website at incubator.apache.org</name>
+      <!-- On why this is the tmp dir and not hbase.apache.org, see
+               https://issues.apache.org/jira/browse/HBASE-7593?focusedCommentId=13555866&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13555866
+               -->
+      <url>file:///tmp</url>
+    </site>
+  </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-sources.jar -o /tmp/htrace-core-3.1.0-incubating-sources.jar && jar tf /tmp/htrace-core-3.1.0-incubating-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-tests.jar -o /tmp/htrace-core-3.1.0-incubating-tests.jar && jar tf /tmp/htrace-core-3.1.0-incubating-tests.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/htrace/
+org/apache/htrace/impl/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+org/apache/htrace/impl/TestMilliSpan.class
+org/apache/htrace/TestCountSampler.class
+org/apache/htrace/TestHTrace.class
+org/apache/htrace/TestHTraceConfiguration.class
+org/apache/htrace/TestSampler$1.class
+org/apache/htrace/TestSampler$TestParamSampler.class
+org/apache/htrace/TestSampler.class
+org/apache/htrace/TestSpanReceiverBuilder$TestSpanReceiver.class
+org/apache/htrace/TestSpanReceiverBuilder.class
+org/apache/htrace/TraceCreator$1.class
+org/apache/htrace/TraceCreator$MyRunnable.class
+org/apache/htrace/TraceCreator.class
+META-INF/maven/
+META-INF/maven/org.apache.htrace/
+META-INF/maven/org.apache.htrace/htrace-core/
+META-INF/maven/org.apache.htrace/htrace-core/pom.xml
+META-INF/maven/org.apache.htrace/htrace-core/pom.properties
+
+ succeeded in 125ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+org/
+org/apache/
+org/apache/htrace/
+org/apache/htrace/impl/
+org/apache/htrace/wrappers/
+org/apache/htrace/HTraceConfiguration.java
+org/apache/htrace/impl/AlwaysSampler.java
+org/apache/htrace/impl/CountSampler.java
+org/apache/htrace/impl/LocalFileSpanReceiver.java
+org/apache/htrace/impl/MilliSpan.java
+org/apache/htrace/impl/NeverSampler.java
+org/apache/htrace/impl/POJOSpanReceiver.java
+org/apache/htrace/impl/ProbabilitySampler.java
+org/apache/htrace/impl/StandardOutSpanReceiver.java
+org/apache/htrace/impl/TrueIfTracingSampler.java
+org/apache/htrace/NullScope.java
+org/apache/htrace/Sampler.java
+org/apache/htrace/SamplerBuilder.java
+org/apache/htrace/Span.java
+org/apache/htrace/SpanReceiver.java
+org/apache/htrace/SpanReceiverBuilder.java
+org/apache/htrace/TimelineAnnotation.java
+org/apache/htrace/Trace.java
+org/apache/htrace/TraceInfo.java
+org/apache/htrace/Tracer.java
+org/apache/htrace/TraceScope.java
+org/apache/htrace/TraceTree.java
+org/apache/htrace/wrappers/TraceCallable.java
+org/apache/htrace/wrappers/TraceExecutorService.java
+org/apache/htrace/wrappers/TraceProxy.java
+org/apache/htrace/wrappers/TraceRunnable.java
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"https://github.com/apache|git-wip-us.apache.org|repo1.maven.org/maven2/.+-sources.jar|javadoc.jar|tests.jar' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/incubator-htrace | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+exec
+/usr/bin/bash -lc "curl -I -L -s https://git-wip-us.apache.org/repos/asf?p=incubator-htrace.git | sed -n '1,30p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 734ms:
+HTTP/2 302 
+location: https://github.com/apache/incubator-htrace
+content-type: text/html; charset=iso-8859-1
+date: Tue, 05 May 2026 00:38:22 GMT
+server: Apache
+
+HTTP/2 301 
+date: Tue, 05 May 2026 00:38:22 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/apache/incubator-retired-htrace
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=eS0pYz3L0K8IzkCBD95rcxQV2LtaZBDJM2xUrxtYaupBaM%2BsV%2FGapogK%2FxX%2B%2F3%2F5neAm7kNzfqv0OFR%2BZ2gJ2adx6s2utZsunGf9MJ369NQUzEjDZHHFVj4C6nezxofIl%2FcBckdv9S%2Fgac17LtU8OmBoa4zLwEA4xljnFV6TkC9YGCnvDPdCLNATEvbIGSGrv2aOm2JmhkHeieHBWnsoKjWEPkhBlUHigd6QV1gGh0XFJVG403O5KkWLJ1DyitBsug%2BTsDeUwA%2BG4WmGsHfD9A%3D%3D--%2FGI7UqeS09O1MGb2--3Pe7kIq3cwM%2BMGCV6hi8Dg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.880019829.1777941502; expires=Wed, 05 May 2027 00:38:22 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 00:38:22 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510A:18E6D1:160B14:1267EA:69F93BFE
+
+HTTP/2 200 
+date: Tue, 05 May 2026 00:38:22 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d69eb07367c5c358700faf1f0455a1de"
+
+ succeeded in 780ms:
+HTTP/2 301 
+date: Tue, 05 May 2026 00:38:22 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/apache/incubator-retired-htrace
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=mwyLvP3nt1iClDYD%2FBkcqOBZDoBBI%2BkU6sPcqVXZf4phugD5FUC22mYtcu30x0nZBn1CEQIUYfbF4Nt4YkjDoUtouCE4qC5vjdFnodO87N9eEwuf3Wi9b1a8NDYF2%2By7a0az3csHjVNrobNswzjaaqXKNZe5ssp040o9shORwTNhDX815DOrPmOR36SHN8nbqapaSERqIDlXr8vgqLNW4%2Btuz7aPWbYeA%2FkvN2p4WkXOjGLktJ4rEqFoftE9GDGyGYUjqeJklpCDRpWXIgWwmA%3D%3D--utiOeCaQNin6FcgG--dPK7MV28AaEHhwWlyPB0vg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1794154529.1777941501; expires=Wed, 05 May 2027 00:38:21 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 00:38:21 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:B4FA:16492D:1290DC:69F93BFD
+
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"' build/discovered-artifact-metadata | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'javadoc\\.jar|sources\\.jar|tests\\.jar|repo1\\.maven\\.org|repo\\.maven\\.apache\\.org' build/discovered-artifact-metadata metadata -S | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/ws_3/$version$/ws_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/ws_3/$version$/ws_3-$version$-javadoc.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.apache-extras.beanshell/bsh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-sources.jar",
+metadata/org.apache-extras.beanshell/bsh/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-src.zip",
+metadata/org.apache-extras.beanshell/bsh/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/$version$/antlr-runtime-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/$version$/org.abego.treelayout.core-$version$-sources.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/$version$/org.abego.treelayout.core-$version$-javadoc.jar",
+metadata/org.antlr/ST4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-sources.jar",
+metadata/org.antlr/ST4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-util-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+metadata/org.apache.camel/camel-util-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/$version$/leveldb-api-$version$-sources.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/$version$/leveldb-api-$version$-javadoc.jar",
+metadata/org.apache.camel/apt/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-sources.jar",
+metadata/org.apache.camel/apt/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/org.json/json/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/json/json/$version$/json-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/incubator-retired-htrace/3.1.0/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 248ms:
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+HTrace
+======
+HTrace is a tracing framework for use with distributed systems written in java.
+
+See documentation at src/main/site/markdown/index.md or at http://htrace.incubator.apache.org.
+
+exec
+/usr/bin/bash -lc "rg -n 'incubator-retired|incubator-htrace|git-wip-us.apache.org|htrace.incubator' metadata build/discovered-artifact-metadata -S | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/incubator-retired-htrace | rg '\"html_url\"|\"description\"|\"archived\"|\"default_branch\"|\"full_name\"'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-javadoc.jar -o /tmp/htrace-core-3.1.0-incubating-javadoc.jar && jar tf /tmp/htrace-core-3.1.0-incubating-javadoc.jar | sed -n '1,60p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 145ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/htrace/
+org/apache/htrace/class-use/
+org/apache/htrace/impl/
+org/apache/htrace/impl/class-use/
+org/apache/htrace/wrappers/
+org/apache/htrace/wrappers/class-use/
+resources/
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index-all.html
+index.html
+org/apache/htrace/class-use/HTraceConfiguration.html
+org/apache/htrace/class-use/NullScope.html
+org/apache/htrace/class-use/Sampler.html
+org/apache/htrace/class-use/SamplerBuilder.html
+org/apache/htrace/class-use/Span.html
+org/apache/htrace/class-use/Span.SpanSerializer.html
+org/apache/htrace/class-use/SpanReceiver.html
+org/apache/htrace/class-use/SpanReceiverBuilder.html
+org/apache/htrace/class-use/TimelineAnnotation.html
+org/apache/htrace/class-use/Trace.html
+org/apache/htrace/class-use/TraceInfo.html
+org/apache/htrace/class-use/Tracer.html
+org/apache/htrace/class-use/TraceScope.html
+org/apache/htrace/class-use/TraceTree.html
+org/apache/htrace/class-use/TraceTree.SpansByParent.html
+org/apache/htrace/class-use/TraceTree.SpansByProcessId.html
+org/apache/htrace/HTraceConfiguration.html
+org/apache/htrace/impl/AlwaysSampler.html
+org/apache/htrace/impl/class-use/AlwaysSampler.html
+org/apache/htrace/impl/class-use/CountSampler.html
+org/apache/htrace/impl/class-use/LocalFileSpanReceiver.html
+org/apache/htrace/impl/class-use/MilliSpan.Builder.html
+org/apache/htrace/impl/class-use/MilliSpan.html
+org/apache/htrace/impl/class-use/MilliSpan.MilliSpanDeserializer.html
+org/apache/htrace/impl/class-use/NeverSampler.html
+org/apache/htrace/impl/class-use/POJOSpanReceiver.html
+org/apache/htrace/impl/class-use/ProbabilitySampler.html
+org/apache/htrace/impl/class-use/StandardOutSpanReceiver.html
+org/apache/htrace/impl/class-use/TrueIfTracingSampler.html
+org/apache/htrace/impl/CountSampler.html
+org/apache/htrace/impl/LocalFileSpanReceiver.html
+org/apache/htrace/impl/MilliSpan.Builder.html
+org/apache/htrace/impl/MilliSpan.html
+org/apache/htrace/impl/MilliSpan.MilliSpanDeserializer.html
+org/apache/htrace/impl/NeverSampler.html
+org/apache/htrace/impl/package-frame.html
+org/apache/htrace/impl/package-summary.html
+org/apache/htrace/impl/package-tree.html
+org/apache/htrace/impl/package-use.html
+org/apache/htrace/impl/POJOSpanReceiver.html
+org/apache/htrace/impl/ProbabilitySampler.html
+org/apache/htrace/impl/StandardOutSpanReceiver.html
+
+ succeeded in 204ms:
+  "full_name": "apache/incubator-retired-htrace",
+    "html_url": "https://github.com/apache",
+  "html_url": "https://github.com/apache/incubator-retired-htrace",
+  "description": "Mirror of Apache HTrace (Incubating)",
+  "archived": true,
+  "default_branch": "master",
+    "html_url": "https://github.com/apache",
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/
+web search: 
+web search: repo1.maven.org org/apache/htrace/htrace/3.1.0-incubating htrace-3.1.0-incubating.pom
+codex
+I found the live GitHub mirror at `apache/incubator-retired-htrace`; the old Apache Git URL redirects there. The artifact itself is a normal JVM JAR with class files, so I’ll leave `language` and `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+diff --git a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+index a33bc3754b2132c09c132f30cb2799bbdfc32db0..2a783486fd1058d677cd4f9ffdef0df503747b0c
+--- a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
++++ b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
++  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating",
++  "repository-url" : "https://github.com/apache/incubator-retired-htrace",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
++  "description" : "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+index a33bc3754b2132c09c132f30cb2799bbdfc32db0..2a783486fd1058d677cd4f9ffdef0df503747b0c
+--- a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
++++ b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
++  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating",
++  "repository-url" : "https://github.com/apache/incubator-retired-htrace",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
++  "description" : "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.htrace:htrace-core:3.1.0-incubating",
+  "repository-url": "https://github.com/apache/incubator-retired-htrace",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
+  "description": "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-sources.jar \\
+  https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-tests.jar \\
+  https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-javadoc.jar \\
+  https://github.com/apache/incubator-retired-htrace; do curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+diff --git a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+index a33bc3754b2132c09c132f30cb2799bbdfc32db0..2a783486fd1058d677cd4f9ffdef0df503747b0c
+--- a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
++++ b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
++  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating",
++  "repository-url" : "https://github.com/apache/incubator-retired-htrace",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
++  "description" : "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+ }
+
+ succeeded in 219ms:
+200 https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/htrace-core-3.1.0-incubating-javadoc.jar
+200 https://github.com/apache/incubator-retired-htrace
+
+codex
+The JSON parses cleanly, and each placeholder-expanded Maven URL returns `200` for sources, tests, and Javadocs. I’m checking the worktree view now because this file is under `build/`, which may be ignored by Git.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating",
+  "repository-url" : "https://github.com/apache/incubator-retired-htrace",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
+  "description" : "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a
+diff --git a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+index a33bc3754b2132c09c132f30cb2799bbdfc32db0..2a783486fd1058d677cd4f9ffdef0df503747b0c
+--- a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
++++ b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
++  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating",
++  "repository-url" : "https://github.com/apache/incubator-retired-htrace",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
++  "description" : "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+ }
+
+ succeeded in 390ms:
+!! build/
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/3.1.0-incubating/
+codex
+Updated [org.apache.htrace-htrace-core-3.1.0-incubating.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json:1).
+
+I used the archived Apache GitHub repository as the repository root and Maven Central URLs for the sources, tests, and Javadocs because all three classifier artifacts exist for `3.1.0-incubating`. ([github.com](https://github.com/apache/incubator-retired-htrace)) The description is two sentences, `language` is absent, and `not-for-native-image` is absent because this is a normal JVM artifact with class files rather than an Android/JS/Native-only artifact.
+
+Validated the JSON with `jq` and checked that the expanded source, test, documentation, and repository URLs return `200`.
+diff --git a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+index a33bc3754b2132c09c132f30cb2799bbdfc32db0..2a783486fd1058d677cd4f9ffdef0df503747b0c
+--- a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
++++ b/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating"
++  "coordinates" : "org.apache.htrace:htrace-core:3.1.0-incubating",
++  "repository-url" : "https://github.com/apache/incubator-retired-htrace",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/htrace/htrace-core/$version$/htrace-core-$version$-javadoc.jar",
++  "description" : "Apache HTrace Core provides tracing primitives for instrumenting and propagating trace spans across distributed Java systems. It includes samplers, span receivers, tracers, scopes, and helper wrappers used to collect and report timing and trace information."
+ }
+
+tokens used
+65,521
+Updated [org.apache.htrace-htrace-core-3.1.0-incubating.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a/build/discovered-artifact-metadata/org.apache.htrace-htrace-core-3.1.0-incubating.json:1).
+
+I used the archived Apache GitHub repository as the repository root and Maven Central URLs for the sources, tests, and Javadocs because all three classifier artifacts exist for `3.1.0-incubating`. ([github.com](https://github.com/apache/incubator-retired-htrace)) The description is two sentences, `language` is absent, and `not-for-native-image` is absent because this is a normal JVM artifact with class files rather than an Android/JS/Native-only artifact.
+
+Validated the JSON with `jq` and checked that the expanded source, test, documentation, and repository URLs return `200`.
+Ran agent for org.apache.htrace:htrace-core:3.1.0-incubating (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a/build/agent-artifact-discovery-logs/org.apache.htrace-htrace-core-3.1.0-incubating.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2889-b5c7ef3a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 4 executed, 5 from cache
