@@ -37,6 +37,11 @@ object PureconfigGenericScala3Models {
   given ConfigReader[ServiceSettings] = deriveReader[ServiceSettings]
   given ConfigWriter[ServiceSettings] = deriveWriter[ServiceSettings]
 
+  final case class MaintenanceWindow(day: String, hour: Option[Int], approvers: Option[List[String]])
+
+  given ConfigReader[MaintenanceWindow] = deriveReader[MaintenanceWindow]
+  given ConfigWriter[MaintenanceWindow] = deriveWriter[MaintenanceWindow]
+
   final case class StrictFeature(maxConnections: Int, enabledByDefault: Boolean = true)
 
   given ProductHint[StrictFeature] = ProductHint[StrictFeature](
@@ -102,6 +107,27 @@ class Pureconfig_generic_scala3_3Test {
     assertEquals(List("http", "public"), settings.tags)
     assertEquals((10, "burst"), settings.limits)
     assertEquals(Map("tracing" -> true, "metrics" -> false), settings.features)
+  }
+
+  @Test
+  def readsAndWritesOptionalProductFields(): Unit = {
+    val window: MaintenanceWindow = ConfigSource
+      .string("""
+        day = "sunday"
+        approvers = ["ops", "security"]
+        """)
+      .loadOrThrow[MaintenanceWindow]
+
+    assertEquals(MaintenanceWindow("sunday", None, Some(List("ops", "security"))), window)
+
+    val writtenWindow: MaintenanceWindow = MaintenanceWindow("monday", Some(2), None)
+    val written: ConfigObject = ConfigWriter[MaintenanceWindow].to(writtenWindow).asInstanceOf[ConfigObject]
+
+    assertEquals("monday", written.toConfig.getString("day"))
+    assertEquals(2, written.toConfig.getInt("hour"))
+
+    val roundTripped: MaintenanceWindow = ConfigSource.fromConfig(written.toConfig).loadOrThrow[MaintenanceWindow]
+    assertEquals(writtenWindow, roundTripped)
   }
 
   @Test
