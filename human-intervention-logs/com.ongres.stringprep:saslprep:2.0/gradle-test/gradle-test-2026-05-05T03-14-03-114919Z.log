@@ -1,0 +1,196 @@
+Starting a Gradle Daemon, 6 busy and 2 incompatible and 340 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.ongres.stringprep:saslprep:2.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5705-5f8d8c3f/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+SaslprepTest > enforcesBidirectionalRuleForRandAlCatCharacters() FAILED
+    java.lang.AssertionError: 
+    Expecting throwable message:
+      "RandALCat character is not the first and the last character"
+    to contain:
+      "RandALCat character is not the first and the last characters"
+    but did not.
+
+    Throwable that failed the check:
+
+    java.lang.IllegalArgumentException: RandALCat character is not the first and the last character
+    	at com.ongres.stringprep.Stringprep.prepare(Stringprep.java:182)
+    	at com.ongres.stringprep.Profile.prepareStored(Profile.java:59)
+    	at com.ongres.saslprep.SASLprep.prepareStored(SASLprep.java:61)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.saslPrep(SaslprepTest.java:131)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.lambda$enforcesBidirectionalRuleForRandAlCatCharacters$1(SaslprepTest.java:100)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.enforcesBidirectionalRuleForRandAlCatCharacters(SaslprepTest.java:100)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+        at com_ongres_stringprep.saslprep.SaslprepTest.enforcesBidirectionalRuleForRandAlCatCharacters(SaslprepTest.java:102)
+
+SaslprepTest > rejectsProhibitedCharactersFromEachSaslprepCategory() FAILED
+    java.lang.AssertionError: [ASCII control] 
+    Expecting throwable message:
+      "Prohibited ASCII control "0x0007""
+    to contain:
+      "Prohibited character"
+    but did not.
+
+    Throwable that failed the check:
+
+    java.lang.IllegalArgumentException: Prohibited ASCII control "0x0007"
+    	at com.ongres.stringprep.Stringprep.prohibitedCharater(Stringprep.java:278)
+    	at com.ongres.stringprep.Stringprep.prohibitedOutput(Stringprep.java:239)
+    	at com.ongres.stringprep.Stringprep.prepare(Stringprep.java:155)
+    	at com.ongres.stringprep.Profile.prepareStored(Profile.java:59)
+    	at com.ongres.saslprep.SASLprep.prepareStored(SASLprep.java:61)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.saslPrep(SaslprepTest.java:131)
+
+11 tests completed, 3 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5705-5f8d8c3f/tests/src/com.ongres.stringprep/saslprep/2.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 2s
+    	at com_ongres_stringprep.saslprep.SaslprepTest.lambda$assertProhibited$0(SaslprepTest.java:124)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.assertProhibited(SaslprepTest.java:124)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.rejectsProhibitedCharactersFromEachSaslprepCategory(SaslprepTest.java:69)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+        at com_ongres_stringprep.saslprep.SaslprepTest.assertProhibited(SaslprepTest.java:127)
+        at com_ongres_stringprep.saslprep.SaslprepTest.rejectsProhibitedCharactersFromEachSaslprepCategory(SaslprepTest.java:69)
+
+SaslprepTest > rejectsUnassignedCodePointsOnlyForStoredStrings() FAILED
+    java.lang.AssertionError: 
+    Expecting throwable message:
+      "Unassigned code point "0x0221""
+    to contain:
+      "Prohibited character"
+    but did not.
+
+    Throwable that failed the check:
+
+    java.lang.IllegalArgumentException: Unassigned code point "0x0221"
+    	at com.ongres.stringprep.Stringprep.prohibitedCharater(Stringprep.java:278)
+    	at com.ongres.stringprep.Stringprep.prohibitedOutput(Stringprep.java:272)
+    	at com.ongres.stringprep.Stringprep.prepare(Stringprep.java:155)
+    	at com.ongres.stringprep.Profile.prepareStored(Profile.java:59)
+    	at com.ongres.saslprep.SASLprep.prepareStored(SASLprep.java:61)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.saslPrep(SaslprepTest.java:131)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.lambda$rejectsUnassignedCodePointsOnlyForStoredStrings$0(SaslprepTest.java:85)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+    	at com_ongres_stringprep.saslprep.SaslprepTest.rejectsUnassignedCodePointsOnlyForStoredStrings(SaslprepTest.java:85)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+        at com_ongres_stringprep.saslprep.SaslprepTest.rejectsUnassignedCodePointsOnlyForStoredStrings(SaslprepTest.java:87)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5705-5f8d8c3f/tests/src/com.ongres.stringprep/saslprep/2.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5705-5f8d8c3f/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.ongres.stringprep:saslprep:2.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date
