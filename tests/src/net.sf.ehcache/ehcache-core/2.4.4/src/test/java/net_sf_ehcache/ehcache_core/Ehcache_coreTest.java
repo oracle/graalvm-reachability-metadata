@@ -41,6 +41,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -210,6 +214,48 @@ public class Ehcache_coreTest {
             assertThat(createdByRefresh.getObjectValue()).isEqualTo("beta:generated:3");
             assertThat(backingCache.getKeys()).containsExactlyInAnyOrder("alpha", "beta");
         } finally {
+            manager.shutdown();
+        }
+    }
+
+    @Test
+    void explicitKeyLocksCoordinateConcurrentAccess() throws Exception {
+        CacheManager manager = newCacheManager("locking",
+                new CacheConfiguration("locks", 10)
+                        .eternal(true)
+                        .overflowToDisk(false));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            Cache cache = manager.getCache("locks");
+            cache.put(new Element("locked", "initial"));
+
+            cache.acquireWriteLockOnKey("locked");
+            try {
+                assertThat(cache.isWriteLockedByCurrentThread("locked")).isTrue();
+
+                Future<Boolean> blockedReader = executor.submit(() -> cache.tryReadLockOnKey("locked", 100L));
+                assertThat(blockedReader.get(1L, TimeUnit.SECONDS)).isFalse();
+            } finally {
+                cache.releaseWriteLockOnKey("locked");
+            }
+            assertThat(cache.isWriteLockedByCurrentThread("locked")).isFalse();
+
+            Future<Boolean> successfulWriter = executor.submit(() -> {
+                if (!cache.tryWriteLockOnKey("locked", 1_000L)) {
+                    return false;
+                }
+                try {
+                    cache.put(new Element("locked", "updated"));
+                    return true;
+                } finally {
+                    cache.releaseWriteLockOnKey("locked");
+                }
+            });
+            assertThat(successfulWriter.get(2L, TimeUnit.SECONDS)).isTrue();
+            assertThat(cache.get("locked").getObjectValue()).isEqualTo("updated");
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(2L, TimeUnit.SECONDS)).isTrue();
             manager.shutdown();
         }
     }
