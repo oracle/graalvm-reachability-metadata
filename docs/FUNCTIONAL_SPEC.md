@@ -60,7 +60,7 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [CI.md](CI.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
-- Schedule-driven: full metadata sweep, new-library-version compatibility (every 4 hours), Docker image vulnerability scans, scheduled release every two weeks, scheduled coverage publication.
+- Schedule-driven: full metadata sweep, new-library-version compatibility (daily), Docker image vulnerability scans, scheduled release every two weeks, scheduled coverage publication.
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
