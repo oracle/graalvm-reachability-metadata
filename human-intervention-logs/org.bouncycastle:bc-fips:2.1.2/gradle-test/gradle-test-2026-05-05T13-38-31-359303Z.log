@@ -1,0 +1,146 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.bouncycastle:bc-fips:2.1.2
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5950-c17b617c/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 15 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.bouncycastle.crypto.fips.NativeLoader$1 in an unnamed module (file:/tmp/metadata-forge-gradle/14d0d0f7be8cbdbf/caches/modules-2/files-2.1/org.bouncycastle/bc-fips/2.1.2/61fbe8383f70489dda95a11a2a4739eb818ff2c/bc-fips-2.1.2.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /tmp/bc-fips-jni_404702155662563/libbc-probe.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+
+> Task :test
+
+ClassUtilTest > invalidGcmTagUsesAeadBadTagExceptionConstructor() FAILED
+    java.lang.UnsatisfiedLinkError: /tmp/bc-fips-jni_404702155662563/libbc-probe.so: /tmp/bc-fips-jni_404702155662563/libbc-probe.so: file too short
+
+6 tests completed, 3 failed
+        at java.base/jdk.internal.loader.NativeLibraries.load(Native Method)
+        at java.base/jdk.internal.loader.NativeLibraries$NativeLibraryImpl.open(NativeLibraries.java:321)
+        at java.base/jdk.internal.loader.NativeLibraries.loadLibrary(NativeLibraries.java:187)
+        at java.base/jdk.internal.loader.NativeLibraries.loadLibrary(NativeLibraries.java:129)
+        at java.base/java.lang.ClassLoader.loadLibrary(ClassLoader.java:2245)
+        at java.base/java.lang.Runtime.load0(Runtime.java:767)
+        at java.base/java.lang.System.load(System.java:1647)
+        at org.bouncycastle.crypto.fips.NativeLoader$1.run(Unknown Source)
+        at java.base/java.security.AccessController.doPrivileged(AccessController.java:74)
+        at org.bouncycastle.crypto.fips.NativeLoader.loadDriver(Unknown Source)
+        at org.bouncycastle.crypto.fips.FipsStatus.isReady(Unknown Source)
+        at org.bouncycastle.crypto.CryptoServicesRegistrar.getDefaultMode(Unknown Source)
+        at org.bouncycastle.crypto.CryptoServicesRegistrar.<clinit>(Unknown Source)
+        at org.bouncycastle.jcajce.provider.ProvSecureHash$MD5.configure(Unknown Source)
+        at org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider.<init>(Unknown Source)
+        at org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider.<init>(Unknown Source)
+        at org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider.<init>(Unknown Source)
+        at org_bouncycastle.bc_fips.ClassUtilTest.invalidGcmTagUsesAeadBadTagExceptionConstructor(ClassUtilTest.java:41)
+
+FipsStatusTest > fipsStatusInitializesModuleAndReportsReady() FAILED
+    org.opentest4j.AssertionFailedError: READY ==> expected: <true> but was: <false>
+        at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+        at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+        at app//org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+        at app//org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+        at app//org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:188)
+        at app//org_bouncycastle.bc_fips.FipsStatusTest.fipsStatusInitializesModuleAndReportsReady(FipsStatusTest.java:46)
+
+NativeLoaderTest > fipsStatusStartupAttemptsNativeResourceLoadingForForcedVariant() FAILED
+    java.lang.LinkageError: loader constraint violation: when resolving method 'void org.bouncycastle.crypto.general.FipsRegister.registerEngineProvider(org.bouncycastle.crypto.fips.FipsAlgorithm, org.bouncycastle.crypto.fips.FipsEngineProvider)' the class loader org_bouncycastle.bc_fips.NativeLoaderTest$IsolatedFipsLoader @53968b51 of the current class, org/bouncycastle/crypto/fips/FipsSHS, and the class loader 'app' for the method's defining class, org/bouncycastle/crypto/general/FipsRegister, have different Class objects for the type org/bouncycastle/crypto/fips/FipsAlgorithm used in the signature (org.bouncycastle.crypto.fips.FipsSHS is in unnamed module of loader org_bouncycastle.bc_fips.NativeLoaderTest$IsolatedFipsLoader @53968b51, parent loader 'app'; org.bouncycastle.crypto.general.FipsRegister is in unnamed module of loader 'app')
+        at org.bouncycastle.crypto.fips.FipsSHS.<clinit>(Unknown Source)
+        at java.base/java.lang.Class.forName0(Native Method)
+        at java.base/java.lang.Class.forName(Class.java:467)
+        at java.base/java.lang.Class.forName(Class.java:458)
+        at org.bouncycastle.crypto.fips.FipsStatus.loadClass(Unknown Source)
+        at org.bouncycastle.crypto.fips.FipsStatus.access$200(Unknown Source)
+        at org.bouncycastle.crypto.fips.FipsStatus$Loader.run(Unknown Source)
+        at org.bouncycastle.crypto.fips.FipsStatus.isReady(Unknown Source)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at org_bouncycastle.bc_fips.NativeLoaderTest.invokeStatic(NativeLoaderTest.java:72)
+        at org_bouncycastle.bc_fips.NativeLoaderTest.assertIsolatedStartupAttemptsNativeLoading(NativeLoaderTest.java:60)
+        at org_bouncycastle.bc_fips.NativeLoaderTest.fipsStatusStartupAttemptsNativeResourceLoadingForForcedVariant(NativeLoaderTest.java:44)
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5950-c17b617c/tests/src/org.bouncycastle/bc-fips/2.1.2/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5950-c17b617c/tests/src/org.bouncycastle/bc-fips/2.1.2/build/reports/tests/test/index.html
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+* Try:
+
+> Run with --scanYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins. to generate a Build Scan (Powered by Develocity).
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+15 actionable tasks: 4 executed, 11 up-to-date
+BUILD FAILED in 16s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5950-c17b617c/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.bouncycastle:bc-fips:2.1.2 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 19s
+9 actionable tasks: 1 executed, 8 up-to-date
