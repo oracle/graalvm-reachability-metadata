@@ -1,0 +1,1177 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df996-7901-79f1-81c5-954a93716d26
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.inject:guice:3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0" when "$version$" is replaced with "3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+- Set "coordinates" to "com.google.inject:guice:3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format, then verify the Guice 3.0 artifact and tag URLs before editing the target JSON.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+
+exec
+/usr/bin/bash -lc "if [ -f build/discovered-artifact-metadata/com.google.inject-guice-3.0.json ]; then sed -n '1,200p' build/discovered-artifact-metadata/com.google.inject-guice-3.0.json; fi" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.inject:guice:3.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+codex
+The target file currently only has coordinates, so this is a straightforward fill-in. I’m checking Maven Central first because the request prefers Maven-hosted sources and tests when they exist, then I’ll fall back to tagged upstream URLs where needed.
+web search: 
+web search: Maven Central com.google.inject guice 3.0 sources tests jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/inject/guice/3.0/guice-3.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.google.inject</groupId>
+    <artifactId>guice-parent</artifactId>
+    <version>3.0</version>
+  </parent>
+
+  <artifactId>guice</artifactId>
+
+  <name>Google Guice - Core Library</name>
+
+  <properties>
+    <cglib.version>2.2.1-v20090111</cglib.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <!--
+     | Replace with official CGLIB artifact when it's released
+    -->
+    <dependency>
+      <groupId>org.sonatype.sisu.inject</groupId>
+      <artifactId>cglib</artifactId>
+      <version>${cglib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject-tck</artifactId>
+      <version>1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>3.0.5.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute</groupId>
+      <artifactId>bnd</artifactId>
+      <version>0.0.384</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <version>3.0.5</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+       | Add standard LICENSE and NOTICE files
+      -->
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+      </plugin>
+      <!--
+       | Enable Java5 conformance checks
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!--
+           | Temporarily excluded tests
+          -->
+          <excludes>
+            <exclude>**/OSGiContainerTest*</exclude>
+            <exclude>**/ScopesTest*</exclude>
+            <exclude>**/TypeConversionTest*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <!--
+       | Add OSGi manifest
+      -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+      </plugin>
+      <!--
+       | Remove duplicate jarjar'd LICENSE and NOTICE
+      -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>LICENSE</exclude>
+            <exclude>NOTICE</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <!--
+       | No-AOP profile: repeat the build lifecycle with munged no-AOP source
+      -->
+      <id>guice.with.no_aop</id>
+      <activation>
+        <property>
+          <name>guice.with.no_aop</name>
+          <value>!false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>munge-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>munge-fork</goal>
+                </goals>
+                <configuration>
+                  <symbols>NO_AOP</symbols>
+                  <excludes>
+                    **/InterceptorBinding.java,
+                    **/InterceptorBindingProcessor.java,
+                    **/InterceptorStackCallback.java,
+                    **/LineNumbers.java,
+                    **/MethodAspect.java,
+                    **/ProxyFactory.java,
+                    **/BytecodeGenTest.java,
+                    **/IntegrationTest.java,
+                    **/MethodInterceptionTest.java,
+                    **/ProxyFactoryTest.java
+                  </excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+           | Package the no-AOP build with its own OSGi manifest and attach using "no_aop" classifier
+          -->
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>no_aop</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.directory}/munged/classes</classesDirectory>
+                  <classifier>no_aop</classifier>
+                  <archive>
+                    <manifestFile>${project.build.directory}/munged/classes/META-INF/MANIFEST.MF</manifestFile>
+                  </archive>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!--
+       | JarJar build profile: re-package ASM and CGLIB classes under the Guice namespace
+      -->
+      <id>guice.with.jarjar</id>
+      <activation>
+        <property>
+          <name>guice.with.jarjar</name>
+          <value>!false</value>
+        </property>
+      </activation>
+      <dependencies>
+        <!--
+         | Mark as optional: embedded by JarJar
+        -->
+        <dependency>
+          <groupId>org.sonatype.sisu.inject</groupId>
+          <artifactId>cglib</artifactId>
+          <version>${cglib.version}</version>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>jarjar-maven-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>*:asm</include>
+                <include>*:cglib</include>
+              </includes>
+            </configuration>
+          </plugin>
+          <plugin>
+            <!--
+             | Package the original non-JarJar'd classes so extensions can compile against them
+            -->
+            <artifactId>maven-jar-plugin</artifactId>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/google/guice.git | rg '3\\.0|guice' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/inject/guice/3.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 126ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/inject/guice/3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/inject/guice/3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="guice-3.0-javadoc.jar" title="guice-3.0-javadoc.jar">guice-3.0-javadoc.jar</a>                             2011-03-25 18:19    884740      
+<a href="guice-3.0-javadoc.jar.asc" title="guice-3.0-javadoc.jar.asc">guice-3.0-javadoc.jar.asc</a>                         2011-03-25 18:19       194      
+<a href="guice-3.0-javadoc.jar.asc.md5" title="guice-3.0-javadoc.jar.asc.md5">guice-3.0-javadoc.jar.asc.md5</a>                     2011-03-25 18:19        32      
+<a href="guice-3.0-javadoc.jar.asc.sha1" title="guice-3.0-javadoc.jar.asc.sha1">guice-3.0-javadoc.jar.asc.sha1</a>                    2011-03-25 18:19        40      
+<a href="guice-3.0-javadoc.jar.md5" title="guice-3.0-javadoc.jar.md5">guice-3.0-javadoc.jar.md5</a>                         2011-03-25 18:19        32      
+<a href="guice-3.0-javadoc.jar.sha1" title="guice-3.0-javadoc.jar.sha1">guice-3.0-javadoc.jar.sha1</a>                        2011-03-25 18:19        40      
+<a href="guice-3.0-no_aop.jar" title="guice-3.0-no_aop.jar">guice-3.0-no_aop.jar</a>                              2011-03-25 18:19    487010      
+<a href="guice-3.0-no_aop.jar.asc" title="guice-3.0-no_aop.jar.asc">guice-3.0-no_aop.jar.asc</a>                          2011-03-25 18:19       194      
+<a href="guice-3.0-no_aop.jar.asc.md5" title="guice-3.0-no_aop.jar.asc.md5">guice-3.0-no_aop.jar.asc.md5</a>                      2011-03-25 18:19        32      
+<a href="guice-3.0-no_aop.jar.asc.sha1" title="guice-3.0-no_aop.jar.asc.sha1">guice-3.0-no_aop.jar.asc.sha1</a>                     2011-03-25 18:19        40      
+<a href="guice-3.0-no_aop.jar.md5" title="guice-3.0-no_aop.jar.md5">guice-3.0-no_aop.jar.md5</a>                          2011-03-25 18:19        32      
+<a href="guice-3.0-no_aop.jar.sha1" title="guice-3.0-no_aop.jar.sha1">guice-3.0-no_aop.jar.sha1</a>                         2011-03-25 18:19        40      
+<a href="guice-3.0-sources.jar" title="guice-3.0-sources.jar">guice-3.0-sources.jar</a>                             2011-03-25 18:19    339281      
+<a href="guice-3.0-sources.jar.asc" title="guice-3.0-sources.jar.asc">guice-3.0-sources.jar.asc</a>                         2011-03-25 18:19       194      
+<a href="guice-3.0-sources.jar.asc.md5" title="guice-3.0-sources.jar.asc.md5">guice-3.0-sources.jar.asc.md5</a>                     2011-03-25 18:19        32      
+<a href="guice-3.0-sources.jar.asc.sha1" title="guice-3.0-sources.jar.asc.sha1">guice-3.0-sources.jar.asc.sha1</a>                    2011-03-25 18:19        40      
+<a href="guice-3.0-sources.jar.md5" title="guice-3.0-sources.jar.md5">guice-3.0-sources.jar.md5</a>                         2011-03-25 18:19        32      
+<a href="guice-3.0-sources.jar.sha1" title="guice-3.0-sources.jar.sha1">guice-3.0-sources.jar.sha1</a>                        2011-03-25 18:19        40      
+<a href="guice-3.0-tests.jar" title="guice-3.0-tests.jar">guice-3.0-tests.jar</a>                               2011-03-25 18:19   1121982      
+<a href="guice-3.0-tests.jar.asc" title="guice-3.0-tests.jar.asc">guice-3.0-tests.jar.asc</a>                           2011-03-25 18:19       194      
+<a href="guice-3.0-tests.jar.asc.md5" title="guice-3.0-tests.jar.asc.md5">guice-3.0-tests.jar.asc.md5</a>                       2011-03-25 18:19        32      
+<a href="guice-3.0-tests.jar.asc.sha1" title="guice-3.0-tests.jar.asc.sha1">guice-3.0-tests.jar.asc.sha1</a>                      2011-03-25 18:19        40      
+<a href="guice-3.0-tests.jar.md5" title="guice-3.0-tests.jar.md5">guice-3.0-tests.jar.md5</a>                           2011-03-25 18:19        32      
+<a href="guice-3.0-tests.jar.sha1" title="guice-3.0-tests.jar.sha1">guice-3.0-tests.jar.sha1</a>                          2011-03-25 18:19        40      
+<a href="guice-3.0.jar" title="guice-3.0.jar">guice-3.0.jar</a>                                     2011-03-25 18:19    710492      
+<a href="guice-3.0.jar.asc" title="guice-3.0.jar.asc">guice-3.0.jar.asc</a>                                 2011-03-25 18:19       194      
+<a href="guice-3.0.jar.asc.md5" title="guice-3.0.jar.asc.md5">guice-3.0.jar.asc.md5</a>                             2011-03-25 18:19        32      
+<a href="guice-3.0.jar.asc.sha1" title="guice-3.0.jar.asc.sha1">guice-3.0.jar.asc.sha1</a>                            2011-03-25 18:19        40      
+<a href="guice-3.0.jar.md5" title="guice-3.0.jar.md5">guice-3.0.jar.md5</a>                                 2011-03-25 18:19        32      
+<a href="guice-3.0.jar.sha1" title="guice-3.0.jar.sha1">guice-3.0.jar.sha1</a>                                2011-03-25 18:19        40      
+<a href="guice-3.0.pom" title="guice-3.0.pom">guice-3.0.pom</a>                                     2011-03-25 18:19      7282      
+<a href="guice-3.0.pom.asc" title="guice-3.0.pom.asc">guice-3.0.pom.asc</a>                                 2011-03-25 18:19       194      
+<a href="guice-3.0.pom.asc.md5" title="guice-3.0.pom.asc.md5">guice-3.0.pom.asc.md5</a>                             2011-03-25 18:19        32      
+<a href="guice-3.0.pom.asc.sha1" title="guice-3.0.pom.asc.sha1">guice-3.0.pom.asc.sha1</a>                            2011-03-25 18:19        40      
+<a href="guice-3.0.pom.md5" title="guice-3.0.pom.md5">guice-3.0.pom.md5</a>                                 2011-03-25 18:19        32      
+<a href="guice-3.0.pom.sha1" title="guice-3.0.pom.sha1">guice-3.0.pom.sha1</a>                                2011-03-25 18:19        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 382ms:
+77727a73c2addaffd388faacc99a76b61b7bd4c2	refs/tags/3.0
+83262cd2731505a6b4ccb5685f5b300fcccd5eb8	refs/tags/3.0-rc1
+3310d26e2ea8d521f7c1355cbb64ac4af97f0f76	refs/tags/3.0-rc2
+57c6c235482eef44c58283d23aa4312cf983a4cc	refs/tags/3.0-rc3
+
+web search: 
+web search: Maven Central com.google.inject guice 3.0 sources tests jar
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|not-for-native-image|\"language\"' . --glob '*.json' --glob '"'!build/discovered-artifact-metadata/com.google.inject-guice-3.0.json'"' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+./metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+./metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+./metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+./metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+./metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+./metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+./metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+./metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+./metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+./metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+./metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+./metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+./metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+./metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+./metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+./metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+./metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+./metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+./metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+./metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+./metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+./metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+./metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+./metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+./metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+./metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+./metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'artifact-metadata|metadata.*json|schema|discovered' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+forge/utility_scripts/schema_validator.py
+forge/schemas/benchmark_run_metrics_schema.json
+forge/schemas/benchmark_suite_schema.json
+forge/schemas/strategy_schema.json
+forge/tests/test_schema_validator.py
+tests/tck-build-logic/src/main/resources/scaffold/reachability-metadata.json.template
+metadata/com.aayushatharva.brotli4j/brotli4j/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json
+metadata/com.aayushatharva.brotli4j/service/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/service/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/reachability-metadata.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/io.suzaku/boopickle_3/1.4.0/reachability-metadata.json
+metadata/io.suzaku/boopickle_3/index.json
+metadata/com.google.javascript/closure-compiler-externs/index.json
+metadata/com.google.javascript/closure-compiler-externs/v20150505/reachability-metadata.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/3.0.0/reachability-metadata.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/3.31.6/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json
+metadata/com.google.api.grpc/grpc-google-common-protos/2.70.0/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/3.52.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json
+tests/src/org.ehcache/ehcache/3.10.8-jakarta/src/test/resources/META-INF/native-image/ehcache-test-metadata/resource-config.json
+tests/src/io.opencensus/opencensus-api/0.31.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-common-protos/2.41.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-common-protos/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json
+tests/src/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json
+metadata/com.google.api.grpc/proto-google-iam-v1/1.40.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json
+metadata/ru.vyarus/generics-resolver/3.0.3/reachability-metadata.json
+metadata/ru.vyarus/generics-resolver/index.json
+metadata/dev.zio/zio-config_3/4.0.4/reachability-metadata.json
+metadata/dev.zio/zio-config_3/index.json
+metadata/dev.zio/zio-stacktracer_3/2.1.15/reachability-metadata.json
+metadata/dev.zio/zio-stacktracer_3/index.json
+metadata/dev.zio/zio-stacktracer_3/2.1.19/reachability-metadata.json
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/reachability-metadata.json
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json
+metadata/dev.zio/zio-http_3/3.3.3/reachability-metadata.json
+metadata/dev.zio/zio-http_3/index.json
+metadata/dev.zio/zio-internal-macros_3/2.1.15/reachability-metadata.json
+metadata/dev.zio/zio-internal-macros_3/index.json
+metadata/dev.zio/zio-internal-macros_3/2.1.19/reachability-metadata.json
+metadata/dev.zio/zio-schema_3/1.7.0/reachability-metadata.json
+metadata/dev.zio/zio-schema_3/index.json
+metadata/dev.zio/izumi-reflect_3/3.0.1/reachability-metadata.json
+metadata/dev.zio/izumi-reflect_3/index.json
+metadata/dev.zio/zio-schema-derivation_3/1.7.0/reachability-metadata.json
+metadata/dev.zio/zio-schema-derivation_3/index.json
+metadata/dev.zio/zio-prelude_3/1.0.0-RC39/reachability-metadata.json
+metadata/dev.zio/zio-prelude_3/index.json
+metadata/dev.zio/zio-interop-cats_3/index.json
+metadata/dev.zio/zio-interop-cats_3/23.1.0.13/reachability-metadata.json
+metadata/dev.zio/zio-schema-macros_3/1.7.0/reachability-metadata.json
+metadata/dev.zio/zio-schema-macros_3/index.json
+metadata/dev.zio/zio-prelude-macros_3/1.0.0-RC39/reachability-metadata.json
+metadata/dev.zio/zio-prelude-macros_3/index.json
+metadata/dev.zio/zio-config-typesafe_3/4.0.7/reachability-metadata.json
+metadata/dev.zio/zio-config-typesafe_3/index.json
+metadata/dev.zio/zio-interop-tracer_3/index.json
+metadata/dev.zio/zio-interop-tracer_3/23.1.0.13/reachability-metadata.json
+metadata/org.scalatra/scalatra-common_3/3.0.0-M5-javax/reachability-metadata.json
+metadata/org.scalatra/scalatra-common_3/index.json
+metadata/org.apiguardian/apiguardian-api/1.1.2/reachability-metadata.json
+metadata/org.apiguardian/apiguardian-api/index.json
+metadata/javax.activation/javax.activation-api/1.2.0/reachability-metadata.json
+metadata/javax.activation/javax.activation-api/index.json
+metadata/javax.activation/activation/1.1/reachability-metadata.json
+metadata/javax.activation/activation/index.json
+metadata/org.apache.arrow/arrow-format/7.0.0/reachability-metadata.json
+metadata/org.apache.arrow/arrow-format/index.json
+metadata/org.apache.arrow/arrow-format/15.0.0/reachability-metadata.json
+metadata/org.javamoney.moneta/moneta-core/1.3/reachability-metadata.json
+metadata/org.javamoney.moneta/moneta-core/1.4/reachability-metadata.json
+metadata/org.javamoney.moneta/moneta-core/index.json
+metadata/dev.failsafe/failsafe/3.3.1/reachability-metadata.json
+metadata/dev.failsafe/failsafe/index.json
+
+exec
+/usr/bin/bash -lc "find . -path '*discovered-artifact-metadata*' -maxdepth 4 -type f | head -100" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/com/google/inject/guice/3.0/guice-3.0-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 19:21:51 GMT
+content-type: application/java-archive
+content-length: 1121982
+cf-ray: 9f721c501e79bc44-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 293062
+etag: "e10248163d552250ab75dba8bb0faa38"
+last-modified: Fri, 25 Mar 2011 18:20:21 GMT
+x-checksum-md5: e10248163d552250ab75dba8bb0faa38
+x-checksum-sha1: f89c3881f6c09a9afc91ce3095c9ac7cfdc57ab8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/com/google/inject/guice/3.0/guice-3.0-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 19:21:51 GMT
+content-type: application/java-archive
+content-length: 339281
+cf-ray: 9f721c505a573d61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1740551
+etag: "b347b70b90a9431f9e4375e3732d9027"
+last-modified: Fri, 25 Mar 2011 18:19:53 GMT
+x-checksum-md5: b347b70b90a9431f9e4375e3732d9027
+x-checksum-sha1: d117c4481f64955cb1862ed38cb568add2f5fe05
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/com/google/inject/guice/3.0/guice-3.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 19:21:51 GMT
+content-type: application/java-archive
+content-length: 884740
+cf-ray: 9f721c505c54bc4e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 739086
+etag: "02d6dc900deac2d7d80365d4aff80056"
+last-modified: Fri, 25 Mar 2011 18:20:05 GMT
+x-checksum-md5: 02d6dc900deac2d7d80365d4aff80056
+x-checksum-sha1: 9785ebd9ca29e8bcac23a2e6ce9ea3ccb339fe18
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/google/guice/tree/3.0 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 780ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 19:21:52 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"77ccd202ba94d3469d3ad537e15321b0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=rwgeHF4Wy3y7Y1eznBSMx09Kl0p5q%2BCWhkg0mAQgGj8jYA%2B6pn77tjg7i7m1dOoTn7XuGYdG8ji2n3OmQytlvyBoXxpwlGlG9rasCYnLft%2BEL6%2BYXoMsR8rTwKnJubqsrF%2BWI3pHFiYM%2FEJh8kuCXmQ8g89Hb7WvwPIBO81pd%2FHbDR3OVzYEdJARSsyAHnqo2XpDufnJsYMQ%2BEYqN2YcPsbd75EcTvLh%2BNJm3L4wbXKvmE%2FtQ65a9v0xnoDszdOU6JQskuftJ08kbjMlvTDAJQ%3D%3D--SXAZjqX9LM3wQg99--xMveMvWupv3HQPYf8pH90Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.839381458.1778008911; expires=Wed, 05 May 2027 19:21:51 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 19:21:51 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5105:19B340:BBDF19:8B4F5B:69FA434F
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/google/inject/guice-parent/3.0/guice-parent-3.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2006 Google, Inc. All rights reserved.
+
+This program is licensed to you under the Apache License Version 2.0,
+and you may not use this file except in compliance with the Apache License Version 2.0.
+You may obtain a copy of the Apache License Version 2.0 at http://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the Apache License Version 2.0 is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.google</groupId>
+    <artifactId>google</artifactId>
+    <version>5</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <groupId>com.google.inject</groupId>
+  <artifactId>guice-parent</artifactId>
+  <version>3.0</version>
+
+  <name>Google Guice</name>
+
+  <description>
+    Guice is a lightweight dependency injection framework for Java 5 and above
+  </description>
+
+  <url>http://code.google.com/p/google-guice/</url>
+  <inceptionYear>2006</inceptionYear>
+
+  <organization>
+    <name>Google, Inc.</name>
+    <url>http://www.google.com</url>
+  </organization>
+
+  <mailingLists>
+    <mailingList>
+      <name>Guice Users List</name>
+      <archive>http://groups.google.com/group/google-guice/topics</archive>
+      <subscribe>http://groups.google.com/group/google-guice/subscribe</subscribe>
+      <unsubscribe>http://groups.google.com/group/google-guice/subscribe</unsubscribe>
+      <post>http://groups.google.com/group/google-guice/post</post>
+    </mailingList>
+    <mailingList>
+      <name>Guice Developers List</name>
+      <archive>http://groups.google.com/group/google-guice-dev/topics</archive>
+      <subscribe>http://groups.google.com/group/google-guice-dev/subscribe</subscribe>
+      <unsubscribe>http://groups.google.com/group/google-guice-dev/subscribe</unsubscribe>
+      <post>http://groups.google.com/group/google-guice-dev/post</post>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:svn:http://google-guice.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://google-guice.googlecode.com/svn/trunk</developerConnection>
+    <url>http://code.google.com/p/google-guice/source/browse</url>
+  </scm>
+
+  <issueManagement>
+    <system>Google Code</system>
+    <url>http://code.google.com/p/google-guice/issues/</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/Google-Guice/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>core</module>
+    <module>extensions</module>
+  </modules>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <properties>
+    <!--
+     | The spec version of the public Guice API
+    -->
+    <guice.api.version>1.3</guice.api.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!--
+     | Use "-Dguice.with.jarjar=false" to build without jarjar
+    -->
+    <guice.with.jarjar>true</guice.with.jarjar>
+    <!--
+     | Use "-Dguice.with.no_aop=false" to skip the no-AOP variant
+    -->
+    <guice.with.no_aop>true</guice.with.no_aop>
+  </properties>
+
+  <dependencies>
+    <!--
+     | Run tests with TestNG
+    -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>5.11</version>
+      <classifier>jdk15</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!--
+     | Ant-style directories
+    -->
+    <sourceDirectory>${project.basedir}/src</sourceDirectory>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/test</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
+    <pluginManagement>
+      <plugins>
+        <!--
+         | Standard LICENSE and NOTICE files
+        -->
+        <plugin>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.1</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>process</goal>
+              </goals>
+              <configuration>
+                <resourceBundles>
+                  <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
+                </resourceBundles>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!--
+         | Make sure we only use Java5 methods
+        -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.6</version>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/google/inject/guice/3.0/guice-3.0-sources.jar -o /tmp/guice-3.0-sources.jar && jar tf /tmp/guice-3.0-sources.jar | head -60' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/google/inject/guice/3.0/guice-3.0-tests.jar -o /tmp/guice-3.0-tests.jar && jar tf /tmp/guice-3.0-tests.jar | head -60' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/google/inject/guice/3.0/guice-3.0.jar -o /tmp/guice-3.0.jar && jar tf /tmp/guice-3.0.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 290ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+com/
+com/google/
+com/google/inject/
+com/google/inject/binder/
+com/google/inject/internal/
+com/google/inject/internal/util/
+com/google/inject/matcher/
+com/google/inject/name/
+com/google/inject/spi/
+com/google/inject/util/
+com/google/inject/AbstractModule.java
+com/google/inject/binder/AnnotatedBindingBuilder.java
+com/google/inject/binder/AnnotatedConstantBindingBuilder.java
+com/google/inject/binder/AnnotatedElementBuilder.java
+com/google/inject/binder/ConstantBindingBuilder.java
+com/google/inject/binder/LinkedBindingBuilder.java
+com/google/inject/binder/package-info.java
+com/google/inject/binder/ScopedBindingBuilder.java
+com/google/inject/Binder.java
+com/google/inject/Binding.java
+com/google/inject/BindingAnnotation.java
+com/google/inject/ConfigurationException.java
+com/google/inject/CreationException.java
+com/google/inject/Exposed.java
+com/google/inject/Guice.java
+com/google/inject/ImplementedBy.java
+com/google/inject/Inject.java
+com/google/inject/Injector.java
+com/google/inject/internal/AbstractBindingBuilder.java
+com/google/inject/internal/AbstractBindingProcessor.java
+com/google/inject/internal/AbstractProcessor.java
+com/google/inject/internal/Annotations.java
+com/google/inject/internal/BindingBuilder.java
+com/google/inject/internal/BindingImpl.java
+com/google/inject/internal/BindingProcessor.java
+com/google/inject/internal/BoundProviderFactory.java
+com/google/inject/internal/BytecodeGen.java
+com/google/inject/internal/CircularDependencyProxy.java
+com/google/inject/internal/ConstantBindingBuilderImpl.java
+com/google/inject/internal/ConstantFactory.java
+com/google/inject/internal/ConstructionContext.java
+com/google/inject/internal/ConstructionProxy.java
+com/google/inject/internal/ConstructionProxyFactory.java
+com/google/inject/internal/ConstructorBindingImpl.java
+com/google/inject/internal/ConstructorInjector.java
+com/google/inject/internal/ConstructorInjectorStore.java
+com/google/inject/internal/ContextualCallable.java
+com/google/inject/internal/CreationListener.java
+com/google/inject/internal/DefaultConstructionProxyFactory.java
+com/google/inject/internal/DeferredLookups.java
+com/google/inject/internal/DelegatingInvocationHandler.java
+com/google/inject/internal/EncounterImpl.java
+com/google/inject/internal/ErrorHandler.java
+com/google/inject/internal/Errors.java
+com/google/inject/internal/ErrorsException.java
+
+ succeeded in 357ms:
+com/google/inject/AbstractModule.class
+com/google/inject/binder/AnnotatedBindingBuilder.class
+com/google/inject/binder/AnnotatedConstantBindingBuilder.class
+com/google/inject/binder/AnnotatedElementBuilder.class
+com/google/inject/binder/ConstantBindingBuilder.class
+com/google/inject/binder/LinkedBindingBuilder.class
+com/google/inject/binder/ScopedBindingBuilder.class
+com/google/inject/Binder.class
+com/google/inject/Binding.class
+com/google/inject/BindingAnnotation.class
+com/google/inject/ConfigurationException.class
+com/google/inject/CreationException.class
+com/google/inject/Exposed.class
+com/google/inject/Guice.class
+com/google/inject/ImplementedBy.class
+com/google/inject/Inject.class
+com/google/inject/Injector.class
+com/google/inject/internal/AbstractBindingBuilder.class
+com/google/inject/internal/AbstractBindingProcessor$Processor$1.class
+com/google/inject/internal/AbstractBindingProcessor$Processor.class
+
+ succeeded in 486ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/google/
+com/google/inject/
+com/google/inject/example/
+com/google/inject/internal/
+com/google/inject/internal/asm/
+com/google/inject/internal/util/
+com/google/inject/matcher/
+com/google/inject/name/
+com/google/inject/spi/
+com/google/inject/util/
+com/googlecode/
+com/googlecode/guice/
+com/googlecode/guice/bundle/
+com/google/inject/AllTests.class
+com/google/inject/Asserts.class
+com/google/inject/BinderTest$1.class
+com/google/inject/BinderTest$10$1.class
+com/google/inject/BinderTest$10.class
+com/google/inject/BinderTest$11.class
+com/google/inject/BinderTest$12.class
+com/google/inject/BinderTest$13.class
+com/google/inject/BinderTest$14.class
+com/google/inject/BinderTest$15$1.class
+com/google/inject/BinderTest$15.class
+com/google/inject/BinderTest$16$1.class
+com/google/inject/BinderTest$16.class
+com/google/inject/BinderTest$17.class
+com/google/inject/BinderTest$18.class
+com/google/inject/BinderTest$19.class
+com/google/inject/BinderTest$2.class
+com/google/inject/BinderTest$20$1.class
+com/google/inject/BinderTest$20.class
+com/google/inject/BinderTest$21$1.class
+com/google/inject/BinderTest$21.class
+com/google/inject/BinderTest$22$1.class
+com/google/inject/BinderTest$22.class
+com/google/inject/BinderTest$23.class
+com/google/inject/BinderTest$24.class
+com/google/inject/BinderTest$25.class
+com/google/inject/BinderTest$26$1.class
+com/google/inject/BinderTest$26.class
+com/google/inject/BinderTest$27$1.class
+com/google/inject/BinderTest$27.class
+com/google/inject/BinderTest$3$1.class
+com/google/inject/BinderTest$3.class
+com/google/inject/BinderTest$4.class
+com/google/inject/BinderTest$5.class
+com/google/inject/BinderTest$6.class
+com/google/inject/BinderTest$7.class
+com/google/inject/BinderTest$8$1.class
+com/google/inject/BinderTest$8.class
+com/google/inject/BinderTest$9$1.class
+com/google/inject/BinderTest$9.class
+com/google/inject/BinderTest$ExtendsHasImplementedBy2.class
+com/google/inject/BinderTest$Foo.class
+com/google/inject/BinderTest$HasImplementedBy1.class
+com/google/inject/BinderTest$HasImplementedBy2.class
+
+codex
+Maven Central has `sources`, `tests`, and `javadoc` artifacts for `3.0`, and the upstream Git repository has a `3.0` tag. Since the main artifact contains `.class` files and is ordinary Java bytecode, I’ll leave the language and not-for-native-image fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+diff --git a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+index 34ccdf333436c5c539ea2983b030769ae560bbe6..a42b0b0ed42b92302f1f0992f3e27b2d66c3df9f
+--- a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
++++ b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.inject:guice:3.0"
++  "coordinates" : "com.google.inject:guice:3.0",
++  "repository-url" : "https://github.com/google/guice",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
++  "description" : "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+index 34ccdf333436c5c539ea2983b030769ae560bbe6..a42b0b0ed42b92302f1f0992f3e27b2d66c3df9f
+--- a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
++++ b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.inject:guice:3.0"
++  "coordinates" : "com.google.inject:guice:3.0",
++  "repository-url" : "https://github.com/google/guice",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
++  "description" : "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+ }
+
+web search: 
+web search: https://github.com/google/guice/tree/3.0
+web search: 
+web search: repo.maven.apache.org/maven2/com/google/inject/guice/3.0/ guice-3.0-sources.jar guice-3.0-tests.jar guice-3.0-javadoc.jar
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.google.inject-guice-3.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.inject:guice:3.0",
+  "repository-url": "https://github.com/google/guice",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
+  "description": "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.inject-guice-3.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+index 34ccdf333436c5c539ea2983b030769ae560bbe6..a42b0b0ed42b92302f1f0992f3e27b2d66c3df9f
+--- a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
++++ b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.inject:guice:3.0"
++  "coordinates" : "com.google.inject:guice:3.0",
++  "repository-url" : "https://github.com/google/guice",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
++  "description" : "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/com.google.inject-guice-3.0.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.google.inject-guice-3.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.inject:guice:3.0",
+  "repository-url" : "https://github.com/google/guice",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
+  "description" : "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.google.inject-guice-3.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d
+diff --git a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+index 34ccdf333436c5c539ea2983b030769ae560bbe6..a42b0b0ed42b92302f1f0992f3e27b2d66c3df9f
+--- a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
++++ b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.inject:guice:3.0"
++  "coordinates" : "com.google.inject:guice:3.0",
++  "repository-url" : "https://github.com/google/guice",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
++  "description" : "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+ }
+
+ succeeded in 401ms:
+web search: 
+web search: 
+web search: 
+web search: "guice-3.0-sources.jar" "guice-3.0-tests.jar"
+web search: 
+web search: GitHub google guice repository
+codex
+Updated [com.google.inject-guice-3.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json).
+
+I used Maven Central URLs for the source, test, and javadoc artifacts, and set the repository root to the Google Guice GitHub repository. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/inject/guice/3.0/?utm_source=openai)) I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because `guice:3.0` is a standard JVM Java artifact.
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+index 34ccdf333436c5c539ea2983b030769ae560bbe6..a42b0b0ed42b92302f1f0992f3e27b2d66c3df9f
+--- a/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
++++ b/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.inject:guice:3.0"
++  "coordinates" : "com.google.inject:guice:3.0",
++  "repository-url" : "https://github.com/google/guice",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/inject/guice/$version$/guice-$version$-javadoc.jar",
++  "description" : "Guice is a lightweight dependency injection framework for Java that implements the javax.inject API and lets applications configure object graphs through modules and bindings. It supports constructor, method, and field injection plus AOP-style method interception to reduce boilerplate in JVM applications."
+ }
+
+tokens used
+66,674
+Updated [com.google.inject-guice-3.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/build/discovered-artifact-metadata/com.google.inject-guice-3.0.json).
+
+I used Maven Central URLs for the source, test, and javadoc artifacts, and set the repository root to the Google Guice GitHub repository. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/inject/guice/3.0/?utm_source=openai)) I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because `guice:3.0` is a standard JVM Java artifact.
+
+Validated the JSON with `jq`.
+Ran agent for com.google.inject:guice:3.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/build/agent-artifact-discovery-logs/com.google.inject-guice-3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2376-3fb3152d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 13s
+9 actionable tasks: 9 executed
