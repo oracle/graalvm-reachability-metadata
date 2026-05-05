@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.SQLException;
 
+import net.postgis.jdbc.DriverWrapper;
 import org.junit.jupiter.api.Test;
-import org.postgis.DriverWrapper;
 
 public class DriverWrapperTest {
 
