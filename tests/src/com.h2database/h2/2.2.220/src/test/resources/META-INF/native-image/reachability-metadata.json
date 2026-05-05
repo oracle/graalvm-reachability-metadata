@@ -301,9 +301,62 @@
           ]
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "h2.MemoryUnmapperTest"
+      },
+      "type" : "org.h2.util.MemoryUnmapper",
+      "fields" : [
+        {
+          "name" : "INVOKE_CLEANER"
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.MemoryUnmapper"
+      },
+      "type" : "java.nio.DirectByteBuffer",
+      "methods" : [
+        {
+          "name" : "cleaner",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.MemoryUnmapper"
+      },
+      "type" : "jdk.internal.ref.Cleaner",
+      "methods" : [
+        {
+          "name" : "clean",
+          "parameterTypes" : [ ]
+        }
+      ]
     }
   ],
   "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "glob" : "META-INF/services/com.sun.source.util.Plugin"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "glob" : "META-INF/services/java.nio.file.spi.FileSystemProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "glob" : "META-INF/services/javax.annotation.processing.Processor"
+    },
     {
       "condition" : {
         "typeReached" : "h2.DatabaseTest"
@@ -384,6 +437,18 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "glob" : "com/sun/tools/javac/resources/compiler_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "glob" : "com/sun/tools/javac/resources/javac_en.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "h2.JdbcUtilsTest$SimpleContext"
       },
       "glob" : "jndi.properties"
@@ -393,6 +458,26 @@
         "typeReached" : "h2.CompareModeIcu4JTest"
       },
       "glob" : "urlhandler.props"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "module" : "jdk.compiler",
+      "glob" : "com/sun/tools/javac/resources/compiler_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.h2.util.SourceCompiler"
+      },
+      "module" : "jdk.compiler",
+      "glob" : "com/sun/tools/javac/resources/javac_en.properties"
+    },
+    {
+      "bundle" : "com.sun.tools.javac.resources.compiler"
+    },
+    {
+      "bundle" : "com.sun.tools.javac.resources.javac"
     }
   ],
   "serialization" : [

@@ -13,6 +13,8 @@ String libraryVersion = tck.testedLibraryVersion.get()
 tasks.withType(Test).configureEach {
     systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$CountingJavaObjectSerializer'
     systemProperty 'h2.nioCleanerHack', 'true'
+    jvmArgs '--add-opens=java.base/java.nio=ALL-UNNAMED',
+            '--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED'
 }
 
 dependencies {
@@ -25,6 +27,8 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add('-Dh2.nioCleanerHack=true')
+            buildArgs.add('--add-opens=java.base/java.nio=ALL-UNNAMED')
+            buildArgs.add('--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED')
         }
     }
     agent {
