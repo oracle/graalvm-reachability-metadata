@@ -21,7 +21,13 @@ import java.util.logging.Level;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.appidentity.PublicCertificate;
+import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.ByteRange;
+import com.google.appengine.api.blobstore.FileInfo;
+import com.google.appengine.api.blobstore.RangeFormatException;
+import com.google.appengine.api.blobstore.UnsupportedRangeFormatException;
+import com.google.appengine.api.blobstore.UploadOptions;
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Category;
@@ -453,6 +459,80 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(FacetRefinement.fromTokenString(refinement.toTokenString()).getRange().toString())
                 .isEqualTo(highPageCount.toString());
         assertThat(RescoringMatchScorer.newBuilder().build()).isNotNull();
+    }
+
+    @Test
+    void blobstoreRangesUploadOptionsAndMetadataExposeConfiguredData() {
+        ByteRange boundedRange = ByteRange.parse("bytes=5-12");
+        assertThat(boundedRange.hasEnd()).isTrue();
+        assertThat(boundedRange.getStart()).isEqualTo(5L);
+        assertThat(boundedRange.getEnd()).isEqualTo(12L);
+        assertThat(boundedRange).isEqualTo(new ByteRange(5L, 12L));
+        assertThat(boundedRange.toString()).isEqualTo("bytes=5-12");
+
+        ByteRange openEndedRange = ByteRange.parse("bytes=20-");
+        assertThat(openEndedRange.hasEnd()).isFalse();
+        assertThat(openEndedRange.getStart()).isEqualTo(20L);
+        assertThat(openEndedRange.toString()).isEqualTo("bytes=20-");
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(openEndedRange::getEnd);
+
+        ByteRange suffixRange = ByteRange.parse("bytes=-8");
+        assertThat(suffixRange.hasEnd()).isFalse();
+        assertThat(suffixRange.getStart()).isEqualTo(-8L);
+        assertThat(suffixRange.toString()).isEqualTo("bytes=-8");
+
+        ByteRange contentRange = ByteRange.parseContentRange("bytes 4-9/100");
+        assertThat(contentRange).isEqualTo(new ByteRange(4L, 9L));
+        assertThatExceptionOfType(RangeFormatException.class).isThrownBy(() -> ByteRange.parse("bytes=9-4"));
+        assertThatExceptionOfType(UnsupportedRangeFormatException.class).isThrownBy(() -> ByteRange.parse("items=1-2"));
+
+        UploadOptions uploadOptions = UploadOptions.Builder.withDefaults()
+                .maxUploadSizeBytes(4_096L)
+                .maxUploadSizeBytesPerBlob(2_048L)
+                .googleStorageBucketName("uploads-bucket");
+        assertThat(uploadOptions.hasMaxUploadSizeBytes()).isTrue();
+        assertThat(uploadOptions.getMaxUploadSizeBytes()).isEqualTo(4_096L);
+        assertThat(uploadOptions.hasMaxUploadSizeBytesPerBlob()).isTrue();
+        assertThat(uploadOptions.getMaxUploadSizeBytesPerBlob()).isEqualTo(2_048L);
+        assertThat(uploadOptions.hasGoogleStorageBucketName()).isTrue();
+        assertThat(uploadOptions.getGoogleStorageBucketName()).isEqualTo("uploads-bucket");
+        assertThat(uploadOptions).isEqualTo(UploadOptions.Builder.withMaxUploadSizeBytes(4_096L)
+                .maxUploadSizeBytesPerBlob(2_048L)
+                .googleStorageBucketName("uploads-bucket"));
+        assertThat(uploadOptions.toString()).contains("uploads-bucket");
+
+        UploadOptions defaultOptions = UploadOptions.Builder.withDefaults();
+        assertThat(defaultOptions.hasMaxUploadSizeBytes()).isFalse();
+        assertThat(defaultOptions.hasMaxUploadSizeBytesPerBlob()).isFalse();
+        assertThat(defaultOptions.hasGoogleStorageBucketName()).isFalse();
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(defaultOptions::getMaxUploadSizeBytes);
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> UploadOptions.Builder.withMaxUploadSizeBytes(0L));
+
+        Date creation = new Date(1_700_000_000_000L);
+        BlobKey uploadedBlobKey = new BlobKey("uploaded-blob");
+        BlobInfo blobInfo = new BlobInfo(
+                uploadedBlobKey, "text/plain", creation, "invoice.txt", 42L, "md5-hash", "/gs/uploads/invoice.txt");
+        assertThat(blobInfo.getBlobKey()).isEqualTo(uploadedBlobKey);
+        assertThat(blobInfo.getContentType()).isEqualTo("text/plain");
+        assertThat(blobInfo.getCreation()).isEqualTo(creation);
+        assertThat(blobInfo.getFilename()).isEqualTo("invoice.txt");
+        assertThat(blobInfo.getSize()).isEqualTo(42L);
+        assertThat(blobInfo.getMd5Hash()).isEqualTo("md5-hash");
+        assertThat(blobInfo.getGsObjectName()).isEqualTo("/gs/uploads/invoice.txt");
+        assertThat(blobInfo).isEqualTo(new BlobInfo(
+                uploadedBlobKey, "text/plain", creation, "invoice.txt", 42L, "md5-hash", "/gs/uploads/invoice.txt"));
+
+        FileInfo fileInfo = new FileInfo(
+                "text/plain", creation, "invoice.txt", 42L, "md5-hash", "/gs/uploads/invoice.txt");
+        assertThat(fileInfo.getContentType()).isEqualTo("text/plain");
+        assertThat(fileInfo.getCreation()).isEqualTo(creation);
+        assertThat(fileInfo.getFilename()).isEqualTo("invoice.txt");
+        assertThat(fileInfo.getSize()).isEqualTo(42L);
+        assertThat(fileInfo.getMd5Hash()).isEqualTo("md5-hash");
+        assertThat(fileInfo.getGsObjectName()).isEqualTo("/gs/uploads/invoice.txt");
+        assertThat(fileInfo).isEqualTo(new FileInfo(
+                "text/plain", creation, "invoice.txt", 42L, "md5-hash", "/gs/uploads/invoice.txt"));
     }
 
     @Test
