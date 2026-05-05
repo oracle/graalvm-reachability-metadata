@@ -45,6 +45,7 @@ import org.apache.maven.model.Site;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -55,6 +56,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Maven_modelTest {
     @Test
@@ -184,6 +186,27 @@ public class Maven_modelTest {
         assertThat(profile.getBuild().getDefaultGoal()).isEqualTo("package");
         assertThat(profile.getRepositories()).hasSize(1);
         assertThat(((Dependency) profile.getDependencies().get(0)).getArtifactId()).isEqualTo("profile-lib");
+    }
+
+    @Test
+    void readerStrictModeRejectsUnknownPomElementsWhileLenientModeSkipsThem() throws Exception {
+        String pomXml = """
+                <project>
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>org.example</groupId>
+                  <artifactId>lenient-reader</artifactId>
+                  <version>1.0</version>
+                  <unexpectedMetadata>
+                    <generatedBy>test-suite</generatedBy>
+                  </unexpectedMetadata>
+                </project>
+                """;
+
+        Model lenientModel = new MavenXpp3Reader().read(new StringReader(pomXml), false);
+
+        assertThat(lenientModel.getId()).isEqualTo("org.example:lenient-reader:jar:1.0");
+        assertThrows(XmlPullParserException.class,
+                () -> new MavenXpp3Reader().read(new StringReader(pomXml), true));
     }
 
     @Test
