@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -23,10 +25,32 @@ import java.util.List;
 import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CertificateBuilderTest {
+    @Test
+    void buildIssuedByReadsMlDsaParameterNameFromJdkAsymmetricKey() throws Exception {
+        KeyPair issuerKeyPair = generateMlDsaKeyPair();
+        X509Certificate issuerCertificate = new MinimalX509Certificate(issuerKeyPair.getPublic());
+        X509Bundle issuerBundle = X509Bundle.fromCertificatePath(
+                new X509Certificate[] {issuerCertificate},
+                issuerCertificate,
+                issuerKeyPair);
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> new CertificateBuilder()
+                        .subject("CN=leaf")
+                        .publicKey(new MlDsaPublicKey())
+                        .buildIssuedBy(issuerBundle));
+
+        String message = String.valueOf(exception.getMessage());
+        assertFalse(message.contains("Cannot get algorithm name for ML-DSA key"));
+        assertFalse(message.contains("Don't know what signature algorithm is best"));
+    }
+
     @Test
     void buildIssuedByReadsMlDsaParameterNameFromIssuerPublicKey() {
         PublicKey issuerPublicKey = new MlDsaPublicKey();
@@ -36,14 +60,18 @@ public class CertificateBuilderTest {
                 issuerCertificate,
                 new KeyPair(issuerPublicKey, new MinimalPrivateKey()));
 
-        UnsupportedOperationException exception = assertThrows(
-                UnsupportedOperationException.class,
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
                 () -> new CertificateBuilder()
                         .subject("CN=leaf")
                         .publicKey(new MlDsaPublicKey())
                         .buildIssuedBy(issuerBundle));
 
-        assertTrue(exception.getMessage().contains("Algorithm not supported: test-ml-dsa"));
+        assertTrue(exception.getMessage().contains("Cannot get algorithm name for ML-DSA key"));
+    }
+
+    private static KeyPair generateMlDsaKeyPair() throws NoSuchAlgorithmException {
+        return KeyPairGenerator.getInstance("ML-DSA-44").generateKeyPair();
     }
 
     public static final class MlDsaPublicKey implements PublicKey {
