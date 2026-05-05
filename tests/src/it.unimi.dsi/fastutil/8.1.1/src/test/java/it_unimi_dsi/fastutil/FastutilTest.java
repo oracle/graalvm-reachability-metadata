@@ -13,7 +13,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Locale;
+import java.util.Objects;
 
+import it.unimi.dsi.fastutil.Hash.Strategy;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -33,6 +36,7 @@ import it.unimi.dsi.fastutil.ints.IntLists;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.io.BinIO;
 import it.unimi.dsi.fastutil.longs.Long2DoubleLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -100,6 +104,31 @@ public class FastutilTest {
         Int2ObjectMap.Entry<String> entry = clone.int2ObjectEntrySet().iterator().next();
         assertThat(entry.getIntKey()).isEqualTo(2);
         assertThat(entry.getValue()).isEqualTo("two-replaced");
+    }
+
+    @Test
+    void object2IntOpenCustomHashMapUsesCustomStrategyForObjectKeys() {
+        Object2IntOpenCustomHashMap<String> counts = new Object2IntOpenCustomHashMap<>(
+                new CaseInsensitiveStringStrategy());
+        counts.defaultReturnValue(-1);
+
+        assertThat(counts.put("Alpha", 1)).isEqualTo(-1);
+        assertThat(counts.strategy()).isInstanceOf(CaseInsensitiveStringStrategy.class);
+        assertThat(counts.containsKey("ALPHA")).isTrue();
+        assertThat(counts.getInt("alpha")).isEqualTo(1);
+        assertThat(counts.addTo("ALPHA", 4)).isEqualTo(1);
+        assertThat(counts.getInt("Alpha")).isEqualTo(5);
+        assertThat(counts.putIfAbsent("alpha", 99)).isEqualTo(5);
+
+        counts.put("bravo", 2);
+        assertThat(counts.replace("BRAVO", 2, 6)).isTrue();
+        assertThat(counts.getInt("Bravo")).isEqualTo(6);
+        assertThat(counts.keySet()).containsExactlyInAnyOrder("Alpha", "bravo");
+        assertThat(counts.values().toIntArray()).containsExactlyInAnyOrder(5, 6);
+        assertThat(counts.remove("ALPHA", 4)).isFalse();
+        assertThat(counts.remove("alpha", 5)).isTrue();
+        assertThat(counts.containsKey("Alpha")).isFalse();
+        assertThat(counts.getInt("Alpha")).isEqualTo(-1);
     }
 
     @Test
@@ -288,6 +317,23 @@ public class FastutilTest {
         assertThat(singleton.getInt(0)).isEqualTo(42);
         IntList unmodifiable = IntLists.unmodifiable(new IntArrayList(new int[] {1, 2}));
         assertThatThrownBy(() -> unmodifiable.add(3)).isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    private static final class CaseInsensitiveStringStrategy implements Strategy<String> {
+        @Override
+        public int hashCode(String value) {
+            String normalized = normalize(value);
+            return normalized == null ? 0 : normalized.hashCode();
+        }
+
+        @Override
+        public boolean equals(String left, String right) {
+            return Objects.equals(normalize(left), normalize(right));
+        }
+
+        private static String normalize(String value) {
+            return value == null ? null : value.toLowerCase(Locale.ROOT);
+        }
     }
 
     @Test
