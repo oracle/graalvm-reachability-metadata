@@ -107,6 +107,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def supportsBracedExpressionsInInterpolatedValuePositions(): Unit = {
+    val document: Json = json"""
+      {
+        "sum": ${2 + 3},
+        "doubled": ${List(1, 2, 3).map(_ * 2)},
+        "label": ${"circe" + "-literal"}
+      }
+    """
+
+    assertThat(document).isEqualTo(
+      Json.obj(
+        "sum" -> Json.fromInt(5),
+        "doubled" -> Json.arr(Json.fromInt(2), Json.fromInt(4), Json.fromInt(6)),
+        "label" -> Json.fromString("circe-literal")
+      )
+    )
+  }
+
+  @Test
   def supportsTopLevelScalarJsonLiterals(): Unit = {
     val nullLiteral: Json = json"null"
     val trueLiteral: Json = json"true"
