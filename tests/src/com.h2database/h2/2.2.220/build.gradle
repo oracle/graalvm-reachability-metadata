@@ -12,6 +12,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 tasks.withType(Test).configureEach {
     systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$CountingJavaObjectSerializer'
+    systemProperty 'h2.nioCleanerHack', 'true'
 }
 
 dependencies {
@@ -21,6 +22,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('-Dh2.nioCleanerHack=true')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
