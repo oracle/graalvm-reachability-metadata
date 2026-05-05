@@ -65,7 +65,8 @@ class FixTestNativeImageRunTests {
                 .contains("\"tested-versions\" : [\n      \"4.2.2.Final\"\n    ]");
         assertThat(readGradlewInvocations())
                 .contains("4.2.2.Final|-Pagent test")
-                .contains("4.2.2.Final|metadataCopy --task test --dir " + metadataDirectory(NEW_VERSION))
+                .contains("4.2.2.Final|metadataCopy --task test --dir ")
+                .contains("|mergeNativeTraceMetadata -PinputDirs=")
                 .contains("4.2.2.Final|test -Pcoordinates=" + NEW_COORDINATES);
     }
 
@@ -148,6 +149,18 @@ class FixTestNativeImageRunTests {
                       break
                     fi
                     shift
+                  done
+                  exit 0
+                fi
+                if [ "$1" = "mergeNativeTraceMetadata" ]; then
+                  for arg in "$@"; do
+                    case "$arg" in
+                      -PoutputDir=*)
+                        out="${arg#-PoutputDir=}"
+                        mkdir -p "$out"
+                        printf '{"reflection":[]}\\n' > "$out/reachability-metadata.json"
+                        ;;
+                    esac
                   done
                   exit 0
                 fi

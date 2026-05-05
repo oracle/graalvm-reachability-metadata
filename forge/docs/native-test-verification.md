@@ -14,11 +14,15 @@ The verification gate ensures that the test binary passes on Native Image
 for a given coordinate. The ordered recovery contract is:
 
 1. Try the normal JVM `native-image-agent` path first via
-   `./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar`.
-   This is the primary metadata source and must not be skipped. If this path
-   fails, continue with native tracing instead of routing directly to Codex.
+   `./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar
+   --metadataOutputDir=<output_dir>/agent`. This is the primary metadata
+   source and must not be skipped. It is staged separately from durable
+   repository metadata. If this path fails, continue with native tracing
+   instead of routing directly to Codex.
 2. If JVM-agent metadata was generated, run the regular coordinate validation
-   (`./gradlew test -Pcoordinates=<g:a:v>`). If the native tests pass, return
+   (`./gradlew test -Pcoordinates=<g:a:v>
+   -PmetadataConfigDirs=<output_dir>/agent`). If the native tests pass, merge
+   the staged agent metadata into durable repository metadata and return
    `PASSED`.
 3. If native testing still fails after JVM-agent metadata was generated, or if
    the JVM-agent metadata path failed, use native tracing as a fallback. Each
@@ -27,14 +31,16 @@ for a given coordinate. The ordered recovery contract is:
    `-H:+MetadataTracingSupport`, `--exact-reachability-metadata`, and
    `-H:MissingRegistrationReportingMode=Exit`.
 4. If native tracing converges, merge the accepted trace dirs into
-   `output_dir`, fold the merged metadata into the durable
-   `metadata/<group>/<artifact>/<version>/reachability-metadata.json`,
-   and return `PASSED`. If tracing stalls, exhausts its budget, or fails
-   for a non-metadata reason, route the accumulated diagnostics to codex.
-   Codex is the final recovery step — the only failures that bypass it
-   are failures of the post-success merge or durable-aggregation steps
-   themselves, which are infrastructure problems codex cannot repair and
-   therefore terminate as `FAILED` directly (see §4 gate semantics).
+   `<output_dir>/trace`, then run one final native-image-utils merge over
+   existing durable metadata, `<output_dir>/agent` when present, and
+   `<output_dir>/trace` when present. The final merge result is copied to
+   `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, and
+   the gate returns `PASSED`. If tracing stalls, exhausts its budget, or
+   fails for a non-metadata reason, route the accumulated diagnostics to
+   codex. Codex is the final recovery step — the only failures that bypass
+   it are failures of the post-success trace merge or final durable merge,
+   which are infrastructure problems codex cannot repair and therefore
+   terminate as `FAILED` directly (see §4 gate semantics).
 
 Pi is **not** invoked. Removing failing tests would mask exactly the code
 issues that must surface to the coding agent.
@@ -54,7 +60,7 @@ branch to its checkpoint.
 | --- | --- | --- |
 | Coordinate `group:artifact:version` | Caller | Identifies the test module. |
 | Reachability repo path | Caller | Working directory for Gradle. |
-| Output directory | Caller | Absolute path for fallback native-trace metadata. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers — same convention as [native-metadata-exploration.md §4](native-metadata-exploration.md#4-output). On a trace-backed `PASSED`, the gate merges all accepted per-cycle trace dirs into this directory (one `mergeNativeTraceMetadata` invocation). If the JVM-agent metadata path alone passes, this directory may remain empty. |
+| Output directory | Caller | Absolute staging root for this gate invocation. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers — same convention as [native-metadata-exploration.md §4](native-metadata-exploration.md#4-output). The gate writes JVM-agent metadata to `<output_dir>/agent`, merged trace metadata to `<output_dir>/trace`, and writes durable repository metadata only after the final native-image-utils merge succeeds. |
 | Condition packages | `condition_packages` argument to `verify_native_test_passes` | Default `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
 | Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **100**. In practice convergence is expected within a handful of cycles; the high default is a soft cap, not a target. Each cycle rebuilds `nativeTestCompile`, so the wall-clock cost is dominated by native-image build time. |
 | Per-cycle timeout | `cycle_timeout_seconds` argument | Default 30 minutes. Caps the preflight `./gradlew test` invocation and each `runNativeTraceImage` invocation; on timeout the step is treated as a non-zero exit and routed to codex. |
@@ -64,15 +70,13 @@ branch to its checkpoint.
 `NativeTestVerificationResult` carries:
 
 - `status` — `PASSED`, `PASSED_WITH_INTERVENTION`, or `FAILED`.
-- `output_dir` — echoes the caller's input. Populated with merged trace
-  metadata only when a fallback trace cycle reaches binary exit `0` (one
-  `mergeNativeTraceMetadata` invocation at the end). It may remain empty
-  when JVM-agent metadata alone made the native tests pass, when Codex is
-  invoked before tracing, or when Codex is invoked after a stalled trace
-  fallback. Empty on `FAILED`, except when the failure is the trace-output
-  merge (`mergeNativeTraceMetadata`) or the durable-metadata aggregation
-  step itself — in that case `output_dir` may contain whatever the
-  partially completed merge wrote before the failure.
+- `output_dir` — echoes the caller's input. `<output_dir>/agent` contains
+  staged JVM-agent metadata when `generateMetadata` succeeds.
+  `<output_dir>/trace` contains merged trace metadata only when a fallback
+  trace cycle reaches binary exit `0`. The durable
+  `metadata/<group>/<artifact>/<version>/reachability-metadata.json` file is
+  updated only by the final native-image-utils merge. On `FAILED`, staging
+  dirs may contain partially completed agent or trace output.
 - `iterations_used` — number of outer cycles consumed.
 - `last_native_test_log_path` — absolute path to the last relevant
   Gradle log (`generateMetadata`, `test`, or `runNativeTraceImage`).
@@ -91,18 +95,20 @@ branch to its checkpoint.
 
 ```mermaid
 flowchart TD
-    Start([invoke gate]) --> Init[reset output_dir + runs_dir<br/>config_dirs = []<br/>i = 0]
-    Init --> Agent[gradlew generateMetadata<br/>--agentAllowedPackages=fromJar]
+    Start([invoke gate]) --> Init[reset output_dir + runs_dir<br/>agent_dir = output_dir/agent<br/>trace_dir = output_dir/trace<br/>config_dirs = []<br/>i = 0]
+    Init --> Agent[gradlew generateMetadata<br/>--agentAllowedPackages=fromJar<br/>--metadataOutputDir=agent_dir]
     Agent -- fail --> Outer{i &lt; max-native-test-verification-iterations?}
-    Agent -- pass --> Test[gradlew test<br/>-Pcoordinates=&lt;g:a:v&gt;]
-    Test -- pass --> PassAgent([return PASSED])
+    Agent -- pass --> Test[gradlew test<br/>-Pcoordinates=&lt;g:a:v&gt;<br/>-PmetadataConfigDirs=agent_dir]
+    Test -- pass --> FinalAgent[final merge<br/>durable + agent_dir]
+    FinalAgent --> PassAgent([return PASSED])
     Test -- fails before nativeTest --> Codex
     Test -- nativeTest fails --> Outer
     Outer -- no --> Codex
     Outer -- yes --> Run[gradlew runNativeTraceImage<br/>-PtraceMetadataPath=runs/cycle-i<br/>-PtraceMetadataConditionPackages=&lt;packages&gt;<br/>-PmetadataConfigDirs=&lt;config_dirs&gt;]
     Run --> Route{binary exit code}
-    Route -- 0 --> Merge[mergeNativeTraceMetadata<br/>config_dirs &rarr; output_dir]
-    Merge --> Pass([return PASSED])
+    Route -- 0 --> MergeTrace[mergeNativeTraceMetadata<br/>accepted trace dirs &rarr; trace_dir]
+    MergeTrace --> FinalTrace[final merge<br/>durable + agent_dir + trace_dir]
+    FinalTrace --> Pass([return PASSED])
     Route -- 172 --> Append[config_dirs += runs/cycle-i]
     Append --> Bump[i = i + 1]
     Bump --> Outer
@@ -116,15 +122,18 @@ flowchart TD
 Gate semantics:
 
 - **JVM agent first.** The first metadata action is always
-  `./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar`.
-  The JVM agent observes the test suite on HotSpot and writes the normal
-  repository metadata. Native tracing must not run before this step. If
-  metadata generation fails, the gate logs the failure and starts native
-  tracing with no accepted trace dirs.
+  `./gradlew generateMetadata -Pcoordinates=<g:a:v>
+  --agentAllowedPackages=fromJar --metadataOutputDir=<output_dir>/agent`.
+  The JVM agent observes the test suite on HotSpot and writes staged agent
+  metadata. Native tracing must not run before this step. If metadata
+  generation fails, the gate logs the failure and starts native tracing with
+  no accepted trace dirs.
 - **Native test run second.** After JVM-agent metadata is generated, the
-  gate runs `./gradlew test -Pcoordinates=<g:a:v>`. A pass returns
-  `PASSED` without invoking native tracing. A failure before `nativeTest`
-  is treated as a code/test problem and is routed to codex.
+  gate runs `./gradlew test -Pcoordinates=<g:a:v>
+  -PmetadataConfigDirs=<output_dir>/agent`. A pass finalizes staged agent
+  metadata into durable repository metadata and returns `PASSED` without
+  invoking native tracing. A failure before `nativeTest` is treated as a
+  code/test problem and is routed to codex.
 - **Native tracing is fallback.** The trace loop starts after JVM-agent
   metadata generation fails, or after JVM-agent metadata exists and native
   testing still fails.
@@ -132,9 +141,10 @@ Gate semantics:
   `./gradlew runNativeTraceImage -Pcoordinates=<g:a:v>
   -PtraceMetadataPath=<runs_dir>/cycle-<i>
   -PtraceMetadataConditionPackages=<packages>
-  -PmetadataConfigDirs=<config_dirs>` (the last property is omitted on
-  the first cycle when no trace dirs have been accepted yet). The
-  resulting binary is built with `-H:+MetadataTracingSupport`,
+  -PmetadataConfigDirs=<config_dirs>` where `config_dirs` is the staged
+  agent dir, when present, followed by accepted trace dirs. The last
+  property is omitted only when no staged agent metadata and no accepted
+  trace dirs exist. The resulting binary is built with `-H:+MetadataTracingSupport`,
   `--exact-reachability-metadata`, and
   `-H:MissingRegistrationReportingMode=Exit` (see
   [native-metadata-exploration.md §7.2](native-metadata-exploration.md#72-runnativetraceimage)).
@@ -142,9 +152,10 @@ Gate semantics:
   exact-metadata-aware exit code.
 - **Exit-code routing**:
   - `0` → the metadata accumulated in `config_dirs` plus the code under
-    test are sufficient. The gate runs a single
-    `mergeNativeTraceMetadata` to populate `output_dir` with the merged
-    metadata and returns.
+    test are sufficient. The gate runs `mergeNativeTraceMetadata` to
+    populate `<output_dir>/trace` with merged accepted trace metadata, then
+    runs the final native-image-utils merge over durable metadata, staged
+    agent metadata, and staged trace metadata before returning `PASSED`.
   - `172` → `ExitStatus.MISSING_METADATA`. The trace dir captured at
     least one missing access; appending it to `config_dirs` makes the
     next cycle's build see that metadata. If the current `172` cycle
@@ -175,21 +186,22 @@ Gate semantics:
   for diagnostics.)
 - **Hard fail.** If codex does not converge, the gate returns `FAILED` and
   the calling workflow aborts; see §6.
-- **Merge and aggregation failures are terminal without codex.** Two
-  post-success steps run after a trace cycle returns binary exit `0`:
-  (a) `./gradlew mergeNativeTraceMetadata` consolidates the accepted
-  per-cycle dirs into `output_dir`; (b) the durable-metadata aggregation
-  folds `output_dir/reachability-metadata.json` into
+- **Final merge failures are terminal without codex.** After the gate has
+  enough staged metadata to pass, it performs one durable native-image-utils
+  merge. The inputs are existing durable metadata when present,
+  `<output_dir>/agent` when present, and `<output_dir>/trace` when present.
+  The merge result is copied to
   `metadata/<group>/<artifact>/<version>/reachability-metadata.json`. If
-  either step fails, the gate returns `FAILED` directly. Codex is **not**
-  invoked for these failures: they are infrastructure problems (Gradle
-  merge task, filesystem write, malformed durable JSON) downstream of a
-  successful trace, and codex cannot repair the metadata pipeline itself.
-  The calling workflow handles them like any other `FAILED` (§6). This is
-  the only carve-out from the "only codex failure may FAIL" invariant —
-  every other failure mode (JVM-agent failure, `gradlew test` failure
-  before `nativeTest`, `172` with no usable / no new metadata, non-`0`/
-  `172` trace cycle exit, budget exhaustion) routes through codex first.
+  the trace-output merge or final durable merge fails, the gate returns
+  `FAILED` directly. Codex is **not** invoked for these failures: they are
+  infrastructure problems (Gradle merge task, filesystem write, malformed
+  metadata input) downstream of a successful validation path, and codex
+  cannot repair the metadata pipeline itself. The calling workflow handles
+  them like any other `FAILED` (§6). This is the only carve-out from the
+  "only codex failure may FAIL" invariant — every other failure mode
+  (JVM-agent failure, `gradlew test` failure before `nativeTest`, `172`
+  with no usable / no new metadata, non-`0`/`172` trace cycle exit, budget
+  exhaustion) routes through codex first.
 
 ## 5. Reusable Implementation Surface
 
@@ -213,16 +225,22 @@ def verify_native_test_passes(
 The module composes existing helpers and owns no domain logic of its own:
 
 - `./gradlew generateMetadata -Pcoordinates=...
-  --agentAllowedPackages=fromJar` — primary JVM-agent metadata collection,
-  attempted before the trace loop.
-- `./gradlew test -Pcoordinates=...` — normal coordinate validation after
-  JVM-agent metadata is available.
+  --agentAllowedPackages=fromJar --metadataOutputDir=<output_dir>/agent` —
+  primary JVM-agent metadata collection, attempted before the trace loop and
+  staged outside durable repository metadata.
+- `./gradlew test -Pcoordinates=...
+  -PmetadataConfigDirs=<output_dir>/agent` — normal coordinate validation
+  after JVM-agent metadata is available.
 - `./gradlew runNativeTraceImage -Pcoordinates=...
   -PtraceMetadataPath=<runs_dir>/cycle-<i>
   -PtraceMetadataConditionPackages=<packages>
-  -PmetadataConfigDirs=<accepted dirs>` — fallback trace-cycle execution.
+  -PmetadataConfigDirs=<agent dir,accepted trace dirs>` — fallback trace-cycle execution.
 - `./gradlew mergeNativeTraceMetadata -PinputDirs=...
-  -PoutputDir=<output_dir>` — single final merge on trace-backed `PASSED`.
+  -PoutputDir=<output_dir>/trace` — trace-dir merge on trace-backed
+  `PASSED`.
+- `./gradlew mergeNativeTraceMetadata -PinputDirs=...
+  -PoutputDir=<temporary merge dir>` — final durable merge of existing
+  durable metadata plus staged agent and trace metadata.
 - `run_codex_metadata_fix` — codex acts as the coding agent after JVM-agent
   metadata plus native tracing fail to produce passing native tests. Pi is
   **not** invoked.
@@ -256,26 +274,28 @@ A `verify_native_test_passes(...)` invocation is correct iff:
    across runs.
 2. Before any native-trace cycle starts, the gate invokes
    `./gradlew generateMetadata -Pcoordinates=...
-   --agentAllowedPackages=fromJar`.
+   --agentAllowedPackages=fromJar --metadataOutputDir=<output_dir>/agent`.
 3. If JVM-agent metadata generation fails, the gate starts native tracing
    with no accepted trace dirs.
 4. After successful JVM-agent metadata generation, the gate invokes
-   `./gradlew test -Pcoordinates=...`. If the coordinate passes, return
+   `./gradlew test -Pcoordinates=...
+   -PmetadataConfigDirs=<output_dir>/agent`. If the coordinate passes,
+   finalize staged agent metadata into durable repository metadata and return
    `PASSED` without native tracing.
 5. Each fallback outer cycle invokes `./gradlew runNativeTraceImage
    -Pcoordinates=... -PtraceMetadataPath=<runs_dir>/cycle-<i>
    -PtraceMetadataConditionPackages=<packages>` exactly once, with
-   `-PmetadataConfigDirs=<accepted dirs>` appended whenever any prior
-   cycle was accepted.
+   `-PmetadataConfigDirs=<agent dir,accepted trace dirs>` appended whenever
+   staged agent metadata or any prior accepted trace cycle exists.
 6. The verification binary's exit code is recovered from Gradle's
    "exit value N" log line and routed:
    - `0` → run `mergeNativeTraceMetadata` once with all accepted run
-     dirs as `-PinputDirs=` and the caller's `output_dir` as
-     `-PoutputDir=`, then fold the resulting reachability metadata into
+     dirs as `-PinputDirs=` and `<output_dir>/trace` as `-PoutputDir=`,
+     then run one final native-image-utils merge of durable metadata,
+     `<output_dir>/agent`, and `<output_dir>/trace`, copy that result to
      `metadata/<group>/<artifact>/<version>/reachability-metadata.json`,
-     then return `PASSED`. If either the `mergeNativeTraceMetadata` task
-     or the durable-aggregation step fails, return `FAILED` directly —
-     codex is **not** invoked for these post-success infrastructure
+     and return `PASSED`. If either merge fails, return `FAILED` directly
+     — codex is **not** invoked for these post-success infrastructure
      failures.
    - `172` with new trace metadata entries → append
      `runs_dir/cycle-<i>` to the running config dirs and continue to the
