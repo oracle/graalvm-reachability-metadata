@@ -8,7 +8,7 @@ package com_sun_istack.istack_commons_tools;
 
 import org.junit.jupiter.api.Test;
 
-class Istack_commons_toolsTest {
+public class Istack_commons_toolsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
