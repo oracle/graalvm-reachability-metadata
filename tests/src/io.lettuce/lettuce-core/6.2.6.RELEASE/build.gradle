@@ -15,6 +15,20 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+test {
+    systemProperty "io.lettuce.core.epoll", "false"
+    systemProperty "io.lettuce.core.iouring", "false"
+    systemProperty "io.lettuce.core.kqueue", "false"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.addAll([
+            "-Dio.lettuce.core.epoll=false",
+            "-Dio.lettuce.core.iouring=false",
+            "-Dio.lettuce.core.kqueue=false"
+    ])
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
