@@ -128,6 +128,27 @@ class Fs2_reactive_streams_3Test {
   }
 
   @Test
+  def streamPublisherPropagatesStreamFailureToSubscriber(): Unit = {
+    val failure = new IllegalStateException("stream failed")
+    val failingStream: Stream[IO, String] =
+      Stream.emit("before failure").covary[IO] ++ Stream.raiseError[IO](failure)
+    val program = failingStream.toUnicastPublisher.use { publisher =>
+      IO.blocking {
+        val subscriber = new RecordingSubscriber[String](initialRequest = Long.MaxValue)
+
+        publisher.subscribe(subscriber)
+        subscriber.awaitTerminal()
+
+        assertThat(subscriber.valuesVector).isEqualTo(Vector("before failure"))
+        assertThat(subscriber.completed.get()).isFalse()
+        assertThat(subscriber.error.get()).isSameAs(failure)
+      }
+    }
+
+    runIO(program)
+  }
+
+  @Test
   def invalidRequestIsReportedToSubscriberAsError(): Unit = {
     val program = Stream.emits(Vector(1, 2, 3)).covary[IO].toUnicastPublisher.use { publisher =>
       IO.blocking {
