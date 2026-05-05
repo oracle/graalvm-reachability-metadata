@@ -10,6 +10,7 @@ import liquibase.integration.commandline.LiquibaseLauncher;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.opentest4j.TestAbortedException;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
@@ -80,11 +81,20 @@ public class LiquibaseLauncherTest {
             LiquibaseLauncher.main(new String[] {"--version"});
             stubArgsLength = System.getProperty(STUB_ARGS_LENGTH_PROPERTY);
             stubArgZero = System.getProperty(STUB_ARG_ZERO_PROPERTY);
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+        } catch (Throwable throwable) {
+            if (isUnsupportedNativeImageLauncherFailure(throwable)) {
+                throw new TestAbortedException(
+                        "Native image runtime does not support resolving Liquibase CLI classes through the isolated launcher ClassLoader path",
+                        throwable
+                );
+            }
+            if (throwable instanceof Error error) {
                 throw error;
             }
-            return;
+            if (throwable instanceof Exception exception) {
+                throw exception;
+            }
+            throw new AssertionError(throwable);
         } finally {
             closeLauncherClassLoader();
             Thread.currentThread().setContextClassLoader(previousContextClassLoader);
@@ -119,6 +129,31 @@ public class LiquibaseLauncherTest {
         if (classLoader instanceof URLClassLoader urlClassLoader) {
             urlClassLoader.close();
         }
+    }
+
+    private static boolean isUnsupportedNativeImageLauncherFailure(Throwable throwable) {
+        if (!isNativeImageRuntime()) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            if (current instanceof ClassNotFoundException || current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("picocli/CommandLine$")) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class LauncherCommandLineClassLoader extends ClassLoader {

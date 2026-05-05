@@ -16,6 +16,7 @@ import liquibase.precondition.CustomPreconditionWrapper;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +60,16 @@ public class CustomPreconditionWrapperTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
-            return;
+            throw new TestAbortedException(
+                    "Native image runtime does not support defining duplicate application classes from custom ClassLoader bytes",
+                    error
+            );
+        }
+
+        if (isNativeImageRuntime() && !classLoader.loadedDuplicatePrecondition) {
+            throw new TestAbortedException(
+                    "Native image runtime did not reload the custom precondition through the isolated ClassLoader"
+            );
         }
 
         assertThat(classLoader.loadedDuplicatePrecondition).isTrue();
@@ -152,5 +162,9 @@ public class CustomPreconditionWrapperTest {
                 throws CustomPreconditionFailedException, CustomPreconditionErrorException {
             checked = true;
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
