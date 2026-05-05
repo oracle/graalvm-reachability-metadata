@@ -43,6 +43,17 @@ class Mockito_5_12_3Test extends MockitoSugar {
   }
 
   @Test
+  def typedMocksCanTargetConcreteScalaClasses(): Unit = exerciseMockitoDynamicClassGeneration {
+    val renderer: ReportRendererForMockito_5_12_3Test = mock[ReportRendererForMockito_5_12_3Test]
+
+    Mockito.when(renderer.render("daily")).thenReturn("mock-daily-report")
+
+    assertEquals("mock-daily-report", renderer.render("daily"))
+    Mockito.verify(renderer).render("daily")
+    Mockito.verifyNoMoreInteractions(renderer)
+  }
+
+  @Test
   def defaultAnswerOverloadControlsUnstubbedMethodResults(): Unit = exerciseMockitoDynamicClassGeneration {
     val answer: Answer[AnyRef] = invocation => {
       val key: String = invocation.getArgument[String](0)
@@ -138,6 +149,10 @@ class Mockito_5_12_3Test extends MockitoSugar {
 
 trait LookupRepositoryForMockito_5_12_3Test {
   def lookup(key: String): String
+}
+
+class ReportRendererForMockito_5_12_3Test {
+  def render(reportName: String): String = s"real-$reportName"
 }
 
 trait NestedServiceForMockito_5_12_3Test {
