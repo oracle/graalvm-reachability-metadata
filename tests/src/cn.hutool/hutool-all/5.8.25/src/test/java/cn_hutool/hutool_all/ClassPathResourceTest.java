@@ -7,6 +7,7 @@
 package cn_hutool.hutool_all;
 
 import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.util.ReflectUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -45,6 +46,21 @@ public class ClassPathResourceTest {
 
         assertThat(resource.getPath()).isEqualTo(DEFAULT_RESOURCE);
         assertThat(resource.toString()).isEqualTo("classpath:" + DEFAULT_RESOURCE);
+        assertThat(read(resource)).isEqualTo("loaded-through-default-resource-resolution\n");
+    }
+
+    @Test
+    void fallsBackToSystemResourceWhenNoClassOrClassLoaderIsAvailable() throws Exception {
+        ClassPathResource resource = new ClassPathResource(
+                DEFAULT_RESOURCE,
+                ClassPathResourceTest.class.getClassLoader());
+        ReflectUtil.setFieldValue(resource, "classLoader", null);
+        ReflectUtil.setFieldValue(resource, "clazz", null);
+
+        ReflectUtil.invoke(resource, "initUrl");
+
+        assertThat(resource.getClassLoader()).isNull();
+        assertThat(resource.getUrl()).isEqualTo(ClassLoader.getSystemResource(DEFAULT_RESOURCE));
         assertThat(read(resource)).isEqualTo("loaded-through-default-resource-resolution\n");
     }
 
