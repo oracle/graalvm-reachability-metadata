@@ -17,6 +17,7 @@ dependencies {
 }
 
 test {
+    jvmArgs "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
     systemProperty "io.lettuce.core.epoll", "false"
     systemProperty "io.lettuce.core.iouring", "false"
     systemProperty "io.lettuce.core.kqueue", "false"
@@ -37,6 +38,11 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add("--add-opens=java.base/java.lang.invoke=ALL-UNNAMED")
         }
     }
 }
