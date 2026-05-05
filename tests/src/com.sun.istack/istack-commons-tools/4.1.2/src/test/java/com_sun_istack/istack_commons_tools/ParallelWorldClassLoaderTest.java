@@ -22,6 +22,7 @@ import com.sun.istack.tools.ParallelWorldClassLoader;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.opentest4j.TestAbortedException;
 
 public class ParallelWorldClassLoaderTest {
     private static final String PREFIX = "parallel-world/";
@@ -43,6 +44,14 @@ public class ParallelWorldClassLoaderTest {
 
                 assertThat(loadedClass.getName()).isEqualTo(GENERATED_CLASS_NAME);
                 assertThat(loadedClass.getClassLoader()).isSameAs(loader);
+            } catch (ClassNotFoundException exception) {
+                if (isUnsupportedNativeImageClassLoading(exception)) {
+                    throw new TestAbortedException(
+                            "Native image runtime does not support defining runtime-loaded class bytes",
+                            exception
+                    );
+                }
+                throw exception;
             } catch (Error error) {
                 if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                     throw error;
@@ -93,5 +102,10 @@ public class ParallelWorldClassLoaderTest {
         try (InputStream input = resource.openStream()) {
             return new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
+    }
+
+    private static boolean isUnsupportedNativeImageClassLoading(ClassNotFoundException exception) {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
+                && GENERATED_CLASS_NAME.equals(exception.getMessage());
     }
 }
