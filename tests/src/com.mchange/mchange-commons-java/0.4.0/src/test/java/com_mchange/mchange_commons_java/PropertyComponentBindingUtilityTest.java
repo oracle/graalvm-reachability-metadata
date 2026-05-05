@@ -7,17 +7,27 @@
 package com_mchange.mchange_commons_java;
 
 import com.mchange.v2.beans.swing.PropertyBoundComboBox;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SwingUtilities;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class PropertyComponentBindingUtilityTest {
+    @BeforeAll
+    static void skipWhenNativeImageCannotSupportSwingFixture() {
+        // The Swing fixture is not stable under either the metadata agent or the native runtime.
+        assumeFalse(isNativeImageAgentActive(), "native-image-agent crashes on the AWT event queue for this test");
+        assumeFalse(isNativeImageRuntime(), "AWT event queue initialization is not supported in this native-image test");
+    }
+
     @Test
     void comboBoxBindingReadsInitialValueAndWritesUserSelectionToBean() throws Exception {
         BoundChoiceBean bean = new BoundChoiceBean();
@@ -99,6 +109,15 @@ public class PropertyComponentBindingUtilityTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean isNativeImageAgentActive() {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+                .anyMatch(argument -> argument.contains("native-image-agent"));
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private interface ThrowingRunnable {
