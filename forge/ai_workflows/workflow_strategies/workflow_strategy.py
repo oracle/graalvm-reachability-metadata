@@ -19,6 +19,7 @@ from ai_workflows.fix_post_generation_pi import (
     run_pi_post_generation_fix,
 )
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -145,26 +146,31 @@ class WorkflowStrategy(ABC):
     @staticmethod
     def _run_command(cmd: str) -> str:
         """Execute a shell command and return its combined stdout/stderr."""
+        env = None
         if cmd.startswith("./gradlew"):
-            require_complete_reachability_repo(os.getcwd())
+            repo_path = os.getcwd()
+            require_complete_reachability_repo(repo_path)
+            env = gradle_command_environment(repo_path)
             cmd = WorkflowStrategy._with_no_daemon(cmd)
-        result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        result = subprocess.run(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         return result.stdout
 
     def _run_command_with_env(self, cmd: str, env: dict[str, str] | None = None) -> str:
         """Execute a shell command with optional environment overrides."""
+        repo_path = getattr(self, "reachability_repo_path", os.getcwd())
         if cmd.startswith("./gradlew test "):
             return run_gradle_test_command(
                 cmd,
-                getattr(self, "reachability_repo_path", os.getcwd()),
+                repo_path,
                 library=getattr(self, "library", None),
                 env=env,
             )
+        command_env = gradle_command_environment(repo_path, env) if cmd.startswith("./gradlew") else env
         result = subprocess.run(
             self._with_no_daemon(cmd),
             shell=True,
-            cwd=getattr(self, "reachability_repo_path", None),
-            env=env,
+            cwd=repo_path,
+            env=command_env,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -285,6 +291,7 @@ class WorkflowStrategy(ABC):
         return subprocess.run(
             command,
             cwd=self.reachability_repo_path,
+            env=gradle_command_environment(self.reachability_repo_path),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
