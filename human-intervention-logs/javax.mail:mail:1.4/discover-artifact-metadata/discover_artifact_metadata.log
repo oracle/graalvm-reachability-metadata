@@ -1,0 +1,697 @@
+Starting a Gradle Daemon, 4 busy and 2 incompatible and 248 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df575-7294-7b82-a8f6-bae03e75b01a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.mail:mail:1.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.4" when "$version$" is replaced with "1.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+- Set "coordinates" to "javax.mail:mail:1.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven and upstream project history, then update the JSON in place with the most stable URLs that resolve for `1.4`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/javax.mail-mail-1.4.json && sed -n '1,200p' build/discovered-artifact-metadata/javax.mail-mail-1.4.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+-rw-rw-r-- 1 vjovanov vjovanov 44 May  5 02:06 build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+{
+  "coordinates" : "javax.mail:mail:1.4"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'javax\\.mail:mail|javax.mail-mail|\"repository-url\".*javamail|javaee/javamail' ." in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central javax.mail mail 1.4 sources jar javadoc repository
+web search: 
+web search: site:github.com/javaee/javamail JAVAMAIL-1_4 tag
+web search: 
+web search: https://github.com/javaee/javamail/releases
+web search: 
+web search: https://central.sonatype.com/artifact/javax.mail/mail/1.4
+codex
+Maven Central has the `mail-1.4-sources.jar`, but no `-javadoc.jar` or test artifact for this version. I’m checking the archived JavaMail repository tags now so the non-Maven URLs point at an actual versioned tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.mail</groupId>
+  <artifactId>mail</artifactId>
+  <version>1.4</version>
+  <name>JavaMail API</name>
+  <description>
+    The JavaMail API provides a platform-independent and protocol-independent framework to build mail and messaging applications.
+  </description>
+  <url>https://glassfish.dev.java.net/javaee5/mail/</url>
+
+  <licenses>
+    <license>
+      <name>Common Development and Distribution License (CDDL) v1.0</name>
+      <url>https://glassfish.dev.java.net/public/CDDLv1.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <downloadUrl>https://maven-repository.dev.java.net/nonav/repository/javax.mail/jars/mail-1.4.jar</downloadUrl>
+  </distributionManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:07:07 GMT
+content-type: application/java-archive
+content-length: 465692
+cf-ray: 9f6b80ceeb139a60-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2576931
+etag: "c93c148e2f961b3a80e8fc013a9d30bf"
+last-modified: Fri, 20 Oct 2006 15:38:51 GMT
+x-checksum-md5: c93c148e2f961b3a80e8fc013a9d30bf
+x-checksum-sha1: fdd508f19a5075196138c94b341120e917c10e8a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/javamail.git | rg 'JAVAMAIL-1_4("'$|[''^0-9])|JAVAMAIL_1_4|1[._]4'"'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 356ms:
+d12d240b47e27ba903df063589befcd2ef86047a	refs/tags/1.4.2-beta
+c8c1e6f18b77d3ce2873b0d3bf57b2ef74f27304	refs/tags/JAVAMAIL-1_4_1
+2da0627dc3107fb58cfa5e16f1e440a4c70b6aeb	refs/tags/JAVAMAIL-1_4_2
+d1f0947c5d2d1307e20efcc93abe76b4d8c77ab0	refs/tags/JAVAMAIL-1_4_3
+c5374f40da653bffbf4378deb8a319dc2e9534c4	refs/tags/JAVAMAIL-1_4_3-RC1
+8fba791297656854953183217c4b4384ae1f67b4	refs/tags/JAVAMAIL-1_4_4
+15f2b919867f61672fd324aeca1624551634bce1	refs/tags/JAVAMAIL-1_4_4-RC1
+e5574351b6cfcb4e7fd18fabeb9fc08b17e16c3e	refs/tags/JAVAMAIL-1_4_5
+144efcf64277e199c8764744c38649a19c56c2c6	refs/tags/JAVAMAIL-1_4_5-RC1
+98e00a8176c892c6cacf03ac4b15db1cd9c6bf77	refs/tags/JAVAMAIL-1_4_6
+f097771798bb51ddb6af56825eb0fa833c1bf5fc	refs/tags/JAVAMAIL-1_4_6-RC1
+56664fb32cb94a164f4b689f580fd4a1e518a59b	refs/tags/JAVAMAIL-1_4_7
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4-tests.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/javax.mail/mail/1.4/index.html' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/mail/mail/1.4/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/mail/mail/1.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/mail/mail/1.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="mail-1.4-sources.jar" title="mail-1.4-sources.jar">mail-1.4-sources.jar</a>                              2006-07-17 11:09    465692      
+<a href="mail-1.4-sources.jar.md5" title="mail-1.4-sources.jar.md5">mail-1.4-sources.jar.md5</a>                          2006-07-17 11:09        36      
+<a href="mail-1.4-sources.jar.sha1" title="mail-1.4-sources.jar.sha1">mail-1.4-sources.jar.sha1</a>                         2006-07-17 11:09        44      
+<a href="mail-1.4.jar" title="mail-1.4.jar">mail-1.4.jar</a>                                      2006-07-17 11:09    388864      
+<a href="mail-1.4.jar.md5" title="mail-1.4.jar.md5">mail-1.4.jar.md5</a>                                  2006-07-17 11:09        36      
+<a href="mail-1.4.jar.sha1" title="mail-1.4.jar.sha1">mail-1.4.jar.sha1</a>                                 2006-07-17 11:09        44      
+<a href="mail-1.4.pom" title="mail-1.4.pom">mail-1.4.pom</a>                                      2006-07-17 11:09       993      
+<a href="mail-1.4.pom.md5" title="mail-1.4.pom.md5">mail-1.4.pom.md5</a>                                  2006-07-17 11:09        36      
+<a href="mail-1.4.pom.sha1" title="mail-1.4.pom.sha1">mail-1.4.pom.sha1</a>                                 2006-07-17 11:09        44      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       111      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        75      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 142ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:07:13 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.mail/mail/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=eBwK905KxbNODTlFMMh0HjAR%2B3MK%2FRkgHxhsBlKnXpFb6qSC5rxvQTAohSy267P11pJGGsv8h2IwWpOGQXMWqJG8uZ532SN8%2BsEDubT13p7sy802FfdIpZ%2BiFJ%2Bf47epgA3LujkyCI1U"}]}
+server: cloudflare
+cf-ray: 9f6b80f5381f3b58-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 184ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 00:07:13 GMT
+content-type: text/html
+cf-ray: 9f6b80f4bcdf7a85-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/mail/mail/1.4/mail-1.4-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 213ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 05 May 2026 00:07:13 GMT
+content-type: text/html
+cf-ray: 9f6b80f4c8d93d61-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/mail/mail/1.4/mail-1.4-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1.maven.org/maven2/.+sources.jar\"' build/discovered-artifact-metadata metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/$version$/freemarker-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"\\s*:\\s*\"N/A\"|\"documentation-url\"\\s*:\\s*\"https://javadoc.io/doc' build/discovered-artifact-metadata metadata -g '*.json' | head -60" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.typesafe.play/play-functional_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-functional_3/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/guava-bootstrap/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:7:    "test-code-url" : "N/A",
+metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+metadata/com.github.jnr/jnr-x86asm/index.json:7:    "test-code-url" : "N/A",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:8:    "test-code-url": "N/A",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/$version$",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/io.swagger/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.crac/crac/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/io.smallrye.common/smallrye-common-function/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:42:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n 'javax\\.mail|javamail|jakarta\\.mail' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javax.mail-mail-1.4.json:2:  "coordinates" : "javax.mail:mail:1.4"
+metadata/org.apache.openejb/javaee-api/index.json:4:    "allowed-packages": [ "javax.activation", "javax.annotation", "javax.ejb", "javax.enterprise.deploy", "javax.interceptor", "javax.jms", "javax.jws", "javax.mail", "javax.management.j2ee", "javax.persistence", "javax.resource", "javax.security.jacc", "javax.servlet", "javax.transaction", "javax.xml", "org.apache.geronimo.mail" ],
+metadata/library-and-framework-list.json:2338:          "https://github.com/spring-projects/spring-framework/blob/main/spring-context-support/src/main/java/org/springframework/mail/javamail/JavaMailMimeTypesRuntimeHints.java"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:54:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:63:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:69:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:75:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:77:      "glob": "META-INF/javamail.charset.map"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:81:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:83:      "glob": "META-INF/javamail.default.address.map"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:87:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:89:      "glob": "META-INF/javamail.default.providers"
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:93:        "typeReached": "jakarta.mail.Session"
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:54:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:63:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:69:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:75:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:77:      "glob": "META-INF/javamail.charset.map"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:81:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:83:      "glob": "META-INF/javamail.default.address.map"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:87:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:89:      "glob": "META-INF/javamail.default.providers"
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:93:        "typeReached": "jakarta.mail.Session"
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/com.sun.mail/jakarta.mail/index.json && sed -n '1,40p' metadata/javax.el/javax.el-api/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "com.sun.mail",
+      "jakarta"
+    ],
+    "metadata-version": "2.0.1",
+    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+    "repository-url": "https://github.com/eclipse-ee4j/mail",
+    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/$version$/mail/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+    "description": "Jakarta Mail provides a Java API for composing, sending, receiving, and processing email messages. It models common mail concepts and includes protocol-specific support for internet mail standards such as SMTP, POP3, IMAP, and MIME.",
+    "tested-versions": [
+      "2.0.1",
+      "2.0.2"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/el-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+    "tested-versions" : [
+      "3.0.0",
+      "3.0.1-b01",
+      "3.0.1-b02",
+      "3.0.1-b03",
+      "3.0.1-b04",
+      "3.0.1-b06"
+    ],
+    "allowed-packages" : [
+      "javax.el"
+    ]
+  }
+]
+
+codex
+The `1.4` artifact predates the GitHub tags I found, so I’m using Maven Central for the exact source archive and `N/A` for tests after confirming there is no Maven test jar. The repository root will still point to the JavaMail upstream repository, and documentation will use the versioned javadoc.io page because Central does not publish a `1.4` javadoc jar.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/javaee/javamail' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/mail-1.4.jar" https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4.jar; jar tf "$tmp/mail-1.4.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/mail-1.4-sources.jar" https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4-sources.jar; jar tf "$tmp/mail-1.4-sources.jar" | rg -i '"'("'^|/)test(s)?/|Test'"\\.java"'$|src/test'"' | head -50; status="'$?; rm -rf "$tmp"; exit $status' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 198ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/javamail.charset.map
+META-INF/javamail.default.address.map
+META-INF/javamail.default.providers
+META-INF/mailcap
+com/
+com/sun/
+com/sun/mail/
+com/sun/mail/handlers/
+com/sun/mail/handlers/image_gif.class
+com/sun/mail/handlers/image_jpeg.class
+com/sun/mail/handlers/message_rfc822.class
+com/sun/mail/handlers/multipart_mixed.class
+com/sun/mail/handlers/text_html.class
+com/sun/mail/handlers/text_plain.class
+com/sun/mail/handlers/text_xml.class
+com/sun/mail/iap/
+com/sun/mail/iap/AString.class
+com/sun/mail/iap/Argument.class
+com/sun/mail/iap/Atom.class
+com/sun/mail/iap/BadCommandException.class
+com/sun/mail/iap/ByteArray.class
+com/sun/mail/iap/CommandFailedException.class
+com/sun/mail/iap/ConnectionException.class
+com/sun/mail/iap/Literal.class
+com/sun/mail/iap/LiteralException.class
+com/sun/mail/iap/ParsingException.class
+com/sun/mail/iap/Protocol.class
+com/sun/mail/iap/ProtocolException.class
+com/sun/mail/iap/Response.class
+com/sun/mail/iap/ResponseHandler.class
+com/sun/mail/iap/ResponseInputStream.class
+com/sun/mail/imap/
+com/sun/mail/imap/ACL.class
+com/sun/mail/imap/AppendUID.class
+com/sun/mail/imap/DefaultFolder$1.class
+com/sun/mail/imap/DefaultFolder$2.class
+com/sun/mail/imap/DefaultFolder.class
+com/sun/mail/imap/IMAPBodyPart.class
+com/sun/mail/imap/IMAPFolder$1.class
+com/sun/mail/imap/IMAPFolder$10.class
+com/sun/mail/imap/IMAPFolder$11.class
+com/sun/mail/imap/IMAPFolder$12.class
+com/sun/mail/imap/IMAPFolder$13.class
+com/sun/mail/imap/IMAPFolder$14.class
+com/sun/mail/imap/IMAPFolder$15.class
+com/sun/mail/imap/IMAPFolder$16.class
+com/sun/mail/imap/IMAPFolder$17.class
+com/sun/mail/imap/IMAPFolder$18.class
+com/sun/mail/imap/IMAPFolder$2.class
+com/sun/mail/imap/IMAPFolder$3.class
+com/sun/mail/imap/IMAPFolder$4.class
+com/sun/mail/imap/IMAPFolder$5.class
+com/sun/mail/imap/IMAPFolder$6.class
+com/sun/mail/imap/IMAPFolder$7.class
+com/sun/mail/imap/IMAPFolder$8.class
+com/sun/mail/imap/IMAPFolder$9.class
+com/sun/mail/imap/IMAPFolder$FetchProfileItem.class
+com/sun/mail/imap/IMAPFolder$ProtocolCommand.class
+com/sun/mail/imap/IMAPFolder.class
+com/sun/mail/imap/IMAPInputStream.class
+com/sun/mail/imap/IMAPMessage$1FetchProfileCondition.class
+com/sun/mail/imap/IMAPMessage.class
+com/sun/mail/imap/IMAPMultipartDataSource.class
+com/sun/mail/imap/IMAPNestedMessage.class
+com/sun/mail/imap/IMAPSSLStore.class
+com/sun/mail/imap/IMAPStore$ConnectionPool.class
+com/sun/mail/imap/IMAPStore.class
+com/sun/mail/imap/LengthCounter.class
+com/sun/mail/imap/MessageLiteral.class
+com/sun/mail/imap/Rights$Right.class
+com/sun/mail/imap/Rights.class
+com/sun/mail/imap/Utility$Condition.class
+com/sun/mail/imap/Utility.class
+com/sun/mail/imap/protocol/
+com/sun/mail/imap/protocol/BASE64MailboxDecoder.class
+com/sun/mail/imap/protocol/BASE64MailboxEncoder.class
+com/sun/mail/imap/protocol/BODY.class
+
+ succeeded in 201ms:
+ succeeded in 1036ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:07:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e12e02b572d4f06b2ed8fa8e8c51b03f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=DkYBl8KgD%2BDoJ6o1OMeyTUF7hsI4uq2NkOLHhgXrzV5US7S89tdHjnxo%2FRUsHYr8Cf%2BuXEz6zZQl9GOVzxs9HuTAB2PZPAjQS35MIj1ffZHM3denuXyYCRx0wo0tPUD3CXNbC64S0vjdVF13HPG4QYb1vIzToMVwoDGwKEpi7J4%2FtPm1lutdepSIdRUk5zs6r%2B9m0YS%2Bzyvcy0V4TYp7IkAeDZHVnlLxu97w9qwJf8NHb1%2FLOAFMuv8pXc4o9LZciegeT7Ee0ZZ%2FYYU6zOoO%2FQ%3D%3D--%2FpmvNuNSIU8TK90J--CQwZwhOHkPEY6ht6WDJSng%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1621103456.1777939654; expires=Wed, 05 May 2027 00:07:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 00:07:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5114:101649:527EEF4:3F8228E:69F934C6
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 00:07:41 GMT
+content-type: application/java-archive
+content-length: 465692
+cf-ray: 9f6b81a43e6203b1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2576965
+etag: "c93c148e2f961b3a80e8fc013a9d30bf"
+last-modified: Fri, 20 Oct 2006 15:38:51 GMT
+x-checksum-md5: c93c148e2f961b3a80e8fc013a9d30bf
+x-checksum-sha1: fdd508f19a5075196138c94b341120e917c10e8a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/javax.mail/mail/1.4' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 196ms:
+HTTP/2 303 
+date: Tue, 05 May 2026 00:07:41 GMT
+content-length: 0
+location: /doc/javax.mail/mail/1.4/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=5KjCrZViHWiZdAenuq%2B6PUWWqzOZ%2FNBJcpVo54yee2%2BWDCBCmEJ9E8VD1N9Zbwbl5fD2aS5%2BzaN7bPuHBFSey6AaFPqe6oUsvWQip78DMmx975mDAsA0pazBgqDN%2FlBiQu095bugOQ3w"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f6b81a42e4f3b58-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 05 May 2026 00:07:41 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.mail/mail/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=EwVOYLKTMo6%2FvA2qQE0rx61wF831abmwMUqXJ4ZmBUDO6Ral44h%2BtYiD%2BGhN5wf70FcCk2x6DGTccQ4VfBltP%2B7I7pgGG%2FDWFY3k8Ew5ZUAyZIr1MWaF%2FxH2clMYt90clLEttKfzr2rY"}]}
+server: cloudflare
+cf-ray: 9f6b81a4ceab3b58-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’m going to write the discovered metadata now. I’m leaving `language` and `not-for-native-image` absent because this is a regular JVM Java artifact with `.class` files, not a Kotlin/Groovy/Scala or non-JVM target.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+diff --git a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+index 20c8ad1eb74fd3f7d5654448eb0c87c780b6bb05..ff6d59fe71f2488b953e67d58f5a0d2805e97d78
+--- a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
++++ b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.mail:mail:1.4"
++  "coordinates" : "javax.mail:mail:1.4",
++  "repository-url" : "https://github.com/javaee/javamail",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/mail/mail/$version$/mail-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/javax.mail/mail/$version$",
++  "description" : "JavaMail provides a platform-independent, protocol-independent Java API for building mail and messaging applications. It supports composing, sending, receiving, and processing internet email through mail abstractions and protocol providers such as SMTP, POP3, IMAP, and MIME."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+index 20c8ad1eb74fd3f7d5654448eb0c87c780b6bb05..ff6d59fe71f2488b953e67d58f5a0d2805e97d78
+--- a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
++++ b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.mail:mail:1.4"
++  "coordinates" : "javax.mail:mail:1.4",
++  "repository-url" : "https://github.com/javaee/javamail",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/mail/mail/$version$/mail-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/javax.mail/mail/$version$",
++  "description" : "JavaMail provides a platform-independent, protocol-independent Java API for building mail and messaging applications. It supports composing, sending, receiving, and processing internet email through mail abstractions and protocol providers such as SMTP, POP3, IMAP, and MIME."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.mail-mail-1.4.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/javax.mail-mail-1.4.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6
+ succeeded in 0ms:
+{
+  "coordinates": "javax.mail:mail:1.4",
+  "repository-url": "https://github.com/javaee/javamail",
+  "source-code-url": "https://repo1.maven.org/maven2/javax/mail/mail/$version$/mail-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://javadoc.io/doc/javax.mail/mail/$version$",
+  "description": "JavaMail provides a platform-independent, protocol-independent Java API for building mail and messaging applications. It supports composing, sending, receiving, and processing internet email through mail abstractions and protocol providers such as SMTP, POP3, IMAP, and MIME."
+}
+
+diff --git a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+index 20c8ad1eb74fd3f7d5654448eb0c87c780b6bb05..ff6d59fe71f2488b953e67d58f5a0d2805e97d78
+--- a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
++++ b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.mail:mail:1.4"
++  "coordinates" : "javax.mail:mail:1.4",
++  "repository-url" : "https://github.com/javaee/javamail",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/mail/mail/$version$/mail-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/javax.mail/mail/$version$",
++  "description" : "JavaMail provides a platform-independent, protocol-independent Java API for building mail and messaging applications. It supports composing, sending, receiving, and processing internet email through mail abstractions and protocol providers such as SMTP, POP3, IMAP, and MIME."
+ }
+
+codex
+Updated [javax.mail-mail-1.4.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6/build/discovered-artifact-metadata/javax.mail-mail-1.4.json).
+
+I set the Maven Central sources URL, versioned javadoc.io documentation URL, upstream JavaMail repository URL, and `test-code-url` as `N/A` because no Maven test artifact or confidently versioned upstream test suite exists for `1.4`. I left `language` and `not-for-native-image` absent; the artifact contains JVM `.class` files and is not Kotlin/Groovy/Scala-specific.
+diff --git a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+index 20c8ad1eb74fd3f7d5654448eb0c87c780b6bb05..ff6d59fe71f2488b953e67d58f5a0d2805e97d78
+--- a/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
++++ b/build/discovered-artifact-metadata/javax.mail-mail-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.mail:mail:1.4"
++  "coordinates" : "javax.mail:mail:1.4",
++  "repository-url" : "https://github.com/javaee/javamail",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/mail/mail/$version$/mail-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/javax.mail/mail/$version$",
++  "description" : "JavaMail provides a platform-independent, protocol-independent Java API for building mail and messaging applications. It supports composing, sending, receiving, and processing internet email through mail abstractions and protocol providers such as SMTP, POP3, IMAP, and MIME."
+ }
+
+tokens used
+46,821
+Updated [javax.mail-mail-1.4.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6/build/discovered-artifact-metadata/javax.mail-mail-1.4.json).
+
+I set the Maven Central sources URL, versioned javadoc.io documentation URL, upstream JavaMail repository URL, and `test-code-url` as `N/A` because no Maven test artifact or confidently versioned upstream test suite exists for `1.4`. I left `language` and `not-for-native-image` absent; the artifact contains JVM `.class` files and is not Kotlin/Groovy/Scala-specific.
+Ran agent for javax.mail:mail:1.4 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6/build/agent-artifact-discovery-logs/javax.mail-mail-1.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2869-6b6184b6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 4 executed, 5 from cache
