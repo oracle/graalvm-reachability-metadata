@@ -1,0 +1,292 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.lettuce:lettuce-core:6.2.6.RELEASE
+Command: `/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4372-21d30d63/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :tck-test-support:compileJava
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes
+> Task :tck-test-support:jar
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4372-21d30d63/tests/src/io.lettuce/lettuce-core/6.2.6.RELEASE/src/test/java/io_lettuce/lettuce_core/Lettuce_coreTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :compileTestJava
+
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by io.netty.util.internal.PlatformDependent0$4 (file:/tmp/metadata-forge-gradle/c86ff6992a1d804d/caches/modules-2/files-2.1/io.netty/netty-common/4.1.96.Final/d10c167623cbc471753f950846df241d1021655c/netty-common-4.1.96.Final.jar)
+WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$4
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+> Task :test
+
+Lettuce_coreTest > commandArgumentBuildersEncodeOptionsAndKeyValueResults() FAILED
+    io.lettuce.core.RedisConnectionException: Unable to connect to 127.0.0.1/<unresolved>:45717
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+        at app//io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:201)
+        at app//io_lettuce.lettuce_core.Lettuce_coreTest.commandArgumentBuildersEncodeOptionsAndKeyValueResults(Lettuce_coreTest.java:129)
+
+        Caused by:
+        io.lettuce.core.RedisCommandTimeoutException: Connection initialization timed out after 5 second(s)
+            at app//io.lettuce.core.protocol.RedisHandshakeHandler.lambda$channelRegistered$0(RedisHandshakeHandler.java:67)
+            at app//io.netty.util.concurrent.PromiseTask.runTask(PromiseTask.java:98)
+            at app//io.netty.util.concurrent.PromiseTask.run(PromiseTask.java:106)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+            at app//io.netty.util.concurrent.DefaultEventExecutor.run(DefaultEventExecutor.java:66)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at app//io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at app//io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+Lettuce_coreTest > asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure() FAILED
+    io.lettuce.core.RedisConnectionException: Unable to connect to 127.0.0.1/<unresolved>:36697
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+        at app//io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:201)
+        at app//io_lettuce.lettuce_core.Lettuce_coreTest.asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure(Lettuce_coreTest.java:163)
+
+        Caused by:
+        io.lettuce.core.RedisConnectionException: Connection closed prematurely
+            at app//io.lettuce.core.protocol.RedisHandshakeHandler.channelInactive(RedisHandshakeHandler.java:91)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.ChannelInboundHandlerAdapter.channelInactive(ChannelInboundHandlerAdapter.java:81)
+            at app//io.lettuce.core.ChannelGroupListener.channelInactive(ChannelGroupListener.java:69)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.DefaultChannelPipeline$HeadContext.channelInactive(DefaultChannelPipeline.java:1405)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:301)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.DefaultChannelPipeline.fireChannelInactive(DefaultChannelPipeline.java:901)
+            at app//io.netty.channel.AbstractChannel$AbstractUnsafe$7.run(AbstractChannel.java:813)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:167)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+            at app//io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:566)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at app//io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at app//io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+Lettuce_coreTest > scriptingCommandsDecodeRequestedOutputTypes() FAILED
+    io.lettuce.core.RedisConnectionException: Unable to connect to 127.0.0.1/<unresolved>:44629
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+        at app//io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:201)
+        at app//io_lettuce.lettuce_core.Lettuce_coreTest.scriptingCommandsDecodeRequestedOutputTypes(Lettuce_coreTest.java:247)
+
+        Caused by:
+        io.lettuce.core.RedisConnectionException: Connection closed prematurely
+            at app//io.lettuce.core.protocol.RedisHandshakeHandler.channelInactive(RedisHandshakeHandler.java:91)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.ChannelInboundHandlerAdapter.channelInactive(ChannelInboundHandlerAdapter.java:81)
+            at app//io.lettuce.core.ChannelGroupListener.channelInactive(ChannelGroupListener.java:69)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.DefaultChannelPipeline$HeadContext.channelInactive(DefaultChannelPipeline.java:1405)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:301)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.DefaultChannelPipeline.fireChannelInactive(DefaultChannelPipeline.java:901)
+            at app//io.netty.channel.AbstractChannel$AbstractUnsafe$7.run(AbstractChannel.java:813)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:167)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+            at app//io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:566)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at app//io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at app//io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+Lettuce_coreTest > sortedSetCommandsMapScoredValues() FAILED
+    io.lettuce.core.RedisConnectionException: Unable to connect to 127.0.0.1/<unresolved>:34975
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+        at app//io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:201)
+        at app//io_lettuce.lettuce_core.Lettuce_coreTest.sortedSetCommandsMapScoredValues(Lettuce_coreTest.java:224)
+
+        Caused by:
+        io.lettuce.core.RedisConnectionException: Connection closed prematurely
+            at app//io.lettuce.core.protocol.RedisHandshakeHandler.channelInactive(RedisHandshakeHandler.java:91)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.ChannelInboundHandlerAdapter.channelInactive(ChannelInboundHandlerAdapter.java:81)
+            at app//io.lettuce.core.ChannelGroupListener.channelInactive(ChannelGroupListener.java:69)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.DefaultChannelPipeline$HeadContext.channelInactive(DefaultChannelPipeline.java:1405)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:301)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.DefaultChannelPipeline.fireChannelInactive(DefaultChannelPipeline.java:901)
+            at app//io.netty.channel.AbstractChannel$AbstractUnsafe$7.run(AbstractChannel.java:813)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:167)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+            at app//io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:566)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at app//io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at app//io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+Lettuce_coreTest > geospatialCommandsDecodeCoordinatesAndDistances() FAILED
+    io.lettuce.core.RedisConnectionException: Unable to connect to 127.0.0.1/<unresolved>:42559
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+        at app//io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:201)
+        at app//io_lettuce.lettuce_core.Lettuce_coreTest.geospatialCommandsDecodeCoordinatesAndDistances(Lettuce_coreTest.java:193)
+
+        Caused by:
+        io.lettuce.core.RedisConnectionException: Connection closed prematurely
+            at app//io.lettuce.core.protocol.RedisHandshakeHandler.channelInactive(RedisHandshakeHandler.java:91)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.ChannelInboundHandlerAdapter.channelInactive(ChannelInboundHandlerAdapter.java:81)
+            at app//io.lettuce.core.ChannelGroupListener.channelInactive(ChannelGroupListener.java:69)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.DefaultChannelPipeline$HeadContext.channelInactive(DefaultChannelPipeline.java:1405)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:301)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.DefaultChannelPipeline.fireChannelInactive(DefaultChannelPipeline.java:901)
+            at app//io.netty.channel.AbstractChannel$AbstractUnsafe$7.run(AbstractChannel.java:813)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:167)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+            at app//io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:566)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at app//io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at app//io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+Lettuce_coreTest > synchronousCommandsRoundTripAgainstRedisProtocolServer() FAILED
+    io.lettuce.core.RedisConnectionException: Unable to connect to 127.0.0.1/<unresolved>:36655
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+        at app//io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+        at app//io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+        at app//io.lettuce.core.RedisClient.connect(RedisClient.java:201)
+        at app//io_lettuce.lettuce_core.Lettuce_coreTest.synchronousCommandsRoundTripAgainstRedisProtocolServer(Lettuce_coreTest.java:98)
+
+        Caused by:
+        io.lettuce.core.RedisConnectionException: Connection closed prematurely
+            at app//io.lettuce.core.protocol.RedisHandshakeHandler.channelInactive(RedisHandshakeHandler.java:91)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.ChannelInboundHandlerAdapter.channelInactive(ChannelInboundHandlerAdapter.java:81)
+            at app//io.lettuce.core.ChannelGroupListener.channelInactive(ChannelGroupListener.java:69)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:305)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:274)
+            at app//io.netty.channel.DefaultChannelPipeline$HeadContext.channelInactive(DefaultChannelPipeline.java:1405)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:301)
+            at app//io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:281)
+            at app//io.netty.channel.DefaultChannelPipeline.fireChannelInactive(DefaultChannelPipeline.java:901)
+            at app//io.netty.channel.AbstractChannel$AbstractUnsafe$7.run(AbstractChannel.java:813)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+            at app//io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:167)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+            at app//io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:566)
+            at app//io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at app//io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at app//io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+7 tests completed, 6 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4372-21d30d63/tests/src/io.lettuce/lettuce-core/6.2.6.RELEASE/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 53s
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4372-21d30d63/tests/src/io.lettuce/lettuce-core/6.2.6.RELEASE/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 6 executed, 8 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4372-21d30d63/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.lettuce:lettuce-core:6.2.6.RELEASE failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 56s
+9 actionable tasks: 1 executed, 8 up-to-date
