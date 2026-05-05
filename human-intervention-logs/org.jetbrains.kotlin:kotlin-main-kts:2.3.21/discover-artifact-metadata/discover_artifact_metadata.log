@@ -1,0 +1,945 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df8c0-7cf6-7c63-88cb-8d7bf5e89b05
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-main-kts:2.3.21
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.3.21" when "$version$" is replaced with "2.3.21".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-main-kts:2.3.21".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.3.21".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact and its published metadata first, then patch the JSON directly with version-templated URLs where the version appears.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"language\"|\"not-for-native-image\"|kotlin-main-kts|kotlin-scripting' -n metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json|org.jetbrains.kotlin'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+
+web search: 
+web search: Maven Central org.jetbrains.kotlin kotlin-main-kts 2.3.21
+web search: 
+web search: site:github.com/JetBrains/kotlin/releases/tag v2.3.21 Kotlin
+codex
+The artifact is in the Kotlin monorepo family and the local file currently only has coordinates. I’m checking Maven Central directly because this repo prefers Maven-hosted source/test/doc artifacts when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-main-kts</artifactId>
+  <version>2.3.21</version>
+  <name>Kotlin Main Kts</name>
+  <description>Kotlin "main" script definition</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-scripting-compiler-embeddable</artifactId>
+      <version>2.3.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.3.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>1.6.10</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-main-kts/2.3.21</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-main-kts/2.3.21</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kotlin-main-kts-2.3.21-javadoc.jar" title="kotlin-main-kts-2.3.21-javadoc.jar">kotlin-main-kts-2.3.21-javadoc.jar</a>                2026-04-22 09:31       261      
+<a href="kotlin-main-kts-2.3.21-javadoc.jar.asc" title="kotlin-main-kts-2.3.21-javadoc.jar.asc">kotlin-main-kts-2.3.21-javadoc.jar.asc</a>            2026-04-22 09:31       689      
+<a href="kotlin-main-kts-2.3.21-javadoc.jar.md5" title="kotlin-main-kts-2.3.21-javadoc.jar.md5">kotlin-main-kts-2.3.21-javadoc.jar.md5</a>            2026-04-22 09:31        32      
+<a href="kotlin-main-kts-2.3.21-javadoc.jar.sha1" title="kotlin-main-kts-2.3.21-javadoc.jar.sha1">kotlin-main-kts-2.3.21-javadoc.jar.sha1</a>           2026-04-22 09:31        40      
+<a href="kotlin-main-kts-2.3.21-sources.jar" title="kotlin-main-kts-2.3.21-sources.jar">kotlin-main-kts-2.3.21-sources.jar</a>                2026-04-22 09:31     92003      
+<a href="kotlin-main-kts-2.3.21-sources.jar.asc" title="kotlin-main-kts-2.3.21-sources.jar.asc">kotlin-main-kts-2.3.21-sources.jar.asc</a>            2026-04-22 09:31       689      
+<a href="kotlin-main-kts-2.3.21-sources.jar.md5" title="kotlin-main-kts-2.3.21-sources.jar.md5">kotlin-main-kts-2.3.21-sources.jar.md5</a>            2026-04-22 09:31        32      
+<a href="kotlin-main-kts-2.3.21-sources.jar.sha1" title="kotlin-main-kts-2.3.21-sources.jar.sha1">kotlin-main-kts-2.3.21-sources.jar.sha1</a>           2026-04-22 09:31        40      
+<a href="kotlin-main-kts-2.3.21.jar" title="kotlin-main-kts-2.3.21.jar">kotlin-main-kts-2.3.21.jar</a>                        2026-04-22 09:31   6910069      
+<a href="kotlin-main-kts-2.3.21.jar.asc" title="kotlin-main-kts-2.3.21.jar.asc">kotlin-main-kts-2.3.21.jar.asc</a>                    2026-04-22 09:31       689      
+<a href="kotlin-main-kts-2.3.21.jar.md5" title="kotlin-main-kts-2.3.21.jar.md5">kotlin-main-kts-2.3.21.jar.md5</a>                    2026-04-22 09:31        32      
+<a href="kotlin-main-kts-2.3.21.jar.sha1" title="kotlin-main-kts-2.3.21.jar.sha1">kotlin-main-kts-2.3.21.jar.sha1</a>                   2026-04-22 09:31        40      
+<a href="kotlin-main-kts-2.3.21.pom" title="kotlin-main-kts-2.3.21.pom">kotlin-main-kts-2.3.21.pom</a>                        2026-04-22 09:31      1900      
+<a href="kotlin-main-kts-2.3.21.pom.asc" title="kotlin-main-kts-2.3.21.pom.asc">kotlin-main-kts-2.3.21.pom.asc</a>                    2026-04-22 09:31       689      
+<a href="kotlin-main-kts-2.3.21.pom.md5" title="kotlin-main-kts-2.3.21.pom.md5">kotlin-main-kts-2.3.21.pom.md5</a>                    2026-04-22 09:31        32      
+<a href="kotlin-main-kts-2.3.21.pom.sha1" title="kotlin-main-kts-2.3.21.pom.sha1">kotlin-main-kts-2.3.21.pom.sha1</a>                   2026-04-22 09:31        40      
+<a href="kotlin-main-kts-2.3.21.spdx.json" title="kotlin-main-kts-2.3.21.spdx.json">kotlin-main-kts-2.3.21.spdx.json</a>                  2026-04-22 09:31      7143      
+<a href="kotlin-main-kts-2.3.21.spdx.json.asc" title="kotlin-main-kts-2.3.21.spdx.json.asc">kotlin-main-kts-2.3.21.spdx.json.asc</a>              2026-04-22 09:31       689      
+<a href="kotlin-main-kts-2.3.21.spdx.json.md5" title="kotlin-main-kts-2.3.21.spdx.json.md5">kotlin-main-kts-2.3.21.spdx.json.md5</a>              2026-04-22 09:31        32      
+<a href="kotlin-main-kts-2.3.21.spdx.json.sha1" title="kotlin-main-kts-2.3.21.spdx.json.sha1">kotlin-main-kts-2.3.21.spdx.json.sha1</a>             2026-04-22 09:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/maven-metadata.xml' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-main-kts</artifactId>
+  <versioning>
+    <latest>2.4.0-Beta2</latest>
+    <release>2.4.0-Beta2</release>
+    <versions>
+      <version>1.3.0-rc-190</version>
+      <version>1.3.0-rc-198</version>
+      <version>1.3.0</version>
+      <version>1.3.10</version>
+      <version>1.3.11</version>
+      <version>1.3.20</version>
+      <version>1.3.21</version>
+      <version>1.3.30</version>
+      <version>1.3.31</version>
+      <version>1.3.40</version>
+      <version>1.3.41</version>
+      <version>1.3.50</version>
+      <version>1.3.60</version>
+      <version>1.3.61</version>
+      <version>1.3.70</version>
+      <version>1.3.71</version>
+      <version>1.3.72</version>
+      <version>1.4.0-rc</version>
+      <version>1.4.0</version>
+      <version>1.4.10</version>
+      <version>1.4.20-M1</version>
+      <version>1.4.20-M2</version>
+      <version>1.4.20-RC</version>
+      <version>1.4.20</version>
+      <version>1.4.21</version>
+      <version>1.4.21-2</version>
+      <version>1.4.30-M1</version>
+      <version>1.4.30-RC</version>
+      <version>1.4.30</version>
+      <version>1.4.31</version>
+      <version>1.4.32</version>
+      <version>1.5.0-M1</version>
+      <version>1.5.0-M2</version>
+      <version>1.5.0-RC</version>
+      <version>1.5.0</version>
+      <version>1.5.10</version>
+      <version>1.5.20-M1</version>
+      <version>1.5.20-RC</version>
+      <version>1.5.20</version>
+      <version>1.5.21</version>
+      <version>1.5.30-M1</version>
+      <version>1.5.30-RC</version>
+      <version>1.5.30</version>
+      <version>1.5.31</version>
+      <version>1.5.32</version>
+      <version>1.6.0-M1</version>
+      <version>1.6.0-RC</version>
+      <version>1.6.0-RC2</version>
+      <version>1.6.0</version>
+      <version>1.6.10-RC</version>
+      <version>1.6.10</version>
+      <version>1.6.20-M1</version>
+      <version>1.6.20-RC</version>
+      <version>1.6.20-RC2</version>
+      <version>1.6.20</version>
+      <version>1.6.21</version>
+      <version>1.7.0-Beta</version>
+      <version>1.7.0-RC</version>
+      <version>1.7.0-RC2</version>
+      <version>1.7.0</version>
+      <version>1.7.10</version>
+      <version>1.7.20-Beta</version>
+      <version>1.7.20-RC</version>
+      <version>1.7.20</version>
+      <version>1.7.21</version>
+      <version>1.7.22</version>
+      <version>1.8.0-Beta</version>
+      <version>1.8.0-RC</version>
+      <version>1.8.0-RC2</version>
+      <version>1.8.0</version>
+      <version>1.8.0-343</version>
+      <version>1.8.10</version>
+      <version>1.8.20-Beta</version>
+      <version>1.8.20-RC</version>
+      <version>1.8.20-RC2</version>
+      <version>1.8.20</version>
+      <version>1.8.21</version>
+      <version>1.8.22</version>
+      <version>1.9.0-Beta</version>
+      <version>1.9.0-RC</version>
+      <version>1.9.0</version>
+      <version>1.9.10</version>
+      <version>1.9.20-Beta</version>
+      <version>1.9.20-Beta2</version>
+      <version>1.9.20-RC</version>
+      <version>1.9.20-RC2</version>
+      <version>1.9.20</version>
+      <version>1.9.21</version>
+      <version>1.9.22</version>
+      <version>1.9.23</version>
+      <version>1.9.24</version>
+      <version>1.9.25</version>
+      <version>2.0.0-Beta1</version>
+      <version>2.0.0-Beta2</version>
+      <version>2.0.0-Beta3</version>
+      <version>2.0.0-Beta4</version>
+      <version>2.0.0-Beta5</version>
+      <version>2.0.0-RC1</version>
+      <version>2.0.0-RC2</version>
+      <version>2.0.0-RC3</version>
+      <version>2.0.0</version>
+      <version>2.0.10-RC</version>
+      <version>2.0.10-RC2</version>
+      <version>2.0.10</version>
+      <version>2.0.20-Beta1</version>
+      <version>2.0.20-Beta2</version>
+      <version>2.0.20-RC</version>
+      <version>2.0.20-RC2</version>
+      <version>2.0.20</version>
+      <version>2.0.21-RC</version>
+      <version>2.0.21</version>
+      <version>2.1.0-Beta1</version>
+      <version>2.1.0-Beta2</version>
+      <version>2.1.0-RC</version>
+      <version>2.1.0-RC2</version>
+      <version>2.1.0</version>
+      <version>2.1.10-RC</version>
+      <version>2.1.10-RC2</version>
+      <version>2.1.10</version>
+      <version>2.1.20-Beta1</version>
+      <version>2.1.20-Beta2</version>
+      <version>2.1.20-RC</version>
+      <version>2.1.20-RC2</version>
+      <version>2.1.20-RC3</version>
+      <version>2.1.20</version>
+      <version>2.1.21-RC</version>
+      <version>2.1.21-RC2</version>
+      <version>2.1.21</version>
+      <version>2.2.0-Beta1</version>
+      <version>2.2.0-Beta2</version>
+      <version>2.2.0-RC</version>
+      <version>2.2.0-RC2</version>
+      <version>2.2.0-RC3</version>
+      <version>2.2.0</version>
+      <version>2.2.10-RC</version>
+      <version>2.2.10-RC2</version>
+      <version>2.2.10</version>
+      <version>2.2.20-Beta1</version>
+      <version>2.2.20-Beta2</version>
+      <version>2.2.20-RC</version>
+      <version>2.2.20-RC2</version>
+      <version>2.2.20</version>
+      <version>2.2.21-RC</version>
+      <version>2.2.21-RC2</version>
+      <version>2.2.21</version>
+      <version>2.3.0-Beta1</version>
+      <version>2.3.0-Beta2</version>
+      <version>2.3.0-RC</version>
+      <version>2.3.0-RC2</version>
+      <version>2.3.0-RC3</version>
+      <version>2.3.0</version>
+      <version>2.3.10-RC</version>
+      <version>2.3.10-RC2</version>
+      <version>2.3.10</version>
+      <version>2.3.20-Beta1</version>
+      <version>2.3.20-Beta2</version>
+      <version>2.3.20-RC</version>
+      <version>2.3.20-RC2</version>
+      <version>2.3.20-RC3</version>
+      <version>2.3.20</version>
+      <version>2.3.21-RC</version>
+      <version>2.3.21-RC2</version>
+      <version>2.3.21</version>
+      <version>2.4.0-Beta1</version>
+      <version>2.4.0-Beta2</version>
+    </versions>
+    <lastUpdated>20260423081313</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/kotlin-main-kts-2.3.21-sources.jar" https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-sources.jar; jar tf "$tmp/kotlin-main-kts-2.3.21-sources.jar" | sed -n '"'1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/kotlin/git/ref/tags/v2.3.21' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-test-sources.jar https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-tests.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 233ms:
+{
+  "ref": "refs/tags/v2.3.21",
+  "node_id": "MDM6UmVmMzQzMjI2NjpyZWZzL3RhZ3MvdjIuMy4yMQ==",
+  "url": "https://api.github.com/repos/JetBrains/kotlin/git/refs/tags/v2.3.21",
+  "object": {
+    "sha": "fea1ad8c18995b80d1ca0e3917056104613d23db",
+    "type": "commit",
+    "url": "https://api.github.com/repos/JetBrains/kotlin/git/commits/fea1ad8c18995b80d1ca0e3917056104613d23db"
+  }
+}
+
+ succeeded in 256ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/services/
+META-INF/services/javax.script.ScriptEngineFactory
+org/
+org/jetbrains/
+org/jetbrains/kotlin/
+org/jetbrains/kotlin/mainKts/
+org/jetbrains/kotlin/mainKts/annotations.kt
+org/jetbrains/kotlin/mainKts/scriptDef.kt
+org/jetbrains/kotlin/mainKts/impl/
+org/jetbrains/kotlin/mainKts/impl/directories.kt
+org/jetbrains/kotlin/mainKts/jsr223/
+org/jetbrains/kotlin/mainKts/jsr223/KotlinJsr223MainKtsScriptEngineFactory.kt
+kotlin/
+kotlin/script/
+kotlin/script/experimental/
+kotlin/script/experimental/annotations/
+kotlin/script/experimental/annotations/scriptAnnotations.kt
+kotlin/script/experimental/api/
+kotlin/script/experimental/api/errorHandling.kt
+kotlin/script/experimental/api/kotlinType.kt
+kotlin/script/experimental/api/replAnalysis.kt
+kotlin/script/experimental/api/replCompilation.kt
+kotlin/script/experimental/api/replData.kt
+kotlin/script/experimental/api/replEvaluation.kt
+kotlin/script/experimental/api/scriptCompilation.kt
+kotlin/script/experimental/api/scriptData.kt
+kotlin/script/experimental/api/scriptEvaluation.kt
+kotlin/script/experimental/api/scriptIdeConfiguration.kt
+kotlin/script/experimental/host/
+kotlin/script/experimental/host/BasicScriptingHost.kt
+kotlin/script/experimental/host/configurationFromTemplate.kt
+kotlin/script/experimental/host/hostConfiguration.kt
+kotlin/script/experimental/host/scriptHostUtil.kt
+kotlin/script/experimental/impl/
+kotlin/script/experimental/impl/compilationInternals.kt
+kotlin/script/experimental/impl/refineUtils.kt
+kotlin/script/experimental/impl/runSuspend.kt
+kotlin/script/experimental/util/
+kotlin/script/experimental/util/filterByAnnotationType.kt
+kotlin/script/experimental/util/linkedSnippet.kt
+kotlin/script/experimental/util/propertiesCollection.kt
+kotlin/script/experimental/jvm/
+kotlin/script/experimental/jvm/BasicJvmReplEvaluator.kt
+kotlin/script/experimental/jvm/BasicJvmScriptEvaluator.kt
+kotlin/script/experimental/jvm/jvmScriptCaching.kt
+kotlin/script/experimental/jvm/jvmScriptCompilation.kt
+kotlin/script/experimental/jvm/jvmScriptEvaluation.kt
+kotlin/script/experimental/jvm/jvmScriptingHostConfiguration.kt
+kotlin/script/experimental/jvm/runner.kt
+kotlin/script/experimental/jvm/compat/
+kotlin/script/experimental/jvm/compat/diagnosticsUtil.kt
+kotlin/script/experimental/jvm/impl/
+kotlin/script/experimental/jvm/impl/KJvmCompiledModule.kt
+kotlin/script/experimental/jvm/impl/KJvmCompiledScript.kt
+kotlin/script/experimental/jvm/impl/pathUtil.kt
+kotlin/script/experimental/jvm/util/
+kotlin/script/experimental/jvm/util/SnippetsHistory.kt
+kotlin/script/experimental/jvm/util/diagnosticsHelpers.kt
+kotlin/script/experimental/jvm/util/identifiers.kt
+kotlin/script/experimental/jvm/util/jvmClassLoaderUtil.kt
+kotlin/script/experimental/jvm/util/jvmClasspathUtil.kt
+kotlin/script/experimental/jvm/util/runtimeExceptionReporting.kt
+kotlin/script/experimental/jvm/util/sourceCodeUtils.kt
+kotlin/script/experimental/jvmhost/
+kotlin/script/experimental/jvmhost/BasicJvmScriptingHost.kt
+kotlin/script/experimental/jvmhost/CompiledScriptJarsCache.kt
+kotlin/script/experimental/jvmhost/jvmScriptCompilation.kt
+kotlin/script/experimental/jvmhost/jvmScriptSaving.kt
+kotlin/script/experimental/jvmhost/obsoleteJvmScriptEvaluation.kt
+kotlin/script/experimental/jvmhost/jsr223/
+kotlin/script/experimental/jvmhost/jsr223/KotlinJsr223HostConfiguration.kt
+kotlin/script/experimental/jvmhost/jsr223/KotlinJsr223InvocableScriptEngine.kt
+kotlin/script/experimental/jvmhost/jsr223/KotlinJsr223ScriptEngineImpl.kt
+kotlin/script/experimental/jvmhost/jsr223/propertiesFromContext.kt
+kotlin/script/experimental/jvmhost/repl/
+kotlin/script/experimental/jvmhost/repl/legacyReplCompilation.kt
+kotlin/script/experimental/jvmhost/repl/legacyReplEvaluation.kt
+kotlin/script/experimental/dependencies/
+kotlin/script/experimental/dependencies/CompoundDependenciesResolver.kt
+kotlin/script/experimental/dependencies/ExternalDependenciesResolver.kt
+kotlin/script/experimental/dependencies/FileSystemDependenciesResolver.kt
+kotlin/script/experimental/dependencies/annotations.kt
+kotlin/script/experimental/dependencies/configurationUtils.kt
+kotlin/script/experimental/dependencies/impl/
+kotlin/script/experimental/dependencies/impl/SimpleExternalDependenciesResolverOptionsParser.kt
+kotlin/script/experimental/dependencies/impl/makeExternalDependenciesResolverOptions.kt
+kotlin/script/experimental/dependencies/impl/resolverNamedOptions.kt
+kotlin/script/experimental/dependencies/impl/resolverUtils.kt
+
+ exited 22 in 338ms:
+curl: (22) The requested URL returned error: 404
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-test-sources.jar
+curl: (22) The requested URL returned error: 404
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-tests.jar
+
+exec
+/usr/bin/bash -lc 'for p in libraries/tools/kotlin-main-kts libraries/scripting/kotlin-main-kts libraries/scripting/jvm-host-unshaded/src/org/jetbrains/kotlin/mainKts; do code=$(curl -fsSL -o /dev/null -w '"'%{http_code}' \"https://github.com/JetBrains/kotlin/tree/v2.3.21/"'$p"); printf '"'%s %s\\n' \""'$code" "$p"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/git/trees/v2.3.21?recursive=1' | rg 'kotlin-main-kts|mainKts|scriptDef.kt|KotlinJsr223MainKtsScriptEngineFactory.kt|MainKts' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+exec
+/usr/bin/bash -lc 'for u in https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/tools/kotlin-main-kts/test https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/kotlin-main-kts/test https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host-test/test; do code=$(curl -fsSL -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$code" "$u"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 1977ms:
+200 libraries/tools/kotlin-main-kts
+curl: (22) The requested URL returned error: 404
+404 libraries/scripting/kotlin-main-kts
+curl: (22) The requested URL returned error: 404
+404 libraries/scripting/jvm-host-unshaded/src/org/jetbrains/kotlin/mainKts
+
+ succeeded in 2143ms:
+200 https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/tools/kotlin-main-kts/test
+curl: (22) The requested URL returned error: 404
+404 https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/kotlin-main-kts/test
+200 https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host-test/test
+
+ succeeded in 2446ms:
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/common/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+    "description" : "Kotlin Scripting Common provides shared scripting APIs for defining script sources, diagnostics, compilation and evaluation configurations, and REPL interactions. It supplies the common types used by Kotlin scripting hosts and compiler integrations to configure, compile, and evaluate Kotlin scripts.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "2.3.21",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin.script.experimental"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+      "1.8.21",
+      "1.8.22",
+      "1.9.0",
+      "1.9.10",
+      "1.9.20",
+      "1.9.21",
+      "1.9.22",
+      "1.9.23",
+      "1.9.24",
+      "1.9.25",
+      "2.0.0",
+      "2.0.10",
+      "2.0.20",
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/kotlin-main-kts-2.3.21.jar" https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21.jar; jar tf "$tmp/kotlin-main-kts-2.3.21.jar" | rg '"'\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 1860ms:
+javax/annotation/PostConstruct.class
+javax/annotation/PreDestroy.class
+javax/annotation/Priority.class
+javax/inject/Inject.class
+javax/inject/Named.class
+javax/inject/Provider.class
+javax/inject/Qualifier.class
+javax/inject/Scope.class
+javax/inject/Singleton.class
+kotlin/script/experimental/annotations/KotlinScript.class
+kotlin/script/experimental/api/CompiledScript.class
+kotlin/script/experimental/api/ErrorHandlingKt.class
+kotlin/script/experimental/api/EvaluatedSnippet.class
+kotlin/script/experimental/api/EvaluationResult.class
+kotlin/script/experimental/api/ExternalSourceCode.class
+kotlin/script/experimental/api/IdeScriptCompilationConfigurationBuilder$Companion.class
+kotlin/script/experimental/api/IdeScriptCompilationConfigurationBuilder.class
+kotlin/script/experimental/api/IdeScriptCompilationConfigurationKeys.class
+kotlin/script/experimental/api/IterableResultsCollector.class
+kotlin/script/experimental/api/KotlinType$Companion.class
+
+exec
+/usr/bin/bash -lc "rg '\"metadata-version\"' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg --files build/discovered-artifact-metadata | head -5 | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
+}
+
+codex
+I found Maven Central has the 2.3.21 JVM jar, sources jar, and javadoc jar, but no test-sources/tests classifier. I’m going to use Maven for source/docs and the Kotlin monorepo’s `v$version$` tag for the test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+index 8a5ae5e402d28bfe404f68131fda5387f0ebf014..187b9f4d7a227968a8b3bc9ee4d936c6d347e60a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
++  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+index 8a5ae5e402d28bfe404f68131fda5387f0ebf014..187b9f4d7a227968a8b3bc9ee4d936c6d347e60a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
++  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/tools/kotlin-main-kts/test
+web search: 
+web search: repo.maven.apache.org org.jetbrains.kotlin kotlin-main-kts 2.3.21 javadoc sources pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/org.jetbrains.kotlin/kotlin-main-kts
+web search: 
+web search: central.sonatype.com/artifact/org.jetbrains.kotlin/kotlin-main-kts/2.3.21
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
+  "description": "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-sources.jar \\
+  https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/tools/kotlin-main-kts/test \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-javadoc.jar; do \\
+  code="'$(curl -fsSL -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$code" "$u"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+index 8a5ae5e402d28bfe404f68131fda5387f0ebf014..187b9f4d7a227968a8b3bc9ee4d936c6d347e60a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
++  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 1154ms:
+200 https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-sources.jar
+200 https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/tools/kotlin-main-kts/test
+200 https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/2.3.21/kotlin-main-kts-2.3.21-javadoc.jar
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+index 8a5ae5e402d28bfe404f68131fda5387f0ebf014..187b9f4d7a227968a8b3bc9ee4d936c6d347e60a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
++  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
+  "repository-url" : "https://github.com/JetBrains/kotlin",
+  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
+  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
+  "language" : {
+    "name" : "kotlin",
+    "version" : "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored=matching build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+index 8a5ae5e402d28bfe404f68131fda5387f0ebf014..187b9f4d7a227968a8b3bc9ee4d936c6d347e60a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
++  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 163ms:
+!! build/
+
+web search: 
+web search: github JetBrains kotlin v2.3.21 libraries tools kotlin-main-kts test
+codex
+Updated [org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json).
+
+Set Maven Central source/docs URLs, the Kotlin monorepo test URL, a two-sentence description, and `language` as Kotlin `2.3`. I left `not-for-native-image` absent because the artifact is a JVM jar with `.class` files, so it can be consumed by Native Image. Verified the JSON with `jq` and confirmed all three `$version$` URLs resolve with `2.3.21`.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+index 8a5ae5e402d28bfe404f68131fda5387f0ebf014..187b9f4d7a227968a8b3bc9ee4d936c6d347e60a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-main-kts:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/tools/kotlin-main-kts/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-main-kts/$version$/kotlin-main-kts-$version$-javadoc.jar",
++  "description" : "Kotlin Main Kts provides the standard .main.kts script definition and JSR-223 integration for running Kotlin main scripts. It supplies JVM scripting host components used to configure, compile, and evaluate Kotlin scripts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+tokens used
+70,967
+Updated [org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.json).
+
+Set Maven Central source/docs URLs, the Kotlin monorepo test URL, a two-sentence description, and `language` as Kotlin `2.3`. I left `not-for-native-image` absent because the artifact is a JVM jar with `.class` files, so it can be consumed by Native Image. Verified the JSON with `jq` and confirmed all three `$version$` URLs resolve with `2.3.21`.
+Ran agent for org.jetbrains.kotlin:kotlin-main-kts:2.3.21 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-main-kts-2.3.21.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5265-9e3f8243/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 2s
+9 actionable tasks: 9 executed
