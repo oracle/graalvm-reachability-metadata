@@ -51,6 +51,38 @@ class GradleEnvironmentTests(unittest.TestCase):
 
             self.assertEqual(env["GRADLE_USER_HOME"], gradle_home)
 
+    def test_graalvm_home_with_native_image_drives_java_home(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as graalvm_home:
+            os.makedirs(os.path.join(graalvm_home, "bin"))
+            native_image_path = os.path.join(graalvm_home, "bin", "native-image")
+            with open(native_image_path, "w", encoding="utf-8"):
+                pass
+
+            with patch.dict(os.environ, {}, clear=True):
+                env = gradle_command_environment(
+                    repo_path,
+                    {
+                        "GRAALVM_HOME": graalvm_home,
+                        "JAVA_HOME": "/plain-jdk",
+                    },
+                )
+
+            self.assertEqual(env["GRAALVM_HOME"], graalvm_home)
+            self.assertEqual(env["JAVA_HOME"], graalvm_home)
+
+    def test_java_home_with_native_image_backfills_graalvm_home(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as java_home:
+            os.makedirs(os.path.join(java_home, "bin"))
+            native_image_path = os.path.join(java_home, "bin", "native-image")
+            with open(native_image_path, "w", encoding="utf-8"):
+                pass
+
+            with patch.dict(os.environ, {}, clear=True):
+                env = gradle_command_environment(repo_path, {"JAVA_HOME": java_home})
+
+            self.assertEqual(env["GRAALVM_HOME"], java_home)
+            self.assertEqual(env["JAVA_HOME"], java_home)
+
 
 if __name__ == "__main__":
     unittest.main()
