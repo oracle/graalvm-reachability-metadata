@@ -107,6 +107,31 @@ public class Ktor_serialization_kotlinx_cbor_jvmTest {
         }
     }
 
+    @Test
+    fun customCborConfigurationIgnoresUnknownObjectFields(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val cbor: Cbor = Cbor(from = DefaultCbor) {
+                ignoreUnknownKeys = true
+                serializersModule = SerializersModule {
+                    contextual(ExpandedPayload::class, ExpandedPayloadSerializer)
+                    contextual(CompactPayload::class, CompactPayloadSerializer)
+                }
+            }
+            val configuration = CapturingConfiguration()
+
+            configuration.cbor(cbor)
+
+            val registration = configuration.singleRegistration()
+            val bytes = registration.converter.serializeToBytes(
+                ExpandedPayload(id = "request-7", trace = "diagnostic"),
+            )
+            val decoded: CompactPayload = registration.converter.deserializeFromBytes(bytes)
+
+            assertThat(registration.contentType).isEqualTo(ContentType.Application.Cbor)
+            assertThat(decoded).isEqualTo(CompactPayload(id = "request-7"))
+        }
+    }
+
     private fun registeredDefaultConverter(): ContentConverter {
         val configuration = CapturingConfiguration()
         configuration.cbor()
@@ -141,6 +166,15 @@ public class Ktor_serialization_kotlinx_cbor_jvmTest {
     private data class DefaultedPayload(
         val name: String = "primary",
         val retryCount: Int = 3,
+    )
+
+    private data class ExpandedPayload(
+        val id: String,
+        val trace: String,
+    )
+
+    private data class CompactPayload(
+        val id: String,
     )
 
     private object DefaultedPayloadSerializer : KSerializer<DefaultedPayload> {
@@ -183,6 +217,74 @@ public class Ktor_serialization_kotlinx_cbor_jvmTest {
                 }
 
                 DefaultedPayload(name, retryCount)
+            }
+        }
+    }
+
+    private object ExpandedPayloadSerializer : KSerializer<ExpandedPayload> {
+        private const val ID_INDEX: Int = 0
+        private const val TRACE_INDEX: Int = 1
+        private const val MISSING_ID: String = "missing"
+        private const val MISSING_TRACE: String = "missing"
+
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.ExpandedPayload") {
+            element<String>("id")
+            element<String>("trace")
+        }
+
+        override fun serialize(encoder: Encoder, value: ExpandedPayload): Unit {
+            encoder.encodeStructure(descriptor) {
+                encodeStringElement(descriptor, ID_INDEX, value.id)
+                encodeStringElement(descriptor, TRACE_INDEX, value.trace)
+            }
+        }
+
+        override fun deserialize(decoder: Decoder): ExpandedPayload {
+            return decoder.decodeStructure(descriptor) {
+                var id = MISSING_ID
+                var trace = MISSING_TRACE
+
+                decodeLoop@ while (true) {
+                    when (val index = decodeElementIndex(descriptor)) {
+                        ID_INDEX -> id = decodeStringElement(descriptor, ID_INDEX)
+                        TRACE_INDEX -> trace = decodeStringElement(descriptor, TRACE_INDEX)
+                        CompositeDecoder.DECODE_DONE -> break@decodeLoop
+                        else -> error("Unexpected element index: $index")
+                    }
+                }
+
+                ExpandedPayload(id, trace)
+            }
+        }
+    }
+
+    private object CompactPayloadSerializer : KSerializer<CompactPayload> {
+        private const val ID_INDEX: Int = 0
+        private const val MISSING_ID: String = "missing"
+
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.CompactPayload") {
+            element<String>("id")
+        }
+
+        override fun serialize(encoder: Encoder, value: CompactPayload): Unit {
+            encoder.encodeStructure(descriptor) {
+                encodeStringElement(descriptor, ID_INDEX, value.id)
+            }
+        }
+
+        override fun deserialize(decoder: Decoder): CompactPayload {
+            return decoder.decodeStructure(descriptor) {
+                var id = MISSING_ID
+
+                decodeLoop@ while (true) {
+                    when (val index = decodeElementIndex(descriptor)) {
+                        ID_INDEX -> id = decodeStringElement(descriptor, ID_INDEX)
+                        CompositeDecoder.DECODE_DONE -> break@decodeLoop
+                        else -> error("Unexpected element index: $index")
+                    }
+                }
+
+                CompactPayload(id)
             }
         }
     }
