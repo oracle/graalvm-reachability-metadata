@@ -1,0 +1,885 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df69b-14dd-70b1-8881-fcdf736ac265
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.hsqldb:hsqldb:2.4.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.4.1" when "$version$" is replaced with "2.4.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+- Set "coordinates" to "org.hsqldb:hsqldb:2.4.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.4.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream project/tag, then update the JSON in place using the repository’s existing format.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | head -20 && sed -n '1,200p' build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+{
+  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+
+web search: 
+web search: org.hsqldb hsqldb 2.4.1 Maven Central sources javadoc tests jar
+codex
+Maven Central has the source and Javadoc jars for `2.4.1`, so I’m checking whether a tests artifact exists there before falling back to the upstream tagged source tree for tests.
+exec
+/usr/bin/bash -lc 'curl -sSfL https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.hsqldb</groupId>
+  <artifactId>hsqldb</artifactId>
+  <version>2.4.1</version>
+  <name>HyperSQL Database</name>
+  <description>HSQLDB - Lightweight 100% Java SQL Database Engine</description>
+  <url>http://hsqldb.org</url>
+  <inceptionYear>2001</inceptionYear>
+  <organization>
+    <name>The HSQL Development Group</name>
+    <url>http://hsqldb.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>HSQLDB License, a BSD open source license</name>
+      <url>http://hsqldb.org/web/hsqlLicense.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>unsaved</id>
+      <name>Blaine Simpson</name>
+      <email>blaine.simpson@admc.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:http://svn.code.sf.net/p/hsqldb/svn/base/</connection>
+    <tag>2.4.1</tag>
+    <url>http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -sSIL https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/hsqldb-2.4.1-sources.jar https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar && jar tf /tmp/hsqldb-2.4.1-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/hsqldb-2.4.1.jar https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.jar && jar tf /tmp/hsqldb-2.4.1.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 259ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 05:27:53 GMT
+content-type: text/html
+cf-ray: 9f6d56ad6b73c4a5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 517ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/hsqldb/
+org/hsqldb/SetFunctionValueAggregate.java
+org/hsqldb/SetFunctionValueArray.java
+org/hsqldb/SetFunctionValueUser.java
+org/hsqldb/Expression.java
+org/hsqldb/ExpressionAggregate.java
+org/hsqldb/ExpressionArrayAggregate.java
+org/hsqldb/FunctionSQLInvoked.java
+org/hsqldb/QuerySpecification.java
+org/hsqldb/SetFunction.java
+org/hsqldb/SortAndSlice.java
+org/hsqldb/SchemaManager.java
+org/hsqldb/FunctionCustom.java
+org/hsqldb/ExpressionValue.java
+org/hsqldb/FunctionSQL.java
+org/hsqldb/ParserDQL.java
+org/hsqldb/ClientConnectionHTTP.java
+org/hsqldb/ExpressionColumn.java
+org/hsqldb/ExpressionLogical.java
+org/hsqldb/ExpressionTable.java
+org/hsqldb/HsqlDateTime.java
+org/hsqldb/HsqlNameManager.java
+org/hsqldb/ParserRoutine.java
+org/hsqldb/QueryExpression.java
+org/hsqldb/RangeVariable.java
+org/hsqldb/RowDiskDataChange.java
+org/hsqldb/StatementDML.java
+org/hsqldb/StatementSchema.java
+org/hsqldb/StatementSession.java
+org/hsqldb/StatementSet.java
+org/hsqldb/Table.java
+org/hsqldb/TextTable.java
+org/hsqldb/TriggerDef.java
+org/hsqldb/TriggerDefSQL.java
+org/hsqldb/Session.java
+org/hsqldb/RangeVariableJoined.java
+org/hsqldb/Tokens.java
+org/hsqldb/DatabaseManager.java
+org/hsqldb/ParserDDL.java
+org/hsqldb/TableBase.java
+org/hsqldb/Database.java
+org/hsqldb/ParserBase.java
+org/hsqldb/ParserCommand.java
+org/hsqldb/Routine.java
+org/hsqldb/Schema.java
+org/hsqldb/SchemaObject.java
+org/hsqldb/SchemaObjectSet.java
+org/hsqldb/StatementCommand.java
+org/hsqldb/StatementDMQL.java
+org/hsqldb/StatementTypes.java
+org/hsqldb/TableDerived.java
+org/hsqldb/View.java
+org/hsqldb/Trigger.java
+org/hsqldb/ExpressionOp.java
+org/hsqldb/ParserTable.java
+org/hsqldb/RowAVLDisk.java
+org/hsqldb/RowAVLDiskLarge.java
+org/hsqldb/RowAction.java
+org/hsqldb/TypeInvariants.java
+org/hsqldb/Constraint.java
+org/hsqldb/TableWorks.java
+org/hsqldb/ExpressionArithmetic.java
+org/hsqldb/ExpressionLike.java
+org/hsqldb/Like.java
+org/hsqldb/StatementManager.java
+org/hsqldb/Statement.java
+org/hsqldb/StatementHandler.java
+org/hsqldb/StatementSignal.java
+org/hsqldb/StatementSimple.java
+org/hsqldb/TransactionManager2PL.java
+org/hsqldb/TransactionManagerCommon.java
+org/hsqldb/TransactionManagerMV2PL.java
+org/hsqldb/TransactionManagerMVCC.java
+org/hsqldb/SessionData.java
+org/hsqldb/StatementCompound.java
+org/hsqldb/ClientConnection.java
+org/hsqldb/OpTypes.java
+org/hsqldb/Scanner.java
+org/hsqldb/StatementProcedure.java
+org/hsqldb/Row.java
+org/hsqldb/SessionContext.java
+org/hsqldb/SessionInterface.java
+org/hsqldb/StatementInsert.java
+org/hsqldb/TransactionManager.java
+org/hsqldb/RowAVLDiskData.java
+org/hsqldb/RangeVariableResolver.java
+org/hsqldb/ParserDML.java
+org/hsqldb/StatementSchemaDefinition.java
+org/hsqldb/ReferenceObject.java
+org/hsqldb/ColumnSchema.java
+org/hsqldb/StatementExpression.java
+org/hsqldb/StatementResultUpdate.java
+org/hsqldb/ExpressionColumnAccessor.java
+org/hsqldb/RowAVL.java
+org/hsqldb/SqlInvariants.java
+org/hsqldb/DatabaseType.java
+org/hsqldb/ColumnBase.java
+org/hsqldb/SessionManager.java
+org/hsqldb/NumberSequence.java
+org/hsqldb/StatementQuery.java
+org/hsqldb/RoutineSchema.java
+org/hsqldb/TableUtil.java
+org/hsqldb/RowActionBase.java
+org/hsqldb/Token.java
+org/hsqldb/RangeGroup.java
+org/hsqldb/DatabaseURL.java
+org/hsqldb/HsqlException.java
+org/hsqldb/jdbcDriver.java
+org/hsqldb/StatementCursor.java
+org/hsqldb/ExpressionAccessor.java
+org/hsqldb/ExpressionOrderBy.java
+org/hsqldb/ConstraintCore.java
+org/hsqldb/Server.java
+org/hsqldb/package.html
+org/hsqldb/lib/
+org/hsqldb/lib/CountUpDownLatch.java
+org/hsqldb/lib/ArraySort.java
+
+ succeeded in 520ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/hsqldb_lic.txt
+META-INF/hypersonic_lic.txt
+META-INF/services/
+META-INF/services/java.sql.Driver
+org/
+org/hsqldb/
+org/hsqldb/ClientConnection.class
+org/hsqldb/ClientConnectionHTTP.class
+org/hsqldb/ColumnBase.class
+org/hsqldb/ColumnSchema.class
+org/hsqldb/Constraint.class
+org/hsqldb/ConstraintCore.class
+org/hsqldb/Database$CheckpointRunner.class
+org/hsqldb/Database$TimeoutRunner.class
+org/hsqldb/Database.class
+org/hsqldb/DatabaseManager$1.class
+org/hsqldb/DatabaseManager.class
+org/hsqldb/DatabaseType$1.class
+org/hsqldb/DatabaseType.class
+org/hsqldb/DatabaseURL.class
+org/hsqldb/Expression.class
+org/hsqldb/ExpressionAccessor.class
+org/hsqldb/ExpressionAggregate.class
+org/hsqldb/ExpressionArithmetic.class
+org/hsqldb/ExpressionArrayAggregate.class
+org/hsqldb/ExpressionColumn.class
+org/hsqldb/ExpressionColumnAccessor.class
+org/hsqldb/ExpressionLike.class
+org/hsqldb/ExpressionLogical.class
+org/hsqldb/ExpressionOp.class
+org/hsqldb/ExpressionOrderBy.class
+org/hsqldb/ExpressionTable.class
+org/hsqldb/ExpressionValue.class
+org/hsqldb/FunctionCustom.class
+org/hsqldb/FunctionSQL.class
+org/hsqldb/FunctionSQLInvoked.class
+org/hsqldb/HsqlDateTime$Tokenizer.class
+org/hsqldb/HsqlDateTime.class
+org/hsqldb/HsqlException$HsqlRuntimeMemoryError.class
+org/hsqldb/HsqlException.class
+org/hsqldb/HsqlNameManager$1.class
+org/hsqldb/HsqlNameManager$HsqlName.class
+org/hsqldb/HsqlNameManager$SimpleName.class
+org/hsqldb/HsqlNameManager.class
+org/hsqldb/Like.class
+org/hsqldb/NumberSequence.class
+org/hsqldb/OpTypes.class
+org/hsqldb/ParserBase.class
+org/hsqldb/ParserCommand.class
+org/hsqldb/ParserDDL.class
+org/hsqldb/ParserDML.class
+org/hsqldb/ParserDQL$CompileContext.class
+org/hsqldb/ParserDQL.class
+org/hsqldb/ParserRoutine.class
+org/hsqldb/ParserTable.class
+org/hsqldb/QueryExpression.class
+org/hsqldb/QuerySpecification.class
+org/hsqldb/RangeGroup$RangeGroupEmpty.class
+org/hsqldb/RangeGroup$RangeGroupSimple.class
+org/hsqldb/RangeGroup.class
+org/hsqldb/RangeVariable$1.class
+org/hsqldb/RangeVariable$RangeIteratorBase.class
+org/hsqldb/RangeVariable$RangeIteratorCheck.class
+org/hsqldb/RangeVariable$RangeIteratorEmpty.class
+org/hsqldb/RangeVariable$RangeIteratorJoined.class
+org/hsqldb/RangeVariable$RangeIteratorMain.class
+org/hsqldb/RangeVariable$RangeIteratorRight.class
+org/hsqldb/RangeVariable$RangeVariableConditions.class
+org/hsqldb/RangeVariable.class
+org/hsqldb/RangeVariableJoined.class
+org/hsqldb/RangeVariableResolver.class
+org/hsqldb/ReferenceObject.class
+org/hsqldb/Routine.class
+org/hsqldb/RoutineSchema.class
+org/hsqldb/Row.class
+org/hsqldb/RowAVL.class
+org/hsqldb/RowAVLDisk.class
+org/hsqldb/RowAVLDiskData.class
+
+web search: 
+web search: org.hsqldb hsqldb 2.4.1 Maven Central sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/
+web search: 
+web search: 
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src
+codex
+The artifact is a normal JVM jar with `.class` files and no Kotlin/Groovy/Scala language suffix or metadata pattern, so I’m leaving the language and `not-for-native-image` fields absent.
+exec
+/usr/bin/bash -lc "rg -n 'sourceforge.net/p|svn.code.sf.net|hsqldb' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json:2:  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
+metadata/nekohtml/xercesMinimal/index.json:5:    "source-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/",
+metadata/nekohtml/xercesMinimal/index.json:6:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+metadata/nekohtml/xercesMinimal/index.json:7:    "test-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/test/",
+metadata/nekohtml/xercesMinimal/index.json:8:    "documentation-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/doc/index.html",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/$version$/backport-util-concurrent-$version$-src.tar.gz/download",
+metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/$version$/aopalliance.zip/download",
+metadata/org.hibernate/hibernate-core/index.json:11:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate/hibernate-core/index.json:35:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.jboss.netty/netty/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/org.jboss.netty/netty/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/org.jooq/jooq/3.17.7/reachability-metadata.json:266:      "type": "org.jooq.util.hsqldb.HSQLDBDataType"
+metadata/org.jooq/jooq/3.20.0/reachability-metadata.json:296:      "type": "org.jooq.util.hsqldb.HSQLDBDataType"
+metadata/net.sf.kxml/kxml2/index.json:6:    "repository-url" : "https://sourceforge.net/p/kxml/code/",
+metadata/net.sf.kxml/kxml2/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/kxml/files/kxml2/$version$/kxml2-src-$version$.zip/download",
+metadata/werken-xpath/werken-xpath/index.json:6:    "repository-url" : "https://sourceforge.net/p/werken-xpath/code/",
+metadata/org.hibernate.orm/hibernate-core/index.json:10:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:35:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:59:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:85:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:119:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:152:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:177:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:200:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:224:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.jooq/jooq/3.18.2/reachability-metadata.json:272:      "type": "org.jooq.util.hsqldb.HSQLDBDataType"
+metadata/findbugs/annotations/index.json:5:    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:6:    "repository-url" : "https://sourceforge.net/p/findbugs/cvs/",
+metadata/findbugs/annotations/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:9304:        "typeReached": "org.hsqldb.jdbc.JDBCDriver"
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/hsqldb-2.4.1-sources.jar | rg -n '("'^|/)test|Test|junit|org/hsqldb/test'"' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+exec
+/usr/bin/bash -lc "jar tf /tmp/hsqldb-2.4.1.jar | rg -n 'kotlin|groovy|scala|META-INF/services/java.sql.Driver|\\.class"'$'"' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 172ms:
+6:META-INF/services/java.sql.Driver
+9:org/hsqldb/ClientConnection.class
+10:org/hsqldb/ClientConnectionHTTP.class
+11:org/hsqldb/ColumnBase.class
+12:org/hsqldb/ColumnSchema.class
+13:org/hsqldb/Constraint.class
+14:org/hsqldb/ConstraintCore.class
+15:org/hsqldb/Database$CheckpointRunner.class
+16:org/hsqldb/Database$TimeoutRunner.class
+17:org/hsqldb/Database.class
+18:org/hsqldb/DatabaseManager$1.class
+19:org/hsqldb/DatabaseManager.class
+20:org/hsqldb/DatabaseType$1.class
+21:org/hsqldb/DatabaseType.class
+22:org/hsqldb/DatabaseURL.class
+23:org/hsqldb/Expression.class
+24:org/hsqldb/ExpressionAccessor.class
+25:org/hsqldb/ExpressionAggregate.class
+26:org/hsqldb/ExpressionArithmetic.class
+27:org/hsqldb/ExpressionArrayAggregate.class
+28:org/hsqldb/ExpressionColumn.class
+29:org/hsqldb/ExpressionColumnAccessor.class
+30:org/hsqldb/ExpressionLike.class
+31:org/hsqldb/ExpressionLogical.class
+32:org/hsqldb/ExpressionOp.class
+33:org/hsqldb/ExpressionOrderBy.class
+34:org/hsqldb/ExpressionTable.class
+35:org/hsqldb/ExpressionValue.class
+36:org/hsqldb/FunctionCustom.class
+37:org/hsqldb/FunctionSQL.class
+38:org/hsqldb/FunctionSQLInvoked.class
+39:org/hsqldb/HsqlDateTime$Tokenizer.class
+40:org/hsqldb/HsqlDateTime.class
+41:org/hsqldb/HsqlException$HsqlRuntimeMemoryError.class
+42:org/hsqldb/HsqlException.class
+43:org/hsqldb/HsqlNameManager$1.class
+44:org/hsqldb/HsqlNameManager$HsqlName.class
+45:org/hsqldb/HsqlNameManager$SimpleName.class
+46:org/hsqldb/HsqlNameManager.class
+47:org/hsqldb/Like.class
+48:org/hsqldb/NumberSequence.class
+49:org/hsqldb/OpTypes.class
+50:org/hsqldb/ParserBase.class
+51:org/hsqldb/ParserCommand.class
+52:org/hsqldb/ParserDDL.class
+53:org/hsqldb/ParserDML.class
+54:org/hsqldb/ParserDQL$CompileContext.class
+55:org/hsqldb/ParserDQL.class
+56:org/hsqldb/ParserRoutine.class
+57:org/hsqldb/ParserTable.class
+58:org/hsqldb/QueryExpression.class
+59:org/hsqldb/QuerySpecification.class
+60:org/hsqldb/RangeGroup$RangeGroupEmpty.class
+61:org/hsqldb/RangeGroup$RangeGroupSimple.class
+62:org/hsqldb/RangeGroup.class
+63:org/hsqldb/RangeVariable$1.class
+64:org/hsqldb/RangeVariable$RangeIteratorBase.class
+65:org/hsqldb/RangeVariable$RangeIteratorCheck.class
+66:org/hsqldb/RangeVariable$RangeIteratorEmpty.class
+67:org/hsqldb/RangeVariable$RangeIteratorJoined.class
+68:org/hsqldb/RangeVariable$RangeIteratorMain.class
+69:org/hsqldb/RangeVariable$RangeIteratorRight.class
+70:org/hsqldb/RangeVariable$RangeVariableConditions.class
+71:org/hsqldb/RangeVariable.class
+72:org/hsqldb/RangeVariableJoined.class
+73:org/hsqldb/RangeVariableResolver.class
+74:org/hsqldb/ReferenceObject.class
+75:org/hsqldb/Routine.class
+76:org/hsqldb/RoutineSchema.class
+77:org/hsqldb/Row.class
+78:org/hsqldb/RowAVL.class
+79:org/hsqldb/RowAVLDisk.class
+80:org/hsqldb/RowAVLDiskData.class
+81:org/hsqldb/RowAVLDiskLarge.class
+82:org/hsqldb/RowAction.class
+83:org/hsqldb/RowActionBase.class
+84:org/hsqldb/RowDiskDataChange.class
+85:org/hsqldb/Scanner.class
+86:org/hsqldb/Schema.class
+87:org/hsqldb/SchemaManager.class
+
+ succeeded in 219ms:
+491:org/hsqldb/test/
+492:org/hsqldb/test/TestTextTable.java
+493:org/hsqldb/test/TestTriggers.java
+494:org/hsqldb/test/TestBase.java
+495:org/hsqldb/test/TestINPredicateParameterizationAndCorrelation.java
+496:org/hsqldb/test/TestLikePredicateOptimizations.java
+497:org/hsqldb/test/TestBench.java
+498:org/hsqldb/test/TestTextTables.java
+499:org/hsqldb/test/TestLobs.java
+500:org/hsqldb/test/TestUpdatableResultSets.java
+501:org/hsqldb/test/TestSubQueriesInPreparedStatements.java
+502:org/hsqldb/test/TestJavaFunctions.java
+503:org/hsqldb/test/TestSql.java
+504:org/hsqldb/test/TestDatabaseMetaData.java
+505:org/hsqldb/test/TestDatetimeSimple.java
+506:org/hsqldb/test/TestPreparedStatements.java
+507:org/hsqldb/test/TestQuotes.java
+508:org/hsqldb/test/TestSqlPeriodPredicates.java
+509:org/hsqldb/test/AllTests.java
+510:org/hsqldb/test/TestPeriodPredicates.java
+511:org/hsqldb/test/TestScript.java
+512:org/hsqldb/test/TestScriptRunner.java
+513:org/hsqldb/test/TestStoredProcedure.java
+514:org/hsqldb/test/TestSchemaParse.java
+515:org/hsqldb/test/TestJDBCSavepoints.java
+516:org/hsqldb/test/TestAcl.java
+517:org/hsqldb/test/TestDbBackup.java
+518:org/hsqldb/test/TestUpdatableResults.java
+519:org/hsqldb/test/TestUtil.java
+520:org/hsqldb/test/TestCollation.java
+521:org/hsqldb/test/TestDateTime.java
+522:org/hsqldb/test/TestHTTPKeepAlive.java
+523:org/hsqldb/test/TestMerge.java
+524:org/hsqldb/test/TestMultiInsert.java
+525:org/hsqldb/test/TestTypeConversion.java
+526:org/hsqldb/test/TestViewAsterisks.java
+527:org/hsqldb/test/JDBCBench.java
+528:org/hsqldb/test/TestAllTypes.java
+529:org/hsqldb/test/TestPreparedSubQueries.java
+530:org/hsqldb/test/TestDataStructures.java
+531:org/hsqldb/test/TestSqlPersistent.java
+532:org/hsqldb/test/TestGroupByHaving.java
+533:org/hsqldb/test/TestJDBCGeneratedColumns.java
+534:org/hsqldb/test/TriggerClass.java
+535:org/hsqldb/test/TestScripts.java
+536:org/hsqldb/test/TestSubselect.java
+537:org/hsqldb/test/TestHarness.java
+538:org/hsqldb/test/ClearTests.java
+539:org/hsqldb/test/TestCascade.java
+540:org/hsqldb/test/TestLibSpeed.java
+541:org/hsqldb/test/TestKarl.java
+542:org/hsqldb/test/BlaineTrig.java
+543:org/hsqldb/test/TestInstantiation.java
+544:org/hsqldb/test/Waiter.java
+545:org/hsqldb/test/TestCacheSize.java
+546:org/hsqldb/test/TestHashStructures.java
+547:org/hsqldb/test/TestNullInUnion.java
+556:org/hsqldb/sample/Testdb.java
+586:org/hsqldb/auth/LdapAuthBeanTester.java
+
+codex
+The HSQLDB source jar itself contains `org/hsqldb/test/...`, so I’ll use the Maven source jar for both source and test provenance; that matches the instruction to prefer Maven-hosted sources/tests when available.
+exec
+/usr/bin/bash -lc "curl -sSIL https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 05:28:21 GMT
+content-type: application/java-archive
+content-length: 649298
+cf-ray: 9f6d57608d76be59-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 46653
+etag: "79ad78e8ccb8f7786ef433088db195d2"
+last-modified: Sun, 20 May 2018 16:24:11 GMT
+x-checksum-md5: 79ad78e8ccb8f7786ef433088db195d2
+x-checksum-sha1: fe6a34a5fe875616dc165e28f16b2af61ac5a019
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -sSIL https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 05:28:21 GMT
+content-type: application/java-archive
+content-length: 2357636
+cf-ray: 9f6d57608aadbe89-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1853478
+etag: "8ddbbebf9e20fea781c89ff86cd59436"
+last-modified: Sun, 20 May 2018 16:24:13 GMT
+x-checksum-md5: 8ddbbebf9e20fea781c89ff86cd59436
+x-checksum-sha1: 39b5e7e988c00331083aaf9231ca4e4fb00ac70d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/hsqldb-2.4.1-javadoc.jar https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-javadoc.jar && jar tf /tmp/hsqldb-2.4.1-javadoc.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+exec
+/usr/bin/bash -lc "curl -sSIL https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 214ms:
+META-INF/
+META-INF/MANIFEST.MF
+hsqldbs.png
+javadoc.css
+package-list
+overview-frame.html
+constant-values.html
+serialized-form.html
+overview-tree.html
+index-all.html
+deprecated-list.html
+allclasses-frame.html
+allclasses-noframe.html
+index.html
+overview-summary.html
+help-doc.html
+script.js
+org/
+org/hsqldb/
+org/hsqldb/Trigger.html
+org/hsqldb/package-frame.html
+org/hsqldb/package-summary.html
+org/hsqldb/package-tree.html
+org/hsqldb/package-use.html
+org/hsqldb/server/
+org/hsqldb/server/Server.html
+org/hsqldb/server/ServerAcl.html
+org/hsqldb/server/ServerAcl.AclFormatException.html
+org/hsqldb/server/WebServer.html
+org/hsqldb/server/package-frame.html
+org/hsqldb/server/package-summary.html
+org/hsqldb/server/package-tree.html
+org/hsqldb/server/package-use.html
+org/hsqldb/server/class-use/
+org/hsqldb/server/class-use/Server.html
+org/hsqldb/server/class-use/WebServer.html
+org/hsqldb/server/class-use/ServerAcl.html
+org/hsqldb/server/class-use/ServerAcl.AclFormatException.html
+org/hsqldb/sample/
+org/hsqldb/sample/SqlFileEmbedder.html
+
+ succeeded in 375ms:
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1777910289>; as=style; rel=preload
+
+HTTP/2 200 
+date: Tue, 05 May 2026 05:28:22 GMT
+content-type: text/html; charset=utf-8
+content-length: 56556
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777910289>; rel=preload; as=style
+content-security-policy: fenced-frame-src https:; object-src 'none'; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; form-action 'self'; frame-ancestors 'self'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; upgrade-insecure-requests; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=26c77bba-1d1b-42e7-9caf-a1ff69f093b7; Max-Age=315360000; Path=/; expires=Fri, 02-May-2036 05:28:22 GMT; secure; HttpOnly
+set-cookie: _csrf_token=d638ae9b85a412661bebf90f2b643e379a1d43bf90768f74ea14217aaa0e48dd96a29b3373153d01; secure; SameSite=Strict; Path=/
+
+web search: 
+web search: Maven Central org.hsqldb hsqldb 2.4.1 POM SCM URL HSQLDB
+web search: 
+web search: https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/
+web search: 
+web search: https://central.sonatype.com/artifact/org.hsqldb/hsqldb/2.4.1
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: sourceforge hsqldb svn HEAD tree base tags 2.4.1 test-src
+codex
+I’m going to write the metadata now: Maven-hosted source/Javadoc jars, SourceForge SVN root from the published POM, and no Native Image exclusion because the artifact contains JVM bytecode.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..c75668e0d64692b95f7d6c6c796030f16cd38a81
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight, pure Java relational database engine with an embedded JDBC driver and optional server modes. It provides SQL database functionality for in-memory and disk-backed databases, including transactions, LOBs, and ACID behavior."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..c75668e0d64692b95f7d6c6c796030f16cd38a81
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight, pure Java relational database engine with an embedded JDBC driver and optional server modes. It provides SQL database functionality for in-memory and disk-backed databases, including transactions, LOBs, and ACID behavior."
+ }
+
+codex
+The file is patched. I’m doing a quick JSON parse and URL substitution check so the generated entry is usable as-is.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+{
+  "coordinates": "org.hsqldb:hsqldb:2.4.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
+  "repository-url": "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
+  "description": "HSQLDB is a lightweight, pure Java relational database engine with an embedded JDBC driver and optional server modes. It provides SQL database functionality for in-memory and disk-backed databases, including transactions, LOBs, and ACID behavior."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'for url in https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-javadoc.jar https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/; do curl -sSIL "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..c75668e0d64692b95f7d6c6c796030f16cd38a81
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight, pure Java relational database engine with an embedded JDBC driver and optional server modes. It provides SQL database functionality for in-memory and disk-backed databases, including transactions, LOBs, and ACID behavior."
+ }
+
+ succeeded in 450ms:
+HTTP/2 103 
+
+codex
+The JSON parses cleanly, and the Maven URLs resolve with `2.4.1` substituted. I’m checking git status next because this generated file may be untracked rather than tracked.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+exec
+/usr/bin/bash -lc "curl -sSL -o /dev/null -w '%{http_code}\\n' https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+exec
+/usr/bin/bash -lc "jar tf /tmp/hsqldb-2.4.1-sources.jar | rg '"'^org/hsqldb/test/'"' | head -5" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b
+ succeeded in 126ms:
+org/hsqldb/test/
+org/hsqldb/test/TestTextTable.java
+org/hsqldb/test/TestTriggers.java
+org/hsqldb/test/TestBase.java
+org/hsqldb/test/TestINPredicateParameterizationAndCorrelation.java
+
+ succeeded in 215ms:
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..c75668e0d64692b95f7d6c6c796030f16cd38a81
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight, pure Java relational database engine with an embedded JDBC driver and optional server modes. It provides SQL database functionality for in-memory and disk-backed databases, including transactions, LOBs, and ACID behavior."
+ }
+
+ succeeded in 347ms:
+200
+
+web search: 
+web search: Maven Central org.hsqldb hsqldb 2.4.1 description source javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/
+web search: 
+web search: https://central.sonatype.com/artifact/org.hsqldb/hsqldb/2.4.1
+codex
+Updated [org.hsqldb-hsqldb-2.4.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json:1).
+
+Set Maven-hosted source and Javadoc URLs because Maven Central publishes `hsqldb-2.4.1-sources.jar` and `hsqldb-2.4.1-javadoc.jar`; the published POM identifies the SourceForge SVN repository and the `2.4.1` tag. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/))
+
+I also verified locally that the artifact jar contains JVM `.class` files and the source jar contains `org/hsqldb/test/...`, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. JSON parsing passed with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..c75668e0d64692b95f7d6c6c796030f16cd38a81
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight, pure Java relational database engine with an embedded JDBC driver and optional server modes. It provides SQL database functionality for in-memory and disk-backed databases, including transactions, LOBs, and ACID behavior."
+ }
+
+tokens used
+75,580
+Updated [org.hsqldb-hsqldb-2.4.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json:1).
+
+Set Maven-hosted source and Javadoc URLs because Maven Central publishes `hsqldb-2.4.1-sources.jar` and `hsqldb-2.4.1-javadoc.jar`; the published POM identifies the SourceForge SVN repository and the `2.4.1` tag. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/))
+
+I also verified locally that the artifact jar contains JVM `.class` files and the source jar contains `org/hsqldb/test/...`, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. JSON parsing passed with `jq`.
+Ran agent for org.hsqldb:hsqldb:2.4.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b/build/agent-artifact-discovery-logs/org.hsqldb-hsqldb-2.4.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-bf943a8b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
