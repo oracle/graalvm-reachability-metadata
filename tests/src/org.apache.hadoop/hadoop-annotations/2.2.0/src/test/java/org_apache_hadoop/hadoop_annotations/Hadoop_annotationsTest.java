@@ -96,6 +96,19 @@ public class Hadoop_annotationsTest {
                 .isEqualTo("@org.apache.hadoop.classification.InterfaceAudience$LimitedPrivate(value=[HDFS, YARN])");
     }
 
+    @Test
+    void publicStabilityNamespaceCanBackCompatibilityPolicyObjects() {
+        InterfaceStability stabilityNamespace = new InterfaceStability();
+        CompatibilityPolicy policy = new CompatibilityPolicy(
+                stabilityNamespace,
+                List.of("stable", "evolving", "unstable"));
+
+        assertThat(policy.namespace()).isSameAs(stabilityNamespace);
+        assertThat(policy.describe()).isEqualTo("stability-policy:stable,evolving,unstable");
+        assertThat(policy.isKnown("evolving")).isTrue();
+        assertThat(policy.isKnown("experimental")).isFalse();
+    }
+
     @InterfaceAudience.Public
     @InterfaceStability.Stable
     private interface CatalogApi {
@@ -211,6 +224,18 @@ public class Hadoop_annotationsTest {
     private record PublicRecord(String host, int port) {
         private String endpoint() {
             return host + ":" + port;
+        }
+    }
+
+    @InterfaceAudience.Public
+    @InterfaceStability.Evolving
+    private record CompatibilityPolicy(InterfaceStability namespace, List<String> levels) {
+        private String describe() {
+            return "stability-policy:" + String.join(",", levels);
+        }
+
+        private boolean isKnown(String level) {
+            return levels.contains(level);
         }
     }
 
