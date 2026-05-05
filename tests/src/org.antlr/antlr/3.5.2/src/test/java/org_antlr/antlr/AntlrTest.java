@@ -8,7 +8,7 @@ package org_antlr.antlr;
 
 import org.junit.jupiter.api.Test;
 
-class AntlrTest {
+public class AntlrTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
