@@ -1,0 +1,110 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: javassist:javassist:3.12.0.GA
+Command: `/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-eac9f599/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 19 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test FAILED
+
+AppletServerTest > exportedObjectCanReceiveSerializedRmiInvocationAndReturnSerializedValue() FAILED
+    java.lang.RuntimeException: java.io.IOException: invalid constant type: 18
+        at javassist.CtClassType.getClassFile2(CtClassType.java:203)
+        at javassist.CtClassType.getModifiers(CtClassType.java:387)
+        at javassist.tools.rmi.StubGenerator.produceProxyClass(StubGenerator.java:130)
+        at javassist.tools.rmi.StubGenerator.makeProxyClass(StubGenerator.java:119)
+        at javassist.tools.rmi.AppletServer.exportObject(AppletServer.java:121)
+        at javassist.javassist.AppletServerTest.exportedObjectCanReceiveSerializedRmiInvocationAndReturnSerializedValue(AppletServerTest.java:33)
+
+        Caused by:
+        java.io.IOException: invalid constant type: 18
+            at javassist.bytecode.ConstPool.readOne(ConstPool.java:1027)
+            at javassist.bytecode.ConstPool.read(ConstPool.java:970)
+            at javassist.bytecode.ConstPool.<init>(ConstPool.java:127)
+            at javassist.bytecode.ClassFile.read(ClassFile.java:722)
+            at javassist.bytecode.ClassFile.<init>(ClassFile.java:109)
+            at javassist.CtClassType.getClassFile2(CtClassType.java:190)
+            ... 5 more
+
+16 tests completed, 1 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-eac9f599/tests/src/javassist/javassist/3.12.0.GA/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-eac9f599/tests/src/javassist/javassist/3.12.0.GA/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 11s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-eac9f599/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for javassist:javassist:3.12.0.GA failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 15s
+9 actionable tasks: 1 executed, 8 up-to-date
