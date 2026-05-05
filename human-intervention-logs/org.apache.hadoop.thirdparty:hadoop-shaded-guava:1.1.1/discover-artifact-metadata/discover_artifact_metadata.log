@@ -1,0 +1,1525 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df5c6-41c2-7ab2-adfd-c1e8cfb7a2bf
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.1" when "$version$" is replaced with "1.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+- Set "coordinates" to "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Hadoop thirdparty sources, then patch the JSON directly. After that I’ll do a quick validity check on the file.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+{
+  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "hadoop-shaded-guava|hadoop-thirdparty|org.apache.hadoop.thirdparty" .' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+./COVERAGE.md:348:| [`org.apache.hadoop.thirdparty:hadoop-shaded-protobuf_3_7`](https://github.com/apache/hadoop-thirdparty) | 1.1.1 | 100.0% (31/31 calls) | <details><summary>Show</summary> This artifact packages Google Protocol Buffers Java 3.7.1 with its classes relocated under the org.apache.hadoop.thirdparty.protobuf namespace for Hadoop. The shading lets Hadoop use protobuf internally without conflicting with applications that depend on their own com.google.protobuf classes.</details> |
+./stats/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/execution-metrics.json:4:    "library": "org.apache.hadoop.thirdparty:hadoop-shaded-protobuf_3_7:1.1.1",
+./stats/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/execution-metrics.json:59:      "test_file": "tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org/robolectric/AndroidTest.java",
+./stats/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/execution-metrics.json:60:      "metadata_file": "metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:6:    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:8:    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:9:    "description" : "This artifact packages Google Protocol Buffers Java 3.7.1 with its classes relocated under the org.apache.hadoop.thirdparty.protobuf namespace for Hadoop. The shading lets Hadoop use protobuf internally without conflicting with applications that depend on their own com.google.protobuf classes.",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:14:      "org.apache.hadoop.thirdparty.protobuf"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:5:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.ByteBufferWriter"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:11:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.UnsafeUtil"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:22:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.UnsafeUtil"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:33:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.Android"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:39:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageV3"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:41:      "type" : "org.apache.hadoop.thirdparty.protobuf.Any"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:45:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:47:      "type" : "org.apache.hadoop.thirdparty.protobuf.Any",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:61:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageV3"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:63:      "type" : "org.apache.hadoop.thirdparty.protobuf.Any$Builder"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:67:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageV3$Builder"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:69:      "type" : "org.apache.hadoop.thirdparty.protobuf.Any$Builder",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:74:            "org.apache.hadoop.thirdparty.protobuf.ByteString"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:81:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:83:      "type" : "org.apache.hadoop.thirdparty.protobuf.Any$Builder",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:97:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularStringFieldAccessor"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:99:      "type" : "org.apache.hadoop.thirdparty.protobuf.Any$Builder",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:111:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.ExtensionRegistryLite"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:113:      "type" : "org.apache.hadoop.thirdparty.protobuf.Extension"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:117:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.ExtensionRegistryFactory"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:119:      "type" : "org.apache.hadoop.thirdparty.protobuf.ExtensionRegistry",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:133:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.ExtensionRegistryLite"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:135:      "type" : "org.apache.hadoop.thirdparty.protobuf.ExtensionRegistry",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:140:            "org.apache.hadoop.thirdparty.protobuf.Extension"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:147:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.Internal"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:149:      "type" : "org.apache.hadoop.thirdparty.protobuf.StringValue",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:159:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:161:      "type" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:166:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:184:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.UnsafeUtil"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:190:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.UnsafeUtil$1"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:203:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:209:        "typeReached" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/reachability-metadata.json:211:      "type" : "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/build.gradle:14:    testImplementation "org.apache.hadoop.thirdparty:hadoop-shaded-protobuf_3_7:$libraryVersion"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/settings.gradle:20:rootProject.name = 'org.apache.hadoop.thirdparty.hadoop-shaded-protobuf_3_7_tests'
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.Android"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.Descriptors$FileDescriptor"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.DescriptorsInnerFileDescriptorTest$DependencyDescriptorHolder",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:22:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessage$4"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:24:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageAnonymous4Test$ExtensionDescriptorHolder",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:33:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:35:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageLiteInnerSerializedFormTest$LegacyLiteMessage",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:44:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite$SerializedForm"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:46:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageLiteInnerSerializedFormTest$ModernLiteMessage",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:55:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:57:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageLiteTest$PrintableLiteMessage",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:67:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.MessageLiteToString"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:69:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageLiteTest$PrintableLiteMessage",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:87:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessage"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:89:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageTest$TrackedMessage"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:93:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessage$FieldAccessorTable$SingularFieldAccessor"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:95:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageTest$TrackedMessage",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:109:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.GeneratedMessage"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:111:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageTest$TrackedMessageBuilder"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:115:        "typeReached": "org.apache.hadoop.thirdparty.protobuf.UnsafeUtil"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:117:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.UnsafeUtilTest$ConstructorGuardedType",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:121:      "type": "org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7.GeneratedMessageTest$TrackedMessageBuilder",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/resources/META-INF/native-image/reachability-metadata.json:144:      "type": "org.apache.hadoop.thirdparty.protobuf.StringValue",
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/gradle.properties:4:library.coordinates = org.apache.hadoop.thirdparty:hadoop-shaded-protobuf_3_7:1.1.1
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/gradle.properties:6:metadata.dir = org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageTest.java:11:import org.apache.hadoop.thirdparty.protobuf.DescriptorProtos;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageTest.java:12:import org.apache.hadoop.thirdparty.protobuf.Descriptors;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageTest.java:13:import org.apache.hadoop.thirdparty.protobuf.GeneratedMessage;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageTest.java:14:import org.apache.hadoop.thirdparty.protobuf.Message;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/user-code-filter.json:7:      "includeClasses" : "org.apache.hadoop.thirdparty.protobuf.**"
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/UnsafeUtilTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/UnsafeUtilTest.java:15:import org.apache.hadoop.thirdparty.protobuf.ByteString;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/UnsafeUtilTest.java:19:    private static final String UNSAFE_UTIL_CLASS_NAME = "org.apache.hadoop.thirdparty.protobuf.UnsafeUtil";
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:11:import org.apache.hadoop.thirdparty.protobuf.Descriptors;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:12:import org.apache.hadoop.thirdparty.protobuf.Extension;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:13:import org.apache.hadoop.thirdparty.protobuf.ExtensionRegistry;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:14:import org.apache.hadoop.thirdparty.protobuf.ExtensionRegistryLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:15:import org.apache.hadoop.thirdparty.protobuf.MessageLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ExtensionRegistryLiteTest.java:16:import org.apache.hadoop.thirdparty.protobuf.WireFormat;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteTest.java:21:import org.apache.hadoop.thirdparty.protobuf.CodedOutputStream;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteTest.java:22:import org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageV3Test.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageV3Test.java:13:import org.apache.hadoop.thirdparty.protobuf.Any;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageV3Test.java:14:import org.apache.hadoop.thirdparty.protobuf.ByteString;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageV3Test.java:15:import org.apache.hadoop.thirdparty.protobuf.Descriptors;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ByteBufferWriterTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ByteBufferWriterTest.java:11:import org.apache.hadoop.thirdparty.protobuf.ByteString;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/ByteBufferWriterTest.java:16:            "org.apache.hadoop.thirdparty.protobuf.ByteBufferWriter";
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageAnonymous4Test.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageAnonymous4Test.java:11:import org.apache.hadoop.thirdparty.protobuf.DescriptorProtos;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageAnonymous4Test.java:12:import org.apache.hadoop.thirdparty.protobuf.Descriptors;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageAnonymous4Test.java:13:import org.apache.hadoop.thirdparty.protobuf.DynamicMessage;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageAnonymous4Test.java:14:import org.apache.hadoop.thirdparty.protobuf.GeneratedMessage;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageAnonymous4Test.java:15:import org.apache.hadoop.thirdparty.protobuf.Message;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/InternalTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/InternalTest.java:11:import org.apache.hadoop.thirdparty.protobuf.Internal;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/InternalTest.java:12:import org.apache.hadoop.thirdparty.protobuf.MessageLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/InternalTest.java:13:import org.apache.hadoop.thirdparty.protobuf.StringValue;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/DescriptorsInnerFileDescriptorTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/DescriptorsInnerFileDescriptorTest.java:13:import org.apache.hadoop.thirdparty.protobuf.DescriptorProtos;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/DescriptorsInnerFileDescriptorTest.java:14:import org.apache.hadoop.thirdparty.protobuf.Descriptors;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/DescriptorsInnerFileDescriptorTest.java:15:import org.apache.hadoop.thirdparty.protobuf.ExtensionRegistry;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:7:package org_apache_hadoop_thirdparty.hadoop_shaded_protobuf_3_7;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:20:import org.apache.hadoop.thirdparty.protobuf.ByteString;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:21:import org.apache.hadoop.thirdparty.protobuf.CodedInputStream;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:22:import org.apache.hadoop.thirdparty.protobuf.CodedOutputStream;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:23:import org.apache.hadoop.thirdparty.protobuf.ExtensionRegistryLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:24:import org.apache.hadoop.thirdparty.protobuf.GeneratedMessageLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:25:import org.apache.hadoop.thirdparty.protobuf.InvalidProtocolBufferException;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:26:import org.apache.hadoop.thirdparty.protobuf.MessageLite;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_protobuf_3_7/GeneratedMessageLiteInnerSerializedFormTest.java:27:import org.apache.hadoop.thirdparty.protobuf.Parser;
+./tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/src/test/java/org/robolectric/AndroidTest.java:11:import org.apache.hadoop.thirdparty.protobuf.ByteString;
+
+web search: 
+web search: org.apache.hadoop.thirdparty hadoop-shaded-guava 1.1.1 Maven source jar
+web search: 
+web search: site:github.com/apache/hadoop-thirdparty hadoop-thirdparty-1.1.1 tag
+codex
+The local repo already has matching Hadoop thirdparty metadata for the sibling shaded protobuf artifact. I’m using that as a consistency check, but I’m still verifying Guava-specific details from Maven Central and the Apache release archive.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.1",
+    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+    "description" : "This artifact packages Google Protocol Buffers Java 3.7.1 with its classes relocated under the org.apache.hadoop.thirdparty.protobuf namespace for Hadoop. The shading lets Hadoop use protobuf internally without conflicting with applications that depend on their own com.google.protobuf classes.",
+    "tested-versions" : [
+      "1.1.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.hadoop.thirdparty.protobuf"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>hadoop-thirdparty</artifactId>
+    <groupId>org.apache.hadoop.thirdparty</groupId>
+    <version>1.1.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>hadoop-shaded-guava</artifactId>
+  <name>Apache Hadoop shaded Guava</name>
+  <build>
+    <resources>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${project.basedir}/..</directory>
+        <includes>
+          <include>licenses-binary/*</include>
+          <include>NOTICE.txt</include>
+          <include>NOTICE-binary</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>shade-guava</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>com.google.code.findbugs:jsr305</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>org.checkerframework:checker-qual</artifact>
+                  <excludes>
+                    <exclude>META-INF/LICENSE.txt</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>com/google/</pattern>
+                  <shadedPattern>${shaded.prefix}/com/google/</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org/checkerframework/</pattern>
+                  <shadedPattern>${shaded.prefix}/org/checkerframework/</shadedPattern>
+                </relocation>
+              </relocations>
+              <transformers>
+                <transformer>
+                  <resources>
+                    <resource>NOTICE</resource>
+                    <resource>LICENSE</resource>
+                  </resources>
+                </transformer>
+                <transformer>
+                  <resource>META-INF/LICENSE.txt</resource>
+                  <file>${basedir}/../LICENSE-binary</file>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/hadoop-thirdparty.git | rg '1\\.1\\.1|release'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-thirdparty/1.1.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/hadoop/thirdparty/hadoop-thirdparty/1.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/hadoop/thirdparty/hadoop-thirdparty/1.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hadoop-thirdparty-1.1.1-site.xml" title="hadoop-thirdparty-1.1.1-site.xml">hadoop-thirdparty-1.1.1-site.xml</a>                  2021-05-26 08:11      2016      
+<a href="hadoop-thirdparty-1.1.1-site.xml.asc" title="hadoop-thirdparty-1.1.1-site.xml.asc">hadoop-thirdparty-1.1.1-site.xml.asc</a>              2021-05-26 08:11       833      
+<a href="hadoop-thirdparty-1.1.1-site.xml.md5" title="hadoop-thirdparty-1.1.1-site.xml.md5">hadoop-thirdparty-1.1.1-site.xml.md5</a>              2021-05-26 08:11        32      
+<a href="hadoop-thirdparty-1.1.1-site.xml.sha1" title="hadoop-thirdparty-1.1.1-site.xml.sha1">hadoop-thirdparty-1.1.1-site.xml.sha1</a>             2021-05-26 08:11        40      
+<a href="hadoop-thirdparty-1.1.1.pom" title="hadoop-thirdparty-1.1.1.pom">hadoop-thirdparty-1.1.1.pom</a>                       2021-05-26 08:11     16029      
+<a href="hadoop-thirdparty-1.1.1.pom.asc" title="hadoop-thirdparty-1.1.1.pom.asc">hadoop-thirdparty-1.1.1.pom.asc</a>                   2021-05-26 08:11       833      
+<a href="hadoop-thirdparty-1.1.1.pom.md5" title="hadoop-thirdparty-1.1.1.pom.md5">hadoop-thirdparty-1.1.1.pom.md5</a>                   2021-05-26 08:11        32      
+<a href="hadoop-thirdparty-1.1.1.pom.sha1" title="hadoop-thirdparty-1.1.1.pom.sha1">hadoop-thirdparty-1.1.1.pom.sha1</a>                  2021-05-26 08:11        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 370ms:
+78ae2068d7514eb7d170dade5953215cae53ff1d	refs/tags/rel/release-1.0.0
+3395253a6235c40e5eac57a365fc1268d3f379af	refs/tags/rel/release-1.0.0^{}
+e159647e35b8ef78eee1f51a5a2497db657c76f7	refs/tags/rel/release-1.1.0
+e2cf849f4e1b096efd19294f6bd300a7462ceed6	refs/tags/rel/release-1.1.0^{}
+ad3510439b1a07be23bf88555f8aa3237c22f4f5	refs/tags/rel/release-1.1.1
+e4932839436412d04a90a7cc2ef21a39e9d1dad9	refs/tags/rel/release-1.1.1^{}
+022c9c9084351bd9aa8a7a8e6b85cb00f4b19837	refs/tags/rel/release-1.2.0
+64b672142797b5acffa94cadfc2d2be6f4dbbb23	refs/tags/rel/release-1.2.0^{}
+1c615e7bc47d005f4fe52d711b940cffc33c6622	refs/tags/rel/release-1.3.0
+0fd62903b071b5186f31b7030ce42e1c00f6bb6a	refs/tags/rel/release-1.3.0^{}
+ee64e824f4b3ef1327d8b2f58e25645b81c9a65b	refs/tags/rel/release-1.4.0
+a1eda71bbfa630138b97ecac1a977c18d05f0003	refs/tags/rel/release-1.4.0^{}
+9361815093f1efe67fca41bb66a612f932ea8826	refs/tags/rel/release-1.5.0
+f38cd430aa2a17bd404d90a5f2ca2e2116b22ae4	refs/tags/rel/release-1.5.0^{}
+16f6d2ac9a8c7d3ad4ef63e20ed2e3e4dacc474e	refs/tags/release-1.0.0-RC0
+863efce35337eeebeb928e10c3fd1931351aa20a	refs/tags/release-1.0.0-RC1
+3395253a6235c40e5eac57a365fc1268d3f379af	refs/tags/release-1.0.0-RC1^{}
+55deed3b88b389f900052cd85515e45e3811453c	refs/tags/release-1.1.0-RC0
+e2cf849f4e1b096efd19294f6bd300a7462ceed6	refs/tags/release-1.1.0-RC0^{}
+d81c1d74d9376580ec9b6ec6df945ddaa0ac4dd4	refs/tags/release-1.1.1-RC0
+e4932839436412d04a90a7cc2ef21a39e9d1dad9	refs/tags/release-1.1.1-RC0^{}
+a9aa6b243addc39a45202ad8e7b42bf17a1956ae	refs/tags/release-1.2.0-RC0
+447d6e64a1381f10db770aef0906f09858f1b210	refs/tags/release-1.2.0-RC0^{}
+b2022f008d82c839ed25bcc07170f1014b6d3ad2	refs/tags/release-1.2.0-RC1
+64b672142797b5acffa94cadfc2d2be6f4dbbb23	refs/tags/release-1.2.0-RC1^{}
+27d56b8e146478198fd68ec07bbd963ceefc4051	refs/tags/release-1.3.0-RC1
+0fd62903b071b5186f31b7030ce42e1c00f6bb6a	refs/tags/release-1.3.0-RC1^{}
+d0dba08140592417438dc76636e404566ebe27d4	refs/tags/release-1.4.0-RC0
+5595f1357eaad02e1cfb660bcce7fd34515197ff	refs/tags/release-1.4.0-RC0^{}
+9d3c3570d0da17d42bcacfd6f1d85b4cd9f27366	refs/tags/release-1.4.0-RC1
+a1eda71bbfa630138b97ecac1a977c18d05f0003	refs/tags/release-1.4.0-RC1^{}
+55c7bb344c868a5bbcd8b7d070fabca0453ed9a1	refs/tags/release-1.5.0-RC0
+f38cd430aa2a17bd404d90a5f2ca2e2116b22ae4	refs/tags/release-1.5.0-RC0^{}
+8d5f451c6858bbc0272cc170a08189ad57d28f54	refs/tags/release-1.6.0-RC0
+
+web search: 
+web search: org.apache.hadoop.thirdparty hadoop-shaded-guava 1.1.1 Maven Central
+web search: 
+web search: archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1 hadoop-thirdparty-1.1.1-src.tar.gz site.tar.gz
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz | tar -tzf - | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1.jar -o /tmp/hadoop-shaded-guava-1.1.1.jar && jar tf /tmp/hadoop-shaded-guava-1.1.1.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 119ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/hadoop/thirdparty/thirdparty-1.1.1</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                       <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/hadoop/thirdparty/">Parent Directory</a>                                                -   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="CHANGELOG.md">CHANGELOG.md</a>                               2021-06-01 02:02  1.3K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="CHANGELOG.md.asc">CHANGELOG.md.asc</a>                           2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="CHANGELOG.md.sha512">CHANGELOG.md.sha512</a>                        2021-06-01 02:02  153   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="RELEASENOTES.md">RELEASENOTES.md</a>                            2021-06-01 02:02  1.0K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="RELEASENOTES.md.asc">RELEASENOTES.md.asc</a>                        2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="RELEASENOTES.md.sha512">RELEASENOTES.md.sha512</a>                     2021-06-01 02:02  156   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-rat.txt">hadoop-thirdparty-1.1.1-rat.txt</a>            2021-06-01 02:02  2.7K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-rat.txt.asc">hadoop-thirdparty-1.1.1-rat.txt.asc</a>        2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-rat.txt.sha512">hadoop-thirdparty-1.1.1-rat.txt.sha512</a>     2021-06-01 02:02  172   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="hadoop-thirdparty-1.1.1-site.tar.gz">hadoop-thirdparty-1.1.1-site.tar.gz</a>        2021-06-01 02:02  393K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-site.tar.gz.asc">hadoop-thirdparty-1.1.1-site.tar.gz.asc</a>    2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-site.tar.gz.sha512">hadoop-thirdparty-1.1.1-site.tar.gz.sha512</a> 2021-06-01 02:02  176   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="hadoop-thirdparty-1.1.1-src.tar.gz">hadoop-thirdparty-1.1.1-src.tar.gz</a>         2021-06-01 02:02   21K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-src.tar.gz.asc">hadoop-thirdparty-1.1.1-src.tar.gz.asc</a>     2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-src.tar.gz.sha512">hadoop-thirdparty-1.1.1-src.tar.gz.sha512</a>  2021-06-01 02:02  175   
+<hr></pre>
+</body></html>
+
+ succeeded in 152ms:
+hadoop-thirdparty-1.1.1-src/NOTICE.txt
+hadoop-thirdparty-1.1.1-src/
+hadoop-thirdparty-1.1.1-src/.github/
+hadoop-thirdparty-1.1.1-src/.github/workflows/
+hadoop-thirdparty-1.1.1-src/dev-support/
+hadoop-thirdparty-1.1.1-src/dev-support/bin/
+hadoop-thirdparty-1.1.1-src/dev-support/docker/
+hadoop-thirdparty-1.1.1-src/hadoop-shaded-guava/
+hadoop-thirdparty-1.1.1-src/hadoop-shaded-protobuf_3_7/
+hadoop-thirdparty-1.1.1-src/licenses-binary/
+hadoop-thirdparty-1.1.1-src/src/
+hadoop-thirdparty-1.1.1-src/src/main/
+hadoop-thirdparty-1.1.1-src/src/main/resources/
+hadoop-thirdparty-1.1.1-src/src/main/resources/assemblies/
+hadoop-thirdparty-1.1.1-src/src/site/
+hadoop-thirdparty-1.1.1-src/src/site/markdown/
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/thirdparty-1.0.0/
+hadoop-thirdparty-1.1.1-src/src/site/resources/
+hadoop-thirdparty-1.1.1-src/src/site/resources/css/
+hadoop-thirdparty-1.1.1-src/.github/pull_request_template.md
+hadoop-thirdparty-1.1.1-src/.github/workflows/build.yml
+hadoop-thirdparty-1.1.1-src/.github/workflows/dependency_check.yml
+hadoop-thirdparty-1.1.1-src/.github/workflows/license_check.yml
+hadoop-thirdparty-1.1.1-src/LICENSE-binary
+hadoop-thirdparty-1.1.1-src/LICENSE.txt
+hadoop-thirdparty-1.1.1-src/NOTICE-binary
+hadoop-thirdparty-1.1.1-src/README.md
+hadoop-thirdparty-1.1.1-src/dev-support/bin/create-release
+hadoop-thirdparty-1.1.1-src/dev-support/bin/releasedocmaker
+hadoop-thirdparty-1.1.1-src/dev-support/bin/yetus-wrapper
+hadoop-thirdparty-1.1.1-src/dev-support/docker/Dockerfile
+hadoop-thirdparty-1.1.1-src/dev-support/docker/hadoop_env_checks.sh
+hadoop-thirdparty-1.1.1-src/hadoop-shaded-guava/pom.xml
+hadoop-thirdparty-1.1.1-src/hadoop-shaded-protobuf_3_7/pom.xml
+hadoop-thirdparty-1.1.1-src/licenses-binary/LICENSE.protobuf.txt
+hadoop-thirdparty-1.1.1-src/pom.xml
+hadoop-thirdparty-1.1.1-src/src/main/resources/assemblies/hadoop-thirdparty-src.xml
+hadoop-thirdparty-1.1.1-src/src/site/markdown/index.md.vm
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/thirdparty-1.0.0/CHANGELOG.thirdparty-1.0.0.md
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/thirdparty-1.0.0/RELEASENOTES.thirdparty-1.0.0.md
+hadoop-thirdparty-1.1.1-src/src/site/resources/css/site.css
+hadoop-thirdparty-1.1.1-src/src/site/site.xml
+
+ succeeded in 359ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES
+META-INF/maven/
+META-INF/maven/org.apache.hadoop.thirdparty/
+META-INF/maven/org.apache.hadoop.thirdparty/hadoop-shaded-guava/
+META-INF/maven/org.apache.hadoop.thirdparty/hadoop-shaded-guava/pom.xml
+META-INF/maven/org.apache.hadoop.thirdparty/hadoop-shaded-guava/pom.properties
+META-INF/NOTICE-binary
+META-INF/NOTICE.txt
+META-INF/licenses-binary/
+META-INF/licenses-binary/LICENSE.protobuf.txt
+META-INF/maven/com.google.guava/
+META-INF/maven/com.google.guava/guava/
+META-INF/maven/com.google.guava/guava/pom.properties
+META-INF/maven/com.google.guava/guava/pom.xml
+org/
+org/apache/
+org/apache/hadoop/
+org/apache/hadoop/thirdparty/
+org/apache/hadoop/thirdparty/com/
+org/apache/hadoop/thirdparty/com/google/
+org/apache/hadoop/thirdparty/com/google/common/
+org/apache/hadoop/thirdparty/com/google/common/annotations/
+org/apache/hadoop/thirdparty/com/google/common/annotations/Beta.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/GwtCompatible.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/GwtIncompatible.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/VisibleForTesting.class
+org/apache/hadoop/thirdparty/com/google/common/base/
+org/apache/hadoop/thirdparty/com/google/common/base/Absent.class
+org/apache/hadoop/thirdparty/com/google/common/base/AbstractIterator$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/AbstractIterator$State.class
+org/apache/hadoop/thirdparty/com/google/common/base/AbstractIterator.class
+org/apache/hadoop/thirdparty/com/google/common/base/Ascii.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$2.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$3.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$4.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$5.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$StringConverter.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$And.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Any.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$AnyOf.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Ascii.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$BitSetMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$BreakingWhitespace.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Digit.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$FastMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$ForPredicate.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$InRange.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Invisible.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Is.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$IsEither.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$IsNot.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$JavaDigit.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$JavaIsoControl.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$JavaLetter.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$JavaLetterOrDigit.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$JavaLowerCase.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$JavaUpperCase.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$NamedFastMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Negated.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$NegatedFastMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$None.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Or.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$RangesMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$SingleWidth.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher$Whitespace.class
+org/apache/hadoop/thirdparty/com/google/common/base/CharMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/Charsets.class
+org/apache/hadoop/thirdparty/com/google/common/base/CommonMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/CommonPattern.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter$1$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter$ConverterComposition.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter$FunctionBasedConverter.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter$IdentityConverter.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter$ReverseConverter.class
+org/apache/hadoop/thirdparty/com/google/common/base/Converter.class
+org/apache/hadoop/thirdparty/com/google/common/base/Defaults.class
+org/apache/hadoop/thirdparty/com/google/common/base/Enums$StringConverter.class
+org/apache/hadoop/thirdparty/com/google/common/base/Enums.class
+org/apache/hadoop/thirdparty/com/google/common/base/Equivalence$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/Equivalence$Equals.class
+org/apache/hadoop/thirdparty/com/google/common/base/Equivalence$EquivalentToPredicate.class
+org/apache/hadoop/thirdparty/com/google/common/base/Equivalence$Identity.class
+org/apache/hadoop/thirdparty/com/google/common/base/Equivalence$Wrapper.class
+org/apache/hadoop/thirdparty/com/google/common/base/Equivalence.class
+org/apache/hadoop/thirdparty/com/google/common/base/ExtraObjectsMethodsForWeb.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizablePhantomReference.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableReference.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableReferenceQueue$DecoupledLoader.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableReferenceQueue$DirectLoader.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableReferenceQueue$FinalizerLoader.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableReferenceQueue$SystemLoader.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableReferenceQueue.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableSoftReference.class
+org/apache/hadoop/thirdparty/com/google/common/base/FinalizableWeakReference.class
+org/apache/hadoop/thirdparty/com/google/common/base/Function.class
+org/apache/hadoop/thirdparty/com/google/common/base/FunctionalEquivalence.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$ConstantFunction.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$ForMapWithDefault.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$FunctionComposition.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$FunctionForMapNoDefault.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$IdentityFunction.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$PredicateFunction.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$SupplierFunction.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions$ToStringFunction.class
+org/apache/hadoop/thirdparty/com/google/common/base/Functions.class
+org/apache/hadoop/thirdparty/com/google/common/base/Java8Usage$SomeTypeAnnotation.class
+org/apache/hadoop/thirdparty/com/google/common/base/Java8Usage.class
+org/apache/hadoop/thirdparty/com/google/common/base/JdkPattern$JdkMatcher.class
+org/apache/hadoop/thirdparty/com/google/common/base/JdkPattern.class
+org/apache/hadoop/thirdparty/com/google/common/base/Joiner$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/Joiner$2.class
+org/apache/hadoop/thirdparty/com/google/common/base/Joiner$3.class
+org/apache/hadoop/thirdparty/com/google/common/base/Joiner$MapJoiner.class
+
+web search: 
+web search: org.apache.hadoop.thirdparty hadoop-shaded-guava 1.1.1 Maven Central
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-thirdparty/1.1.1/hadoop-thirdparty-1.1.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.hadoop.thirdparty</groupId>
+  <artifactId>hadoop-thirdparty</artifactId>
+  <version>1.1.1</version>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>21</version>
+    <relativePath/>
+    <!-- no parent resolution -->
+  </parent>
+  <name>Apache Hadoop Third-party Libs</name>
+  <packaging>pom</packaging>
+  <description>
+    Packaging of relocated (renamed, shaded) third-party libraries used by Hadoop.
+  </description>
+
+  <distributionManagement>
+    <repository>
+      <id>${distMgmtStagingId}</id>
+      <name>${distMgmtStagingName}</name>
+      <url>${distMgmtStagingUrl}</url>
+    </repository>
+    <snapshotRepository>
+      <id>${distMgmtSnapshotsId}</id>
+      <name>${distMgmtSnapshotsName}</name>
+      <url>${distMgmtSnapshotsUrl}</url>
+    </snapshotRepository>
+    <site>
+      <id>apache.website</id>
+      <url>scpexe://people.apache.org/www/hadoop.apache.org/docs/rthirdparty-${project.version}</url>
+    </site>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>${distMgmtSnapshotsId}</id>
+      <name>${distMgmtSnapshotsName}</name>
+      <url>${distMgmtSnapshotsUrl}</url>
+    </repository>
+    <repository>
+      <id>repository.jboss.org</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <!-- define the Java language version used by the compiler -->
+    <javac.version>1.8</javac.version>
+
+    <distMgmtSnapshotsId>apache.snapshots.https</distMgmtSnapshotsId>
+    <distMgmtSnapshotsName>Apache Development Snapshot Repository</distMgmtSnapshotsName>
+    <distMgmtSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
+    <distMgmtStagingId>apache.staging.https</distMgmtStagingId>
+    <distMgmtStagingName>Apache Release Distribution Repository</distMgmtStagingName>
+    <distMgmtStagingUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distMgmtStagingUrl>
+
+    <!-- platform encoding override -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!--thirdparty dependency versions-->
+    <shaded.prefix>org.apache.hadoop.thirdparty</shaded.prefix>
+    <protobuf.shade.prefix>${shaded.prefix}.protobuf</protobuf.shade.prefix>
+    <protobuf_3_7.version>3.7.1</protobuf_3_7.version>
+    <guava.version>30.1.1-jre</guava.version>
+
+    <!-- maven plugin versions -->
+    <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
+    <maven-stylus-skin.version>1.5</maven-stylus-skin.version>
+    <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+    <maven-assembly-plugin.version>2.5</maven-assembly-plugin.version>
+    <maven-dependency-plugin.version>3.0.2</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
+    <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+    <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+    <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
+    <wagon-ssh.version>2.4</wagon-ssh.version>
+    <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <checkstyle.version>8.19</checkstyle.version>
+    <dependency-check-maven.version>6.1.5</dependency-check-maven.version>
+    <exec-maven-plugin.version>1.3.1</exec-maven-plugin.version>
+  </properties>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://www.apache.org</url>
+  </organization>
+
+  <modules>
+    <module>hadoop-shaded-protobuf_3_7</module>
+    <module>hadoop-shaded-guava</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+          <configuration>
+            <rules>
+              <requireMavenVersion>
+                <version>[3.0.2,)</version>
+              </requireMavenVersion>
+              <requireJavaVersion>
+                <version>[1.8,)</version>
+              </requireJavaVersion>
+            </rules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven-assembly-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${apache-rat-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${maven-antrun-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+          <dependencies>
+            <dependency><!-- add support for ssh/scp -->
+              <groupId>org.apache.maven.wagon</groupId>
+              <artifactId>wagon-ssh</artifactId>
+              <version>${wagon-ssh.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-module-markdown</artifactId>
+              <version>1.8</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${maven-bundle-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${dependency-check-maven.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>dependency-reduced-pom.xml</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz | tar -xOzf - hadoop-thirdparty-1.1.1-src/pom.xml | sed -n '1,240p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz | tar -xOzf - hadoop-thirdparty-1.1.1-src/README.md hadoop-thirdparty-1.1.1-src/hadoop-shaded-guava/pom.xml | sed -n '1,240p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 123ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.hadoop.thirdparty</groupId>
+  <artifactId>hadoop-thirdparty</artifactId>
+  <version>1.1.1</version>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>21</version>
+    <relativePath/>
+    <!-- no parent resolution -->
+  </parent>
+  <name>Apache Hadoop Third-party Libs</name>
+  <packaging>pom</packaging>
+  <description>
+    Packaging of relocated (renamed, shaded) third-party libraries used by Hadoop.
+  </description>
+
+  <distributionManagement>
+    <repository>
+      <id>${distMgmtStagingId}</id>
+      <name>${distMgmtStagingName}</name>
+      <url>${distMgmtStagingUrl}</url>
+    </repository>
+    <snapshotRepository>
+      <id>${distMgmtSnapshotsId}</id>
+      <name>${distMgmtSnapshotsName}</name>
+      <url>${distMgmtSnapshotsUrl}</url>
+    </snapshotRepository>
+    <site>
+      <id>apache.website</id>
+      <url>scpexe://people.apache.org/www/hadoop.apache.org/docs/rthirdparty-${project.version}</url>
+    </site>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>${distMgmtSnapshotsId}</id>
+      <name>${distMgmtSnapshotsName}</name>
+      <url>${distMgmtSnapshotsUrl}</url>
+    </repository>
+    <repository>
+      <id>repository.jboss.org</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <!-- define the Java language version used by the compiler -->
+    <javac.version>1.8</javac.version>
+
+    <distMgmtSnapshotsId>apache.snapshots.https</distMgmtSnapshotsId>
+    <distMgmtSnapshotsName>Apache Development Snapshot Repository</distMgmtSnapshotsName>
+    <distMgmtSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
+    <distMgmtStagingId>apache.staging.https</distMgmtStagingId>
+    <distMgmtStagingName>Apache Release Distribution Repository</distMgmtStagingName>
+    <distMgmtStagingUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distMgmtStagingUrl>
+
+    <!-- platform encoding override -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!--thirdparty dependency versions-->
+    <shaded.prefix>org.apache.hadoop.thirdparty</shaded.prefix>
+    <protobuf.shade.prefix>${shaded.prefix}.protobuf</protobuf.shade.prefix>
+    <protobuf_3_7.version>3.7.1</protobuf_3_7.version>
+    <guava.version>30.1.1-jre</guava.version>
+
+    <!-- maven plugin versions -->
+    <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
+    <maven-stylus-skin.version>1.5</maven-stylus-skin.version>
+    <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+    <maven-assembly-plugin.version>2.5</maven-assembly-plugin.version>
+    <maven-dependency-plugin.version>3.0.2</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
+    <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+    <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+    <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
+    <wagon-ssh.version>2.4</wagon-ssh.version>
+    <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <checkstyle.version>8.19</checkstyle.version>
+    <dependency-check-maven.version>6.1.5</dependency-check-maven.version>
+    <exec-maven-plugin.version>1.3.1</exec-maven-plugin.version>
+  </properties>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://www.apache.org</url>
+  </organization>
+
+  <modules>
+    <module>hadoop-shaded-protobuf_3_7</module>
+    <module>hadoop-shaded-guava</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+          <configuration>
+            <rules>
+              <requireMavenVersion>
+                <version>[3.0.2,)</version>
+              </requireMavenVersion>
+              <requireJavaVersion>
+                <version>[1.8,)</version>
+              </requireJavaVersion>
+            </rules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven-assembly-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${apache-rat-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${maven-antrun-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+          <dependencies>
+            <dependency><!-- add support for ssh/scp -->
+              <groupId>org.apache.maven.wagon</groupId>
+              <artifactId>wagon-ssh</artifactId>
+              <version>${wagon-ssh.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-module-markdown</artifactId>
+              <version>1.8</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${maven-bundle-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${dependency-check-maven.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>dependency-reduced-pom.xml</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>pre-clean</phase>
+          </execution>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+          </execution>
+          <execution>
+
+ succeeded in 146ms:
+# Apache Hadoop Thirdparty
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>hadoop-thirdparty</artifactId>
+        <groupId>org.apache.hadoop.thirdparty</groupId>
+        <version>1.1.1</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>hadoop-shaded-guava</artifactId>
+    <name>Apache Hadoop shaded Guava</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/..</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>licenses-binary/*</include>
+                    <include>NOTICE.txt</include>
+                    <include>NOTICE-binary</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>shade-guava</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>com.google.code.findbugs:jsr305</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.checkerframework:checker-qual</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/LICENSE.txt</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com/google/</pattern>
+                                    <shadedPattern>${shaded.prefix}/com/google/</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org/checkerframework/</pattern>
+                                    <shadedPattern>${shaded.prefix}/org/checkerframework/</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                    <resources>
+                                        <resource>NOTICE</resource>
+                                        <resource>LICENSE</resource>
+                                    </resources>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/LICENSE.txt</resource>
+                                    <file>${basedir}/../LICENSE-binary</file>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hadoop-shaded-guava-1.1.1.jar" title="hadoop-shaded-guava-1.1.1.jar">hadoop-shaded-guava-1.1.1.jar</a>                     2021-05-26 08:13   3362359      
+<a href="hadoop-shaded-guava-1.1.1.jar.asc" title="hadoop-shaded-guava-1.1.1.jar.asc">hadoop-shaded-guava-1.1.1.jar.asc</a>                 2021-05-26 08:13       833      
+<a href="hadoop-shaded-guava-1.1.1.jar.md5" title="hadoop-shaded-guava-1.1.1.jar.md5">hadoop-shaded-guava-1.1.1.jar.md5</a>                 2021-05-26 08:13        32      
+<a href="hadoop-shaded-guava-1.1.1.jar.sha1" title="hadoop-shaded-guava-1.1.1.jar.sha1">hadoop-shaded-guava-1.1.1.jar.sha1</a>                2021-05-26 08:13        40      
+<a href="hadoop-shaded-guava-1.1.1.pom" title="hadoop-shaded-guava-1.1.1.pom">hadoop-shaded-guava-1.1.1.pom</a>                     2021-05-26 08:13      2968      
+<a href="hadoop-shaded-guava-1.1.1.pom.asc" title="hadoop-shaded-guava-1.1.1.pom.asc">hadoop-shaded-guava-1.1.1.pom.asc</a>                 2021-05-26 08:13       833      
+<a href="hadoop-shaded-guava-1.1.1.pom.md5" title="hadoop-shaded-guava-1.1.1.pom.md5">hadoop-shaded-guava-1.1.1.pom.md5</a>                 2021-05-26 08:13        32      
+<a href="hadoop-shaded-guava-1.1.1.pom.sha1" title="hadoop-shaded-guava-1.1.1.pom.sha1">hadoop-shaded-guava-1.1.1.pom.sha1</a>                2021-05-26 08:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz | tar -tzf - | sed -n '1,140p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+exec
+/usr/bin/bash -lc 'curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz | tar -xOzf - hadoop-thirdparty-1.1.1-src/pom.xml | rg -n "scm|github|url|connection|developerConnection" -C 2' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 131ms:
+42-      <id>${distMgmtStagingId}</id>
+43-      <name>${distMgmtStagingName}</name>
+44:      <url>${distMgmtStagingUrl}</url>
+45-    </repository>
+46-    <snapshotRepository>
+47-      <id>${distMgmtSnapshotsId}</id>
+48-      <name>${distMgmtSnapshotsName}</name>
+49:      <url>${distMgmtSnapshotsUrl}</url>
+50-    </snapshotRepository>
+51-    <site>
+52-      <id>apache.website</id>
+53:      <url>scpexe://people.apache.org/www/hadoop.apache.org/docs/rthirdparty-${project.version}</url>
+54-    </site>
+55-  </distributionManagement>
+--
+59-      <id>${distMgmtSnapshotsId}</id>
+60-      <name>${distMgmtSnapshotsName}</name>
+61:      <url>${distMgmtSnapshotsUrl}</url>
+62-    </repository>
+63-    <repository>
+64-      <id>repository.jboss.org</id>
+65:      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+66-      <snapshots>
+67-        <enabled>false</enabled>
+--
+73-    <license>
+74-      <name>Apache License, Version 2.0</name>
+75:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+76-    </license>
+77-  </licenses>
+--
+119-  <organization>
+120-    <name>Apache Software Foundation</name>
+121:    <url>https://www.apache.org</url>
+122-  </organization>
+123-
+--
+255-            <exclude>.gitignore</exclude>
+256-            <exclude>.git/**</exclude>
+257:            <exclude>.github/pull_request_template.md</exclude>
+258-            <exclude>.idea/**</exclude>
+259-            <exclude>README.md</exclude>
+
+ succeeded in 451ms:
+r1.1.1/css/
+r1.1.1/css/maven-base.css
+r1.1.1/css/maven-theme.css
+r1.1.1/css/print.css
+r1.1.1/css/site.css
+r1.1.1/hadoop-shaded-guava/
+r1.1.1/hadoop-shaded-guava/css/
+r1.1.1/hadoop-shaded-guava/css/maven-base.css
+r1.1.1/hadoop-shaded-guava/css/maven-theme.css
+r1.1.1/hadoop-shaded-guava/css/print.css
+r1.1.1/hadoop-shaded-guava/css/site.css
+r1.1.1/hadoop-shaded-guava/images/
+r1.1.1/hadoop-shaded-guava/images/apache-maven-project-2.png
+r1.1.1/hadoop-shaded-guava/images/banner.jpg
+r1.1.1/hadoop-shaded-guava/images/bg.jpg
+r1.1.1/hadoop-shaded-guava/images/breadcrumbs.jpg
+r1.1.1/hadoop-shaded-guava/images/collapsed.gif
+r1.1.1/hadoop-shaded-guava/images/expanded.gif
+r1.1.1/hadoop-shaded-guava/images/external.png
+r1.1.1/hadoop-shaded-guava/images/h3.jpg
+r1.1.1/hadoop-shaded-guava/images/h5.jpg
+r1.1.1/hadoop-shaded-guava/images/icon_error_sml.gif
+r1.1.1/hadoop-shaded-guava/images/icon_info_sml.gif
+r1.1.1/hadoop-shaded-guava/images/icon_success_sml.gif
+r1.1.1/hadoop-shaded-guava/images/icon_warning_sml.gif
+r1.1.1/hadoop-shaded-guava/images/logo_apache.jpg
+r1.1.1/hadoop-shaded-guava/images/logo_maven.jpg
+r1.1.1/hadoop-shaded-guava/images/logos/
+r1.1.1/hadoop-shaded-guava/images/logos/build-by-maven-black.png
+r1.1.1/hadoop-shaded-guava/images/logos/build-by-maven-white.png
+r1.1.1/hadoop-shaded-guava/images/logos/maven-feather.png
+r1.1.1/hadoop-shaded-guava/images/maven-logo-2.gif
+r1.1.1/hadoop-shaded-guava/images/newwindow.png
+r1.1.1/hadoop-shaded-protobuf_3_7/
+r1.1.1/hadoop-shaded-protobuf_3_7/css/
+r1.1.1/hadoop-shaded-protobuf_3_7/css/maven-base.css
+r1.1.1/hadoop-shaded-protobuf_3_7/css/maven-theme.css
+r1.1.1/hadoop-shaded-protobuf_3_7/css/print.css
+r1.1.1/hadoop-shaded-protobuf_3_7/css/site.css
+r1.1.1/hadoop-shaded-protobuf_3_7/images/
+r1.1.1/hadoop-shaded-protobuf_3_7/images/apache-maven-project-2.png
+r1.1.1/hadoop-shaded-protobuf_3_7/images/banner.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/bg.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/breadcrumbs.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/collapsed.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/expanded.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/external.png
+r1.1.1/hadoop-shaded-protobuf_3_7/images/h3.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/h5.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/icon_error_sml.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/icon_info_sml.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/icon_success_sml.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/icon_warning_sml.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/logo_apache.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/logo_maven.jpg
+r1.1.1/hadoop-shaded-protobuf_3_7/images/logos/
+r1.1.1/hadoop-shaded-protobuf_3_7/images/logos/build-by-maven-black.png
+r1.1.1/hadoop-shaded-protobuf_3_7/images/logos/build-by-maven-white.png
+r1.1.1/hadoop-shaded-protobuf_3_7/images/logos/maven-feather.png
+r1.1.1/hadoop-shaded-protobuf_3_7/images/maven-logo-2.gif
+r1.1.1/hadoop-shaded-protobuf_3_7/images/newwindow.png
+r1.1.1/images/
+r1.1.1/images/apache-maven-project-2.png
+r1.1.1/images/banner.jpg
+r1.1.1/images/bg.jpg
+r1.1.1/images/breadcrumbs.jpg
+r1.1.1/images/collapsed.gif
+r1.1.1/images/expanded.gif
+r1.1.1/images/external.png
+r1.1.1/images/h3.jpg
+r1.1.1/images/h5.jpg
+r1.1.1/images/icon_error_sml.gif
+r1.1.1/images/icon_info_sml.gif
+r1.1.1/images/icon_success_sml.gif
+r1.1.1/images/icon_warning_sml.gif
+r1.1.1/images/logo_apache.jpg
+r1.1.1/images/logo_maven.jpg
+r1.1.1/images/logos/
+r1.1.1/images/logos/build-by-maven-black.png
+r1.1.1/images/logos/build-by-maven-white.png
+r1.1.1/images/logos/maven-feather.png
+r1.1.1/images/maven-logo-2.gif
+r1.1.1/images/newwindow.png
+r1.1.1/index.html
+r1.1.1/release/
+r1.1.1/release/README.html
+r1.1.1/release/index.html
+r1.1.1/release/thirdparty-1.0.0/
+r1.1.1/release/thirdparty-1.0.0/CHANGELOG.thirdparty-1.0.0.html
+r1.1.1/release/thirdparty-1.0.0/RELEASENOTES.thirdparty-1.0.0.html
+r1.1.1/release/thirdparty-1.1.1/
+r1.1.1/release/thirdparty-1.1.1/CHANGELOG.thirdparty-1.1.1.html
+r1.1.1/release/thirdparty-1.1.1/RELEASENOTES.thirdparty-1.1.1.html
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/
+web search: 
+web search: https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/
+web search: 
+web search: https://downloads.apache.org/hadoop/thirdparty/thirdparty-1.1.1/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/hadoop-shaded-guava/pom.xml
+web search: 
+web search: https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/pom.xml
+web search: 
+web search: '<guava.version>' in https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/pom.xml
+codex
+The artifact is a normal JVM JAR: Maven Central publishes a `hadoop-shaded-guava-1.1.1.jar`, and the JAR contains `.class` files under the relocated Hadoop namespace. I also found no source or test classifier on Maven Central, so I’ll use the Apache release source/site archives and keep the test URL as `N/A`, matching the existing Hadoop thirdparty pattern in this repo.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..dcf16fbef5f7d380459d4d22b3f1836949c58b94
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty.com.google namespace for Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..dcf16fbef5f7d380459d4d22b3f1836949c58b94
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty.com.google namespace for Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
+  "repository-url": "https://github.com/apache/hadoop-thirdparty",
+  "source-code-url": "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
+  "test-code-url": "N/A",
+  "documentation-url": "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
+  "description": "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty.com.google namespace for Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..dcf16fbef5f7d380459d4d22b3f1836949c58b94
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty.com.google namespace for Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+codex
+The JSON parses cleanly. I’m doing one last status check now because this file lives under `build/`, which may be ignored, so it may not show in a normal `git diff`.
+exec
+/usr/bin/bash -lc "test -s /tmp/hadoop-shaded-guava-1.1.1.jar && jar tf /tmp/hadoop-shaded-guava-1.1.1.jar | rg -n '\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..dcf16fbef5f7d380459d4d22b3f1836949c58b94
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty.com.google namespace for Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+ succeeded in 146ms:
+ succeeded in 214ms:
+!! build/
+
+web search: 
+web search: Maven Central org.apache.hadoop.thirdparty hadoop-shaded-guava 1.1.1
+web search: 
+web search: https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/hadoop-shaded-guava/pom.xml
+web search: 
+web search: '<guava.version>' in https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/pom.xml
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/
+codex
+Updated [org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json).
+
+I set the repository, source archive, documentation archive, `test-code-url: "N/A"`, and the two-sentence description. I left `language` absent and did not set `not-for-native-image`: Maven Central publishes a JVM JAR for this artifact, and local inspection confirmed it contains `.class` files. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/))
+
+The source and documentation archives are from the Apache Hadoop thirdparty 1.1.1 release archive, and the Guava version/relocation details come from the release-tagged Hadoop thirdparty POMs. ([downloads.apache.org](https://downloads.apache.org/hadoop/thirdparty/thirdparty-1.1.1/))
+
+Verification: `jq` parsed the updated JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..dcf16fbef5f7d380459d4d22b3f1836949c58b94
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty.com.google namespace for Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+tokens used
+113,953
+Updated [org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json).
+
+I set the repository, source archive, documentation archive, `test-code-url: "N/A"`, and the two-sentence description. I left `language` absent and did not set `not-for-native-image`: Maven Central publishes a JVM JAR for this artifact, and local inspection confirmed it contains `.class` files. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/))
+
+The source and documentation archives are from the Apache Hadoop thirdparty 1.1.1 release archive, and the Guava version/relocation details come from the release-tagged Hadoop thirdparty POMs. ([downloads.apache.org](https://downloads.apache.org/hadoop/thirdparty/thirdparty-1.1.1/))
+
+Verification: `jq` parsed the updated JSON successfully.
+Ran agent for org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037/build/agent-artifact-discovery-logs/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-d1445037/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 4 executed, 5 from cache
