@@ -189,12 +189,22 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        List<String> javaInstallationArgs = gradleJavaInstallationArgs(System.getenv());
+        List<String> generateArgs = new ArrayList<>(javaInstallationArgs);
+        generateArgs.add("-Pagent");
+        generateArgs.add("test");
+        List<String> metadataCopyArgs = new ArrayList<>(javaInstallationArgs);
+        metadataCopyArgs.add("metadataCopy");
+        metadataCopyArgs.add("--task");
+        metadataCopyArgs.add("test");
+        metadataCopyArgs.add("--dir");
+        metadataCopyArgs.add(metadataDirectory.toString());
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), generateArgs, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), metadataCopyArgs, "Cannot perform metadata copy", testsDirectory);
     }
 
     /**
@@ -205,12 +215,62 @@ public final class MetadataGenerationUtils {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
 
         Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
+        List<String> javaInstallationArgs = gradleJavaInstallationArgs(System.getenv());
+        List<String> generateArgs = new ArrayList<>(javaInstallationArgs);
+        generateArgs.add("-Pagent");
+        generateArgs.add("test");
+        List<String> metadataCopyArgs = new ArrayList<>(javaInstallationArgs);
+        metadataCopyArgs.add("metadataCopy");
+        metadataCopyArgs.add("--task");
+        metadataCopyArgs.add("test");
+        metadataCopyArgs.add("--dir");
+        metadataCopyArgs.add(metadataDirectory.toString());
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), generateArgs, env, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), metadataCopyArgs, env, "Cannot perform metadata copy", testsDirectory);
+    }
+
+    static List<String> gradleJavaInstallationArgs(Map<String, String> env) {
+        String explicitPaths = normalizeInstallPaths(env.get("TCK_JDK_INSTALLATION_PATHS"));
+        if (explicitPaths != null) {
+            return List.of(
+                    "-Porg.gradle.java.installations.auto-detect=false",
+                    "-Porg.gradle.java.installations.paths=" + explicitPaths
+            );
+        }
+
+        Set<String> installPaths = new LinkedHashSet<>();
+        for (String envVar : List.of("GRAALVM_HOME", "JAVA_HOME")) {
+            String installPath = normalizeInstallPath(env.get(envVar));
+            if (installPath != null) {
+                installPaths.add(installPath);
+            }
+        }
+        if (installPaths.isEmpty()) {
+            return List.of();
+        }
+        return List.of(
+                "-Porg.gradle.java.installations.auto-detect=false",
+                "-Porg.gradle.java.installations.paths=" + String.join(",", installPaths)
+        );
+    }
+
+    private static String normalizeInstallPaths(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+
+    private static String normalizeInstallPath(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        File directory = new File(value.trim());
+        return directory.isDirectory() ? directory.getAbsolutePath() : null;
     }
 
     /**

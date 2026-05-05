@@ -188,6 +188,32 @@ class MetadataGenerationUtilsTests {
                 .containsEntry("allowed-packages", List.of("graphql"));
     }
 
+    @Test
+    void gradleJavaInstallationArgsPrefersExplicitInstallationPathsEnv() {
+        assertThat(MetadataGenerationUtils.gradleJavaInstallationArgs(Map.of(
+                "TCK_JDK_INSTALLATION_PATHS", "/jdk/a,/jdk/b",
+                "GRAALVM_HOME", tempDir.resolve("graalvm").toString(),
+                "JAVA_HOME", tempDir.resolve("java").toString()
+        ))).containsExactly(
+                "-Porg.gradle.java.installations.auto-detect=false",
+                "-Porg.gradle.java.installations.paths=/jdk/a,/jdk/b"
+        );
+    }
+
+    @Test
+    void gradleJavaInstallationArgsFallsBackToToolHomeEnvironmentVariables() throws IOException {
+        Path graalvmHome = Files.createDirectories(tempDir.resolve("graalvm"));
+        Path javaHome = Files.createDirectories(tempDir.resolve("java"));
+
+        assertThat(MetadataGenerationUtils.gradleJavaInstallationArgs(Map.of(
+                "GRAALVM_HOME", graalvmHome.toString(),
+                "JAVA_HOME", javaHome.toString()
+        ))).containsExactly(
+                "-Porg.gradle.java.installations.auto-detect=false",
+                "-Porg.gradle.java.installations.paths=" + graalvmHome + "," + javaHome
+        );
+    }
+
     private Project createProject() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
