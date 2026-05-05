@@ -95,7 +95,7 @@ public class BeanConstructorsDynamicAccessTest {
 
         RecordCtorBean bean = (RecordCtorBean) constructors.createRecordBean("Ada", 37);
 
-        assertThat(propertyNames).containsOnlyKeys("name", "age");
+        assertThat(propertyNames.keySet()).containsExactlyInAnyOrder("name", "age");
         assertThat(bean.name()).isEqualTo("Ada");
         assertThat(bean.age()).isEqualTo(37);
         assertThat(RECORD_CTOR_CALLS).hasValue(1);
