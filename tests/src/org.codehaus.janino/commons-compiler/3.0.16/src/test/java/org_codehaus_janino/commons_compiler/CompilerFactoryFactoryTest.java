@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import org.codehaus.commons.compiler.AbstractCompilerFactory;
+import org.codehaus.commons.compiler.AbstractJavaSourceClassLoader;
 import org.codehaus.commons.compiler.CompilerFactoryFactory;
 import org.codehaus.commons.compiler.ICompiler;
 import org.codehaus.commons.compiler.ICompilerFactory;
@@ -75,6 +76,16 @@ public class CompilerFactoryFactoryTest {
         @Override
         public ICompiler newCompiler() {
             throw new UnsupportedOperationException(getId() + ": newCompiler");
+        }
+
+        @Override
+        public AbstractJavaSourceClassLoader newJavaSourceClassLoader() {
+            return AbstractJavaSourceClassLoaderTest.newJavaSourceClassLoader();
+        }
+
+        @Override
+        public AbstractJavaSourceClassLoader newJavaSourceClassLoader(ClassLoader parentClassLoader) {
+            return AbstractJavaSourceClassLoaderTest.newJavaSourceClassLoader(parentClassLoader);
         }
     }
 
