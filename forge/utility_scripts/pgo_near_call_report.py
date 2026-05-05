@@ -23,6 +23,27 @@ PRIMITIVE_ARRAY_TYPES = {
     "D": "double",
 }
 
+FRAMEWORK_TYPE_PREFIXES = (
+    "com.oracle.svm.",
+    "java.",
+    "javax.",
+    "jdk.",
+    "junit.",
+    "org.gradle.",
+    "org.graalvm.junit.",
+    "org.junit.",
+    "sun.",
+    "worker.org.gradle.",
+)
+
+TEST_TYPE_SUFFIXES = (
+    "IT",
+    "ITCase",
+    "Test",
+    "TestCase",
+    "Tests",
+)
+
 
 @dataclass(frozen=True)
 class PgoNearCallRecord:
@@ -30,6 +51,9 @@ class PgoNearCallRecord:
     static_path: list[int]
     static_path_edges: list[dict]
     sampled_path: list[tuple[int, int]]
+    sampled_full_path: list[tuple[tuple[str, str, tuple[str, ...], str], int]]
+    sampled_path_full_indexes: list[int]
+    sampled_join_path_index: int | None
     sample_count: int
     prefix_length: int
     methods: dict
@@ -57,10 +81,10 @@ def format_pgo_near_call_guidance(
         "Target uncovered dynamic-access call:",
         _format_call_site(best.call_site),
         "",
-        "Closest sampled runtime path:",
-        _format_path(best.sampled_path, best.methods, include_bci=True),
+        "Closest sampled stack from an existing test to the PGO/call-graph join point:",
+        _format_existing_test_stack_to_join(best),
         "",
-        "Static path to the uncovered call:",
+        "Static path from the PGO-reached method to the uncovered call:",
         _format_path(best.static_path, best.methods, best.static_path_edges),
     ]
     alternate_records = [record for record in records[1:] if record.call_site == best.call_site]
@@ -82,21 +106,25 @@ def format_pgo_near_call_guidance(
     ])
     divergence = best.static_path[best.prefix_length - 1] if best.prefix_length > 0 else None
     static_next = best.static_path[best.prefix_length] if best.prefix_length < len(best.static_path) else None
-    observed_next = best.sampled_path[best.prefix_length][0] if best.prefix_length < len(best.sampled_path) else None
+    observed_next = _observed_branch_after_join(best)
     static_next_edge = _edge_between(best.static_path_edges, best.prefix_length - 1)
     if divergence is not None:
-        lines.append("- Shared prefix ends at: {method}".format(method=_format_method(divergence, best.methods)))
+        lines.append("- PGO reached: {method}".format(method=_format_method(divergence, best.methods)))
     else:
-        lines.append("- No shared static prefix was sampled.")
+        lines.append("- No sampled method could be joined to the static call graph.")
     if observed_next is not None:
-        lines.append("- Current tests then execute: {method}".format(method=_format_method(observed_next, best.methods)))
+        observed_method, observed_bci = observed_next
+        lines.append("- Current sampled execution then goes to: {method} @sample-bci={bci}".format(
+            method=_format_key(observed_method),
+            bci=observed_bci,
+        ))
     else:
-        lines.append("- Current sampled path ended at the divergence point.")
+        lines.append("- Current sampled path ended at the PGO/call-graph join point.")
     if static_next is not None:
         suffix = ""
         if static_next_edge is not None:
             suffix = " @invoke-bci={bci}".format(bci=static_next_edge["bci"])
-        lines.append("- Tests need to drive: {method}{suffix}".format(
+        lines.append("- To reach the uncovered call, tests need to drive: {method}{suffix}".format(
             method=_format_method(static_next, best.methods),
             suffix=suffix,
         ))
@@ -115,7 +143,7 @@ def build_pgo_near_call_records(
     if not os.path.isdir(reports_dir):
         reports_dir = report_dir
 
-    methods, edges, adjacency, roots = _load_static_call_tree(reports_dir)
+    methods, edges, adjacency, reverse_adjacency, roots = _load_static_call_tree(reports_dir)
     iprof, iprof_methods = _load_iprof(_find_file(report_dir, "native-test.iprof"))
     static_key_to_id = {method["key"]: method_id for method_id, method in methods.items()}
     samples = _sample_paths(iprof, iprof_methods, static_key_to_id)
@@ -126,19 +154,158 @@ def build_pgo_near_call_records(
         if not target_edges:
             continue
         for target_edge in target_edges:
-            static_path, static_path_edges = _shortest_path_to_edge(adjacency, roots, target_edge)
-            closest_sample = _choose_closest_sample(static_path, samples)
-            records.append(PgoNearCallRecord(
-                call_site=call_site,
-                static_path=static_path,
-                static_path_edges=static_path_edges,
-                sampled_path=closest_sample["path"],
-                sample_count=closest_sample["count"],
-                prefix_length=_common_prefix_length(static_path, closest_sample["path"]),
-                methods=methods,
+            records.append(_build_record_for_target_edge(
+                call_site,
+                target_edge,
+                methods,
+                adjacency,
+                reverse_adjacency,
+                roots,
+                samples,
             ))
-    records.sort(key=lambda record: (record.prefix_length, -record.depth_remaining, record.sample_count), reverse=True)
+    records.sort(key=_record_sort_key, reverse=True)
     return records
+
+
+def _build_record_for_target_edge(
+        call_site: DynamicAccessCallSite,
+        target_edge: dict,
+        methods: dict,
+        adjacency: dict[int, list[dict]],
+        reverse_adjacency: dict[int, list[dict]],
+        roots: list[int],
+        samples: list[dict],
+) -> PgoNearCallRecord:
+    next_edges_to_target = _next_edges_to_target_caller(reverse_adjacency, target_edge["caller"])
+    best_join = _choose_best_sampled_join(next_edges_to_target, target_edge, methods, samples)
+    if best_join is not None:
+        return PgoNearCallRecord(
+            call_site=call_site,
+            static_path=best_join["static_path"],
+            static_path_edges=best_join["static_path_edges"],
+            sampled_path=best_join["sample"]["path"],
+            sampled_full_path=best_join["sample"]["full_path"],
+            sampled_path_full_indexes=best_join["sample"]["path_full_indexes"],
+            sampled_join_path_index=best_join["sampled_join_path_index"],
+            sample_count=best_join["sample"]["count"],
+            prefix_length=1,
+            methods=methods,
+        )
+
+    static_path, static_path_edges = _shortest_path_to_edge(adjacency, roots, target_edge)
+    closest_sample = _choose_closest_sample(static_path, samples)
+    return PgoNearCallRecord(
+        call_site=call_site,
+        static_path=static_path,
+        static_path_edges=static_path_edges,
+        sampled_path=closest_sample["path"],
+        sampled_full_path=closest_sample["full_path"],
+        sampled_path_full_indexes=closest_sample["path_full_indexes"],
+        sampled_join_path_index=None,
+        sample_count=closest_sample["count"],
+        prefix_length=_common_prefix_length(static_path, closest_sample["path"]),
+        methods=methods,
+    )
+
+
+def _next_edges_to_target_caller(reverse_adjacency: dict[int, list[dict]], target_caller: int) -> dict[int, dict | None]:
+    next_edges: dict[int, dict | None] = {target_caller: None}
+    queue = deque([target_caller])
+    while queue:
+        method_id = queue.popleft()
+        for edge in reverse_adjacency.get(method_id, []):
+            predecessor = edge["caller"]
+            if predecessor in next_edges:
+                continue
+            next_edges[predecessor] = edge
+            queue.append(predecessor)
+    return next_edges
+
+
+def _choose_best_sampled_join(
+        next_edges_to_target: dict[int, dict | None],
+        target_edge: dict,
+        methods: dict,
+        samples: list[dict],
+) -> dict | None:
+    candidates = []
+    for sample in samples:
+        for sampled_path_index, (method_id, _) in enumerate(sample["path"]):
+            if method_id not in next_edges_to_target:
+                continue
+            static_path, static_path_edges = _path_from_join_to_target_edge(
+                method_id,
+                next_edges_to_target,
+                target_edge,
+            )
+            candidates.append({
+                "sample": sample,
+                "sampled_join_path_index": sampled_path_index,
+                "static_path": static_path,
+                "static_path_edges": static_path_edges,
+                "score": _sampled_join_score(sample, sampled_path_index, static_path_edges, methods),
+            })
+    if not candidates:
+        return None
+    return max(candidates, key=lambda candidate: candidate["score"])
+
+
+def _path_from_join_to_target_edge(
+        join_method: int,
+        next_edges_to_target: dict[int, dict | None],
+        target_edge: dict,
+) -> tuple[list[int], list[dict]]:
+    static_path = [join_method]
+    static_path_edges = []
+    current = join_method
+    while current != target_edge["caller"]:
+        edge = next_edges_to_target[current]
+        if edge is None:
+            break
+        static_path_edges.append(edge)
+        current = edge["callee"]
+        static_path.append(current)
+    static_path_edges.append(target_edge)
+    static_path.append(target_edge["callee"])
+    return static_path, static_path_edges
+
+
+def _sampled_join_score(
+        sample: dict,
+        sampled_path_index: int,
+        static_path_edges: list[dict],
+        methods: dict,
+) -> tuple:
+    join_method_id = sample["path"][sampled_path_index][0]
+    sampled_full_index = sample["path_full_indexes"][sampled_path_index]
+    test_index = _existing_test_frame_index(sample["full_path"])
+    join_is_after_test = test_index is None or sampled_full_index >= test_index
+    return (
+        join_is_after_test,
+        _method_prompt_quality(methods[join_method_id]["key"]),
+        -len(static_path_edges),
+        sample["count"],
+        sampled_path_index,
+    )
+
+
+def _record_sort_key(record: PgoNearCallRecord) -> tuple:
+    join_method = record.static_path[record.prefix_length - 1] if record.prefix_length > 0 else None
+    prompt_quality = 0 if join_method is None else _method_prompt_quality(record.methods[join_method]["key"])
+    return (
+        record.prefix_length > 0,
+        prompt_quality,
+        -record.depth_remaining,
+        record.sample_count,
+    )
+
+
+def _method_prompt_quality(key: tuple[str, str, tuple[str, ...], str]) -> int:
+    if _looks_like_framework_frame(key):
+        return 0
+    if _looks_like_existing_test_frame(key):
+        return 1
+    return 2
 
 
 def _normalize_type_name(name: str) -> str:
@@ -189,7 +356,7 @@ def _read_csv_by_id(path: str) -> dict[int, dict]:
         return {int(row["Id"]): row for row in csv.DictReader(csv_file)}
 
 
-def _load_static_call_tree(reports_dir: str) -> tuple[dict, list[dict], dict[int, list[dict]], list[int]]:
+def _load_static_call_tree(reports_dir: str) -> tuple[dict, list[dict], dict[int, list[dict]], dict[int, list[dict]], list[int]]:
     methods = _read_csv_by_id(_find_file(reports_dir, "call_tree_methods.csv"))
     invokes = _read_csv_by_id(_find_file(reports_dir, "call_tree_invokes.csv"))
     targets_path = _find_file(reports_dir, "call_tree_targets.csv")
@@ -202,6 +369,7 @@ def _load_static_call_tree(reports_dir: str) -> tuple[dict, list[dict], dict[int
 
     edges = []
     adjacency: dict[int, list[dict]] = {}
+    reverse_adjacency: dict[int, list[dict]] = {}
     for target in targets:
         invoke = invokes[int(target["InvokeId"])]
         caller_id = int(invoke["MethodId"])
@@ -214,9 +382,10 @@ def _load_static_call_tree(reports_dir: str) -> tuple[dict, list[dict], dict[int
         }
         edges.append(edge)
         adjacency.setdefault(caller_id, []).append(edge)
+        reverse_adjacency.setdefault(callee_id, []).append(edge)
 
     roots = [method_id for method_id, method in methods.items() if method["IsEntryPoint"] == "true"]
-    return methods, edges, adjacency, roots
+    return methods, edges, adjacency, reverse_adjacency, roots
 
 
 def _load_iprof(iprof_path: str) -> tuple[dict, dict[int, tuple[str, str, tuple[str, ...], str]]]:
@@ -248,14 +417,22 @@ def _sample_paths(iprof: dict, iprof_methods: dict, static_key_to_id: dict) -> l
     paths = []
     for profile in iprof.get("samplingProfiles", []):
         mapped_path = []
+        mapped_full_indexes = []
+        full_path = []
         for method_id, bci in _parse_context(profile["ctx"]):
             key = iprof_methods.get(method_id)
+            if key is None:
+                continue
+            full_path.append((key, bci))
             static_id = static_key_to_id.get(key)
             if static_id is not None and (not mapped_path or mapped_path[-1][0] != static_id):
                 mapped_path.append((static_id, bci))
+                mapped_full_indexes.append(len(full_path) - 1)
         if mapped_path:
             paths.append({
                 "path": mapped_path,
+                "full_path": full_path,
+                "path_full_indexes": mapped_full_indexes,
                 "count": int(profile["records"][0]),
                 "context": profile["ctx"],
             })
@@ -406,6 +583,134 @@ def _format_path(path: list, methods: dict, path_edges: list[dict] | None = None
             index=index + 1,
             method=_format_method(method_id, methods),
             suffix=suffix,
+        ))
+    return "\n".join(lines) if lines else "- None"
+
+
+def _format_existing_test_stack_to_join(record: PgoNearCallRecord) -> str:
+    stack, note, test_entry_index, join_index = _existing_test_stack_to_join(record)
+    lines = []
+    if note:
+        lines.append("- {note}".format(note=note))
+    lines.extend(_format_stack_trace_path(stack, test_entry_index, join_index).splitlines())
+    return "\n".join(lines) if lines else "- None"
+
+
+def _observed_branch_after_join(
+        record: PgoNearCallRecord,
+) -> tuple[tuple[str, str, tuple[str, ...], str], int] | None:
+    if not record.sampled_full_path:
+        return None
+    if record.sampled_join_path_index is not None:
+        observed_path_index = record.sampled_join_path_index + 1
+    else:
+        observed_path_index = record.prefix_length
+    if observed_path_index >= len(record.sampled_path_full_indexes):
+        return None
+
+    observed_full_index = record.sampled_path_full_indexes[observed_path_index]
+    test_start = _existing_test_frame_index(record.sampled_full_path)
+    if test_start is not None and observed_full_index < test_start:
+        observed_full_index = _first_mapped_index_at_or_after(
+            record.sampled_full_path,
+            record.sampled_path_full_indexes,
+            test_start,
+        )
+    if observed_full_index is None:
+        return None
+    return record.sampled_full_path[observed_full_index]
+
+
+def _existing_test_stack_to_join(
+        record: PgoNearCallRecord,
+) -> tuple[list[tuple[tuple[str, str, tuple[str, ...], str], int]], str | None, int | None, int | None]:
+    if not record.sampled_full_path:
+        return [], "No sampled stack frames were available.", None, None
+
+    join_full_index = _sampled_join_full_index(record)
+    note = None
+    if join_full_index is None:
+        join_full_index = len(record.sampled_full_path) - 1
+        note = "No sampled call-graph join frame was identified; showing the sampled stack."
+
+    test_start = _existing_test_frame_index(record.sampled_full_path)
+    start = test_start if test_start is not None else 0
+    if start > join_full_index:
+        start = 0
+        note = "The identified test frame appears after the PGO/call-graph join point; showing the sampled prefix."
+    elif test_start is None:
+        note = note or "No existing test frame was identified before the PGO/call-graph join point; showing the sampled prefix."
+
+    stack = record.sampled_full_path[start:join_full_index + 1]
+    relative_test_entry = test_start - start if test_start is not None and start <= test_start <= join_full_index else None
+    relative_join = len(stack) - 1 if stack else None
+    return stack, note, relative_test_entry, relative_join
+
+
+def _sampled_join_full_index(record: PgoNearCallRecord) -> int | None:
+    if record.sampled_join_path_index is not None:
+        return record.sampled_path_full_indexes[record.sampled_join_path_index]
+    if record.prefix_length > 0 and record.sampled_path_full_indexes:
+        return record.sampled_path_full_indexes[record.prefix_length - 1]
+    if record.sampled_path_full_indexes:
+        return record.sampled_path_full_indexes[0]
+    return None
+
+
+def _existing_test_frame_index(
+        sampled_full_path: list[tuple[tuple[str, str, tuple[str, ...], str], int]],
+) -> int | None:
+    for index, (key, _) in enumerate(sampled_full_path):
+        if _looks_like_existing_test_frame(key):
+            return index
+    return None
+
+
+def _first_mapped_index_at_or_after(
+        sampled_full_path: list[tuple[tuple[str, str, tuple[str, ...], str], int]],
+        mapped_indexes: list[int],
+        start_index: int,
+) -> int | None:
+    for mapped_index in mapped_indexes:
+        if mapped_index >= start_index and not _looks_like_framework_frame(sampled_full_path[mapped_index][0]):
+            return mapped_index
+    for mapped_index in mapped_indexes:
+        if mapped_index >= start_index:
+            return mapped_index
+    return None
+
+
+def _looks_like_existing_test_frame(key: tuple[str, str, tuple[str, ...], str]) -> bool:
+    if _looks_like_framework_frame(key):
+        return False
+    simple_holder = key[0].rsplit(".", 1)[-1]
+    return simple_holder.endswith(TEST_TYPE_SUFFIXES)
+
+
+def _looks_like_framework_frame(key: tuple[str, str, tuple[str, ...], str]) -> bool:
+    holder = key[0]
+    return holder.startswith(FRAMEWORK_TYPE_PREFIXES)
+
+
+def _format_stack_trace_path(
+        path: list[tuple[tuple[str, str, tuple[str, ...], str], int]],
+        test_entry_index: int | None,
+        join_index: int | None,
+) -> str:
+    lines = []
+    for index, (key, bci) in enumerate(path):
+        markers = []
+        if index == test_entry_index:
+            markers.append("existing test entry point")
+        if index == join_index:
+            markers.append("PGO/call-graph join point")
+        marker_suffix = ""
+        if markers:
+            marker_suffix = "  <-- {markers}".format(markers=", ".join(markers))
+        lines.append("    at {method} @sample-bci={bci}{marker_suffix}".format(
+            method=_format_key(key),
+            bci=bci,
+            marker_suffix=marker_suffix,
         ))
     return "\n".join(lines) if lines else "- None"
 

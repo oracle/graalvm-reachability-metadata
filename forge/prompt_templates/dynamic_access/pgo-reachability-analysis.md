@@ -36,10 +36,10 @@ Classify each uncovered call site conservatively:
 - If uncertain, mark `reachable` as `true`.
 
 Return exactly this JSON shape:
-{
+{{
   "summary": "short explanation",
   "callSites": [
-    {
+    {{
       "metadataType": "same value as the report",
       "trackedApi": "same value as the report",
       "frame": "same value as the report",
@@ -48,6 +48,6 @@ Return exactly this JSON shape:
       "reason": "why this call site is or is not reachable in the current setup",
       "requiredChanges": "test/build.gradle changes that would be needed if reachable, otherwise empty",
       "confidence": "high"
-    }
+    }}
   ]
-}
+}}

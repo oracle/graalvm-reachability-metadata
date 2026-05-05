@@ -17,26 +17,52 @@ from utility_scripts.pgo_near_call_report import (
 
 
 class PgoNearCallReportTests(unittest.TestCase):
-    def test_build_records_maps_sampled_prefix_to_static_dynamic_access_path(self) -> None:
+    def test_build_records_starts_static_path_at_sampled_call_graph_join(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             self._write_report_fixture(tmpdir)
             records = build_pgo_near_call_records(tmpdir, [self._call_site()])
 
         self.assertEqual(len(records), 1)
         record = records[0]
-        self.assertEqual(record.prefix_length, 2)
+        self.assertEqual(record.static_path, [2, 3, 5])
+        self.assertEqual(record.sampled_join_path_index, 1)
+        self.assertEqual(record.prefix_length, 1)
         self.assertEqual(record.depth_remaining, 2)
         self.assertEqual(record.sample_count, 7)
 
-    def test_format_guidance_names_divergence_and_required_next_method(self) -> None:
+    def test_format_guidance_names_reached_method_observed_branch_and_required_turn(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             self._write_report_fixture(tmpdir)
             guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
 
         self.assertIn("Target uncovered dynamic-access call:", guidance)
-        self.assertIn("Current tests then execute: example.Other.covered():void", guidance)
-        self.assertIn("Tests need to drive: example.TargetHolder.call():void @invoke-bci=20", guidance)
+        self.assertIn("Closest sampled stack from an existing test to the PGO/call-graph join point:", guidance)
+        self.assertIn(
+            "at example.Test.main():void @sample-bci=10  <-- existing test entry point",
+            guidance,
+        )
+        self.assertIn(
+            "at example.Router.route():void @sample-bci=20  <-- PGO/call-graph join point",
+            guidance,
+        )
+        self.assertIn("PGO reached: example.Router.route():void", guidance)
+        self.assertIn("Current sampled execution then goes to: example.Other.covered():void @sample-bci=21", guidance)
+        self.assertIn(
+            "To reach the uncovered call, tests need to drive: example.TargetHolder.call():void @invoke-bci=20",
+            guidance,
+        )
         self.assertIn("Static steps still missing: 2", guidance)
+
+    def test_sampled_join_wins_when_target_caller_is_also_static_entry_point(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir, target_holder_is_entry_point=True)
+            records = build_pgo_near_call_records(tmpdir, [self._call_site()])
+            guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
+
+        self.assertEqual(records[0].static_path, [2, 3, 5])
+        self.assertEqual(records[0].sampled_join_path_index, 1)
+        self.assertIn("PGO reached: example.Router.route():void", guidance)
+        self.assertIn("1. example.Router.route():void", guidance)
 
     def test_matching_uses_tracked_api_parameters_to_disambiguate_overloads(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -104,6 +130,7 @@ class PgoNearCallReportTests(unittest.TestCase):
             extra_methods: list[list[str]] | None = None,
             target_invokes: list[list[str]] | None = None,
             target_targets: list[list[str]] | None = None,
+            target_holder_is_entry_point: bool = False,
     ) -> None:
         reports_dir = os.path.join(report_dir, "reports")
         os.makedirs(reports_dir)
@@ -113,7 +140,8 @@ class PgoNearCallReportTests(unittest.TestCase):
             [
                 ["1", "example.Test", "main", "empty", "void", "true"],
                 ["2", "example.Router", "route", "empty", "void", "false"],
-                ["3", "example.TargetHolder", "call", "empty", "void", "false"],
+                ["3", "example.TargetHolder", "call", "empty", "void",
+                 "true" if target_holder_is_entry_point else "false"],
                 ["4", "example.Other", "covered", "empty", "void", "false"],
                 ["5", "java.lang.Class", "forName", "java.lang.String", "java.lang.Class", "false"],
             ] + (extra_methods or []),

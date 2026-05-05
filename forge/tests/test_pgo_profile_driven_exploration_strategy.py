@@ -196,6 +196,42 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
         self.assertIn("mismatch with existing registration", fake_agent.prompt)
         self.assertEqual(len(strategy.dynamic_access_unreachable), 3)
 
+    def test_reachability_analysis_prompt_template_renders_literal_json_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = PgoProfileDrivenExplorationStrategy(
+                {
+                    "model": "test-model",
+                    "prompts": {
+                        "pgo-profile-driven-exploration": "unused",
+                        "pgo-reachability-analysis": (
+                            "prompt_templates/dynamic_access/pgo-reachability-analysis.md"
+                        ),
+                    },
+                    "parameters": {
+                        "max-iterations": 1,
+                        "max-class-test-iterations": 1,
+                    },
+                },
+                library="org.example:lib:1.0.0",
+                reachability_repo_path=tmpdir,
+                test_version="1.0.0",
+                runtime_environment_summary="- OS: test\n- JDK: test",
+                source_context_overview="- Source: test",
+            )
+            active_class = self._report(0).classes[0]
+
+            with patch.object(strategy, "_collect_test_runtime_classpath", return_value=["/tmp/lib.jar"]), \
+                    patch.object(strategy, "_read_build_gradle_contents", return_value="dependencies {}"):
+                prompt = strategy._render_reachability_analysis_prompt(
+                    active_class,
+                    "generatePgoDynamicAccessNearCallReport failed",
+                )
+
+        self.assertIn('"summary": "short explanation"', prompt)
+        self.assertIn('"callSites": [', prompt)
+        self.assertIn('"reachable": false', prompt)
+        self.assertIn("generatePgoDynamicAccessNearCallReport failed", prompt)
+
     def test_refresh_returns_unavailable_guidance_when_formatter_has_no_actionable_guidance(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             strategy = self._strategy(tmpdir)
