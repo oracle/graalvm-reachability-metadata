@@ -40,6 +40,7 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.junit.jupiter.api.Test;
+import org.neo4j.bolt.connection.AccessMode;
 import org.neo4j.bolt.connection.AuthToken;
 import org.neo4j.bolt.connection.AuthTokens;
 import org.neo4j.bolt.connection.BasicResponseHandler;
@@ -48,13 +49,12 @@ import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
 import org.neo4j.bolt.connection.ClusterComposition;
 import org.neo4j.bolt.connection.DatabaseName;
-import org.neo4j.bolt.connection.DatabaseNameUtil;
 import org.neo4j.bolt.connection.DefaultDomainNameResolver;
 import org.neo4j.bolt.connection.GqlStatusError;
 import org.neo4j.bolt.connection.NotificationClassification;
 import org.neo4j.bolt.connection.NotificationConfig;
 import org.neo4j.bolt.connection.NotificationSeverity;
-import org.neo4j.bolt.connection.RoutingContext;
+import org.neo4j.bolt.connection.RoutedBoltConnectionParameters;
 import org.neo4j.bolt.connection.SecurityPlan;
 import org.neo4j.bolt.connection.SecurityPlans;
 import org.neo4j.bolt.connection.TelemetryApi;
@@ -191,33 +191,33 @@ public class Neo4j_bolt_connectionTest {
         assertThatThrownBy(() -> new BoltServerAddress("db.example.com", -1))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        RoutingContext empty = RoutingContext.EMPTY;
-        assertThat(empty.isDefined()).isFalse();
-        assertThat(empty.isServerRoutingEnabled()).isTrue();
-        assertThat(empty.toMap()).isEmpty();
+        RoutedBoltConnectionParameters defaultParameters = RoutedBoltConnectionParameters.defaultParameters();
+        assertThat(defaultParameters.accessMode()).isEqualTo(AccessMode.WRITE);
+        assertThat(defaultParameters.databaseName()).isNull();
+        assertThat(defaultParameters.homeDatabaseHint()).isNull();
+        assertThat(defaultParameters.bookmarks()).isEmpty();
+        assertThat(defaultParameters.impersonatedUser()).isNull();
 
-        RoutingContext routing = new RoutingContext(
-                URI.create("neo4j://router.example.com:9000?region=eu&policy=fast"));
-        assertThat(routing.isDefined()).isTrue();
-        assertThat(routing.isServerRoutingEnabled()).isTrue();
-        assertThat(routing.toMap()).containsEntry("address", "router.example.com:9000")
-                .containsEntry("region", "eu")
-                .containsEntry("policy", "fast");
-        assertThatThrownBy(() -> routing.toMap().put("other", "value"))
-                .isInstanceOf(UnsupportedOperationException.class);
+        DatabaseName databaseName = DatabaseName.database("customers");
+        RoutedBoltConnectionParameters routing = RoutedBoltConnectionParameters.builder()
+                .withAccessMode(AccessMode.READ)
+                .withDatabaseName(databaseName)
+                .withHomeDatabaseHint("home")
+                .withBookmarks(Set.of("bookmark-1"))
+                .withImpersonatedUser("alice")
+                .build();
+        assertThat(routing.accessMode()).isEqualTo(AccessMode.READ);
+        assertThat(routing.databaseName()).isSameAs(databaseName);
+        assertThat(routing.homeDatabaseHint()).isEqualTo("home");
+        assertThat(routing.bookmarks()).containsExactly("bookmark-1");
+        assertThat(routing.impersonatedUser()).isEqualTo("alice");
 
-        RoutingContext direct = new RoutingContext(URI.create("bolt://db.example.com?policy=fast"));
-        assertThat(direct.isServerRoutingEnabled()).isFalse();
-        assertThat(direct.toMap()).containsEntry("address", "db.example.com:7687");
-        assertThatThrownBy(() -> new RoutingContext(URI.create("neo4j://router.example.com?address=elsewhere")))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        DatabaseName defaultDatabase = DatabaseNameUtil.defaultDatabase();
+        DatabaseName defaultDatabase = DatabaseName.defaultDatabase();
         assertThat(defaultDatabase.databaseName()).isEmpty();
         assertThat(defaultDatabase.description()).isEqualTo("<default database>");
-        assertThat(DatabaseNameUtil.database(null)).isSameAs(defaultDatabase);
-        assertThat(DatabaseNameUtil.systemDatabase().databaseName()).contains(DatabaseNameUtil.SYSTEM_DATABASE_NAME);
-        assertThat(DatabaseNameUtil.database("customers").databaseName()).contains("customers");
+        assertThat(DatabaseName.database(null)).isSameAs(defaultDatabase);
+        assertThat(DatabaseName.systemDatabase().databaseName()).contains("system");
+        assertThat(databaseName.databaseName()).contains("customers");
     }
 
     @Test
@@ -281,17 +281,14 @@ public class Neo4j_bolt_connectionTest {
         assertThat(GqlStatusError.UNKNOWN.getStatusDescription("details")).contains("details");
 
         SSLContext sslContext = SSLContexts.forAnyCertificate(null);
-        SecurityPlan encrypted = SecurityPlans.encrypted(true, sslContext, true);
-        assertThat(encrypted.requiresEncryption()).isTrue();
-        assertThat(encrypted.requiresClientAuth()).isTrue();
+        SecurityPlan encrypted = SecurityPlans.encrypted(sslContext, true, "db.example.com");
         assertThat(encrypted.sslContext()).isSameAs(sslContext);
-        assertThat(encrypted.requiresHostnameVerification()).isTrue();
+        assertThat(encrypted.verifyHostname()).isTrue();
+        assertThat(encrypted.expectedHostname()).isEqualTo("db.example.com");
         SecurityPlan trustAll = SecurityPlans.encryptedForAnyCertificate();
-        assertThat(trustAll.requiresEncryption()).isTrue();
-        assertThat(trustAll.requiresHostnameVerification()).isFalse();
-        SecurityPlan unencrypted = SecurityPlans.unencrypted();
-        assertThat(unencrypted.requiresEncryption()).isFalse();
-        assertThat(unencrypted.sslContext()).isNull();
+        assertThat(trustAll.sslContext()).isNotNull();
+        assertThat(trustAll.verifyHostname()).isFalse();
+        assertThat(trustAll.expectedHostname()).isNull();
     }
 
     @Test
