@@ -1,0 +1,160 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-2a575c59
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df63d-010c-78c1-840b-83fc4d500aee
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mozilla:rhino:1.7R5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.7R5].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-2a575c59/metadata/org.mozilla/rhino/index.json
+- Entry selector: "metadata-version" = "1.7R5"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar
+- repository-url: https://github.com/mozilla/rhino
+- test-code-url: https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar
+- documentation-url: https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar
+- description: Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.7R5
+- Entry metadata-version: 1.7R5
+- Entry test-version: 1.7R5
+- Entry tested-versions: [1.7R5]
+codex
+I’ll verify the Maven artifacts and upstream tag first, then I’ll only edit `index.json` if one of the target fields is actually missing or the URL maintenance rules require a correction.
+web search: 
+web search: org.mozilla rhino 1.7R5 Maven sources javadoc
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.mozilla/rhino/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-2a575c59
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7R5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
+    "repository-url" : "https://github.com/mozilla/rhino",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
+    "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users.",
+    "tested-versions" : [
+      "1.7R5"
+    ],
+    "allowed-packages" : [
+      "org.mozilla"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-tests.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-test-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-2a575c59
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mozilla/rhino.git '*1_7R5*' '*1.7R5*' '*1.7.5*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-2a575c59
+ succeeded in 363ms:
+584e7ec09c84de6b5e556a450a6b581f087a4aea	refs/tags/Rhino1_7R5_RELEASE
+
+ exited 22 in 400ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 03:44:59 GMT
+content-type: application/java-archive
+content-length: 1162852
+cf-ray: 9f6cbff4dc2fbc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 403199
+etag: "e359125cd0de764f88caedb88eef341a"
+last-modified: Fri, 30 Jan 2015 00:14:19 GMT
+x-checksum-md5: e359125cd0de764f88caedb88eef341a
+x-checksum-sha1: a439b01da1c8eab8ef369d82a4ca237243f3a6bc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 05 May 2026 03:44:59 GMT
+content-type: text/html
+cf-ray: 9f6cbff54d38bc0e-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: org.mozilla rhino 1.7R5 site:mvnrepository.com
+web search: 
+web search: https://github.com/mozilla/rhino/tree/Rhino1_7R5_RELEASE
+
+Daemon is stopping immediately stop command received
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
