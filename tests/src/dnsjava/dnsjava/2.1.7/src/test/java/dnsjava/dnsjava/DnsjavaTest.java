@@ -16,9 +16,12 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +57,7 @@ import org.xbill.DNS.OPTRecord;
 import org.xbill.DNS.Opcode;
 import org.xbill.DNS.Options;
 import org.xbill.DNS.RRset;
+import org.xbill.DNS.RRSIGRecord;
 import org.xbill.DNS.Rcode;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.ReverseMap;
@@ -77,6 +81,7 @@ import org.xbill.DNS.utils.base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DnsjavaTest {
 
@@ -253,6 +258,43 @@ public class DnsjavaTest {
         assertThat(parsedUpdate.getSectionArray(Section.ZONE)).hasSize(1);
         assertThat(parsedUpdate.getSectionArray(Section.PREREQ)).hasSize(2);
         assertThat(parsedUpdate.getSectionArray(Section.UPDATE)).hasSize(4);
+    }
+
+    @Test
+    void signsAndVerifiesDnssecRrsets() throws Exception {
+        Name zoneName = Name.fromString("example.com.");
+        Name host = Name.fromString("signed.example.com.");
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(1_024);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        DNSKEYRecord dnskey = new DNSKEYRecord(zoneName, DClass.IN, 3_600, DNSKEYRecord.Flags.ZONE_KEY,
+                DNSKEYRecord.Protocol.DNSSEC, DNSSEC.Algorithm.RSASHA256, keyPair.getPublic());
+
+        DSRecord delegationSigner = new DSRecord(zoneName, DClass.IN, 3_600, DSRecord.SHA256_DIGEST_ID, dnskey);
+        assertThat(delegationSigner.getFootprint()).isEqualTo(dnskey.getFootprint());
+        assertThat(delegationSigner.getAlgorithm()).isEqualTo(DNSSEC.Algorithm.RSASHA256);
+        assertThat(delegationSigner.getDigest()).isNotEmpty();
+
+        RRset rrset = new RRset(new ARecord(host, DClass.IN, 300, InetAddress.getByName("192.0.2.120")));
+        rrset.addRR(new ARecord(host, DClass.IN, 300, InetAddress.getByName("192.0.2.121")));
+        Date inception = new Date(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(1));
+        Date expiration = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
+
+        RRSIGRecord signature = DNSSEC.sign(rrset, dnskey, keyPair.getPrivate(), inception, expiration);
+        assertThat(signature.getTypeCovered()).isEqualTo(Type.A);
+        assertThat(signature.getAlgorithm()).isEqualTo(DNSSEC.Algorithm.RSASHA256);
+        assertThat(signature.getSigner()).isEqualTo(zoneName);
+        assertThat(signature.getFootprint()).isEqualTo(dnskey.getFootprint());
+        assertThat(DNSSEC.digestRRset(signature, rrset)).isNotEmpty();
+        assertThatCode(() -> DNSSEC.verify(rrset, signature, dnskey)).doesNotThrowAnyException();
+
+        RRSIGRecord parsedSignature = (RRSIGRecord) Record.fromWire(signature.toWire(Section.ANSWER), Section.ANSWER);
+        assertThat(parsedSignature).isEqualTo(signature);
+        assertThatCode(() -> DNSSEC.verify(rrset, parsedSignature, dnskey)).doesNotThrowAnyException();
+
+        RRset alteredRrset = new RRset(new ARecord(host, DClass.IN, 300, InetAddress.getByName("192.0.2.122")));
+        assertThatThrownBy(() -> DNSSEC.verify(alteredRrset, parsedSignature, dnskey))
+                .isInstanceOf(DNSSEC.DNSSECException.class);
     }
 
     @Test
