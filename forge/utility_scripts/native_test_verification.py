@@ -139,6 +139,7 @@ def verify_native_test_passes(
             _GATE_STAGE,
             f"{stage}: {reason}; routing to codex (terminal)",
         )
+        require_complete_reachability_repo(reachability_repo_path)
         codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
             reachability_repo_path,
             coordinate,
@@ -157,6 +158,7 @@ def verify_native_test_passes(
                 f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
             )
             return _make_result(STATUS_FAILED, iterations_used)
+        require_complete_reachability_repo(reachability_repo_path)
         log_stage(_GATE_STAGE, "codex finished; trusting codex's outcome")
         return _make_result(STATUS_PASSED_WITH_INTERVENTION, iterations_used)
 
