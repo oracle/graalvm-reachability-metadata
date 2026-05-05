@@ -30,13 +30,16 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Static utility class for operations shared by metadata-generation tasks.
@@ -189,12 +192,33 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        try {
+            Path agentMetadataDirectory = Files.createTempDirectory("generate-metadata-agent-");
+            Path mergedMetadataDirectory = Files.createTempDirectory("generate-metadata-merged-");
+            try {
+                collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, agentMetadataDirectory);
+                mergeMetadataIntoDurableDirectory(execOps, layout, gradlew, metadataDirectory, agentMetadataDirectory, mergedMetadataDirectory);
+            } finally {
+                deleteRecursively(agentMetadataDirectory);
+                deleteRecursively(mergedMetadataDirectory);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot prepare metadata generation staging directories", e);
+        }
+    }
+
+    /**
+     * Runs Gradle tasks to generate metadata using the agent and copies
+     * the results into the requested output directory without durable merging.
+     */
+    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, Path metadataDirectory) {
+        Path resolvedMetadataDirectory = resolveMetadataDirectory(layout, metadataDirectory);
 
         GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", resolvedMetadataDirectory.toString()), "Cannot perform metadata copy", testsDirectory);
     }
 
     /**
@@ -203,6 +227,27 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        try {
+            Path agentMetadataDirectory = Files.createTempDirectory("generate-metadata-agent-");
+            Path mergedMetadataDirectory = Files.createTempDirectory("generate-metadata-merged-");
+            try {
+                collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, gvmTckLv, agentMetadataDirectory);
+                mergeMetadataIntoDurableDirectory(execOps, layout, gradlew, metadataDirectory, agentMetadataDirectory, mergedMetadataDirectory);
+            } finally {
+                deleteRecursively(agentMetadataDirectory);
+                deleteRecursively(mergedMetadataDirectory);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot prepare metadata generation staging directories", e);
+        }
+    }
+
+    /**
+     * Runs Gradle tasks to generate metadata using the agent with a specific GVM_TCK_LV
+     * and copies the results into the requested output directory without durable merging.
+     */
+    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv, Path metadataDirectory) {
+        Path resolvedMetadataDirectory = resolveMetadataDirectory(layout, metadataDirectory);
 
         Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
 
@@ -210,7 +255,56 @@ public final class MetadataGenerationUtils {
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", resolvedMetadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+    }
+
+    private static Path resolveMetadataDirectory(ProjectLayout layout, Path metadataDirectory) {
+        if (metadataDirectory.isAbsolute()) {
+            return metadataDirectory;
+        }
+        return layout.getProjectDirectory().getAsFile().toPath().resolve(metadataDirectory).normalize();
+    }
+
+    private static void mergeMetadataIntoDurableDirectory(
+            ExecOperations execOps,
+            ProjectLayout layout,
+            Path gradlew,
+            Path durableMetadataDirectory,
+            Path agentMetadataDirectory,
+            Path mergedMetadataDirectory
+    ) throws IOException {
+        List<Path> inputDirectories = Files.isRegularFile(durableMetadataDirectory.resolve("reachability-metadata.json"))
+                ? List.of(durableMetadataDirectory, agentMetadataDirectory)
+                : List.of(agentMetadataDirectory);
+        GeneralUtils.printInfo("Merging generated metadata");
+        GeneralUtils.invokeCommand(
+                execOps,
+                gradlew.toString(),
+                List.of(
+                        "mergeNativeTraceMetadata",
+                        "-PinputDirs=" + String.join(",", inputDirectories.stream().map(Path::toString).toList()),
+                        "-PoutputDir=" + mergedMetadataDirectory
+                ),
+                "Cannot merge generated metadata",
+                layout.getProjectDirectory().getAsFile().toPath()
+        );
+        Path mergedMetadataFile = mergedMetadataDirectory.resolve("reachability-metadata.json");
+        if (!Files.isRegularFile(mergedMetadataFile)) {
+            throw new RuntimeException("Merged metadata file was not created: " + mergedMetadataFile);
+        }
+        Files.createDirectories(durableMetadataDirectory);
+        Files.copy(mergedMetadataFile, durableMetadataDirectory.resolve("reachability-metadata.json"), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private static void deleteRecursively(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(path)) {
+            for (Path currentPath : paths.sorted(Comparator.reverseOrder()).toList()) {
+                Files.deleteIfExists(currentPath);
+            }
+        }
     }
 
     /**
