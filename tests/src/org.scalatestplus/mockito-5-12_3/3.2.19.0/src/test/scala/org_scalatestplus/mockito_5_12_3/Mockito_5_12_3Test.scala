@@ -6,11 +6,138 @@
  */
 package org_scalatestplus.mockito_5_12_3
 
+import org.graalvm.internal.tck.NativeImageSupport
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.mockito.Answers
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
+import org.mockito.stubbing.Answer
+import org.scalatestplus.mockito.MockitoSugar
 
-class Mockito_5_12_3Test {
+import scala.language.implicitConversions
+
+class Mockito_5_12_3Test extends MockitoSugar {
   @Test
-  def test(): Unit = {
-    println("This is just a placeholder, implement your test")
+  def companionObjectCreatesTypedMocksWithoutClassLiterals(): Unit = exerciseMockitoDynamicClassGeneration {
+    val runnable: Runnable = MockitoSugar.mock[Runnable]
+
+    runnable.run()
+
+    Mockito.verify(runnable).run()
+    Mockito.verifyNoMoreInteractions(runnable)
+    assertTrue(Mockito.mockingDetails(runnable).isMock)
+  }
+
+  @Test
+  def traitProvidesTypedMocksThatCanBeStubbedAndVerified(): Unit = exerciseMockitoDynamicClassGeneration {
+    val repository: LookupRepositoryForMockito_5_12_3Test = mock[LookupRepositoryForMockito_5_12_3Test]
+
+    Mockito.when(repository.lookup("alpha")).thenReturn("value-alpha")
+
+    assertEquals("value-alpha", repository.lookup("alpha"))
+    Mockito.verify(repository).lookup("alpha")
+    Mockito.verifyNoMoreInteractions(repository)
+  }
+
+  @Test
+  def defaultAnswerOverloadControlsUnstubbedMethodResults(): Unit = exerciseMockitoDynamicClassGeneration {
+    val answer: Answer[AnyRef] = invocation => {
+      val key: String = invocation.getArgument[String](0)
+      s"default-$key"
+    }
+    val repository: LookupRepositoryForMockito_5_12_3Test = mock[LookupRepositoryForMockito_5_12_3Test](answer)
+
+    assertEquals("default-missing", repository.lookup("missing"))
+    Mockito.when(repository.lookup("configured")).thenReturn("explicit-value")
+    assertEquals("explicit-value", repository.lookup("configured"))
+    assertEquals("default-other", repository.lookup("other"))
+
+    Mockito.verify(repository).lookup("missing")
+    Mockito.verify(repository).lookup("configured")
+    Mockito.verify(repository).lookup("other")
+  }
+
+  @Test
+  def namedMockOverloadAppliesMockitoMockName(): Unit = exerciseMockitoDynamicClassGeneration {
+    val repository: LookupRepositoryForMockito_5_12_3Test = mock[LookupRepositoryForMockito_5_12_3Test]("namedRepository")
+
+    val mockName: String = Mockito.mockingDetails(repository).getMockCreationSettings.getMockName.toString
+
+    assertEquals("namedRepository", mockName)
+    Mockito.when(repository.lookup("id-1")).thenReturn("named-result")
+    assertEquals("named-result", repository.lookup("id-1"))
+    Mockito.verify(repository).lookup("id-1")
+  }
+
+  @Test
+  def mockSettingsOverloadSupportsDeepStubsNamesAndExtraInterfaces(): Unit = exerciseMockitoDynamicClassGeneration {
+    val service: NestedServiceForMockito_5_12_3Test = mock[NestedServiceForMockito_5_12_3Test](
+      Mockito
+        .withSettings()
+        .name("nestedService")
+        .defaultAnswer(Answers.RETURNS_DEEP_STUBS)
+        .extraInterfaces(classOf[ResettableForMockito_5_12_3Test])
+    )
+
+    Mockito.when(service.repository().lookup("deep-id")).thenReturn("deep-value")
+
+    assertEquals("nestedService", Mockito.mockingDetails(service).getMockCreationSettings.getMockName.toString)
+    assertEquals("deep-value", service.repository().lookup("deep-id"))
+    assertTrue(service.isInstanceOf[ResettableForMockito_5_12_3Test])
+
+    val resettable: ResettableForMockito_5_12_3Test = service.asInstanceOf[ResettableForMockito_5_12_3Test]
+    resettable.resetAll()
+    Mockito.verify(resettable).resetAll()
+  }
+
+  @Test
+  def captureCreatesTypedArgumentCaptorsAndImplicitlyCapturesDuringVerification(): Unit =
+    exerciseMockitoDynamicClassGeneration {
+      val sink: AuditSinkForMockito_5_12_3Test = mock[AuditSinkForMockito_5_12_3Test]
+      val firstEvent: AuditEventForMockito_5_12_3Test = AuditEventForMockito_5_12_3Test("created", 1)
+      val secondEvent: AuditEventForMockito_5_12_3Test = AuditEventForMockito_5_12_3Test("updated", 2)
+      val captor: ArgumentCaptor[AuditEventForMockito_5_12_3Test] = capture[AuditEventForMockito_5_12_3Test]
+
+      sink.publish(firstEvent)
+      sink.publish(secondEvent)
+
+      Mockito.verify(sink, Mockito.times(2)).publish(captor)
+      assertNotNull(captor.getValue)
+      assertEquals(2, captor.getAllValues.size())
+      assertEquals(firstEvent, captor.getAllValues.get(0))
+      assertEquals(secondEvent, captor.getAllValues.get(1))
+      Mockito.verifyNoMoreInteractions(sink)
+    }
+
+  private def exerciseMockitoDynamicClassGeneration(body: => Unit): Unit = {
+    try {
+      body
+    } catch {
+      case error: Error =>
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+          throw error
+        }
+    }
   }
 }
+
+trait LookupRepositoryForMockito_5_12_3Test {
+  def lookup(key: String): String
+}
+
+trait NestedServiceForMockito_5_12_3Test {
+  def repository(): LookupRepositoryForMockito_5_12_3Test
+}
+
+trait ResettableForMockito_5_12_3Test {
+  def resetAll(): Unit
+}
+
+trait AuditSinkForMockito_5_12_3Test {
+  def publish(event: AuditEventForMockito_5_12_3Test): Unit
+}
+
+final case class AuditEventForMockito_5_12_3Test(name: String, revision: Int)
