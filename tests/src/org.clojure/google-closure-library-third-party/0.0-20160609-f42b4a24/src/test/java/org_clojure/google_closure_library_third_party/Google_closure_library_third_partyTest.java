@@ -19,23 +19,33 @@ import org.junit.jupiter.api.Test;
 
 public class Google_closure_library_third_partyTest {
     private static final List<String> DISTRIBUTED_RESOURCES = List.of(
+            "goog/caja/string/html/htmlparser.js",
+            "goog/caja/string/html/htmlsanitizer.js",
             "goog/dojo/dom/query.js",
+            "goog/dojo/dom/query_test.html",
             "goog/dojo/dom/query_test.js",
-            "goog/dojo/dom/query_test_dom.html",
-            "goog/mochikit/BUILD",
-            "goog/mochikit/LICENSE",
-            "goog/mochikit/async/BUILD",
+            "goog/loremipsum/text/loremipsum.js",
+            "goog/loremipsum/text/loremipsum_test.html",
             "goog/mochikit/async/deferred.js",
-            "goog/mochikit/async/deferred_async_test.js",
-            "goog/mochikit/async/deferred_async_test_dom.html",
-            "goog/mochikit/async/deferred_test.js",
+            "goog/mochikit/async/deferred_async_test.html",
+            "goog/mochikit/async/deferred_test.html",
             "goog/mochikit/async/deferredlist.js",
-            "goog/mochikit/async/deferredlist_test.js",
+            "goog/mochikit/async/deferredlist_test.html",
+            "goog/osapi/osapi.js",
+            "goog/svgpan/svgpan.js",
             "README.md",
             "AUTHORS",
             "LICENSE");
 
     private static final Map<String, List<String>> MODULE_PROVIDES = Map.of(
+            "goog/caja/string/html/htmlparser.js",
+            List.of("goog.string.html.HtmlParser", "goog.string.html.HtmlSaxHandler"),
+            "goog/caja/string/html/htmlsanitizer.js",
+            List.of("goog.string.html.HtmlSanitizer", "goog.string.html.htmlSanitize"),
+            "goog/dojo/dom/query.js",
+            List.of("goog.dom.query"),
+            "goog/loremipsum/text/loremipsum.js",
+            List.of("goog.text.LoremIpsum"),
             "goog/mochikit/async/deferred.js",
             List.of(
                     "goog.async.Deferred",
@@ -43,8 +53,10 @@ public class Google_closure_library_third_partyTest {
                     "goog.async.Deferred.CanceledError"),
             "goog/mochikit/async/deferredlist.js",
             List.of("goog.async.DeferredList"),
-            "goog/dojo/dom/query.js",
-            List.of("goog.dom.query"));
+            "goog/osapi/osapi.js",
+            List.of("goog.osapi"),
+            "goog/svgpan/svgpan.js",
+            List.of("svgpan.SvgPan"));
 
     @Test
     void distributedResourceSetIsAvailableOnTheClasspath() throws IOException {
@@ -127,33 +139,32 @@ public class Google_closure_library_third_partyTest {
 
     @Test
     void bundledJavascriptFixturesReferenceThePackagedModules() throws IOException {
-        assertThat(readResource("goog/mochikit/async/deferred_test.js"))
-                .contains("goog.module('goog.async.deferredTest')")
-                .contains("const Deferred = goog.require('goog.async.Deferred')")
-                .contains("testNormal()")
-                .contains("testCancel()")
-                .contains("testDeferredDependencies()");
+        assertThat(readResource("goog/mochikit/async/deferred_test.html"))
+                .contains("goog.require('goog.async.Deferred')")
+                .contains("function testNormal()")
+                .contains("function testCancel()")
+                .contains("function testDeferredDependencies()");
 
-        assertThat(readResource("goog/mochikit/async/deferred_async_test.js"))
-                .contains("goog.module('goog.async.deferredAsyncTest')")
-                .contains("const Deferred = goog.require('goog.async.Deferred')")
-                .contains("testErrorStack()");
+        assertThat(readResource("goog/mochikit/async/deferred_async_test.html"))
+                .contains("goog.require('goog.async.Deferred')")
+                .contains("goog.async.Deferred.LONG_STACK_TRACES = true;")
+                .contains("function testErrorStack()");
 
-        assertThat(readResource("goog/mochikit/async/deferredlist_test.js"))
-                .contains("goog.module('goog.async.deferredListTest')")
-                .contains("const DeferredList = goog.require('goog.async.DeferredList')")
-                .contains("testDeferredList()")
-                .contains("testGatherResults()");
+        assertThat(readResource("goog/mochikit/async/deferredlist_test.html"))
+                .contains("goog.require('goog.async.DeferredList')")
+                .contains("function testDeferredList()")
+                .contains("function testGatherResults()");
 
-        assertThat(readResource("goog/mochikit/async/deferred_async_test_dom.html"))
-                .contains("goog.async.Deferred.LONG_STACK_TRACES = true;");
+        assertThat(readResource("goog/loremipsum/text/loremipsum_test.html"))
+                .contains("goog.require('goog.text.LoremIpsum')")
+                .contains("function testLoremIpsum()");
 
         assertThat(readResource("goog/dojo/dom/query_test.js"))
                 .contains("function testBasicSelectors()")
                 .contains("function testNthChild()")
                 .contains("function testAttributes()");
 
-        assertThat(readResource("goog/dojo/dom/query_test_dom.html"))
+        assertThat(readResource("goog/dojo/dom/query_test.html"))
                 .contains("<h1>testing goog.dom.query()</h1>")
                 .contains("id=iframe-test");
     }
@@ -162,9 +173,9 @@ public class Google_closure_library_third_partyTest {
     void projectDocumentationAndLicenseArePackaged() throws IOException {
         assertThat(readResource("README.md"))
                 .contains("# Closure Library")
-                .contains("*actively* maintained by the Clojure team")
-                .contains("Google stopped contributing to Closure Library on August 2024")
-                .contains("Previous version of this README can be found here");
+                .contains("Closure Library is a powerful, low-level JavaScript library")
+                .contains("https://developers.google.com/closure/library")
+                .contains("npm install google-closure-library");
 
         assertThat(readResource("AUTHORS"))
                 .contains("Closure Library")
@@ -186,8 +197,12 @@ public class Google_closure_library_third_partyTest {
 
         assertThat(resourceCountsByGroup)
                 .contains(
+                        entry("goog/caja", 2L),
                         entry("goog/dojo", 3L),
-                        entry("goog/mochikit", 9L));
+                        entry("goog/loremipsum", 2L),
+                        entry("goog/mochikit", 5L),
+                        entry("goog/osapi", 1L),
+                        entry("goog/svgpan", 1L));
     }
 
     private static String readResource(String resourcePath) throws IOException {
