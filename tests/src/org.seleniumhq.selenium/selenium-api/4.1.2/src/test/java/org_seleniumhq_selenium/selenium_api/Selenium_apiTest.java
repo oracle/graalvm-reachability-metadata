@@ -379,7 +379,7 @@ public class Selenium_apiTest {
 
         assertThatThrownBy(() -> mouse.createPointerMove(Duration.ofMillis(-1), PointerInput.Origin.pointer(), 0, 0))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Duration must be set to 0 or more");
+                .hasMessageContaining("Duration must be 0 or greater");
         assertThatThrownBy(() -> new Sequence(keyboard, 0).addAction(mouse.createPointerDown(0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("wrong kind of input device");
