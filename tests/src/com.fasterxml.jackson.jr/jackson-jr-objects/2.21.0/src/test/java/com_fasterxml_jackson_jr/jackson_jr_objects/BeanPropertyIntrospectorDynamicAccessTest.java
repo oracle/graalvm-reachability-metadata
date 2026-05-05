@@ -33,6 +33,8 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         BeanConstructors constructors = new BeanConstructors(IntrospectedBean.class);
         BeanPropertyIntrospector.addNonRecordConstructors(IntrospectedBean.class, constructors);
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, IntrospectedBean.class);
+        POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER,
+                POJODefinition.class);
 
         IntrospectedBean objectBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
                 "{\"name\":\"Ada\",\"active\":true,\"visible\":7}");
@@ -41,7 +43,9 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         assertThat(constructors).isNotNull();
         assertThat(definition.constructors()).isNotNull();
+        assertThat(libraryDefinition.constructors()).isNotNull();
         assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
+        assertThat(propertyNames(libraryDefinition)).contains("ignorableNames", "properties");
         assertThat(objectBean.getName()).isEqualTo("Ada");
         assertThat(objectBean.isActive()).isTrue();
         assertThat(objectBean.visible).isEqualTo(7);
@@ -52,9 +56,15 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
     @Test
     void collectsDeclaredFieldsAndMethodsForSerialization() throws Exception {
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, IntrospectedBean.class);
+        POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                POJODefinition.class);
+        POJODefinition beanConstructorsDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                BeanConstructors.class);
         String json = JSON_WITH_FORCE_ACCESS.asString(IntrospectedBean.create("Ada", true, 7));
 
         assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
+        assertThat(propertyNames(libraryDefinition)).contains("ignorableNames", "properties");
+        assertThat(beanConstructorsDefinition.getProperties()).isEmpty();
         assertThat(json).contains("\"name\":\"Ada\"", "\"active\":true", "\"visible\":7");
 
         POJODefinition.Prop visible = property(definition, "visible");
@@ -66,6 +76,25 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         assertThat(name.setter).isNotNull();
         assertThat(active.isGetter).isNotNull();
         assertThat(active.setter).isNotNull();
+    }
+
+    @Test
+    void publicJsonApiIntrospectsBeanConstructorsFieldsAndMethods() throws Exception {
+        POJODefinition readDefinition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER,
+                PublicApiBean.class);
+        POJODefinition writeDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                PublicApiBean.class);
+        PublicApiBean bean = JSON.std.beanFrom(PublicApiBean.class,
+                "{\"id\":42,\"name\":\"Ada\",\"enabled\":true}");
+        String json = JSON.std.asString(bean);
+
+        assertThat(readDefinition.constructors()).isNotNull();
+        assertThat(propertyNames(readDefinition)).containsExactlyInAnyOrder("enabled", "id", "name");
+        assertThat(propertyNames(writeDefinition)).containsExactlyInAnyOrder("enabled", "id", "name");
+        assertThat(bean.id).isEqualTo(42);
+        assertThat(bean.getName()).isEqualTo("Ada");
+        assertThat(bean.isEnabled()).isTrue();
+        assertThat(json).contains("\"enabled\":true", "\"id\":42", "\"name\":\"Ada\"");
     }
 
     @Test
@@ -153,6 +182,31 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         public int getValue() {
             return value;
+        }
+    }
+
+    public static final class PublicApiBean {
+        public int id;
+        private String name;
+        private boolean enabled;
+
+        public PublicApiBean() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
     }
 

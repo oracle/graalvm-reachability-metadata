@@ -8,6 +8,7 @@ package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.jr.ob.JSON;
@@ -77,6 +78,32 @@ public class MapBuilderDefaultDynamicAccessTest {
         assertThat(empty).isInstanceOf(ConstructorTrackingMap.class).isEmpty();
         assertThat(singleton).isInstanceOf(ConstructorTrackingMap.class).containsEntry("answer", 42);
         assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(2);
+    }
+
+    @Test
+    void readsJsonObjectIntoConfiguredJdkMapImplementation() throws Exception {
+        JSON json = JSON.builder()
+                .mapBuilder(MapBuilder.defaultImpl().newBuilder(TreeMap.class))
+                .build();
+
+        Map<String, Object> counts = json.mapFrom("{\"beta\":2,\"alpha\":1}");
+
+        assertThat(counts).isExactlyInstanceOf(TreeMap.class);
+        assertThat(counts).containsEntry("alpha", 1).containsEntry("beta", 2);
+        assertThat(counts.keySet()).containsExactly("alpha", "beta");
+    }
+
+    @Test
+    void directBuilderFactoryMethodsInstantiateConfiguredJdkMapImplementation() throws Exception {
+        MapBuilder builder = MapBuilder.defaultImpl()
+                .newBuilder(TreeMap.class)
+                .newBuilder(JSON.Feature.READ_ONLY.mask());
+
+        Map<String, Object> empty = builder.emptyMap();
+        Map<String, Object> singleton = builder.singletonMap("answer", 42);
+
+        assertThat(empty).isExactlyInstanceOf(TreeMap.class).isEmpty();
+        assertThat(singleton).isExactlyInstanceOf(TreeMap.class).containsEntry("answer", 42);
     }
 
     @Test

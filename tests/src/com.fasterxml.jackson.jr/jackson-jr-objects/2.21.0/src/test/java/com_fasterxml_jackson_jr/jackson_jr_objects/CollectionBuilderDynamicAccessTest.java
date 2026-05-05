@@ -56,6 +56,30 @@ public class CollectionBuilderDynamicAccessTest {
     }
 
     @Test
+    void createsLibraryTypedArraysDirectlyForEveryCardinality() throws Exception {
+        CollectionBuilder builder = CollectionBuilder.defaultImpl();
+        Class<JSON> elementType = runtimeJsonType();
+        JSON alternate = JSON.builder().build();
+
+        JSON[] empty = builder.emptyArray(elementType);
+        JSON[] singleton = builder.singletonArray(elementType, JSON.std);
+        JSON[] multiple = builder.start()
+                .add(JSON.std)
+                .add(alternate)
+                .buildArray(elementType);
+
+        assertThat(empty).isEmpty();
+        assertThat(empty.getClass().getComponentType()).isSameAs(elementType);
+        assertThat(singleton).hasSize(1);
+        assertThat(singleton[0]).isSameAs(JSON.std);
+        assertThat(singleton.getClass().getComponentType()).isSameAs(elementType);
+        assertThat(multiple).hasSize(2);
+        assertThat(multiple[0]).isSameAs(JSON.std);
+        assertThat(multiple[1]).isSameAs(alternate);
+        assertThat(multiple.getClass().getComponentType()).isSameAs(elementType);
+    }
+
+    @Test
     void readsEmptyTypedArraysThroughJsonApi() throws Exception {
         Class<String> elementType = runtimeStringType();
 
@@ -132,6 +156,17 @@ public class CollectionBuilderDynamicAccessTest {
     @SuppressWarnings("unchecked")
     private static Class<String> runtimeStringType() throws Exception {
         return (Class<String>) JSON.std.beanFrom(Class.class, '"' + String.class.getName() + '"');
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<JSON> runtimeJsonType() throws Exception {
+        String propertyName = "collection.builder.json.type." + System.nanoTime();
+        System.setProperty(propertyName, JSON.class.getName());
+        try {
+            return (Class<JSON>) JSON.std.beanFrom(Class.class, '"' + System.getProperty(propertyName) + '"');
+        } finally {
+            System.clearProperty(propertyName);
+        }
     }
 
     public static final class ArrayElement {

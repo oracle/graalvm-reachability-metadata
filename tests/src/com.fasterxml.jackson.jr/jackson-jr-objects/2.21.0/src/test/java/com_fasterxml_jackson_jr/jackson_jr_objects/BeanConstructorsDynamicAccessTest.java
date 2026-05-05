@@ -6,11 +6,14 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import java.lang.reflect.Constructor;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,14 +27,36 @@ public class BeanConstructorsDynamicAccessTest {
     void resetConstructorCounters() {
         PublicDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
         PrivateDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
+        NestedBeanHolder.CONSTRUCTOR_CALLS.set(0);
+        NestedDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
+        NestedRecordHolder.CONSTRUCTOR_CALLS.set(0);
         RECORD_CTOR_CALLS.set(0);
     }
 
     @Test
-    void createsBeansDirectlyThroughPublicDefaultConstructors() throws Exception {
-        Constructor<PublicDefaultCtorBean> constructor = PublicDefaultCtorBean.class.getDeclaredConstructor();
+    void createsBeansThroughPublicDefaultConstructorsWhenReadingObjects() throws Exception {
+        PublicDefaultCtorBean bean = JSON.std.beanFrom(PublicDefaultCtorBean.class, """
+                {"name":"Ada"}
+                """);
+
+        assertThat(bean.name).isEqualTo("Ada");
+        assertThat(PublicDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
+        PrivateDefaultCtorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PrivateDefaultCtorBean.class, """
+                {"name":"Ada"}
+                """);
+
+        assertThat(bean.name).isEqualTo("Ada");
+        assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsBeansThroughConstructorsDiscoveredByBeanIntrospection() throws Exception {
         AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(PublicDefaultCtorBean.class);
-        constructors.addNoArgsConstructor(constructor);
+        BeanPropertyIntrospector.addNonRecordConstructors(PublicDefaultCtorBean.class, constructors);
 
         PublicDefaultCtorBean bean = (PublicDefaultCtorBean) constructors.createBean();
 
@@ -40,42 +65,21 @@ public class BeanConstructorsDynamicAccessTest {
     }
 
     @Test
-    void createsBeansDirectlyThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
-        Constructor<PrivateDefaultCtorBean> constructor = PrivateDefaultCtorBean.class.getDeclaredConstructor();
-        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(PrivateDefaultCtorBean.class);
-        constructors.addNoArgsConstructor(constructor);
-        constructors.forceAccess();
+    void createsNestedBeansThroughDefaultConstructorsWhenReadingProperties() throws Exception {
+        NestedBeanHolder bean = JSON.std.beanFrom(NestedBeanHolder.class, """
+                {"child":{"name":"Grace"}}
+                """);
 
-        PrivateDefaultCtorBean bean = (PrivateDefaultCtorBean) constructors.createBean();
-
-        assertThat(bean).isNotNull();
-        assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
-    }
-
-    @Test
-    void createsBeansThroughPublicDefaultConstructorsWhenReadingObjects() throws Exception {
-        PublicDefaultCtorBean bean = JSON.std.beanFrom(PublicDefaultCtorBean.class, "{\"name\":\"Ada\"}");
-
-        assertThat(bean.name).isEqualTo("Ada");
-        assertThat(PublicDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
-    }
-
-    @Test
-    void createsRecordsDirectlyThroughCanonicalConstructors() throws Exception {
-        Constructor<RecordCtorBean> constructor = RecordCtorBean.class.getDeclaredConstructor(String.class, int.class);
-        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(RecordCtorBean.class);
-        constructors.addRecordConstructor(constructor);
-
-        RecordCtorBean bean = (RecordCtorBean) constructors.createRecordBean("Ada", 37);
-
-        assertThat(bean.name()).isEqualTo("Ada");
-        assertThat(bean.age()).isEqualTo(37);
-        assertThat(RECORD_CTOR_CALLS).hasValue(1);
+        assertThat(bean.child.name).isEqualTo("Grace");
+        assertThat(NestedBeanHolder.CONSTRUCTOR_CALLS).hasValue(1);
+        assertThat(NestedDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
     }
 
     @Test
     void createsRecordsThroughCanonicalConstructorsWhenReadingObjects() throws Exception {
-        RecordCtorBean bean = JSON.std.beanFrom(RecordCtorBean.class, "{\"name\":\"Ada\",\"age\":37}");
+        RecordCtorBean bean = JSON.std.beanFrom(RecordCtorBean.class, """
+                {"name":"Ada","age":37}
+                """);
 
         assertThat(bean.name()).isEqualTo("Ada");
         assertThat(bean.age()).isEqualTo(37);
@@ -83,12 +87,30 @@ public class BeanConstructorsDynamicAccessTest {
     }
 
     @Test
-    void createsBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
-        PrivateDefaultCtorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PrivateDefaultCtorBean.class,
-                "{\"name\":\"Ada\"}");
+    void createsRecordsThroughConstructorsDiscoveredByBeanIntrospection() throws Exception {
+        Map<String, String> propertyNames = new LinkedHashMap<>();
+        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(RecordCtorBean.class);
+        constructors.addRecordConstructor(BeanPropertyIntrospector.derivePropertiesFromRecordConstructor(
+                RecordCtorBean.class, propertyNames, Function.identity()));
 
-        assertThat(bean.name).isEqualTo("Ada");
-        assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+        RecordCtorBean bean = (RecordCtorBean) constructors.createRecordBean("Ada", 37);
+
+        assertThat(propertyNames.keySet()).containsExactlyInAnyOrder("name", "age");
+        assertThat(bean.name()).isEqualTo("Ada");
+        assertThat(bean.age()).isEqualTo(37);
+        assertThat(RECORD_CTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsNestedRecordsThroughCanonicalConstructorsWhenReadingProperties() throws Exception {
+        NestedRecordHolder bean = JSON.std.beanFrom(NestedRecordHolder.class, """
+                {"child":{"name":"Grace","age":42}}
+                """);
+
+        assertThat(bean.child.name()).isEqualTo("Grace");
+        assertThat(bean.child.age()).isEqualTo(42);
+        assertThat(NestedRecordHolder.CONSTRUCTOR_CALLS).hasValue(1);
+        assertThat(RECORD_CTOR_CALLS).hasValue(1);
     }
 
     static final class AccessibleBeanConstructors extends BeanConstructors {
@@ -121,6 +143,36 @@ public class BeanConstructorsDynamicAccessTest {
         public String name;
 
         private PrivateDefaultCtorBean() {
+            CONSTRUCTOR_CALLS.incrementAndGet();
+        }
+    }
+
+    public static final class NestedBeanHolder {
+        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
+
+        public NestedDefaultCtorBean child;
+
+        public NestedBeanHolder() {
+            CONSTRUCTOR_CALLS.incrementAndGet();
+        }
+    }
+
+    public static final class NestedDefaultCtorBean {
+        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
+
+        public String name;
+
+        public NestedDefaultCtorBean() {
+            CONSTRUCTOR_CALLS.incrementAndGet();
+        }
+    }
+
+    public static final class NestedRecordHolder {
+        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
+
+        public RecordCtorBean child;
+
+        public NestedRecordHolder() {
             CONSTRUCTOR_CALLS.incrementAndGet();
         }
     }
