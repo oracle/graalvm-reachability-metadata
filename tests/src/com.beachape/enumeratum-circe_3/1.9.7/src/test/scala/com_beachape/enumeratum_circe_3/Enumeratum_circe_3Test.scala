@@ -27,10 +27,14 @@ import enumeratum.values.ShortCirceEnum
 import enumeratum.values.ShortEnum
 import enumeratum.values.ShortEnumEntry
 import enumeratum.values.StringCirceEnum
+import enumeratum.values.{Circe => ValueEnumCirce}
 import enumeratum.values.StringEnum
 import enumeratum.values.StringEnumEntry
 import io.circe.Decoder
+import io.circe.Encoder
 import io.circe.Json
+import io.circe.KeyDecoder
+import io.circe.KeyEncoder
 import io.circe.syntax._
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -136,6 +140,21 @@ class Enumeratum_circe_3Test {
     assertLeft(Json.fromString("AB").as[QualityGrade])
   }
 
+  @Test
+  def supportsStandaloneValueEnumCodecFactoriesWithoutMixinTraits(): Unit = {
+    val ticketEncoder: Encoder[TicketState] = ValueEnumCirce.encoder[Int, TicketState](TicketState)
+    val ticketDecoder: Decoder[TicketState] = ValueEnumCirce.decoder[Int, TicketState](TicketState)
+    val bucketKeyEncoder: KeyEncoder[StorageBucket] = ValueEnumCirce.keyEncoder(StorageBucket)
+    val bucketKeyDecoder: KeyDecoder[StorageBucket] = ValueEnumCirce.keyDecoder(StorageBucket)
+
+    assertEquals(Json.fromInt(10), ticketEncoder(TicketState.Open))
+    assertRightEquals(TicketState.Closed, ticketDecoder.decodeJson(Json.fromInt(20)))
+    assertLeftMessageContains(ticketDecoder.decodeJson(Json.fromInt(30)), "30 is not a member")
+    assertEquals("archive", bucketKeyEncoder(StorageBucket.Archive))
+    assertEquals(Some(StorageBucket.Hot), bucketKeyDecoder("hot"))
+    assertEquals(None, bucketKeyDecoder("cold"))
+  }
+
   private def assertRightEquals[A](expected: A, actual: Decoder.Result[A]): Unit = {
     actual match {
       case Right(value) => assertEquals(expected, value)
@@ -226,4 +245,20 @@ object WireFlag extends ByteEnum[WireFlag] with ByteCirceEnum[WireFlag] {
   case object Acknowledge extends WireFlag(8.toByte)
 
   val values = IndexedSeq(Synchronise, Acknowledge)
+}
+
+sealed abstract class TicketState(val value: Int) extends IntEnumEntry
+object TicketState extends IntEnum[TicketState] {
+  case object Open extends TicketState(10)
+  case object Closed extends TicketState(20)
+
+  val values = IndexedSeq(Open, Closed)
+}
+
+sealed abstract class StorageBucket(val value: String) extends StringEnumEntry
+object StorageBucket extends StringEnum[StorageBucket] {
+  case object Hot extends StorageBucket("hot")
+  case object Archive extends StorageBucket("archive")
+
+  val values = IndexedSeq(Hot, Archive)
 }
