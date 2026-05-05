@@ -9,6 +9,7 @@ package org.graalvm.internal.tck;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NativeImageSupportTest {
 
@@ -25,5 +26,25 @@ public class NativeImageSupportTest {
     @Test
     void returnsFalseForStackOverflowError() {
         assertFalse(NativeImageSupport.isUnsupportedFeatureError(new StackOverflowError()));
+    }
+
+    @Test
+    void returnsFalseOutsideNativeImage() {
+        assertFalse(NativeImageSupport.isInNativeImage());
+    }
+
+    @Test
+    void returnsTrueWhenNativeImagePropertyIsSet() {
+        String previousValue = System.getProperty("org.graalvm.nativeimage.imagecode");
+        try {
+            System.setProperty("org.graalvm.nativeimage.imagecode", "runtime");
+            assertTrue(NativeImageSupport.isInNativeImage());
+        } finally {
+            if (previousValue == null) {
+                System.clearProperty("org.graalvm.nativeimage.imagecode");
+            } else {
+                System.setProperty("org.graalvm.nativeimage.imagecode", previousValue);
+            }
+        }
     }
 }

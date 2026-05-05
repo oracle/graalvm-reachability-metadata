@@ -15,6 +15,11 @@ public final class NativeImageSupport {
     private NativeImageSupport() {
     }
 
+    /// Returns true when the current code is running inside a native image.
+    public static boolean isInNativeImage() {
+        return System.getProperty("org.graalvm.nativeimage.imagecode") != null;
+    }
+
     /// Returns true when the error is an UnsupportedFeatureError thrown by
     /// Native Image for unsupported dynamic operations such as runtime class loading.
     public static boolean isUnsupportedFeatureError(Error error) {
