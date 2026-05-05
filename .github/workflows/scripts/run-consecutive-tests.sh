@@ -58,7 +58,9 @@ run_multiple_attempts() {
     if [ -n "${GVM_TCK_NATIVE_IMAGE_MODE:-}" ]; then
       native_image_mode_prefix="GVM_TCK_NATIVE_IMAGE_MODE=\"$GVM_TCK_NATIVE_IMAGE_MODE\" "
     fi
-    local cmd_str="${native_image_mode_prefix}GVM_TCK_LV=\"$VERSION\" ./gradlew clean $gradle_command -Pcoordinates=\"$TEST_COORDINATES\""
+    # Run each stage without the Gradle daemon so a prior stop-requested daemon
+    # cannot break the next stage in this consecutive verification loop.
+    local cmd_str="${native_image_mode_prefix}GVM_TCK_LV=\"$VERSION\" ./gradlew --no-daemon clean $gradle_command -Pcoordinates=\"$TEST_COORDINATES\""
     if [ $attempt -gt 0 ]; then
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
