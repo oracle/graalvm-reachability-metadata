@@ -19,7 +19,7 @@ public class BeanPropertyReaderDynamicAccessTest {
 
     @Test
     void setsFieldBackedValuesThroughBeanPropertyReader() throws Exception {
-        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null);
+        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null, 0);
         FieldBackedReaderBean bean = new FieldBackedReaderBean();
 
         reader.setValueFor(bean, new Object[]{3});
@@ -31,7 +31,7 @@ public class BeanPropertyReaderDynamicAccessTest {
     @Test
     void invokesSetterBackedValuesThroughBeanPropertyReader() throws Exception {
         BeanPropertyReader reader = new BeanPropertyReader("name", null,
-                PublicSetterBackedReaderBean.class.getMethod("setName", String.class));
+                PublicSetterBackedReaderBean.class.getMethod("setName", String.class), 0);
         PublicSetterBackedReaderBean bean = new PublicSetterBackedReaderBean();
 
         reader.setValueFor(bean, new Object[]{"Ada"});
@@ -42,7 +42,7 @@ public class BeanPropertyReaderDynamicAccessTest {
 
     @Test
     void reportsFieldBackedAssignmentFailuresFromBeanPropertyReader() throws Exception {
-        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null);
+        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null, 0);
         FieldBackedReaderBean bean = new FieldBackedReaderBean();
 
         assertThatThrownBy(() -> reader.setValueFor(bean, new Object[]{"not an int"}))
@@ -54,7 +54,7 @@ public class BeanPropertyReaderDynamicAccessTest {
     @Test
     void reportsSetterBackedInvocationFailuresFromBeanPropertyReader() throws Exception {
         BeanPropertyReader reader = new BeanPropertyReader("name", null,
-                PublicSetterBackedReaderBean.class.getMethod("setName", String.class));
+                PublicSetterBackedReaderBean.class.getMethod("setName", String.class), 0);
         PublicSetterBackedReaderBean bean = new PublicSetterBackedReaderBean();
 
         assertThatThrownBy(() -> reader.setValueFor(bean, new Object[]{13}))
@@ -63,6 +63,21 @@ public class BeanPropertyReaderDynamicAccessTest {
                         "Failed to set property 'name' (raw type java.lang.String) to value of type java.lang.Integer");
         assertThat(bean.getName()).isNull();
         assertThat(bean.getSetterCalls()).isZero();
+    }
+
+    @Test
+    void reportsExceptionsThrownBySetterMethodsFromBeanPropertyReader() throws Exception {
+        BeanPropertyReader reader = new BeanPropertyReader("name", null,
+                ThrowingSetterBackedReaderBean.class.getMethod("setName", String.class), 0);
+        ThrowingSetterBackedReaderBean bean = new ThrowingSetterBackedReaderBean();
+
+        assertThatThrownBy(() -> reader.setValueFor(bean, new Object[]{"denied"}))
+                .isInstanceOf(JSONObjectException.class)
+                .hasMessageContaining(
+                        "Failed to set property 'name' (raw type java.lang.String) to value of type java.lang.String")
+                .hasRootCauseInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage("Rejected name: denied");
+        assertThat(bean.getSetterCalls()).isEqualTo(1);
     }
 
     @Test
@@ -98,6 +113,15 @@ public class BeanPropertyReaderDynamicAccessTest {
                 "{\"name\":\"Grace\"}");
 
         assertThat(bean.getName()).isEqualTo("Grace");
+        assertThat(bean.getSetterCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void populatesFieldAndSetterBackedPropertiesInOneRead() throws Exception {
+        MixedReaderBean bean = JSON.std.beanFrom(MixedReaderBean.class, "{\"id\":7,\"name\":\"Katherine\"}");
+
+        assertThat(bean.id).isEqualTo(7);
+        assertThat(bean.getName()).isEqualTo("Katherine");
         assertThat(bean.getSetterCalls()).isEqualTo(1);
     }
 
@@ -173,6 +197,44 @@ public class BeanPropertyReaderDynamicAccessTest {
             this.name = name;
             setterCalls++;
             return this;
+        }
+    }
+
+    public static final class MixedReaderBean {
+        public int id;
+        private String name;
+        private int setterCalls;
+
+        public MixedReaderBean() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getSetterCalls() {
+            return setterCalls;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+            setterCalls++;
+        }
+    }
+
+    public static final class ThrowingSetterBackedReaderBean {
+        private int setterCalls;
+
+        public ThrowingSetterBackedReaderBean() {
+        }
+
+        public int getSetterCalls() {
+            return setterCalls;
+        }
+
+        public void setName(String name) {
+            setterCalls++;
+            throw new IllegalStateException("Rejected name: " + name);
         }
     }
 

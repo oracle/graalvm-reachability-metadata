@@ -19,7 +19,7 @@ from utility_scripts.dynamic_access_report import (
     load_dynamic_access_coverage_report,
 )
 from utility_scripts.large_library_progress import LargeLibraryProgressState
-from utility_scripts.metadata_index import resolve_test_version
+from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     per_class_output_dir,
@@ -31,6 +31,7 @@ from utility_scripts.strategy_loader import load_strategy_by_name
 
 FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.4"
 DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 100
+DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
 
 
 @WorkflowStrategy.register("dynamic_access_iterative")
@@ -63,6 +64,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             "max-native-test-verification-iterations",
             DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
         )
+        self.native_test_verification_batch_size = self._parameter_int(
+            "native-test-verification-batch-size",
+            DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE,
+        )
+        if self.native_test_verification_batch_size < 1:
+            raise ValueError("Strategy parameter 'native-test-verification-batch-size' must be >= 1")
         self.large_library_progress_state: LargeLibraryProgressState | None = self.context.get(
             "large_library_progress_state",
         )
@@ -133,6 +140,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         prompt_iterations = 0
         successful_classes = 0
         processed_classes_this_part = 0
+        pending_native_test_classes: list[str] = []
         initial_part_covered_calls = current_report.covered_calls
         if self.large_library_progress_state is not None:
             initial_part_covered_calls = self._initial_part_covered_calls(current_report)
@@ -147,9 +155,23 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         }
         initial_class_count = len(current_report.classes)
 
+        def flush_native_test_batch(reason: str) -> bool:
+            nonlocal current_report
+            ok, gate_label = self._run_pending_native_test_verification_gate(
+                pending_native_test_classes,
+                reason,
+            )
+            if not ok:
+                return False
+            if gate_label is not None:
+                current_report = self._refresh_report_after_gate(gate_label) or current_report
+            return True
+
         while True:
             active_class = current_report.next_uncovered_class(exhausted_classes)
             if active_class is None:
+                if not flush_native_test_batch("end-of-classes"):
+                    return False, prompt_iterations
                 if (
                         successful_classes == 0
                         and self.keep_tests_without_dynamic_access
@@ -292,11 +314,18 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                             f"({current_report.covered_calls}/{current_report.total_calls})"
                         )
                         successful_classes += 1
-                        if not self._run_native_test_verification_gate(class_name):
+                        if not self._queue_native_test_verification_step(
+                                pending_native_test_classes,
+                                class_name,
+                        ):
                             gate_failed = True
                             exhausted_classes.add(class_name)
                             break
-                        current_report = self._refresh_report_after_gate(class_name) or current_report
+                        if self._native_test_verification_batch_ready(pending_native_test_classes):
+                            if not flush_native_test_batch("batch-size"):
+                                gate_failed = True
+                                exhausted_classes.add(class_name)
+                                break
                         self._mark_large_library_completed(class_name, current_report)
                     else:
                         self._print_dynamic_access_detail(
@@ -314,10 +343,16 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                     successful_classes += 1
                     exhausted_classes.add(class_name)
-                    if not self._run_native_test_verification_gate(class_name):
+                    if not self._queue_native_test_verification_step(
+                            pending_native_test_classes,
+                            class_name,
+                    ):
                         gate_failed = True
                         break
-                    current_report = self._refresh_report_after_gate(class_name) or current_report
+                    if self._native_test_verification_batch_ready(pending_native_test_classes):
+                        if not flush_native_test_batch("batch-size"):
+                            gate_failed = True
+                            break
                     self._mark_large_library_completed(class_name, current_report)
                     break
                 if updated_class.covered_calls > active_class.covered_calls:
@@ -339,12 +374,16 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_checkpoint = subprocess.check_output(
                         ["git", "rev-parse", "HEAD"], text=True,
                     ).strip()
-                    if not self._run_native_test_verification_gate(class_name):
+                    if not self._queue_native_test_verification_step(
+                            pending_native_test_classes,
+                            class_name,
+                    ):
                         gate_failed = True
                         break
-                    refreshed = self._refresh_report_after_gate(class_name)
-                    if refreshed is not None:
-                        current_report = refreshed
+                    if self._native_test_verification_batch_ready(pending_native_test_classes):
+                        if not flush_native_test_batch("batch-size"):
+                            gate_failed = True
+                            break
                         updated_class = current_report.get_class(class_name) or updated_class
                     self._save_large_library_progress(current_report)
                 else:
@@ -422,6 +461,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     processed_classes_this_part,
                     initial_part_covered_calls,
             ):
+                if not flush_native_test_batch("large-library-chunk-boundary"):
+                    return False, prompt_iterations
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
                 self._print_dynamic_access_message(
                     "Large-library chunk boundary reached after {count} class(es).".format(
@@ -430,6 +471,56 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 )
                 self._save_large_library_progress(current_report)
                 return True, prompt_iterations
+
+    def _queue_native_test_verification_step(
+            self,
+            pending_classes: list[str],
+            class_name: str,
+    ) -> bool:
+        """Queue one committed class step for the next native-test verification batch."""
+        pending_classes.append(class_name)
+        self._print_dynamic_access_detail(
+            "native-test gate: queued class={class_name} pending={pending}/{batch_size}".format(
+                class_name=class_name,
+                pending=len(pending_classes),
+                batch_size=self.native_test_verification_batch_size,
+            ),
+            indent_level=2,
+        )
+        return True
+
+    def _native_test_verification_batch_ready(self, pending_classes: list[str]) -> bool:
+        return len(pending_classes) >= self.native_test_verification_batch_size
+
+    def _run_pending_native_test_verification_gate(
+            self,
+            pending_classes: list[str],
+            reason: str,
+    ) -> tuple[bool, str | None]:
+        """Run and clear the pending native-test gate batch when any classes are queued."""
+        if not pending_classes:
+            return True, None
+        gate_label = self._native_test_verification_batch_label(pending_classes)
+        self._print_dynamic_access_detail(
+            "native-test gate: flushing {count} queued class step(s), reason={reason}".format(
+                count=len(pending_classes),
+                reason=reason,
+            ),
+            indent_level=2,
+        )
+        if not self._run_native_test_verification_gate(gate_label):
+            return False, gate_label
+        pending_classes.clear()
+        return True, gate_label
+
+    @staticmethod
+    def _native_test_verification_batch_label(class_names: list[str]) -> str:
+        if len(class_names) == 1:
+            return class_names[0]
+        return "{last_class}__native_batch_{count}".format(
+            last_class=class_names[-1],
+            count=len(class_names),
+        )
 
     def _run_native_test_verification_gate(self, class_name: str) -> bool:
         """Run the per-class native-test verification gate; return True if PASSED."""
@@ -458,6 +549,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
             indent_level=2,
         )
+        self._commit_library_metadata(f"Native metadata for {class_name}")
         return True
 
     def _refresh_report_after_gate(self, class_name: str):
@@ -657,6 +749,37 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             cwd=self.reachability_repo_path,
         ).returncode != 0 and subprocess.run(
             ["git", "commit", "-m", message],
+            cwd=self.reachability_repo_path,
+            capture_output=True, check=False,
+        )
+
+    def _commit_library_metadata(self, message: str) -> None:
+        """Stage and commit durable library metadata created by the class gate."""
+        metadata_version = resolve_metadata_version(
+            self.reachability_repo_path,
+            self.group,
+            self.artifact,
+            self.version,
+        )
+        metadata_dir = os.path.join(
+            self.reachability_repo_path, "metadata", self.group, self.artifact, metadata_version,
+        )
+        subprocess.run(
+            ["git", "add", "-A", metadata_dir],
+            cwd=self.reachability_repo_path,
+            capture_output=True, check=False,
+        )
+        # `git diff --cached --quiet -- <path>` exits non-zero iff <path> has staged changes.
+        # Restricting to <metadata_dir> ensures unrelated staged files don't trigger a commit.
+        diff_rc = subprocess.run(
+            ["git", "diff", "--cached", "--quiet", "--", metadata_dir],
+            cwd=self.reachability_repo_path,
+            capture_output=True, check=False,
+        ).returncode
+        if diff_rc == 0:
+            return
+        subprocess.run(
+            ["git", "commit", "-m", message, "--", metadata_dir],
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         )

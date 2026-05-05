@@ -23,6 +23,7 @@ public abstract class RunNativeTraceImageInvocationTask extends AllCoordinatesEx
         ));
         appendProperty(command, "metadataConfigDirs");
         appendProperty(command, "traceMetadataPath");
+        appendProperty(command, "traceMetadataConditionPackages");
         appendProperty(command, "traceBinaryExitFile");
         return command;
     }
@@ -30,12 +31,5 @@ public abstract class RunNativeTraceImageInvocationTask extends AllCoordinatesEx
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
         return "Native trace image run failed for " + coordinates + " with exit code " + exitCode + ".";
-    }
-
-    private void appendProperty(List<String> command, String propertyName) {
-        Object propertyValue = getProject().findProperty(propertyName);
-        if (propertyValue != null) {
-            command.add("-P" + propertyName + "=" + propertyValue);
-        }
     }
 }

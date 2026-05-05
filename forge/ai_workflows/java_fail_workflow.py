@@ -21,6 +21,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -51,12 +52,14 @@ class JavaFailWorkflowConfig:
         task_type: str,
         branch_prefix: str,
         metrics_filename: str,
+        metadata_index_task: str,
     ):
         self.mode = mode
         self.default_strategy_name = default_strategy_name
         self.task_type = task_type
         self.branch_prefix = branch_prefix
         self.metrics_filename = metrics_filename
+        self.metadata_index_task = metadata_index_task
 
 
 JAVAC_CONFIG = JavaFailWorkflowConfig(
@@ -65,6 +68,7 @@ JAVAC_CONFIG = JavaFailWorkflowConfig(
     task_type="fix-javac-fail",
     branch_prefix="fix-javac",
     metrics_filename="fix_javac_fail.json",
+    metadata_index_task="addLibraryMetadataIndexJson",
 )
 
 JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
@@ -73,6 +77,7 @@ JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
     task_type="fix-java-run-fail",
     branch_prefix="fix-java-run",
     metrics_filename="fix_java_run_fail.json",
+    metadata_index_task="addLibraryAsLatestMetadataIndexJson",
 )
 
 
@@ -224,15 +229,21 @@ def copy_and_prepare_project_dir(
 
 def run_gradle_task(task: str, coordinates: str) -> None:
     """Run a Gradle task for the provided dependency coordinates."""
-    require_complete_reachability_repo(os.getcwd())
+    repo_path = os.getcwd()
+    require_complete_reachability_repo(repo_path)
     command = f"./gradlew {task} -Pcoordinates={coordinates}"
-    subprocess.run(command, shell=True, check=True)
+    subprocess.run(command, shell=True, env=gradle_command_environment(repo_path), check=True)
 
 
-def update_metadata_index_json(group, artifact, updated_library_version):
-    """Update metadata index.json to point to the new library version."""
+def update_metadata_index_json(
+        config: JavaFailWorkflowConfig,
+        group: str,
+        artifact: str,
+        updated_library_version: str,
+) -> None:
+    """Update metadata index.json for the target library version."""
     new_version_coordinates = f"{group}:{artifact}:{updated_library_version}"
-    run_gradle_task("addLibraryAsLatestMetadataIndexJson", new_version_coordinates)
+    run_gradle_task(config.metadata_index_task, new_version_coordinates)
 
 
 def create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version):
@@ -271,6 +282,90 @@ def create_project_prep_checkpoint(config: JavaFailWorkflowConfig, group, artifa
         check=True,
     )
     return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+
+
+def commit_last_passing_candidate(
+        reachability_repo_path: str,
+        group: str,
+        artifact: str,
+        updated_library_version: str,
+) -> str | None:
+    """Commit the generated candidate that already passed the workflow test loop."""
+    candidate_paths: list[str] = [
+        os.path.join("tests", "src", group, artifact, updated_library_version),
+        os.path.join("metadata", group, artifact),
+    ]
+    add_result = subprocess.run(
+        ["git", "add", "-A", "--", *candidate_paths],
+        cwd=reachability_repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if add_result.returncode != 0:
+        print("ERROR: Failed to stage last passing candidate.", file=sys.stderr)
+        print(add_result.stdout)
+        return None
+
+    diff_result = subprocess.run(
+        ["git", "diff", "--cached", "--quiet", "--", *candidate_paths],
+        cwd=reachability_repo_path,
+        check=False,
+    )
+    if diff_result.returncode == 0:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=reachability_repo_path,
+            text=True,
+        ).strip()
+    if diff_result.returncode != 1:
+        print("ERROR: Failed to inspect staged last passing candidate.", file=sys.stderr)
+        return None
+
+    commit_result = subprocess.run(
+        ["git", "commit", "-m", f"Preserve last passing candidate for {group}:{artifact}:{updated_library_version}"],
+        cwd=reachability_repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if commit_result.returncode != 0:
+        print("ERROR: Failed to commit last passing candidate.", file=sys.stderr)
+        print(commit_result.stdout)
+        return None
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"],
+        cwd=reachability_repo_path,
+        text=True,
+    ).strip()
+
+
+def reset_failed_java_fix_worktree(
+        reachability_repo_path: str,
+        commit_checkpoint: str,
+        last_passing_candidate_commit: str | None,
+        tests_dir: str,
+        metadata_dir: str,
+        tests_dir_preexisted: bool,
+        metadata_dir_preexisted: bool,
+) -> str:
+    """Reset failed workflow output while keeping a passing candidate when one exists."""
+    reset_target = last_passing_candidate_commit or commit_checkpoint
+    if last_passing_candidate_commit is not None:
+        print(f"[Test fixing failed; preserving last passing candidate at {last_passing_candidate_commit}.]")
+    subprocess.run(["git", "reset", "--hard", reset_target], cwd=reachability_repo_path, check=True)
+    if last_passing_candidate_commit is None:
+        if not tests_dir_preexisted:
+            shutil.rmtree(tests_dir, ignore_errors=True)
+        if not metadata_dir_preexisted:
+            shutil.rmtree(metadata_dir, ignore_errors=True)
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"],
+        cwd=reachability_repo_path,
+        text=True,
+    ).strip()
 
 
 def init_agent(
@@ -378,7 +473,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     metadata_dir_preexisted = os.path.exists(metadata_dir)
 
     copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
-    update_metadata_index_json(group, artifact, updated_library_version)
+    update_metadata_index_json(config, group, artifact, updated_library_version)
     create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
     commit_checkpoint = create_project_prep_checkpoint(config, group, artifact, updated_library_version)
     updated_library = f"{group}:{artifact}:{updated_library_version}"
@@ -442,18 +537,31 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         agent=agent,
     )
 
+    last_passing_candidate_commit = None
     if workflow_status == RUN_STATUS_SUCCESS:
-        finalize_status, _ = strategy_obj._finalize_successful_iteration()
-        workflow_status = finalize_status
+        last_passing_candidate_commit = commit_last_passing_candidate(
+            reachability_repo_path,
+            group,
+            artifact,
+            updated_library_version,
+        )
+        if last_passing_candidate_commit is None:
+            workflow_status = RUN_STATUS_FAILURE
+        else:
+            finalize_status, _ = strategy_obj._finalize_successful_iteration()
+            workflow_status = finalize_status
 
     if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}:
         print("[Test fixing failed.]")
-        subprocess.run(["git", "reset", "--hard", commit_checkpoint], check=True)
-        ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        if not tests_dir_preexisted:
-            shutil.rmtree(tests_dir, ignore_errors=True)
-        if not metadata_dir_preexisted:
-            shutil.rmtree(metadata_dir, ignore_errors=True)
+        ending_commit = reset_failed_java_fix_worktree(
+            reachability_repo_path=reachability_repo_path,
+            commit_checkpoint=commit_checkpoint,
+            last_passing_candidate_commit=last_passing_candidate_commit,
+            tests_dir=tests_dir,
+            metadata_dir=metadata_dir,
+            tests_dir_preexisted=tests_dir_preexisted,
+            metadata_dir_preexisted=metadata_dir_preexisted,
+        )
         run_metrics = create_failure_run_metrics_output(
             package=group,
             artifact=artifact,

@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from email.message import Message
 from typing import Any
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import is_not_for_native_image_entry
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
@@ -146,6 +147,7 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
     result = subprocess.run(
         command,
         cwd=reachability_repo_path,
+        env=gradle_command_environment(reachability_repo_path),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
@@ -180,6 +182,7 @@ def discover_artifact_metadata(
     result = subprocess.run(
         command,
         cwd=reachability_repo_path,
+        env=gradle_command_environment(reachability_repo_path),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,

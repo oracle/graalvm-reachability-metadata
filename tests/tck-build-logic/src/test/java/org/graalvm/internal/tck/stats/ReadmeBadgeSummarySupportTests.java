@@ -291,26 +291,29 @@ class ReadmeBadgeSummarySupportTests {
         );
 
         String svg = Files.readString(graphFile, StandardCharsets.UTF_8);
+        String darkSvg = Files.readString(tempDir.resolve("latest").resolve("metrics-over-time-dark.svg"), StandardCharsets.UTF_8);
         assertThat(svg).contains("<svg");
-        assertThat(svg).contains("Coverage over time");
-        assertThat(svg).contains("Supported libraries");
+        assertThat(darkSvg).contains("<svg");
+        assertThat(darkSvg).contains("#0d1117");
+        assertThat(svg).contains("Coverage over Time");
+        assertThat(svg).contains("Supported Libraries");
         assertThat(svg).contains("Libraries with reachability metadata in the repository");
-        assertThat(svg).contains("Dynamic access coverage");
+        assertThat(svg).contains("Dynamic Access Coverage");
         assertThat(svg).contains("Dynamic-access call coverage across repository metadata");
-        assertThat(svg).contains("Tested library versions");
+        assertThat(svg).contains("Tested Library Versions");
         assertThat(svg).contains("Tested library versions recorded across metadata indexes");
-        assertThat(svg).contains("Tested lines of code");
+        assertThat(svg).contains("Tested Lines of Code");
         assertThat(svg).contains("Covered lines reported across library coverage stats");
-        assertThat(svg).contains("Updated 2026-04-07 | Generated 2026-04-07T12:34:56Z");
+        assertThat(svg).contains("Updated 2026-04-07 12:34 UTC");
         assertThat(svg).contains("35.8%");
         assertThat(svg).contains("text-anchor=\"start\">Apr 5</text>");
         assertThat(svg).contains("text-anchor=\"middle\">Apr 6</text>");
         assertThat(svg).contains("text-anchor=\"end\">Apr 7</text>");
         assertThat(svg).contains("<path d=\"M ");
         assertThat(svg).contains("<circle");
-        assertThat(svg.indexOf("Supported libraries")).isLessThan(svg.indexOf("Tested library versions"));
-        assertThat(svg.indexOf("Tested library versions")).isLessThan(svg.indexOf("Dynamic access coverage"));
-        assertThat(svg.indexOf("Dynamic access coverage")).isLessThan(svg.indexOf("Tested lines of code"));
+        assertThat(svg.indexOf("Supported Libraries")).isLessThan(svg.indexOf("Tested Library Versions"));
+        assertThat(svg.indexOf("Tested Library Versions")).isLessThan(svg.indexOf("Dynamic Access Coverage"));
+        assertThat(svg.indexOf("Dynamic Access Coverage")).isLessThan(svg.indexOf("Tested Lines of Code"));
     }
 
     @Test
@@ -348,6 +351,44 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(svg).contains("text-anchor=\"start\">Apr 2026</text>");
         assertThat(svg).contains("text-anchor=\"middle\">May 2026</text>");
         assertThat(svg).contains("text-anchor=\"end\">Jun 2026</text>");
+    }
+
+    @Test
+    void writeMetricsOverviewGraphCompactsLargeCountTickLabels() throws IOException {
+        Path graphFile = tempDir.resolve("latest").resolve("metrics-over-time.svg");
+        ReadmeBadgeSummarySupport.ReadmeMetricsHistory history = new ReadmeBadgeSummarySupport.ReadmeMetricsHistory(
+                List.of(
+                        new ReadmeBadgeSummarySupport.HistoryEntry(
+                                "2026-04-05",
+                                new ReadmeBadgeSummarySupport.HistoryMetrics(
+                                        new ReadmeBadgeSummarySupport.MetadataIndexMetrics(4, 5, 6, 8),
+                                        new ReadmeBadgeSummarySupport.StatsMetrics(new BigDecimal("31.5"), 9, 1_000_000)
+                                )
+                        ),
+                        new ReadmeBadgeSummarySupport.HistoryEntry(
+                                "2026-04-06",
+                                new ReadmeBadgeSummarySupport.HistoryMetrics(
+                                        new ReadmeBadgeSummarySupport.MetadataIndexMetrics(4, 5, 6, 8),
+                                        new ReadmeBadgeSummarySupport.StatsMetrics(new BigDecimal("34.0"), 9, 1_200_000)
+                                )
+                        ),
+                        new ReadmeBadgeSummarySupport.HistoryEntry(
+                                "2026-04-07",
+                                new ReadmeBadgeSummarySupport.HistoryMetrics(
+                                        new ReadmeBadgeSummarySupport.MetadataIndexMetrics(4, 5, 6, 8),
+                                        new ReadmeBadgeSummarySupport.StatsMetrics(new BigDecimal("35.8"), 9, 1_400_000)
+                                )
+                        )
+                )
+        );
+
+        ReadmeBadgeSummarySupport.writeMetricsOverviewGraph(graphFile, history);
+
+        String svg = Files.readString(graphFile, StandardCharsets.UTF_8);
+        assertThat(svg).contains(">960K</text>");
+        assertThat(svg).contains(">1.1M</text>");
+        assertThat(svg).contains(">1.4M</text>");
+        assertThat(svg).contains(">1,400,000</text>");
     }
 
     @Test
@@ -429,7 +470,7 @@ class ReadmeBadgeSummarySupportTests {
                   {
                     "latest": true,
                     "metadata-version": "1.0.0",
-                    "description": "Alpha | library"
+                    "description": "Alpha | library. Provides extended <docs> & utilities."
                   }
                 ]
                 """
@@ -461,13 +502,19 @@ class ReadmeBadgeSummarySupportTests {
 
         assertThat(markdown).contains("# Coverage");
         assertThat(markdown).contains("Updated: 2026-04-08");
-        assertThat(markdown).contains("![Coverage over time](latest/metrics-over-time.svg)");
+        assertThat(markdown).contains("![Coverage over Time](latest/metrics-over-time.svg#gh-light-mode-only)");
+        assertThat(markdown).contains("![Coverage over Time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)");
         assertThat(markdown).contains("| Library | Description | Dynamic access coverage |");
-        assertThat(markdown).contains("| `com.example:alpha` | Alpha \\| library | 75.0% (3/4 calls) |");
-        assertThat(markdown).contains("| `com.example:zeta` | Zeta library | 25.0% (1/4 calls) |");
+        assertThat(markdown).contains(
+                "| `com.example:alpha` | <details><summary>Show</summary> "
+                        + "Alpha \\| library. Provides extended &lt;docs&gt; &amp; utilities.</details> | 75.0% (3/4 calls) |"
+        );
+        assertThat(markdown).contains(
+                "| `com.example:zeta` | <details><summary>Show</summary> Zeta library</details> | 25.0% (1/4 calls) |"
+        );
         assertThat(markdown).doesNotContain("org.example:ignored");
         assertThat(markdown.indexOf("`com.example:alpha`")).isLessThan(markdown.indexOf("`com.example:zeta`"));
-        assertThat(markdown.indexOf("![Coverage over time]")).isLessThan(markdown.indexOf("## Libraries"));
+        assertThat(markdown.indexOf("![Coverage over Time]")).isLessThan(markdown.indexOf("## Libraries"));
     }
 
     private void writeIndexFile(String groupId, String artifactId, String content) throws IOException {

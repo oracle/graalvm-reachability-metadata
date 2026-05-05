@@ -9,6 +9,7 @@ import re
 import subprocess
 import sys
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.style_checks import run_style_fix_and_checks
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
@@ -20,6 +21,7 @@ def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subpr
     return subprocess.run(
         command,
         cwd=repo_path,
+        env=gradle_command_environment(repo_path),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,

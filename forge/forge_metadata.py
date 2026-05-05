@@ -18,6 +18,7 @@ Usage:
 import argparse
 import concurrent.futures
 import errno
+import hashlib
 import json
 import os
 import random
@@ -61,7 +62,9 @@ from git_scripts.common_git import (
     get_origin_owner,
     is_github_rate_limit_text,
     log_github_query,
+    run_github_command_with_retries,
     run_github_json_with_retries,
+    run_github_with_retries,
 )
 from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
 from git_scripts.make_pr_java_run_fix import main as run_make_pr_java_run_fix
@@ -89,6 +92,7 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
+    git_env_limited_to_repo_root,
     get_forge_subdir_name,
     get_repo_root,
     require_complete_reachability_repo,
@@ -114,14 +118,21 @@ DEFAULT_MAX_ISSUES = 5  # Default maximum number of issues to process per run
 DEFAULT_PARALLELISM = 1
 MAX_PARALLELISM = 4
 DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
+ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
 GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
+PRIORITY_BLOCKING_LIBRARY_THRESHOLD = 10
+PRIORITY_BLOCKING_ISSUE_QUERY_CHUNK_SIZE = 25
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
 ISSUE_CLAIM_CACHE_VERSION = 1
 ISSUE_CLAIM_CACHE_FILENAME = "issue-cache-v1.json"
 ISSUE_CLAIM_CACHE_LOCK_FILENAME = "issue-cache-v1.lock"
 DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS = 15 * 60
+ISSUE_SEARCH_CACHE_VERSION = 1
+ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
+ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
+DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
@@ -129,6 +140,9 @@ REVIEW_PERIOD_SUFFIX_SECONDS = {
     "h": 60 * 60,
     "d": 24 * 60 * 60,
 }
+FAILED_CI_STATES = {"FAILURE", "ERROR"}
+RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS = {"failure"}
+MAX_AUTOMATED_WORKFLOW_RERUN_ATTEMPTS = 3
 
 REPO = "oracle/graalvm-reachability-metadata"
 PROJECT_NUMBER = 30
@@ -161,6 +175,7 @@ ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
 ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
 ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE = "not_for_native_image"
 ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
+ISSUE_CLAIM_CACHE_REASON_CLOSED = "closed"
 ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
 ISSUE_CLAIM_CACHE_REASON_NON_TODO = "non_todo"
 ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS = "in_progress"
@@ -169,6 +184,7 @@ ISSUE_CLAIM_CACHE_REASONS = {
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+    ISSUE_CLAIM_CACHE_REASON_CLOSED,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
     ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
@@ -187,6 +203,8 @@ NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
     "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
 )
+PRIORITY_LABEL_COLOR = "FBCA04"
+PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
 LARGE_LIBRARY_LABEL_COLOR = "C5DEF5"
 LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION = "Issue is intentionally split across multiple reviewable PR parts"
 LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION = "Previous large-library part merged; automation may resume the next part"
@@ -446,6 +464,16 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
     sys.exit(1)
 
 
+def get_issue_claim_payload(issue_number: int) -> dict:
+    """Fetch mutable issue state immediately before claim decisions."""
+    return gh_json(
+        "issue", "view",
+        str(issue_number),
+        "--repo", REPO,
+        "--json", "number,title,url,state,labels,assignees",
+    )
+
+
 def build_issue_search_query(
         label: str,
         extra_labels: list[str] | None = None,
@@ -499,24 +527,61 @@ def search_issues_with_label(
     page = (offset // per_page) + 1
     page_offset = offset % per_page
     query = build_issue_search_query(label, extra_labels)
+    items = get_issue_search_page(query, page, per_page)
+    return items[page_offset:page_offset + limit]
+
+
+def fetch_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
+    """Fetch and normalize one GitHub search result page for issues."""
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
-        "-f", "sort=created",
+        "-f", "sort=updated",
         "-f", "order=desc",
         "-F", f"per_page={per_page}",
         "-F", f"page={page}",
     )
-    items = data.get("items", [])
     return [
         normalize_github_issue_search_item(item)
-        for item in items[page_offset:page_offset + limit]
+        for item in data.get("items", [])
     ]
+
+
+def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
+    """Return one issue search page, using the shared local cache when fresh."""
+    if not is_issue_search_cache_enabled() or get_issue_search_cache_ttl_seconds() <= 0:
+        return fetch_issue_search_page(query, page, per_page)
+
+    ttl_seconds = get_issue_search_cache_ttl_seconds()
+    cache_key = build_issue_search_cache_key("page", query, "updated", "desc", page, per_page)
+    now = time.time()
+    cached_payload = _read_issue_search_cache_payload()
+    if cached_payload is not None:
+        cached_page = _get_cached_issue_search_page(cached_payload, cache_key, now, ttl_seconds)
+        if cached_page is not None:
+            return cached_page
+
+    with LocalIssueSearchCacheWriterLock():
+        now = time.time()
+        payload = _read_issue_search_cache_payload_or_empty(now)
+        cached_page = _get_cached_issue_search_page(payload, cache_key, now, ttl_seconds)
+        if cached_page is not None:
+            return cached_page
+
+        issues = fetch_issue_search_page(query, page, per_page)
+        _set_cached_issue_search_page(payload, cache_key, issues, now)
+        _write_issue_search_cache_payload(payload, now)
+        return issues
 
 
 def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
     query = build_issue_search_query(label, extra_labels)
+    return get_issue_search_count(query)
+
+
+def fetch_issue_search_count(query: str) -> int:
+    """Fetch GitHub's count of open issues for a search query."""
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
@@ -525,11 +590,35 @@ def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -
     return int(data.get("total_count", 0))
 
 
+def get_issue_search_count(query: str) -> int:
+    """Return an issue search count, using the shared local cache when fresh."""
+    if not is_issue_search_cache_enabled() or get_issue_search_cache_ttl_seconds() <= 0:
+        return fetch_issue_search_count(query)
+
+    ttl_seconds = get_issue_search_cache_ttl_seconds()
+    cache_key = build_issue_search_cache_key("count", query)
+    now = time.time()
+    cached_payload = _read_issue_search_cache_payload()
+    if cached_payload is not None:
+        cached_count = _get_cached_issue_search_count(cached_payload, cache_key, now, ttl_seconds)
+        if cached_count is not None:
+            return cached_count
+
+    with LocalIssueSearchCacheWriterLock():
+        now = time.time()
+        payload = _read_issue_search_cache_payload_or_empty(now)
+        cached_count = _get_cached_issue_search_count(payload, cache_key, now, ttl_seconds)
+        if cached_count is not None:
+            return cached_count
+
+        total_count = fetch_issue_search_count(query)
+        _set_cached_issue_search_count(payload, cache_key, total_count, now)
+        _write_issue_search_cache_payload(payload, now)
+        return total_count
+
+
 def get_issues_with_label(label: str, limit: int, offset: int = 0, extra_labels: list[str] | None = None) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
-    label_desc = f"'{label}'" + (f" + {extra_labels}" if extra_labels else "")
-    print()
-    log_stage("issue-scan", f"Fetching issues with label {label_desc} from {REPO} (offset={offset}, limit={limit})")
     return search_issues_with_label(label, limit, offset, extra_labels)
 
 
@@ -566,6 +655,17 @@ def issue_has_label(issue: dict, label_name: str) -> bool:
         if isinstance(label, dict) and label.get("name") == label_name:
             return True
     return False
+
+
+def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
+    """Update a local issue payload after a label was applied remotely."""
+    if issue_has_label(issue, label_name):
+        return
+    labels = issue.get("labels")
+    if not isinstance(labels, list):
+        labels = []
+        issue["labels"] = labels
+    labels.append({"name": label_name})
 
 
 def get_issue_payload_assignees(issue: dict) -> Optional[list[str]]:
@@ -721,6 +821,51 @@ class LocalIssueClaimCacheWriterLock:
                 time.sleep(0.05)
 
 
+class LocalIssueSearchCacheWriterLock:
+    """Short-lived exclusive lock for shared issue-search cache updates."""
+
+    def __init__(self):
+        self.lock_path = get_issue_search_cache_lock_path()
+        self.lock_file = None
+        self.fallback_lock_path = f"{self.lock_path}.exclusive"
+
+    def __enter__(self):
+        self.acquire()
+        return self
+
+    def __exit__(self, _exc_type, _exc, _traceback) -> None:
+        self.release()
+
+    def acquire(self) -> None:
+        os.makedirs(os.path.dirname(self.lock_path), exist_ok=True)
+        if fcntl is None:
+            self._acquire_exclusive_file_lock()
+            return
+        self.lock_file = open(self.lock_path, "a+", encoding="utf-8")
+        fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX)
+
+    def release(self) -> None:
+        if self.lock_file is None:
+            return
+        try:
+            if fcntl is not None:
+                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
+        finally:
+            self.lock_file.close()
+            self.lock_file = None
+            if fcntl is None and os.path.exists(self.fallback_lock_path):
+                os.unlink(self.fallback_lock_path)
+
+    def _acquire_exclusive_file_lock(self) -> None:
+        while True:
+            try:
+                fd = os.open(self.fallback_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                self.lock_file = os.fdopen(fd, "w", encoding="utf-8")
+                return
+            except FileExistsError:
+                time.sleep(0.05)
+
+
 def get_issue_claim_locks_root() -> str:
     """Return the shared local directory for issue claim locks."""
     return os.path.join(
@@ -743,6 +888,16 @@ def get_issue_claim_cache_path() -> str:
 def get_issue_claim_cache_lock_path() -> str:
     """Return the shared local issue-claim cache writer lock path."""
     return os.path.join(get_issue_claim_locks_root(), ISSUE_CLAIM_CACHE_LOCK_FILENAME)
+
+
+def get_issue_search_cache_path() -> str:
+    """Return the shared local issue-search cache path."""
+    return os.path.join(get_issue_claim_locks_root(), ISSUE_SEARCH_CACHE_FILENAME)
+
+
+def get_issue_search_cache_lock_path() -> str:
+    """Return the shared local issue-search cache writer lock path."""
+    return os.path.join(get_issue_claim_locks_root(), ISSUE_SEARCH_CACHE_LOCK_FILENAME)
 
 
 def try_acquire_issue_claim_lock(issue_number: int) -> LocalIssueClaimLock | None:
@@ -941,9 +1096,330 @@ def invalidate_issue_claim_cache_entry(issue_number: int, now: float | None = No
         _write_issue_claim_cache_entries(cache, now)
 
 
+def _remove_file_if_exists(path: str) -> bool:
+    try:
+        os.unlink(path)
+        return True
+    except FileNotFoundError:
+        return False
+
+
+def clear_issue_claim_cache() -> bool:
+    """Delete the shared local issue-claim cache file."""
+    with LocalIssueClaimCacheWriterLock():
+        return _remove_file_if_exists(get_issue_claim_cache_path())
+
+
+def is_issue_search_cache_enabled() -> bool:
+    """Return True when the shared local issue-search cache is enabled."""
+    return os.environ.get("FORGE_ISSUE_SEARCH_CACHE", "1") != "0"
+
+
+def get_issue_search_cache_ttl_seconds() -> int:
+    """Return the issue-search cache TTL in seconds."""
+    raw_value = os.environ.get("FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS")
+    if raw_value is None or raw_value == "":
+        return DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS
+    try:
+        value = int(raw_value)
+    except ValueError:
+        print("ERROR: FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
+        sys.exit(1)
+    if value < 0:
+        print("ERROR: FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
+        sys.exit(1)
+    return value
+
+
+def _read_issue_search_cache_payload() -> dict | None:
+    cache_path = get_issue_search_cache_path()
+    try:
+        with open(cache_path, "r", encoding="utf-8") as cache_file:
+            payload = json.load(cache_file)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if payload.get("version") != ISSUE_SEARCH_CACHE_VERSION:
+        return None
+    if payload.get("repo") != REPO:
+        return None
+    if not isinstance(payload.get("pages"), dict):
+        return None
+    if not isinstance(payload.get("counts"), dict):
+        return None
+    return payload
+
+
+def _empty_issue_search_cache_payload(now: float) -> dict:
+    return {
+        "version": ISSUE_SEARCH_CACHE_VERSION,
+        "repo": REPO,
+        "updated_at_epoch": now,
+        "pages": {},
+        "counts": {},
+    }
+
+
+def _read_issue_search_cache_payload_or_empty(now: float) -> dict:
+    return _read_issue_search_cache_payload() or _empty_issue_search_cache_payload(now)
+
+
+def _write_issue_search_cache_payload(payload: dict, updated_at_epoch: float) -> None:
+    cache_path = get_issue_search_cache_path()
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    payload["version"] = ISSUE_SEARCH_CACHE_VERSION
+    payload["repo"] = REPO
+    payload["updated_at_epoch"] = updated_at_epoch
+    payload.setdefault("pages", {})
+    payload.setdefault("counts", {})
+
+    temp_path = f"{cache_path}.{os.getpid()}.{uuid.uuid4().hex}.tmp"
+    try:
+        with open(temp_path, "w", encoding="utf-8") as cache_file:
+            json.dump(payload, cache_file, sort_keys=True)
+            cache_file.write("\n")
+            cache_file.flush()
+            os.fsync(cache_file.fileno())
+        os.replace(temp_path, cache_path)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+def clear_issue_search_cache() -> bool:
+    """Delete the shared local issue-search cache file."""
+    with LocalIssueSearchCacheWriterLock():
+        return _remove_file_if_exists(get_issue_search_cache_path())
+
+
+def clear_issue_caches() -> None:
+    """Delete local issue queue caches used by work-queue scanning."""
+    removed_claim_cache = clear_issue_claim_cache()
+    removed_search_cache = clear_issue_search_cache()
+    print()
+    log_stage(
+        "issue-cache",
+        f"Cleared issue claim cache at {get_issue_claim_cache_path()} "
+        f"({'removed' if removed_claim_cache else 'not present'})",
+    )
+    log_stage(
+        "issue-cache",
+        f"Cleared issue search cache at {get_issue_search_cache_path()} "
+        f"({'removed' if removed_search_cache else 'not present'})",
+    )
+
+
+def build_issue_search_cache_key(*parts: object) -> str:
+    """Return a stable compact cache key for a GitHub issue-search request."""
+    key_payload = json.dumps(parts, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(key_payload.encode("utf-8")).hexdigest()
+
+
+def _is_fresh_issue_search_entry(entry: dict, now: float, ttl_seconds: int) -> bool:
+    try:
+        observed_at_epoch = float(entry.get("observed_at_epoch"))
+    except (TypeError, ValueError):
+        return False
+    return now - observed_at_epoch <= ttl_seconds
+
+
+def _get_cached_issue_search_page(
+        payload: dict,
+        cache_key: str,
+        now: float,
+        ttl_seconds: int,
+) -> list[dict] | None:
+    entry = payload.get("pages", {}).get(cache_key)
+    if not isinstance(entry, dict) or not _is_fresh_issue_search_entry(entry, now, ttl_seconds):
+        return None
+    issues = entry.get("issues")
+    if not isinstance(issues, list):
+        return None
+    return [
+        issue
+        for issue in issues
+        if isinstance(issue, dict) and isinstance(issue.get("number"), int)
+    ]
+
+
+def _set_cached_issue_search_page(payload: dict, cache_key: str, issues: list[dict], now: float) -> None:
+    payload.setdefault("pages", {})[cache_key] = {
+        "observed_at_epoch": now,
+        "issues": issues,
+    }
+
+
+def _get_cached_issue_search_count(
+        payload: dict,
+        cache_key: str,
+        now: float,
+        ttl_seconds: int,
+) -> int | None:
+    entry = payload.get("counts", {}).get(cache_key)
+    if not isinstance(entry, dict) or not _is_fresh_issue_search_entry(entry, now, ttl_seconds):
+        return None
+    total_count = entry.get("total_count")
+    if not isinstance(total_count, int):
+        return None
+    return total_count
+
+
+def _set_cached_issue_search_count(payload: dict, cache_key: str, total_count: int, now: float) -> None:
+    payload.setdefault("counts", {})[cache_key] = {
+        "observed_at_epoch": now,
+        "total_count": total_count,
+    }
+
+
 def pull_request_has_label(pr: dict, label_name: str) -> bool:
     """Return True when the GitHub pull request payload contains the given label."""
     return issue_has_label(pr, label_name)
+
+
+def get_open_issues_blocked_by_issue_counts(
+        issue_numbers: list[int],
+        minimum_count: int = PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+        chunk_size: int = PRIORITY_BLOCKING_ISSUE_QUERY_CHUNK_SIZE,
+) -> dict[int, int]:
+    """Return open issue counts blocked by each issue, capped after `minimum_count`."""
+    if minimum_count <= 0 or chunk_size <= 0:
+        return {}
+
+    owner, repo_name = REPO.split("/")
+    unique_issue_numbers = list(dict.fromkeys(issue_numbers))
+    counts = {issue_number: 0 for issue_number in unique_issue_numbers}
+    cursors: dict[int, str | None] = {issue_number: None for issue_number in unique_issue_numbers}
+    remaining_issue_numbers = set(unique_issue_numbers)
+
+    while remaining_issue_numbers:
+        batch = list(remaining_issue_numbers)[:chunk_size]
+        issue_fields = "\n".join(
+            f"""
+        issue_{issue_number}: issue(number: {issue_number}) {{
+          blocking(first: 100{f', after: "{cursors[issue_number]}"' if cursors[issue_number] else ""}) {{
+            nodes {{
+              number
+              closed
+            }}
+            pageInfo {{
+              hasNextPage
+              endCursor
+            }}
+          }}
+        }}
+            """
+            for issue_number in batch
+        )
+        query = f"""
+        query {{
+          repository(owner: "{owner}", name: "{repo_name}") {{
+{issue_fields}
+          }}
+        }}
+        """
+        result = gh_json("api", "graphql", "-f", f"query={query}", quiet=True)
+        repository = (
+            result.get("data", {})
+            .get("repository", {})
+        ) or {}
+
+        for issue_number in batch:
+            issue = repository.get(f"issue_{issue_number}")
+            blocking = issue.get("blocking", {}) if isinstance(issue, dict) else {}
+            for blocked_issue in blocking.get("nodes", []):
+                if isinstance(blocked_issue, dict) and not blocked_issue.get("closed", False):
+                    counts[issue_number] += 1
+                    if counts[issue_number] >= minimum_count:
+                        break
+
+            page_info = blocking.get("pageInfo", {}) if isinstance(blocking, dict) else {}
+            if counts[issue_number] >= minimum_count or not page_info.get("hasNextPage"):
+                remaining_issue_numbers.discard(issue_number)
+                continue
+
+            cursor = page_info.get("endCursor")
+            if cursor:
+                cursors[issue_number] = cursor
+            else:
+                remaining_issue_numbers.discard(issue_number)
+
+    return counts
+
+
+def mark_issue_numbers_blocking_many_libraries_as_priority(
+        issue_numbers: list[int],
+        threshold: int = PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+) -> set[int]:
+    """Apply the priority label to issues that block at least `threshold` open issues."""
+    priority_issue_numbers: set[int] = set()
+    if not issue_numbers:
+        return priority_issue_numbers
+
+    counts = get_open_issues_blocked_by_issue_counts(issue_numbers, threshold)
+    for issue_number in issue_numbers:
+        if counts.get(issue_number, 0) < threshold or issue_number in priority_issue_numbers:
+            continue
+        add_issue_label(issue_number, LABEL_PRIORITY)
+        priority_issue_numbers.add(issue_number)
+        log_stage(
+            "priority",
+            (
+                f"Issue #{issue_number} blocks at least {threshold} open issue(s); "
+                f"added label '{LABEL_PRIORITY}'"
+            ),
+        )
+    return priority_issue_numbers
+
+
+def mark_issues_blocking_many_libraries_as_priority(
+        issues: list[dict],
+        threshold: int = PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+) -> None:
+    """Mark unprioritized issue payloads as priority when they block many open issues."""
+    candidate_issue_numbers = [
+        issue["number"]
+        for issue in issues
+        if isinstance(issue, dict)
+        and isinstance(issue.get("number"), int)
+        and not issue_has_label(issue, LABEL_PRIORITY)
+    ]
+    priority_issue_numbers = mark_issue_numbers_blocking_many_libraries_as_priority(
+        candidate_issue_numbers,
+        threshold,
+    )
+    for issue in issues:
+        issue_number = issue.get("number") if isinstance(issue, dict) else None
+        if issue_number in priority_issue_numbers:
+            add_issue_label_to_payload(issue, LABEL_PRIORITY)
+
+
+def try_mark_issues_blocking_many_libraries_as_priority(issues: list[dict]) -> None:
+    """Best-effort priority labeling for queue ordering."""
+    try:
+        mark_issues_blocking_many_libraries_as_priority(issues)
+    except GitHubRateLimitExceeded:
+        raise
+    except Exception as exc:
+        print(
+            "ERROR: Failed to mark blocker issues as priority; "
+            f"continuing without dependency priority updates: {format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
+
+
+def try_mark_issue_numbers_blocking_many_libraries_as_priority(issue_numbers: list[int]) -> None:
+    """Best-effort priority labeling for blockers discovered during claim checks."""
+    try:
+        mark_issue_numbers_blocking_many_libraries_as_priority(issue_numbers)
+    except GitHubRateLimitExceeded:
+        raise
+    except Exception as exc:
+        print(
+            "ERROR: Failed to mark blocker issues as priority; "
+            f"continuing without dependency priority updates: {format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
 
 
 def get_prioritized_issues_with_label(
@@ -954,10 +1430,9 @@ def get_prioritized_issues_with_label(
         priority_exhausted: bool = False,
 ) -> tuple[list[dict], int, int, bool, bool]:
     """Fetch one issue batch and return priority issues first within that batch."""
-    print()
-    log_stage("issue-scan", f"Searching issues for label '{label}' with priority issues first in the fetched batch")
     regular_issues = get_issues_with_label(label, limit, regular_offset)
     regular_offset += len(regular_issues)
+    try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
     sorted_issues = sorted(
         regular_issues,
         key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
@@ -979,7 +1454,14 @@ def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
     )
     if item_id:
         print()
-        log_stage("project-item", f"{item_id} Issue number: {issue_number}")
+        status_text = status if status is not None else "unknown"
+        log_stage(
+            "project-item",
+            (
+                f"Issue #{issue_number} is linked to GitHub project item {item_id} "
+                f"in project {PROJECT_NUMBER} with Status '{status_text}'"
+            ),
+        )
     return item_id, status
 
 
@@ -1094,7 +1576,7 @@ CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
 
 def get_authenticated_user() -> str:
     """Return the GitHub username of the currently authenticated gh user."""
-    result = gh("api", "user", "--jq", ".login")
+    result = run_github_with_retries(gh, ("api", "user", "--jq", ".login"))
     return result.stdout.strip()
 
 
@@ -1231,6 +1713,76 @@ def has_passing_pull_request_gates(pr: dict) -> bool:
     )
 
 
+def has_failed_pull_request_ci(pr: dict) -> bool:
+    """Return True when the pull request's combined CI status is failed."""
+    status_check_rollup = pr.get("statusCheckRollup")
+    ci_state = status_check_rollup.get("state") if isinstance(status_check_rollup, dict) else None
+    return ci_state in FAILED_CI_STATES
+
+
+def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
+    """Return GitHub Actions workflow runs for the pull request head commit."""
+    data = gh_json(
+        "api",
+        "--method",
+        "GET",
+        f"/repos/{REPO}/actions/runs",
+        "-F",
+        f"head_sha={head_sha}",
+        "-F",
+        "event=pull_request",
+        "-F",
+        "per_page=100",
+    )
+    workflow_runs = data.get("workflow_runs") if isinstance(data, dict) else None
+    if not isinstance(workflow_runs, list):
+        print(f"ERROR: Missing workflow runs for pull request head {head_sha}.", file=sys.stderr)
+        raise RuntimeError(f"Missing workflow runs for pull request head {head_sha}")
+    return workflow_runs
+
+
+def get_rerunnable_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
+    """Return failed GitHub Actions run IDs below the automated rerun limit."""
+    run_ids: list[int] = []
+    for workflow_run in workflow_runs:
+        if not isinstance(workflow_run, dict):
+            continue
+        run_id = workflow_run.get("id")
+        run_attempt = workflow_run.get("run_attempt")
+        conclusion = workflow_run.get("conclusion")
+        if (
+                isinstance(run_id, int)
+                and isinstance(run_attempt, int)
+                and run_attempt < MAX_AUTOMATED_WORKFLOW_RERUN_ATTEMPTS
+                and conclusion in RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS
+        ):
+            run_ids.append(run_id)
+    return run_ids
+
+
+def rerun_failed_pull_request_workflow_jobs(pr_number: int, head_sha: str) -> int:
+    """Rerun failed GitHub Actions jobs for the current pull request head SHA."""
+    workflow_runs = get_pull_request_workflow_runs(head_sha)
+    run_ids = get_rerunnable_failed_workflow_run_ids(workflow_runs)
+    if not run_ids:
+        print(
+            f"[No failed GitHub Actions workflow runs eligible for rerun on PR #{pr_number} "
+            f"at head {head_sha}.]"
+        )
+        return 0
+
+    for run_id in run_ids:
+        print(f"[Rerunning failed GitHub Actions jobs for PR #{pr_number}, workflow run {run_id}.]")
+        gh(
+            "api",
+            "--method",
+            "POST",
+            f"/repos/{REPO}/actions/runs/{run_id}/rerun-failed-jobs",
+        )
+
+    return len(run_ids)
+
+
 def resolve_pull_request_merge_flag(pr: dict) -> str:
     """Resolve the merge method flag, preferring squash merges by default."""
     repository = pr.get("repository")
@@ -1299,6 +1851,24 @@ def reconcile_reviewed_pull_request(pr_number: int) -> bool:
 
         if review_decision != "APPROVED":
             print(f"[Skipping merge for PR #{pr_number}: review decision is '{review_decision}'.]")
+            return True
+
+        if has_failed_pull_request_ci(pr):
+            head_sha = pr.get("headRefOid")
+            if not isinstance(head_sha, str) or not head_sha:
+                print(f"ERROR: Missing head SHA for approved PR #{pr_number} with failed CI.", file=sys.stderr)
+                raise RuntimeError(f"Missing head SHA for approved PR #{pr_number} with failed CI")
+            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
+            if rerun_count:
+                print(
+                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                    f"for approved PR #{pr_number}; skipping merge for this pass.]"
+                )
+            else:
+                print(
+                    f"[Skipping merge for approved PR #{pr_number}: CI failed, but no eligible "
+                    "GitHub Actions workflow runs were found to rerun.]"
+                )
             return True
 
         if not has_passing_pull_request_gates(pr):
@@ -1807,7 +2377,7 @@ def get_cached_field_info() -> tuple[str, str, dict[str, str]]:
     return project_node_id, field_id, option_ids
 
 
-def set_item_status(item_id: str, status: str):
+def set_item_status(item_id: str, status: str) -> None:
     """
     Update the Status field of a project item to the given status option name.
     """
@@ -1815,12 +2385,15 @@ def set_item_status(item_id: str, status: str):
     log_stage("project-status", f"Setting project item {item_id} -> {status}")
     project_node_id, field_id, option_ids = get_cached_field_info()
     option_id = option_ids.get(status)
-    gh(
-        "project", "item-edit",
-        "--id", item_id,
-        "--project-id", project_node_id,
-        "--field-id", field_id,
-        "--single-select-option-id", option_id,
+    run_github_command_with_retries(
+        gh,
+        (
+            "project", "item-edit",
+            "--id", item_id,
+            "--project-id", project_node_id,
+            "--field-id", field_id,
+            "--single-select-option-id", option_id,
+        ),
     )
 
 
@@ -2223,6 +2796,22 @@ def _build_failed_generation_fallback_comment(
     )
 
 
+def claimed_issue_worktree_is_valid(claimed_issue: ClaimedIssue, stage: str) -> bool:
+    """Return True when analysis agents may safely run in the claimed issue worktree."""
+    try:
+        require_claimed_issue_worktree(claimed_issue, stage)
+        return True
+    except Exception as exc:
+        print(
+            (
+                f"ERROR: Skipping {stage} for issue #{claimed_issue.issue['number']} "
+                f"because the claimed worktree is invalid: {exc!r}"
+            ),
+            file=sys.stderr,
+        )
+        return False
+
+
 def run_codex_failed_generation_analysis(
         claimed_issue: ClaimedIssue,
         candidate: HumanInterventionCandidate,
@@ -2232,6 +2821,13 @@ def run_codex_failed_generation_analysis(
     """Use Codex to analyze a failed library-generation run and write an issue comment."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     log_paths = collect_issue_log_paths(claimed_issue, started_at)
+    if not claimed_issue_worktree_is_valid(claimed_issue, "failed-run analysis"):
+        return _build_failed_generation_fallback_comment(
+            claimed_issue,
+            candidate,
+            log_paths,
+            preservation_result,
+        )
     prompt = _build_failed_generation_analysis_prompt(
         claimed_issue,
         candidate,
@@ -2326,6 +2922,8 @@ def run_human_intervention_analysis(
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
     read_only_files = _collect_human_intervention_read_only_files(claimed_issue)
     prompt = _build_human_intervention_analysis_prompt(claimed_issue, candidate)
+    if not claimed_issue_worktree_is_valid(claimed_issue, "human-intervention analysis"):
+        return _build_human_intervention_fallback_comment(claimed_issue, candidate)
 
     try:
         agent = init_workflow_agent(
@@ -2405,6 +3003,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     if label_name == LABEL_NOT_FOR_NATIVE_IMAGE:
         label_color = NOT_FOR_NATIVE_IMAGE_LABEL_COLOR
         label_description = NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION
+    elif label_name == LABEL_PRIORITY:
+        label_color = PRIORITY_LABEL_COLOR
+        label_description = PRIORITY_LABEL_DESCRIPTION
     elif label_name == LABEL_LARGE_LIBRARY_SERIES:
         label_color = LARGE_LIBRARY_LABEL_COLOR
         label_description = LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION
@@ -2494,6 +3095,28 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
     return f"https://github.com/{origin_owner}/{repo_name}/tree/{quote(branch_name, safe='')}"
 
 
+def require_claimed_issue_worktree(claimed_issue: ClaimedIssue, stage: str) -> str:
+    """Require the claimed issue path to be the exact isolated reachability worktree."""
+    try:
+        resolved_path = require_complete_reachability_repo(claimed_issue.worktree_path)
+    except SystemExit as exc:
+        raise RuntimeError(
+            (
+                f"Issue #{claimed_issue.issue['number']} {stage} requires a valid isolated "
+                f"worktree at {claimed_issue.worktree_path}."
+            )
+        ) from exc
+    expected_path = os.path.abspath(claimed_issue.worktree_path)
+    if resolved_path != expected_path:
+        raise RuntimeError(
+            (
+                f"Issue #{claimed_issue.issue['number']} {stage} resolved the wrong "
+                f"worktree root: expected {expected_path}, got {resolved_path}."
+            )
+        )
+    return resolved_path
+
+
 def copy_library_logs_to_preserved_worktree(claimed_issue: ClaimedIssue) -> str | None:
     """Copy the current library logs into the preserved worktree and return the repo-relative path."""
     safe_library_name = sanitize_library_log_segment(claimed_issue.issue_coordinates)
@@ -2527,27 +3150,29 @@ def copy_library_logs_to_preserved_worktree(claimed_issue: ClaimedIssue) -> str 
 def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
     """Commit and push the failed run worktree so it survives workspace cleanup."""
     branch_name = build_failure_preservation_branch_name(claimed_issue)
-    repo_path = claimed_issue.worktree_path
+    repo_path = require_claimed_issue_worktree(claimed_issue, "failure preservation")
+    git_env = git_env_limited_to_repo_root(repo_path)
     issue_number = claimed_issue.issue["number"]
 
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
-    subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, check=True)
+    subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
-    subprocess.run(["git", "add", "-A"], cwd=repo_path, check=True)
+    subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
     if logs_destination_relpath is not None:
-        subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, check=True)
-    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+        subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
+    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
     committed_changes = diff_result.returncode != 0
     if committed_changes:
         subprocess.run(
             ["git", "commit", "-m", f"Preserve failed automation work for issue #{issue_number}"],
             cwd=repo_path,
+            env=git_env,
             check=True,
         )
     else:
         log_stage("preserve-failed-work", f"No uncommitted work found for issue #{issue_number}; pushing branch at current HEAD.")
 
-    subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, check=True)
+    subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, env=git_env, check=True)
     branch_url = build_origin_branch_url(repo_path, branch_name)
     log_stage("preserve-failed-work", f"Preserved failed work for issue #{issue_number}: {branch_url}")
     return FailurePreservationResult(
@@ -2565,17 +3190,19 @@ def refresh_preserved_branch_logs(
     if preservation_result is None:
         return
 
-    repo_path = claimed_issue.worktree_path
+    repo_path = require_claimed_issue_worktree(claimed_issue, "preserved log refresh")
+    git_env = git_env_limited_to_repo_root(repo_path)
     issue_number = claimed_issue.issue["number"]
-    subprocess.run(["git", "switch", preservation_result.branch_name], cwd=repo_path, check=True)
+    subprocess.run(["git", "switch", preservation_result.branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
     if logs_destination_relpath is None:
         return
 
-    subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, check=True)
+    subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
     diff_result = subprocess.run(
         ["git", "diff", "--cached", "--quiet", "--", logs_destination_relpath],
         cwd=repo_path,
+        env=git_env,
         check=False,
     )
     if diff_result.returncode == 0:
@@ -2585,9 +3212,10 @@ def refresh_preserved_branch_logs(
     subprocess.run(
         ["git", "commit", "-m", f"Add automation logs for issue #{issue_number}"],
         cwd=repo_path,
+        env=git_env,
         check=True,
     )
-    subprocess.run(["git", "push"], cwd=repo_path, check=True)
+    subprocess.run(["git", "push"], cwd=repo_path, env=git_env, check=True)
     log_stage("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
 
 
@@ -2728,6 +3356,7 @@ def invoke_pipeline(
 ) -> bool:
     """Run the matching workflow for the claimed issue in its isolated worktree."""
     issue_number = claimed_issue.issue["number"]
+    require_claimed_issue_worktree(claimed_issue, "workflow execution")
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         print()
@@ -2978,7 +3607,7 @@ def get_work_queue_configs_from_environment(
             random_offset=(
                 random_offset_override
                 if random_offset_override is not None
-                else get_env_zero_one_bool("FORGE_RANDOM_WORK_OFFSET", True)
+                else get_env_zero_one_bool("FORGE_RANDOM_WORK_OFFSET", False)
             ),
         ),
     ]
@@ -3416,6 +4045,9 @@ def claim_issue_for_processing(
         large_library_resume_artifact_override: str | None = None,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
+    if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
+        return None
+
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
         return None
 
@@ -3437,7 +4069,7 @@ def claim_issue_for_processing(
         )
         return None
 
-    item_id = try_claim_issue(issue, authenticated_user)
+    item_id = try_claim_issue(issue, authenticated_user, label)
     if not item_id:
         return None
 
@@ -3511,17 +4143,37 @@ def run_claimed_issue(
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
     """Reset an issue claim back to Todo and clear all assignment, with verification."""
     print(f"\n[issue-revert] Reverting issue #{issue_number} claim because {reason}", file=sys.stderr)
+    revert_errors: list[Exception] = []
     print(f"[issue-revert] Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}", file=sys.stderr)
-    set_item_status(item_id, STATUS_TODO)
+    try:
+        set_item_status(item_id, STATUS_TODO)
+    except Exception as exc:
+        revert_errors.append(exc)
+        print(
+            f"ERROR: Issue #{issue_number} revert could not set project item {item_id} "
+            f"to {STATUS_TODO}: {format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
     print(f"[issue-revert] Reverting issue #{issue_number}: clearing all assignees", file=sys.stderr)
-    clear_issue_assignees(issue_number)
+    try:
+        clear_issue_assignees(issue_number)
+    except Exception as exc:
+        revert_errors.append(exc)
+        print(
+            f"ERROR: Issue #{issue_number} revert could not clear assignees: "
+            f"{format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
     verified_status = get_item_status(item_id)
     verified_assignees = get_issue_assignees(issue_number)
     if verified_status != STATUS_TODO or verified_assignees:
-        raise RuntimeError(
+        verification_error = RuntimeError(
             f"Issue #{issue_number} revert verification failed: "
             f"status={verified_status!r}, assignees={verified_assignees!r}"
         )
+        if revert_errors:
+            raise verification_error from revert_errors[0]
+        raise verification_error
     invalidate_issue_claim_cache_entry(issue_number)
     print(
         f"ERROR: Issue #{issue_number} failed due to {reason}; verified revert with "
@@ -3588,6 +4240,7 @@ def finalize_successful_issue(
         claimed_issue: ClaimedIssue,
 ) -> None:
     """Create the PR for a successful isolated workflow run."""
+    require_claimed_issue_worktree(claimed_issue, "successful finalization")
     large_library_state_path = find_progress_state_path(
         claimed_issue.scratch_metrics_repo_path,
         claimed_issue.issue["number"],
@@ -3801,6 +4454,7 @@ def process_claimed_issue_lifecycle(
             if is_interrupt_exception(exc) or is_user_interrupt_requested():
                 mark_user_interrupt_requested()
                 revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                raise
             else:
                 try:
                     handle_failed_claimed_issue(
@@ -3822,6 +4476,7 @@ def process_claimed_issue_lifecycle(
                     mark_user_interrupt_requested()
                     revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
                     raise
+                return False
         raise
     finally:
         try:
@@ -4018,6 +4673,45 @@ def get_issue_claim_cache_observation_from_payload(
     return None
 
 
+def refresh_issue_payload_for_claim(
+        issue: dict,
+        required_label: str | None = None,
+        authenticated_user: str | None = None,
+) -> bool:
+    """Refresh mutable issue state and return whether it remains claimable."""
+    issue_number = issue.get("number")
+    if not isinstance(issue_number, int):
+        return False
+
+    fresh_issue = get_issue_claim_payload(issue_number)
+    issue.clear()
+    issue.update(fresh_issue)
+
+    state = str(issue.get("state", "")).upper()
+    if state and state != "OPEN":
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=issue_number,
+                reason=ISSUE_CLAIM_CACHE_REASON_CLOSED,
+            )
+        ])
+        return False
+
+    if required_label is not None and not issue_has_label(issue, required_label):
+        log_stage(
+            "issue-claim",
+            f"Skipping issue #{issue_number}: it no longer has label '{required_label}'",
+        )
+        return False
+
+    observation = get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
+    if observation is not None:
+        record_issue_claim_cache_observations([observation])
+        return False
+
+    return True
+
+
 def get_issue_claim_cache_observation_from_preflight(
         preflight: IssueClaimPreflight,
         authenticated_user: str | None = None,
@@ -4067,6 +4761,8 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
         blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
         return f"recently cached as blocked by open issue(s) {blockers_text}"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_CLOSED:
+        return "recently cached as closed"
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM:
         return f"recently cached as missing project {PROJECT_NUMBER} item"
     if cached_skip.reason in {ISSUE_CLAIM_CACHE_REASON_NON_TODO, ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS}:
@@ -4192,15 +4888,6 @@ def should_skip_issue_from_preflight(
 ) -> bool:
     number = issue["number"]
 
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
-        return True
-    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        return True
-
-    payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
-        return True
-
     cached_large_library_continuation = (
         cached_skip is not None
         and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
@@ -4264,7 +4951,11 @@ def is_issue_blocked(issue_number: int) -> bool:
     return bool(get_open_blocking_issue_numbers(issue_number))
 
 
-def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
+def try_claim_issue(
+        issue: dict,
+        authenticated_user: str,
+        required_label: str | None = None,
+) -> Optional[str]:
     """
     Attempt to exclusively claim an issue.
 
@@ -4279,28 +4970,13 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
     """
     number = issue["number"]
 
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
-            )
-        ])
-        return None
-    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
-            )
-        ])
-        return None
-
     claim_lock = try_acquire_issue_claim_lock(number)
     if claim_lock is None:
         return None
 
     try:
+        if not refresh_issue_payload_for_claim(issue, required_label, authenticated_user):
+            return None
         return try_claim_issue_with_local_lock(issue, authenticated_user)
     finally:
         claim_lock.release()
@@ -4313,6 +4989,7 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
     # Skip if blocked by another issue
     open_blockers = get_open_blocking_issue_numbers(number)
     if open_blockers:
+        try_mark_issue_numbers_blocking_many_libraries_as_priority(open_blockers)
         record_issue_claim_cache_observations([
             IssueClaimCacheObservation(
                 issue_number=number,
@@ -4440,6 +5117,45 @@ def get_issue_scan_batch_size(_remaining_limit: int, _available_slots: int) -> i
     return DEFAULT_ISSUE_SCAN_BATCH_SIZE
 
 
+def format_issue_scan_position(
+        offset: int,
+        current_offset: int,
+        priority_offset: int,
+        regular_offset: int,
+) -> str:
+    """Return a concise description of the current issue scan position."""
+    if offset == 0:
+        return f"priority offset {priority_offset}, regular offset {regular_offset}"
+    return f"offset {current_offset}"
+
+
+def log_issue_scan_start(label: str, offset: int) -> None:
+    """Log where an issue scan starts."""
+    if offset == 0:
+        position = "from the most recently updated issues with priority-first ordering"
+    else:
+        position = f"from offset {offset}"
+    print()
+    log_stage("issue-scan", f"Starting issue scan for label '{label}' {position}")
+
+
+def log_issue_scan_progress(
+        label: str,
+        scanned_count: int,
+        offset: int,
+        current_offset: int,
+        priority_offset: int,
+        regular_offset: int,
+) -> None:
+    """Log issue scan progress after another interval of candidates was inspected."""
+    position = format_issue_scan_position(offset, current_offset, priority_offset, regular_offset)
+    print()
+    log_stage(
+        "issue-scan",
+        f"Looked through {scanned_count} issue(s) for label '{label}' ({position})",
+    )
+
+
 def resolve_random_issue_scan_offset(label: str) -> int:
     """Choose a random searchable offset for an issue label."""
     issue_count = count_issues_with_label(label)
@@ -4480,6 +5196,8 @@ def process_issues_with_label(
     authenticated_user = resolve_authenticated_user(authenticated_user)
 
     processed_count = 0
+    scanned_count = 0
+    next_scan_progress_log_count = ISSUE_SCAN_PROGRESS_LOG_INTERVAL
     current_offset = offset
     priority_offset = 0
     regular_offset = 0
@@ -4488,6 +5206,8 @@ def process_issues_with_label(
     unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
     active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
+
+    log_issue_scan_start(label, offset)
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=parallelism)
     try:
@@ -4527,23 +5247,22 @@ def process_issues_with_label(
                                 exhausted = True
                                 break
 
-                        payload_cache_observations = [
-                            observation
-                            for observation in (
-                                get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
-                                for issue in issues
-                            )
-                            if observation is not None
-                        ]
-                        record_issue_claim_cache_observations(payload_cache_observations)
-
                         cached_skips = get_cached_issue_claim_skips(issues, authenticated_user)
                         unresolved_candidates.extend(
                             (issue, cached_skips.get(issue["number"]))
                             for issue in issues
                         )
-                        print()
-                        log_stage("issue-scan", f"Found {len(issues)} issue(s) to consider")
+                        scanned_count += len(issues)
+                        while scanned_count >= next_scan_progress_log_count:
+                            log_issue_scan_progress(
+                                label,
+                                next_scan_progress_log_count,
+                                offset,
+                                current_offset,
+                                priority_offset,
+                                regular_offset,
+                            )
+                            next_scan_progress_log_count += ISSUE_SCAN_PROGRESS_LOG_INTERVAL
                         continue
                     else:
                         break
@@ -4614,6 +5333,8 @@ def process_issues_with_label(
     finally:
         executor.shutdown(wait=False, cancel_futures=True)
 
+    print()
+    log_stage("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
     return processed_count
 
 
@@ -4744,6 +5465,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--continue-large-library-artifact",
         metavar="PATH",
         help="Resume a large-library series from a durable progress state JSON artifact.",
+    )
+    mode.add_argument(
+        "--clear-issue-caches",
+        action="store_true",
+        help="Delete local issue claim/search caches used by work-queue scanning and exit.",
     )
 
     parser.add_argument(
@@ -4894,6 +5620,9 @@ def main() -> None:
     args = parse_args()
 
     try:
+        if args.clear_issue_caches:
+            clear_issue_caches()
+            return
         if args.strategy_name:
             require_strategy_by_name(args.strategy_name)
         if args.review_pr is None and not args.run_work_queues:

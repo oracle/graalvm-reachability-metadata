@@ -37,6 +37,7 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
             defaultArgs.add("-Porg.gradle.java.installations.auto-detect=false");
             defaultArgs.add("-Porg.gradle.java.installations.paths=" + installPathsProperty.get());
         }
+        appendProperty(defaultArgs, "metadataConfigDirs");
         return defaultArgs;
     }
 

@@ -239,15 +239,18 @@ Rules:
 
 ### Terminal native-test verification gate
 
-After the agent (or the codex/Pi cascade) produces its final edit, the
-runtime fix workflow invokes the
+After the agent (or the configured post-generation intervention) produces
+its final edit, the runtime fix workflow invokes the
 [native test verification gate](../docs/native-test-verification.md) once
 with `output_dir = tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/`
-as the workflow's terminal success criterion. The gate iteratively re-runs
-the trace loop and `./gradlew nativeTest` until the test passes or the
-`max-native-test-verification-iterations` budget is exhausted. A `FAILED`
-gate result aborts the workflow with `RUN_STATUS_FAILURE`; partial
-recovery is not an acceptable terminal state. This is the same component
-used by the [dynamic-access workflow](../docs/dynamic-access-workflow.md)
-per-class gate, configured with a single global output directory instead
-of a per-class one.
+as the workflow's terminal success criterion. The gate first runs
+`./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar`,
+then runs `./gradlew test -Pcoordinates=<g:a:v>`. If native testing still
+fails, it uses native tracing as a fallback; if tracing stalls, exhausts its
+budget, times out, or fails for a non-metadata reason, Codex is the final
+recovery step. A `FAILED` gate result aborts the workflow with
+`RUN_STATUS_FAILURE`; partial recovery is not an acceptable terminal state.
+This is the same component used by the
+[dynamic-access workflow](../docs/dynamic-access-workflow.md) per-class
+gate, configured with a single global output directory instead of a
+per-class one.

@@ -324,6 +324,30 @@ class GitHubRateLimitTests(unittest.TestCase):
         self.assertEqual(gh.call_count, 2)
         sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
 
+    def test_get_authenticated_login_retries_transient_timeout(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr='Get "https://api.github.com/user": dial tcp 140.82.121.5:443: i/o timeout',
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="vjovanov\n",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            self.assertEqual(common_git.get_authenticated_login(cwd="/repo"), "vjovanov")
+
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(run.call_args_list[0].kwargs["cwd"], "/repo")
+        self.assertEqual(run.call_args_list[1].kwargs["cwd"], "/repo")
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+
 
 if __name__ == "__main__":
     unittest.main()

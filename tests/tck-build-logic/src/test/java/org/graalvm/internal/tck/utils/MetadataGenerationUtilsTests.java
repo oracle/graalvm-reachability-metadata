@@ -131,6 +131,63 @@ class MetadataGenerationUtilsTests {
                 .containsEntry("tested-versions", List.of("2.0.0", "2.1.0"));
     }
 
+    @Test
+    void addVersionToIndexJsonPreservesLatestEntryForHistoricalBackfill() throws IOException {
+        String group = "com.graphql-java";
+        String artifact = "graphql-java";
+        String backfillVersion = "2018-06-27T00-18-28-1e12da9";
+        writeIndex(
+                group,
+                artifact,
+                """
+                [
+                  {
+                    "latest" : true,
+                    "metadata-version" : "19.7",
+                    "tested-versions" : [
+                      "19.7",
+                      "24.3",
+                      "25.0",
+                      "26.0"
+                    ],
+                    "allowed-packages" : [
+                      "graphql"
+                    ]
+                  },
+                  {
+                    "metadata-version" : "19.2",
+                    "tested-versions" : [
+                      "19.2",
+                      "19.3"
+                    ],
+                    "allowed-packages" : [
+                      "graphql"
+                    ]
+                  }
+                ]
+                """
+        );
+
+        MetadataGenerationUtils.addVersionToIndexJson(
+                createProject().getLayout(),
+                Coordinates.parse(group + ":" + artifact + ":" + backfillVersion),
+                null
+        );
+
+        List<Map<String, Object>> entries = readIndex(group, artifact);
+        assertThat(entries.stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.get("latest")))
+                .map(entry -> entry.get("metadata-version")))
+                .containsExactly("19.7");
+        assertThat(findEntry(entries, "19.7"))
+                .containsEntry("tested-versions", List.of("19.7", "24.3", "25.0", "26.0"));
+        assertThat(entries.get(1))
+                .doesNotContainKey("latest")
+                .containsEntry("metadata-version", backfillVersion)
+                .containsEntry("tested-versions", List.of(backfillVersion))
+                .containsEntry("allowed-packages", List.of("graphql"));
+    }
+
     private Project createProject() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())

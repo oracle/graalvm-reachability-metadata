@@ -9,7 +9,12 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.java_fail_workflow import JAVAC_CONFIG, copy_and_prepare_project_dir, create_project_prep_checkpoint
+from ai_workflows.java_fail_workflow import (
+    JAVAC_CONFIG,
+    copy_and_prepare_project_dir,
+    create_project_prep_checkpoint,
+    reset_failed_java_fix_worktree,
+)
 
 
 class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
@@ -61,3 +66,47 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
         self.assertEqual(run.call_count, 3)
         self.assertEqual(run.call_args_list[2].args[0], ["git", "diff", "--cached", "--quiet"])
         check_output.assert_called_once_with(["git", "rev-parse", "HEAD"], text=True)
+
+    def test_failed_workflow_reset_preserves_last_passing_candidate(self) -> None:
+        with patch("ai_workflows.java_fail_workflow.subprocess.run") as run, \
+                patch(
+                    "ai_workflows.java_fail_workflow.subprocess.check_output",
+                    return_value="candidate\n",
+                ) as check_output, \
+                patch("ai_workflows.java_fail_workflow.shutil.rmtree") as rmtree:
+            ending_commit = reset_failed_java_fix_worktree(
+                reachability_repo_path="/repo",
+                commit_checkpoint="prep",
+                last_passing_candidate_commit="candidate",
+                tests_dir="/repo/tests/src/org.example/demo/2.0.0",
+                metadata_dir="/repo/metadata/org.example/demo/2.0.0",
+                tests_dir_preexisted=False,
+                metadata_dir_preexisted=False,
+            )
+
+        self.assertEqual(ending_commit, "candidate")
+        run.assert_called_once_with(["git", "reset", "--hard", "candidate"], cwd="/repo", check=True)
+        check_output.assert_called_once_with(["git", "rev-parse", "HEAD"], cwd="/repo", text=True)
+        rmtree.assert_not_called()
+
+    def test_failed_workflow_reset_cleans_scaffold_when_no_candidate_passed(self) -> None:
+        with patch("ai_workflows.java_fail_workflow.subprocess.run") as run, \
+                patch(
+                    "ai_workflows.java_fail_workflow.subprocess.check_output",
+                    return_value="prep\n",
+                ), \
+                patch("ai_workflows.java_fail_workflow.shutil.rmtree") as rmtree:
+            ending_commit = reset_failed_java_fix_worktree(
+                reachability_repo_path="/repo",
+                commit_checkpoint="prep",
+                last_passing_candidate_commit=None,
+                tests_dir="/repo/tests/src/org.example/demo/2.0.0",
+                metadata_dir="/repo/metadata/org.example/demo/2.0.0",
+                tests_dir_preexisted=False,
+                metadata_dir_preexisted=False,
+            )
+
+        self.assertEqual(ending_commit, "prep")
+        run.assert_called_once_with(["git", "reset", "--hard", "prep"], cwd="/repo", check=True)
+        rmtree.assert_any_call("/repo/tests/src/org.example/demo/2.0.0", ignore_errors=True)
+        rmtree.assert_any_call("/repo/metadata/org.example/demo/2.0.0", ignore_errors=True)

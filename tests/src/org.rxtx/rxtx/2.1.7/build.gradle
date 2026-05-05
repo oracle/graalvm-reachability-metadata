@@ -1,0 +1,74 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+Provider<Directory> rxtxNativeLibraryDirectory = layout.buildDirectory.dir("rxtx-native")
+Provider<RegularFile> rxtxNativeLibrary = rxtxNativeLibraryDirectory.map {
+    it.file("librxtxSerial.so")
+}
+
+TaskProvider<Exec> compileRxtxSerial = tasks.register("compileRxtxSerial", Exec) {
+    File rxtxSerialSource = layout.projectDirectory.file("src/test/c/rxtxSerial.c").asFile
+    inputs.file(rxtxSerialSource)
+    outputs.file(rxtxNativeLibrary)
+
+    doFirst {
+        File nativeLibraryDirectory = rxtxNativeLibraryDirectory.get().asFile
+        nativeLibraryDirectory.mkdirs()
+        commandLine "gcc",
+                "-shared",
+                "-fPIC",
+                "-I${System.getProperty('java.home')}/include",
+                "-I${System.getProperty('java.home')}/include/linux",
+                "-o",
+                rxtxNativeLibrary.get().asFile.absolutePath,
+                rxtxSerialSource.absolutePath
+    }
+}
+
+String rxtxNativeLibraryPath = rxtxNativeLibraryDirectory.get().asFile.absolutePath
+
+dependencies {
+    testImplementation "org.rxtx:rxtx:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.named("test") {
+    dependsOn compileRxtxSerial
+    systemProperty "java.library.path", rxtxNativeLibraryPath
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn compileRxtxSerial
+}
+
+tasks.named("nativeTest") {
+    dependsOn compileRxtxSerial
+    runtimeArgs.add("-Djava.library.path=${rxtxNativeLibraryPath}")
+    environment.put("LD_LIBRARY_PATH", rxtxNativeLibraryPath)
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Djava.library.path=${rxtxNativeLibraryPath}")
+            buildArgs.add("--initialize-at-run-time=gnu.io.CommPortIdentifier,gnu.io.RXTXCommDriver,gnu.io.RXTXVersion")
+        }
+    }
+
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

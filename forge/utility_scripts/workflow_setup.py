@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
@@ -81,7 +82,7 @@ def run_gradle_test_with_graalvm(repo_path: str, library: str, graalvm_home: str
     return subprocess.run(
         ["./gradlew", "test", f"-Pcoordinates={library}"],
         cwd=repo_path,
-        env=build_graalvm_environment(graalvm_home),
+        env=gradle_command_environment(repo_path, build_graalvm_environment(graalvm_home)),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,

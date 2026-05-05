@@ -7,10 +7,16 @@
 package h2;
 
 import org.h2.api.Interval;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,14 +29,39 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Moritz Halbritter
  */
-class H2Test {
+public class H2Test {
+    private static final Path FILE_DATABASE_DIRECTORY = Paths.get("data");
+
+    @BeforeAll
+    static void configureJavaObjectSerializerProperty() {
+        System.setProperty("h2.javaObjectSerializer", JdbcUtilsTest.TestJavaObjectSerializer.class.getName());
+    }
+
+    @BeforeEach
+    void cleanupFileBackedDatabase() throws IOException {
+        if (!Files.exists(FILE_DATABASE_DIRECTORY)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(FILE_DATABASE_DIRECTORY)) {
+            paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete " + path, e);
+                }
+            });
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"jdbc:h2:./data/test", "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"})
     void test(String url) throws Exception {

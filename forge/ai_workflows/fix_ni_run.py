@@ -10,6 +10,7 @@ import sys
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.source_context import populate_artifact_urls
@@ -62,6 +63,7 @@ def run_fix_test_native_image_run(
             f"-PnewLibraryVersion={new_version}",
         ],
         cwd=reachability_metadata_path,
+        env=gradle_command_environment(reachability_metadata_path),
     )
 
 
@@ -77,6 +79,7 @@ def run_gradle_test(
             f"-Pcoordinates={coordinates}",
         ],
         cwd=reachability_metadata_path,
+        env=gradle_command_environment(reachability_metadata_path),
     )
 
 

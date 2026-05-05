@@ -20,7 +20,7 @@ LIBRARY_UPDATE_WORK_LIMIT="${FORGE_LIBRARY_UPDATE_WORK_LIMIT:-1}"
 LIBRARY_UPDATE_WORK_STRATEGY_NAME="${FORGE_LIBRARY_UPDATE_STRATEGY_NAME:-}"
 WORK_LABEL="${FORGE_WORK_LABEL:-library-new-request}"
 WORK_LIMIT="${FORGE_WORK_LIMIT:-1}"
-RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-1}"
+RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-0}"
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
@@ -31,6 +31,7 @@ MAX_PARALLELISM=4
 RUN_ONCE=0
 REQUEST_STOP=0
 CLEAR_STOP=0
+CLEAR_ISSUE_CACHES=0
 BRANCH_ARG_PROVIDED=0
 SLEEP_POLL_SECONDS="${FORGE_DO_WORK_SLEEP_POLL_SECONDS:-5}"
 
@@ -76,6 +77,9 @@ Options:
   --clear-stop, --resume
       Clear the matching global or branch-scoped stop marker so future do-work
       loops can run.
+  --clear-issue-caches
+      Delete local issue claim/search caches used by work-queue scanning and
+      exit.
   --branch BRANCH
       Branch to monitor on origin. Equivalent to the optional positional
       metadata-forge-branch argument.
@@ -92,9 +96,10 @@ Options:
       Process up to N new-library tasks per run; 0 disables it. Defaults to
       FORGE_WORK_LIMIT, then 1.
   --random-offset
-      Start new-library issue scans at a random offset. This is the default.
+      Start new-library issue scans at a random offset.
   --no-random-offset
-      Start new-library issue scans from the beginning of the issue list.
+      Start new-library issue scans from the beginning of the issue list. This
+      is the default.
   --parallelism N
       Run up to N issue workflows in parallel. Defaults to FORGE_PARALLELISM,
       then 1. The maximum is 4.
@@ -118,7 +123,7 @@ Environment:
       Path to the shared stop marker. Defaults to ~/.metadata-forge-stop.
   FORGE_RANDOM_WORK_OFFSET
       Set to 1 to start new-library issue scans at a random offset, or 0 to
-      scan from the beginning. Defaults to 1.
+      scan from the beginning. Defaults to 0.
   FORGE_PARALLELISM
       Run up to this many issue workflows in parallel. Defaults to 1. The
       maximum is 4.
@@ -134,6 +139,7 @@ Examples:
   $0 master
   $0 --javac-limit 3 --new-limit 1
   $0 --once --branch master
+  $0 --clear-issue-caches
   DO_WORK_SLEEP_SECONDS=60 $0 origin/main
 EOF
 }
@@ -446,6 +452,10 @@ while [[ "$#" -gt 0 ]]; do
             CLEAR_STOP=1
             shift
             ;;
+        --clear-issue-caches)
+            CLEAR_ISSUE_CACHES=1
+            shift
+            ;;
         --branch)
             require_option_value "$1" "${2:-}"
             BRANCH_ARG="$2"
@@ -555,6 +565,11 @@ if [[ "$MONITORED_BRANCH" == "" ]]; then
     echo "metadata-forge branch must not be empty." >&2
     usage >&2
     exit 1
+fi
+
+if [[ "$CLEAR_ISSUE_CACHES" == "1" ]]; then
+    "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" --clear-issue-caches
+    exit 0
 fi
 
 require_stop_file

@@ -60,7 +60,7 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [CI.md](CI.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
-- Schedule-driven: full metadata sweep, new-library-version compatibility (every 4 hours), Docker image vulnerability scans, scheduled release every two weeks, scheduled coverage publication.
+- Schedule-driven: full metadata sweep, new-library-version compatibility (daily), Docker image vulnerability scans, scheduled release every two weeks, scheduled coverage publication.
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
@@ -73,7 +73,7 @@ Every two weeks the `create-scheduled-release` workflow packages metadata if it 
 `publish-scheduled-coverage.yml` derives, from committed `stats/` and `metadata/**/index.json`:
 - `latest/badges.json` — badges shown in the README (libraries supported, tested versions, dynamic-access coverage, tested LOC).
 - `latest/libraries.json` — per-library metrics.
-- `latest/metrics-over-time.svg` — historical chart referenced from [COVERAGE.md](../COVERAGE.md).
+- `latest/metrics-over-time.svg` and `latest/metrics-over-time-dark.svg` — light and dark historical charts referenced from [COVERAGE.md](../COVERAGE.md).
 - `history/history.json` — append-only history.
 
 These are force-pushed to the `stats/coverage` branch.

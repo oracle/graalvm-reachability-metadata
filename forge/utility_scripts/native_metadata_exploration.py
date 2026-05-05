@@ -31,6 +31,7 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Any
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
@@ -232,6 +233,7 @@ def _run_gradle(cmd: list[str], cwd: str, log_path: str, timeout_seconds: int) -
             result = subprocess.run(
                 cmd,
                 cwd=cwd,
+                env=gradle_command_environment(cwd),
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 check=False,

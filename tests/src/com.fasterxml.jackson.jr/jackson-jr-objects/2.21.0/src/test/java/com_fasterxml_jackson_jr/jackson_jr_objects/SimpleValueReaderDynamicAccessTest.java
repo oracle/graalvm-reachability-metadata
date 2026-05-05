@@ -24,39 +24,39 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class SimpleValueReaderDynamicAccessTest {
     @Test
     void resolvesTopLevelClassesFromStringValues() throws Exception {
-        String className = loadableClassName();
+        String className = runtimeJdkClassName();
 
         Class<?> resolved = JSON.std.beanFrom(Class.class, '"' + className + '"');
 
-        assertThat(resolved).isEqualTo(LoadableType.class);
+        assertThat(resolved.getName()).isEqualTo(className);
     }
 
     @Test
     void resolvesClassTypedBeanPropertiesFromStringValues() throws Exception {
-        String className = loadableClassName();
+        String className = runtimeJdkClassName();
 
         TypeHolder holder = JSON.std.beanFrom(TypeHolder.class,
                 "{\"type\":\"" + className + "\"}");
 
-        assertThat(holder.type).isEqualTo(LoadableType.class);
+        assertThat(holder.type.getName()).isEqualTo(className);
     }
 
     @Test
     void resolvesClassesInsideTypedMapsAndLists() throws Exception {
-        String className = loadableClassName();
+        String className = runtimeJdkClassName();
 
         Map<String, Class> classesByName = JSON.std.mapOfFrom(Class.class,
                 "{\"primary\":\"" + className + "\"}");
         List<Class> classes = JSON.std.listOfFrom(Class.class,
                 "[\"" + className + "\"]");
 
-        assertThat(classesByName.get("primary")).isEqualTo(LoadableType.class);
-        assertThat(classes).singleElement().isEqualTo(LoadableType.class);
+        assertThat(classesByName.get("primary").getName()).isEqualTo(className);
+        assertThat(classes).singleElement().satisfies(type -> assertThat(type.getName()).isEqualTo(className));
     }
 
     @Test
     void readsClassNamesWithSimpleValueReader() throws Exception {
-        String className = loadableClassName();
+        String className = runtimeJdkClassName();
         SimpleValueReader reader = new SimpleValueReader(Class.class, SER_CLASS);
         JsonFactory jsonFactory = new JsonFactory();
 
@@ -64,7 +64,22 @@ public class SimpleValueReaderDynamicAccessTest {
             parser.nextToken();
             Object resolved = reader.read(null, parser);
 
-            assertThat(resolved).isEqualTo(LoadableType.class);
+            assertThat(resolved).isInstanceOf(Class.class);
+            assertThat(((Class<?>) resolved).getName()).isEqualTo(className);
+        }
+    }
+
+    @Test
+    void readsClassNamesFromTheStreamingEntryPoint() throws Exception {
+        String className = runtimeJdkClassName();
+        SimpleValueReader reader = new SimpleValueReader(Class.class, SER_CLASS);
+        JsonFactory jsonFactory = new JsonFactory();
+
+        try (JsonParser parser = jsonFactory.createParser('"' + className + '"')) {
+            Object resolved = reader.readNext(null, parser);
+
+            assertThat(resolved).isInstanceOf(Class.class);
+            assertThat(((Class<?>) resolved).getName()).isEqualTo(className);
         }
     }
 
@@ -77,16 +92,13 @@ public class SimpleValueReaderDynamicAccessTest {
                 .hasMessage("Failed to bind `java.lang.Class` from value '" + className + "'");
     }
 
-    private static String loadableClassName() {
+    private static String runtimeJdkClassName() {
         String propertyName = "simple.value.reader.class." + System.nanoTime();
-        System.setProperty(propertyName, LoadableType.class.getName());
+        System.setProperty(propertyName, String.join(".", "java", "util", "LinkedHashMap"));
         return System.getProperty(propertyName);
     }
 
     public static final class TypeHolder {
         public Class<?> type;
-    }
-
-    public static final class LoadableType {
     }
 }

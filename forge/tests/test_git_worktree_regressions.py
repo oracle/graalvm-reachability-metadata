@@ -80,6 +80,14 @@ class GitWorktreeRegressionTests(unittest.TestCase):
 
             self.assertEqual(require_complete_reachability_repo(repo_root), repo_root)
 
+    def test_complete_reachability_repo_validation_accepts_symlink_to_full_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
+            link_root = os.path.join(temp_dir, "linked-repo")
+            os.symlink(repo_root, link_root)
+
+            self.assertEqual(require_complete_reachability_repo(link_root), os.path.abspath(link_root))
+
     def test_complete_reachability_repo_validation_rejects_partial_library_dir(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             partial_dir = os.path.join(temp_dir, "tests", "src", "org.example", "demo", "1.0.0")
@@ -95,6 +103,17 @@ class GitWorktreeRegressionTests(unittest.TestCase):
 
             with self.assertRaises(SystemExit):
                 require_complete_reachability_repo(artifact_dir)
+
+    def test_complete_reachability_repo_validation_rejects_nested_leftover_worktree(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
+            leftover_dir = os.path.join(repo_root, "forge", "local_repositories", "forge_worktrees", "1412-deadbeef")
+            os.makedirs(os.path.join(leftover_dir, "tests"), exist_ok=True)
+            os.makedirs(os.path.join(leftover_dir, "build"), exist_ok=True)
+
+            self.assertEqual(_git(["rev-parse", "--show-toplevel"], cwd=leftover_dir).stdout.strip(), repo_root)
+            with self.assertRaises(SystemExit):
+                require_complete_reachability_repo(leftover_dir)
 
     def test_complete_reachability_repo_validation_rejects_checkout_missing_gradlew(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -190,6 +209,42 @@ class GitWorktreeRegressionTests(unittest.TestCase):
             self.assertEqual(scratch_metrics_path, os.path.join(worktree_path, "forge"))
             validate.assert_called_once_with(worktree_path)
             _git(["worktree", "remove", "--force", worktree_path], cwd=reachability_repo)
+
+    def test_failed_work_preservation_rejects_broken_nested_worktree_without_switching_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            reachability_repo = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
+            broken_worktree_path = os.path.join(
+                reachability_repo,
+                "forge",
+                "local_repositories",
+                "forge_worktrees",
+                "1412-deadbeef",
+            )
+            os.makedirs(os.path.join(broken_worktree_path, "tests"), exist_ok=True)
+            claimed_issue = forge_metadata.ClaimedIssue(
+                issue={
+                    "number": 1412,
+                    "title": "Add support for org.example:lib:1.0.0",
+                },
+                label=forge_metadata.LABEL_LIBRARY_NEW,
+                item_id="item-1",
+                base_reachability_metadata_path=reachability_repo,
+                worktree_path=broken_worktree_path,
+                scratch_metrics_repo_path=os.path.join(broken_worktree_path, "forge"),
+                issue_coordinates="org.example:lib:1.0.0",
+            )
+
+            forge_metadata.preservation_failed_worktree_paths.clear()
+            with patch.object(
+                    forge_metadata,
+                    "build_failure_preservation_branch_name",
+                    return_value="ai/test/human-intervention/issue-1412",
+            ):
+                preservation_result = forge_metadata.preserve_failed_work_for_follow_up(claimed_issue)
+
+            self.assertIsNone(preservation_result)
+            self.assertEqual(_git(["branch", "--show-current"], cwd=reachability_repo).stdout.strip(), "master")
+            self.assertIn(broken_worktree_path, forge_metadata.preservation_failed_worktree_paths)
 
     def test_ensure_local_metrics_repo_accepts_git_worktrees(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

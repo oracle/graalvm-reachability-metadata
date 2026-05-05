@@ -33,6 +33,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
@@ -276,6 +277,7 @@ def run_scaffold(library: str) -> bool:
     scaffold_proc = subprocess.run(
         f"./gradlew scaffold --coordinates={library} --rerun-tasks",
         shell=True,
+        env=gradle_command_environment(os.getcwd()),
         capture_output=True,
         text=True
     )

@@ -43,9 +43,10 @@ At a glance:
 >
 > The deterministic loop specified here is also composed into the
 > [native test verification gate](native-test-verification.md), which
-> wraps it with `nativeTest` execution and codex/Pi recovery so callers
-> can assert "Native Image tests pass" rather than just "metadata was
-> collected".
+> runs JVM-agent metadata collection first, uses this trace contract only as
+> a fallback when `nativeTest` still fails, and routes terminal recovery to
+> Codex so callers can assert "Native Image tests pass" rather than just
+> "metadata was collected".
 
 ## 1. Purpose
 
@@ -282,9 +283,10 @@ whenever earlier iterations produced accepted traces; callers must inspect
 both `failure` and `output_dir`.
 
 The module must not depend on any workflow strategy or intervention.
-Sequencing with `generateMetadata`, codex fixup, agent hand-off, etc. is
-the responsibility of the `native_trace_collect` intervention that wraps
-it (see §8 and §9).
+Sequencing with `generateMetadata`, native-test verification, codex fixup,
+agent hand-off, etc. is the responsibility of the caller that wraps it
+(see §8 and §9). In the native-test verification gate, that caller runs
+JVM-agent metadata first and reaches this trace loop only as fallback.
 
 ## 7. Required Gradle Support
 

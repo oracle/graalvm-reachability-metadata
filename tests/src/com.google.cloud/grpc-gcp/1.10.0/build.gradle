@@ -1,0 +1,33 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.google.cloud:grpc-gcp:$libraryVersion"
+    testImplementation 'com.google.api:api-common:2.1.5'
+    testImplementation 'com.google.protobuf:protobuf-java:3.25.5'
+    testImplementation 'com.google.protobuf:protobuf-java-util:3.25.5'
+    testImplementation 'io.grpc:grpc-api:1.69.0'
+    testImplementation 'io.opencensus:opencensus-api:0.28.3'
+    testImplementation 'io.opentelemetry:opentelemetry-api:1.46.0'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

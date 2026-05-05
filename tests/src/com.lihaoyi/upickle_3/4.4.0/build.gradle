@@ -1,0 +1,59 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+import org.gradle.api.tasks.testing.Test
+
+import java.io.File
+
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    id "scala"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.lihaoyi:upickle_3:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.scala-lang:scala3-library_3:3.3.6'
+    testImplementation 'org.scala-lang:scala3-compiler_3:3.3.6'
+}
+
+String graalvmHome = System.getenv("GRAALVM_HOME") ?: System.getenv("JAVA_HOME")
+File graalvmJavaExecutable = graalvmHome == null ? null : new File(graalvmHome, "bin/java")
+File graalvmLibDirectory = graalvmHome == null ? null : new File(graalvmHome, "lib")
+
+if (project.hasProperty("agent") && graalvmJavaExecutable != null && graalvmJavaExecutable.isFile()) {
+    tasks.withType(Test).configureEach {
+        executable = graalvmJavaExecutable.absolutePath
+        if (graalvmLibDirectory != null && graalvmLibDirectory.isDirectory()) {
+            jvmArgs("-Djava.library.path=${graalvmLibDirectory.absolutePath}")
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
