@@ -9,16 +9,27 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String redirectPipeCreationModeProperty = 'org.jline.terminal.exec.redirectPipeCreationMode'
+String redirectPipeCreationModeReflection = 'reflection'
 
 dependencies {
     testImplementation "org.aesh:readline:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty redirectPipeCreationModeProperty, redirectPipeCreationModeReflection
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+}
+
 graalvmNative {
     binaries {
         all {
             buildArgs.add('--initialize-at-run-time=org.aesh.terminal.utils.OSUtils')
+            buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
+        }
+        test {
+            runtimeArgs("-D${redirectPipeCreationModeProperty}=${redirectPipeCreationModeReflection}")
         }
     }
     agent {
