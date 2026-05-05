@@ -53,6 +53,15 @@ class Enumeratum_circe_3Test {
   }
 
   @Test
+  def respectsCustomEntryNamesForPlainEnumCodecs(): Unit = {
+    assertEquals(Json.fromString("user_signed_in"), (AuditEvent.UserSignedIn: AuditEvent).asJson)
+    assertEquals(Json.fromString("password_reset_requested"), (AuditEvent.PasswordResetRequested: AuditEvent).asJson)
+    assertRightEquals(AuditEvent.UserSignedIn, Json.fromString("user_signed_in").as[AuditEvent])
+    assertRightEquals(AuditEvent.PasswordResetRequested, Json.fromString("password_reset_requested").as[AuditEvent])
+    assertLeftMessageContains(Json.fromString("UserSignedIn").as[AuditEvent], "'UserSignedIn' is not a member")
+  }
+
+  @Test
   def supportsAlternativeCaseSensitiveEnumCodecs(): Unit = {
     val lowercaseEncoder = EnumCirce.encoderLowercase(TrafficSignal)
     val uppercaseEncoder = EnumCirce.encoderUppercase(TrafficSignal)
@@ -159,6 +168,14 @@ object TrafficSignal extends Enum[TrafficSignal] with CirceEnum[TrafficSignal] w
   case object FlashingYellow extends TrafficSignal
 
   val values = IndexedSeq(Stop, Proceed, FlashingYellow)
+}
+
+sealed trait AuditEvent extends EnumEntry with EnumEntry.Snakecase
+object AuditEvent extends Enum[AuditEvent] with CirceEnum[AuditEvent] {
+  case object UserSignedIn extends AuditEvent
+  case object PasswordResetRequested extends AuditEvent
+
+  val values = IndexedSeq(UserSignedIn, PasswordResetRequested)
 }
 
 sealed abstract class HttpStatus(val value: Int) extends IntEnumEntry
