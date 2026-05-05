@@ -14,12 +14,15 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.thymeleaf.standard.serializer.StandardJavaScriptSerializer;
 
+import tools.jackson.databind.json.JsonMapper;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StandardJavaScriptSerializerInnerJackson3StandardJavaScriptSerializerTest {
 
     @Test
-    void serializeValueUsesJackson3WhenOnlyJackson3IsAvailable() {
+    void serializeValueUsesJackson3BuilderWhenAvailable() {
+        JsonMapper.setBuilderAvailable(true);
         StandardJavaScriptSerializer serializer = new StandardJavaScriptSerializer(true);
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("message", "Hello");
@@ -30,4 +33,22 @@ public class StandardJavaScriptSerializerInnerJackson3StandardJavaScriptSerializ
 
         assertThat(writer.toString()).isEqualTo("{\"message\":\"Hello\",\"numbers\":[1,2,3]}");
     }
+
+    @Test
+    void serializeValueFallsBackToJackson3ObjectMapperWhenBuilderIsUnavailable() {
+        JsonMapper.setBuilderAvailable(false);
+        try {
+            StandardJavaScriptSerializer serializer = new StandardJavaScriptSerializer(true);
+            Map<String, Object> model = new LinkedHashMap<>();
+            model.put("path", "one/two&three");
+            StringWriter writer = new StringWriter();
+
+            serializer.serializeValue(model, writer);
+
+            assertThat(writer.toString()).isEqualTo("{\"path\":\"one\\/two\\u0026three\"}");
+        } finally {
+            JsonMapper.setBuilderAvailable(true);
+        }
+    }
+
 }
