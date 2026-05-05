@@ -117,8 +117,8 @@ public class JedisTest {
                 .get("object_*", "#")
                 .desc()
                 .alpha();
-        assertThat(strings(sortingParams.getParams()))
-                .containsExactly("BY", "weight_*", "LIMIT", "2", "5", "GET", "object_*", "GET", "#", "DESC", "ALPHA");
+        assertThat(commandArguments(Protocol.Command.SORT, sortingParams))
+                .containsExactly("SORT", "BY", "weight_*", "LIMIT", "2", "5", "GET", "object_*", "GET", "#", "DESC", "ALPHA");
 
         ScanParams scanParams = new ScanParams().match("user:*").count(25);
         assertThat(commandArguments(Protocol.Command.SCAN, scanParams))
@@ -140,14 +140,14 @@ public class JedisTest {
                 .addParams(ZAddParams.zAddParams().nx().ch())
                 .add(9.5D)
                 .add("alice");
-        assertThat(strings(zaddParams)).containsExactly("ZADD", "leaders", "nx", "ch", "9.5", "alice");
+        assertThat(strings(zaddParams)).containsExactly("ZADD", "leaders", "NX", "CH", "9.5", "alice");
 
         CommandArguments zincrByParams = new CommandArguments(Protocol.Command.ZADD)
                 .key("leaders")
                 .addParams(ZIncrByParams.zIncrByParams().xx())
                 .add(2.0D)
                 .add("bob");
-        assertThat(strings(zincrByParams)).containsExactly("ZADD", "leaders", "xx", "incr", "2.0", "bob");
+        assertThat(strings(zincrByParams)).containsExactly("ZADD", "leaders", "XX", "INCR", "2.0", "bob");
 
         CommandArguments geoRadiusParams = new CommandArguments(Protocol.Command.GEORADIUS)
                 .key("Sicily")
