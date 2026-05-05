@@ -1,0 +1,224 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.diffplug.spotless:spotless-lib:2.45.0
+Command: `/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-a0a8b44b/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :copyKtfmtJars
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+KtfmtStepInnerStateTest > createsStyledFormatterWithModernGlueConstructor() FAILED
+    java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory
+        at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.slf4j.LoggerFactory
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 7 more
+
+KtfmtStepInnerStateTest > createsOptionsFormatterWithModernGlueConstructor() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsOptionsFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:71)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+KtfmtStepInnerStateTest > createsDefaultFormatterWithModernGlueConstructor() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsDefaultFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:48)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+KtfmtStepInnerStateTest > createsStyledOptionsFormatterWithModernGlueConstructor() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledOptionsFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:81)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+KtfmtStepInnerStateTest > formatsWithModernFallbackStaticStyleField() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatsWithModernFallbackStaticStyleField(KtfmtStepInnerStateTest.java:99)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+KtfmtStepInnerStateTest > formatsWithLegacyFallbackCompanionStyleFactory() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatsWithLegacyFallbackCompanionStyleFactory(KtfmtStepInnerStateTest.java:108)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+KtfmtStepInnerStateTest > formatsWithPreFormatPackageDefaultFallback() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatsWithPreFormatPackageDefaultFallback(KtfmtStepInnerStateTest.java:90)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatWithRuntimeClassLoadingSupport(KtfmtStepInnerStateTest.java:115)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsStyledFormatterWithModernGlueConstructor(KtfmtStepInnerStateTest.java:57)
+
+8 tests completed, 7 failed
+
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-a0a8b44b/tests/src/com.diffplug.spotless/spotless-lib/2.45.0/build/reports/tests/test/index.html
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-a0a8b44b/tests/src/com.diffplug.spotless/spotless-lib/2.45.0/build/reports/problems/problems-report.html
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 21s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 4 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-a0a8b44b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.diffplug.spotless:spotless-lib:2.45.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 23s
+9 actionable tasks: 1 executed, 8 up-to-date
