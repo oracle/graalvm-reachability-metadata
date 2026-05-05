@@ -247,7 +247,12 @@ public class UtilsTest {
         int[] methodNameAndTypeIndex = new int[count];
         int longMaxValue = 0;
         int offset = 10;
+        boolean skipNextConstantPoolEntry = false;
         for (int i = 1; i < count; i++) {
+            if (skipNextConstantPoolEntry) {
+                skipNextConstantPoolEntry = false;
+                continue;
+            }
             int tag = bytes[offset] & 0xff;
             offset++;
             switch (tag) {
@@ -276,12 +281,12 @@ public class UtilsTest {
                     longMaxValue = i;
                 }
                 offset += 8;
-                i++;
+                skipNextConstantPoolEntry = true;
                 break;
             default:
                 offset = skipConstantPoolEntry(bytes, offset, tag, i);
                 if (tag == 6) {
-                    i++;
+                    skipNextConstantPoolEntry = true;
                 }
             }
         }
