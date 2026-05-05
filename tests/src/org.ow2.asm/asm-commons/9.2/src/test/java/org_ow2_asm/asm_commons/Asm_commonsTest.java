@@ -27,6 +27,7 @@ import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.commons.ModuleHashesAttribute;
 import org.objectweb.asm.commons.ModuleResolutionAttribute;
 import org.objectweb.asm.commons.ModuleTargetAttribute;
+import org.objectweb.asm.commons.SerialVersionUIDAdder;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.commons.StaticInitMerger;
 import org.objectweb.asm.commons.TableSwitchGenerator;
@@ -268,6 +269,26 @@ public class Asm_commonsTest {
     }
 
     @Test
+    void serialVersionUidAdderAddsStableFieldWhenMissingAndPreservesExistingField() {
+        byte[] serializableBytecode = buildSerializableClassWithoutSerialVersionUid();
+        ClassNode firstGeneratedClass = addSerialVersionUid(serializableBytecode);
+        ClassNode secondGeneratedClass = addSerialVersionUid(serializableBytecode);
+
+        FieldNode serialVersionUid = findField(firstGeneratedClass, "serialVersionUID", "J");
+        int expectedAccess = Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
+        assertThat(serialVersionUid.access & expectedAccess).isEqualTo(expectedAccess);
+        assertThat(serialVersionUid.value).isInstanceOf(Long.class);
+        assertThat(serialVersionUid.value).isEqualTo(findField(secondGeneratedClass, "serialVersionUID", "J").value);
+
+        ClassNode classWithExistingField = addSerialVersionUid(buildSerializableClassWithSerialVersionUid());
+        assertThat(classWithExistingField.fields)
+                .filteredOn(field -> "serialVersionUID".equals(field.name))
+                .singleElement()
+                .extracting(field -> field.value)
+                .isEqualTo(123L);
+    }
+
+    @Test
     void moduleAttributesRoundTripThroughClassReaderAndWriter() {
         byte[] moduleInfoBytecode = buildModuleInfoWithCommonsAttributes();
         List<Attribute> attributes = new ArrayList<>();
@@ -439,6 +460,36 @@ public class Asm_commonsTest {
         return classWriter.toByteArray();
     }
 
+    private static byte[] buildSerializableClassWithoutSerialVersionUid() {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, "generated/SerializableHolder", null,
+                "java/lang/Object", new String[] {"java/io/Serializable"});
+        classWriter.visitField(Opcodes.ACC_PRIVATE, "number", "I", null, null).visitEnd();
+        classWriter.visitField(Opcodes.ACC_PRIVATE | Opcodes.ACC_TRANSIENT, "cachedText", "Ljava/lang/String;", null,
+                null).visitEnd();
+        writeDefaultConstructor(classWriter);
+        classWriter.visitEnd();
+        return classWriter.toByteArray();
+    }
+
+    private static byte[] buildSerializableClassWithSerialVersionUid() {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, "generated/SerializableHolderWithUid", null,
+                "java/lang/Object", new String[] {"java/io/Serializable"});
+        classWriter.visitField(Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
+                "serialVersionUID", "J", null, 123L).visitEnd();
+        classWriter.visitField(Opcodes.ACC_PRIVATE, "number", "I", null, null).visitEnd();
+        writeDefaultConstructor(classWriter);
+        classWriter.visitEnd();
+        return classWriter.toByteArray();
+    }
+
+    private static ClassNode addSerialVersionUid(byte[] bytecode) {
+        ClassWriter classWriter = new ClassWriter(0);
+        new ClassReader(bytecode).accept(new SerialVersionUIDAdder(classWriter), 0);
+        return readClass(classWriter.toByteArray());
+    }
+
     private static byte[] buildModuleInfoWithCommonsAttributes() {
         ClassWriter classWriter = new ClassWriter(0);
         classWriter.visit(Opcodes.V9, Opcodes.ACC_MODULE, "module-info", null, null, null);
@@ -481,6 +532,13 @@ public class Asm_commonsTest {
                 .filter(method -> name.equals(method.name) && descriptor.equals(method.desc))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Missing method " + name + descriptor));
+    }
+
+    private static FieldNode findField(ClassNode classNode, String name, String descriptor) {
+        return classNode.fields.stream()
+                .filter(field -> name.equals(field.name) && descriptor.equals(field.desc))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Missing field " + name + " " + descriptor));
     }
 
     private static <T extends Attribute> T findAttribute(List<Attribute> attributes, Class<T> attributeType) {
