@@ -20,7 +20,8 @@ public class SynthesizedAnnotationProxyTest {
 
     @Test
     void synthesizeCreatesProxyAnnotationFromAggregateAnnotation() {
-        Route sourceAnnotation = AnnotatedType.class.getAnnotation(Route.class);
+        Class<AnnotatedType> annotatedTypeAnnotationAccess = AnnotatedType.class;
+        Route sourceAnnotation = annotatedTypeAnnotationAccess.getAnnotation(Route.class);
         assertThat(sourceAnnotation).isNotNull();
         SynthesizedAggregateAnnotation aggregateAnnotation = AnnotationUtil.aggregatingFromAnnotation(sourceAnnotation);
 

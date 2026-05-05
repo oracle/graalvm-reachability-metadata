@@ -18,7 +18,8 @@ public class AnnotationProxyTest {
 
     @Test
     void fallsBackToAnnotationProxyMethodInvocation() throws Throwable {
-        Deprecated annotation = AnnotationProxyTest.class.getAnnotation(Deprecated.class);
+        Class<AnnotationProxyTest> annotationProxyTestAnnotationAccess = AnnotationProxyTest.class;
+        Deprecated annotation = annotationProxyTestAnnotationAccess.getAnnotation(Deprecated.class);
         assertThat(annotation).isNotNull();
         AnnotationProxy<Deprecated> proxy = new AnnotationProxy<>(annotation);
 
