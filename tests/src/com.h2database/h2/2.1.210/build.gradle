@@ -9,20 +9,30 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String upgradeLegacyVersion = "1.4.200"
+
+configurations {
+    upgradeLegacyH2
+}
 
 dependencies {
 	testImplementation("com.h2database:h2:$libraryVersion")
 	testImplementation("com.ibm.icu:icu4j:73.2")
 	testImplementation("org.assertj:assertj-core:3.22.0")
+    upgradeLegacyH2("com.h2database:h2:$upgradeLegacyVersion")
 }
+
+String upgradeLegacyH2Jar = configurations.upgradeLegacyH2.singleFile.absolutePath
 
 tasks.named("test") {
     jvmArgs "--add-opens=java.base/java.nio=ALL-UNNAMED"
     systemProperty "h2.nioCleanerHack", "true"
+    systemProperty "h2.upgrade.oldJar", upgradeLegacyH2Jar
 }
 
 tasks.named("nativeTest") {
     runtimeArgs.add("-Dh2.nioCleanerHack=true")
+    runtimeArgs.add("-Dh2.upgrade.oldJar=$upgradeLegacyH2Jar")
 }
 
 graalvmNative {
