@@ -6,7 +6,7 @@
  */
 package io_micrometer.micrometer_core;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import com.hazelcast.monitor.LocalMapStats;
 import com.hazelcast.monitor.NearCacheStats;
 import io.micrometer.core.instrument.FunctionCounter;
