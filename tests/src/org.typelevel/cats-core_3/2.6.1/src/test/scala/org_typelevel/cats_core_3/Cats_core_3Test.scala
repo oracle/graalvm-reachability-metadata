@@ -199,6 +199,22 @@ class Cats_core_3Test {
   }
 
   @Test
+  def constAccumulatesContextWhileRetaggingIgnoredValues(): Unit = {
+    type Collected[A] = Const[Vector[String], A]
+
+    val requiredName: Collected[String] = Const[Vector[String], String](Vector("name is required"))
+    val requiredEmail: Collected[String] = Const[Vector[String], String](Vector("email is required"))
+    val mapped: Collected[Int] = requiredName.map(_.length)
+    val combined: Collected[(String, String)] = Apply[Collected].map2(requiredName, requiredEmail)((name, email) =>
+      (name, email)
+    )
+
+    assertThat(mapped.getConst).isEqualTo(Vector("name is required"))
+    assertThat(combined.getConst).isEqualTo(Vector("name is required", "email is required"))
+    assertThat(combined.retag[Double].getConst).isEqualTo(Vector("name is required", "email is required"))
+  }
+
+  @Test
   def andThenComposesLargeFunctionPipelinesStackSafely(): Unit = {
     val identityPipeline: AndThen[Int, Int] = AndThen((value: Int) => value)
     val increment: Int => Int = value => value + 1
