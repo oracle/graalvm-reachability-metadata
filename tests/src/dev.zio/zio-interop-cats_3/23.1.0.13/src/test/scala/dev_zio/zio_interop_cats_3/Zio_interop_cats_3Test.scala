@@ -12,6 +12,7 @@ import cats.MonadError
 import cats.Parallel
 import cats.SemigroupK
 import cats.data.Ior
+import cats.effect.Deferred
 import cats.effect.IO
 import cats.effect.Ref
 import cats.effect.Resource
@@ -95,6 +96,19 @@ class Zio_interop_cats_3Test {
     } yield (initial, previous, updated, tryUpdated, finalValue)
 
     assertEquals((1, 1, 5, Some("saw-5"), 10), runZio(program))
+  }
+
+  @Test
+  def catsEffectDeferredCompletesZioWaitersOnce(): Unit = {
+    val program = for {
+      deferred <- Deferred[Task, String]
+      waiter <- deferred.get.map(value => s"received-$value").fork
+      completed <- deferred.complete("signal")
+      completedAgain <- deferred.complete("ignored")
+      result <- waiter.join
+    } yield (completed, completedAgain, result)
+
+    assertEquals((true, false, "received-signal"), runZio(program))
   }
 
   @Test
