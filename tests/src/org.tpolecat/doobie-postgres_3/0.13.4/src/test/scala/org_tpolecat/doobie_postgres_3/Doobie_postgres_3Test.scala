@@ -6,8 +6,11 @@
  */
 package org_tpolecat.doobie_postgres_3
 
+import cats.~>
 import cats.effect.IO
 import doobie.Meta
+import doobie.free.connection.ConnectionOp
+import doobie.implicits._
 import doobie.postgres.Text
 import doobie.postgres.implicits._
 import doobie.postgres.pgisimplicits._
@@ -119,6 +122,17 @@ class Doobie_postgres_3Test {
   }
 
   @Test
+  def copyInReturnsZeroForEmptyCollectionsWithoutOpeningCopyApi(): Unit = {
+    val copyStatement = sql"COPY target_table (id, name) FROM STDIN"
+    val rowsCopied: Long = copyStatement
+      .copyIn(List.empty[(Int, String)])
+      .foldMap(failOnConnectionAccess)
+      .unsafeRunSync()
+
+    assertEquals(0L, rowsCopied)
+  }
+
+  @Test
   def postgresEnumHelpersConstructMetaMappingsForScalaAndJavaEnums(): Unit = {
     val scalaEnumMeta: Meta[Weekday.Value] = pgEnum(Weekday, "weekday")
     val stringEnumMeta: Meta[TrafficLight] = pgEnumStringOpt[TrafficLight](
@@ -175,6 +189,12 @@ class Doobie_postgres_3Test {
   private def assertMetaAvailable[A](implicit meta: Meta[A]): Unit = {
     assertNotNull(meta)
   }
+
+  private val failOnConnectionAccess: ConnectionOp ~> IO =
+    new (ConnectionOp ~> IO) {
+      override def apply[A](operation: ConnectionOp[A]): IO[A] =
+        IO.raiseError(new AssertionError(s"unexpected connection operation: $operation"))
+    }
 
   private object Weekday extends Enumeration {
     val Monday: Value = Value("monday")
