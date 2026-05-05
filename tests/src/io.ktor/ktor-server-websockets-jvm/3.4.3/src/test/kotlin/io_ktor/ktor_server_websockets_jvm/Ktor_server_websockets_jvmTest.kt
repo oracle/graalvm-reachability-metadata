@@ -10,10 +10,14 @@ import io.ktor.client.plugins.websocket.WebSockets as ClientWebSockets
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
+import io.ktor.serialization.WebsocketContentConverter
 import io.ktor.server.testing.testApplication
 import io.ktor.server.websocket.WebSockets as ServerWebSockets
 import io.ktor.server.websocket.pingInterval
+import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.pingPeriod
+import io.ktor.server.websocket.receiveDeserialized
+import io.ktor.server.websocket.sendSerialized
 import io.ktor.server.websocket.timeout
 import io.ktor.server.websocket.webSocket
 import io.ktor.server.websocket.webSocketRaw
@@ -21,6 +25,8 @@ import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import io.ktor.util.reflect.TypeInfo
+import io.ktor.utils.io.charsets.Charset
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
@@ -162,6 +168,38 @@ public class Ktor_server_websockets_jvmTest {
     }
 
     @Test
+    fun serverContentConverterReceivesAndSendsTypedMessages(): Unit = testApplication {
+        val converterObserved: AtomicReference<Boolean> = AtomicReference(false)
+
+        install(ServerWebSockets) {
+            pingPeriod = null
+            timeout = 2.seconds
+            contentConverter = PipeSeparatedMessageConverter
+        }
+        routing {
+            webSocket("/converted") {
+                converterObserved.set(converter === PipeSeparatedMessageConverter)
+
+                val request: ConvertedMessage = withTimeout(RequestTimeout) { receiveDeserialized() }
+                sendSerialized(ConvertedMessage("server", "${request.sender}:${request.payload.uppercase()}"))
+            }
+        }
+
+        val client = createClient {
+            install(ClientWebSockets)
+        }
+        client.webSocket("/converted") {
+            send(Frame.Text("client|hello"))
+
+            val response: Frame = withTimeout(RequestTimeout) { incoming.receive() }
+            assertThat(response).isInstanceOf(Frame.Text::class.java)
+            assertThat((response as Frame.Text).readText()).isEqualTo("server|client:HELLO")
+        }
+
+        assertThat(converterObserved.get()).isTrue()
+    }
+
+    @Test
     fun publicPluginConfigurationKeepsDurationAndFrameSettings(): Unit {
         val options = ServerWebSockets.WebSocketOptions().apply {
             pingPeriod = 125.milliseconds
@@ -183,6 +221,26 @@ public class Ktor_server_websockets_jvmTest {
         assertThat(plugin.maxFrameSize).isEqualTo(4096)
         assertThat(plugin.masking).isTrue()
         assertThat(plugin.coroutineContext).isNotNull
+    }
+
+    private data class ConvertedMessage(val sender: String, val payload: String)
+
+    private object PipeSeparatedMessageConverter : WebsocketContentConverter {
+        override suspend fun serialize(charset: Charset, typeInfo: TypeInfo, value: Any?): Frame {
+            val message = value as ConvertedMessage
+            return Frame.Text("${message.sender}|${message.payload}")
+        }
+
+        override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: Frame): Any? {
+            if (content !is Frame.Text || typeInfo.type != ConvertedMessage::class) {
+                return null
+            }
+
+            val text: String = content.readText()
+            return ConvertedMessage(text.substringBefore('|'), text.substringAfter('|'))
+        }
+
+        override fun isApplicable(frame: Frame): Boolean = frame is Frame.Text
     }
 
     private companion object {
