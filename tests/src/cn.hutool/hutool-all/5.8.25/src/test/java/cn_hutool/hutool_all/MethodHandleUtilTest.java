@@ -51,6 +51,28 @@ public class MethodHandleUtilTest {
     }
 
     @Test
+    void performsSpecialLookupForInterfaceDefaultMethod() throws Throwable {
+        MethodHandle specialHandle = MethodHandleUtil.lookup(DefaultGreeting.class).findSpecial(
+                DefaultGreeting.class,
+                "defaultGreeting",
+                MethodType.methodType(String.class, String.class),
+                DefaultGreeting.class);
+
+        String greeting = (String) specialHandle.invokeWithArguments(new DefaultGreetingImpl(), "Lin");
+        assertThat(greeting).isEqualTo("default Lin");
+    }
+
+    @Test
+    void returnsNullAfterTryingSpecialLookupForMissingMethod() {
+        MethodHandle missingHandle = MethodHandleUtil.findMethod(
+                HandleSubject.class,
+                "missing",
+                MethodType.methodType(String.class));
+
+        assertThat(missingHandle).isNull();
+    }
+
+    @Test
     void invokesMethodsThroughUnreflectAndUnreflectSpecial() throws Exception {
         HandleSubject subject = new HandleSubject("direct", 11);
 
