@@ -1,0 +1,1021 @@
+Starting a Gradle Daemon, 8 busy and 4 incompatible and 323 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df5f4-cca1-7871-a33f-f82a27edb84b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.jdmk:jmxtools:1.2.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.2.1" when "$version$" is replaced with "1.2.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+- Set "coordinates" to "com.sun.jdmk:jmxtools:1.2.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.2.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact from Maven first, then fall back to upstream project pages if Maven does not carry source, tests, or documentation. After that I’ll update the JSON in place and validate it parses.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+-rw-rw-r-- 1 vjovanov vjovanov 52 May  5 04:25 build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+
+exec
+/usr/bin/bash -lc "rg -n 'com\\.sun\\.jdmk|jmxtools|jdmk' ." in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ exited 1 in 0ms:
+web search: 
+web search: com.sun.jdmk jmxtools 1.2.1 maven sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/
+web search: 
+web search: https://github.com/nickman/OpenDMK/tree/master/OpenDMK/core/
+codex
+Maven Central only exposes the POM in the canonical directory for this version, so there is no Maven-hosted sources or test artifact to prefer. I’m checking the old Sun/OpenDMK mirrors now to see whether there is a version-specific source or test URL that maps cleanly to `1.2.1`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sun.jdmk</groupId>
+  <artifactId>jmxtools</artifactId>
+  <version>1.2.1</version>
+  <name>JMX 1.2.1 Reference Implementation</name>
+  <url>http://java.sun.com/products/JavaManagement/</url>
+
+  <distributionManagement>
+    <downloadUrl>http://java.sun.com/products/JavaManagement/download.html</downloadUrl>
+  </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1-test-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 218ms:
+
+  0     0    0     0  HTTP/2 404 
+date: Tue, 05 May 2026 02:26:14 GMT
+content-type: text/html
+cf-ray: 9f6c4c945bdc739d-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 179ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Tue, 05 May 2026 02:26:14 GMT
+content-type: text/html
+cf-ray: 9f6c4c949f7dbc4e-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 273ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Tue, 05 May 2026 02:26:14 GMT
+content-type: text/html
+cf-ray: 9f6c4c946a9924c0-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: "JMX 1.2.1 Reference Implementation" jmxtools
+web search: 
+web search: "Java Dynamic Management Kit" source code jmxtools
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"N/A\"|\"source-code-url\" : \"N/A\"|\"documentation-url\" : \"N/A\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'java.sun.com/products/JavaManagement|docs.oracle.com/cd/E19698-01|OpenDMK|jdmk' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json:2:  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"not-for-native-image\"|\"language\"' metadata | head -120" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:9:    "description" : "stax-ex extends the JSR-173 StAX API with support for parser reuse, non-text XML infosets, and improved namespace handling. It provides Java interfaces and helpers used by JAXB and Metro to stream XML data efficiently, including binary content.",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:25:    "description" : "stax-ex extends the JSR-173 StAX API with utilities for higher-performance XML streaming and parser reuse. It also improves handling of non-text XML infosets and namespace processing for JAXB and Metro use cases.",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:40:    "description" : "stax-ex provides extensions to the JSR-173 StAX API for handling binary and streaming XML content in Java. It adds XMLStreamReader and XMLStreamWriter support that enables efficient access to data such as base64-backed content without unnecessary copying.",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:15:    "description": "Ehcache is an open source, standards-based Java cache that improves performance, reduces database load, and simplifies scalability. It supports both the Ehcache API and the JSR-107 cache API, with configurations ranging from in-process caches to larger tiered deployments."
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:10:    "description": "OpenCensus API provides Java APIs for collecting application metrics, distributed traces, and tags. It lets libraries and applications record telemetry data that can be exported by OpenCensus implementations.",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:9:    "description" : "OpenCensus gRPC Util provides Java utilities for adding trace instrumentation around gRPC usage. This artifact includes helpers for mapping gRPC status values to OpenCensus trace status values.",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:9:    "description" : "Play Exceptions provides the core Play Framework exception types used to carry structured error details such as titles, descriptions, source locations, attachments, and rich HTML descriptions. It supports Play's developer error reporting by exposing reusable exception classes that can identify relevant source lines and attach additional diagnostic content.",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:9:    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:9:    "description" : "Java Data Objects (JDO) API defines standard interfaces and annotations for Java object persistence. This artifact provides the JDO 3.2 API classes used by applications and persistence providers to model, query, and manage persistent Java objects.",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:9:    "description" : "JSch is a pure Java implementation of the SSH2 protocol. It provides client-side APIs for SSH sessions and related operations such as secure file transfer, port forwarding, and command execution.",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:9:    "description" : "Zipkin Core Library provides the core data model and codecs for representing and encoding distributed tracing spans. It includes APIs and utilities for traces, endpoints, annotations, dependency links, and query-related types used by Zipkin.",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:9:    "description" : "Provides Bouncy Castle Java APIs for PKIX, CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It targets JDK 1.5 through JDK 1.8 and is typically used alongside a JCE/JCA provider such as Bouncy Castle's cryptography provider.",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:9:    "description" : "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and X.509 certificate generation on JDK 1.8 and later. It is typically used with a JCE/JCA provider such as Bouncy Castle to build and process public-key infrastructure and related cryptographic message formats.",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:12:    "description": "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It supports parsing, creating, and processing PKIX- and certificate-related cryptographic structures on JDK 1.5 and later.",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:16:    "description": "Provides the Jakarta Servlet 4.0 specification API as a JBoss-packaged artifact for Java web applications. It defines the standard server-side interfaces for handling HTTP requests, responses, and related web container interactions."
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:11:    "description": "Apache Log4j 1.2 is a Java logging framework that lets applications route log events to appenders such as the console, files, sockets, JDBC, and JMS. It provides hierarchical loggers plus configurable layouts, filters, and XML or properties-based configuration.",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:20:    "description" : "ParaNamer is a Java library that exposes constructor and method parameter names at runtime. It can read parameter names from generated metadata, annotations, debug symbols, or bytecode so frameworks can bind arguments without manual name declarations.",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:9:    "description" : "Mordant Core is a Kotlin multiplatform library for rendering styled terminal output, including ANSI colors, text styling, widgets, tables, input handling, and terminal capability detection. The mordant-core-jvm artifact provides the JVM variant of the core APIs for command-line applications that need rich terminal rendering and interaction.",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:9:    "description" : "Mordant is a Kotlin library for rendering styled terminal output, including colors, tables, widgets, Markdown, input, and animations. The mordant-jvm-ffm-jvm artifact provides Mordant's JVM terminal interface backed by Java's Foreign Function & Memory APIs for native terminal integration on JDK 22 or newer.",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:9:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:37:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:9:    "description" : "Apache Directory LDAP API I18n provides the internationalized message and error-code resources used by the Apache Directory LDAP API modules. It exposes the I18n enum and resource bundles that format localized diagnostics for LDAP, ASN1, DSML, and related Directory API components.",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-i18n/index.json:37:    "description" : "Apache Directory LDAP API I18n provides the internationalized message and error-code resources used by the Apache Directory LDAP API modules. It exposes the I18n enum and resource bundles that format localized diagnostics for LDAP, ASN1, DSML, and related Directory API components.",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+
+exec
+/usr/bin/bash -lc 'rg --files metadata | head -20' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json
+metadata/com.aayushatharva.brotli4j/service/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/service/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/reachability-metadata.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+
+web search: 
+web search: site:mvnrepository.com/artifact/com.sun.jdmk/jmxtools 1.2.1
+web search: 
+web search: "com.sun.jdmk.jmxtools"
+web search: 
+web search: 
+web search: 
+web search: javadoc.io com.sun.jdmk jmxtools 1.2.1
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/doc/files.html
+codex
+The strongest versioned documentation I found is a mirror of the original JMX RI 1.2.1 bundle. Its file list says `jmxtools.jar` contains JVM class files for `com.sun.jdmk.*`, while the source tree in that bundle is only for `jmxri.jar`, so I’m treating source and test-suite URLs as unavailable rather than pointing them at unrelated examples.
+exec
+/usr/bin/bash -lc 'curl -I -L https://dist.wso2.org/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.osgeo.org/repository/release/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/doc/files.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc 'curl -I -L https://logicaldoc.sourceforge.net/maven/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 211ms:
+
+  0   99k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Tue, 05 May 2026 02:27:09 GMT
+content-type: application/x-java-archive
+content-length: 102394
+server: cloudflare
+vary: Host
+vary: Accept-Encoding
+last-modified: Tue, 07 Oct 2008 09:52:51 GMT
+etag: "18ffa-458a6c34902c0"
+accept-ranges: bytes
+cache-control: max-age=3600
+expires: Tue, 05 May 2026 03:27:05 GMT
+x-from: sfp-ioweb82-2
+cf-cache-status: REVALIDATED
+set-cookie: __cf_bm=C6mylRR.BwlQiTl4kKHWss_G.czdHZidiwFCzj.Sskc-1777948028.9530036-1.0.1.1-XBEdFbWIUdH9SkLiW0nsCi7qtksaOp95r6Qypae2hxDufdibYGv.U_s0Ze8HNF57eZywlCvjmtkQJbUIdfcLjHMV83cqh1Q7Sr30xnWSfB_vs_u04ylSxXdzgzEhtvRT; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Tue, 05 May 2026 02:57:09 GMT
+content-security-policy: upgrade-insecure-requests
+cf-ray: 9f6c4decfe39039d-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 527ms:
+
+  0   99k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Tue, 05 May 2026 02:27:09 GMT
+content-type: application/java-archive
+content-length: 102394
+server: cloudflare
+last-modified: Sat, 18 Dec 2010 09:26:12 GMT
+etag: "4d0c7e34-18ffa"
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+accept-ranges: bytes
+cache-control: max-age=14400
+cf-cache-status: MISS
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+cf-ray: 9f6c4dec5b5d6aa1-GVA
+
+
+ succeeded in 630ms:
+
+  0  1602    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+server: nginx/1.18.0 (Ubuntu)
+date: Tue, 05 May 2026 02:27:09 GMT
+content-type: text/html
+content-length: 1602
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+cache-control: no-cache, no-store, max-age=0, must-revalidate, post-check=0, pre-check=0
+pragma: no-cache
+expires: 0
+x-frame-options: DENY
+
+
+ succeeded in 1393ms:
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+  <!-- Created by: Andy KASS, 22-Sept-1999 -->
+
+  <TITLE>JMX RI</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF"
+      LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+<TABLE BORDER=0 WIDTH="100%"><TR>
+<TD><IMG SRC="images/smi.logo.gif" ALT="Sun Microsystems, Inc"
+         HEIGHT=43 WIDTH=120>&nbsp;</TD>
+<TD ALIGN=right><A HREF="../index.html">
+<B>JMX Agent and Instrumentation<B><BR>Reference Implementation</BR></B></A></TD>
+</TR></TABLE>
+<HR>
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<CENTER>
+  <H1>
+    File List
+  </H1>
+</CENTER>
+<BLOCKQUOTE>
+This software bundle includes the following files:<P>
+
+<TABLE WIDTH="88%" BORDER=2 CELLPADDING=3>
+
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>lib/jmxri.jar</CODE></TD>
+<TD>All Java class files of the JMX reference implementation, grouped
+in the following packages:<BR>
+&nbsp; - javax.management<BR>
+&nbsp; - javax.management.loading<BR>
+&nbsp; - javax.management.monitor<BR>
+&nbsp; - javax.management.timer<BR>
+&nbsp; - javax.management.relation<BR>
+&nbsp; - javax.management.modelmbean<BR>
+&nbsp; - javax.management.openmbean<BR>
+&nbsp; - com.sun.jmx.*<BR>
+This last package contains implementation internals that are not
+defined by the JMX specification.</TD></TR>
+
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>lib/jmxtools.jar</CODE></TD>
+<TD>The Java class files of the RI toolkit, in package 
+<tt>com.sun.jdmk.*</tt>, mainly the HTML protocol adaptor. 
+These classes are <I>not</I> part of the JMX RI per se, but
+are provided with it as a binary contribution for added functionality. 
+The tutorial and the
+examples use the toolkit to demonstrate certain features of the
+RI.</TD></TR>
+
+<!-- temporarily (?) comment out grinder
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>lib/jmxgrinder.jar</CODE></TD>
+<TD>All Java classes needed to launch the JMX Grinder tool for
+checking MBeans against the specification.</TD></TR>
+-->
+
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>src/*</CODE></TD>
+<TD>All the source files for the classes of the JMX Reference
+Implementation (those in <tt>jmxri.jar</tt>).</TD></TR>
+
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>examples/*</CODE></TD>
+<TD>The Java source code examples which demonstrate MBeans, JMX agents
+and the HTML adaptor server. The standard and dynamic MBeans
+demonstrate how to implement the instrumentation level of the JMX
+specification. The example code is also used in the tutorial supplied
+as part of the documentation. Each example is in a separate
+directory:<BR>
+&nbsp; - examples/StandardMBean/<BR>
+&nbsp; - examples/DynamicMBean/<BR>
+&nbsp; - examples/OpenMBean/<BR>
+&nbsp; - examples/ModelMBean/<BR>
+&nbsp; - examples/MonitorMBean/<BR>
+&nbsp; - examples/Relation/<BR>
+&nbsp; - examples/BaseAgent/</TD></TR>
+
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>doc/api/*</CODE></TD>
+<TD>The detailed API of the JMX RI and toolkit, in HTML format as
+generated by Javadoc; <CODE>doc/api/index.html</CODE> is the home
+page.</TD></TR>
+
+<TR><TD VALIGN=TOP ALIGN=RIGHT><CODE>doc/index.html</CODE></TD>
+<TD>The home page of this software bundle containing links to:<BR>
+&nbsp; - the JMX API<BR>
+&nbsp; - "README" files for all examples<BR>
+<!-- &nbsp; - documentation for the JMX Grinder tool<BR> -->
+&nbsp; - the JMX RI tutorial<BR>
+These and other documentation files are stored in the
+<CODE>doc/doc/</CODE> directory.</TD></TR>
+
+</TABLE>
+
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<HR>
+
+<IMG SRC="images/java_red.gif" ALT = "Java coffee cup logo"
+     HEIGHT=85 WIDTH=49 ALIGN=RIGHT>
+
+<P>
+<FONT SIZE=-1><A HREF="copyright.html">Copyright</A> 2000-2003
+      Sun Microsystems, Inc.,
+      &nbsp;<BR>
+      All rights reserved.</FONT>
+<P>
+<P>
+&nbsp;
+</BODY></HTML>
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.pom
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/doc/files.html
+web search: 
+web search: https://jarcasting.com/artifacts/com.sun.jdmk/jmxtools/
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/jdmk/jmxtools/1.2.1/
+codex
+I have enough evidence to edit now: Central has only the POM for this coordinate, while the versioned RI documentation documents `jmxtools.jar` as JVM bytecode for `com.sun.jdmk.*` and provides versioned API docs. I’ll set source and test URLs to `N/A`, keep Native Image applicability fields absent, and leave language absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+codex
+The metadata file is updated. I’m doing a quick JSON parse and checking the diff so the final answer can report the exact state rather than just the intent.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.jdmk:jmxtools:1.2.1",
+  "repository-url": "N/A",
+  "source-code-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
+  "description": "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+ succeeded in 161ms:
+web search: 
+web search: "lib/jmxtools.jar" "The Java class files of the RI toolkit"
+web search: 
+web search: 
+web search: 
+web search: "jmx-1_2_1-bin/doc/doc/files.html"
+web search: 
+web search: site:javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials "jmx-1_2_1-ri"
+exec
+/usr/bin/bash -lc 'curl -I -L https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc 'curl -I -L https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/com/sun/jdmk/comm/HtmlAdaptorServer.html' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+ succeeded in 856ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Tue, 05 May 2026 02:27:57 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+ succeeded in 859ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0   913    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+content-type: text/html
+last-modified: Tue, 15 Jul 2003 08:24:24 GMT
+accept-ranges: bytes
+content-length: 913
+date: Tue, 05 May 2026 02:27:57 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/overview-frame.html | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+ succeeded in 880ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc (build 1.4.2) on Tue Jul 15 17:22:49 MEST 2003 -->
+<TITLE>
+Overview (Java Management Extensions 1.2.1 API Specification)
+</TITLE>
+
+<META NAME="keywords" CONTENT="Overview, <h2>Java<sup><font size=-2>TM</font></sup> Management Extensions (JMX<sup><font size=-2>TM</font></sup>) API Specification <p> Version 1.2.1 <br>&nbsp;</h2>">
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="stylesheet.css" TITLE="Style">
+
+
+</HEAD>
+
+<BODY BGCOLOR="white">
+
+<TABLE BORDER="0" WIDTH="100%" SUMMARY="">
+<TR>
+<TD NOWRAP><FONT size="+1" CLASS="FrameTitleFont">
+<B></B></FONT></TD>
+</TR>
+</TABLE>
+
+<TABLE BORDER="0" WIDTH="100%" SUMMARY="">
+<TR>
+<TD NOWRAP><FONT CLASS="FrameItemFont"><A HREF="allclasses-frame.html" target="packageFrame">All Classes</A></FONT>
+<P>
+<FONT size="+1" CLASS="FrameHeadingFont">
+Packages</FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/package-frame.html" target="packageFrame">javax.management</A></FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/loading/package-frame.html" target="packageFrame">javax.management.loading</A></FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/modelmbean/package-frame.html" target="packageFrame">javax.management.modelmbean</A></FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/monitor/package-frame.html" target="packageFrame">javax.management.monitor</A></FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/openmbean/package-frame.html" target="packageFrame">javax.management.openmbean</A></FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/relation/package-frame.html" target="packageFrame">javax.management.relation</A></FONT>
+<BR>
+<FONT CLASS="FrameItemFont"><A HREF="javax/management/timer/package-frame.html" target="packageFrame">javax.management.timer</A></FONT>
+<BR>
+</TD>
+</TR>
+</TABLE>
+
+<P>
+&nbsp;
+</BODY>
+</HTML>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/doc/index.html | sed -n '1,200p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/allclasses-frame.html | rg -n 'jdmk|HtmlAdaptor|Adaptor|com.sun'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html | sed -n '1,200p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 798ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 830ms:
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+  <TITLE>JMX 1.2.1 RI Documentation Index</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF"
+      LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+<TABLE BORDER=0 WIDTH="100%"><TR>
+<TD><IMG SRC="doc/images/smi.logo.gif" ALT="Sun Microsystems, Inc"
+         HEIGHT=43 WIDTH=120>&nbsp;</TD>
+</TR></TABLE>
+<HR>
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<CENTER>
+  <H1>
+    Java<SUP><FONT SIZE=-2>TM</FONT></SUP> Management Extensions
+    (JMX<SUP><FONT SIZE=-2>TM</FONT></SUP>)</H1>
+  <H2>
+    Reference Implementation Version 1.2.1</B></BR>
+  </H2>
+</CENTER>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+
+The Java <SUP><FONT SIZE=-2>TM</FONT></SUP> Management extensions 
+(JMX<SUP><FONT SIZE=-2>TM</FONT></SUP>) provide a standard for instrumenting 
+manageable resources and developing dynamic agents. This release contains the 
+JMX reference implementation (RI) for the instrumentation and agent levels of 
+the specification.<P> 
+
+The Java classes which make up the RI are supported on
+the Java 2 Platform, Standard Edition (J2SE), version 1.4:
+
+<A HREF="http://java.sun.com/webapps/getjava/BrowserRedirect?locale=en">
+<IMG SRC="doc/images/get_java_red_button.gif" ALT = "Java: Get It Now!" ALIGN=CENTER>
+</A>
+<P>
+
+As a result of the 
+<A HREF="http://jcp.org/en/home/index">Java Community Process</A>, 
+JMX is an extension to the Java programming
+language, and its packages use the <code>javax</code> prefix. The RI
+also includes some internal classes in the
+<code>com.sun.jmx.*</code> packages.<P>
+
+In this software bundle, Sun also provides classes for an
+HTML adaptor: these are independent of the JMX specification and are
+provided only for demonstration purposes. These classes are in the
+<code>com.sun.jdmk.*</code> packages.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="doc/files.html">File List</A>
+  </FONT></B><BR>
+
+Includes the list of all components in this bundle and how to use them.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="RELEASE_NOTES.txt">Release Notes</A>
+  </FONT></B><BR>
+
+The Release Notes cover the features and known limitations of this release.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="api/index.html">API Specification</A>
+  </FONT></B><BR>
+
+Online documentation for all JMX packages, classes and members of the
+agent and instrumentation RI, as generated by the Javadoc<SUP><FONT
+SIZE=-2>TM</FONT></SUP> tool.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="doc/examples.html">Examples</A>
+  </FONT></B><BR>
+
+The JMX reference implementation contains code examples for different types of MBean.
+It also contains code examples of JMX services and an example of a base agent.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="doc/tutorial.html">Tutorial</A>
+  </FONT></B><BR>
+
+This simple tutorial presents some of the features of the Java Management
+extensions. It relies on the MBeans and base agent presented in the
+examples. Your browser becomes the management interface to these objects
+using the provided HTML protocol adaptor.
+
+</BLOCKQUOTE>
+
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<HR>
+
+<IMG SRC="doc/images/java_red.gif" ALT = "Java coffee cup logo"
+HEIGHT=85 WIDTH=49 ALIGN=RIGHT>
+
+<P>
+<FONT SIZE=-1><A HREF="doc/copyright.html">Copyright</A> 2000-2003
+      Sun Microsystems, Inc.,
+      &nbsp;<BR>
+      All rights reserved.</FONT>
+<P>
+<P>
+&nbsp;
+</BODY></HTML>
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+ exited 1 in 1108ms:
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..089e8376ad12da2ba643b8a11bc0bf7891081ce7
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/api/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+codex
+One adjustment: the API index itself is the JMX RI API frameset and does not clearly expose the `com.sun.jdmk` toolkit classes. The versioned bundle documentation index explicitly names the HTML adaptor and `com.sun.jdmk.*`, so I’m switching the documentation URL to that stronger target.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..1d4a695bc31b4fd8ec25c4b1c8e7a760cb8bed36
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..1d4a695bc31b4fd8ec25c4b1c8e7a760cb8bed36
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.jdmk:jmxtools:1.2.1",
+  "repository-url": "N/A",
+  "source-code-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
+  "description": "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..1d4a695bc31b4fd8ec25c4b1c8e7a760cb8bed36
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+ succeeded in 814ms:
+
+  0  3921    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  3921HTTP/2 200 
+content-type: text/html
+last-modified: Tue, 15 Jul 2003 08:24:26 GMT
+accept-ranges: bytes
+content-length: 3921
+date: Tue, 05 May 2026 02:28:22 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+codex
+Updated [com.sun.jdmk-jmxtools-1.2.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json).
+
+Set repository/source/test URLs to `N/A`, set the documentation URL, added the exact two-sentence description, and left `language` plus `not-for-native-image` fields absent.
+
+Validation: `jq . build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json` parses successfully.
+diff --git a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+index 1ff34f1484356c445c7715488e4107ebab42a54a..1d4a695bc31b4fd8ec25c4b1c8e7a760cb8bed36
+--- a/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1"
++  "coordinates" : "com.sun.jdmk:jmxtools:1.2.1",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "jmxtools provides the Sun JMX 1.2.1 RI toolkit classes in the com.sun.jdmk packages, mainly the HTML protocol adaptor used to expose and manage MBeans through a web browser. It is bundled as a binary contribution alongside the JMX reference implementation so tutorials and examples can demonstrate agent-management features that are outside the core JMX specification."
+ }
+
+tokens used
+124,276
+Updated [com.sun.jdmk-jmxtools-1.2.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json).
+
+Set repository/source/test URLs to `N/A`, set the documentation URL, added the exact two-sentence description, and left `language` plus `not-for-native-image` fields absent.
+
+Validation: `jq . build/discovered-artifact-metadata/com.sun.jdmk-jmxtools-1.2.1.json` parses successfully.
+Ran agent for com.sun.jdmk:jmxtools:1.2.1 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/agent-artifact-discovery-logs/com.sun.jdmk-jmxtools-1.2.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3038-84db7732/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 48s
+9 actionable tasks: 4 executed, 5 from cache
