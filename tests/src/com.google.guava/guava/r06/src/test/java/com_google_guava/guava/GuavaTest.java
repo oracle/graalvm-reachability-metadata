@@ -8,7 +8,7 @@ package com_google_guava.guava;
 
 import org.junit.jupiter.api.Test;
 
-class GuavaTest {
+public class GuavaTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
