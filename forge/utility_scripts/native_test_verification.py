@@ -5,11 +5,12 @@
 
 """Native test verification gate.
 
-The gate first runs the normal JVM ``native-image-agent`` metadata collection
-(``generateMetadata``), then validates the coordinate with ``./gradlew test``.
-Native tracing is only a fallback when native testing still fails after that
-metadata exists. Codex is the terminal repair path when the fallback cannot
-converge. Pi is not invoked.
+The gate first tries the normal JVM ``native-image-agent`` metadata collection
+(``generateMetadata``). If that succeeds, it validates the coordinate with
+``./gradlew test``. Native tracing is the fallback when JVM-agent metadata
+generation fails or when native testing still fails after that metadata exists.
+Codex is the terminal repair path when the fallback cannot converge. Pi is not
+invoked.
 
 See ``forge/docs/native-test-verification.md`` for the full contract.
 """
@@ -90,7 +91,7 @@ def verify_native_test_passes(
         max_iterations: int = 100,
         cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
 ) -> NativeTestVerificationResult:
-    """Run JVM-agent metadata first, then trace only as native-test fallback.
+    """Try JVM-agent metadata first, then use native tracing as fallback.
 
     See ``forge/docs/native-test-verification.md`` for the full contract.
     """
@@ -166,34 +167,34 @@ def verify_native_test_passes(
     )
     last_log_path = generate_metadata_log_path
     if generate_metadata_rc != 0:
-        return _route_to_codex(
-            stage="generateMetadata",
-            reason=f"generateMetadata failed (exit={generate_metadata_rc})",
-            reproduction_command=_generate_metadata_command(coordinate),
-            iterations_used=0,
+        failure_reason = _summarize_gradle_failure_reason(generate_metadata_log_path)
+        log_stage(
+            _GATE_STAGE,
+            f"generateMetadata failed (exit={generate_metadata_rc}); starting native trace fallback",
         )
-
-    test_log_path = _gate_log_path(coordinate, 0, "test")
-    test_rc, failed_task = _run_coordinate_test(
-        reachability_repo_path=reachability_repo_path,
-        coordinate=coordinate,
-        log_path=test_log_path,
-        timeout_seconds=cycle_timeout_seconds,
-    )
-    last_log_path = test_log_path
-    if test_rc == 0:
-        log_stage(_GATE_STAGE, "JVM-agent metadata made native tests pass")
-        return _make_result(STATUS_PASSED, 0)
-    if failed_task != "nativeTest":
-        failed_task_display = failed_task or "unknown"
-        return _route_to_codex(
-            stage="test",
-            reason=f"test failed before native trace fallback (failed_task={failed_task_display}, exit={test_rc})",
-            reproduction_command=_coordinate_test_command(coordinate),
-            iterations_used=0,
+        log_stage(_GATE_STAGE, f"generateMetadata failure reason: {failure_reason}", indent_level=1)
+    else:
+        test_log_path = _gate_log_path(coordinate, 0, "test")
+        test_rc, failed_task = _run_coordinate_test(
+            reachability_repo_path=reachability_repo_path,
+            coordinate=coordinate,
+            log_path=test_log_path,
+            timeout_seconds=cycle_timeout_seconds,
         )
+        last_log_path = test_log_path
+        if test_rc == 0:
+            log_stage(_GATE_STAGE, "JVM-agent metadata made native tests pass")
+            return _make_result(STATUS_PASSED, 0)
+        if failed_task != "nativeTest":
+            failed_task_display = failed_task or "unknown"
+            return _route_to_codex(
+                stage="test",
+                reason=f"test failed before native trace fallback (failed_task={failed_task_display}, exit={test_rc})",
+                reproduction_command=_coordinate_test_command(coordinate),
+                iterations_used=0,
+            )
 
-    log_stage(_GATE_STAGE, "nativeTest still fails after JVM-agent metadata; starting native trace fallback")
+        log_stage(_GATE_STAGE, "nativeTest still fails after JVM-agent metadata; starting native trace fallback")
 
     for cycle in range(max_iterations):
         log_stage(_GATE_STAGE, f"cycle {cycle + 1}/{max_iterations}")
@@ -313,10 +314,6 @@ def verify_native_test_passes(
     )
 
 
-def _generate_metadata_command(coordinate: str) -> str:
-    return f"./gradlew generateMetadata -Pcoordinates={coordinate} --agentAllowedPackages=fromJar"
-
-
 def _coordinate_test_command(coordinate: str) -> str:
     return f"./gradlew test -Pcoordinates={coordinate}"
 
@@ -397,6 +394,63 @@ def _parse_first_failed_task(log_path: str) -> str | None:
         return None
     match = _FAILED_TASK_PATTERN.search(content)
     return match.group(1) if match else None
+
+
+def _summarize_gradle_failure_reason(log_path: str) -> str:
+    """Extract a short, human-readable Gradle failure reason from a log."""
+    try:
+        with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
+            lines = [line.strip() for line in handle.readlines()]
+    except OSError as exc:
+        return f"unable to read log: {exc}"
+
+    non_empty_lines = [line for line in lines if line]
+    if not non_empty_lines:
+        return "log is empty"
+
+    priority_patterns = [
+        "Could not find agent library",
+        "platform encoding not initialized",
+        "FATAL ERROR in native method",
+        "Error occurred during initialization of VM",
+        "MissingReflectionRegistrationError",
+        "MissingResourceRegistrationError",
+        "MissingSerializationRegistrationError",
+        "MissingJNIRegistrationError",
+        "MissingProxyRegistrationError",
+        "Caused by:",
+        "Execution failed for task",
+        "Cannot generate metadata",
+        "finished with non-zero exit value",
+    ]
+    for pattern in priority_patterns:
+        for line in non_empty_lines:
+            if pattern in line:
+                return _trim_failure_reason(line)
+
+    failed_task = _FAILED_TASK_PATTERN.search("\n".join(non_empty_lines))
+    if failed_task:
+        return f"task {failed_task.group(1)} failed"
+
+    for line in non_empty_lines:
+        if line.startswith("ERROR:") or line.startswith("error:"):
+            return _trim_failure_reason(line)
+
+    fallback_lines = [
+        line for line in non_empty_lines
+        if not line.startswith("BUILD SUCCESSFUL")
+        and not line.startswith("Deprecated Gradle features were used")
+    ]
+    if fallback_lines:
+        return _trim_failure_reason(fallback_lines[-1])
+    return f"no specific failure reason found in {display_log_path(log_path)}"
+
+
+def _trim_failure_reason(reason: str, max_length: int = 240) -> str:
+    """Keep failure summaries compact enough for one log line."""
+    if len(reason) <= max_length:
+        return reason
+    return reason[:max_length - 3].rstrip() + "..."
 
 
 def _run_native_trace_image_command(

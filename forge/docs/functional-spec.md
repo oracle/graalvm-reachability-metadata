@@ -226,10 +226,10 @@ labels after publishing the part PR.
   `native_trace_collect` intervention.
 - [Native test verification gate](native-test-verification.md) —
   reusable component that asserts `./gradlew nativeTest` passes for a
-  coordinate by running JVM-agent metadata collection first, using native
-  tracing only as fallback, and routing final recovery to Codex. Used as the
-  per-class gate in the dynamic-access workflow and the terminal gate in the
-  fix-native-run workflow.
+  coordinate by trying JVM-agent metadata collection first, using native
+  tracing when that path fails or when native testing still fails, and routing
+  final recovery to Codex. Used as the per-class gate in the dynamic-access
+  workflow and the terminal gate in the fix-native-run workflow.
 - [Java compilation / runtime failure fix workflow](fix-java-run-fail.md)
   — version-bump fix workflow shared by `fix_javac_fail` and
   `fix_java_run_fail`. Strategies in this family route through the

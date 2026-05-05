@@ -514,8 +514,38 @@ class GateRoutingTests(unittest.TestCase):
         self.assertIn("codex-repro-metadata-gap-exhausted", trace_path)
         self.assertNotIn(trace_path, config_dirs)
 
-    def test_routes_to_codex_when_generate_metadata_fails(self) -> None:
-        fake, calls = self._fake_run_factory([], generate_metadata_rc=1)
+    def test_falls_back_to_native_trace_when_generate_metadata_fails(self) -> None:
+        fake, calls = self._fake_run_factory(
+            [0],
+            generate_metadata_rc=1,
+            log_text=(
+                "FAILURE: Build failed with an exception.\n"
+                "Caused by: java.lang.InternalError: platform encoding not initialized\n"
+            ),
+        )
+        output = io.StringIO()
+        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
+            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            return_value=(0, "/tmp/codex.log", False),
+        ) as codex_mock, redirect_stdout(output):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        codex_mock.assert_not_called()
+        self.assertTrue(any("generateMetadata" in c for c in calls))
+        self.assertFalse(any("test" in c for c in calls))
+        self.assertTrue(any("runNativeTraceImage" in c for c in calls))
+        self.assertIn(
+            "generateMetadata failure reason: Caused by: java.lang.InternalError: platform encoding not initialized",
+            output.getvalue(),
+        )
+
+    def test_routes_to_codex_after_native_trace_failure_when_generate_metadata_fails(self) -> None:
+        fake, calls = self._fake_run_factory([1], generate_metadata_rc=1)
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
             "utility_scripts.native_test_verification.run_codex_metadata_fix",
             return_value=(0, "/tmp/codex.log", False),
@@ -528,7 +558,7 @@ class GateRoutingTests(unittest.TestCase):
             )
         self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         codex_mock.assert_called_once()
-        self.assertFalse(any("runNativeTraceImage" in c for c in calls))
+        self.assertTrue(any("runNativeTraceImage" in c for c in calls))
 
     def test_routes_to_codex_when_test_fails_before_native_test(self) -> None:
         fake, calls = self._fake_run_factory([], test_rc=1, test_failed_task="compileTestJava")
