@@ -1,0 +1,562 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df679-0d70-7ca1-9b9b-d3f30ed9952c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xalan:xalan:2.7.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.7.3].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/metadata/xalan/xalan/index.json
+- Entry selector: "metadata-version" = "2.7.3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.7.3
+- Entry metadata-version: 2.7.3
+- Entry test-version: 2.7.3
+- Entry tested-versions: [2.7.3]
+codex
+I’ll verify the artifact metadata and tagged project URLs first, then update only the missing fields in the JSON entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/xalan/xalan/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.7.3",
+    "tested-versions" : [
+      "2.7.3"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  },
+  {
+    "metadata-version" : "2.7.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/xalan-java",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+    "tested-versions" : [
+      "2.7.0",
+      "2.7.1",
+      "2.7.2"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.7\\.3\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/xalan/xalan/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 0ms:
+4:    "metadata-version" : "2.7.3",
+15:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+16:    "repository-url" : "https://github.com/apache/xalan-java",
+17:    "test-code-url" : "N/A",
+18:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+19:    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+
+web search: 
+web search: Maven Central xalan xalan 2.7.3 sources jar tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/apache/xalan-java/tags
+web search: 
+web search: archive.apache.org dist xalan xalan-j 2.7.3 src
+web search: 
+web search: https://issues.apache.org/jira/browse/XALANJ-2657
+codex
+Maven Central for `xalan:xalan:2.7.3` only exposes the main jar and POM, and Apache’s Jira explicitly notes that the 2.7.3 Central publication lacks source and javadoc artifacts. I’m checking the official Apache release archive and GitHub tags next so the versioned URLs resolve instead of pointing at unversioned current docs.
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/source/
+web search: 
+web search: https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10
+codex
+I found the only 2.7.3 GitHub tag is `xalan-j_2_7_3-rc10`, and both the source repo and separate `xalan-test` repo expose that tag. The Apache source archive also has the final 2.7.3 source distribution, so I’m using that for source code rather than a nonexistent Maven sources jar.
+exec
+/usr/bin/bash -lc "rg -n 'archive\\.apache\\.org/dist/xalan|xalan-test|xalan-j_2_7_3|xalan-j_2_7_2|xalan-j_2_7_1|source-code-url|test-code-url|documentation-url' metadata/xalan metadata | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 0ms:
+metadata/xalan/xalan/index.json:15:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+metadata/xalan/xalan/index.json:17:    "test-code-url" : "N/A",
+metadata/xalan/xalan/index.json:18:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:73:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'find metadata/xalan -maxdepth 3 -name index.json -print' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 0ms:
+metadata/xalan/xalan/index.json
+
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs
+web search: 
+web search: https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/source/
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 xalan xalan 2.7.3 xalan-2.7.3.pom
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/binaries/
+exec
+/usr/bin/bash -lc "curl -sSLI -o /dev/null -w '%{http_code} %{url_effective}\\n' https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.zip" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+exec
+/usr/bin/bash -lc "curl -sSLI -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+exec
+/usr/bin/bash -lc "curl -sSLI -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 129ms:
+200 https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.zip
+
+exec
+/usr/bin/bash -lc "curl -sSLI -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-sources.jar https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-tests.jar https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-javadoc.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 273ms:
+404 https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-sources.jar
+HTTP/2 404 
+date: Tue, 05 May 2026 04:51:31 GMT
+content-type: text/html
+cf-ray: 9f6d21683acaf877-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xalan/xalan/2.7.3/xalan-2.7.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+404 https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-tests.jar
+HTTP/2 404 
+date: Tue, 05 May 2026 04:51:31 GMT
+content-type: text/html
+cf-ray: 9f6d21699c30f877-ZRH
+cf-cache-status: HIT
+age: 142
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xalan/xalan/2.7.3/xalan-2.7.3-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+404 https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-javadoc.jar
+
+ succeeded in 518ms:
+200 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs
+
+ succeeded in 592ms:
+200 https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests
+
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/source/
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs
+web search: 
+web search: Apache Xalan-Java XSLT processor transforms XML documents description
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: xalan-j_2_7_3-rc10 final release 2.7.3
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src
+codex
+I’m going to write exact versioned URLs rather than `$version$` templates here because the upstream tag format is `xalan-j_2_7_3-rc10`, not a direct `2.7.3` substitution. The Central directory has no sources/tests/javadocs for this artifact, so the selected URLs are the tagged Apache GitHub source, test, and xdocs directories.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/metadata/xalan/xalan/index.json
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..c3fa77dec5f71d9f804c3c4cc62c169c5404fb6c
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, XML, or other output formats. It implements XSLT 1.0 and XPath 1.0 and exposes standard Java transformation APIs such as JAXP/TRAX for embedding stylesheet processing in applications.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..c3fa77dec5f71d9f804c3c4cc62c169c5404fb6c
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, XML, or other output formats. It implements XSLT 1.0 and XPath 1.0 and exposes standard Java transformation APIs such as JAXP/TRAX for embedding stylesheet processing in applications.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+codex
+The JSON is patched. I’ll run a lightweight validation on the edited file and the repository metadata check for this coordinate.
+exec
+/usr/bin/bash -lc "jq . metadata/xalan/xalan/index.json >/dev/null && sed -n '1,32p' metadata/xalan/xalan/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.7.3",
+    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src",
+    "repository-url" : "https://github.com/apache/xalan-java",
+    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
+    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
+    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, XML, or other output formats. It implements XSLT 1.0 and XPath 1.0 and exposes standard Java transformation APIs such as JAXP/TRAX for embedding stylesheet processing in applications.",
+    "tested-versions" : [
+      "2.7.3"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  },
+  {
+    "metadata-version" : "2.7.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/xalan-java",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+    "tested-versions" : [
+      "2.7.0",
+      "2.7.1",
+      "2.7.2"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..c3fa77dec5f71d9f804c3c4cc62c169c5404fb6c
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, XML, or other output formats. It implements XSLT 1.0 and XPath 1.0 and exposes standard Java transformation APIs such as JAXP/TRAX for embedding stylesheet processing in applications.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..c3fa77dec5f71d9f804c3c4cc62c169c5404fb6c
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, XML, or other output formats. It implements XSLT 1.0 and XPath 1.0 and exposes standard Java transformation APIs such as JAXP/TRAX for embedding stylesheet processing in applications.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+ exited 1 in 12356ms:
+Starting a Gradle Daemon, 13 busy and 6 incompatible and 272 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/metadata/xalan/xalan/2.7.3/
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/metadata/xalan/xalan/2.7.3/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 11s
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+web search: 
+web search: site:xalan.apache.org/xalan-j Xalan-Java XSLT processor XML HTML text
+codex
+Updated [metadata/xalan/xalan/index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/metadata/xalan/xalan/index.json:4) for the `metadata-version` `2.7.3` entry.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the two-sentence `description`. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Maven Central for `2.7.3` lists only the main jar/POM artifacts, so I used the tagged Apache GitHub source, test, and xdocs paths instead. ([repo1.maven.org](https://repo1.maven.org/maven2/xalan/xalan/2.7.3/))
+
+Verification:
+- `jq` validation passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3` failed because `metadata/xalan/xalan/2.7.3/reachability-metadata.json` is missing, unrelated to the JSON URL fields.
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..c3fa77dec5f71d9f804c3c4cc62c169c5404fb6c
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/src",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, XML, or other output formats. It implements XSLT 1.0 and XPath 1.0 and exposes standard Java transformation APIs such as JAXP/TRAX for embedding stylesheet processing in applications.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+tokens used
+129,176
+Updated [metadata/xalan/xalan/index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/metadata/xalan/xalan/index.json:4) for the `metadata-version` `2.7.3` entry.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the two-sentence `description`. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Maven Central for `2.7.3` lists only the main jar/POM artifacts, so I used the tagged Apache GitHub source, test, and xdocs paths instead. ([repo1.maven.org](https://repo1.maven.org/maven2/xalan/xalan/2.7.3/))
+
+Verification:
+- `jq` validation passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3` failed because `metadata/xalan/xalan/2.7.3/reachability-metadata.json` is missing, unrelated to the JSON URL fields.
+Ran agent for xalan:xalan:2.7.3 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/build/agent-url-discovery-logs/xalan-xalan-2.7.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-17ad6e53/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 28s
+9 actionable tasks: 1 executed, 8 up-to-date
