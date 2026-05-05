@@ -57,11 +57,33 @@ class GenerateMetadataTaskTests {
                 .contains("graalvmNative")
                 .contains("agent")
                 .contains("userCodeFilterPath = \"user-code-filter.json\"")
-                .contains("metadataCopy")
-                .contains("mergeWithExisting = true");
+                .doesNotContain("mergeWithExisting");
         assertThat(readGradlewInvocations())
                 .contains("tests/src/org.lz4/lz4-java/1.8.0|-Pagent test")
-                .contains("tests/src/org.lz4/lz4-java/1.8.0|metadataCopy --task test --dir " + tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0"));
+                .contains("tests/src/org.lz4/lz4-java/1.8.0|metadataCopy --task test --dir ")
+                .contains("mergeNativeTraceMetadata")
+                .contains("-PoutputDir=");
+        assertThat(tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0/reachability-metadata.json")).exists();
+    }
+
+    @Test
+    void runWithMetadataOutputDirCopiesAgentMetadataToStagingOnly() throws IOException {
+        Coordinates coordinates = Coordinates.parse("org.lz4:lz4-java:1.8.0");
+        installLibraryArtifact(coordinates, List.of("net/jpountz/lz4/LZ4Factory.class"));
+        Project project = createProject();
+        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+        Path stagedMetadataDir = tempDir.resolve("staged-agent-metadata");
+        TestGenerateMetadataTask task = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+        task.setAgentAllowedPackages("fromJar");
+        task.setMetadataOutputDir(stagedMetadataDir.toString());
+
+        task.run();
+
+        assertThat(stagedMetadataDir.resolve("reachability-metadata.json")).exists();
+        assertThat(tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0/reachability-metadata.json")).doesNotExist();
+        assertThat(readGradlewInvocations())
+                .contains("metadataCopy --task test --dir " + stagedMetadataDir)
+                .doesNotContain("mergeNativeTraceMetadata");
     }
 
     @Test
@@ -208,6 +230,17 @@ class GenerateMetadataTaskTests {
                       break
                     fi
                     shift
+                  done
+                fi
+                if [ "$1" = "mergeNativeTraceMetadata" ]; then
+                  for arg in "$@"; do
+                    case "$arg" in
+                      -PoutputDir=*)
+                        out="${arg#-PoutputDir=}"
+                        mkdir -p "$out"
+                        printf '{}\n' > "$out/reachability-metadata.json"
+                        ;;
+                    esac
                   done
                 fi
                 exit 0

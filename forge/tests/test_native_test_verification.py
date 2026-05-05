@@ -219,7 +219,7 @@ class MetadataAggregationTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=self._fake_native_image_utils_merge(merge_calls),
         ):
-            self.assertTrue(ntv._aggregate_trace_metadata(self.repo, "g:a:1.0", self.output_dir))
+            self.assertTrue(ntv._finalize_staged_metadata(self.repo, "g:a:1.0", [self.output_dir]))
 
         durable_metadata = json.loads(durable_metadata_path.read_text(encoding="utf-8"))
         methods = [
@@ -363,6 +363,16 @@ class GateRoutingTests(unittest.TestCase):
             if hasattr(stdout, "write"):
                 stdout.write(log_text)
             if "generateMetadata" in cmd:
+                output_dir = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("--metadataOutputDir=")),
+                    None,
+                )
+                if generate_metadata_rc == 0 and output_dir:
+                    Path(output_dir).mkdir(parents=True, exist_ok=True)
+                    Path(output_dir, "reachability-metadata.json").write_text(
+                        json.dumps({"reflection": [{"type": "com.example.AgentGenerated"}]}),
+                        encoding="utf-8",
+                    )
                 return subprocess.CompletedProcess(cmd, generate_metadata_rc)
             if "test" in cmd:
                 if hasattr(stdout, "write") and test_failed_task is not None:
@@ -515,7 +525,7 @@ class GateRoutingTests(unittest.TestCase):
             )
         self.assertEqual(result.status, ntv.STATUS_PASSED)
         self.assertIn(
-            os.path.join(self.output_dir, "reachability-metadata.json"),
+            os.path.join(self.output_dir, "trace", "reachability-metadata.json"),
             output.getvalue(),
         )
 
@@ -621,7 +631,7 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.intervention_records, [])
 
     def test_aggregate_failure_returns_failed_without_invoking_codex(self) -> None:
-        # Malformed durable metadata makes _aggregate_trace_metadata raise; the
+        # Malformed durable metadata makes final native-image-utils merge fail; the
         # gate must surface FAILED directly per the spec carve-out.
         metadata_dir = Path(self.repo) / "metadata" / "g" / "a" / "1.0"
         metadata_dir.mkdir(parents=True)
@@ -664,7 +674,7 @@ class GateRoutingTests(unittest.TestCase):
         input_dirs = next(arg for arg in merge_calls[0] if arg.startswith("-PinputDirs="))
         self.assertIn("cycle-0", input_dirs)
         durable_input_dirs = next(arg for arg in merge_calls[1] if arg.startswith("-PinputDirs="))
-        self.assertIn(self.output_dir, durable_input_dirs)
+        self.assertIn(os.path.join(self.output_dir, "trace"), durable_input_dirs)
 
     def test_routes_to_codex_and_prints_stacktrace_when_172_produces_no_metadata(self) -> None:
         fake, _calls = self._fake_run_factory(
@@ -800,6 +810,8 @@ class GateRoutingTests(unittest.TestCase):
         self.assertTrue(any("generateMetadata" in c for c in calls))
         self.assertFalse(any("test" in c for c in calls))
         self.assertTrue(any("runNativeTraceImage" in c for c in calls))
+        first_trace_call = next(c for c in calls if "runNativeTraceImage" in c)
+        self.assertFalse(any(c.startswith("-PmetadataConfigDirs=") for c in first_trace_call))
         self.assertIn(
             "generateMetadata failure reason: Caused by: java.lang.InternalError: platform encoding not initialized",
             output.getvalue(),

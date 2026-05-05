@@ -32,6 +32,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
 
     private String coordinates;
     private String agentAllowedPackages;
+    private String metadataOutputDir;
 
     {
         Object coordsProp = getProject().findProperty("coordinates");
@@ -67,6 +68,17 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         return agentAllowedPackages;
     }
 
+    @Option(option = "metadataOutputDir", description = "Directory where generated agent metadata is copied without durable final merge")
+    public void setMetadataOutputDir(String metadataOutputDir) {
+        this.metadataOutputDir = metadataOutputDir;
+    }
+
+    @Input
+    @Optional
+    public String getMetadataOutputDir() {
+        return metadataOutputDir;
+    }
+
     @TaskAction
     public void run() throws IOException {
         Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), coordinates);
@@ -82,7 +94,18 @@ public abstract class GenerateMetadataTask extends DefaultTask {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(coordinatesValue.group()));
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
-        MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+        if (metadataOutputDir == null || metadataOutputDir.isBlank()) {
+            MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+        } else {
+            MetadataGenerationUtils.collectMetadata(
+                    getExecOperations(),
+                    testsDirectory,
+                    getLayout(),
+                    coordinates,
+                    gradlewPath,
+                    Path.of(metadataOutputDir)
+            );
+        }
         if (isFromJarAllowedPackages()) {
             MetadataGenerationUtils.setAllowedPackagesInIndexJson(getLayout(), coordinatesValue, packageList);
         }

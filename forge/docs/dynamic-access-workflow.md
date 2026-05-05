@@ -212,11 +212,11 @@ batch suffix when the flush contains more than one class step. If the loop
 finishes, or a large-library chunk boundary is reached, with fewer than the
 configured number of queued class steps, the strategy flushes that partial
 batch before returning. The gate always starts with the normal JVM-agent
-metadata path:
+metadata path, but writes that output to a per-gate staging directory:
 
 ```text
-./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar
-./gradlew test -Pcoordinates=<g:a:v>
+./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar --metadataOutputDir=<output_dir>/agent
+./gradlew test -Pcoordinates=<g:a:v> -PmetadataConfigDirs=<output_dir>/agent
 ```
 
 If the coordinate passes, the gate returns `PASSED` without native tracing.
@@ -231,10 +231,11 @@ failed tracing to Codex. Pi is not part of this gate.
 Effects within this workflow:
 
 1. The gate keeps metadata cumulative. JVM-agent output is written to the
-   durable `metadata/<group>/<artifact>/<version>/` directory; if native
-   tracing was needed, the merged trace output is also folded into that
-   durable metadata file before the next batch starts or before the phase
-   returns.
+   gate-local `<output_dir>/agent` directory; if native tracing was needed,
+   merged trace output is written to `<output_dir>/trace`. Only after the
+   gate passes are existing durable metadata, staged agent metadata, and
+   staged trace metadata merged into the durable
+   `metadata/<group>/<artifact>/<version>/` directory.
 2. The dynamic-access coverage report is regenerated **after** the gate so
    that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.

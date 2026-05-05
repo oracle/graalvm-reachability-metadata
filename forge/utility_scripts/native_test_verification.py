@@ -107,6 +107,8 @@ def verify_native_test_passes(
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
     _reset_directory(output_dir)
     _reset_directory(runs_dir)
+    agent_metadata_dir = os.path.join(output_dir, "agent")
+    trace_metadata_dir = os.path.join(output_dir, "trace")
     condition_packages = condition_packages or _default_condition_packages(coordinate)
 
     log_stage(
@@ -168,9 +170,11 @@ def verify_native_test_passes(
     generate_metadata_rc = _run_generate_metadata(
         reachability_repo_path=reachability_repo_path,
         coordinate=coordinate,
+        output_dir=agent_metadata_dir,
         log_path=generate_metadata_log_path,
     )
     last_log_path = generate_metadata_log_path
+    agent_metadata_dirs = [agent_metadata_dir] if generate_metadata_rc == 0 else []
     if generate_metadata_rc != 0:
         failure_reason = _summarize_gradle_failure_reason(generate_metadata_log_path)
         log_stage(
@@ -183,19 +187,26 @@ def verify_native_test_passes(
         test_rc, failed_task = _run_coordinate_test(
             reachability_repo_path=reachability_repo_path,
             coordinate=coordinate,
+            metadata_config_dirs=[agent_metadata_dir],
             log_path=test_log_path,
             timeout_seconds=cycle_timeout_seconds,
         )
         last_log_path = test_log_path
         if test_rc == 0:
             log_stage(_GATE_STAGE, "JVM-agent metadata made native tests pass")
+            if not _finalize_staged_metadata(
+                    reachability_repo_path=reachability_repo_path,
+                    coordinate=coordinate,
+                    metadata_dirs=[agent_metadata_dir],
+            ):
+                return _make_result(STATUS_FAILED, 0)
             return _make_result(STATUS_PASSED, 0)
         if failed_task != "nativeTest":
             failed_task_display = failed_task or "unknown"
             return _route_to_codex(
                 stage="test",
                 reason=f"test failed before native trace fallback (failed_task={failed_task_display}, exit={test_rc})",
-                reproduction_command=_coordinate_test_command(coordinate),
+                reproduction_command=_coordinate_test_command(coordinate, [agent_metadata_dir]),
                 iterations_used=0,
             )
 
@@ -212,7 +223,7 @@ def verify_native_test_passes(
             coordinate=coordinate,
             run_dir=run_dir,
             condition_packages=condition_packages,
-            metadata_config_dirs=accepted_run_dirs,
+            metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             log_path=log_path,
             timeout_seconds=cycle_timeout_seconds,
         )
@@ -233,13 +244,13 @@ def verify_native_test_passes(
             if not _merge_into_output(
                 reachability_repo_path=reachability_repo_path,
                 run_dirs=run_dirs_to_merge,
-                output_dir=output_dir,
+                output_dir=trace_metadata_dir,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
-            if not _aggregate_trace_metadata(
+            if not _finalize_staged_metadata(
                 reachability_repo_path=reachability_repo_path,
                 coordinate=coordinate,
-                output_dir=output_dir,
+                metadata_dirs=agent_metadata_dirs + [trace_metadata_dir],
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
             return _make_result(STATUS_PASSED, cycle + 1)
@@ -258,7 +269,7 @@ def verify_native_test_passes(
                         coordinate=coordinate,
                         run_dir=run_dir,
                         condition_packages=condition_packages,
-                        metadata_config_dirs=accepted_run_dirs,
+                        metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
                 )
@@ -279,7 +290,7 @@ def verify_native_test_passes(
                         coordinate=coordinate,
                         run_dir=run_dir,
                         condition_packages=condition_packages,
-                        metadata_config_dirs=accepted_run_dirs,
+                        metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
                 )
@@ -302,7 +313,7 @@ def verify_native_test_passes(
                 coordinate=coordinate,
                 run_dir=run_dir,
                 condition_packages=condition_packages,
-                metadata_config_dirs=accepted_run_dirs,
+                metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             ),
             iterations_used=cycle + 1,
         )
@@ -319,14 +330,17 @@ def verify_native_test_passes(
             coordinate=coordinate,
             run_dir=os.path.join(runs_dir, "codex-repro-metadata-gap-exhausted"),
             condition_packages=condition_packages,
-            metadata_config_dirs=accepted_run_dirs,
+            metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
         ),
         iterations_used=max_iterations,
     )
 
 
-def _coordinate_test_command(coordinate: str) -> str:
-    return f"./gradlew test -Pcoordinates={coordinate}"
+def _coordinate_test_command(coordinate: str, metadata_config_dirs: list[str] | None = None) -> str:
+    parts = ["./gradlew test", f"-Pcoordinates={coordinate}"]
+    if metadata_config_dirs:
+        parts.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
+    return " ".join(parts)
 
 
 def _default_condition_packages(coordinate: str) -> list[str]:
@@ -336,14 +350,16 @@ def _default_condition_packages(coordinate: str) -> list[str]:
 def _run_generate_metadata(
         reachability_repo_path: str,
         coordinate: str,
+        output_dir: str,
         log_path: str,
 ) -> int:
-    """Run JVM-agent metadata generation for the coordinate."""
+    """Run JVM-agent metadata generation for the coordinate into a staging dir."""
     cmd = [
         "./gradlew",
         "generateMetadata",
         f"-Pcoordinates={coordinate}",
         "--agentAllowedPackages=fromJar",
+        f"--metadataOutputDir={output_dir}",
     ]
     return _run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
@@ -355,11 +371,14 @@ def _run_generate_metadata(
 def _run_coordinate_test(
         reachability_repo_path: str,
         coordinate: str,
+        metadata_config_dirs: list[str],
         log_path: str,
         timeout_seconds: int,
 ) -> tuple[int, str | None]:
     """Run normal coordinate tests and return the first failed Gradle task."""
     cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}"]
+    if metadata_config_dirs:
+        cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
     result = _run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
@@ -367,6 +386,14 @@ def _run_coordinate_test(
         timeout_seconds=timeout_seconds,
     )
     return result.returncode, _parse_first_failed_task(log_path)
+
+
+def _existing_metadata_dirs(paths: list[str]) -> list[str]:
+    return [
+        path
+        for path in paths
+        if os.path.isfile(os.path.join(path, _AGGREGATED_METADATA_FILE_NAME))
+    ]
 
 
 def _run_logged_gradle_command(
@@ -840,15 +867,15 @@ def _print_aggregated_metadata_path(output_dir: str) -> None:
     )
 
 
-def _aggregate_trace_metadata(
+def _finalize_staged_metadata(
         reachability_repo_path: str,
         coordinate: str,
-        output_dir: str,
+        metadata_dirs: list[str],
 ) -> bool:
-    """Merge trace-backed metadata into the durable library metadata file."""
-    trace_metadata_path = os.path.join(output_dir, _AGGREGATED_METADATA_FILE_NAME)
-    if not os.path.isfile(trace_metadata_path):
-        log_stage(_GATE_STAGE, "native trace produced no reachability-metadata.json to aggregate")
+    """Merge staged agent/trace metadata into the durable library metadata file."""
+    staged_metadata_dirs = _existing_metadata_dirs(metadata_dirs)
+    if not staged_metadata_dirs:
+        log_stage(_GATE_STAGE, "no staged reachability-metadata.json to finalize")
         return True
 
     try:
@@ -877,7 +904,7 @@ def _aggregate_trace_metadata(
     input_dirs = []
     if os.path.isfile(durable_metadata_path):
         input_dirs.append(durable_metadata_dir)
-    input_dirs.append(output_dir)
+    input_dirs.extend(staged_metadata_dirs)
 
     try:
         with tempfile.TemporaryDirectory(prefix="native-trace-durable-") as temp_dir:
@@ -906,7 +933,7 @@ def _aggregate_trace_metadata(
         return False
     log_stage(
         _GATE_STAGE,
-        f"aggregated native trace metadata into {os.path.relpath(durable_metadata_path, reachability_repo_path)}",
+        f"finalized staged metadata into {os.path.relpath(durable_metadata_path, reachability_repo_path)}",
     )
     return True
 
