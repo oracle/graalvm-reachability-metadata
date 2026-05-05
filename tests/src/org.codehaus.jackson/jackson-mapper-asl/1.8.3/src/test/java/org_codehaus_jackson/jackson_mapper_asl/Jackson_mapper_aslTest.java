@@ -8,7 +8,7 @@ package org_codehaus_jackson.jackson_mapper_asl;
 
 import org.junit.jupiter.api.Test;
 
-class Jackson_mapper_aslTest {
+public class Jackson_mapper_aslTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
