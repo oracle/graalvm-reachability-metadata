@@ -116,6 +116,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
         claimed_issue = _claimed_issue()
 
         with patch.object(forge_metadata, "find_progress_state_path", return_value=None), \
+                patch.object(forge_metadata, "require_claimed_issue_worktree"), \
                 patch.object(forge_metadata, "_load_pending_run_metrics", return_value={"status": "success"}), \
                 patch.object(forge_metadata, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
                 patch.object(forge_metadata, "is_not_for_native_image", return_value=True), \
@@ -1975,6 +1976,7 @@ class InterruptHandlingTests(unittest.TestCase):
         claimed_issue = _claimed_issue()
 
         with patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=130), \
+                patch.object(forge_metadata, "require_claimed_issue_worktree"), \
                 patch.object(forge_metadata, "require_graalvm_home_env") as require_graalvm_home:
             with self.assertRaises(KeyboardInterrupt):
                 forge_metadata.invoke_pipeline(claimed_issue, None, False)
@@ -2010,6 +2012,70 @@ class InterruptHandlingTests(unittest.TestCase):
         handle_failed_claimed_issue.assert_not_called()
         revert_claimed_issue.assert_called_once_with(claimed_issue, "Ctrl+C interrupt")
         cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
+
+    def test_unhandled_system_exit_is_failed_issue_not_queue_stopper(self) -> None:
+        claimed_issue = _claimed_issue()
+
+        with patch.object(forge_metadata, "run_claimed_issue", side_effect=SystemExit(1)), \
+                patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+            handled = forge_metadata.process_claimed_issue_lifecycle(
+                claimed_issue,
+                strategy_name=None,
+                keep_tests_without_dynamic_access=False,
+                canonical_metrics_repo_path="/tmp/metrics",
+            )
+
+        self.assertFalse(handled)
+        handle_completed_run.assert_not_called()
+        handle_failed_claimed_issue.assert_called_once()
+        cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
+
+    def test_failed_run_analysis_uses_fallback_when_worktree_is_invalid(self) -> None:
+        claimed_issue = _claimed_issue()
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name=None,
+            workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+            reason="job_failed",
+        )
+
+        with patch.object(forge_metadata, "_load_pending_run_metrics", return_value=None), \
+                patch.object(forge_metadata, "collect_issue_log_paths", return_value=[]), \
+                patch.object(forge_metadata, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
+                patch.object(forge_metadata.subprocess, "run") as run:
+            comment = forge_metadata.run_codex_failed_generation_analysis(
+                claimed_issue,
+                candidate,
+                started_at=123.0,
+                preservation_result=None,
+            )
+
+        self.assertIn("Human intervention needed", comment)
+        run.assert_not_called()
+
+    def test_human_intervention_analysis_uses_fallback_when_worktree_is_invalid(self) -> None:
+        claimed_issue = _claimed_issue()
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name="strategy",
+            workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+            reason="low_dynamic_access_coverage",
+        )
+        strategy = {"model": "test-model"}
+
+        with patch.object(forge_metadata, "load_strategy_by_name", return_value=strategy), \
+                patch.object(forge_metadata, "_collect_human_intervention_read_only_files", return_value=[]), \
+                patch.object(forge_metadata, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
+                patch.object(forge_metadata, "init_workflow_agent") as init_agent:
+            comment = forge_metadata.run_human_intervention_analysis(
+                claimed_issue,
+                candidate,
+                started_at=123.0,
+                preservation_result=None,
+            )
+
+        self.assertIn("Human intervention needed", comment)
+        init_agent.assert_not_called()
 
     def test_human_intervention_posting_noops_after_interrupt(self) -> None:
         forge_metadata.mark_user_interrupt_requested()

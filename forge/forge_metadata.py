@@ -92,6 +92,7 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
+    git_env_limited_to_repo_root,
     get_forge_subdir_name,
     get_repo_root,
     require_complete_reachability_repo,
@@ -2795,6 +2796,22 @@ def _build_failed_generation_fallback_comment(
     )
 
 
+def claimed_issue_worktree_is_valid(claimed_issue: ClaimedIssue, stage: str) -> bool:
+    """Return True when analysis agents may safely run in the claimed issue worktree."""
+    try:
+        require_claimed_issue_worktree(claimed_issue, stage)
+        return True
+    except Exception as exc:
+        print(
+            (
+                f"ERROR: Skipping {stage} for issue #{claimed_issue.issue['number']} "
+                f"because the claimed worktree is invalid: {exc!r}"
+            ),
+            file=sys.stderr,
+        )
+        return False
+
+
 def run_codex_failed_generation_analysis(
         claimed_issue: ClaimedIssue,
         candidate: HumanInterventionCandidate,
@@ -2804,6 +2821,13 @@ def run_codex_failed_generation_analysis(
     """Use Codex to analyze a failed library-generation run and write an issue comment."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     log_paths = collect_issue_log_paths(claimed_issue, started_at)
+    if not claimed_issue_worktree_is_valid(claimed_issue, "failed-run analysis"):
+        return _build_failed_generation_fallback_comment(
+            claimed_issue,
+            candidate,
+            log_paths,
+            preservation_result,
+        )
     prompt = _build_failed_generation_analysis_prompt(
         claimed_issue,
         candidate,
@@ -2898,6 +2922,8 @@ def run_human_intervention_analysis(
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
     read_only_files = _collect_human_intervention_read_only_files(claimed_issue)
     prompt = _build_human_intervention_analysis_prompt(claimed_issue, candidate)
+    if not claimed_issue_worktree_is_valid(claimed_issue, "human-intervention analysis"):
+        return _build_human_intervention_fallback_comment(claimed_issue, candidate)
 
     try:
         agent = init_workflow_agent(
@@ -3069,6 +3095,28 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
     return f"https://github.com/{origin_owner}/{repo_name}/tree/{quote(branch_name, safe='')}"
 
 
+def require_claimed_issue_worktree(claimed_issue: ClaimedIssue, stage: str) -> str:
+    """Require the claimed issue path to be the exact isolated reachability worktree."""
+    try:
+        resolved_path = require_complete_reachability_repo(claimed_issue.worktree_path)
+    except SystemExit as exc:
+        raise RuntimeError(
+            (
+                f"Issue #{claimed_issue.issue['number']} {stage} requires a valid isolated "
+                f"worktree at {claimed_issue.worktree_path}."
+            )
+        ) from exc
+    expected_path = os.path.abspath(claimed_issue.worktree_path)
+    if resolved_path != expected_path:
+        raise RuntimeError(
+            (
+                f"Issue #{claimed_issue.issue['number']} {stage} resolved the wrong "
+                f"worktree root: expected {expected_path}, got {resolved_path}."
+            )
+        )
+    return resolved_path
+
+
 def copy_library_logs_to_preserved_worktree(claimed_issue: ClaimedIssue) -> str | None:
     """Copy the current library logs into the preserved worktree and return the repo-relative path."""
     safe_library_name = sanitize_library_log_segment(claimed_issue.issue_coordinates)
@@ -3102,27 +3150,29 @@ def copy_library_logs_to_preserved_worktree(claimed_issue: ClaimedIssue) -> str 
 def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
     """Commit and push the failed run worktree so it survives workspace cleanup."""
     branch_name = build_failure_preservation_branch_name(claimed_issue)
-    repo_path = claimed_issue.worktree_path
+    repo_path = require_claimed_issue_worktree(claimed_issue, "failure preservation")
+    git_env = git_env_limited_to_repo_root(repo_path)
     issue_number = claimed_issue.issue["number"]
 
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
-    subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, check=True)
+    subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
-    subprocess.run(["git", "add", "-A"], cwd=repo_path, check=True)
+    subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
     if logs_destination_relpath is not None:
-        subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, check=True)
-    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+        subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
+    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
     committed_changes = diff_result.returncode != 0
     if committed_changes:
         subprocess.run(
             ["git", "commit", "-m", f"Preserve failed automation work for issue #{issue_number}"],
             cwd=repo_path,
+            env=git_env,
             check=True,
         )
     else:
         log_stage("preserve-failed-work", f"No uncommitted work found for issue #{issue_number}; pushing branch at current HEAD.")
 
-    subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, check=True)
+    subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, env=git_env, check=True)
     branch_url = build_origin_branch_url(repo_path, branch_name)
     log_stage("preserve-failed-work", f"Preserved failed work for issue #{issue_number}: {branch_url}")
     return FailurePreservationResult(
@@ -3140,17 +3190,19 @@ def refresh_preserved_branch_logs(
     if preservation_result is None:
         return
 
-    repo_path = claimed_issue.worktree_path
+    repo_path = require_claimed_issue_worktree(claimed_issue, "preserved log refresh")
+    git_env = git_env_limited_to_repo_root(repo_path)
     issue_number = claimed_issue.issue["number"]
-    subprocess.run(["git", "switch", preservation_result.branch_name], cwd=repo_path, check=True)
+    subprocess.run(["git", "switch", preservation_result.branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
     if logs_destination_relpath is None:
         return
 
-    subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, check=True)
+    subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
     diff_result = subprocess.run(
         ["git", "diff", "--cached", "--quiet", "--", logs_destination_relpath],
         cwd=repo_path,
+        env=git_env,
         check=False,
     )
     if diff_result.returncode == 0:
@@ -3160,9 +3212,10 @@ def refresh_preserved_branch_logs(
     subprocess.run(
         ["git", "commit", "-m", f"Add automation logs for issue #{issue_number}"],
         cwd=repo_path,
+        env=git_env,
         check=True,
     )
-    subprocess.run(["git", "push"], cwd=repo_path, check=True)
+    subprocess.run(["git", "push"], cwd=repo_path, env=git_env, check=True)
     log_stage("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
 
 
@@ -3303,6 +3356,7 @@ def invoke_pipeline(
 ) -> bool:
     """Run the matching workflow for the claimed issue in its isolated worktree."""
     issue_number = claimed_issue.issue["number"]
+    require_claimed_issue_worktree(claimed_issue, "workflow execution")
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         print()
@@ -4186,6 +4240,7 @@ def finalize_successful_issue(
         claimed_issue: ClaimedIssue,
 ) -> None:
     """Create the PR for a successful isolated workflow run."""
+    require_claimed_issue_worktree(claimed_issue, "successful finalization")
     large_library_state_path = find_progress_state_path(
         claimed_issue.scratch_metrics_repo_path,
         claimed_issue.issue["number"],
@@ -4399,6 +4454,7 @@ def process_claimed_issue_lifecycle(
             if is_interrupt_exception(exc) or is_user_interrupt_requested():
                 mark_user_interrupt_requested()
                 revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                raise
             else:
                 try:
                     handle_failed_claimed_issue(
@@ -4420,6 +4476,7 @@ def process_claimed_issue_lifecycle(
                     mark_user_interrupt_requested()
                     revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
                     raise
+                return False
         raise
     finally:
         try:

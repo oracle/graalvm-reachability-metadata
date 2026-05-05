@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 from utility_scripts.task_logs import build_task_log_path, display_log_path
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 
 CODEX_MODEL_NAME = "oca/gpt-5.4"
 CODEX_TIMEOUT_SECONDS = 1200
@@ -22,6 +23,7 @@ def run_codex_metadata_fix(
     Requires the ``fix-missing-reachability-metadata`` skill. The skill definition lives at:
     https://github.com/oracle/graalvm-reachability-metadata/blob/master/skills/fix-missing-reachability-metadata/SKILL.md
     """
+    reachability_metadata_path = require_complete_reachability_repo(reachability_metadata_path)
     prompt = f"Fix the metadata entries for {coordinates}"
     if reproduction_command:
         prompt += f"\n\nReproduce the failure with:\n{reproduction_command}"

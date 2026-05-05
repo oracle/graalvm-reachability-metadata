@@ -19,6 +19,14 @@ def get_forge_subdir_name() -> str:
     return os.path.basename(get_repo_root())
 
 
+def git_env_limited_to_repo_root(repo_root: str) -> dict[str, str]:
+    """Return an environment that prevents Git from discovering parent repos."""
+    resolved_root = os.path.abspath(repo_root)
+    env = os.environ.copy()
+    env["GIT_CEILING_DIRECTORIES"] = os.path.dirname(resolved_root)
+    return env
+
+
 def _run_git(cmd: list[str], cwd: str) -> None:
     """Run a git command and exit with a clear error on failure."""
     result = subprocess.run(
@@ -37,18 +45,22 @@ def _run_git(cmd: list[str], cwd: str) -> None:
 
 
 def _is_git_checkout(repo_root: str) -> bool:
-    """Return True when the path is a git checkout, including linked worktrees."""
+    """Return True when the exact path is a git checkout, including linked worktrees."""
     if not os.path.isdir(repo_root):
         return False
 
+    resolved_root = os.path.abspath(repo_root)
     result = subprocess.run(
-        ["git", "rev-parse", "--git-dir"],
-        cwd=repo_root,
+        ["git", "rev-parse", "--show-toplevel"],
+        cwd=resolved_root,
+        env=git_env_limited_to_repo_root(resolved_root),
         check=False,
         capture_output=True,
         text=True,
     )
-    return result.returncode == 0
+    if result.returncode != 0:
+        return False
+    return os.path.realpath(result.stdout.strip()) == os.path.realpath(resolved_root)
 
 
 def ensure_local_reachability_repo(reachability_root: str) -> str:
@@ -172,7 +184,7 @@ def require_complete_reachability_repo(repo_root: str) -> str:
             file=sys.stderr,
         )
         raise SystemExit(1)
-    return repo_root
+    return os.path.abspath(repo_root)
 
 
 def resolve_parent_reachability_repo() -> str:
