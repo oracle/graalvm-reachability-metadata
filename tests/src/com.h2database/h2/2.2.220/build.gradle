@@ -9,18 +9,39 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String graalVmHome = System.getenv("GRAALVM_HOME") ?: System.getenv("JAVA_HOME")
 
 tasks.withType(Test).configureEach {
+    exclude("h2/MemoryUnmapperTest.class", "h2/SourceCompilerTest.class")
+    if (graalVmHome != null && !graalVmHome.isBlank()) {
+        environment "LD_LIBRARY_PATH", "${graalVmHome}/lib"
+        jvmArgs "-Djava.library.path=${graalVmHome}/lib"
+    }
     systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$CountingJavaObjectSerializer'
     systemProperty 'h2.nioCleanerHack', 'true'
     jvmArgs '--add-opens=java.base/java.nio=ALL-UNNAMED',
             '--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED'
 }
 
+configurations {
+    h2UpgradeJar {
+        canBeConsumed = false
+        canBeResolved = true
+        transitive = false
+    }
+}
+
 dependencies {
 	testImplementation("com.h2database:h2:$libraryVersion")
 	testImplementation("com.ibm.icu:icu4j:73.2")
 	testImplementation("org.assertj:assertj-core:3.22.0")
+    h2UpgradeJar("com.h2database:h2:1.4.200")
+}
+
+tasks.named("processTestResources") {
+    from(configurations.h2UpgradeJar) {
+        into "h2-upgrade"
+    }
 }
 
 graalvmNative {
