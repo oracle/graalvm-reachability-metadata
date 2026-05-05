@@ -360,8 +360,12 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
 }
 
 tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
-    if (runNativeTraceImageTaskRequested) {
-        task.doFirst {
+    task.doFirst {
+        File nativeImageOutputDirectory = task.outputFile.get().asFile.parentFile
+        if (!nativeImageOutputDirectory.isDirectory() && !nativeImageOutputDirectory.mkdirs()) {
+            throw new GradleException("Failed to create native-image output directory: ${nativeImageOutputDirectory.absolutePath}")
+        }
+        if (runNativeTraceImageTaskRequested) {
             requiredGradleProperty("traceMetadataPath")
         }
     }
