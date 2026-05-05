@@ -132,6 +132,49 @@ public class Ktor_server_cio_jvmTest {
     }
 
     @Test
+    fun `cio engine handles expect continue request bodies`() {
+        val requestBody: String = "continue-body"
+
+        withCioServer(
+            module = {
+                routing {
+                    post("/expect") {
+                        val body: String = call.receiveText()
+
+                        call.response.headers.append("X-Body-Length", body.length.toString())
+                        call.respondText(
+                            text = body.uppercase(),
+                            contentType = ContentType.Text.Plain,
+                            status = HttpStatusCode.Created,
+                        )
+                    }
+                }
+            },
+        ) { baseUri: URI ->
+            val executor: ExecutorService = Executors.newSingleThreadExecutor()
+            val client: HttpClient = newClient(executor)
+            try {
+                val response: HttpResponse<String> = client.send(
+                    request(baseUri.resolve("/expect"))
+                        .expectContinue(true)
+                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build(),
+                    HttpResponse.BodyHandlers.ofString(),
+                )
+
+                assertThat(response.statusCode()).isEqualTo(HttpStatusCode.Created.value)
+                assertThat(response.headers().firstValue("X-Body-Length"))
+                    .hasValue(requestBody.length.toString())
+                assertThat(response.body()).isEqualTo(requestBody.uppercase())
+            } finally {
+                client.close()
+                executor.shutdownNow()
+                assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue()
+            }
+        }
+    }
+
+    @Test
     fun `cio engine streams text writer responses`() {
         withCioServer(
             module = {
