@@ -7,7 +7,6 @@
 package org_codehaus_jackson.jackson_mapper_asl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -20,35 +19,18 @@ public class ClassUtilInnerEnumTypeLocatorTest {
     public void locatesEnumTypeForEmptyEnumSet() {
         EnumSet<Color> colors = EnumSet.noneOf(Color.class);
 
-        Throwable failure = catchThrowable(() -> {
-            Class<? extends Enum<?>> enumType = ClassUtil.findEnumType(colors);
+        Class<? extends Enum<?>> enumType = ClassUtil.findEnumType(colors);
 
-            assertThat(enumType).isEqualTo(Color.class);
-        });
-
-        assertSuccessfulOrBlockedByJdkEncapsulation(failure);
+        assertThat(enumType).isEqualTo(Color.class);
     }
 
     @Test
     public void locatesEnumTypeForEmptyEnumMap() {
         EnumMap<Color, String> colors = new EnumMap<Color, String>(Color.class);
 
-        Throwable failure = catchThrowable(() -> {
-            Class<? extends Enum<?>> enumType = ClassUtil.findEnumType(colors);
+        Class<? extends Enum<?>> enumType = ClassUtil.findEnumType(colors);
 
-            assertThat(enumType).isEqualTo(Color.class);
-        });
-
-        assertSuccessfulOrBlockedByJdkEncapsulation(failure);
-    }
-
-    private static void assertSuccessfulOrBlockedByJdkEncapsulation(Throwable failure) {
-        if (failure == null) {
-            return;
-        }
-        assertThat(failure)
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasCauseInstanceOf(IllegalAccessException.class);
+        assertThat(enumType).isEqualTo(Color.class);
     }
 
     private enum Color {
