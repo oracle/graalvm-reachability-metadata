@@ -56,11 +56,15 @@ from ai_workflows.improve_library_coverage import (
 )
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
 from git_scripts.common_git import (
+    GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubRateLimitExceeded,
+    _github_retry_delay_seconds,
+    _log_github_transient_retry,
     ensure_gh_authenticated,
     get_issue_project_item_status,
     get_origin_owner,
     is_github_rate_limit_text,
+    is_github_transient_failure_text,
     log_github_query,
     run_github_command_with_retries,
     run_github_json_with_retries,
@@ -398,28 +402,41 @@ def gh(
         input_text: str | None = None,
         cwd: str | None = None,
         quiet: bool = False,
+        max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
 ) -> subprocess.CompletedProcess:
     """Run a gh CLI command and return the completed process."""
+    if max_attempts < 1:
+        raise ValueError("max_attempts must be at least 1")
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
     if not quiet:
         log_github_query(args)
-    result = subprocess.run(
-        cmd,
-        capture_output=True,
-        text=True,
-        env=env,
-        input=input_text,
-        cwd=cwd,
-    )
-    if check and result.returncode != 0:
+    for attempt in range(1, max_attempts + 1):
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            env=env,
+            input=input_text,
+            cwd=cwd,
+        )
+        if result.returncode == 0:
+            return result
+
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
-        if is_github_rate_limit_text(error_text):
+        if check and is_github_rate_limit_text(error_text):
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if not quiet:
-            print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
-        result.check_returncode()
-    return result
+        if attempt < max_attempts and is_github_transient_failure_text(error_text):
+            _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+            time.sleep(_github_retry_delay_seconds(attempt))
+            continue
+        if check:
+            if not quiet:
+                print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
+            result.check_returncode()
+        return result
+
+    raise RuntimeError("GitHub command exhausted retries")
 
 
 def gh_json(*args: str, quiet: bool = False) -> any:
