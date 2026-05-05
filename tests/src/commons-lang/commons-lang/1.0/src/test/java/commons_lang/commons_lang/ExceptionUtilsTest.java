@@ -33,12 +33,36 @@ public class ExceptionUtilsTest {
         assertThat(cause).isSameAs(root);
     }
 
+    @Test
+    public void getRootCauseFollowsCustomAccessorMethods() {
+        IllegalStateException root = new IllegalStateException("root");
+        CustomCauseException middle = new CustomCauseException("middle", root);
+        CustomCauseException wrapper = new CustomCauseException("wrapper", middle);
+
+        Throwable cause = ExceptionUtils.getRootCause(wrapper);
+
+        assertThat(cause).isSameAs(root);
+    }
+
     public static class DetailBackedException extends Exception {
         public Throwable detail;
 
         public DetailBackedException(Throwable detail) {
             super("detail backed");
             this.detail = detail;
+        }
+    }
+
+    public static class CustomCauseException extends Exception {
+        private final Throwable cause;
+
+        public CustomCauseException(String message, Throwable cause) {
+            super(message);
+            this.cause = cause;
+        }
+
+        public Throwable getSourceException() {
+            return cause;
         }
     }
 }

@@ -22,4 +22,14 @@ public class NestableDelegateTest {
 
         assertThat(nestedMessage).isEqualTo("inner");
     }
+
+    @Test
+    public void nestedMessagesIncludeNestableCauses() {
+        NestableException root = new NestableException("inner");
+        NestableException exception = new NestableException("outer", root);
+
+        String[] messages = exception.getMessages();
+
+        assertThat(messages).containsExactly("outer", "inner");
+    }
 }

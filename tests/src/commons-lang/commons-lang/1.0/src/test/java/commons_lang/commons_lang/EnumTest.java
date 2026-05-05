@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,5 +30,17 @@ public class EnumTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("The Class must be a subclass of Enum");
         }
+    }
+
+    @Test
+    public void enumUtilsReturnsEmptyCollectionsForEnumBaseClass() throws Exception {
+        Class<?> enumClass = ClassLoader.getSystemClassLoader().loadClass("org.apache.commons.lang.enum.Enum");
+        Class<?> enumUtilsClass = ClassLoader.getSystemClassLoader().loadClass("org.apache.commons.lang.enum.EnumUtils");
+        Method getEnumList = enumUtilsClass.getMethod("getEnumList", Class.class);
+
+        Object enumList = getEnumList.invoke(null, enumClass);
+
+        assertThat(enumList).isInstanceOf(List.class);
+        assertThat((List<?>) enumList).isEmpty();
     }
 }
