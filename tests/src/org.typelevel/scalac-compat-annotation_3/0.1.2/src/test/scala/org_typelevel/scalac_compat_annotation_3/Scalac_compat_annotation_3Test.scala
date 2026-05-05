@@ -79,6 +79,28 @@ final class Scalac_compat_annotation_3Test {
   }
 
   @Test
+  def unusedAliasAcceptsExplanatoryLabelsOnDefinitionsAndBindings(): Unit = {
+    val annotation: scala.annotation.Annotation = new unused("reserved for source compatibility")
+
+    assertThat(annotation).isNotNull()
+    assertThat(typeChecks("""
+      import org.typelevel.scalaccompat.annotation.unused
+
+      final class ExplicitUnusedSurface {
+        @unused("called by generated sources")
+        private val cachedDefault: Int = 1
+
+        @unused("extension point")
+        def hook(@unused("reserved parameter") reserved: String): Int = {
+          @unused("documented local")
+          val localDefault = reserved.reverse
+          cachedDefault
+        }
+      }
+      """)).isTrue()
+  }
+
+  @Test
   def uncheckedVarianceAliasesSupportCovariantApiShapes(): Unit = {
     val reader: CovariantReader[String] = new StringReader("stored")
     val widened: CovariantReader[AnyRef] = reader
