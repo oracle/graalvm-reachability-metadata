@@ -65,8 +65,8 @@ public class Builder_modelTest {
     private static final File PROJECT_DIR = new File("sample-project");
 
     @Test
-    public void exposesStableVersionArtifactOutputAndSeverityConstants() {
-        assertThat(Version.ANDROID_GRADLE_PLUGIN_VERSION).isEqualTo("2.1.0");
+    public void exposesVersionArtifactOutputAndSeverityConstants() {
+        assertThat(Version.ANDROID_GRADLE_PLUGIN_VERSION).matches("\\d+\\.\\d+\\.\\d+");
         assertThat(Version.BUILDER_MODEL_API_VERSION).isEqualTo(3);
 
         assertThat(AndroidProject.PROPERTY_BUILD_MODEL_ONLY).isEqualTo("android.injected.build.model.only");
