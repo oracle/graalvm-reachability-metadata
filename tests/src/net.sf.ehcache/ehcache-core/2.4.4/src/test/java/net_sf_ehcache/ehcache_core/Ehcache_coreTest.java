@@ -18,6 +18,8 @@ import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.CacheWriterConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.Searchable;
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import net.sf.ehcache.event.CacheEventListener;
 import net.sf.ehcache.loader.CacheLoader;
 import net.sf.ehcache.management.ManagementService;
@@ -179,6 +181,40 @@ public class Ehcache_coreTest {
     }
 
     @Test
+    void selfPopulatingCacheCreatesAndRefreshesEntriesOnDemand() throws Exception {
+        CacheManager manager = newCacheManager("selfPopulating",
+                new CacheConfiguration("generatedValues", 10)
+                        .eternal(true)
+                        .overflowToDisk(false)
+                        .statistics(true));
+        try {
+            Cache backingCache = manager.getCache("generatedValues");
+            SequencedCacheEntryFactory factory = new SequencedCacheEntryFactory();
+            SelfPopulatingCache cache = new SelfPopulatingCache(backingCache, factory);
+
+            Element generated = cache.get("alpha");
+            assertThat(generated.getObjectValue()).isEqualTo("alpha:generated:1");
+            assertThat(backingCache.get("alpha").getObjectValue()).isEqualTo("alpha:generated:1");
+            assertThat(factory.created.get()).isEqualTo(1);
+
+            Element cached = cache.get("alpha");
+            assertThat(cached.getObjectValue()).isEqualTo("alpha:generated:1");
+            assertThat(factory.created.get()).isEqualTo(1);
+
+            Element refreshed = cache.refresh("alpha");
+            assertThat(refreshed.getObjectValue()).isEqualTo("alpha:generated:2");
+            assertThat(cache.get("alpha").getObjectValue()).isEqualTo("alpha:generated:2");
+            assertThat(factory.created.get()).isEqualTo(2);
+
+            Element createdByRefresh = cache.refresh("beta");
+            assertThat(createdByRefresh.getObjectValue()).isEqualTo("beta:generated:3");
+            assertThat(backingCache.getKeys()).containsExactlyInAnyOrder("alpha", "beta");
+        } finally {
+            manager.shutdown();
+        }
+    }
+
+    @Test
     void xmlConfigurationInputStreamBuildsUsableCaches() throws Exception {
         String managerName = uniqueName("xml");
         String xml = """
@@ -267,6 +303,15 @@ public class Ehcache_coreTest {
 
     private static String uniqueName(String scenario) {
         return "ehcacheCore" + scenario + MANAGER_IDS.incrementAndGet();
+    }
+
+    private static final class SequencedCacheEntryFactory implements CacheEntryFactory {
+        private final AtomicInteger created = new AtomicInteger();
+
+        @Override
+        public Object createEntry(Object key) throws Exception {
+            return key + ":generated:" + created.incrementAndGet();
+        }
     }
 
     private static final class CountingCacheEventListener implements CacheEventListener {
