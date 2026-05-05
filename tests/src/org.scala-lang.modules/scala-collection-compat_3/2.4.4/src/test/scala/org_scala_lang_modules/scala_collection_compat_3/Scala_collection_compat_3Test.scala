@@ -14,6 +14,7 @@ import scala.collection.compat.Factory
 import scala.collection.compat.IterableOnce
 import scala.collection.compat.immutable.ArraySeq
 import scala.collection.compat.immutable.LazyList
+import scala.util.control.compat.ControlThrowable
 
 class Scala_collection_compat_3Test {
   @Test
@@ -92,7 +93,41 @@ class Scala_collection_compat_3Test {
     assertEquals(3, evaluated)
   }
 
+  @Test
+  def controlThrowableAliasSupportsBoundedControlFlow(): Unit = {
+    val visited: scala.collection.mutable.ListBuffer[Int] = scala.collection.mutable.ListBuffer.empty[Int]
+    val totalBeforeStop: Int = sumUntilLimit(List(1, 2, 3, 4, 5), 6, visited)
+
+    assertEquals(6, totalBeforeStop)
+    assertEquals(List(1, 2, 3), visited.toList)
+  }
+
   private def total(values: IterableOnce[Int]): Int = values.iterator.sum
 
+  private def sumUntilLimit(
+      values: List[Int],
+      limit: Int,
+      visited: scala.collection.mutable.ListBuffer[Int]
+  ): Int = {
+    var total: Int = 0
+    try {
+      values.foreach { value =>
+        total += value
+        visited += value
+        if (total >= limit) {
+          throw new StopTraversal(total)
+        }
+      }
+      total
+    } catch {
+      case control: ControlThrowable =>
+        control match {
+          case stop: StopTraversal => stop.partialTotal
+        }
+    }
+  }
+
   private def fibonacciFrom(first: Int, second: Int): LazyList[Int] = first #:: fibonacciFrom(second, first + second)
+
+  private final class StopTraversal(val partialTotal: Int) extends ControlThrowable
 }
