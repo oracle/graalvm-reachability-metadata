@@ -12,11 +12,17 @@ import static org.assertj.core.api.Assertions.fail;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(OrderAnnotation.class)
 public class EnumTest {
 
+    @Order(1)
     @Test
     public void enumUtilsValidatesThatClassArgumentsExtendCommonsEnum() throws Exception {
         Class<?> enumUtilsClass = ClassLoader.getSystemClassLoader().loadClass("org.apache.commons.lang.enum.EnumUtils");
@@ -32,6 +38,7 @@ public class EnumTest {
         }
     }
 
+    @Order(2)
     @Test
     public void enumUtilsReturnsEmptyCollectionsForEnumBaseClass() throws Exception {
         Class<?> enumClass = ClassLoader.getSystemClassLoader().loadClass("org.apache.commons.lang.enum.Enum");
@@ -42,5 +49,18 @@ public class EnumTest {
 
         assertThat(enumList).isInstanceOf(List.class);
         assertThat((List<?>) enumList).isEmpty();
+    }
+
+    @Order(3)
+    @Test
+    public void enumUtilsReturnsEmptyMapForEnumBaseClass() throws Exception {
+        Class<?> enumClass = ClassLoader.getSystemClassLoader().loadClass("org.apache.commons.lang.enum.Enum");
+        Class<?> enumUtilsClass = ClassLoader.getSystemClassLoader().loadClass("org.apache.commons.lang.enum.EnumUtils");
+        Method getEnumMap = enumUtilsClass.getMethod("getEnumMap", Class.class);
+
+        Object enumMap = getEnumMap.invoke(null, enumClass);
+
+        assertThat(enumMap).isInstanceOf(Map.class);
+        assertThat((Map<?, ?>) enumMap).isEmpty();
     }
 }
