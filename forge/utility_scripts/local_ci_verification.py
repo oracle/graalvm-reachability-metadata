@@ -575,7 +575,15 @@ def _gradle_output(
         failed = _run_recorded_command(
             repo_path,
             gate,
-            ["./gradlew", task_name, f"-PbaseCommit={base_commit}", "-PnewCommit=HEAD", *(extra_args or [])],
+            [
+                "./gradlew",
+                "--no-daemon",
+                "--console=plain",
+                task_name,
+                f"-PbaseCommit={base_commit}",
+                "-PnewCommit=HEAD",
+                *(extra_args or []),
+            ],
             result,
             env={"GITHUB_OUTPUT": output_path},
         )

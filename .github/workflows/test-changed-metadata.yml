@@ -46,7 +46,7 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.changed == 'true'
         run: |
-          ./gradlew generateChangedMetadataTestMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          ./gradlew --no-daemon --console=plain generateChangedMetadataTestMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
           echo "Matrix:"
           echo "${{ steps.set-matrix.outputs.matrix }}"
 
