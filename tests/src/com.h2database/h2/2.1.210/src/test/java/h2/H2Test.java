@@ -7,10 +7,12 @@
 package h2;
 
 import org.h2.api.Interval;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,10 +32,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Moritz Halbritter
  */
-class H2Test {
+public class H2Test {
     @ParameterizedTest
-    @ValueSource(strings = {"jdbc:h2:./data/test", "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"})
-    void test(String url) throws Exception {
+    @ValueSource(strings = {"file", "memory"})
+    void test(String storageType, @TempDir Path temporaryDirectory) throws Exception {
+        String url = createDatabaseUrl(storageType, temporaryDirectory);
         // Cleanup
         withConnection(url, connection -> {
             connection.prepareStatement("DROP TABLE IF EXISTS test").execute();
@@ -129,6 +132,17 @@ class H2Test {
                 }
             }
         });
+    }
+
+    private static String createDatabaseUrl(String storageType, Path temporaryDirectory) {
+        if ("file".equals(storageType)) {
+            String databasePath = temporaryDirectory.resolve("test").toAbsolutePath().toString().replace('\\', '/');
+            return "jdbc:h2:" + databasePath;
+        }
+        if ("memory".equals(storageType)) {
+            return "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1";
+        }
+        throw new IllegalArgumentException("Unsupported storage type: " + storageType);
     }
 
     private static void withConnection(String url, ConnectionCallback callback) throws SQLException {
