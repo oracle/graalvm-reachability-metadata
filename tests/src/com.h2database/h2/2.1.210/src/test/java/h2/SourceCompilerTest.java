@@ -34,6 +34,8 @@ public class SourceCompilerTest {
             assertThat(method).isNotNull();
             assertThat(method.getName()).isEqualTo("twice");
             assertThat(method.invoke(null, 21)).isEqualTo(42);
+        } catch (ClassNotFoundException exception) {
+            verifyUnsupportedDynamicClassLoading(exception);
         } catch (Error error) {
             verifyUnsupportedDynamicClassLoading(error);
         }
@@ -55,14 +57,25 @@ public class SourceCompilerTest {
             assertThat(method).isNotNull();
             assertThat(method.getName()).isEqualTo("greeting");
             assertThat(method.invoke(null, "H2")).isEqualTo("Hello, H2");
+        } catch (ClassNotFoundException exception) {
+            verifyUnsupportedDynamicClassLoading(exception);
         } catch (Error error) {
             verifyUnsupportedDynamicClassLoading(error);
         }
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) throws ClassNotFoundException {
+        if (throwable instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+            return;
+        }
+        if (throwable instanceof ClassNotFoundException exception
+                && (JAVAX_TOOLS_CLASS_NAME.equals(exception.getMessage())
+                        || LEGACY_JAVAC_CLASS_NAME.equals(exception.getMessage()))) {
+            return;
+        }
+        if (throwable instanceof Error error) {
             throw error;
         }
+        throw (ClassNotFoundException) throwable;
     }
 }

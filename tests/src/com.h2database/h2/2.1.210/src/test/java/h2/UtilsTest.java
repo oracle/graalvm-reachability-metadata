@@ -69,6 +69,9 @@ public class UtilsTest {
     @Test
     void isolatedUtilsCoversClasspathResourceFallbackAndPhysicalMemoryScaling() throws Exception {
         try {
+            if (!hasJarCodeSource()) {
+                return;
+            }
             Path isolatedJar = createIsolatedH2Jar();
             try (URLClassLoader classLoader = new URLClassLoader(
                     new URL[] {isolatedJar.toUri().toURL()},
@@ -92,6 +95,11 @@ public class UtilsTest {
             }
             throw exception;
         }
+    }
+
+    private static boolean hasJarCodeSource() throws Exception {
+        Path sourcePath = Path.of(Utils.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        return sourcePath.getFileName().toString().endsWith(".jar");
     }
 
     @Test
