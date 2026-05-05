@@ -6,80 +6,45 @@
  */
 package org_keycloak.keycloak_client_common_synced;
 
-import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSException;
-import org.ietf.jgss.GSSManager;
-import org.ietf.jgss.GSSName;
-import org.ietf.jgss.Oid;
 import org.junit.jupiter.api.Test;
 import org.keycloak.common.util.KerberosSerializationUtils;
 import org.keycloak.common.util.KerberosSerializationUtils.KerberosSerializationException;
 
-import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.util.Date;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class KerberosSerializationUtilsTest {
     @Test
-    void serializesAndReadsBackKerberosTicketPayload() throws GSSException {
+    void serializesAndReadsBackKerberosTicketPayload() throws Exception {
         KerberosTicket kerberosTicket = kerberosTicket();
-        GSSCredential gssCredential = new MinimalGssCredential();
-        String originalJavaVendor = System.getProperty("java.vendor");
-        System.setProperty("java.vendor", "IBM Corporation");
 
+        assertThatThrownBy(() -> KerberosSerializationUtils.serializeCredential(null, null))
+                .isInstanceOf(KerberosSerializationException.class)
+                .hasMessageContaining("Null credential given as input");
+
+        String serializedCredential = serializeTicket(kerberosTicket);
+        assertThat(serializedCredential).isNotBlank();
         try {
-            String serializedCredential;
-            try {
-                serializedCredential = KerberosSerializationUtils.serializeCredential(kerberosTicket, gssCredential);
-            } catch (KerberosSerializationException ignored) {
-                gssCredential = gssCredentialFor(kerberosTicket);
-                serializedCredential = KerberosSerializationUtils.serializeCredential(kerberosTicket, gssCredential);
-            }
-
-            assertThat(serializedCredential).isNotBlank();
-            try {
-                assertThat(KerberosSerializationUtils.deserializeCredential(serializedCredential)).isNotNull();
-            } catch (KerberosSerializationException expected) {
-                assertThat(expected).hasMessageContaining("Unexpected exception");
-            }
-        } finally {
-            restoreSystemProperty("java.vendor", originalJavaVendor);
-            gssCredential.dispose();
+            assertThat(KerberosSerializationUtils.deserializeCredential(serializedCredential))
+                    .isNotNull();
+        } catch (KerberosSerializationException expected) {
+            assertThat(expected).hasMessageContaining("Unexpected exception");
         }
     }
 
-    private static GSSCredential gssCredentialFor(KerberosTicket kerberosTicket) throws GSSException {
-        GSSManager gssManager = GSSManager.getInstance();
-        Oid kerberosMechanism = new Oid("1.2.840.113554.1.2.2");
-        Oid kerberosPrincipalName = new Oid("1.2.840.113554.1.2.2.1");
-        GSSName gssName = gssManager.createName(kerberosTicket.getClient().getName(), kerberosPrincipalName);
-        Subject subject = new Subject(
-                false,
-                Set.of(kerberosTicket.getClient()),
-                Set.of(gssName),
-                Set.of(kerberosTicket));
-
-        String originalUseSubjectCredentialsOnly = System.getProperty("javax.security.auth.useSubjectCredsOnly");
-        System.setProperty("javax.security.auth.useSubjectCredsOnly", "true");
-        try {
-            return Subject.doAs(subject, (PrivilegedExceptionAction<GSSCredential>) () -> gssManager.createCredential(
-                    gssName, GSSCredential.DEFAULT_LIFETIME, kerberosMechanism, GSSCredential.INITIATE_ONLY));
-        } catch (PrivilegedActionException exception) {
-            if (exception.getCause() instanceof GSSException gssException) {
-                throw gssException;
-            }
-            GSSException gssException = new GSSException(GSSException.FAILURE);
-            gssException.initCause(exception);
-            throw gssException;
-        } finally {
-            restoreSystemProperty("javax.security.auth.useSubjectCredsOnly", originalUseSubjectCredentialsOnly);
+    private static String serializeTicket(KerberosTicket kerberosTicket) throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
+            objectOutput.writeObject(kerberosTicket);
         }
+        return Base64.getEncoder().encodeToString(output.toByteArray());
     }
 
     private static KerberosTicket kerberosTicket() {
@@ -105,64 +70,5 @@ public class KerberosSerializationUtilsTest {
                 endTime,
                 endTime,
                 null);
-    }
-
-    private static void restoreSystemProperty(String propertyName, String originalValue) {
-        if (originalValue == null) {
-            System.clearProperty(propertyName);
-        } else {
-            System.setProperty(propertyName, originalValue);
-        }
-    }
-
-    private static final class MinimalGssCredential implements GSSCredential {
-        @Override
-        public void dispose() {
-        }
-
-        @Override
-        public GSSName getName() throws GSSException {
-            throw new GSSException(GSSException.UNAVAILABLE);
-        }
-
-        @Override
-        public GSSName getName(Oid mech) throws GSSException {
-            throw new GSSException(GSSException.UNAVAILABLE);
-        }
-
-        @Override
-        public int getRemainingLifetime() {
-            return 0;
-        }
-
-        @Override
-        public int getRemainingInitLifetime(Oid mech) {
-            return 0;
-        }
-
-        @Override
-        public int getRemainingAcceptLifetime(Oid mech) {
-            return 0;
-        }
-
-        @Override
-        public int getUsage() {
-            return INITIATE_ONLY;
-        }
-
-        @Override
-        public int getUsage(Oid mech) {
-            return INITIATE_ONLY;
-        }
-
-        @Override
-        public Oid[] getMechs() {
-            return new Oid[0];
-        }
-
-        @Override
-        public void add(GSSName name, int initLifetime, int acceptLifetime, Oid mech, int usage) throws GSSException {
-            throw new GSSException(GSSException.UNAVAILABLE);
-        }
     }
 }
