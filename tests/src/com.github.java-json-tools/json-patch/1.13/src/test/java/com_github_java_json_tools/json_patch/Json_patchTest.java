@@ -185,6 +185,49 @@ public class Json_patchTest {
     }
 
     @Test
+    void appliesJsonPatchOperationsAtDocumentRoot() throws Exception {
+        JsonNode source = json("""
+                {
+                  "status": "draft",
+                  "items": ["old"]
+                }
+                """);
+        JsonPatch addAtRoot = JsonPatch.fromJson(json("""
+                [
+                  {"op": "add", "path": "", "value": ["replacement"]}
+                ]
+                """));
+        JsonPatch replaceAtRoot = JsonPatch.fromJson(json("""
+                [
+                  {"op": "replace", "path": "", "value": {"status": "published"}}
+                ]
+                """));
+        JsonPatch removeAtRoot = JsonPatch.fromJson(json("""
+                [
+                  {"op": "remove", "path": ""}
+                ]
+                """));
+
+        JsonNode added = addAtRoot.apply(source);
+        JsonNode replaced = replaceAtRoot.apply(source);
+        JsonNode removed = removeAtRoot.apply(source);
+
+        assertThat(added).isEqualTo(json("""
+                ["replacement"]
+                """));
+        assertThat(replaced).isEqualTo(json("""
+                {"status": "published"}
+                """));
+        assertThat(removed.isMissingNode()).isTrue();
+        assertThat(source).isEqualTo(json("""
+                {
+                  "status": "draft",
+                  "items": ["old"]
+                }
+                """));
+    }
+
+    @Test
     void testOperationComparesJsonNumbersByNumericValue() throws Exception {
         JsonNode source = json("""
                 {
