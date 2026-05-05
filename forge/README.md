@@ -76,6 +76,12 @@ Local Forge automation must run without `sudo`. Local CI verification fails
 fast instead of prompting for an administrator password if a command or script
 would require elevated privileges.
 
+Forge scopes `GRADLE_USER_HOME` per reachability-repo worktree so parallel
+workers do not share Gradle daemons, but reuses one shared Gradle wrapper
+distribution cache under the system temp directory. Set
+`FORGE_GRADLE_DISTRIBUTIONS_HOME` to override that cache location, or
+`FORGE_GRADLE_USER_HOME` to override the full Gradle user home.
+
 ## Manual Workflows
 
 The top-level worker delegates to these lower-level entry points. Use them
