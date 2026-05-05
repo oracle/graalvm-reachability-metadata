@@ -105,7 +105,7 @@ public class Aether_utilTest {
         Artifact released = timestampedSnapshot.setVersion("1.0").setFile(ARTIFACT_FILE);
         Artifact changedProperties = released.setProperties(Collections.singletonMap("build", "reproducible"));
         Artifact parsed = new DefaultArtifact("org.example:demo:jar:tests:1.0");
-        Artifact sources = new SubArtifact(artifact, "*-sources", "*", SOURCES_FILE);
+        Artifact sources = new SubArtifact(artifact, "*-sources", "*", properties, SOURCES_FILE);
         Artifact sourceRelease = sources.setVersion("1.0");
 
         assertThat(registry.get("bundle")).isSameAs(javaArchive);
