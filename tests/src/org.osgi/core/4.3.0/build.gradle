@@ -16,6 +16,16 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add(
+                    '--initialize-at-run-time=org.osgi.framework.CapabilityPermissionCollection')
+            buildArgs.add(
+                    '--initialize-at-run-time=org.osgi.framework.PackagePermissionCollection')
+            buildArgs.add(
+                    '--initialize-at-run-time=org.osgi.framework.ServicePermissionCollection')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
