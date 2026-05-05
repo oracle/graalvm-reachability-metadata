@@ -106,7 +106,7 @@ public class Selenium_apiTest {
         assertThat(extractedProxy).isSameAs(manualProxy);
         assertThat(extractedProxy.getProxyType()).isEqualTo(Proxy.ProxyType.MANUAL);
         assertThat(proxyJson)
-                .containsEntry("proxyType", "MANUAL")
+                .containsEntry("proxyType", "manual")
                 .containsEntry("httpProxy", "proxy.example.test:8080")
                 .containsEntry("sslProxy", "secure.example.test:8443")
                 .containsEntry("socksProxy", "socks.example.test:1080")
