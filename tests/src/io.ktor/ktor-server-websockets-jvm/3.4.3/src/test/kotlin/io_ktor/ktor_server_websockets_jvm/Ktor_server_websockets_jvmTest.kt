@@ -17,8 +17,11 @@ import io.ktor.server.websocket.pingPeriod
 import io.ktor.server.websocket.timeout
 import io.ktor.server.websocket.webSocket
 import io.ktor.server.websocket.webSocketRaw
+import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
+import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -98,6 +101,35 @@ public class Ktor_server_websockets_jvmTest {
         }
 
         assertThat(observedUpgradeHeader.get()).isEqualTo("websocket")
+    }
+
+    @Test
+    fun defaultWebSocketSessionExposesPeerCloseReason(): Unit = testApplication {
+        val observedCloseReason: CompletableDeferred<CloseReason?> = CompletableDeferred()
+
+        install(ServerWebSockets) {
+            pingPeriod = null
+            timeout = 2.seconds
+        }
+        routing {
+            webSocket("/close-reason") {
+                val reason: CloseReason? = withTimeout(RequestTimeout) { closeReason.await() }
+                observedCloseReason.complete(reason)
+            }
+        }
+
+        val client = createClient {
+            install(ClientWebSockets)
+        }
+        client.webSocket("/close-reason") {
+            withTimeout(RequestTimeout) {
+                close(CloseReason(CloseReason.Codes.NORMAL, "client completed"))
+            }
+        }
+
+        val reason: CloseReason? = withTimeout(RequestTimeout) { observedCloseReason.await() }
+        assertThat(reason?.knownReason).isEqualTo(CloseReason.Codes.NORMAL)
+        assertThat(reason?.message).isEqualTo("client completed")
     }
 
     @Test
