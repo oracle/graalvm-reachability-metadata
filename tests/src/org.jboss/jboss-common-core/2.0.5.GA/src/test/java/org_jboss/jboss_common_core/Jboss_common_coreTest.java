@@ -11,6 +11,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.beans.PropertyEditor;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +36,11 @@ import org.jboss.util.collection.Iterators;
 import org.jboss.util.collection.LazyList;
 import org.jboss.util.collection.LazyMap;
 import org.jboss.util.collection.ListSet;
+import org.jboss.util.file.FilePrefixFilter;
+import org.jboss.util.file.FileSuffixFilter;
+import org.jboss.util.file.FilenamePrefixFilter;
+import org.jboss.util.file.FilenameSuffixFilter;
+import org.jboss.util.file.Files;
 import org.jboss.util.graph.Edge;
 import org.jboss.util.graph.Graph;
 import org.jboss.util.graph.Vertex;
@@ -49,6 +58,7 @@ import org.jboss.util.state.State;
 import org.jboss.util.state.StateMachine;
 import org.jboss.util.state.Transition;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Jboss_common_coreTest {
     @Test
@@ -360,5 +370,41 @@ public class Jboss_common_coreTest {
         List<Object> names = new ArrayList<>();
         properties.names().forEachRemaining(names::add);
         assertThat(names).contains("host", "port", "datasource.name");
+    }
+
+    @Test
+    void fileUtilitiesCopyDeleteEncodeNamesAndFilterByName(@TempDir File tempDir) throws Exception {
+        File source = new File(tempDir, "config-source.txt");
+        File target = new File(tempDir, "config-copy.LOG");
+        byte[] payload = "copied configuration".getBytes(StandardCharsets.UTF_8);
+        try (OutputStream outputStream = new FileOutputStream(source)) {
+            outputStream.write(payload);
+        }
+
+        Files.copy(source, target, 4);
+
+        try (InputStream inputStream = new FileInputStream(target)) {
+            assertThat(inputStream.readAllBytes()).isEqualTo(payload);
+        }
+        String unsafeName = "domain:server/name@node";
+        String encodedName = Files.encodeFileName(unsafeName);
+        assertThat(encodedName).isNotEqualTo(unsafeName).doesNotContain(":", "/");
+        assertThat(Files.decodeFileName(encodedName)).isEqualTo(unsafeName);
+
+        assertThat(new FilePrefixFilter("CONFIG", true).accept(target)).isTrue();
+        assertThat(new FilePrefixFilter("CONFIG", false).accept(target)).isFalse();
+        assertThat(new FileSuffixFilter(new String[] {".txt", ".log"}, true).accept(target)).isTrue();
+        assertThat(new FilenamePrefixFilter("config").accept(tempDir, target.getName())).isTrue();
+        assertThat(new FilenameSuffixFilter(".log", true).accept(tempDir, target.getName())).isTrue();
+
+        File nestedDir = new File(tempDir, "nested");
+        assertThat(nestedDir.mkdir()).isTrue();
+        File nestedFile = new File(nestedDir, "child.txt");
+        try (OutputStream outputStream = new FileOutputStream(nestedFile)) {
+            outputStream.write(payload);
+        }
+
+        assertThat(Files.delete(nestedDir)).isTrue();
+        assertThat(nestedDir.exists()).isFalse();
     }
 }
