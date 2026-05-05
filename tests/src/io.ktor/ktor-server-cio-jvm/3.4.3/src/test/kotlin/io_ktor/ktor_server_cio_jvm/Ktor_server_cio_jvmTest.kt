@@ -22,13 +22,17 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.ServerSocket
+import java.net.Socket
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
@@ -255,6 +259,43 @@ public class Ktor_server_cio_jvmTest {
         }
     }
 
+    @Test
+    fun `cio engine keeps http connections alive for sequential requests`() {
+        withCioServer(
+            module = {
+                routing {
+                    get("/first") {
+                        call.respondText("first-response", ContentType.Text.Plain)
+                    }
+                    get("/second") {
+                        call.respondText("second-response", ContentType.Text.Plain)
+                    }
+                }
+            },
+        ) { baseUri: URI ->
+            val socket: Socket = Socket()
+            try {
+                socket.soTimeout = REQUEST_TIMEOUT.toMillis().toInt()
+                socket.connect(
+                    InetSocketAddress(LOOPBACK_HOST, baseUri.port),
+                    REQUEST_TIMEOUT.toMillis().toInt(),
+                )
+
+                socket.writeHttpGet(path = "/first", connection = "keep-alive")
+                val firstResponse: RawHttpResponse = readRawHttpResponse(socket.getInputStream())
+                socket.writeHttpGet(path = "/second", connection = "close")
+                val secondResponse: RawHttpResponse = readRawHttpResponse(socket.getInputStream())
+
+                assertThat(firstResponse.statusCode).isEqualTo(HttpStatusCode.OK.value)
+                assertThat(firstResponse.body).isEqualTo("first-response")
+                assertThat(secondResponse.statusCode).isEqualTo(HttpStatusCode.OK.value)
+                assertThat(secondResponse.body).isEqualTo("second-response")
+            } finally {
+                socket.close()
+            }
+        }
+    }
+
     private fun withCioServer(module: Application.() -> Unit, test: (URI) -> Unit) {
         val port: Int = findAvailablePort()
         val server = embeddedServer(CIO, host = LOOPBACK_HOST, port = port, module = module)
@@ -282,8 +323,98 @@ public class Ktor_server_cio_jvmTest {
         socket.localPort
     }
 
+    private fun Socket.writeHttpGet(path: String, connection: String) {
+        val requestText: String = listOf(
+            "GET $path HTTP/1.1",
+            "Host: $LOOPBACK_HOST",
+            "Connection: $connection",
+        ).joinToString(separator = "\r\n", postfix = "\r\n\r\n")
+
+        getOutputStream().write(requestText.toByteArray(StandardCharsets.US_ASCII))
+        getOutputStream().flush()
+    }
+
+    private fun readRawHttpResponse(input: InputStream): RawHttpResponse {
+        val headerText: String = String(readHeaderBytes(input), StandardCharsets.ISO_8859_1)
+        val headerLines: List<String> = headerText.split("\r\n").filter { line: String -> line.isNotEmpty() }
+        val statusCode: Int = headerLines.first().split(" ")[1].toInt()
+        val headers: Map<String, String> = headerLines.drop(1).associate { line: String ->
+            val separatorIndex: Int = line.indexOf(':')
+
+            line.substring(0, separatorIndex).lowercase() to line.substring(separatorIndex + 1).trim()
+        }
+        val bodyBytes: ByteArray = when {
+            headers.containsKey("content-length") -> readExactly(input, headers.getValue("content-length").toInt())
+            headers["transfer-encoding"].equals("chunked", ignoreCase = true) -> readChunkedBody(input)
+            else -> ByteArray(0)
+        }
+
+        return RawHttpResponse(statusCode = statusCode, body = String(bodyBytes, StandardCharsets.UTF_8))
+    }
+
+    private fun readHeaderBytes(input: InputStream): ByteArray {
+        val bytes: ByteArrayOutputStream = ByteArrayOutputStream()
+        var lastFourBytes: Int = 0
+
+        while (bytes.size() < MAX_HEADER_BYTES) {
+            val nextByte: Int = input.read()
+            check(nextByte >= 0) { "Unexpected end of stream while reading HTTP headers" }
+            bytes.write(nextByte)
+            lastFourBytes = (lastFourBytes shl 8) or nextByte
+            if (lastFourBytes == HTTP_HEADER_TERMINATOR) {
+                return bytes.toByteArray()
+            }
+        }
+
+        error("HTTP response headers exceeded $MAX_HEADER_BYTES bytes")
+    }
+
+    private fun readChunkedBody(input: InputStream): ByteArray {
+        val body: ByteArrayOutputStream = ByteArrayOutputStream()
+
+        while (true) {
+            val chunkSizeLine: String = readAsciiLine(input)
+            val chunkSize: Int = chunkSizeLine.substringBefore(';').trim().toInt(radix = 16)
+            if (chunkSize == 0) {
+                while (readAsciiLine(input).isNotEmpty()) {
+                    // Consume trailing headers.
+                }
+                return body.toByteArray()
+            }
+
+            body.write(readExactly(input, chunkSize))
+            assertThat(readAsciiLine(input)).isEmpty()
+        }
+    }
+
+    private fun readAsciiLine(input: InputStream): String {
+        val bytes: ByteArrayOutputStream = ByteArrayOutputStream()
+
+        while (true) {
+            val nextByte: Int = input.read()
+            check(nextByte >= 0) { "Unexpected end of stream while reading an HTTP line" }
+            if (nextByte == '\r'.code) {
+                val lineFeed: Int = input.read()
+                check(lineFeed == '\n'.code) { "Expected LF after CR in HTTP line" }
+                return String(bytes.toByteArray(), StandardCharsets.US_ASCII)
+            }
+            bytes.write(nextByte)
+        }
+    }
+
+    private fun readExactly(input: InputStream, byteCount: Int): ByteArray {
+        val bytes: ByteArray = input.readNBytes(byteCount)
+
+        check(bytes.size == byteCount) { "Expected $byteCount bytes but received ${bytes.size}" }
+        return bytes
+    }
+
+    private data class RawHttpResponse(val statusCode: Int, val body: String)
+
     private companion object {
         private const val LOOPBACK_HOST: String = "127.0.0.1"
+        private const val MAX_HEADER_BYTES: Int = 16 * 1024
+        private const val HTTP_HEADER_TERMINATOR: Int = 0x0D0A0D0A
         private val REQUEST_TIMEOUT: Duration = Duration.ofSeconds(10)
     }
 }
