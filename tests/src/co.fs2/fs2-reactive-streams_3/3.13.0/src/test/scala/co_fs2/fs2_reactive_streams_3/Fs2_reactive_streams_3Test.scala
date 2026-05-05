@@ -85,6 +85,37 @@ class Fs2_reactive_streams_3Test {
   }
 
   @Test
+  def subscribeStreamProgramCancellationFinalizesTheStream(): Unit = {
+    val finalized = new CountDownLatch(1)
+    val subscriber = new AwaitingValuesSubscriber[Int](
+      initialRequest = Long.MaxValue,
+      expectedValues = 3
+    )
+    val stream = Stream
+      .iterate(1)(_ + 1)
+      .covary[IO]
+      .metered(25.millis)
+      .onFinalize(IO.delay(finalized.countDown()))
+
+    val program = for {
+      fiber <- subscribeStream[IO, Int](stream, subscriber).start
+      _ <- IO.blocking(subscriber.awaitValues())
+      _ <- fiber.cancel
+      _ <- IO.blocking {
+        if (!finalized.await(10L, TimeUnit.SECONDS)) {
+          throw new AssertionError("Timed out waiting for subscribed stream finalizer")
+        }
+      }
+    } yield ()
+
+    runIO(program)
+
+    assertThat(subscriber.valuesVector.take(3)).isEqualTo(Vector(1, 2, 3))
+    assertThat(subscriber.completed.get()).isFalse()
+    assertThat(subscriber.error.get()).isNull()
+  }
+
+  @Test
   def streamPublisherHonorsDemandAndSupportsUnboundedFollowUpRequest(): Unit = {
     val program = Stream.emits(Vector(1, 2, 3, 4, 5)).covary[IO].toUnicastPublisher.use { publisher =>
       IO.blocking {
@@ -277,6 +308,46 @@ class Fs2_reactive_streams_3Test {
     def awaitTerminal(): Unit = {
       if (!terminal.await(10L, TimeUnit.SECONDS)) {
         throw new AssertionError("Timed out waiting for reactive-streams terminal signal")
+      }
+    }
+  }
+
+  private final class AwaitingValuesSubscriber[A](
+      initialRequest: Long,
+      expectedValues: Int
+  ) extends Subscriber[A] {
+    private val subscription = new AtomicReference[Subscription]()
+    private val values = new CopyOnWriteArrayList[A]()
+    private val receivedExpectedValues = new CountDownLatch(expectedValues)
+
+    val completed = new AtomicBoolean(false)
+    val error = new AtomicReference[Throwable]()
+
+    override def onSubscribe(s: Subscription): Unit = {
+      if (subscription.compareAndSet(null, s)) {
+        s.request(initialRequest)
+      } else {
+        s.cancel()
+      }
+    }
+
+    override def onNext(value: A): Unit = {
+      values.add(value)
+      receivedExpectedValues.countDown()
+    }
+
+    override def onError(t: Throwable): Unit =
+      error.set(t)
+
+    override def onComplete(): Unit =
+      completed.set(true)
+
+    def valuesVector: Vector[A] =
+      values.asScala.toVector
+
+    def awaitValues(): Unit = {
+      if (!receivedExpectedValues.await(10L, TimeUnit.SECONDS)) {
+        throw new AssertionError("Timed out waiting for reactive-streams values")
       }
     }
   }
