@@ -35,7 +35,7 @@ public class AnnotatedClassTest {
 
         AnnotatedConstructor defaultConstructor = annotatedClass.getDefaultConstructor();
         assertThat(defaultConstructor).isNotNull();
-        assertThat(defaultConstructor.getAnnotation(JsonCreator.class)).isNotNull();
+        assertThat((defaultConstructor).getAnnotation(JsonCreator.class)).isNotNull();
 
         AnnotatedConstructor stringConstructor = annotatedClass.getConstructors().get(0);
         assertThat(stringConstructor.getParameterClass(0)).isEqualTo(String.class);
@@ -45,17 +45,17 @@ public class AnnotatedClassTest {
         assertThat(factory.getParameter(0).getAnnotation(JsonProperty.class).value()).isEqualTo("factoryName");
 
         AnnotatedMethod getter = annotatedClass.findMethod("getName", NO_PARAMETERS);
-        assertThat(getter.getAnnotation(JsonProperty.class).value()).isEqualTo("mixedName");
+        assertThat((getter).getAnnotation(JsonProperty.class).value()).isEqualTo("mixedName");
 
         AnnotatedMethod inheritedSetter = annotatedClass.findMethod("setBaseName", STRING_PARAMETER);
         assertThat(inheritedSetter).isNotNull();
 
         AnnotatedMethod objectHashCode = annotatedClass.findMethod("hashCode", NO_PARAMETERS);
         assertThat(objectHashCode.getDeclaringClass()).isEqualTo(Object.class);
-        assertThat(objectHashCode.getAnnotation(JsonProperty.class).value()).isEqualTo("objectHashCode");
+        assertThat((objectHashCode).getAnnotation(JsonProperty.class).value()).isEqualTo("objectHashCode");
 
         AnnotatedField mixedField = findField(annotatedClass, "fieldName");
-        assertThat(mixedField.getAnnotation(JsonProperty.class).value()).isEqualTo("mixedFieldName");
+        assertThat((mixedField).getAnnotation(JsonProperty.class).value()).isEqualTo("mixedFieldName");
 
         AnnotatedField inheritedField = findField(annotatedClass, "baseName");
         assertThat(inheritedField).isNotNull();
