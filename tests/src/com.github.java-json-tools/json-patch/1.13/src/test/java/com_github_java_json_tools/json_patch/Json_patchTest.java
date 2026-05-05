@@ -185,6 +185,38 @@ public class Json_patchTest {
     }
 
     @Test
+    void testOperationComparesJsonNumbersByNumericValue() throws Exception {
+        JsonNode source = json("""
+                {
+                  "threshold": 1,
+                  "items": [
+                    {"price": 2.00}
+                  ],
+                  "status": "pending"
+                }
+                """);
+        JsonPatch patch = JsonPatch.fromJson(json("""
+                [
+                  {"op": "test", "path": "/threshold", "value": 1.0},
+                  {"op": "test", "path": "/items/0/price", "value": 2},
+                  {"op": "replace", "path": "/status", "value": "accepted"}
+                ]
+                """));
+
+        JsonNode patched = patch.apply(source);
+
+        assertThat(patched).isEqualTo(json("""
+                {
+                  "threshold": 1,
+                  "items": [
+                    {"price": 2.00}
+                  ],
+                  "status": "accepted"
+                }
+                """));
+    }
+
+    @Test
     void reportsInvalidPatchDocumentsAndFailedOperations() throws Exception {
         JsonPatch failingTest = JsonPatch.fromJson(json("""
                 [
