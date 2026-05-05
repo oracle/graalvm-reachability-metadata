@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
@@ -26,7 +27,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +120,7 @@ public class CustomChangeWrapperTest {
 
 final class TestBundle implements Bundle {
 
-    private final Dictionary<String, String> headers = new Hashtable<>();
+    private final Dictionary<String, String> headers = FrameworkUtil.asDictionary(new HashMap<>());
 
     TestBundle() {
         headers.put("Liquibase-Custom-Change-Packages", "*");
