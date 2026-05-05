@@ -464,16 +464,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         artifact,
         updated_library_version,
     )
-    metadata_dir = os.path.join(
-        reachability_repo_path,
-        "metadata",
-        group,
-        artifact,
-        updated_library_version,
-    )
-    tests_dir_preexisted = os.path.exists(tests_dir)
-    metadata_dir_preexisted = os.path.exists(metadata_dir)
-
     copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
     update_metadata_index_json(config, group, artifact, updated_library_version)
     create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
@@ -555,26 +545,40 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
 
     if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}:
         print("[Test fixing failed.]")
-        ending_commit = reset_failed_java_fix_worktree(
-            reachability_repo_path=reachability_repo_path,
-            commit_checkpoint=commit_checkpoint,
-            last_passing_candidate_commit=last_passing_candidate_commit,
-            tests_dir=tests_dir,
-            metadata_dir=metadata_dir,
-            tests_dir_preexisted=tests_dir_preexisted,
-            metadata_dir_preexisted=metadata_dir_preexisted,
-        )
-        run_metrics = create_failure_run_metrics_output(
-            package=group,
-            artifact=artifact,
-            library_version=updated_library_version,
-            agent=agent,
-            model_name=model_name,
-            global_iterations=iterations,
-            strategy_name=strategy_name,
-            starting_commit=commit_checkpoint,
-            ending_commit=ending_commit,
-        )
+        ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        try:
+            run_metrics = metrics_writer.create_javac_fix_run_metrics_output_json(
+                repo_path=reachability_repo_path,
+                package=group,
+                artifact=artifact,
+                previous_library_version=old_library_version,
+                new_library_version=updated_library_version,
+                agent=agent,
+                model_name=model_name,
+                global_iterations=iterations,
+                tests_root=test_source_layout.source_root,
+                strategy_name=strategy_name,
+                status=RUN_STATUS_FAILURE,
+                starting_commit=commit_checkpoint,
+                ending_commit=ending_commit,
+                post_generation_intervention=strategy_obj.post_generation_intervention,
+            )
+        except Exception as exc:
+            print(
+                f"WARNING: Failed to collect failure artifacts for preserved work: {exc!r}",
+                file=sys.stderr,
+            )
+            run_metrics = create_failure_run_metrics_output(
+                package=group,
+                artifact=artifact,
+                library_version=updated_library_version,
+                agent=agent,
+                model_name=model_name,
+                global_iterations=iterations,
+                strategy_name=strategy_name,
+                starting_commit=commit_checkpoint,
+                ending_commit=ending_commit,
+            )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
             print("[Test fixing produced PR-eligible post-generation failure output.]")
