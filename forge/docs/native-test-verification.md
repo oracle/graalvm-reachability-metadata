@@ -13,13 +13,16 @@
 The verification gate ensures that the test binary passes on Native Image
 for a given coordinate. The ordered recovery contract is:
 
-1. Run the normal JVM `native-image-agent` path first via
+1. Try the normal JVM `native-image-agent` path first via
    `./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar`.
-   This is the primary metadata source and must not be skipped.
-2. Run the regular coordinate validation (`./gradlew test -Pcoordinates=<g:a:v>`).
-   If the native tests pass, return `PASSED`.
-3. If native testing still fails after JVM-agent metadata was generated, use
-   native tracing as a fallback. Each fallback cycle invokes
+   This is the primary metadata source and must not be skipped. If this path
+   fails, continue with native tracing instead of routing directly to Codex.
+2. If JVM-agent metadata was generated, run the regular coordinate validation
+   (`./gradlew test -Pcoordinates=<g:a:v>`). If the native tests pass, return
+   `PASSED`.
+3. If native testing still fails after JVM-agent metadata was generated, or if
+   the JVM-agent metadata path failed, use native tracing as a fallback. Each
+   fallback cycle invokes
    `./gradlew runNativeTraceImage`; the trace binary is built with
    `-H:+MetadataTracingSupport`, `--exact-reachability-metadata`, and
    `-H:MissingRegistrationReportingMode=Exit`.
@@ -82,11 +85,11 @@ branch to its checkpoint.
 flowchart TD
     Start([invoke gate]) --> Init[reset output_dir + runs_dir<br/>config_dirs = []<br/>i = 0]
     Init --> Agent[gradlew generateMetadata<br/>--agentAllowedPackages=fromJar]
-    Agent -- fail --> Codex[run_codex_metadata_fix]
+    Agent -- fail --> Outer{i &lt; max-native-test-verification-iterations?}
     Agent -- pass --> Test[gradlew test<br/>-Pcoordinates=&lt;g:a:v&gt;]
     Test -- pass --> PassAgent([return PASSED])
     Test -- fails before nativeTest --> Codex
-    Test -- nativeTest fails --> Outer{i &lt; max-native-test-verification-iterations?}
+    Test -- nativeTest fails --> Outer
     Outer -- no --> Codex
     Outer -- yes --> Run[gradlew runNativeTraceImage<br/>-PtraceMetadataPath=runs/cycle-i<br/>-PtraceMetadataConditionPackages=&lt;packages&gt;<br/>-PmetadataConfigDirs=&lt;config_dirs&gt;]
     Run --> Route{binary exit code}
@@ -108,14 +111,15 @@ Gate semantics:
   `./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar`.
   The JVM agent observes the test suite on HotSpot and writes the normal
   repository metadata. Native tracing must not run before this step. If
-  metadata generation fails, the gate routes to codex with the generation
-  log and does not attempt native tracing.
+  metadata generation fails, the gate logs the failure and starts native
+  tracing with no accepted trace dirs.
 - **Native test run second.** After JVM-agent metadata is generated, the
   gate runs `./gradlew test -Pcoordinates=<g:a:v>`. A pass returns
   `PASSED` without invoking native tracing. A failure before `nativeTest`
   is treated as a code/test problem and is routed to codex.
-- **Native tracing is fallback.** The trace loop starts only after
-  JVM-agent metadata exists and native testing still fails.
+- **Native tracing is fallback.** The trace loop starts after JVM-agent
+  metadata generation fails, or after JVM-agent metadata exists and native
+  testing still fails.
 - **One Gradle invocation per trace cycle.** The cycle runs only
   `./gradlew runNativeTraceImage -Pcoordinates=<g:a:v>
   -PtraceMetadataPath=<runs_dir>/cycle-<i>
@@ -186,7 +190,8 @@ def verify_native_test_passes(
 The module composes existing helpers and owns no domain logic of its own:
 
 - `./gradlew generateMetadata -Pcoordinates=...
-  --agentAllowedPackages=fromJar` — primary JVM-agent metadata collection.
+  --agentAllowedPackages=fromJar` — primary JVM-agent metadata collection,
+  attempted before the trace loop.
 - `./gradlew test -Pcoordinates=...` — normal coordinate validation after
   JVM-agent metadata is available.
 - `./gradlew runNativeTraceImage -Pcoordinates=...
@@ -229,8 +234,8 @@ A `verify_native_test_passes(...)` invocation is correct iff:
 2. Before any native-trace cycle starts, the gate invokes
    `./gradlew generateMetadata -Pcoordinates=...
    --agentAllowedPackages=fromJar`.
-3. If JVM-agent metadata generation fails, the gate invokes codex with
-   the generation log and does not start native tracing.
+3. If JVM-agent metadata generation fails, the gate starts native tracing
+   with no accepted trace dirs.
 4. After successful JVM-agent metadata generation, the gate invokes
    `./gradlew test -Pcoordinates=...`. If the coordinate passes, return
    `PASSED` without native tracing.
