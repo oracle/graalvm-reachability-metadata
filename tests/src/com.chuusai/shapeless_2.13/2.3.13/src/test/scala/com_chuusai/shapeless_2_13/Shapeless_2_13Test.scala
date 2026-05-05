@@ -21,6 +21,7 @@ import shapeless.Poly1
 import shapeless.Sized
 import shapeless.::
 import shapeless.:+:
+import shapeless.lens
 import shapeless.nat._
 import shapeless.record._
 import shapeless.syntax.singleton._
@@ -143,10 +144,27 @@ class Shapeless_2_13Test {
     assertThat(mismatched).isEqualTo(None)
     assertThat(tooShort).isEqualTo(None)
   }
+
+  @Test
+  def lensesReadAndUpdateNestedProductFields(): Unit = {
+    val profile: Profile = Profile(Person("Dorothy", 97, active = true), Address("Arlington", "Virginia"))
+    val ownerNameLens = lens[Profile].owner.name
+    val cityLens = lens[Profile].address.city
+
+    val moved: Profile = cityLens.set(profile)("Hampton")
+    val renamed: Profile = ownerNameLens.modify(moved)(_.toUpperCase)
+
+    assertThat(ownerNameLens.get(profile)).isEqualTo("Dorothy")
+    assertThat(cityLens.get(profile)).isEqualTo("Arlington")
+    assertThat(moved).isEqualTo(Profile(Person("Dorothy", 97, active = true), Address("Hampton", "Virginia")))
+    assertThat(renamed).isEqualTo(Profile(Person("DOROTHY", 97, active = true), Address("Hampton", "Virginia")))
+  }
 }
 
 object Shapeless_2_13Test {
   final case class Person(name: String, age: Int, active: Boolean)
+  final case class Address(city: String, state: String)
+  final case class Profile(owner: Person, address: Address)
 
   sealed trait Shape
   final case class Circle(radius: Double) extends Shape
