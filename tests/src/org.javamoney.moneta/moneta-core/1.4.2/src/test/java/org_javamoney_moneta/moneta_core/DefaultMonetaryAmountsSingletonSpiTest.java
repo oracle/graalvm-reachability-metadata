@@ -8,6 +8,7 @@ package org_javamoney_moneta.moneta_core;
 
 import org.javamoney.moneta.FastMoney;
 import org.javamoney.moneta.spi.DefaultMonetaryAmountsSingletonSpi;
+import org.javamoney.moneta.spi.MonetaryConfig;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,20 +18,14 @@ public class DefaultMonetaryAmountsSingletonSpiTest {
 
     @Test
     public void getDefaultAmountTypeLoadsConfiguredAmountClass() {
-        String previousValue = System.getProperty(DEFAULT_AMOUNT_TYPE_PROPERTY);
+        String previousValue = MonetaryConfig.setValue(DEFAULT_AMOUNT_TYPE_PROPERTY, FastMoney.class.getName());
         try {
-            System.setProperty(DEFAULT_AMOUNT_TYPE_PROPERTY, FastMoney.class.getName());
-
             DefaultMonetaryAmountsSingletonSpi amounts = new DefaultMonetaryAmountsSingletonSpi();
 
             assertThat(amounts.getDefaultAmountType()).isEqualTo(FastMoney.class);
             assertThat(amounts.getAmountTypes()).contains(FastMoney.class);
         } finally {
-            if (previousValue == null) {
-                System.clearProperty(DEFAULT_AMOUNT_TYPE_PROPERTY);
-            } else {
-                System.setProperty(DEFAULT_AMOUNT_TYPE_PROPERTY, previousValue);
-            }
+            MonetaryConfig.setValue(DEFAULT_AMOUNT_TYPE_PROPERTY, previousValue);
         }
     }
 }
