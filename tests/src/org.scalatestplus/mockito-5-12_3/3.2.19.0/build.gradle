@@ -34,3 +34,18 @@ graalvmNative {
         }
     }
 }
+
+tasks.named("nativeTestCompile").configure {
+    doFirst {
+        copy {
+            from "src/native-test/resources"
+            into layout.buildDirectory.dir("resources/test").get().asFile
+        }
+    }
+}
+
+tasks.named("test").configure {
+    doFirst {
+        delete layout.buildDirectory.dir("resources/test/mockito-extensions").get().asFile
+    }
+}

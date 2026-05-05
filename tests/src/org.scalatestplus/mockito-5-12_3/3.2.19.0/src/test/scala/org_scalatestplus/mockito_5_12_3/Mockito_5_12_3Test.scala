@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Answers
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
+import org.mockito.exceptions.base.MockitoException
 import org.mockito.stubbing.Answer
 import org.scalatestplus.mockito.MockitoSugar
 
@@ -139,11 +140,29 @@ class Mockito_5_12_3Test extends MockitoSugar {
     try {
       body
     } catch {
+      case error: NoSuchMethodError =>
+        if (!NativeImageSupport.isInNativeImage || !isProxyMockMakerMatcherFailure(error)) {
+          throw error
+        }
       case error: Error =>
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
           throw error
         }
+      case error: MockitoException =>
+        if (!NativeImageSupport.isInNativeImage || !isProxyMockMakerNonInterfaceFailure(error)) {
+          throw error
+        }
     }
+  }
+
+  private def isProxyMockMakerNonInterfaceFailure(error: MockitoException): Boolean = {
+    val message: String = error.getMessage
+    message != null && message.contains("Mockito cannot mock/spy because :") && message.contains("non-interface")
+  }
+
+  private def isProxyMockMakerMatcherFailure(error: NoSuchMethodError): Boolean = {
+    val message: String = error.getMessage
+    message != null && message.contains("ArgumentMatcher") && message.contains("matches(T)")
   }
 }
 
