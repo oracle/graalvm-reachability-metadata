@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import inspect
 import json
 import os
 import shutil
@@ -92,14 +93,7 @@ def ensure_gh_authenticated() -> None:
         )
         sys.exit(1)
     try:
-        log_github_query(("auth", "status", "--hostname", "github.com"))
-        subprocess.run(
-            ["gh", "auth", "status", "--hostname", "github.com"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=True,
-        )
+        gh("auth", "status", "--hostname", "github.com")
     except subprocess.CalledProcessError:
         print("GitHub CLI is not authenticated for github.com. Run 'gh auth login' and try again.")
         sys.exit(1)
@@ -109,7 +103,7 @@ class GitHubRateLimitExceeded(RuntimeError):
     """Raised when GitHub reports an exhausted API rate-limit bucket."""
 
 
-GITHUB_TRANSIENT_RETRY_ATTEMPTS = 3
+GITHUB_TRANSIENT_RETRY_ATTEMPTS = 5
 GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS = 2.0
 GITHUB_LOG_REDACTED_FLAGS = {
     "--body",
@@ -198,7 +192,7 @@ def _format_github_retry_reason(reason: str) -> str:
 
 
 def _github_retry_delay_seconds(attempt: int) -> float:
-    return GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS * attempt
+    return GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS * (2 ** (attempt - 1))
 
 
 def _log_github_transient_retry(reason: str, attempt: int, max_attempts: int, quiet: bool) -> None:
@@ -259,34 +253,68 @@ def log_github_query(args: Iterable[str]) -> None:
     print(f"[github-query] gh {' '.join(formatted_args)}")
 
 
+def _gh_runner_accepts_max_attempts(gh_runner: Callable[..., subprocess.CompletedProcess]) -> bool:
+    try:
+        signature = inspect.signature(gh_runner)
+    except (TypeError, ValueError):
+        return False
+    return (
+        "max_attempts" in signature.parameters
+        or any(parameter.kind == inspect.Parameter.VAR_KEYWORD for parameter in signature.parameters.values())
+    )
+
+
+def _run_gh_runner_once(
+        gh_runner: Callable[..., subprocess.CompletedProcess],
+        args: tuple[str, ...],
+        quiet: bool,
+) -> subprocess.CompletedProcess:
+    if _gh_runner_accepts_max_attempts(gh_runner):
+        return gh_runner(*args, quiet=quiet, max_attempts=1)
+    return gh_runner(*args, quiet=quiet)
+
+
 def gh(
         *args: str,
         check: bool = True,
         input_text: str | None = None,
         cwd=None,
         quiet: bool = False,
+        max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
 ) -> subprocess.CompletedProcess:
     """Run a gh CLI command and return the completed process."""
+    if max_attempts < 1:
+        raise ValueError("max_attempts must be at least 1")
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
     if not quiet:
         log_github_query(args)
-    result = subprocess.run(
-        cmd,
-        capture_output=True,
-        text=True,
-        env=env,
-        input=input_text,
-        cwd=cwd,
-    )
-    if check and result.returncode != 0:
+    for attempt in range(1, max_attempts + 1):
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            env=env,
+            input=input_text,
+            cwd=cwd,
+        )
+        if result.returncode == 0:
+            return result
+
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
-        if is_github_rate_limit_text(error_text):
+        if check and is_github_rate_limit_text(error_text):
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if not quiet:
-            print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
-        result.check_returncode()
-    return result
+        if attempt < max_attempts and is_github_transient_failure_text(error_text):
+            _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+            time.sleep(_github_retry_delay_seconds(attempt))
+            continue
+        if check:
+            if not quiet:
+                print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
+            result.check_returncode()
+        return result
+
+    raise RuntimeError("GitHub command exhausted retries")
 
 
 def run_github_json_with_retries(
@@ -300,7 +328,7 @@ def run_github_json_with_retries(
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
-            result = gh_runner(*args, quiet=command_quiet)
+            result = _run_gh_runner_once(gh_runner, args, command_quiet)
         except subprocess.CalledProcessError as exc:
             error_text = _github_error_text_from_exception(exc)
             if attempt < max_attempts and is_github_transient_failure_text(error_text):
@@ -336,7 +364,7 @@ def run_github_command_with_retries(
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
-            return gh_runner(*args, quiet=command_quiet)
+            return _run_gh_runner_once(gh_runner, args, command_quiet)
         except subprocess.CalledProcessError as exc:
             error_text = _github_error_text_from_exception(exc)
             if attempt < max_attempts and is_github_transient_failure_text(error_text):
@@ -372,7 +400,12 @@ def gh_json(*args: str) -> Any:
 def gh_with_retries(*args: str, quiet: bool = False, cwd: str | None = None) -> subprocess.CompletedProcess:
     """Run a read-only gh CLI command with retries for transient failures."""
     return run_github_with_retries(
-        lambda *gh_args, quiet=False: gh(*gh_args, cwd=cwd, quiet=quiet),
+        lambda *gh_args, quiet=False, max_attempts=1: gh(
+            *gh_args,
+            cwd=cwd,
+            quiet=quiet,
+            max_attempts=max_attempts,
+        ),
         args,
         quiet=quiet,
     )
@@ -656,7 +689,6 @@ def find_issue_for_coordinates(search_string: str, repo: str):
 
     # Build the gh issue list command
     command = [
-        "gh",
         "issue",
         "list",
         "--repo", repo,
@@ -666,17 +698,9 @@ def find_issue_for_coordinates(search_string: str, repo: str):
         "--json", "number"
     ]
 
-    print(f"Executing command: {' '.join(command)}")
+    print(f"Executing command: gh {' '.join(command)}")
 
-    # Run the command and let exceptions propagate to fail fast
-    result = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        check=True
-    )
-
-    issue_data = json.loads(result.stdout)
+    issue_data = gh_json(*command)
 
     if isinstance(issue_data, list) and len(issue_data) > 0 and 'number' in issue_data[0]:
         return issue_data[0]['number']

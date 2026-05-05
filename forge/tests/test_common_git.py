@@ -287,6 +287,52 @@ class GitHubRateLimitTests(unittest.TestCase):
             with self.assertRaises(common_git.GitHubRateLimitExceeded):
                 common_git.gh("api", "graphql")
 
+    def test_common_gh_retries_transient_failure(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: HTTP 502",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            common_git.gh("issue", "comment", "1412", "--body", "body")
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+        self.assertIn("GitHub API transient failure", stderr.getvalue())
+
+    def test_common_gh_retries_transient_failure_with_check_false(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr='Get "https://api.github.com/repos/example/repo": context deadline exceeded',
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            result = common_git.gh("pr", "view", "--repo", "example/repo", check=False)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+
     def test_common_gh_json_raises_typed_rate_limit_error_from_graphql_payload(self) -> None:
         completed_process = subprocess.CompletedProcess(
             ["gh"],
