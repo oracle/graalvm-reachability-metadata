@@ -1,0 +1,1154 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfa09-daa7-7cb0-ae7a-dfd8afb5187b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.tpolecat:doobie-postgres_3:0.13.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.13.4" when "$version$" is replaced with "0.13.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+- Set "coordinates" to "org.tpolecat:doobie-postgres_3:0.13.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.13.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven and the upstream repo, then update the JSON in place with the version-tokenized URLs and language metadata.
+exec
+/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+{
+  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
+}
+
+exec
+/bin/bash -lc "rg -n \"\\\"language\\\"|doobie|source-code-url|test-code-url|documentation-url\" build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json:2:  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/$version$/reactive-streams-$version$-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/$version$/reactive-streams-tck-$version$-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/$version$/reactive-streams-$version$-javadoc.jar",
+metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/$version$/mysql-connector-java-$version$-sources.jar",
+metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/mysql/mysql-connector-java/index.json:11:    "documentation-url": "https://github.com/mysql/mysql-connector-j/blob/$version$/README.md",
+metadata/org.thymeleaf/thymeleaf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/$version$/thymeleaf-$version$-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/tests/thymeleaf-tests-core",
+metadata/org.thymeleaf/thymeleaf/index.json:8:    "documentation-url" : "https://www.thymeleaf.org/apidocs/thymeleaf/$version$/",
+metadata/org.thymeleaf/thymeleaf/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/$version$/thymeleaf-$version$-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:22:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf/index.json:23:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/README.txt",
+metadata/org.thymeleaf/thymeleaf/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/$version$/thymeleaf-$version$-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:39:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf/index.json:40:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/README.txt",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+metadata/org.parboiled/parboiled_3/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.apache.maven/maven-artifact/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+metadata/org.apache.maven/maven-artifact/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:7:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:7:    "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
+metadata/com.google.auto.service/auto-service-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/$version$/auto-service-annotations-$version$-sources.jar",
+metadata/com.google.auto.service/auto-service-annotations/index.json:7:    "test-code-url" : "https://github.com/google/auto/tree/auto-service-$version$/service/processor/src/test",
+metadata/com.google.auto.service/auto-service-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/$version$/auto-service-annotations-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/com.google.api/api-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-sources.jar",
+metadata/com.google.api/api-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-tests.jar",
+metadata/com.google.api/api-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-javadoc.jar",
+metadata/io.mockk/mockk-agent-api-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/mockk/mockk-agent-api-jvm/$version$/mockk-agent-api-jvm-$version$-sources.jar",
+metadata/io.mockk/mockk-agent-api-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/io.mockk/mockk-agent-api-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/mockk/mockk-agent-api-jvm/$version$/mockk-agent-api-jvm-$version$-javadoc.jar",
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/$version$/objenesis-$version$-sources.jar",
+metadata/org.objenesis/objenesis/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/$version$/objenesis-tck-$version$-sources.jar",
+metadata/org.objenesis/objenesis/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/$version$/objenesis-$version$-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-$version$/src/test/java/",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-javadoc.jar",
+metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.enterprise/cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+metadata/com.google.api/gax-httpjson/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/gax-httpjson/$version$/gax-httpjson-$version$-sources.jar",
+metadata/com.google.api/gax-httpjson/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/gax-httpjson/$version$/gax-httpjson-$version$-testlib.jar",
+metadata/com.google.api/gax-httpjson/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/gax-httpjson/$version$/gax-httpjson-$version$-javadoc.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-sources.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+metadata/org.tpolecat/sourcepos_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-javadoc.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-api-di/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-javadoc.jar",
+
+web search: 
+web search: Maven org.tpolecat doobie-postgres_3 0.13.4 pom scm
+web search: 
+web search: https://github.com/typelevel/doobie/tree/v0.13.4
+web search: 
+web search: repo1.maven.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4.pom
+codex
+The artifact is a Scala-cross-published JVM JAR (`_3`), so I’m treating it as Scala 3 unless Maven contents prove otherwise. I’m checking whether Central publishes source/javadoc/test artifacts before falling back to GitHub for tests.
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4-javadoc.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4-tests.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/typelevel/doobie/git/trees/v0.13.4?recursive=1 | rg 'modules/postgres|src/test|src/main|README|site|docs|microsite|book'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 323ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/tpolecat/doobie-postgres_3/0.13.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/tpolecat/doobie-postgres_3/0.13.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="doobie-postgres_3-0.13.4-javadoc.jar" title="doobie-postgres_3-0.13.4-javadoc.jar">doobie-postgres_3-0.13.4-javadoc.jar</a>              2021-05-23 19:09       189      
+<a href="doobie-postgres_3-0.13.4-javadoc.jar.asc" title="doobie-postgres_3-0.13.4-javadoc.jar.asc">doobie-postgres_3-0.13.4-javadoc.jar.asc</a>          2021-05-23 19:09       455      
+<a href="doobie-postgres_3-0.13.4-javadoc.jar.asc.md5" title="doobie-postgres_3-0.13.4-javadoc.jar.asc.md5">doobie-postgres_3-0.13.4-javadoc.jar.asc.md5</a>      2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4-javadoc.jar.asc.sha1" title="doobie-postgres_3-0.13.4-javadoc.jar.asc.sha1">doobie-postgres_3-0.13.4-javadoc.jar.asc.sha1</a>     2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4-javadoc.jar.md5" title="doobie-postgres_3-0.13.4-javadoc.jar.md5">doobie-postgres_3-0.13.4-javadoc.jar.md5</a>          2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4-javadoc.jar.sha1" title="doobie-postgres_3-0.13.4-javadoc.jar.sha1">doobie-postgres_3-0.13.4-javadoc.jar.sha1</a>         2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4-sources.jar" title="doobie-postgres_3-0.13.4-sources.jar">doobie-postgres_3-0.13.4-sources.jar</a>              2021-05-23 19:09     44006      
+<a href="doobie-postgres_3-0.13.4-sources.jar.asc" title="doobie-postgres_3-0.13.4-sources.jar.asc">doobie-postgres_3-0.13.4-sources.jar.asc</a>          2021-05-23 19:09       455      
+<a href="doobie-postgres_3-0.13.4-sources.jar.asc.md5" title="doobie-postgres_3-0.13.4-sources.jar.asc.md5">doobie-postgres_3-0.13.4-sources.jar.asc.md5</a>      2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4-sources.jar.asc.sha1" title="doobie-postgres_3-0.13.4-sources.jar.asc.sha1">doobie-postgres_3-0.13.4-sources.jar.asc.sha1</a>     2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4-sources.jar.md5" title="doobie-postgres_3-0.13.4-sources.jar.md5">doobie-postgres_3-0.13.4-sources.jar.md5</a>          2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4-sources.jar.sha1" title="doobie-postgres_3-0.13.4-sources.jar.sha1">doobie-postgres_3-0.13.4-sources.jar.sha1</a>         2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4.jar" title="doobie-postgres_3-0.13.4.jar">doobie-postgres_3-0.13.4.jar</a>                      2021-05-23 19:09   1170141      
+<a href="doobie-postgres_3-0.13.4.jar.asc" title="doobie-postgres_3-0.13.4.jar.asc">doobie-postgres_3-0.13.4.jar.asc</a>                  2021-05-23 19:09       455      
+<a href="doobie-postgres_3-0.13.4.jar.asc.md5" title="doobie-postgres_3-0.13.4.jar.asc.md5">doobie-postgres_3-0.13.4.jar.asc.md5</a>              2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4.jar.asc.sha1" title="doobie-postgres_3-0.13.4.jar.asc.sha1">doobie-postgres_3-0.13.4.jar.asc.sha1</a>             2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4.jar.md5" title="doobie-postgres_3-0.13.4.jar.md5">doobie-postgres_3-0.13.4.jar.md5</a>                  2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4.jar.sha1" title="doobie-postgres_3-0.13.4.jar.sha1">doobie-postgres_3-0.13.4.jar.sha1</a>                 2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4.pom" title="doobie-postgres_3-0.13.4.pom">doobie-postgres_3-0.13.4.pom</a>                      2021-05-23 19:09      2969      
+<a href="doobie-postgres_3-0.13.4.pom.asc" title="doobie-postgres_3-0.13.4.pom.asc">doobie-postgres_3-0.13.4.pom.asc</a>                  2021-05-23 19:09       455      
+<a href="doobie-postgres_3-0.13.4.pom.asc.md5" title="doobie-postgres_3-0.13.4.pom.asc.md5">doobie-postgres_3-0.13.4.pom.asc.md5</a>              2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4.pom.asc.sha1" title="doobie-postgres_3-0.13.4.pom.asc.sha1">doobie-postgres_3-0.13.4.pom.asc.sha1</a>             2021-05-23 19:09        40      
+<a href="doobie-postgres_3-0.13.4.pom.md5" title="doobie-postgres_3-0.13.4.pom.md5">doobie-postgres_3-0.13.4.pom.md5</a>                  2021-05-23 19:09        32      
+<a href="doobie-postgres_3-0.13.4.pom.sha1" title="doobie-postgres_3-0.13.4.pom.sha1">doobie-postgres_3-0.13.4.pom.sha1</a>                 2021-05-23 19:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 380ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.tpolecat</groupId>
+    <artifactId>doobie-postgres_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Postgres support for doobie.</description>
+    <url>https://github.com/tpolecat/doobie</url>
+    <version>0.13.4</version>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>doobie-postgres</name>
+    <organization>
+        <name>org.tpolecat</name>
+        <url>https://github.com/tpolecat/doobie</url>
+    </organization>
+    <scm>
+        <url>https://github.com/tpolecat/doobie</url>
+        <connection>scm:git:https://github.com/tpolecat/doobie.git</connection>
+        <developerConnection>scm:git:git@github.com:tpolecat/doobie.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>tpolecat</id>
+            <name>Rob Norris</name>
+            <url>http://www.tpolecat.org</url>
+            <email>rob_norris@mac.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.tpolecat</groupId>
+            <artifactId>doobie-core_3</artifactId>
+            <version>0.13.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-collection-compat_3</artifactId>
+            <version>2.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalacheck-effect-munit_3</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>munit-cats-effect-2_3</artifactId>
+            <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>co.fs2</groupId>
+            <artifactId>fs2-io_3</artifactId>
+            <version>2.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.20</version>
+        </dependency>
+        <dependency>
+            <groupId>net.postgis</groupId>
+            <artifactId>postgis-jdbc</artifactId>
+            <version>2.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 518ms:
+      "path": "README.md",
+      "path": "modules/bench/src/main",
+      "path": "modules/bench/src/main/scala",
+      "path": "modules/bench/src/main/scala/doobie",
+      "path": "modules/bench/src/main/scala/doobie/bench",
+      "path": "modules/bench/src/main/scala/doobie/bench/select.scala",
+      "path": "modules/bench/src/main/scala/doobie/bench/text.scala",
+      "path": "modules/core/src/main",
+      "path": "modules/core/src/main/scala-2.13+",
+      "path": "modules/core/src/main/scala-2.13+/doobie",
+      "path": "modules/core/src/main/scala-2.13+/doobie/util",
+      "path": "modules/core/src/main/scala-2.13+/doobie/util/MultiVersionTypeSupport.scala",
+      "path": "modules/core/src/main/scala-2.13+/doobie/util/compat",
+      "path": "modules/core/src/main/scala-2.13+/doobie/util/compat/FactoryCompat.scala",
+      "path": "modules/core/src/main/scala-2.13+/doobie/util/compat/package.scala",
+      "path": "modules/core/src/main/scala-2.13-",
+      "path": "modules/core/src/main/scala-2.13-/doobie",
+      "path": "modules/core/src/main/scala-2.13-/doobie/util",
+      "path": "modules/core/src/main/scala-2.13-/doobie/util/MultiVersionTypeSupport.scala",
+      "path": "modules/core/src/main/scala-2.13-/doobie/util/compat",
+      "path": "modules/core/src/main/scala-2.13-/doobie/util/compat/FactoryCompat.scala",
+      "path": "modules/core/src/main/scala-2.13-/doobie/util/compat/package.scala",
+      "path": "modules/core/src/main/scala-2",
+      "path": "modules/core/src/main/scala-2/enum.scala",
+      "path": "modules/core/src/main/scala-2/util",
+      "path": "modules/core/src/main/scala-2/util/GetPlatform.scala",
+      "path": "modules/core/src/main/scala-2/util/PutPlatform.scala",
+      "path": "modules/core/src/main/scala-2/util/ReadPlatform.scala",
+      "path": "modules/core/src/main/scala-2/util/WritePlatform.scala",
+      "path": "modules/core/src/main/scala-3",
+      "path": "modules/core/src/main/scala-3/util",
+      "path": "modules/core/src/main/scala-3/util/GetPlatform.scala",
+      "path": "modules/core/src/main/scala-3/util/PutPlatform.scala",
+      "path": "modules/core/src/main/scala-3/util/ReadPlatform.scala",
+      "path": "modules/core/src/main/scala-3/util/WritePlatform.scala",
+      "path": "modules/core/src/main/scala",
+      "path": "modules/core/src/main/scala/doobie",
+      "path": "modules/core/src/main/scala/doobie/aliases.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated",
+      "path": "modules/core/src/main/scala/doobie/enumerated/.bsp",
+      "path": "modules/core/src/main/scala/doobie/enumerated/.bsp/sbt.json",
+      "path": "modules/core/src/main/scala/doobie/enumerated/autogeneratedkeys.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/columnnullable.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/fetchdirection.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/holdability.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/jdbctype.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/nullability.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/package.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/parametermode.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/parameternullable.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/project",
+      "path": "modules/core/src/main/scala/doobie/enumerated/project/build.properties",
+      "path": "modules/core/src/main/scala/doobie/enumerated/resultsetconcurrency.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/resultsettype.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/sqlstate.scala",
+      "path": "modules/core/src/main/scala/doobie/enumerated/transactionisolation.scala",
+      "path": "modules/core/src/main/scala/doobie/free",
+      "path": "modules/core/src/main/scala/doobie/free/Aliases.scala",
+      "path": "modules/core/src/main/scala/doobie/free/package.scala",
+      "path": "modules/core/src/main/scala/doobie/hi",
+      "path": "modules/core/src/main/scala/doobie/hi/Aliases.scala",
+      "path": "modules/core/src/main/scala/doobie/hi/connection.scala",
+      "path": "modules/core/src/main/scala/doobie/hi/package.scala",
+      "path": "modules/core/src/main/scala/doobie/hi/preparedstatement.scala",
+      "path": "modules/core/src/main/scala/doobie/hi/resultset.scala",
+      "path": "modules/core/src/main/scala/doobie/hi/statement.scala",
+      "path": "modules/core/src/main/scala/doobie/package.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax",
+      "path": "modules/core/src/main/scala/doobie/syntax/align.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/all.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/applicativeerror.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/connectionio.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/foldable.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/package.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/put.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/stream.scala",
+      "path": "modules/core/src/main/scala/doobie/syntax/string.scala",
+      "path": "modules/core/src/main/scala/doobie/util",
+      "path": "modules/core/src/main/scala/doobie/util/Colors.scala",
+      "path": "modules/core/src/main/scala/doobie/util/ExecutionContexts.scala",
+      "path": "modules/core/src/main/scala/doobie/util/analysis.scala",
+      "path": "modules/core/src/main/scala/doobie/util/catchsql.scala",
+      "path": "modules/core/src/main/scala/doobie/util/foldable.scala",
+      "path": "modules/core/src/main/scala/doobie/util/fragment.scala",
+      "path": "modules/core/src/main/scala/doobie/util/fragments.scala",
+      "path": "modules/core/src/main/scala/doobie/util/get.scala",
+      "path": "modules/core/src/main/scala/doobie/util/invariant.scala",
+      "path": "modules/core/src/main/scala/doobie/util/io.scala",
+      "path": "modules/core/src/main/scala/doobie/util/lens.scala",
+      "path": "modules/core/src/main/scala/doobie/util/log.scala",
+      "path": "modules/core/src/main/scala/doobie/util/meta",
+      "path": "modules/core/src/main/scala/doobie/util/meta/legacymeta.scala",
+      "path": "modules/core/src/main/scala/doobie/util/meta/meta.scala",
+      "path": "modules/core/src/main/scala/doobie/util/meta/sqlmeta.scala",
+      "path": "modules/core/src/main/scala/doobie/util/meta/timemeta.scala",
+      "path": "modules/core/src/main/scala/doobie/util/package.scala",
+      "path": "modules/core/src/main/scala/doobie/util/pretty.scala",
+      "path": "modules/core/src/main/scala/doobie/util/put.scala",
+      "path": "modules/core/src/main/scala/doobie/util/query.scala",
+      "path": "modules/core/src/main/scala/doobie/util/read.scala",
+      "path": "modules/core/src/main/scala/doobie/util/stream.scala",
+      "path": "modules/core/src/main/scala/doobie/util/testing.scala",
+      "path": "modules/core/src/main/scala/doobie/util/transactor.scala",
+      "path": "modules/core/src/main/scala/doobie/util/update.scala",
+      "path": "modules/core/src/main/scala/doobie/util/write.scala",
+      "path": "modules/core/src/main/scala/doobie/util/yolo.scala",
+      "path": "modules/core/src/test",
+      "path": "modules/core/src/test/scala-2",
+      "path": "modules/core/src/test/scala-2/doobie",
+      "path": "modules/core/src/test/scala-2/doobie/util",
+      "path": "modules/core/src/test/scala-2/doobie/util/GetSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-2/doobie/util/LogSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-2/doobie/util/PutSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-2/doobie/util/ReadSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-2/doobie/util/WriteSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-3",
+      "path": "modules/core/src/test/scala-3/doobie",
+      "path": "modules/core/src/test/scala-3/doobie/util",
+      "path": "modules/core/src/test/scala-3/doobie/util/GetSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-3/doobie/util/LogSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-3/doobie/util/PutSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-3/doobie/util/ReadSuitePlatform.scala",
+      "path": "modules/core/src/test/scala-3/doobie/util/WriteSuitePlatform.scala",
+      "path": "modules/core/src/test/scala",
+      "path": "modules/core/src/test/scala/doobie",
+      "path": "modules/core/src/test/scala/doobie/issue",
+      "path": "modules/core/src/test/scala/doobie/issue/262.scala",
+      "path": "modules/core/src/test/scala/doobie/issue/706.scala",
+      "path": "modules/core/src/test/scala/doobie/issue/780.scala",
+      "path": "modules/core/src/test/scala/doobie/syntax",
+      "path": "modules/core/src/test/scala/doobie/syntax/CatchSqlSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/syntax/PutSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/syntax/StringSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util",
+      "path": "modules/core/src/test/scala/doobie/util/CatchSqlSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/FragmentSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/FragmentsSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/GetSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/InvariantSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/LensSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/LogSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/ProcessSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/PutSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/QuerySuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/ReadSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/StrategySuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/TransactorSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/WriteSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/YoloSuite.scala",
+      "path": "modules/core/src/test/scala/doobie/util/arbitraries",
+      "path": "modules/core/src/test/scala/doobie/util/arbitraries/SQLArbitraries.scala",
+      "path": "modules/core/src/test/scala/doobie/util/arbitraries/StringArbitraries.scala",
+      "path": "modules/core/src/test/scala/doobie/util/arbitraries/TimeArbitraries.scala",
+      "path": "modules/core/src/test/scala/doobie/util/meta",
+      "path": "modules/core/src/test/scala/doobie/util/meta/MetaSuite.scala",
+      "path": "modules/docs",
+      "path": "modules/docs/src",
+      "path": "modules/docs/src/main",
+      "path": "modules/docs/src/main/mdoc",
+      "path": "modules/docs/src/main/mdoc/docs",
+      "path": "modules/docs/src/main/mdoc/docs/01-Introduction.md",
+      "path": "modules/docs/src/main/mdoc/docs/02-Toolkit.md",
+      "path": "modules/docs/src/main/mdoc/docs/03-Connecting.md",
+      "path": "modules/docs/src/main/mdoc/docs/04-Selecting.md",
+      "path": "modules/docs/src/main/mdoc/docs/05-Parameterized.md",
+      "path": "modules/docs/src/main/mdoc/docs/06-Checking.md",
+      "path": "modules/docs/src/main/mdoc/docs/07-Updating.md",
+      "path": "modules/docs/src/main/mdoc/docs/08-Fragments.md",
+      "path": "modules/docs/src/main/mdoc/docs/09-Error-Handling.md",
+      "path": "modules/docs/src/main/mdoc/docs/10-Logging.md",
+      "path": "modules/docs/src/main/mdoc/docs/11-Arrays.md",
+      "path": "modules/docs/src/main/mdoc/docs/12-Custom-Mappings.md",
+      "path": "modules/docs/src/main/mdoc/docs/13-Unit-Testing.md",
+      "path": "modules/docs/src/main/mdoc/docs/14-Managing-Connections.md",
+      "path": "modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
+      "path": "modules/docs/src/main/mdoc/docs/16-Extensions-H2.md",
+      "path": "modules/docs/src/main/mdoc/docs/17-Quill.md",
+      "path": "modules/docs/src/main/mdoc/docs/18-FAQ.md",
+      "path": "modules/docs/src/main/mdoc/docs/index.md",
+      "path": "modules/docs/src/main/mdoc/img",
+      "path": "modules/docs/src/main/mdoc/img/navbar_brand.png",
+      "path": "modules/docs/src/main/mdoc/img/navbar_brand.svg",
+      "path": "modules/docs/src/main/mdoc/img/navbar_brand2x.png",
+      "path": "modules/docs/src/main/mdoc/img/nesting.png",
+      "path": "modules/docs/src/main/mdoc/img/sidebar_brand.png",
+      "path": "modules/docs/src/main/mdoc/img/sidebar_brand2x.png",
+      "path": "modules/docs/src/main/mdoc/img/yeah.png",
+      "path": "modules/docs/src/main/mdoc/index.md",
+      "path": "modules/docs/src/main/mdoc/infographic.md",
+      "path": "modules/docs/src/main/mdoc/migration.md",
+      "path": "modules/example/src/main",
+      "path": "modules/example/src/main/scala-2",
+      "path": "modules/example/src/main/scala-2/example",
+      "path": "modules/example/src/main/scala-2/example/Orm.scala",
+      "path": "modules/example/src/main/scala",
+      "path": "modules/example/src/main/scala/example",
+      "path": "modules/example/src/main/scala/example/AnalysisTest.scala",
+      "path": "modules/example/src/main/scala/example/CallableStatementExample.scala",
+      "path": "modules/example/src/main/scala/example/Coproduct.scala",
+      "path": "modules/example/src/main/scala/example/CustomReadWrite.scala",
+      "path": "modules/example/src/main/scala/example/Dynamic.scala",
+      "path": "modules/example/src/main/scala/example/FirstExample.scala",
+      "path": "modules/example/src/main/scala/example/FragmentExample.scala",
+      "path": "modules/example/src/main/scala/example/FreeUsage.scala",
+      "path": "modules/example/src/main/scala/example/GenericStream.scala",
+      "path": "modules/example/src/main/scala/example/HiUsage.scala",
+      "path": "modules/example/src/main/scala/example/HikariExample.scala",
+      "path": "modules/example/src/main/scala/example/Join.scala",
+      "path": "modules/example/src/main/scala/example/Noop.scala",
+      "path": "modules/example/src/main/scala/example/OtherSchema.scala",
+      "path": "modules/example/src/main/scala/example/PostgresCopyInCsv.scala",
+      "path": "modules/example/src/main/scala/example/PostgresLargeObject.scala",
+      "path": "modules/example/src/main/scala/example/PostgresNotify.scala",
+      "path": "modules/example/src/main/scala/example/PostgresPoint.scala",
+      "path": "modules/example/src/main/scala/example/StreamToFile.scala",
+      "path": "modules/example/src/main/scala/example/StreamingCopy.scala",
+      "path": "modules/example/src/test",
+      "path": "modules/example/src/test/scala-2",
+      "path": "modules/example/src/test/scala-2/example",
+      "path": "modules/example/src/test/scala-2/example/AnalysisTestScalaTest.scala",
+      "path": "modules/example/src/test/scala-2/example/AnalysisTestSpecs2.scala",
+      "path": "modules/free/src/main",
+      "path": "modules/free/src/main/scala-2",
+      "path": "modules/free/src/main/scala-2/doobie",
+      "path": "modules/free/src/main/scala-2/doobie/util",
+      "path": "modules/free/src/main/scala-2/doobie/util/PosPlatform.scala",
+      "path": "modules/free/src/main/scala-3",
+      "path": "modules/free/src/main/scala-3/doobie",
+      "path": "modules/free/src/main/scala-3/doobie/util",
+      "path": "modules/free/src/main/scala-3/doobie/util/PosPlatform.scala",
+      "path": "modules/free/src/main/scala",
+      "path": "modules/free/src/main/scala/doobie",
+      "path": "modules/free/src/main/scala/doobie/free",
+      "path": "modules/free/src/main/scala/doobie/free/blob.scala",
+      "path": "modules/free/src/main/scala/doobie/free/callablestatement.scala",
+      "path": "modules/free/src/main/scala/doobie/free/clob.scala",
+      "path": "modules/free/src/main/scala/doobie/free/connection.scala",
+      "path": "modules/free/src/main/scala/doobie/free/databasemetadata.scala",
+      "path": "modules/free/src/main/scala/doobie/free/driver.scala",
+      "path": "modules/free/src/main/scala/doobie/free/embedded.scala",
+      "path": "modules/free/src/main/scala/doobie/free/kleisliinterpreter.scala",
+      "path": "modules/free/src/main/scala/doobie/free/nclob.scala",
+      "path": "modules/free/src/main/scala/doobie/free/preparedstatement.scala",
+      "path": "modules/free/src/main/scala/doobie/free/ref.scala",
+      "path": "modules/free/src/main/scala/doobie/free/resultset.scala",
+      "path": "modules/free/src/main/scala/doobie/free/sqldata.scala",
+      "path": "modules/free/src/main/scala/doobie/free/sqlinput.scala",
+      "path": "modules/free/src/main/scala/doobie/free/sqloutput.scala",
+      "path": "modules/free/src/main/scala/doobie/free/statement.scala",
+      "path": "modules/free/src/main/scala/doobie/util",
+      "path": "modules/free/src/main/scala/doobie/util/pos.scala",
+      "path": "modules/h2/src/main",
+      "path": "modules/h2/src/main/scala",
+      "path": "modules/h2/src/main/scala/doobie",
+      "path": "modules/h2/src/main/scala/doobie/h2",
+      "path": "modules/h2/src/main/scala/doobie/h2/H2Transactor.scala",
+      "path": "modules/h2/src/main/scala/doobie/h2/Metas.scala",
+      "path": "modules/h2/src/main/scala/doobie/h2/package.scala",
+      "path": "modules/h2/src/main/scala/doobie/h2/syntax",
+      "path": "modules/h2/src/main/scala/doobie/h2/syntax/h2transactor.scala",
+      "path": "modules/h2/src/test",
+      "path": "modules/h2/src/test/scala",
+      "path": "modules/h2/src/test/scala/doobie",
+      "path": "modules/h2/src/test/scala/doobie/h2",
+      "path": "modules/h2/src/test/scala/doobie/h2/h2types.scala",
+      "path": "modules/hikari/src/main",
+      "path": "modules/hikari/src/main/scala",
+      "path": "modules/hikari/src/main/scala/doobie",
+      "path": "modules/hikari/src/main/scala/doobie/hikari",
+      "path": "modules/hikari/src/main/scala/doobie/hikari/HikariTransactor.scala",
+      "path": "modules/hikari/src/main/scala/doobie/hikari/package.scala",
+      "path": "modules/hikari/src/test",
+      "path": "modules/hikari/src/test/scala",
+      "path": "modules/hikari/src/test/scala/doobie",
+      "path": "modules/hikari/src/test/scala/doobie/hikari",
+      "path": "modules/hikari/src/test/scala/doobie/hikari/issue",
+      "path": "modules/hikari/src/test/scala/doobie/hikari/issue/824.scala",
+      "path": "modules/hikari/src/test/scala/doobie/postgres",
+      "path": "modules/hikari/src/test/scala/doobie/postgres/PGConcurrentSuite.scala",
+      "path": "modules/munit/src/main",
+      "path": "modules/munit/src/main/scala",
+      "path": "modules/munit/src/main/scala/doobie",
+      "path": "modules/munit/src/main/scala/doobie/munit",
+      "path": "modules/munit/src/main/scala/doobie/munit/analysisspec.scala",
+      "path": "modules/munit/src/main/scala/doobie/munit/package.scala",
+      "path": "modules/munit/src/test",
+      "path": "modules/munit/src/test/scala",
+      "path": "modules/munit/src/test/scala/doobie",
+      "path": "modules/munit/src/test/scala/doobie/munit",
+      "path": "modules/munit/src/test/scala/doobie/munit/CheckerTests.scala",
+      "path": "modules/postgres-circe",
+      "path": "modules/postgres-circe/src",
+      "path": "modules/postgres-circe/src/main",
+      "path": "modules/postgres-circe/src/main/scala",
+      "path": "modules/postgres-circe/src/main/scala/doobie",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres/circe",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres/circe/Instances.scala",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres/circe/json",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres/circe/json/package.scala",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres/circe/jsonb",
+      "path": "modules/postgres-circe/src/main/scala/doobie/postgres/circe/jsonb/package.scala",
+      "path": "modules/postgres-circe/src/test",
+      "path": "modules/postgres-circe/src/test/scala",
+      "path": "modules/postgres-circe/src/test/scala/doobie",
+      "path": "modules/postgres-circe/src/test/scala/doobie/postrges",
+      "path": "modules/postgres-circe/src/test/scala/doobie/postrges/circe",
+      "path": "modules/postgres-circe/src/test/scala/doobie/postrges/circe/PGJsonSuite.scala",
+      "path": "modules/postgres",
+      "path": "modules/postgres/src",
+      "path": "modules/postgres/src/main",
+      "path": "modules/postgres/src/main/scala-2",
+      "path": "modules/postgres/src/main/scala-2/doobie",
+      "path": "modules/postgres/src/main/scala-2/doobie/postgres",
+      "path": "modules/postgres/src/main/scala-2/doobie/postgres/TextPlatform.scala",
+      "path": "modules/postgres/src/main/scala-3",
+      "path": "modules/postgres/src/main/scala-3/doobie",
+      "path": "modules/postgres/src/main/scala-3/doobie/postgres",
+      "path": "modules/postgres/src/main/scala-3/doobie/postgres/TextPlatform.scala",
+      "path": "modules/postgres/src/main/scala",
+      "path": "modules/postgres/src/main/scala/doobie",
+      "path": "modules/postgres/src/main/scala/doobie/postgres",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/Instances.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/JavaTimeInstances.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/Text.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/aliases.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/copyin.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/copymanager.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/copyout.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/embedded.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/kleisliinterpreter.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/largeobject.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/largeobjectmanager.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/free/pgconnection.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/aliases.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/connection.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/largeobject.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/largeobjectmanager.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/lostreaming.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/package.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/hi/pgconnection.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/package.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/pgisinstances.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/sqlstate.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/syntax",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/syntax/FragmentSyntax.scala",
+      "path": "modules/postgres/src/main/scala/doobie/postgres/syntax/syntax.scala",
+      "path": "modules/postgres/src/test",
+      "path": "modules/postgres/src/test/java",
+      "path": "modules/postgres/src/test/java/doobie",
+      "path": "modules/postgres/src/test/java/doobie/postgres",
+      "path": "modules/postgres/src/test/java/doobie/postgres/enums",
+      "path": "modules/postgres/src/test/java/doobie/postgres/enums/MyJavaEnum.java",
+      "path": "modules/postgres/src/test/scala",
+      "path": "modules/postgres/src/test/scala/doobie",
+      "path": "modules/postgres/src/test/scala/doobie/postgres",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/CheckSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/LOStreamingSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/LOSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/ManyRowsSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/NotifySuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/PGCopySuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/ReadErrorSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/SyntaxSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/TextSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/TypesSuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/UnapplySuite.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/enums",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/enums/MyEnum.scala",
+      "path": "modules/postgres/src/test/scala/doobie/postgres/enums/MyScalaEnum.scala",
+      "path": "modules/quill/src/main",
+      "path": "modules/quill/src/main/scala",
+      "path": "modules/quill/src/main/scala/doobie",
+      "path": "modules/quill/src/main/scala/doobie/quill",
+      "path": "modules/quill/src/main/scala/doobie/quill/DoobieContext.scala",
+      "path": "modules/quill/src/main/scala/doobie/quill/DoobieContextBase.scala",
+      "path": "modules/quill/src/test",
+      "path": "modules/quill/src/test/scala",
+      "path": "modules/quill/src/test/scala/doobie",
+      "path": "modules/quill/src/test/scala/doobie/quill",
+      "path": "modules/quill/src/test/scala/doobie/quill/PostgresDoobieContextSuite.scala",
+      "path": "modules/quill/src/test/scala/doobie/quill/issue",
+      "path": "modules/quill/src/test/scala/doobie/quill/issue/1067.scala",
+      "path": "modules/refined/src/main",
+      "path": "modules/refined/src/main/scala",
+      "path": "modules/refined/src/main/scala/doobie",
+      "path": "modules/refined/src/main/scala/doobie/refined",
+      "path": "modules/refined/src/main/scala/doobie/refined/Instances.scala",
+      "path": "modules/refined/src/main/scala/doobie/refined/package.scala",
+      "path": "modules/refined/src/test",
+      "path": "modules/refined/src/test/scala",
+      "path": "modules/refined/src/test/scala/doobie",
+      "path": "modules/refined/src/test/scala/doobie/refined",
+      "path": "modules/refined/src/test/scala/doobie/refined/RefinedSuite.scala",
+      "path": "modules/scalatest/src/main",
+      "path": "modules/scalatest/src/main/scala",
+      "path": "modules/scalatest/src/main/scala/doobie",
+      "path": "modules/scalatest/src/main/scala/doobie/scalatest",
+      "path": "modules/scalatest/src/main/scala/doobie/scalatest/AnalysisMatchers.scala",
+      "path": "modules/scalatest/src/main/scala/doobie/scalatest/Checker.scala",
+      "path": "modules/scalatest/src/test",
+      "path": "modules/scalatest/src/test/scala",
+      "path": "modules/scalatest/src/test/scala/doobie",
+      "path": "modules/scalatest/src/test/scala/doobie/scalatest",
+      "path": "modules/scalatest/src/test/scala/doobie/scalatest/CheckerTests.scala",
+      "path": "modules/scalatest/src/test/scala/doobie/scalatest/MatcherTests.scala",
+      "path": "modules/specs2/src/main",
+      "path": "modules/specs2/src/main/scala",
+      "path": "modules/specs2/src/main/scala/doobie",
+      "path": "modules/specs2/src/main/scala/doobie/specs2",
+      "path": "modules/specs2/src/main/scala/doobie/specs2/analysismatchers.scala",
+      "path": "modules/specs2/src/main/scala/doobie/specs2/analysisspec.scala",
+      "path": "modules/specs2/src/main/scala/doobie/specs2/package.scala",
+      "path": "modules/specs2/src/test",
+      "path": "modules/specs2/src/test/scala",
+      "path": "modules/specs2/src/test/scala/doobie",
+      "path": "modules/specs2/src/test/scala/doobie/specs2",
+      "path": "modules/specs2/src/test/scala/doobie/specs2/CheckerTests.scala",
+      "path": "modules/specs2/src/test/scala/doobie/specs2/IOAnalysisMatchersChecks.scala",
+      "path": "modules/specs2/src/test/scala/doobie/specs2/MatcherTests.scala",
+      "path": "modules/specs2/src/test/scala/doobie/specs2/beforeall.scala",
+
+ exited 22 in 1509ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 21:27:46 GMT
+content-type: application/java-archive
+content-length: 44006
+cf-ray: 9f72d4bfa8b30380-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "572cdf1ce14f899ef0cf8dfff48bb661"
+last-modified: Sun, 23 May 2021 19:09:57 GMT
+x-checksum-md5: 572cdf1ce14f899ef0cf8dfff48bb661
+x-checksum-sha1: 0cace5866e621535a0846c621cbb9a6fef0e1129
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 05 May 2026 21:27:46 GMT
+content-type: application/java-archive
+content-length: 189
+cf-ray: 9f72d4c2ab2e126d-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "12f040356ff3be9797c28b34be8b5c8b"
+last-modified: Sun, 23 May 2021 19:09:56 GMT
+x-checksum-md5: 12f040356ff3be9797c28b34be8b5c8b
+x-checksum-sha1: 99c67a1a48b9b77264e7d20df1a2e812451ef071
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 05 May 2026 21:27:47 GMT
+content-type: text/html
+cf-ray: 9f72d4c67a8ce28f-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/bin/bash -lc "rg -n \"doobie\" metadata build/discovered-artifact-metadata -g '*.json'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 148ms:
+web search: 
+web search: https://github.com/typelevel/doobie/tree/v0.13.4/modules/postgres/src/test
+web search: 
+web search: org.tpolecat doobie-postgres_3 0.13.4 Maven Central
+web search: 
+web search: "doobie-postgres_3" "0.13.4" "Postgres support"
+web search: 
+web search: https://mvnrepository.com/artifact/org.tpolecat/doobie-postgres_3/0.13.4
+web search: 
+web search: 
+exec
+/bin/bash -lc "sed -n '1,60p' metadata/org.tpolecat/sourcepos_3/index.json && curl -fsSL https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/1.1.0/sourcepos_3-1.1.0.pom | sed -n '1,50p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 286ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.tpolecat</groupId>
+    <artifactId>sourcepos_3</artifactId>
+    <packaging>jar</packaging>
+    <description>sourcepos</description>
+    <url>https://github.com/tpolecat/sourcepos</url>
+    <version>1.1.0</version>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>sourcepos</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Typelevel</name>
+        <url>https://typelevel.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/tpolecat/SourcePos</url>
+        <connection>scm:git:https://github.com/tpolecat/SourcePos.git</connection>
+        <developerConnection>scm:git:git@github.com:tpolecat/SourcePos.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>tpolecat</id>
+            <name>Rob Norris</name>
+            <url>http://www.tpolecat.org</url>
+            <email>rob_norris@mac.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.javadoc.io/doc/org.tpolecat/sourcepos_3/1.1.0/</info.apiURL>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit_3</artifactId>
+            <version>1.0.0-M7</version>
+            <scope>test</scope>
+
+web search: 
+web search: doobie 0.13.4 documentation PostgreSQL
+web search: 
+web search: https://mvnrepository.com/artifact/org.tpolecat/doobie-postgres_3/0.13.4
+web search: 
+web search: https://github.com/typelevel/doobie/tree/v0.13.4/modules/postgres/src/test
+web search: 
+web search: https://github.com/typelevel/doobie
+exec
+/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r -n1 sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 0ms:
+{
+  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
+}
+
+codex
+Central has the main JAR, sources JAR, and javadoc JAR, but no `tests.jar`; the upstream tag contains `modules/postgres/src/test`, so I’ll use Maven for sources and the tagged GitHub tree for tests. For documentation I’m using the tagged PostgreSQL extension doc because it is more useful than the tiny Scala 3 javadoc placeholder.
+exec
+/bin/bash -lc 'curl -I -fsSL https://github.com/typelevel/doobie/blob/v0.13.4/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+exec
+/bin/bash -lc 'curl -I -fsSL https://github.com/typelevel/doobie/tree/v0.13.4/modules/postgres/src/test' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/doobie-postgres_3-0.13.4.jar" https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4.jar; jar tf "$tmp/doobie-postgres_3-0.13.4.jar" | rg '"'\\.class"'$'"' | head -20; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 786ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 21:28:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2fe475cf1b40b280fe7a64a1d08420e1"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=TO1jLtGpUjCArbfHy7B99V5pM%2BqFjTRXlo2UYebn0%2F5d9d1dNk%2FuYn1LYO8RAao7y%2F4jdk0axR8erasdy6gd9tUaQ%2BYG2AoKgezSCCErPoFGPIyJSBpNw1qXidatbpHtH0U5KZOUFGfsGmS92fU2H8%2BwdYzyCxFQYvUxrPRG9R1snB%2B46fSPMlkNu4XaW%2FUpsLk8gk2tkiLb0BkIyXNDc%2FRX2lHJv5LYCaMnGPOgl4bTcz6wPONkEjjDFeCLhsPXzxb2wSWgLxswG9OgP5zoSQ%3D%3D--oe%2BtFaGqFT4rLIBi--sVg%2BNvXkSvt3hP46ABN0kw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.273857180.1778016521; expires=Wed, 05 May 2027 21:28:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 21:28:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B954:1113DF:218BFB5:1940285:69FA6108
+
+
+ succeeded in 950ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 21:28:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/typelevel/doobie.git
+x-raw-download: https://raw.githubusercontent.com/typelevel/doobie/v0.13.4/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md
+etag: W/"d8e400c57b440cabd4207659fba2c707"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3UvVoAQmjJY8zyqHpLvsFO4G89kfYsYxuJ8Xk%2FhFBGxxUmNbN5LPB7udLzwv%2B5w1pH%2B%2B1XZSVNtugL9s35OHvlTFecgtPf0dzN33E86BtvtvnHxNuMVDROB2Bv3z6HliYUlPC%2BraIkBVcaS31FZtjZjDH8tU8fl%2Bswbc0BWWy04tfPowuryW%2FqcjoFFe3FhYpHNpqhRVASqZe%2F2WYGlxlBFnIQtG7HcTdvKdhAo%2BT10z1OYcOoczJv6vBxZkOnmMOVqEINfTPRaQaDUvo2ZwYg%3D%3D--FqVxNYGVqpJYGp8e--WrVoPfY9V1ZbeaofPCGFyQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1064046517.1778016521; expires=Wed, 05 May 2027 21:28:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 21:28:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B94A:1EC6F7:2118D08:18D07ED:69FA6108
+
+
+ succeeded in 1648ms:
+doobie/postgres/Instances.class
+doobie/postgres/JavaTimeInstances.class
+doobie/postgres/PgisInstances.class
+doobie/postgres/Text$$anon$1.class
+doobie/postgres/Text$$anon$2.class
+doobie/postgres/Text$.class
+doobie/postgres/Text.class
+doobie/postgres/TextInstances$$anon$1.class
+doobie/postgres/TextInstances$$anon$2.class
+doobie/postgres/TextInstances.class
+doobie/postgres/TextInstances0.class
+doobie/postgres/TextInstances1.class
+doobie/postgres/TextPlatform.class
+doobie/postgres/free/Embeddable.class
+doobie/postgres/free/Embedded$.class
+doobie/postgres/free/Embedded$CopyIn$.class
+doobie/postgres/free/Embedded$CopyIn.class
+doobie/postgres/free/Embedded$CopyManager$.class
+doobie/postgres/free/Embedded$CopyManager.class
+doobie/postgres/free/Embedded$CopyOut$.class
+
+codex
+I’m updating the metadata now. I’m leaving `not-for-native-image` absent because the artifact is a normal JVM JAR and contains `.class` files.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 0ms:
+{
+  "coordinates": "org.tpolecat:doobie-postgres_3:0.13.4",
+  "repository-url": "https://github.com/typelevel/doobie",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
+  "documentation-url": "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
+  "description": "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4-sources.jar' \\
+  'https://github.com/typelevel/doobie/tree/v0.13.4/modules/postgres/src/test' \\
+  'https://github.com/typelevel/doobie/blob/v0.13.4/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md'; do \\
+  status="'$(curl -o /dev/null -s -w '"'%{http_code}' -L \""'$url"); printf '"'%s %s\\n' \""'$status" "$url"; '"\\
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1202ms:
+200 https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/0.13.4/doobie-postgres_3-0.13.4-sources.jar
+200 https://github.com/typelevel/doobie/tree/v0.13.4/modules/postgres/src/test
+200 https://github.com/typelevel/doobie/blob/v0.13.4/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md
+
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json && sed -n '1,120p' build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 818ms:
+{
+  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
+  "repository-url" : "https://github.com/typelevel/doobie",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
+  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
+  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+web search: 
+web search: https://mvnrepository.com/artifact/org.tpolecat/doobie-postgres_3/0.13.4
+codex
+Updated [org.tpolecat-doobie-postgres_3-0.13.4.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json:1).
+
+Set the repository, Maven sources URL, tagged GitHub test URL, tagged PostgreSQL documentation URL, two-sentence description, and Scala 3 language metadata. I left `not-for-native-image` absent because this is a Scala 3 JVM JAR artifact, not a non-JVM target. ([mvnrepository.com](https://mvnrepository.com/artifact/org.tpolecat/doobie-postgres_3/0.13.4))
+
+Verified JSON parses with `jq`, and the `$version$ -> 0.13.4` source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+index d00409b772e6102bcb8599ecb4a746a46cc07570..ef5a1ea355d305680ba6fa08a2d84d2ef3485bd2
+--- a/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
++++ b/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4"
++  "coordinates" : "org.tpolecat:doobie-postgres_3:0.13.4",
++  "repository-url" : "https://github.com/typelevel/doobie",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/doobie-postgres_3/$version$/doobie-postgres_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/postgres/src/test",
++  "documentation-url" : "https://github.com/typelevel/doobie/blob/v$version$/modules/docs/src/main/mdoc/docs/15-Extensions-PostgreSQL.md",
++  "description" : "doobie-postgres adds PostgreSQL-specific support to doobie, a functional JDBC layer for Scala. It supplies PostgreSQL type mappings, syntax, and helpers for features such as arrays, enums, copy operations, notifications, and large objects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+90,769
+Updated [org.tpolecat-doobie-postgres_3-0.13.4.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/build/discovered-artifact-metadata/org.tpolecat-doobie-postgres_3-0.13.4.json:1).
+
+Set the repository, Maven sources URL, tagged GitHub test URL, tagged PostgreSQL documentation URL, two-sentence description, and Scala 3 language metadata. I left `not-for-native-image` absent because this is a Scala 3 JVM JAR artifact, not a non-JVM target. ([mvnrepository.com](https://mvnrepository.com/artifact/org.tpolecat/doobie-postgres_3/0.13.4))
+
+Verified JSON parses with `jq`, and the `$version$ -> 0.13.4` source, test, and documentation URLs all returned HTTP 200.
+Ran agent for org.tpolecat:doobie-postgres_3:0.13.4 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/build/agent-artifact-discovery-logs/org.tpolecat-doobie-postgres_3-0.13.4.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5341-4e1b0c29/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 58s
+9 actionable tasks: 9 executed
