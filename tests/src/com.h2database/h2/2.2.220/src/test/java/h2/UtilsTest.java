@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class UtilsTest {
     @Test
@@ -75,6 +76,7 @@ public class UtilsTest {
 
     @Test
     void loadsResourceDirectlyWhenBundledDataZipIsUnavailable(@TempDir Path temporaryDirectory) throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Child-first URLClassLoader resource isolation is JVM-only");
         try {
             try (ChildFirstH2ClassLoader classLoader = newIsolatedH2ClassLoader(temporaryDirectory, true, false)) {
                 Class<?> isolatedUtils = classLoader.loadClass(Utils.class.getName());
@@ -93,6 +95,7 @@ public class UtilsTest {
 
     @Test
     void invokesOperatingSystemBeanWhenMaximumHeapIsUnbounded(@TempDir Path temporaryDirectory) throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Child-first URLClassLoader resource isolation is JVM-only");
         try {
             try (ChildFirstH2ClassLoader classLoader = newIsolatedH2ClassLoader(temporaryDirectory, false, true)) {
                 Class<?> isolatedUtils = classLoader.loadClass(Utils.class.getName());
@@ -112,6 +115,10 @@ public class UtilsTest {
     private static byte[] invokeGetResource(Class<?> isolatedUtils, String name) throws Exception {
         Method method = isolatedUtils.getMethod("getResource", String.class);
         return (byte[]) method.invoke(null, name);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static ChildFirstH2ClassLoader newIsolatedH2ClassLoader(
