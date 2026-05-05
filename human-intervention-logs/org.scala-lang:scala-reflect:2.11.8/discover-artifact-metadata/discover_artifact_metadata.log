@@ -1,0 +1,501 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df96f-b27b-7723-8684-08c92464d4a8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scala-lang:scala-reflect:2.11.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.11.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+- Set "coordinates" to "org.scala-lang:scala-reflect:2.11.8".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata conventions in the repo, then look up the exact 2.11.8 source/test/docs locations before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.scala-lang-scala-reflect-2\\.11\\.8\\.json|scala-reflect'" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+/home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+codex
+The target file only has coordinates right now. I’m checking both Maven Central artifacts and the upstream Scala tag so the source/test/docs fields point at exact 2.11.8 material rather than a moving branch.
+web search: 
+web search: Maven Central org.scala-lang scala-reflect 2.11.8 sources jar tests jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.scala-lang/scala-reflect/2.11.8
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/
+web search: 
+web search: site:scala-lang.org/api/2.11.8 scala-reflect 2.11.8
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' metadata tests build src | head -80" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+rg: src: No such file or directory (os error 2)
+metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-sources.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:6:    "repository-url" : "https://github.com/scala-js/scala-js",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:7:    "test-code-url" : "https://github.com/scala-js/scala-js/tree/v1.16.0/test-suite",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-sources.jar",
+metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/2.0.0.Final/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-sources.jar",
+metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.1.0.Final/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar",
+metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.0.0.GA/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar",
+metadata/org.apache.james/apache-mime4j-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-core/0.8.13/apache-mime4j-core-0.8.13-sources.jar",
+metadata/org.apache.james/apache-mime4j-core/index.json:6:    "repository-url" : "https://github.com/apache/james-mime4j",
+metadata/org.apache.james/apache-mime4j-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-core/0.8.13/apache-mime4j-core-0.8.13-tests.jar",
+metadata/org.apache.james/apache-mime4j-core/index.json:8:    "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site/xdoc",
+metadata/com.github.luben/zstd-jni/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.2-5/zstd-jni-1.5.2-5-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:5:    "repository-url" : "https://github.com/luben/zstd-jni/tree/c1.5.2-5",
+metadata/com.github.luben/zstd-jni/index.json:6:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/c1.5.2-5/src/test",
+metadata/com.github.luben/zstd-jni/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.2-5/zstd-jni-1.5.2-5-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.4-1/zstd-jni-1.5.4-1-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:20:    "repository-url" : "https://github.com/luben/zstd-jni",
+metadata/com.github.luben/zstd-jni/index.json:21:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v1.5.4-1/src/test",
+metadata/com.github.luben/zstd-jni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.4-1/zstd-jni-1.5.4-1-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.4-2/zstd-jni-1.5.4-2-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:34:    "repository-url" : "https://github.com/luben/zstd-jni",
+metadata/com.github.luben/zstd-jni/index.json:35:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v1.5.4-2/src/test",
+metadata/com.github.luben/zstd-jni/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.4-2/zstd-jni-1.5.4-2-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-1/zstd-jni-1.5.5-1-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:48:    "repository-url" : "https://github.com/luben/zstd-jni",
+metadata/com.github.luben/zstd-jni/index.json:49:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v1.5.5-1/src/test",
+metadata/com.github.luben/zstd-jni/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-1/zstd-jni-1.5.5-1-javadoc.jar",
+metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29-sources.jar",
+metadata/mysql/mysql-connector-java/index.json:9:    "repository-url": "https://github.com/mysql/mysql-connector-j",
+metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/8.0.29/src/test",
+metadata/mysql/mysql-connector-java/index.json:11:    "documentation-url": "https://github.com/mysql/mysql-connector-j/blob/8.0.29/README.md",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/3.0.0/jakarta.jms-api-3.0.0-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/messaging",
+metadata/jakarta.jms/jakarta.jms-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/messaging/3.0/jakarta-messaging-tck-3.0.0.zip",
+metadata/jakarta.jms/jakarta.jms-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/3.0.0/jakarta.jms-api-3.0.0-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/messaging",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/avalon-framework/avalon-framework/index.json:5:    "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/",
+metadata/avalon-framework/avalon-framework/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/avalon-framework/avalon-framework/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/test/",
+metadata/avalon-framework/avalon-framework/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/src/xdocs/framework/",
+metadata/com.google.protobuf/protobuf-java-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:6:    "repository-url" : "https://github.com/protocolbuffers/protobuf",
+metadata/com.google.protobuf/protobuf-java-util/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v23.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:23:    "repository-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0",
+metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:46:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:47:    "repository-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12",
+metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:49:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-javadoc.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/2.0.2/kerby-xdr-2.0.2-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-xdr/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-2.0.2/kerby-common/kerby-xdr/src/test",
+metadata/org.apache.kerby/kerby-xdr/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/2.0.2/kerby-xdr-2.0.2-javadoc.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/1.0.1/kerby-xdr-1.0.1-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:23:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-xdr/index.json:24:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-xdr/src/test",
+metadata/org.apache.kerby/kerby-xdr/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/1.0.1/kerby-xdr-1.0.1-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "find . -name '*scala-reflect*' -o -name '*scala-lang*' | head -40" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 109ms:
+./stats/org.scala-lang
+./tests/src/org.scala-lang
+./metadata/org.scala-lang
+./build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+./build/agent-artifact-discovery-logs/org.scala-lang-scala-reflect-2.11.8.log
+
+exec
+/usr/bin/bash -lc "find metadata/org.scala-lang -maxdepth 3 -type f -name 'index.json' -print" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+metadata/org.scala-lang/scala3-interfaces/index.json
+
+exec
+/usr/bin/bash -lc 'find stats/org.scala-lang -maxdepth 4 -type f | head -80' in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+stats/org.scala-lang/scala3-interfaces/3.3.1/stats.json
+stats/org.scala-lang/scala3-interfaces/3.3.1/execution-metrics.json
+
+exec
+/usr/bin/bash -lc 'find tests/src/org.scala-lang -maxdepth 4 -type f | head -80' in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+tests/src/org.scala-lang/scala3-interfaces/3.3.1/.gitignore
+tests/src/org.scala-lang/scala3-interfaces/3.3.1/gradle.properties
+tests/src/org.scala-lang/scala3-interfaces/3.3.1/build.gradle
+tests/src/org.scala-lang/scala3-interfaces/3.3.1/user-code-filter.json
+tests/src/org.scala-lang/scala3-interfaces/3.3.1/settings.gradle
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.scala-lang/scala3-interfaces/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-sources.jar",
+    "repository-url" : "https://github.com/scala/scala3",
+    "test-code-url" : "https://github.com/scala/scala3/tree/3.3.1/tests",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-javadoc.jar",
+    "description" : "scala3-interfaces provides Java interfaces used by the Scala 3 compiler for compiler callbacks, diagnostics, source files, and source positions. These interfaces define the API surface that tools and integrations use to communicate with the Scala 3 compiler without depending on compiler implementation classes.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.3.5",
+      "3.3.6",
+      "3.3.7",
+      "3.4.0",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.5.0",
+      "3.5.1",
+      "3.5.2",
+      "3.6.0",
+      "3.6.1",
+      "3.6.2",
+      "3.6.3",
+      "3.6.4",
+      "3.7.0",
+      "3.7.1",
+      "3.7.2",
+      "3.7.3",
+      "3.7.4",
+      "3.8.0",
+      "3.8.1",
+      "3.8.2",
+      "3.8.3",
+      "3.8.4-RC1",
+      "3.8.4-RC2"
+    ],
+    "allowed-packages" : [
+      "dotty.tools.dotc.interfaces"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"name\" : \"scala\"|\"name\": \"scala\"|scala3-interfaces' metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+metadata/org.scala-sbt/test-interface/index.json:11:      "name" : "scala",
+metadata/org.scala-lang/scala3-interfaces/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-sources.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-javadoc.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:9:    "description" : "scala3-interfaces provides Java interfaces used by the Scala 3 compiler for compiler callbacks, diagnostics, source files, and source positions. These interfaces define the API surface that tools and integrations use to communicate with the Scala 3 compiler without depending on compiler implementation classes.",
+metadata/org.scala-lang/scala3-interfaces/index.json:11:      "name" : "scala",
+
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/org.scala-lang/scala-reflect/2.11.8
+web search: 
+web search: site:github.com/scala/scala/tree/v2.11.8 scala reflect test v2.11.8
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8/test/junit/scala/reflect
+codex
+Maven Central has the exact 2.11.8 sources and javadoc jars, but no tests jar in that artifact directory, so I’m using the upstream Scala v2.11.8 test tree for tests. I’m also marking it as Scala 2 language-specific metadata.
+apply patch
+patch: completed
+/home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+index 0a5e5d65d23740a9a43eb7e3b0d511ee0a8fca19..d046cb91c04341e149dd12c31723e35d16213d28
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
++  "coordinates" : "org.scala-lang:scala-reflect:2.11.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v2.11.8/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
++  "description" : "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+index 0a5e5d65d23740a9a43eb7e3b0d511ee0a8fca19..d046cb91c04341e149dd12c31723e35d16213d28
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
++  "coordinates" : "org.scala-lang:scala-reflect:2.11.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v2.11.8/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
++  "description" : "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+The JSON is updated. I’m doing a quick validity check and probing the selected URLs so the file doesn’t contain a typo or a dead exact-version link.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json' in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+{
+  "coordinates": "org.scala-lang:scala-reflect:2.11.8",
+  "source-code-url": "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
+  "repository-url": "https://github.com/scala/scala",
+  "test-code-url": "https://github.com/scala/scala/tree/v2.11.8/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
+  "description": "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar | sed -n '1,6p'" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar | sed -n '1,6p'" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 18:40:14 GMT
+content-type: application/java-archive
+content-length: 4386937
+cf-ray: 9f71df5aeb391239-LHR
+cf-cache-status: HIT
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/scala/scala/tree/v2.11.8/test | sed -n '1,8p'" in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 102ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 18:40:14 GMT
+content-type: application/java-archive
+content-length: 562895
+cf-ray: 9f71df5afeba71f2-LHR
+cf-cache-status: HIT
+
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+index 0a5e5d65d23740a9a43eb7e3b0d511ee0a8fca19..d046cb91c04341e149dd12c31723e35d16213d28
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
++  "coordinates" : "org.scala-lang:scala-reflect:2.11.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v2.11.8/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
++  "description" : "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 568ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 18:40:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4be0b41ee082bd2e52744a31f12d1bdb"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json' in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+index 0a5e5d65d23740a9a43eb7e3b0d511ee0a8fca19..d046cb91c04341e149dd12c31723e35d16213d28
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
++  "coordinates" : "org.scala-lang:scala-reflect:2.11.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v2.11.8/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
++  "description" : "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json' in /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+index 0a5e5d65d23740a9a43eb7e3b0d511ee0a8fca19..d046cb91c04341e149dd12c31723e35d16213d28
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
++  "coordinates" : "org.scala-lang:scala-reflect:2.11.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v2.11.8/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
++  "description" : "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8 scala-reflect-2.11.8-sources.jar scala-reflect-2.11.8-javadoc.jar
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8/test
+web search: 
+web search: 
+web search: 
+web search: "Index of /maven2/org/scala-lang/scala-reflect/2.11.8"
+web search: 
+web search: https://index.scala-lang.org/scala/scala/artifacts/scala-reflect/2.11.8
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/
+codex
+Updated [org.scala-lang-scala-reflect-2.11.8.json](/home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json).
+
+I used Maven Central’s exact `2.11.8` source and javadoc jars for source/docs, the Scala GitHub repo for the repository URL, and the `v2.11.8` test tree for tests. ([repo1.maven.org](https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/)) I also set the language field to Scala 2 based on the `2.11.8` Scala artifact/version metadata. ([index.scala-lang.org](https://index.scala-lang.org/scala/scala/artifacts/scala-reflect/2.11.8))
+
+Validated the JSON with `jq` and checked the selected source, docs, and test URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+index 0a5e5d65d23740a9a43eb7e3b0d511ee0a8fca19..d046cb91c04341e149dd12c31723e35d16213d28
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-reflect:2.11.8"
++  "coordinates" : "org.scala-lang:scala-reflect:2.11.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-sources.jar",
++  "repository-url" : "https://github.com/scala/scala",
++  "test-code-url" : "https://github.com/scala/scala/tree/v2.11.8/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8-javadoc.jar",
++  "description" : "scala-reflect provides the Scala 2 reflection API used to inspect Scala types, symbols, annotations, and declarations at runtime. It also exposes compiler reflection infrastructure used by Scala 2 macros and tools that need to analyze or generate Scala program structure.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+98,228
+Updated [org.scala-lang-scala-reflect-2.11.8.json](/home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/build/discovered-artifact-metadata/org.scala-lang-scala-reflect-2.11.8.json).
+
+I used Maven Central’s exact `2.11.8` source and javadoc jars for source/docs, the Scala GitHub repo for the repository URL, and the `v2.11.8` test tree for tests. ([repo1.maven.org](https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.8/)) I also set the language field to Scala 2 based on the `2.11.8` Scala artifact/version metadata. ([index.scala-lang.org](https://index.scala-lang.org/scala/scala/artifacts/scala-reflect/2.11.8))
+
+Validated the JSON with `jq` and checked the selected source, docs, and test URLs return HTTP 200.
+Ran agent for org.scala-lang:scala-reflect:2.11.8 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/build/agent-artifact-discovery-logs/org.scala-lang-scala-reflect-2.11.8.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/forge2/forge/local_repositories/forge_worktrees/2620-432bef29/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 48s
+9 actionable tasks: 9 executed
