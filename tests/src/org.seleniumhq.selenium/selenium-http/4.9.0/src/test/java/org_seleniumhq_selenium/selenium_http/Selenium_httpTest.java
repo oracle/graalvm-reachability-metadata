@@ -218,6 +218,35 @@ public class Selenium_httpTest {
     }
 
     @Test
+    public void shouldRouteRequestsUsingCustomPredicates() {
+        AtomicInteger handlerCreations = new AtomicInteger();
+        Route route = Route.matching(req -> req.getMethod() == HttpMethod.OPTIONS
+                && "probe".equals(req.getHeader("X-Route")))
+            .to(() -> {
+                handlerCreations.incrementAndGet();
+                return req -> new HttpResponse()
+                    .setContent(Contents.utf8String(req.getMethod() + ":" + req.getUri()));
+            });
+
+        HttpRequest matching = new HttpRequest(HttpMethod.OPTIONS, "/custom")
+            .setHeader("X-Route", "probe");
+        HttpRequest nonMatching = new HttpRequest(HttpMethod.OPTIONS, "/custom")
+            .setHeader("X-Route", "other");
+
+        assertThat(route.matches(matching)).isTrue();
+        assertThat(route.matches(nonMatching)).isFalse();
+
+        HttpResponse missing = route.execute(nonMatching);
+        assertThat(missing.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+        assertThat(handlerCreations).hasValue(0);
+
+        HttpResponse response = route.execute(matching);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(Contents.utf8String(response.getContent())).isEqualTo("OPTIONS:/custom");
+        assertThat(handlerCreations).hasValue(1);
+    }
+
+    @Test
     public void shouldApplyFiltersAroundHandlersAndPreserveUserAgent() {
         List<String> calls = new ArrayList<>();
         Filter requestFilter = next -> req -> {
