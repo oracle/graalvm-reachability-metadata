@@ -7,7 +7,7 @@
 package org_osgi.osgi_R4_core;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Filter;
@@ -21,9 +21,9 @@ public class FrameworkUtilAnonymous1Test {
         System.setProperty("org.osgi.vendor.framework", "org_osgi.osgi_R4_core.vendor");
 
         Filter filter = FrameworkUtil.createFilter("(service.name=example)");
-        Dictionary<String, String> matchingProperties = new Hashtable<String, String>();
+        Dictionary<Object, Object> matchingProperties = new Properties();
         matchingProperties.put("service.name", "example");
-        Dictionary<String, String> nonMatchingProperties = new Hashtable<String, String>();
+        Dictionary<Object, Object> nonMatchingProperties = new Properties();
         nonMatchingProperties.put("service.name", "other");
 
         assertThat(filter.toString()).isEqualTo("(service.name=example)");

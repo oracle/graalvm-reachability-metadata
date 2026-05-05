@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
@@ -36,7 +36,7 @@ public class BundleSignerConditionAnonymous1Test {
         assertThat(condition.isPostponed()).isFalse();
         assertThat(condition.isMutable()).isFalse();
         assertThat(condition.isSatisfied()).isTrue();
-        assertThat(condition.isSatisfied(new Condition[] {condition}, new Hashtable<String, Object>())).isTrue();
+        assertThat(condition.isSatisfied(new Condition[] {condition}, new Properties())).isTrue();
     }
 
     private static final class TestBundle implements Bundle {
@@ -67,7 +67,7 @@ public class BundleSignerConditionAnonymous1Test {
 
         @Override
         public Dictionary getHeaders() {
-            return new Hashtable<String, String>();
+            return new Properties();
         }
 
         @Override
