@@ -12,7 +12,17 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.apache.arrow:arrow-memory-core:$libraryVersion"
+    testImplementation "org.apache.arrow:arrow-memory-netty:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.nio=ALL-UNNAMED",
+        "--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED",
+        "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED"
+    ]
 }
 
 graalvmNative {
@@ -22,6 +32,16 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--add-opens=java.base/java.lang=ALL-UNNAMED',
+                '--add-opens=java.base/java.nio=ALL-UNNAMED',
+                '--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED',
+                '--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED'
+            ])
         }
     }
 }
