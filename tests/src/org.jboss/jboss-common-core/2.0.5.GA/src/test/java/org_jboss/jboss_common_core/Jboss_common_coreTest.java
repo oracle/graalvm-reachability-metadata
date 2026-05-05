@@ -23,6 +23,7 @@ import java.util.Set;
 import org.jboss.util.Base64;
 import org.jboss.util.Counter;
 import org.jboss.util.LongCounter;
+import org.jboss.util.LRUCachePolicy;
 import org.jboss.util.Objects;
 import org.jboss.util.StringPropertyReplacer;
 import org.jboss.util.Strings;
@@ -184,6 +185,40 @@ public class Jboss_common_coreTest {
         LongCounter synchronizedLongCounter = LongCounter.makeSynchronized(new LongCounter(4L));
         assertThat(synchronizedLongCounter.increment()).isEqualTo(5L);
         assertThat(synchronizedLongCounter.decrement()).isEqualTo(4L);
+    }
+
+    @Test
+    void lruCachePolicyEvictsLeastRecentlyUsedEntriesAndSupportsExplicitRemoval() throws Exception {
+        LRUCachePolicy cache = new LRUCachePolicy(2, 3);
+        cache.create();
+        cache.start();
+        try {
+            cache.insert("one", "first");
+            cache.insert("two", "second");
+            cache.insert("three", "third");
+
+            assertThat(cache.size()).isEqualTo(3);
+            assertThat(cache.get("one")).isEqualTo("first");
+            assertThat(cache.peek("two")).isEqualTo("second");
+
+            cache.insert("four", "fourth");
+            assertThat(cache.peek("two")).isNull();
+            assertThat(cache.peek("one")).isEqualTo("first");
+            assertThat(cache.peek("three")).isEqualTo("third");
+            assertThat(cache.peek("four")).isEqualTo("fourth");
+
+            assertThat(cache.get("three")).isEqualTo("third");
+            cache.insert("five", "fifth");
+            assertThat(cache.peek("one")).isNull();
+            assertThat(cache.peek("three")).isEqualTo("third");
+            assertThat(cache.peek("five")).isEqualTo("fifth");
+
+            cache.remove("three");
+            assertThat(cache.peek("three")).isNull();
+            assertThat(cache.size()).isEqualTo(2);
+        } finally {
+            cache.destroy();
+        }
     }
 
     @Test
