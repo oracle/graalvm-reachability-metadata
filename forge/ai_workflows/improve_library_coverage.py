@@ -361,7 +361,7 @@ def main(argv=None) -> int:
         persistent_instructions=strategy_obj.persistent_instructions,
     )
 
-    run_result = strategy_obj.run(agent=agent)
+    run_result = strategy_obj.run(agent=agent, checkpoint_commit_hash=checkpoint_commit)
     workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
