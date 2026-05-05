@@ -91,6 +91,7 @@ public class OverridingClassLoaderInnerChildURLClassLoaderTest {
         watchPath: String,
         applicationModule: suspend Application.() -> Unit
     ): EmbeddedServer<ChildLoaderStubEngine, ApplicationEngine.Configuration> {
+        ensureJavaHomeProperty()
         val environment: ApplicationEnvironment = applicationEnvironment {
             this.classLoader = classLoader
         }

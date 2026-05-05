@@ -67,6 +67,7 @@ public class ClassLoadersKtTest {
     }
 
     private fun serverFor(classLoader: ClassLoader): EmbeddedServer<StubEngine, ApplicationEngine.Configuration> {
+        ensureJavaHomeProperty()
         val environment: ApplicationEnvironment = applicationEnvironment {
             this.classLoader = classLoader
         }
