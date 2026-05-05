@@ -318,6 +318,70 @@ public class KtorServerAuthJvmTest {
     }
 
     @Test
+    fun requiredAuthenticationStrategyRequiresAllProvidersAndPreservesNamedPrincipals() = testApplication {
+        application {
+            install(Sessions) {
+                cookie<UserIdPrincipal>(SessionCookieName) {
+                    serializer = UserIdPrincipalSessionSerializer
+                }
+            }
+            install(Authentication) {
+                basic("password") {
+                    validate { credential ->
+                        if (credential.name == "member" && credential.password == "correct") {
+                            UserIdPrincipal("password-user")
+                        } else {
+                            null
+                        }
+                    }
+                }
+                session<UserIdPrincipal>("account-session") {
+                    validate { session -> session }
+                    challenge {
+                        call.respondText("required-session-denied", status = HttpStatusCode.Unauthorized)
+                    }
+                }
+            }
+            routing {
+                get("/required-login") {
+                    call.sessions.set(SessionCookieName, UserIdPrincipal("session-user"))
+                    call.respondText("logged-in")
+                }
+                authenticate("password", "account-session", strategy = AuthenticationStrategy.Required) {
+                    get("/required") {
+                        val passwordPrincipal: String = call.principal<UserIdPrincipal>("password")?.name
+                            ?: "missing-password"
+                        val sessionPrincipal: String = call.principal<UserIdPrincipal>("account-session")?.name
+                            ?: "missing-session"
+                        val defaultPrincipal: String = call.principal<UserIdPrincipal>()?.name ?: "missing-default"
+                        call.respondText("$defaultPrincipal|$passwordPrincipal|$sessionPrincipal")
+                    }
+                }
+            }
+        }
+
+        val loginResponse = client.get("/required-login")
+        val sessionCookie: String = requireSessionCookie(loginResponse.headers[HttpHeaders.SetCookie])
+        val successfulResponse = client.get("/required") {
+            header(HttpHeaders.Authorization, basicAuthorization("member", "correct"))
+            header(HttpHeaders.Cookie, sessionCookie)
+        }
+        assertThat(successfulResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(successfulResponse.bodyAsText()).isEqualTo("password-user|password-user|session-user")
+
+        val missingSessionResponse = client.get("/required") {
+            header(HttpHeaders.Authorization, basicAuthorization("member", "correct"))
+        }
+        assertThat(missingSessionResponse.status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(missingSessionResponse.bodyAsText()).isEqualTo("required-session-denied")
+
+        val missingPasswordResponse = client.get("/required") {
+            header(HttpHeaders.Cookie, sessionCookie)
+        }
+        assertThat(missingPasswordResponse.status).isEqualTo(HttpStatusCode.Unauthorized)
+    }
+
+    @Test
     fun sessionAuthenticationValidatesTypedSessionsAndRunsChallenge() = testApplication {
         application {
             install(Sessions) {
