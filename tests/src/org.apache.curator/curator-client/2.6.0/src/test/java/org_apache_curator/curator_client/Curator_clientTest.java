@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -230,6 +231,71 @@ public class Curator_clientTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> PathUtils.validatePath("/uses/../relative"))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void threadUtilitiesCreateDaemonNamedExecutorsAndResolveProcessNames() throws Exception {
+        ThreadFactory factory = ThreadUtils.newThreadFactory("curator-worker");
+        AtomicReference<Thread> createdThread = new AtomicReference<>();
+        CountDownLatch createdThreadLatch = new CountDownLatch(1);
+        Thread thread = factory.newThread(() -> {
+            createdThread.set(Thread.currentThread());
+            createdThreadLatch.countDown();
+        });
+        thread.start();
+
+        assertThat(createdThreadLatch.await(5, TimeUnit.SECONDS)).isTrue();
+        thread.join(TimeUnit.SECONDS.toMillis(5));
+        assertThat(createdThread.get().getName()).startsWith("curator-worker-");
+        assertThat(createdThread.get().isDaemon()).isTrue();
+
+        ExecutorService singleThreadExecutor = ThreadUtils.newSingleThreadExecutor("curator-single");
+        try {
+            Thread executorThread = singleThreadExecutor.submit(Thread::currentThread).get(5, TimeUnit.SECONDS);
+            assertThat(executorThread.getName()).startsWith("curator-single-");
+            assertThat(executorThread.isDaemon()).isTrue();
+        } finally {
+            singleThreadExecutor.shutdownNow();
+            assertThat(singleThreadExecutor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+
+        ExecutorService fixedThreadPool = ThreadUtils.newFixedThreadPool(2, "curator-fixed");
+        try {
+            Thread executorThread = fixedThreadPool.submit(Thread::currentThread).get(5, TimeUnit.SECONDS);
+            assertThat(executorThread.getName()).startsWith("curator-fixed-");
+            assertThat(executorThread.isDaemon()).isTrue();
+        } finally {
+            fixedThreadPool.shutdownNow();
+            assertThat(fixedThreadPool.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+
+        ScheduledExecutorService singleScheduledExecutor = ThreadUtils.newSingleThreadScheduledExecutor(
+                "curator-scheduled");
+        try {
+            Thread scheduledThread = singleScheduledExecutor.schedule(
+                    Thread::currentThread, 1, TimeUnit.MILLISECONDS).get(5, TimeUnit.SECONDS);
+            assertThat(scheduledThread.getName()).startsWith("curator-scheduled-");
+            assertThat(scheduledThread.isDaemon()).isTrue();
+        } finally {
+            singleScheduledExecutor.shutdownNow();
+            assertThat(singleScheduledExecutor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+
+        ScheduledExecutorService fixedScheduledPool = ThreadUtils.newFixedThreadScheduledPool(
+                2, "curator-fixed-scheduled");
+        try {
+            Thread scheduledThread = fixedScheduledPool.schedule(
+                    Thread::currentThread, 1, TimeUnit.MILLISECONDS).get(5, TimeUnit.SECONDS);
+            assertThat(scheduledThread.getName()).startsWith("curator-fixed-scheduled-");
+            assertThat(scheduledThread.isDaemon()).isTrue();
+        } finally {
+            fixedScheduledPool.shutdownNow();
+            assertThat(fixedScheduledPool.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+
+        Object anonymousInstance = new Object() { };
+        assertThat(ThreadUtils.getProcessName(Curator_clientTest.class)).isEqualTo("Curator_clientTest");
+        assertThat(ThreadUtils.getProcessName(anonymousInstance.getClass())).isEqualTo("Curator_clientTest");
     }
 
     @Test
