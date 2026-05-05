@@ -198,6 +198,22 @@ class Cats_core_3Test {
     assertThat(mapped.value).isEqualTo(Some(List("value-2", "value-3", "value-4")))
   }
 
+  @Test
+  def andThenComposesLargeFunctionPipelinesStackSafely(): Unit = {
+    val identityPipeline: AndThen[Int, Int] = AndThen((value: Int) => value)
+    val increment: Int => Int = value => value + 1
+    val pipeline: AndThen[Int, Int] = (1 to 10000).foldLeft(identityPipeline) { (current, _) =>
+      current.andThen(increment)
+    }
+    val formatted: AndThen[Int, String] = pipeline.andThen(value => s"total=$value")
+    val parsed: AndThen[String, Int] = AndThen((value: String) => value.stripPrefix("total=").toInt)
+
+    assertThat(pipeline(0)).isEqualTo(10000)
+    assertThat(formatted(5)).isEqualTo("total=10005")
+    assertThat(formatted.andThen(parsed)(7)).isEqualTo(10007)
+    assertThat(parsed.compose(formatted)(9)).isEqualTo(10009)
+  }
+
   private def validateRegistration(name: String, age: Int, email: String): ValidatedNel[String, Registration] = {
     (nonBlank("name", name), nonNegativeAge(age), validEmail(email)).mapN { (validName, validAge, validEmail) =>
       Registration(validName, validAge, validEmail)
