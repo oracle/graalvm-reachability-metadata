@@ -107,6 +107,19 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def supportsTopLevelScalarJsonLiterals(): Unit = {
+    val nullLiteral: Json = json"null"
+    val trueLiteral: Json = json"true"
+    val falseLiteral: Json = json"false"
+    val scientificNumber: Json = json"6.022e23"
+
+    assertThat(nullLiteral).isEqualTo(Json.Null)
+    assertThat(trueLiteral).isEqualTo(Json.True)
+    assertThat(falseLiteral).isEqualTo(Json.False)
+    assertThat(scientificNumber.asNumber.flatMap(_.toBigDecimal)).isEqualTo(Some(BigDecimal("6.022e23")))
+  }
+
+  @Test
   def supportsTopLevelInterpolatedJsonValue(): Unit = {
     val values: Vector[Int] = Vector(1, 2, 3)
 
