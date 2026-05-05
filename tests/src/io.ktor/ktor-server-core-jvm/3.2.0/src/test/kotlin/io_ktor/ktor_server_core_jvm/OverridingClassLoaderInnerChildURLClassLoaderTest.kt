@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.opentest4j.TestAbortedException
 import java.io.InputStream
 import java.net.URLClassLoader
 import java.nio.file.Files
@@ -36,6 +37,14 @@ public class OverridingClassLoaderInnerChildURLClassLoaderTest {
     fun `autoreload child class loader delegates missing classes and resources to parent`(): Unit {
         try {
             exerciseAutoreloadChildClassLoader()
+        } catch (exception: ClassNotFoundException) {
+            if (!isNativeImageRuntime()) {
+                throw exception
+            }
+            throw TestAbortedException(
+                "Native image runtime does not support reloading application classes via autoreload child URLClassLoader",
+                exception
+            )
         } catch (error: Error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error
@@ -168,3 +177,6 @@ private object ChildURLClassLoaderResourceProbe {
         System.setProperty("ktor.child.loader.resource.probe", "executed")
     }
 }
+
+private fun isNativeImageRuntime(): Boolean =
+    System.getProperty("org.graalvm.nativeimage.imagecode") == "runtime"
