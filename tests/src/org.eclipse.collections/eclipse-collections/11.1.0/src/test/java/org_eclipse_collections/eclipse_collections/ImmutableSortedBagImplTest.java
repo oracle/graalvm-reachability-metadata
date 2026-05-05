@@ -1,0 +1,24 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_eclipse_collections.eclipse_collections;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.eclipse.collections.api.bag.sorted.ImmutableSortedBag;
+import org.eclipse.collections.api.factory.SortedBags;
+import org.junit.jupiter.api.Test;
+
+public class ImmutableSortedBagImplTest {
+    @Test
+    void toArrayCreatesTypedArrayWhenSuppliedArrayIsTooSmall() {
+        final ImmutableSortedBag<String> bag = SortedBags.immutable.with("charlie", "alpha", "alpha", "bravo");
+
+        final String[] result = bag.toArray(new String[0]);
+
+        assertThat(result).isInstanceOf(String[].class).containsExactly("alpha", "alpha", "bravo", "charlie");
+    }
+}
