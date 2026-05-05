@@ -18,6 +18,7 @@ import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.AdviceAdapter;
+import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.CodeSizeEvaluator;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -286,6 +287,62 @@ public class Asm_commonsTest {
                 .singleElement()
                 .extracting(field -> field.value)
                 .isEqualTo(123L);
+    }
+
+    @Test
+    void analyzerAdapterTracksLocalsAndOperandStackAcrossBytecodeInstructions() {
+        MethodNode recordedMethod = new MethodNode(
+                Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
+                "format",
+                "(I)Ljava/lang/String;",
+                null,
+                null);
+        AnalyzerAdapter analyzer = new AnalyzerAdapter(
+                "generated/AnalyzerSubject",
+                Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
+                "format",
+                "(I)Ljava/lang/String;",
+                recordedMethod);
+
+        analyzer.visitCode();
+        assertThat(analyzer.locals).containsExactly(Opcodes.INTEGER);
+        assertThat(analyzer.stack).isEmpty();
+
+        analyzer.visitVarInsn(Opcodes.ILOAD, 0);
+        assertThat(analyzer.stack).containsExactly(Opcodes.INTEGER);
+
+        analyzer.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "java/lang/Integer",
+                "valueOf",
+                "(I)Ljava/lang/Integer;",
+                false);
+        assertThat(analyzer.stack).containsExactly("java/lang/Integer");
+
+        analyzer.visitVarInsn(Opcodes.ASTORE, 1);
+        assertThat(analyzer.locals).containsExactly(Opcodes.INTEGER, "java/lang/Integer");
+        assertThat(analyzer.stack).isEmpty();
+
+        analyzer.visitVarInsn(Opcodes.ALOAD, 1);
+        analyzer.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "java/lang/Integer",
+                "toString",
+                "()Ljava/lang/String;",
+                false);
+        assertThat(analyzer.stack).containsExactly("java/lang/String");
+
+        analyzer.visitInsn(Opcodes.ARETURN);
+        analyzer.visitMaxs(1, 2);
+        analyzer.visitEnd();
+
+        assertThat(recordedMethod.instructions.toArray())
+                .anySatisfy(instruction -> assertThat(instruction)
+                        .isInstanceOfSatisfying(MethodInsnNode.class,
+                                call -> assertThat(call.name).isEqualTo("valueOf")))
+                .anySatisfy(instruction -> assertThat(instruction)
+                        .isInstanceOfSatisfying(MethodInsnNode.class,
+                                call -> assertThat(call.name).isEqualTo("toString")));
     }
 
     @Test
