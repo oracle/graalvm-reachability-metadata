@@ -13,26 +13,22 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.spi.io.FileProcessor;
+import org.eclipse.aether.internal.impl.DefaultPathProcessor;
+import org.eclipse.aether.spi.io.PathProcessor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-public class DefaultServiceLocatorInnerEntryTest {
+public class DefaultPathProcessorTest {
     @TempDir
     Path tempDir;
 
     @Test
-    void createsRegisteredFileProcessorServiceImplementation() throws IOException {
-        DefaultServiceLocator locator = new DefaultServiceLocator();
-
-        FileProcessor fileProcessor = locator.getService(FileProcessor.class);
-
-        assertThat(fileProcessor).isNotNull();
+    void writesDataToNestedPathUsingPathProcessorImplementation() throws IOException {
+        PathProcessor pathProcessor = new DefaultPathProcessor();
 
         Path target = tempDir.resolve("nested/output.txt");
-        fileProcessor.write(target.toFile(), "maven resolver service locator");
+        pathProcessor.write(target, "maven resolver path processor");
 
-        assertThat(Files.readString(target, StandardCharsets.UTF_8)).isEqualTo("maven resolver service locator");
+        assertThat(Files.readString(target, StandardCharsets.UTF_8)).isEqualTo("maven resolver path processor");
     }
 }
