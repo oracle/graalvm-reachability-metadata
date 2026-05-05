@@ -82,6 +82,26 @@ public class KtorSerializationKotlinxProtobufJvmTest {
     }
 
     @Test
+    public fun converterIgnoresUnknownFieldsForSchemaEvolution(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val converter = registeredConverter()
+            val evolvedMessage = EvolvedProtoMessage(
+                id = 7,
+                label = "kept-fields",
+                notes = listOf("new", "optional", "data"),
+                location = ProtoLocation("Berlin", "DE"),
+                enabled = true
+            )
+
+            val decoded = converter.deserializeFromByteArray<StableProtoMessage>(
+                converter.serializeToByteArray(evolvedMessage)
+            )
+
+            assertThat(decoded).isEqualTo(StableProtoMessage(id = 7, label = "kept-fields"))
+        }
+    }
+
+    @Test
     public fun customProtoBufConfigurationAndContentTypeAreUsed(): Unit = runBlocking {
         withTimeout(TEST_TIMEOUT_MILLIS) {
             val customContentType = ContentType.parse("application/vnd.ktor.test-profile+protobuf")
@@ -214,6 +234,21 @@ private data class ProtoLocation(
 private data class ProtoBatch(
     @ProtoNumber(1) val profiles: List<ProtoProfile>,
     @ProtoNumber(2) val aliases: Map<String, ProtoLocation>
+)
+
+@Serializable
+private data class EvolvedProtoMessage(
+    @ProtoNumber(1) val id: Int,
+    @ProtoNumber(2) val label: String,
+    @ProtoNumber(3) val notes: List<String>,
+    @ProtoNumber(4) val location: ProtoLocation,
+    @ProtoNumber(5) val enabled: Boolean
+)
+
+@Serializable
+private data class StableProtoMessage(
+    @ProtoNumber(1) val id: Int,
+    @ProtoNumber(2) val label: String
 )
 
 @Serializable
