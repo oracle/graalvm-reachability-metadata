@@ -48,6 +48,10 @@ import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.images.CompositeTransform;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.log.AppLogLine;
+import com.google.appengine.api.log.LogQuery;
+import com.google.appengine.api.log.LogService.LogLevel;
+import com.google.appengine.api.log.RequestLogs;
 import com.google.appengine.api.mail.BounceNotification;
 import com.google.appengine.api.mail.MailService;
 import com.google.appengine.api.memcache.ErrorHandlers;
@@ -533,6 +537,123 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(fileInfo.getGsObjectName()).isEqualTo("/gs/uploads/invoice.txt");
         assertThat(fileInfo).isEqualTo(new FileInfo(
                 "text/plain", creation, "invoice.txt", 42L, "md5-hash", "/gs/uploads/invoice.txt"));
+    }
+
+    @Test
+    void logQueriesAndRequestLogsExposeConfiguredAccessLogData() {
+        AppLogLine appLogLine = new AppLogLine();
+        appLogLine.setLogLevel(LogLevel.INFO);
+        appLogLine.setLogMessage("handler completed");
+        appLogLine.setTimeUsec(1_700_000_000_001L);
+
+        assertThat(appLogLine.getLogLevel()).isEqualTo(LogLevel.INFO);
+        assertThat(appLogLine.getLogMessage()).isEqualTo("handler completed");
+        assertThat(appLogLine.getTimeUsec()).isEqualTo(1_700_000_000_001L);
+        assertThat(appLogLine.toString()).contains("handler completed");
+
+        AppLogLine sameAppLogLine = new AppLogLine();
+        sameAppLogLine.setLogLevel(LogLevel.INFO);
+        sameAppLogLine.setLogMessage("handler completed");
+        sameAppLogLine.setTimeUsec(1_700_000_000_001L);
+        assertThat(appLogLine).isEqualTo(sameAppLogLine);
+        assertThat(appLogLine.hashCode()).isEqualTo(sameAppLogLine.hashCode());
+
+        RequestLogs requestLogs = new RequestLogs();
+        requestLogs.setAppId("test-app");
+        requestLogs.setModuleId("default");
+        requestLogs.setVersionId("v1");
+        requestLogs.setRequestId("req-1");
+        requestLogs.setIp("192.0.2.10");
+        requestLogs.setNickname("user@example.com");
+        requestLogs.setStartTimeUsec(1_700_000_000_000L);
+        requestLogs.setEndTimeUsec(1_700_000_010_000L);
+        requestLogs.setLatency(10_000L);
+        requestLogs.setMcycles(42L);
+        requestLogs.setPendingTime(500L);
+        requestLogs.setMethod("GET");
+        requestLogs.setResource("/invoices/7");
+        requestLogs.setHttpVersion("HTTP/1.1");
+        requestLogs.setStatus(200);
+        requestLogs.setResponseSize(128L);
+        requestLogs.setReferrer("https://example.com/start");
+        requestLogs.setUserAgent("JUnit");
+        requestLogs.setHost("service.example.com");
+        requestLogs.setUrlMapEntry("main");
+        requestLogs.setCombined("combined access log line");
+        requestLogs.setOffset("offset-token");
+        requestLogs.setInstanceKey("instance-1");
+        requestLogs.setReplicaIndex(2);
+        requestLogs.setTaskQueueName("default");
+        requestLogs.setTaskName("task-1");
+        requestLogs.setFinished(true);
+        requestLogs.setWasLoadingRequest(true);
+        requestLogs.setCost(0.125D);
+        requestLogs.setAppEngineRelease("release-1");
+        requestLogs.setAppLogLines(List.of(appLogLine));
+
+        assertThat(requestLogs.getAppId()).isEqualTo("test-app");
+        assertThat(requestLogs.getModuleId()).isEqualTo("default");
+        assertThat(requestLogs.getVersionId()).isEqualTo("v1");
+        assertThat(requestLogs.getRequestId()).isEqualTo("req-1");
+        assertThat(requestLogs.getIp()).isEqualTo("192.0.2.10");
+        assertThat(requestLogs.getNickname()).isEqualTo("user@example.com");
+        assertThat(requestLogs.getStartTimeUsec()).isEqualTo(1_700_000_000_000L);
+        assertThat(requestLogs.getEndTimeUsec()).isEqualTo(1_700_000_010_000L);
+        assertThat(requestLogs.getLatencyUsec()).isEqualTo(10_000L);
+        assertThat(requestLogs.getMcycles()).isEqualTo(42L);
+        assertThat(requestLogs.getPendingTimeUsec()).isEqualTo(500L);
+        assertThat(requestLogs.getMethod()).isEqualTo("GET");
+        assertThat(requestLogs.getResource()).isEqualTo("/invoices/7");
+        assertThat(requestLogs.getHttpVersion()).isEqualTo("HTTP/1.1");
+        assertThat(requestLogs.getStatus()).isEqualTo(200);
+        assertThat(requestLogs.getResponseSize()).isEqualTo(128L);
+        assertThat(requestLogs.getReferrer()).isEqualTo("https://example.com/start");
+        assertThat(requestLogs.getUserAgent()).isEqualTo("JUnit");
+        assertThat(requestLogs.getHost()).isEqualTo("service.example.com");
+        assertThat(requestLogs.getUrlMapEntry()).isEqualTo("main");
+        assertThat(requestLogs.getCombined()).isEqualTo("combined access log line");
+        assertThat(requestLogs.getOffset()).isEqualTo("offset-token");
+        assertThat(requestLogs.getInstanceKey()).isEqualTo("instance-1");
+        assertThat(requestLogs.getReplicaIndex()).isEqualTo(2);
+        assertThat(requestLogs.getTaskQueueName()).isEqualTo("default");
+        assertThat(requestLogs.getTaskName()).isEqualTo("task-1");
+        assertThat(requestLogs.isFinished()).isTrue();
+        assertThat(requestLogs.isLoadingRequest()).isTrue();
+        assertThat(requestLogs.getCost()).isEqualTo(0.125D);
+        assertThat(requestLogs.getAppEngineRelease()).isEqualTo("release-1");
+        assertThat(requestLogs.getAppLogLines()).containsExactly(appLogLine);
+        assertThat(requestLogs.toString()).contains("req-1");
+
+        LogQuery.Version version = new LogQuery.Version("default", "v1");
+        LogQuery query = LogQuery.Builder.withDefaults()
+                .offset("offset-token")
+                .startTimeUsec(1_700_000_000_000L)
+                .endTimeUsec(1_700_000_010_000L)
+                .batchSize(50)
+                .minLogLevel(LogLevel.WARN)
+                .includeIncomplete(true)
+                .includeAppLogs(true)
+                .versions(List.of(version));
+        LogQuery requestIdsQuery = LogQuery.Builder.withRequestIds(List.of("abc123", "def456"));
+        LogQuery majorVersionsQuery = LogQuery.Builder.withMajorVersionIds(List.of("legacy-v1"));
+        LogQuery clonedQuery = query.clone();
+        clonedQuery.offset("next-offset");
+
+        assertThat(query.getOffset()).isEqualTo("offset-token");
+        assertThat(clonedQuery.getOffset()).isEqualTo("next-offset");
+        assertThat(query.getStartTimeUsec()).isEqualTo(1_700_000_000_000L);
+        assertThat(query.getEndTimeUsec()).isEqualTo(1_700_000_010_000L);
+        assertThat(query.getBatchSize()).isEqualTo(50);
+        assertThat(query.getMinLogLevel()).isEqualTo(LogLevel.WARN);
+        assertThat(query.getIncludeIncomplete()).isTrue();
+        assertThat(query.getIncludeAppLogs()).isTrue();
+        assertThat(query.getVersions()).containsExactly(version);
+        assertThat(requestIdsQuery.getRequestIds()).containsExactly("abc123", "def456");
+        assertThat(majorVersionsQuery.getMajorVersionIds()).containsExactly("legacy-v1");
+        assertThat(version.getModuleId()).isEqualTo("default");
+        assertThat(version.getVersionId()).isEqualTo("v1");
+        assertThat(version).isEqualTo(new LogQuery.Version("default", "v1"));
+        assertThat(version.toString()).contains("default", "v1");
     }
 
     @Test
