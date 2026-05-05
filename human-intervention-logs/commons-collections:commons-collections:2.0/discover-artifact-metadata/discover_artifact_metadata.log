@@ -1,0 +1,958 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df631-5277-7f63-8997-9dab642c3fd8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: commons-collections:commons-collections:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0" when "$version$" is replaced with "2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+- Set "coordinates" to "commons-collections:commons-collections:2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Apache repository, then update the JSON in place. I’m starting by checking the current file and repository conventions so the edit matches the existing format.
+exec
+/usr/bin/bash -lc "rg -n 'commons-collections|source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata tests -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:23:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+{
+  "coordinates" : "commons-collections:commons-collections:2.0"
+}
+
+web search: 
+web search: commons-collections commons-collections 2.0 maven source jar javadoc jar
+codex
+The existing target file only has coordinates, so this is a metadata fill-in. I found the artifact as a normal Java JAR on Maven Central, and I’m now checking which auxiliary artifacts and historical source tags actually exist for version `2.0`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: commons-collections/commons-collections/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>commons-collections/commons-collections/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-collections-2.0-javadoc.jar" title="commons-collections-2.0-javadoc.jar">commons-collections-2.0-javadoc.jar</a>               2005-09-20 05:46    193866      
+<a href="commons-collections-2.0-javadoc.jar.md5" title="commons-collections-2.0-javadoc.jar.md5">commons-collections-2.0-javadoc.jar.md5</a>           2005-09-20 05:46        32      
+<a href="commons-collections-2.0-javadoc.jar.sha1" title="commons-collections-2.0-javadoc.jar.sha1">commons-collections-2.0-javadoc.jar.sha1</a>          2005-09-20 05:46        40      
+<a href="commons-collections-2.0.jar" title="commons-collections-2.0.jar">commons-collections-2.0.jar</a>                       2005-09-20 05:46     90503      
+<a href="commons-collections-2.0.jar.md5" title="commons-collections-2.0.jar.md5">commons-collections-2.0.jar.md5</a>                   2005-09-20 05:46        32      
+<a href="commons-collections-2.0.jar.sha1" title="commons-collections-2.0.jar.sha1">commons-collections-2.0.jar.sha1</a>                  2005-09-20 05:46        40      
+<a href="commons-collections-2.0.pom" title="commons-collections-2.0.pom">commons-collections-2.0.pom</a>                       2005-09-20 05:46       171      
+<a href="commons-collections-2.0.pom.md5" title="commons-collections-2.0.pom.md5">commons-collections-2.0.pom.md5</a>                   2005-09-20 05:46       164      
+<a href="commons-collections-2.0.pom.sha1" title="commons-collections-2.0.pom.sha1">commons-collections-2.0.pom.sha1</a>                  2005-09-20 05:46       172      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:46       135      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:46        99      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:46       154      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-sources.jar && curl -I -L -s https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-javadoc.jar && curl -I -L -s https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-test.jar && curl -I -L -s https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/commons-collections.git '*2*' | rg 'COLLECTIONS|collections|commons' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 331ms:
+9df93a371eee00198876a0187a4914379aa0a871	refs/tags/collections-0-02
+180a5f8c729342dfb419bfcc5791b83794f8f2de	refs/tags/collections-0-02^{}
+79336f861740455dea431704e678b233254eec60	refs/tags/collections-2.0
+658dea9545701b813d9bebee1171c508392e472c	refs/tags/collections-2.0^{}
+269c2bf26528a7907223ce802dc94c25b3c8f3a2	refs/tags/collections-2.1
+88186e85e517ff14f5f77b92f03a4f0b01939e36	refs/tags/collections-2.1^{}
+4a313e733d1ca45d38a60df30d10f5bfa02760b4	refs/tags/collections-2.1-RC1
+a9715c315143c33af61a87eb3f75b37d6445ab90	refs/tags/collections-2.1-RC1^{}
+9ce9f24d195fbc85ff5798bd9c293561c56d8b13	refs/tags/collections-2.1-RC2
+e0bf28ca084483af9d50e972651841936f3c427c	refs/tags/collections-2.1-RC2^{}
+1887effee52f82da5e26041208c7ac71ebc7f0ad	refs/tags/collections-2.1.1
+e0687924eb6b13c02bf55169396840c276f7e8ae	refs/tags/collections-2.1.1^{}
+cf57cc23e48d029e8c528f4a3a7edc820c82a90c	refs/tags/collections-3.2
+8792072a213366605161b2f6e315024711da7eee	refs/tags/collections-3.2^{}
+48943ed4f950e1b10518c91630247526b835d90d	refs/tags/collections-3.2.1
+0af3ae8f26388bcdec42d36bf66a1000a9221754	refs/tags/collections-3.2.1^{}
+29d76eacd8d01d3a43b031f5481658c09c97662e	refs/tags/collections-3.2.1-RC1
+4421639f98b9d3dbf80960296b7b9365aeb1bd3a	refs/tags/collections-3.2.1-RC1^{}
+092ff458fa2bdbe2a21b44d0676a152d79df969e	refs/tags/collections-3.2.2
+8e217b44a763565f395268be20e7cff1dedf747b	refs/tags/collections-3.2.2^{}
+d148a684121bd0f0152c4cd9c8f276ce1e2fff05	refs/tags/collections-3.2.2-RC1
+46fa2cecb6c0c773567df2befc30e482f53a032f	refs/tags/collections-3.2.2-RC1^{}
+b5da485e7a9b66dfbf1e5e67b73bc4e9fbe2364e	refs/tags/collections-3.2.2-RC2
+d5947341fa2b0748c07d1ee7a591061aff7feba2	refs/tags/collections-3.2.2-RC2^{}
+b4cc65878ff4cb89c2af5a56a63dbc3a97da21d1	refs/tags/collections-3.2.2-RC3
+6e60cb6177f287957b4219feaf3c55a5f17e84f7	refs/tags/collections-3.2.2-RC3^{}
+75b1b3ce29f3c0fdd226618a56e769e7b7b29147	refs/tags/collections-4.0-RC2
+aa81b5ceffe18b83d6dfcd9991db407b4f4322d3	refs/tags/collections-4.0-RC2^{}
+00563be2b4d01817078110db57cd755c8088ddd8	refs/tags/collections-4.0-alpha1-RC2
+cc9aea70b9c9f9ccbe12ec11ef79b8a4a5a2f60b	refs/tags/collections-4.0-alpha1-RC2^{}
+73d0a9adcd3aca606a0b4af386103dfead174752	refs/tags/collections-4.1-RC2
+132622ea0e798d6ca958195e168f6682a6e818e2	refs/tags/collections-4.1-RC2^{}
+da36bf3b6c457120517115239d390ca6f7f13695	refs/tags/collections-4.3-RC2
+77e37dbf238d26351edb29e95391e3df75095d01	refs/tags/collections-4.3-RC2^{}
+a512e863e373b4cbd43cfdee6e97e4906cf1b420	refs/tags/collections-snapshot-20040102
+37c73cd18b44d106da203f34ee2dcbb79b36757d	refs/tags/collections-snapshot-20040102^{}
+92d14e83490c801b84ca47709c7454db571b2ed4	refs/tags/commons-collections-4.2
+483cbbbf5a8b3c14edf3e6563e8f8ba380966d47	refs/tags/commons-collections-4.2^{}
+5f7691412c1a1dc8baeed9b6321739d76674ca61	refs/tags/commons-collections-4.2-RC1
+483cbbbf5a8b3c14edf3e6563e8f8ba380966d47	refs/tags/commons-collections-4.2-RC1^{}
+59f6bd6efc04eda0d240b9839178a2fae501deca	refs/tags/commons-collections-4.5.0-M2-RC1
+c92828a71367a4208d380e614f633d0196b5ad27	refs/tags/commons-collections-4.5.0-M2-RC1^{}
+7c0b761942329ef8b0f164e1db70984792d30278	refs/tags/rel/commons-collections-4.5.0-M2
+c92828a71367a4208d380e614f633d0196b5ad27	refs/tags/rel/commons-collections-4.5.0-M2^{}
+
+ succeeded in 933ms:
+HTTP/2 404 
+date: Tue, 05 May 2026 03:32:17 GMT
+content-type: text/html
+cf-ray: 9f6cad56c8d775ff-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 05 May 2026 03:32:17 GMT
+content-type: application/java-archive
+content-length: 193866
+cf-ray: 9f6cad588ba323f7-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 320421
+etag: "f00a06c4eb927f4f04ab7d70ee529199"
+last-modified: Mon, 03 Jul 2006 21:30:00 GMT
+x-checksum-md5: f00a06c4eb927f4f04ab7d70ee529199
+x-checksum-sha1: cd8b236df387fde023934fd3461b6ff1a2988da3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 05 May 2026 03:32:17 GMT
+content-type: text/html
+cf-ray: 9f6cad58fc0003a9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-test.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 05 May 2026 03:32:17 GMT
+content-type: text/html
+cf-ray: 9f6cad5acf58233d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Apache Commons Collections 2.0 source tag collections-2.0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/commons-collections/contents?ref=collections-2.0' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>commons-collections</groupId>
+  <artifactId>commons-collections</artifactId>
+  <version>2.0</version>
+</project>
+
+ succeeded in 167ms:
+[
+  {
+    "name": ".cvsignore",
+    "path": ".cvsignore",
+    "sha": "3cd1c7b2ecda446d751ede1fdebecabc5950930a",
+    "size": 22,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/.cvsignore?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/.cvsignore",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/3cd1c7b2ecda446d751ede1fdebecabc5950930a",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/.cvsignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/.cvsignore?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/3cd1c7b2ecda446d751ede1fdebecabc5950930a",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/.cvsignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "d1cba450ee93ce87c480e58f1570f14f5e5ae68f",
+    "size": 2879,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/LICENSE?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/LICENSE",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/d1cba450ee93ce87c480e58f1570f14f5e5ae68f",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/LICENSE?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/d1cba450ee93ce87c480e58f1570f14f5e5ae68f",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/LICENSE"
+    }
+  },
+  {
+    "name": "PROPOSAL.html",
+    "path": "PROPOSAL.html",
+    "sha": "c53c09376529184a8a47242a41961e4fbe2016ff",
+    "size": 3097,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/PROPOSAL.html?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/PROPOSAL.html",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/c53c09376529184a8a47242a41961e4fbe2016ff",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/PROPOSAL.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/PROPOSAL.html?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/c53c09376529184a8a47242a41961e4fbe2016ff",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/PROPOSAL.html"
+    }
+  },
+  {
+    "name": "README.txt",
+    "path": "README.txt",
+    "sha": "aeec14a77b936216256434083c855c86cbe7b3f1",
+    "size": 846,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/README.txt?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/README.txt",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/aeec14a77b936216256434083c855c86cbe7b3f1",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/README.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/README.txt?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/aeec14a77b936216256434083c855c86cbe7b3f1",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/README.txt"
+    }
+  },
+  {
+    "name": "RELEASE-NOTES-2.0.html",
+    "path": "RELEASE-NOTES-2.0.html",
+    "sha": "fa29de0a8b99b550cbe1adccd91e669e3cf929f4",
+    "size": 8444,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/RELEASE-NOTES-2.0.html?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/RELEASE-NOTES-2.0.html",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/fa29de0a8b99b550cbe1adccd91e669e3cf929f4",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/RELEASE-NOTES-2.0.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/RELEASE-NOTES-2.0.html?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/fa29de0a8b99b550cbe1adccd91e669e3cf929f4",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/RELEASE-NOTES-2.0.html"
+    }
+  },
+  {
+    "name": "STATUS.html",
+    "path": "STATUS.html",
+    "sha": "e23f6f778d0f51efebd4f603713cfcb01c9554cb",
+    "size": 8916,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/STATUS.html?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/STATUS.html",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/e23f6f778d0f51efebd4f603713cfcb01c9554cb",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/STATUS.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/STATUS.html?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/e23f6f778d0f51efebd4f603713cfcb01c9554cb",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/STATUS.html"
+    }
+  },
+  {
+    "name": "build.properties.sample",
+    "path": "build.properties.sample",
+    "sha": "3fff77e762260216cd5ea1fb46278a7749e03d70",
+    "size": 173,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/build.properties.sample?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/build.properties.sample",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/3fff77e762260216cd5ea1fb46278a7749e03d70",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/build.properties.sample",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/build.properties.sample?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/3fff77e762260216cd5ea1fb46278a7749e03d70",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/build.properties.sample"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "9f56d4f46daed0384d833faeb0ee771f2566d4e4",
+    "size": 12644,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/build.xml?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/blob/collections-2.0/build.xml",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/blobs/9f56d4f46daed0384d833faeb0ee771f2566d4e4",
+    "download_url": "https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/build.xml?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/blobs/9f56d4f46daed0384d833faeb0ee771f2566d4e4",
+      "html": "https://github.com/apache/commons-collections/blob/collections-2.0/build.xml"
+    }
+  },
+  {
+    "name": "data",
+    "path": "data",
+    "sha": "6199c9047b711c4f24302bf112df4ae16232d30e",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/data?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/tree/collections-2.0/data",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/trees/6199c9047b711c4f24302bf112df4ae16232d30e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/data?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/trees/6199c9047b711c4f24302bf112df4ae16232d30e",
+      "html": "https://github.com/apache/commons-collections/tree/collections-2.0/data"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "662580664679f9c0b403e355cea0273dd766b377",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/src?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/tree/collections-2.0/src",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/trees/662580664679f9c0b403e355cea0273dd766b377",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/src?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/trees/662580664679f9c0b403e355cea0273dd766b377",
+      "html": "https://github.com/apache/commons-collections/tree/collections-2.0/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/commons/collections/source/ | rg 'collections-2.0-src'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 197ms:
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="collections-2.0-src.tar.gz">collections-2.0-src.tar.gz</a>                      2002-12-27 08:55  136K  
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="collections-2.0-src.zip">collections-2.0-src.zip</a>                         2002-12-27 08:55  274K  
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/commons-collections/contents/src?ref=collections-2.0' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://github.com/apache/commons-collections/tree/collections-2.0/src/java | head -20 && curl -I -L -s https://github.com/apache/commons-collections/tree/collections-2.0/src/test | head -20 && curl -I -L -s https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-javadoc.jar | head -20' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/README.txt | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 163ms:
+[
+  {
+    "name": "conf",
+    "path": "src/conf",
+    "sha": "6cb0ea2555fb22d1f9940cc1bb0bcc0ed6be6917",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/src/conf?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/tree/collections-2.0/src/conf",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/trees/6cb0ea2555fb22d1f9940cc1bb0bcc0ed6be6917",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/src/conf?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/trees/6cb0ea2555fb22d1f9940cc1bb0bcc0ed6be6917",
+      "html": "https://github.com/apache/commons-collections/tree/collections-2.0/src/conf"
+    }
+  },
+  {
+    "name": "java",
+    "path": "src/java",
+    "sha": "400249d9f177547f8af1db464a385a45eaea8570",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/src/java?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/tree/collections-2.0/src/java",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/trees/400249d9f177547f8af1db464a385a45eaea8570",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/src/java?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/trees/400249d9f177547f8af1db464a385a45eaea8570",
+      "html": "https://github.com/apache/commons-collections/tree/collections-2.0/src/java"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "09c2f718c5faf611c204011fb6c1571f9198db15",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/commons-collections/contents/src/test?ref=collections-2.0",
+    "html_url": "https://github.com/apache/commons-collections/tree/collections-2.0/src/test",
+    "git_url": "https://api.github.com/repos/apache/commons-collections/git/trees/09c2f718c5faf611c204011fb6c1571f9198db15",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/commons-collections/contents/src/test?ref=collections-2.0",
+      "git": "https://api.github.com/repos/apache/commons-collections/git/trees/09c2f718c5faf611c204011fb6c1571f9198db15",
+      "html": "https://github.com/apache/commons-collections/tree/collections-2.0/src/test"
+    }
+  }
+]
+
+ succeeded in 173ms:
+Jakarta Commons Collections
+===========================
+
+Welcome to the Collections component of the Jakarta Commons
+project.
+
+This component requires the excellent Ant utility.  It can 
+be found here :
+
+  http://jakarta.apache.org/ant/
+
+For testing the project, you will also need JUnit :
+
+  http://www.junit.org/
+
+To let the test process find JUnit, you may make a 
+copy of the build.properties.sample file, rename to
+build.properties,  and modify to reflect
+the location of the junit.jar on your computer.
+
+
+Once you have Ant propertly installed, and the
+build.properties file correctly reflects the location
+of your junit.jar, you are ready to build and test.
+
+To compile and test the component :
+
+$ ant test
+
+To build a jar :
+
+$ ant dist-jar
+
+To build the API documentation :
+
+$ ant doc
+
+To build the jar and API doc at once :
+
+$ ant dist
+
+
+
+ succeeded in 1045ms:
+HTTP/2 200 
+date: Tue, 05 May 2026 03:32:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0f9e485d8ea611193d446c1d11b49df9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=bS7JmWB7h92OCzJAZKzyH1U6LgGQRNGr7H5r6F%2FY%2FR6GPNg2p4g7Wi8ravVmulwi8y0vnI6Ecn8Y4RkINxJY4jUmGvOaOkPYq6YxViCJamlixrFL1ce8zFcWB%2BvcYziTyNIaeTjvsk3d4ptsmiNVdfpPkklkMqi%2BKzxP6OTDJB3HR8y%2BygxrtotGF2norKskm6ch91Az5r8nVCfYFzP6fl%2B%2BrvX1B3ZvgvR4jpHHLSSkBjFStv24IRCPASdBKomcyWmk7GVe%2Btu2MokjXGXksg%3D%3D--KBXb1dDgEiMr023l--f1ot%2FXXpMwdVjPYYnlsZbQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.930338478.1777951955; expires=Wed, 05 May 2027 03:32:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 03:32:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510F:19A294:693E2B:559AED:69F964D3
+
+HTTP/2 200 
+date: Tue, 05 May 2026 03:32:36 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"65f316eb0f891435be938227f0e9a19d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=eRD7PKqTD06qsJLYRcqkkrcqq5o5eI3lBd9Q93C2360DibA5PwFyU%2BtnkTEZmVqOi1xEOwhZRwzMtKIdbHbv3HSL6clRNHRpIJcPxMnQ24u7CWHKs1O1n5V50P9OVbnOP1n%2Fcek%2B%2FH3IdjwKPM9EQQ3aD3pTqwS5hqVcEI6e5lj8U3mdQb2nyutdEsrfrPXY29S2ZQh9CwIRoXuM0Hhaj4Oq2z5d1LgmA4lt5mAyiyJtAXCBwAGvGhcxZ4EQySN8AOLJo6Hoa98E0NyBIq95tQ%3D%3D--xbrBFcqEk3RnAbUC--W5wVMRqcA2TAlyTNHGxPkg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1126413186.1777951955; expires=Wed, 05 May 2027 03:32:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 05 May 2027 03:32:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5120:C6751:686D5B:547C9E:69F964D3
+
+HTTP/2 200 
+date: Tue, 05 May 2026 03:32:36 GMT
+content-type: application/java-archive
+content-length: 193866
+cf-ray: 9f6cadcff84abc50-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 320440
+etag: "f00a06c4eb927f4f04ab7d70ee529199"
+last-modified: Mon, 03 Jul 2006 21:30:00 GMT
+x-checksum-md5: f00a06c4eb927f4f04ab7d70ee529199
+x-checksum-sha1: cd8b236df387fde023934fd3461b6ff1a2988da3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Apache Commons Collections component extends Java Collections Framework bags bidirectional maps official
+web search: 
+web search: https://commons.apache.org/collections
+web search: 
+web search: repo1.maven.org commons-collections commons-collections 2.0 javadoc jar
+codex
+For version `2.0`, Maven Central has the main JAR and Javadoc JAR, but no `sources`, `test`, or `tests` classifier JARs. The matching Git tag is `collections-2.0`, with `src/java` and `src/test` present, so I’m using those for source and test URLs and Maven Central for the Javadoc URL.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0.jar -o "$tmp/commons-collections-2.0.jar" && jar tf "$tmp/commons-collections-2.0.jar" | rg '"'\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+org/apache/commons/collections/AbstractBag$BagIterator.class
+org/apache/commons/collections/AbstractBag.class
+org/apache/commons/collections/ArrayEnumeration.class
+org/apache/commons/collections/ArrayIterator.class
+org/apache/commons/collections/ArrayStack.class
+org/apache/commons/collections/Bag.class
+org/apache/commons/collections/BeanMap$1.class
+org/apache/commons/collections/BeanMap$10.class
+org/apache/commons/collections/BeanMap$11.class
+org/apache/commons/collections/BeanMap$12.class
+org/apache/commons/collections/BeanMap$2.class
+org/apache/commons/collections/BeanMap$3.class
+org/apache/commons/collections/BeanMap$4.class
+org/apache/commons/collections/BeanMap$5.class
+org/apache/commons/collections/BeanMap$6.class
+org/apache/commons/collections/BeanMap$7.class
+org/apache/commons/collections/BeanMap$8.class
+org/apache/commons/collections/BeanMap$9.class
+org/apache/commons/collections/BeanMap$MyMapEntry.class
+org/apache/commons/collections/BeanMap.class
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/apache/commons-collections/tree/collections-2.0/src/java \\
+  https://github.com/apache/commons-collections/tree/collections-2.0/src/test \\
+  https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-javadoc.jar; do \\
+  printf '%s -> ' \""'$url"; curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/commons-collections/collections-2.0/RELEASE-NOTES-2.0.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 178ms:
+<title>RELEASE NOTES: COLLECTIONS 2.0</title>
+
+<center><h2>RELEASE NOTES: COLLECTIONS 2.0</h2></center>
+
+
+<center><h3>NEW COLLECTIONS AND COMPARATORS</h3></center>
+
+<p><i>Collections 2.0</i> includes a significant number of new collections, in addition to several 
+useful Comparator classes.  Descriptions of the new collections and comparators follow.  
+(For descriptions of all classes in <i>Collections</i>, see the <i>STATUS.html</i> file.)</p> 
+
+<p>These collections are new to <i>Collections 2.0</i>:</p>
+
+<ul>
+
+<li><strong>Bag</strong> - A Collection that counts the number of times an
+    object appears in the collection.  Suppose 
+    you have a Bag that contains <code>{a, a, b, c}</code>.  Calling
+    getCount on <code>a</code> would return 2, while calling
+    uniqueSet would return <code>{a, b, c}</code>.  <i>Note: this is an
+    interface with several implementations.</i></li>
+<li><strong>DoubleOrderedMap</strong> - Red-Black tree-based implementation of Map. 
+    This class guarantees
+    that the map will be in both ascending key order and ascending
+    value order, sorted according to the natural order for the key's
+    and value's classes.</li>
+<li><strong>FilterListIterator</strong> - A proxy <code>ListIterator</code> which 
+    takes a <code>Predicate</code> instance to filter
+    out objects from an underlying <code>ListIterator</code> 
+    instance. Only objects for which the specified 
+    <code>Predicate</code> evaluates to <code>true</code> are
+    returned by the iterator.</li>
+<li><strong>HashBag</strong> -  An implementation of <strong>Bag</strong> that is backed by a 
+    HashMap.</li>
+<li><strong>MultiMap</strong> - This is simply a Map with slightly different semantics.
+    Instead of returning an Object, it returns a Collection.
+    So for example, you can put( key, new Integer(1) ); 
+    and then a Object get( key ); will return you a Collection 
+    instead of an Integer.  This is an interface implemented
+    by <strong>MultiHashMap</strong>.</li>
+<li><strong>ProxyMap</strong> - This <code>Map</code> wraps another <code>Map</code>
+    implementation, using the wrapped instance for its default
+    implementation.  This class is used as a framework on which to
+    build to extensions for its wrapped <code>Map</code> object which
+    would be unavailable or inconvenient via sub-classing (but usable
+    via composition).</li>
+<li><strong>SequencedHashMap</strong> -  A map of objects whose mapping entries are 
+    sequenced based on the order in
+    which they were added.</li>
+<li><strong>SortedBag</strong> - A type of <strong>Bag</strong> that maintains order among its unique
+    representative members</li>
+<li><strong>TreeBag</strong> - An implementation of <strong>Bag</strong> that is backed by a 
+    TreeMap. Order will be maintained among the unique representative
+    members.</li>
+</ul>
+
+<p>These are the new Comparator classes:</p>
+
+<ul>
+<li><strong>ComparableComparator</strong> - A Comparator that compares Comparable objects.
+    This Comparator is useful, for example,
+    for enforcing the natural order in custom implementations
+    of SortedSet and SortedMap.</li>
+<li><strong>ComparatorChain</strong> -  ComparatorChain is a Comparator that wraps one or
+    more Comparators in sequence.  The ComparatorChain
+    calls each Comparator in sequence until either 1)
+    any single Comparator returns a non-zero result
+   (and that result is then returned),
+   or 2) the ComparatorChain is exhausted (and zero is
+   returned).  This type of sorting is very similar
+   to multi-column sorting in SQL, and this class
+   allows Java classes to emulate that kind of behaviour
+   when sorting a List.</li>
+<li><strong>ReverseComparator</strong> - Reverses the order of another comparator.</li>
+</ul>
+
+
+<center><h3>CHANGED COLLECTIONS</h3></center>
+
+These classes have changed since <i>Collections 1.0</i>:
+
+<p><u>ArrayEnumeration</u></p>
+
+<p>ArrayEnumeration has been <b>deprecated</b>.  This class has significant overlap with 
+ArrayIterator, and Collections focuses mainly on Java2-style
+collections.  If you need to enumerate an array,
+create an ArrayIterator and wrap it with an
+IteratorEnumeration instead.</p>
+
+<p><u>ArrayIterator</u></p>
+
+<p><i>Bugs fixed:</i></p>
+<ul>
+  <li>ArrayIterator can now iterate over arrays of primatives.</li>
+  <li>ArrayIterator.setArray(Object) will no longer throw an
+  ArrayIndexOutOfBounds exception.</li>
+</ul>
+
+<p><u>LRUMap</u></p>
+    
+<p>LRUMap has been reimplemented as a subclass of 
+SynchronizedHashMap.  The new implementation of
+LRUMap should be faster, and it also offers true LRU 
+capabilities; now any get(Object) or 
+put(Object,Object) from this collection
+promotes the key to the Most Recently Used position.</p>
+    
+<p><i>LRUMap 2.0 compatibility changes:</i></p>
+<ul> 
+  <li>LRUMap can no longer be cast to a HashMap.</li>
+  <li>The removeLRU() method now has a different 
+    signature, and is no longer public.  Instead, use
+    remove(getFirstKey()).</li>
+  <li>"Externalized" LRUMap 1.0 Objects cannot be
+    read by LRUMap 2.0.</li>
+</ul>
+    
+<p><i>New features:</i></p>
+<ul>
+  <li>True LRU algorithm.</li>
+
+ succeeded in 359ms:
+200
+https://github.com/apache/commons-collections/tree/collections-2.0/src/test -> 200
+https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-javadoc.jar -> 200
+
+codex
+I have enough confidence to edit now: this is a JVM artifact with `.class` files, not Kotlin/Groovy/Scala-specific, and it remains applicable to Native Image metadata. I’ll keep those optional fields absent and fill only the requested metadata fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+diff --git a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+index 2569bd62a0397faab4c767c0d89da1514a15898c..995d0c9db30f164a1006ae6ed71a1559da572356
+--- a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
++++ b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-collections:commons-collections:2.0"
++  "coordinates" : "commons-collections:commons-collections:2.0",
++  "repository-url" : "https://github.com/apache/commons-collections",
++  "source-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
++  "test-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
++  "description" : "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+index 2569bd62a0397faab4c767c0d89da1514a15898c..995d0c9db30f164a1006ae6ed71a1559da572356
+--- a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
++++ b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-collections:commons-collections:2.0"
++  "coordinates" : "commons-collections:commons-collections:2.0",
++  "repository-url" : "https://github.com/apache/commons-collections",
++  "source-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
++  "test-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
++  "description" : "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+{
+  "coordinates": "commons-collections:commons-collections:2.0",
+  "repository-url": "https://github.com/apache/commons-collections",
+  "source-code-url": "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
+  "test-code-url": "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
+  "description": "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'for url in $(jq -r '"'.[\"source-code-url\"], .[\"test-code-url\"], .[\"documentation-url\"]' build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json | sed 's/\\"'$version'"\\"'$/2.0/g'"'); do printf '%s -> ' \""'$url"; curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+diff --git a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+index 2569bd62a0397faab4c767c0d89da1514a15898c..995d0c9db30f164a1006ae6ed71a1559da572356
+--- a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
++++ b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-collections:commons-collections:2.0"
++  "coordinates" : "commons-collections:commons-collections:2.0",
++  "repository-url" : "https://github.com/apache/commons-collections",
++  "source-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
++  "test-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
++  "description" : "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+ }
+
+ succeeded in 387ms:
+200
+https://github.com/apache/commons-collections/tree/collections-2.0/src/test -> 200
+https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-javadoc.jar -> 200
+
+web search: 
+web search: https://github.com/apache/commons-collections
+web search: 
+web search: https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/commons-collections-2.0-javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/commons-collections/commons-collections/
+web search: 
+web search: https://repo1.maven.org/maven2/commons-collections/commons-collections/2.0/
+web search: 
+web search: github apache commons-collections collections-2.0 src/java
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+ succeeded in 0ms:
+{
+  "coordinates" : "commons-collections:commons-collections:2.0",
+  "repository-url" : "https://github.com/apache/commons-collections",
+  "source-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
+  "test-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
+  "description" : "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored=matching build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec
+diff --git a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+index 2569bd62a0397faab4c767c0d89da1514a15898c..995d0c9db30f164a1006ae6ed71a1559da572356
+--- a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
++++ b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-collections:commons-collections:2.0"
++  "coordinates" : "commons-collections:commons-collections:2.0",
++  "repository-url" : "https://github.com/apache/commons-collections",
++  "source-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
++  "test-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
++  "description" : "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+ }
+
+ succeeded in 180ms:
+!! build/
+
+web search: 
+web search: Apache Commons Collections GitHub apache commons-collections
+codex
+Updated [commons-collections-commons-collections-2.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json:1) with repository, source, test, documentation, and two-sentence description fields.
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a normal JVM JAR with class files. The source/test URLs use the matching `collections-2.0` tag, and the documentation URL uses the Maven Central Javadoc JAR; all three resolved successfully for `2.0`. Apache describes Commons Collections as extending and augmenting the Java Collections Framework, and the Apache project page points to the source repository and GitHub mirror. ([github.com](https://github.com/apache/commons-collections?utm_source=openai))
+diff --git a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+index 2569bd62a0397faab4c767c0d89da1514a15898c..995d0c9db30f164a1006ae6ed71a1559da572356
+--- a/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
++++ b/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-collections:commons-collections:2.0"
++  "coordinates" : "commons-collections:commons-collections:2.0",
++  "repository-url" : "https://github.com/apache/commons-collections",
++  "source-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/java",
++  "test-code-url" : "https://github.com/apache/commons-collections/tree/collections-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-collections/commons-collections/$version$/commons-collections-$version$-javadoc.jar",
++  "description" : "Apache Commons Collections extends the Java Collections Framework with additional collection types such as bags, multimaps, ordered maps, iterators, and comparators. Version 2.0 adds several concrete utilities and implementations for working with maps, lists, bags, and ordering behavior in Java applications."
+ }
+
+tokens used
+81,209
+Updated [commons-collections-commons-collections-2.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec/build/discovered-artifact-metadata/commons-collections-commons-collections-2.0.json:1) with repository, source, test, documentation, and two-sentence description fields.
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a normal JVM JAR with class files. The source/test URLs use the matching `collections-2.0` tag, and the documentation URL uses the Maven Central Javadoc JAR; all three resolved successfully for `2.0`. Apache describes Commons Collections as extending and augmenting the Java Collections Framework, and the Apache project page points to the source repository and GitHub mirror. ([github.com](https://github.com/apache/commons-collections?utm_source=openai))
+Ran agent for commons-collections:commons-collections:2.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec/build/agent-artifact-discovery-logs/commons-collections-commons-collections-2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1382-8c648aec/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 4 executed, 5 from cache
