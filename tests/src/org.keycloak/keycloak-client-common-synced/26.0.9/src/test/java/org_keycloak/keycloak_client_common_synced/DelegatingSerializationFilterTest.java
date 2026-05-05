@@ -8,6 +8,7 @@ package org_keycloak.keycloak_client_common_synced;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 import org.keycloak.common.util.DelegatingSerializationFilter;
 
 import java.io.ByteArrayInputStream;
@@ -15,9 +16,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.CodeSource;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,10 @@ public class DelegatingSerializationFilterTest {
 
     @Test
     void initializesLegacyJavaSerializationFilterAdapterWithContextClassLoader() throws Exception {
+        if (isNativeImageRuntime()) {
+            throw new TestAbortedException(
+                    "Native image runtime does not support reloading Keycloak classes via isolated URLClassLoader");
+        }
         try {
             initializeLegacyJavaSerializationFilterAdapterWithContextClassLoader();
         } catch (Error error) {
@@ -99,6 +104,10 @@ public class DelegatingSerializationFilterTest {
         } else {
             System.setProperty("java.specification.version", originalJavaSpecificationVersion);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static final class LegacyObjectInputFilter {
