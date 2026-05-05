@@ -14,6 +14,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.DumpHttpExchangeFilter;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.FormEncodedData;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -47,6 +48,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -242,6 +247,59 @@ public class Selenium_httpTest {
     }
 
     @Test
+    public void shouldLogHttpExchangesAndKeepBodiesReadable() {
+        Logger logger = DumpHttpExchangeFilter.LOG;
+        Level originalLevel = logger.getLevel();
+        boolean originalUseParentHandlers = logger.getUseParentHandlers();
+        RecordingLogHandler logHandler = new RecordingLogHandler();
+        logHandler.setLevel(Level.ALL);
+        logger.addHandler(logHandler);
+        logger.setLevel(Level.ALL);
+        logger.setUseParentHandlers(false);
+
+        try {
+            AtomicInteger requestReads = new AtomicInteger();
+            AtomicInteger responseReads = new AtomicInteger();
+            HttpHandler handler = req -> {
+                assertThat(Contents.utf8String(req.getContent())).isEqualTo("request-body");
+                return new HttpResponse()
+                    .setStatus(HTTP_CREATED)
+                    .addHeader("X-Response", "handled")
+                    .setContent(() -> {
+                        int invocation = responseReads.incrementAndGet();
+                        String body = invocation == 1 ? "response-body" : "unexpected-response";
+                        return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+                    });
+            };
+            HttpRequest request = new HttpRequest(HttpMethod.POST, "/log")
+                .addHeader("X-Request", "enabled")
+                .setContent(() -> {
+                    int invocation = requestReads.incrementAndGet();
+                    String body = invocation == 1 ? "request-body" : "unexpected-request";
+                    return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+                });
+
+            HttpResponse response = handler.with(new DumpHttpExchangeFilter(Level.INFO)).execute(request);
+
+            assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+            assertThat(Contents.utf8String(response.getContent())).isEqualTo("response-body");
+            assertThat(Contents.utf8String(request.getContent())).isEqualTo("request-body");
+            assertThat(requestReads).hasValue(1);
+            assertThat(responseReads).hasValue(1);
+            assertThat(logHandler.messages).hasSize(2);
+            assertThat(logHandler.messages.get(0))
+                .contains("HTTP Request: (POST) /log", "X-Request: enabled", "request-body");
+            assertThat(logHandler.messages.get(1))
+                .contains("HTTP Response: Status code: 201", "X-Response: handled", "response-body");
+        } finally {
+            logger.removeHandler(logHandler);
+            logger.setLevel(originalLevel);
+            logger.setUseParentHandlers(originalUseParentHandlers);
+            logHandler.close();
+        }
+    }
+
+    @Test
     public void shouldExposeImmutableStyleClientConfigValues() throws Exception {
         URI baseUri = new URI("http://localhost:4444/wd/hub");
         Proxy proxy = new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved("proxy.test", 8080));
@@ -376,6 +434,25 @@ public class Selenium_httpTest {
         @Override
         public HttpResponse execute(HttpRequest req) {
             return new HttpResponse().setContent(Contents.utf8String("pong"));
+        }
+    }
+
+    private static class RecordingLogHandler extends Handler {
+        private final List<String> messages = new ArrayList<>();
+
+        @Override
+        public void publish(LogRecord record) {
+            if (isLoggable(record)) {
+                messages.add(record.getMessage());
+            }
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void close() {
         }
     }
 
