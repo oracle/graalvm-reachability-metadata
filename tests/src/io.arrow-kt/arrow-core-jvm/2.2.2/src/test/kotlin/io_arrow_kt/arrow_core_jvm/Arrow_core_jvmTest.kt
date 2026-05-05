@@ -14,14 +14,19 @@ import arrow.core.Option
 import arrow.core.Some
 import arrow.core.align
 import arrow.core.bothIor
+import arrow.core.combine
 import arrow.core.elementAtOrNone
 import arrow.core.filterIsInstance
+import arrow.core.filterOption
 import arrow.core.firstOrNone
 import arrow.core.flatMap
+import arrow.core.flatMapValues
 import arrow.core.flatten
 import arrow.core.flattenOrAccumulate
 import arrow.core.getOrElse
+import arrow.core.getOrNone
 import arrow.core.handleErrorWith
+import arrow.core.mapValuesNotNull
 import arrow.core.nonEmptyListOf
 import arrow.core.none
 import arrow.core.padZip
@@ -191,6 +196,49 @@ public class ArrowCoreJvmTest {
         assertThat(handledLeft).isEqualTo(Ior.Both(7, 14))
         assertThat(unaligned.first).containsExactly("a", "b", null)
         assertThat(unaligned.second).containsExactly(1, 2, 3)
+    }
+
+    @Test
+    fun mapExtensionsFilterTransformAndCombineEntriesByKey() {
+        val optionalScores: Map<String, Option<Int>> = mapOf(
+            "alice" to Some(10),
+            "bob" to none(),
+            "carol" to Some(30),
+        )
+        val presentScores: Map<String, Int> = optionalScores.filterOption()
+        val typedValues: Map<String, Int> = mapOf<String, Any>(
+            "count" to 3,
+            "label" to "core",
+            "retries" to 2,
+        ).filterIsInstance<String, Int>()
+        val labels: Map<String, String> = mapOf(
+            "library" to "arrow",
+            "missing" to null,
+            "module" to "core",
+        ).mapValuesNotNull { entry: Map.Entry<String, String?> ->
+            entry.value?.uppercase()
+        }
+        val firstSquares: Map<String, Int> = mapOf(
+            "odd" to listOf(1, 3),
+            "even" to listOf(2),
+            "empty" to emptyList(),
+        ).flatMapValues { entry: Map.Entry<String, List<Int>> ->
+            entry.value.firstOrNull()?.let { value: Int ->
+                mapOf(entry.key to value * value)
+            } ?: emptyMap()
+        }
+        val combined: Map<String, Int> = mapOf("hits" to 1, "misses" to 2)
+            .combine(mapOf("hits" to 4, "timeouts" to 3)) { first: Int, second: Int ->
+                first + second
+            }
+
+        assertThat(presentScores).isEqualTo(mapOf("alice" to 10, "carol" to 30))
+        assertThat(presentScores.getOrNone("alice")).isEqualTo(Some(10))
+        assertThat(presentScores.getOrNone("bob")).isEqualTo(None)
+        assertThat(typedValues).isEqualTo(mapOf("count" to 3, "retries" to 2))
+        assertThat(labels).isEqualTo(mapOf("library" to "ARROW", "module" to "CORE"))
+        assertThat(firstSquares).isEqualTo(mapOf("odd" to 1, "even" to 4))
+        assertThat(combined).isEqualTo(mapOf("hits" to 5, "misses" to 2, "timeouts" to 3))
     }
 
     @Test
