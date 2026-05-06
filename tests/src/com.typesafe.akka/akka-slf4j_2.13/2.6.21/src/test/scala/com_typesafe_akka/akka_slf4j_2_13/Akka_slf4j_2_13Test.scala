@@ -6,14 +6,15 @@
  */
 package com_typesafe_akka.akka_slf4j_2_13
 
-import akka.actor.ActorSystem
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.event.{DummyClassForStringSources, LogMarker, Logging}
-import akka.event.slf4j.{Logger, SLF4JLogging, Slf4jLogMarker, Slf4jLoggingFilter}
+import akka.event.slf4j.{Logger, SLF4JLogging, Slf4jLogMarker, Slf4jLogger, Slf4jLoggingFilter}
 import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.slf4j.{Marker, MarkerFactory}
 
+import java.util.concurrent.{CompletableFuture, TimeUnit}
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
@@ -107,11 +108,31 @@ class Akka_slf4j_2_13Test {
     }
   }
 
+  @Test
+  def slf4jLoggerAcknowledgesInitialization(): Unit = {
+    withActorSystem("Initialize", "INFO") { system: ActorSystem =>
+      val result: CompletableFuture[AnyRef] = new CompletableFuture[AnyRef]()
+      val probe: ActorRef = system.actorOf(Props(new ReplyProbe(result)), "logger-initialization-probe")
+      val logger: ActorRef = system.actorOf(Props(new Slf4jLogger), "standalone-slf4j-logger")
+
+      logger.tell(Logging.InitializeLogger(system.eventStream), probe)
+
+      assertThat(result.get(10, TimeUnit.SECONDS)).isSameAs(Logging.LoggerInitialized)
+    }
+  }
+
   private final class LoggingComponent extends SLF4JLogging
 }
 
 object Akka_slf4j_2_13Test {
   private val nextSystemId: AtomicInteger = new AtomicInteger()
+
+  private final class ReplyProbe(result: CompletableFuture[AnyRef]) extends Actor {
+    override def receive: Receive = { case message: AnyRef =>
+      result.complete(message)
+      context.stop(self)
+    }
+  }
 
   private def configureSimpleLogger(): Unit = {
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "info")
