@@ -15,9 +15,11 @@ import io.ktor.server.application.call
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.server.sessions.CacheStorage
 import io.ktor.server.sessions.SameSite
 import io.ktor.server.sessions.SessionProvider
 import io.ktor.server.sessions.SessionSerializer
+import io.ktor.server.sessions.SessionStorage
 import io.ktor.server.sessions.SessionStorageMemory
 import io.ktor.server.sessions.SessionTrackerById
 import io.ktor.server.sessions.SessionTrackerByValue
@@ -321,6 +323,32 @@ public class KtorServerSessionsJvmTest {
     }
 
     @Test
+    fun cacheStorageCachesReadsSkipsUnchangedWritesAndInvalidatesEntries(): Unit = runBlocking {
+        val delegate = CountingSessionStorage()
+        delegate.write("record-1", "initial-payload")
+        val storage = CacheStorage(delegate, idleTimeout = 60_000L)
+
+        assertThat(storage.read("record-1")).isEqualTo("initial-payload")
+        assertThat(storage.read("record-1")).isEqualTo("initial-payload")
+        assertThat(delegate.readCount("record-1")).isEqualTo(1)
+
+        val writesAfterSeed: Int = delegate.writeCount
+        storage.write("record-1", "initial-payload")
+        assertThat(delegate.writeCount).isEqualTo(writesAfterSeed)
+
+        storage.write("record-1", "updated-payload")
+        assertThat(delegate.value("record-1")).isEqualTo("updated-payload")
+        assertThat(storage.read("record-1")).isEqualTo("updated-payload")
+        assertThat(delegate.readCount("record-1")).isEqualTo(2)
+
+        storage.invalidate("record-1")
+        assertThat(delegate.value("record-1")).isNull()
+        assertThatThrownBy {
+            runBlocking { storage.read("record-1") }
+        }.isInstanceOf(NoSuchElementException::class.java)
+    }
+
+    @Test
     fun transportTransformersRoundTripAndAuthenticateStandaloneValues(): Unit {
         val signer = SessionTransportTransformerMessageAuthentication(hex(SigningKeyHex))
         val signed: String = signer.transformWrite("session-payload")
@@ -355,6 +383,32 @@ public class KtorServerSessionsJvmTest {
         value.dropLast(1) + 'b'
     } else {
         value.dropLast(1) + 'a'
+    }
+
+    private class CountingSessionStorage : SessionStorage {
+        private val records: MutableMap<String, String> = mutableMapOf()
+        private val readCounts: MutableMap<String, Int> = mutableMapOf()
+
+        var writeCount: Int = 0
+            private set
+
+        override suspend fun read(id: String): String {
+            readCounts[id] = readCount(id) + 1
+            return records[id] ?: throw NoSuchElementException("No session record for $id")
+        }
+
+        override suspend fun write(id: String, value: String) {
+            writeCount++
+            records[id] = value
+        }
+
+        override suspend fun invalidate(id: String) {
+            records.remove(id)
+        }
+
+        fun readCount(id: String): Int = readCounts[id] ?: 0
+
+        fun value(id: String): String? = records[id]
     }
 
     private object ShoppingSessionSerializer : SessionSerializer<ShoppingSession> {
