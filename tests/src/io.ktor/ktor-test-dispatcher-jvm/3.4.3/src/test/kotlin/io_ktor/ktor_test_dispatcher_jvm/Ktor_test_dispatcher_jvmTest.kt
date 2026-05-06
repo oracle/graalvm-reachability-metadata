@@ -92,6 +92,20 @@ public class Ktor_test_dispatcher_jvmTest {
     }
 
     @Test
+    fun runTestWithRealTimeWaitsForRealTimeChildCoroutines() {
+        var childCompleted = false
+
+        runTestWithRealTime(timeout = 5.seconds) {
+            launch {
+                delay(50.milliseconds)
+                childCompleted = true
+            }
+        }
+
+        assertThat(childCompleted).isTrue()
+    }
+
+    @Test
     fun runTestWithRealTimePropagatesBodyFailure() {
         assertThatThrownBy {
             runTestWithRealTime(timeout = 5.seconds) {
