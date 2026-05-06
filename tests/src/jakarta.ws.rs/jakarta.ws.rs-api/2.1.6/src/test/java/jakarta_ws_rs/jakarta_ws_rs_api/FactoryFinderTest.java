@@ -43,6 +43,24 @@ public class FactoryFinderTest extends ClientBuilder {
     }
 
     @Test
+    public void newBuilderInstantiatesProviderWithContextClassLoader() {
+        String previousProvider = System.getProperty(CLIENT_BUILDER_PROPERTY);
+        ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            System.setProperty(CLIENT_BUILDER_PROPERTY, TEST_CLIENT_BUILDER_CLASS);
+            Thread.currentThread().setContextClassLoader(FactoryFinderTest.class.getClassLoader());
+
+            ClientBuilder builder = ClientBuilder.newBuilder();
+
+            assertThat(builder).isInstanceOf(FactoryFinderTest.class);
+        } finally {
+            restoreProviderProperty(previousProvider);
+            Thread.currentThread().setContextClassLoader(previousContextClassLoader);
+        }
+    }
+
+    @Test
     public void newBuilderRetriesWithCurrentClassLoaderWhenContextClassLoaderCannotLoadProvider() {
         String previousProvider = System.getProperty(CLIENT_BUILDER_PROPERTY);
         ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
