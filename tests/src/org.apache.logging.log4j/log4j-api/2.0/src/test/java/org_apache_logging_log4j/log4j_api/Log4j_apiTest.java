@@ -8,7 +8,7 @@ package org_apache_logging_log4j.log4j_api;
 
 import org.junit.jupiter.api.Test;
 
-class Log4j_apiTest {
+public class Log4j_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
