@@ -16,6 +16,7 @@ import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.MultiAssertionErrorBuilder
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.clueContextAsString
 import io.kotest.assertions.collectErrors
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.createLazyAssertionError
@@ -196,6 +197,20 @@ public class Kotest_assertions_shared_jvmTest {
         assertTrue(thrown.message!!.contains("outer failure"))
         assertTrue(thrown.message!!.contains("inner failure"))
         assertEquals(ErrorCollectionMode.Hard, errorCollector.getCollectionMode())
+    }
+
+    @Test
+    fun clueContextAsStringFormatsCurrentCluesInInsertionOrder() {
+        assertEquals("", clueContextAsString())
+
+        errorCollector.pushClue { "outer clue" }
+        errorCollector.pushClue { "inner clue" }
+        try {
+            assertEquals("outer clue\ninner clue\n", clueContextAsString())
+        } finally {
+            errorCollector.popClue()
+            errorCollector.popClue()
+        }
     }
 
     @Test
