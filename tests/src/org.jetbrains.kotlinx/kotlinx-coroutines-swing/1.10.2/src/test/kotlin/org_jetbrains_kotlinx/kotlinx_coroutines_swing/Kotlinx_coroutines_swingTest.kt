@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -126,6 +127,33 @@ public class Kotlinx_coroutines_swingTest {
 
             assertThat(events).containsExactly("before-delay", "after-delay")
             assertThat(completedAfterCancellation).isFalse()
+        }
+    }
+
+    @Test
+    fun timeoutScheduledOnSwingDispatcherCancelsSuspendedCoroutineOnEventDispatchThread(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val events: MutableList<String> = mutableListOf()
+            val finalizerRanOnEventDispatchThread = AtomicBoolean(false)
+
+            val thrown: Throwable? = runCatching {
+                withContext(Dispatchers.Swing) {
+                    withTimeout(100) {
+                        try {
+                            events += "started"
+                            delay(10_000)
+                            events += "after-delay"
+                        } finally {
+                            finalizerRanOnEventDispatchThread.set(SwingUtilities.isEventDispatchThread())
+                            events += "finally"
+                        }
+                    }
+                }
+            }.exceptionOrNull()
+
+            assertThat(thrown).isInstanceOf(TimeoutCancellationException::class.java)
+            assertThat(events).containsExactly("started", "finally")
+            assertThat(finalizerRanOnEventDispatchThread).isTrue()
         }
     }
 }
