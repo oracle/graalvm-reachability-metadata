@@ -82,6 +82,12 @@ public class MockitoJunitJupiterTest {
     }
 
     @Test
+    void extensionHonorsMockNameForMethodParameters(@Mock(name = "methodRepository") GreetingRepository namedRepository) {
+        assertThat(mockingDetails(namedRepository).getMockCreationSettings().getMockName().toString())
+                .isEqualTo("methodRepository");
+    }
+
+    @Test
     void mockitoSettingsCanMakeUnusedStubbingLenient() {
         when(repository.findGreeting("unused")).thenReturn("unused value");
 
