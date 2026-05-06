@@ -170,6 +170,29 @@ class Scala_parser_combinators_3Test {
   }
 
   @Test
+  def dependentParsersBuildTheNextParserFromEarlierInput(): Unit = {
+    val greeting: LengthPrefixedWordParser.ParseResult[String] = LengthPrefixedWordParser.parseAll(
+      LengthPrefixedWordParser.word,
+      "5 hello"
+    )
+    val shortWord: LengthPrefixedWordParser.ParseResult[String] = LengthPrefixedWordParser.parseAll(
+      LengthPrefixedWordParser.word,
+      "3 cat"
+    )
+    val mismatchedLength: LengthPrefixedWordParser.ParseResult[String] = LengthPrefixedWordParser.parseAll(
+      LengthPrefixedWordParser.word,
+      "2 cat"
+    )
+
+    assertThat(greeting.successful).isTrue()
+    assertThat(greeting.get).isEqualTo("hello")
+    assertThat(shortWord.successful).isTrue()
+    assertThat(shortWord.get).isEqualTo("cat")
+    assertThat(mismatchedLength.successful).isFalse()
+    assertThat(mismatchedLength.toString).contains("end of input")
+  }
+
+  @Test
   def coreParsersCanParseCustomTokenReaders(): Unit = {
     val result: WordTokenParser.ParseResult[(String, List[String])] = WordTokenParser.parseTokens(
       List("run", "alpha", ",", "beta", "!")
@@ -364,6 +387,16 @@ class Scala_parser_combinators_3Test {
     private def addition: Parser[Int] = numericLit ~ rep("+" ~> numericLit) ^^ {
       case first ~ rest => (first +: rest).map(_.toInt).sum
     }
+  }
+
+  private object LengthPrefixedWordParser extends RegexParsers {
+    override val skipWhitespace: Boolean = true
+
+    def word: Parser[String] = wholeNumber >> { lengthText =>
+      s"[A-Za-z]{${lengthText.toInt}}".r
+    }
+
+    private def wholeNumber: Parser[String] = """\d+""".r
   }
 
   private object WordTokenParser extends Parsers {
