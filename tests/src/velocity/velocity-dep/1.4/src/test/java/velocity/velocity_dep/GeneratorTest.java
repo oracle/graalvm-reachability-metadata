@@ -41,7 +41,7 @@ public class GeneratorTest {
                     true,
                     classLoader);
 
-            assertThat(generatorClass.getClassLoader()).isSameAs(classLoader);
+            assertExpectedGeneratorLoader(generatorClass.getClassLoader(), classLoader);
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -82,6 +82,26 @@ public class GeneratorTest {
         assertThat(context.get("strings")).isInstanceOf(StringUtils.class);
         assertThat(context.get("files")).isInstanceOf(FileUtil.class);
         assertThat(context.get("properties")).isInstanceOf(PropertiesUtil.class);
+    }
+
+    private static void assertExpectedGeneratorLoader(
+            final ClassLoader generatorLoader,
+            final ClassLoader isolatedLoader
+    ) {
+        if (isNativeImageRuntime()) {
+            assertThat(generatorLoader)
+                    .matches(
+                            loader -> loader == isolatedLoader || loader == ClassLoader.getSystemClassLoader(),
+                            "be the isolated loader or the system loader in native image"
+                    );
+            return;
+        }
+
+        assertThat(generatorLoader).isSameAs(isolatedLoader);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class IsolatedGeneratorClassLoader extends ClassLoader {
