@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.command.SuspendingCliktCommand
 import com.github.ajalt.clikt.command.test
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
+import com.github.ajalt.clikt.core.registerJvmCloseable
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -30,6 +31,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
@@ -145,6 +147,18 @@ public class Clikt_jvmTest {
         }
     }
 
+    @Test
+    fun `context closes registered JVM closeables after command finishes`() {
+        val resource = CloseableProbe()
+
+        val result = CloseableResourceCommand(resource).test(emptyList())
+
+        assertThat(result.statusCode).isZero()
+        assertThat(result.stdout).contains("closed-before-return=false")
+        assertThat(result.stderr).isEmpty()
+        assertThat(resource.closed.get()).isTrue()
+    }
+
     private class OnboardingCommand : CliktCommand("onboard") {
         private val name: String by option("--name").prompt("Display name")
         private val token: String by option("--token").prompt(
@@ -229,6 +243,21 @@ public class Clikt_jvmTest {
         override suspend fun run() {
             summary = word.uppercase().repeat(factor)
             echo("async=$summary")
+        }
+    }
+
+    private class CloseableResourceCommand(private val resource: CloseableProbe) : CliktCommand("resource") {
+        override fun run() {
+            currentContext.registerJvmCloseable(resource)
+            echo("closed-before-return=${resource.closed.get()}")
+        }
+    }
+
+    private class CloseableProbe : AutoCloseable {
+        val closed = AtomicBoolean(false)
+
+        override fun close() {
+            closed.set(true)
         }
     }
 
