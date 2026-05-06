@@ -49,6 +49,20 @@ class Pekko_parsing_3Test {
     assertThat(accumulator.add("one").add("two").result()).isEqualTo("item=one;item=two")
   }
 
+  @Test
+  def compatibilityAnnotationsCanDecorateCaseClassParametersWithoutChangingGeneratedApi(): Unit = {
+    val field: AnnotatedHeaderField = AnnotatedHeaderField("Content-Type", "text/plain")
+    val updated: AnnotatedHeaderField = field.copy(value = "application/json")
+
+    val rendered: String = updated match {
+      case AnnotatedHeaderField(name, value) => s"$name: $value"
+    }
+
+    assertThat(field.name).isEqualTo("Content-Type")
+    assertThat(updated.value).isEqualTo("application/json")
+    assertThat(rendered).isEqualTo("Content-Type: application/json")
+  }
+
   @pre213
   private final class Pre213Tokenizer(private val prefix: String) {
     @pre213
@@ -82,6 +96,8 @@ class Pekko_parsing_3Test {
     @since213
     def describe(value: String): String = s"$prefix($value)"
   }
+
+  private final case class AnnotatedHeaderField(@pre213 name: String, @since213 value: String)
 
   @pre213
   @since213
