@@ -16,6 +16,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.TextContent
 import io.ktor.server.application.call
+import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.header
@@ -36,6 +37,23 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 public class KtorServerTestHostJvmTest {
+    @Test
+    fun builderDslInstallRegistersConfiguredApplicationPlugins() = testApplication {
+        install(ConfiguredResponseHeaderPlugin) {
+            headerValue = "installed by test builder"
+        }
+        routing {
+            get("/plugin") {
+                call.respondText("plugin route")
+            }
+        }
+
+        val response = client.get("/plugin")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.headers["X-Test-Builder-Plugin"]).isEqualTo("installed by test builder")
+        assertThat(response.bodyAsText()).isEqualTo("plugin route")
+    }
+
     @Test
     fun builderDslInstallsApplicationModulesRoutesAndConfiguredClients() = testApplication {
         application {
@@ -264,6 +282,21 @@ public class KtorServerTestHostJvmTest {
         assertThat(engineConfiguration.dispatcher).isNotNull
         assertThat(engineConfiguration.shutdownGracePeriod).isEqualTo(123L)
         assertThat(engineConfiguration.shutdownTimeout).isEqualTo(456L)
+    }
+
+    private class ConfiguredResponseHeaderPluginConfig {
+        var headerValue: String = "unset"
+    }
+
+    private companion object {
+        val ConfiguredResponseHeaderPlugin = createApplicationPlugin(
+            name = "ConfiguredResponseHeaderPlugin",
+            createConfiguration = ::ConfiguredResponseHeaderPluginConfig
+        ) {
+            onCall { call ->
+                call.response.header("X-Test-Builder-Plugin", pluginConfig.headerValue)
+            }
+        }
     }
 
     private suspend inline fun <reified T : Throwable> assertFailsWithType(
