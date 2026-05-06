@@ -15,6 +15,7 @@ import scala.concurrent.duration.DurationInt
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.actor.Props
+import org.apache.pekko.event.DummyClassForStringSources
 import org.apache.pekko.event.LogMarker
 import org.apache.pekko.event.Logging
 import org.apache.pekko.event.Logging.Debug
@@ -44,6 +45,14 @@ class Pekko_slf4j_2_13Test {
     assertThat(Logger.root).isSameAs(LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME))
     assertThat(Logger(classOf[Pekko_slf4j_2_13Test], "ignored-source"))
       .isSameAs(LoggerFactory.getLogger(classOf[Pekko_slf4j_2_13Test]))
+  }
+
+  @Test
+  def loggerFactoryUsesLogSourceAsCategoryForPekkoStringSources(): Unit = {
+    val sourceCategory: String = "org.apache.pekko.slf4j.test.string-source"
+
+    assertThat(Logger(classOf[DummyClassForStringSources], sourceCategory))
+      .isSameAs(LoggerFactory.getLogger(sourceCategory))
   }
 
   @Test
