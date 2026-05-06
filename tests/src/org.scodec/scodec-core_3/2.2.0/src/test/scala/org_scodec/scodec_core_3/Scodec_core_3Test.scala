@@ -143,6 +143,21 @@ class Scodec_core_3Test:
     assertEquals(123, Attempt.fromOption(Some(123), Err("missing")).require)
     assertFalse(Attempt.guard(false, "guard failed").isSuccessful)
 
+  @Test
+  def checksummedCodecAppendsValidatesAndPreservesRemainders(): Unit =
+    val checksum: BitVector => BitVector = valueBits => valueBits.take(8).xor(valueBits.drop(8).take(8))
+    val framing: Codec[(BitVector, BitVector)] = Codec.fromTuple((bits(16), bits(8)))
+    val codec: Codec[Int] = checksummed(uint16, checksum, framing)
+
+    assertEquals(hex("123426"), codec.encode(0x1234).require)
+
+    val decoded: DecodeResult[Int] = codec.decode(hex("123426ff")).require
+    assertEquals(0x1234, decoded.value)
+    assertEquals(hex("ff"), decoded.remainder)
+
+    val checksumFailure: String = failureMessage(codec.decode(hex("123427")))
+    assertTrue(checksumFailure.contains("checksum mismatch"))
+
   private def assertRoundTrip[A](codec: Codec[A], value: A): BitVector =
     val encoded: BitVector = codec.encode(value).require
     val decoded: DecodeResult[A] = codec.decode(encoded).require
