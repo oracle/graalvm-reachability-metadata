@@ -6,6 +6,7 @@
  */
 package org_json4s.json4s_jackson_3
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -26,6 +27,7 @@ import java.io.StringWriter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
+import scala.jdk.CollectionConverters.*
 
 case class JacksonMoney(amount: BigDecimal, currency: String)
 
@@ -273,6 +275,46 @@ class Json4s_jackson_3Test {
     assertEquals(JString("hello"), prettyAst \ "message")
     assertEquals(JLong(2L), prettyAst \ "count")
     assertTrue(prettyText.contains("\n"))
+  }
+
+  @Test
+  def integratesJson4sAstWithJacksonObjectMapperModule(): Unit = {
+    val jacksonMapper: ObjectMapper = new ObjectMapper()
+    jacksonMapper.registerModule(Json4sScalaModule)
+    jacksonMapper.configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true)
+    jacksonMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
+
+    val value: JValue = JObject(
+      JField("title", JString("module")),
+      JField("omitted", JNothing),
+      JField("numbers", JArray(List(JInt(BigInt("1234567890123456789012345")), JDecimal(BigDecimal("10.25"))))),
+      JField("labels", JSet(Set(JString("json4s"), JString("jackson")))),
+      JField("presentNull", JNull)
+    )
+
+    val jsonText: String = jacksonMapper.writeValueAsString(value)
+    val jsonNode: JsonNode = jacksonMapper.readTree(jsonText)
+    assertEquals("module", jsonNode.get("title").asText())
+    assertFalse(jsonNode.has("omitted"))
+    assertTrue(jsonNode.get("labels").isArray)
+    assertEquals(Set("json4s", "jackson"), jsonNode.get("labels").elements().asScala.map(_.asText()).toSet)
+    assertTrue(jsonNode.get("presentNull").isNull)
+
+    val restored: JValue = jacksonMapper.readValue(jsonText, classOf[JValue])
+    assertEquals(JString("module"), restored \ "title")
+    assertEquals(JNothing, restored \ "omitted")
+    assertEquals(JInt(BigInt("1234567890123456789012345")), (restored \ "numbers")(0))
+    assertEquals(JDecimal(BigDecimal("10.25")), (restored \ "numbers")(1))
+    val restoredLabels: Set[String] = (restored \ "labels") match {
+      case JArray(labels) => labels.collect { case JString(label) => label }.toSet
+      case other => fail(s"Expected labels array but got $other")
+    }
+    assertEquals(Set("json4s", "jackson"), restoredLabels)
+    assertEquals(JNull, restored \ "presentNull")
+
+    val objectValue: JObject = jacksonMapper.readValue("""{"active":true,"count":3}""", classOf[JObject])
+    assertEquals(JBool.True, objectValue \ "active")
+    assertEquals(JInt(3), objectValue \ "count")
   }
 
   @Test
