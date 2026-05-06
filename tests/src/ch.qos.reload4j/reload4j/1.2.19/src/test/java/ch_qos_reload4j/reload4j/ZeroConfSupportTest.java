@@ -6,34 +6,21 @@
  */
 package ch_qos_reload4j.reload4j;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
 import org.apache.log4j.net.ZeroConfSupport;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.V1_8;
 
 public class ZeroConfSupportTest {
-    private static final String ZERO_CONF_SUPPORT_CLASS_NAME = "org.apache.log4j.net.ZeroConfSupport";
-    private static final String ZERO_CONF_SUPPORT_RESOURCE = "org/apache/log4j/net/ZeroConfSupport.class";
-
     @Test
     void constructsAdvertisesAndUnadvertisesUsingJmDns3Api() {
         Map properties = new HashMap();
@@ -61,136 +48,112 @@ public class ZeroConfSupportTest {
 
     @Test
     void constructsAdvertisesAndUnadvertisesUsingLegacyJmDns1Api() throws Exception {
+        Field jmDNSClassField = getZeroConfSupportField("jmDNSClass");
+        Field serviceInfoClassField = getZeroConfSupportField("serviceInfoClass");
+        Field jmDNSField = getZeroConfSupportField("jmDNS");
+        Object originalJmDNSClass = jmDNSClassField.get(null);
+        Object originalServiceInfoClass = serviceInfoClassField.get(null);
+        Object originalJmDNS = jmDNSField.get(null);
+
         try {
-            LegacyJmDnsClassLoader classLoader = new LegacyJmDnsClassLoader();
-            Class<?> zeroConfSupportClass = Class.forName(ZERO_CONF_SUPPORT_CLASS_NAME, true, classLoader);
+            jmDNSClassField.set(null, LegacyJmDNS.class);
+            serviceInfoClassField.set(null, LegacyServiceInfo.class);
+            Method createJmDNSVersion1Method = ZeroConfSupport.class.getDeclaredMethod("createJmDNSVersion1");
+            createJmDNSVersion1Method.setAccessible(true);
+            Object legacyJmDNS = createJmDNSVersion1Method.invoke(null);
+            jmDNSField.set(null, legacyJmDNS);
+
             Map properties = new HashMap();
             properties.put("application", "legacy-reload4j-test");
 
-            Object zeroConfSupport = zeroConfSupportClass
-                    .getConstructor(String.class, int.class, String.class, Map.class)
-                    .newInstance("_log4j._tcp.local.", 4561, "legacy-reload4j", properties);
-            Object jmDNSInstance = zeroConfSupportClass.getMethod("getJMDNSInstance").invoke(null);
+            ZeroConfSupport zeroConfSupport = new ZeroConfSupport(
+                    "_log4j._tcp.local.",
+                    4561,
+                    "legacy-reload4j",
+                    properties);
 
-            assertThat(jmDNSInstance).isNotNull();
+            assertThat(legacyJmDNS).isInstanceOf(LegacyJmDNS.class);
+            LegacyJmDNS jmDNS = (LegacyJmDNS) legacyJmDNS;
 
-            zeroConfSupportClass.getMethod("advertise").invoke(zeroConfSupport);
-            zeroConfSupportClass.getMethod("unadvertise").invoke(zeroConfSupport);
-        } catch (InvocationTargetException exception) {
-            if (isUnsupportedNativeImageError(exception.getCause())) {
-                return;
+            zeroConfSupport.advertise();
+
+            assertThat(jmDNS.getRegisteredService()).isInstanceOf(LegacyServiceInfo.class);
+            LegacyServiceInfo registeredService = (LegacyServiceInfo) jmDNS.getRegisteredService();
+            assertThat(registeredService.getZone()).isEqualTo("_log4j._tcp.local.");
+            assertThat(registeredService.getName()).isEqualTo("legacy-reload4j");
+            assertThat(registeredService.getPort()).isEqualTo(4561);
+            assertThat(registeredService.getProperties()).containsEntry("application", "legacy-reload4j-test");
+
+            zeroConfSupport.unadvertise();
+
+            assertThat(jmDNS.getRegisteredService()).isNull();
+        } finally {
+            jmDNSClassField.set(null, originalJmDNSClass);
+            serviceInfoClassField.set(null, originalServiceInfoClass);
+            jmDNSField.set(null, originalJmDNS);
+        }
+    }
+
+    private static Field getZeroConfSupportField(String fieldName) throws NoSuchFieldException {
+        Field field = ZeroConfSupport.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field;
+    }
+
+    public static final class LegacyJmDNS {
+        private Object registeredService;
+
+        public LegacyJmDNS() {
+        }
+
+        public void registerService(LegacyServiceInfo serviceInfo) {
+            registeredService = serviceInfo;
+        }
+
+        public void unregisterService(LegacyServiceInfo serviceInfo) {
+            if (registeredService == serviceInfo) {
+                registeredService = null;
             }
-            throw exception;
-        } catch (Error error) {
-            if (!isUnsupportedNativeImageError(error)) {
-                throw error;
-            }
+        }
+
+        public Object getRegisteredService() {
+            return registeredService;
         }
     }
 
-    private static boolean isUnsupportedNativeImageError(Throwable throwable) {
-        if (throwable == null) {
-            return false;
-        }
-        if (throwable instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
-            return true;
-        }
-        Throwable cause = throwable.getCause();
-        return cause != null && cause != throwable && isUnsupportedNativeImageError(cause);
-    }
+    public static final class LegacyServiceInfo {
+        private final String zone;
+        private final String name;
+        private final int port;
+        private final Hashtable properties;
 
-    private static byte[] readZeroConfSupportBytes() throws IOException {
-        ClassLoader classLoader = ZeroConfSupportTest.class.getClassLoader();
-        try (InputStream inputStream = classLoader.getResourceAsStream(ZERO_CONF_SUPPORT_RESOURCE)) {
-            assertThat(inputStream).isNotNull();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[4096];
-            int read;
-            while ((read = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, read);
-            }
-            return outputStream.toByteArray();
-        }
-    }
-
-    private static byte[] createLegacyJmDNSBytes() {
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, "javax/jmdns/JmDNS", null, "java/lang/Object", null);
-        addDefaultConstructor(classWriter);
-        addEmptyServiceMethod(classWriter, "registerService");
-        addEmptyServiceMethod(classWriter, "unregisterService");
-        classWriter.visitEnd();
-        return classWriter.toByteArray();
-    }
-
-    private static byte[] createLegacyServiceInfoBytes() {
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, "javax/jmdns/ServiceInfo", null, "java/lang/Object", null);
-        MethodVisitor constructor = classWriter.visitMethod(
-                ACC_PUBLIC,
-                "<init>",
-                "(Ljava/lang/String;Ljava/lang/String;IIILjava/util/Hashtable;)V",
-                null,
-                null);
-        constructor.visitCode();
-        constructor.visitVarInsn(ALOAD, 0);
-        constructor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-        constructor.visitInsn(RETURN);
-        constructor.visitMaxs(0, 0);
-        constructor.visitEnd();
-        classWriter.visitEnd();
-        return classWriter.toByteArray();
-    }
-
-    private static void addDefaultConstructor(ClassWriter classWriter) {
-        MethodVisitor constructor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-        constructor.visitCode();
-        constructor.visitVarInsn(ALOAD, 0);
-        constructor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-        constructor.visitInsn(RETURN);
-        constructor.visitMaxs(0, 0);
-        constructor.visitEnd();
-    }
-
-    private static void addEmptyServiceMethod(ClassWriter classWriter, String methodName) {
-        MethodVisitor method = classWriter.visitMethod(
-                ACC_PUBLIC,
-                methodName,
-                "(Ljavax/jmdns/ServiceInfo;)V",
-                null,
-                null);
-        method.visitCode();
-        method.visitInsn(RETURN);
-        method.visitMaxs(0, 0);
-        method.visitEnd();
-    }
-
-    private static final class LegacyJmDnsClassLoader extends ClassLoader {
-        private final Map<String, byte[]> classes = new HashMap<>();
-
-        private LegacyJmDnsClassLoader() throws IOException {
-            super(ZeroConfSupportTest.class.getClassLoader());
-            classes.put(ZERO_CONF_SUPPORT_CLASS_NAME, readZeroConfSupportBytes());
-            classes.put("javax.jmdns.JmDNS", createLegacyJmDNSBytes());
-            classes.put("javax.jmdns.ServiceInfo", createLegacyServiceInfoBytes());
+        public LegacyServiceInfo(
+                String zone,
+                String name,
+                int port,
+                int weight,
+                int priority,
+                Hashtable properties) {
+            this.zone = zone;
+            this.name = name;
+            this.port = port;
+            this.properties = properties;
         }
 
-        @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            synchronized (getClassLoadingLock(name)) {
-                byte[] bytes = classes.get(name);
-                if (bytes == null) {
-                    return super.loadClass(name, resolve);
-                }
-                Class<?> loadedClass = findLoadedClass(name);
-                if (loadedClass == null) {
-                    loadedClass = defineClass(name, bytes, 0, bytes.length);
-                }
-                if (resolve) {
-                    resolveClass(loadedClass);
-                }
-                return loadedClass;
-            }
+        public String getZone() {
+            return zone;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public Hashtable getProperties() {
+            return properties;
         }
     }
 }
