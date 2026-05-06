@@ -132,6 +132,22 @@ class Decline_3Test {
   }
 
   @Test
+  def supportsCountedFlagsAndOptionalFlagArguments(): Unit = {
+    val consoleCommand: Command[ConsoleConfig] = Command("console", "Configure console output.") {
+      val verbosity: Opts[Int] = Opts.flags("verbose", "Increase verbosity.", short = "v").withDefault(0)
+      val color: Opts[String] = Opts
+        .flagOption[String]("color", "Configure color output.", metavar = "mode")
+        .map(_.fold("auto")(mode => s"mode:$mode"))
+        .withDefault("off")
+      (verbosity, color).mapN(ConsoleConfig.apply)
+    }
+
+    assertEquals(ConsoleConfig(0, "off"), parseSuccess(consoleCommand, Nil))
+    assertEquals(ConsoleConfig(2, "auto"), parseSuccess(consoleCommand, List("-v", "--verbose", "--color")))
+    assertEquals(ConsoleConfig(1, "mode:always"), parseSuccess(consoleCommand, List("-v", "--color=always")))
+  }
+
+  @Test
   def parsesBuiltInArgumentTypesIncludingUuidUriAndFiniteDuration(): Unit = {
     val uuid: UUID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
     val typedCommand: Command[TypedValues] = Command("typed", "Parse typed values.") {
@@ -236,6 +252,8 @@ object Decline_3Test {
   final case class ServerConfig(host: String, port: Int)
 
   final case class PaintRequest(color: String, size: Int)
+
+  final case class ConsoleConfig(verbosity: Int, color: String)
 
   final case class TypedValues(id: UUID, callback: URI, timeout: FiniteDuration)
 
