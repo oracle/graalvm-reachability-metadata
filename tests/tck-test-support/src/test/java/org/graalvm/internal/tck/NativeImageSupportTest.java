@@ -13,6 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class NativeImageSupportTest {
 
     @Test
+    void returnsFalseOutsideNativeImageRuntime() {
+        assertFalse(NativeImageSupport.isInNativeImageRuntime());
+    }
+
+    @Test
     void returnsFalseForNull() {
         assertFalse(NativeImageSupport.isUnsupportedFeatureError(null));
     }
