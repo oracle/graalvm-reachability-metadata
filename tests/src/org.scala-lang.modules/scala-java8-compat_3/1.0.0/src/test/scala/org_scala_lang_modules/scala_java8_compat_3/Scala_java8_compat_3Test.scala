@@ -219,6 +219,26 @@ class Scala_java8_compat_3Test {
   }
 
   @Test
+  def accumulatesScalaInputsAndBoxedJavaStreams(): Unit = {
+    val words = List("alpha", "beta", "gamma").accumulate
+    assertThat(words.toList).isEqualTo(List("alpha", "beta", "gamma"))
+
+    val intValues = Vector(1, 1, 2, 3, 5).accumulate
+    assertThat(intValues.toList).isEqualTo(List(1, 1, 2, 3, 5))
+
+    val longValues = Array(10L, 20L, 30L).accumulate
+    assertThat(longValues.toList).isEqualTo(List(10L, 20L, 30L))
+
+    val steppedValues: scala.jdk.DoubleAccumulator = Vector(2.5d, 3.5d, 4.5d).stepper.accumulate
+    assertThat(steppedValues.toList).isEqualTo(List(2.5d, 3.5d, 4.5d))
+
+    val boxedInts = java.util.stream.Stream
+      .of[java.lang.Integer](Integer.valueOf(6), Integer.valueOf(7), Integer.valueOf(8))
+      .accumulatePrimitive
+    assertThat(boxedInts.toList).isEqualTo(List(6, 7, 8))
+  }
+
+  @Test
   def convertsJavaStreamsBackToScalaCollectionsAndPrimitiveStreams(): Unit = {
     val words = java.util.stream.Stream.of("alpha", "beta", "gamma").toScala[Vector]
     assertThat(words).isEqualTo(Vector("alpha", "beta", "gamma"))
