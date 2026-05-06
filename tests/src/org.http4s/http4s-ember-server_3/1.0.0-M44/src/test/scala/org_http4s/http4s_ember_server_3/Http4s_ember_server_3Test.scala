@@ -10,6 +10,7 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all.*
 import com.comcast.ip4s.Host
+import fs2.Stream
 import com.comcast.ip4s.Port
 import org.http4s.EntityDecoder
 import org.http4s.Header
@@ -66,6 +67,39 @@ class Http4s_ember_server_3Test {
 
         assertEquals(201, postResponse.statusCode())
         assertEquals("egami-evitan", postResponse.body())
+      }
+    }
+  }
+
+  @Test
+  def serverStreamsResponseBodies(): Unit = {
+    val streamingApplication: HttpApp[IO] = HttpApp[IO] { request =>
+      (request.method, request.uri.path.renderString) match {
+        case (Method.GET, "/stream") =>
+          val body: Stream[IO, Byte] = Stream
+            .emits(List("alpha", "-", "omega"))
+            .covary[IO]
+            .flatMap(chunk => Stream.emits(chunk.getBytes(StandardCharsets.UTF_8).toSeq).covary[IO])
+
+          Response[IO](Status.Ok).withBodyStream(body).pure[IO]
+
+        case _ =>
+          Response[IO](Status.NotFound).withEntity("not found").pure[IO]
+      }
+    }
+
+    withServer(streamingApplication) { port =>
+      withClient { client =>
+        val request: HttpRequest = HttpRequest
+          .newBuilder(serverUri(port, "/stream"))
+          .timeout(JavaDuration.ofSeconds(5))
+          .GET()
+          .build()
+        val response: HttpResponse[String] = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        assertEquals(200, response.statusCode())
+        assertEquals("alpha-omega", response.body())
+        assertTrue(response.headers().firstValue("Content-Length").isEmpty)
       }
     }
   }
