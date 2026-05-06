@@ -125,6 +125,16 @@ class Circe_generic_3Test {
     assertThat(encoded.as[AutoInventory]).isEqualTo(Right(inventory))
   }
 
+  @Test
+  def semiautomaticDerivationSupportsScala3EnumsWithSingletonAndParameterizedCases(): Unit = {
+    val inTransit: ShipmentStatus = ShipmentStatus.InTransit(location = "Paris", daysInTransit = 2)
+    val delivered: ShipmentStatus = ShipmentStatus.Delivered
+
+    assertDecodesTo(inTransit.asJson, inTransit)
+    assertDecodesTo(delivered.asJson, delivered)
+    assertFailsToDecode[ShipmentStatus](Json.obj("Returned" -> Json.obj()))
+  }
+
   private def assertDecodesTo[A](json: Json, expected: A)(using Decoder[A]): Unit = {
     assertThat(json.as[A]).isEqualTo(Right(expected))
   }
@@ -172,4 +182,14 @@ class Circe_generic_3Test {
   private final case class AutoInventoryItem(sku: String, quantity: Int)
 
   private final case class AutoInventory(location: String, active: Boolean, items: Vector[AutoInventoryItem])
+
+  private enum ShipmentStatus {
+    case Pending
+    case InTransit(location: String, daysInTransit: Int)
+    case Delivered
+  }
+
+  private object ShipmentStatus {
+    given Codec[ShipmentStatus] = deriveCodec[ShipmentStatus]
+  }
 }
