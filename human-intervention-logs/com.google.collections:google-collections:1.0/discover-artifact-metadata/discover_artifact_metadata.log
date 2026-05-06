@@ -1,0 +1,2763 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfea6-34a3-7c32-b2f5-0395a8b6b7cb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.collections:google-collections:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0" when "$version$" is replaced with "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+- Set "coordinates" to "com.google.collections:google-collections:1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven Central and the project’s historical source locations, then patch the discovered metadata JSON in place.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json && sed -n '1,200p' build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+-rw-rw-r-- 1 vjovanov vjovanov 70 May  6 20:56 build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+{
+  "coordinates" : "com.google.collections:google-collections:1.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "com.google.collections:google-collections|google-collections" metadata tests build/discovered-artifact-metadata -S' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json:2:  "coordinates" : "com.google.collections:google-collections:1.0"
+
+web search: 
+web search: com.google.collections google-collections 1.0 Maven Central sources javadoc tests
+web search: 
+web search: https://central.sonatype.com/artifact/com.google.collections/google-collections
+web search: 
+web search: repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar
+codex
+The POM confirms this is a normal `jar` artifact for Java 5 and points at the old Google Code project/SCM. I’m checking the actual Maven directory now because the source and javadoc artifacts should be preferred if they exist there.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+<html>
+<head><title>Index of /maven2/com/google/collections/google-collections/1.0/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/com/google/collections/google-collections/1.0/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="google-collections-1.0.jar">google-collections-1.0.jar</a>                         2009-12-30 17:28               639592
+<a href="google-collections-1.0.jar.md5">google-collections-1.0.jar.md5</a>                     2010-03-20 11:35                   33
+<a href="google-collections-1.0.jar.md5.sha1">google-collections-1.0.jar.md5.sha1</a>                2010-03-20 11:36                   41
+<a href="google-collections-1.0.jar.sha1">google-collections-1.0.jar.sha1</a>                    2010-03-20 11:36                   41
+<a href="google-collections-1.0-javadoc.jar">google-collections-1.0-javadoc.jar</a>                 2009-12-30 17:28               707958
+<a href="google-collections-1.0-javadoc.jar.md5">google-collections-1.0-javadoc.jar.md5</a>             2010-03-20 11:35                   33
+<a href="google-collections-1.0-javadoc.jar.md5.sha1">google-collections-1.0-javadoc.jar.md5.sha1</a>        2010-03-20 11:36                   41
+<a href="google-collections-1.0-javadoc.jar.sha1">google-collections-1.0-javadoc.jar.sha1</a>            2010-03-20 11:36                   41
+<a href="google-collections-1.0.pom">google-collections-1.0.pom</a>                         2009-12-30 17:28                 2478
+<a href="google-collections-1.0.pom.md5">google-collections-1.0.pom.md5</a>                     2010-03-20 11:35                   33
+<a href="google-collections-1.0.pom.md5.sha1">google-collections-1.0.pom.md5.sha1</a>                2010-03-20 11:36                   41
+<a href="google-collections-1.0.pom.sha1">google-collections-1.0.pom.sha1</a>                    2010-03-20 11:36                   41
+<a href="google-collections-1.0-sources.jar">google-collections-1.0-sources.jar</a>                 2009-12-30 17:28               309295
+<a href="google-collections-1.0-sources.jar.md5">google-collections-1.0-sources.jar.md5</a>             2010-03-20 11:35                   33
+<a href="google-collections-1.0-sources.jar.md5.sha1">google-collections-1.0-sources.jar.md5.sha1</a>        2010-03-20 11:36                   41
+<a href="google-collections-1.0-sources.jar.sha1">google-collections-1.0-sources.jar.sha1</a>            2010-03-20 11:36                   41
+</pre>
+<hr>
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.google</groupId>
+    <artifactId>google</artifactId>
+    <version>1</version>
+  </parent>
+  <groupId>com.google.collections</groupId>
+  <artifactId>google-collections</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+  <name>Google Collections Library</name>
+  <description>Google Collections Library is a suite of new collections and collection-related goodness for Java 5.0</description>
+  <inceptionYear>2007</inceptionYear>
+  <url>http://code.google.com/p/google-collections/</url>
+  <organization>
+    <name>Google</name>
+    <url>http://www.google.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://code.google.com/p/google-collections/source/browse/</url>
+    <connection>scm:svn:http://google-collections.googlecode.com/svn/trunk/</connection>
+  </scm>
+  <!-- this is temporarily copied from the parent pom.  remove this section when that is used -->
+  <distributionManagement>
+    <repository>
+      <id>google-maven-repository</id>
+      <name>Google Maven Repository</name>
+      <url>dav:https://google-maven-repository.googlecode.com/svn/repository/</url>
+    </repository>
+    <snapshotRepository>
+      <id>google-maven-snapshot-repository</id>
+      <name>Google Maven Snapshot Repository</name>
+      <url>dav:https://google-maven-repository.googlecode.com/svn/snapshot-repository/</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>1.3.7</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/
+web search: 
+web search: github google guava google-collections 1.0 tag
+exec
+/usr/bin/bash -lc 'curl -fsSL "https://api.github.com/repos/google/guava/tags?per_page=100"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/google/guava.git | rg -i \"(collections|1\\.0|release)\"" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 304ms:
+[
+  {
+    "name": "v33.6.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.6.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.6.0",
+    "commit": {
+      "sha": "de1d87eabff93cb4a7fa8e52df5fc46802c95b17",
+      "url": "https://api.github.com/repos/google/guava/commits/de1d87eabff93cb4a7fa8e52df5fc46802c95b17"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy42LjA="
+  },
+  {
+    "name": "v33.5.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.5.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.5.0",
+    "commit": {
+      "sha": "8868c096cfdabbe38170b6e395369c315cfb72a1",
+      "url": "https://api.github.com/repos/google/guava/commits/8868c096cfdabbe38170b6e395369c315cfb72a1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy41LjA="
+  },
+  {
+    "name": "v33.4.8",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.8",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.8",
+    "commit": {
+      "sha": "f06690fa3e874f65515e8fd338a74d636e2c792f",
+      "url": "https://api.github.com/repos/google/guava/commits/f06690fa3e874f65515e8fd338a74d636e2c792f"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40Ljg="
+  },
+  {
+    "name": "v33.4.7",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.7",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.7",
+    "commit": {
+      "sha": "b4d0b591c3d5040ee9ad9dd5fd78259d5950fee7",
+      "url": "https://api.github.com/repos/google/guava/commits/b4d0b591c3d5040ee9ad9dd5fd78259d5950fee7"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40Ljc="
+  },
+  {
+    "name": "v33.4.6",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.6",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.6",
+    "commit": {
+      "sha": "e7a6a200d7171c78774d5805be77351b7b84eab5",
+      "url": "https://api.github.com/repos/google/guava/commits/e7a6a200d7171c78774d5805be77351b7b84eab5"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjY="
+  },
+  {
+    "name": "v33.4.5",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.5",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.5",
+    "commit": {
+      "sha": "98154c4859258d2a27cae1d6ba2fda742f4c6b6c",
+      "url": "https://api.github.com/repos/google/guava/commits/98154c4859258d2a27cae1d6ba2fda742f4c6b6c"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjU="
+  },
+  {
+    "name": "v33.4.4",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.4",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.4",
+    "commit": {
+      "sha": "ffe051f548c9919f96f8f05814ddb5eb6eba31dc",
+      "url": "https://api.github.com/repos/google/guava/commits/ffe051f548c9919f96f8f05814ddb5eb6eba31dc"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjQ="
+  },
+  {
+    "name": "v33.4.3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.3",
+    "commit": {
+      "sha": "df7e4b0dfbeb86edde7c9e61798a659b28930008",
+      "url": "https://api.github.com/repos/google/guava/commits/df7e4b0dfbeb86edde7c9e61798a659b28930008"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjM="
+  },
+  {
+    "name": "v33.4.2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.2",
+    "commit": {
+      "sha": "66ad09c1eb158c3855e2bf03bc39a4c5b592120e",
+      "url": "https://api.github.com/repos/google/guava/commits/66ad09c1eb158c3855e2bf03bc39a4c5b592120e"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjI="
+  },
+  {
+    "name": "v33.4.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.1",
+    "commit": {
+      "sha": "60431de4bbd1777db70c4254811c85b37cce2e68",
+      "url": "https://api.github.com/repos/google/guava/commits/60431de4bbd1777db70c4254811c85b37cce2e68"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjE="
+  },
+  {
+    "name": "v33.4.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.0",
+    "commit": {
+      "sha": "5c71d2a15435399fa62508d807d5cc83506f7496",
+      "url": "https://api.github.com/repos/google/guava/commits/5c71d2a15435399fa62508d807d5cc83506f7496"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjA="
+  },
+  {
+    "name": "v33.3.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.3.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.3.1",
+    "commit": {
+      "sha": "df9602b6f1dd36414464229e0a441469d06e4575",
+      "url": "https://api.github.com/repos/google/guava/commits/df9602b6f1dd36414464229e0a441469d06e4575"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4zLjE="
+  },
+  {
+    "name": "v33.3.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.3.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.3.0",
+    "commit": {
+      "sha": "0229670c8f305efd745430230dc7782f9406cd44",
+      "url": "https://api.github.com/repos/google/guava/commits/0229670c8f305efd745430230dc7782f9406cd44"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4zLjA="
+  },
+  {
+    "name": "v33.2.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.2.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.2.1",
+    "commit": {
+      "sha": "0c33dd12b193402cdf6962d43d69743521aa2f76",
+      "url": "https://api.github.com/repos/google/guava/commits/0c33dd12b193402cdf6962d43d69743521aa2f76"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4yLjE="
+  },
+  {
+    "name": "v33.2.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.2.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.2.0",
+    "commit": {
+      "sha": "73856da06403d5d087007d3924c168c822dea23c",
+      "url": "https://api.github.com/repos/google/guava/commits/73856da06403d5d087007d3924c168c822dea23c"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4yLjA="
+  },
+  {
+    "name": "v33.1.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.1.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.1.0",
+    "commit": {
+      "sha": "f3e095c3b318f3e6dfeef393146ce5561ec8f859",
+      "url": "https://api.github.com/repos/google/guava/commits/f3e095c3b318f3e6dfeef393146ce5561ec8f859"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4xLjA="
+  },
+  {
+    "name": "v33.0.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.0.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.0.0",
+    "commit": {
+      "sha": "2214c63670fc161da170ac6e1a2d6d07e1531a55",
+      "url": "https://api.github.com/repos/google/guava/commits/2214c63670fc161da170ac6e1a2d6d07e1531a55"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4wLjA="
+  },
+  {
+    "name": "v32.1.3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.1.3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.1.3",
+    "commit": {
+      "sha": "c1088508ddc78bd60d096d2cc3ceef4a82ec909d",
+      "url": "https://api.github.com/repos/google/guava/commits/c1088508ddc78bd60d096d2cc3ceef4a82ec909d"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMi4xLjM="
+  },
+  {
+    "name": "v32.1.2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.1.2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.1.2",
+    "commit": {
+      "sha": "db74bd2fdac443223d45e6fc5c66548542be1081",
+      "url": "https://api.github.com/repos/google/guava/commits/db74bd2fdac443223d45e6fc5c66548542be1081"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMi4xLjI="
+  },
+  {
+    "name": "v32.1.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.1.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.1.1",
+    "commit": {
+      "sha": "427223e9f94406013f1bc77fa0bd1231a1475645",
+      "url": "https://api.github.com/repos/google/guava/commits/427223e9f94406013f1bc77fa0bd1231a1475645"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMi4xLjE="
+  },
+  {
+    "name": "v32.1.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.1.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.1.0",
+    "commit": {
+      "sha": "53bb66554b195ab3aec3da285f1f140b1abae44d",
+      "url": "https://api.github.com/repos/google/guava/commits/53bb66554b195ab3aec3da285f1f140b1abae44d"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMi4xLjA="
+  },
+  {
+    "name": "v32.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.0.1",
+    "commit": {
+      "sha": "8f6c43d803901e7d8bd9ca16a3a049969ddc35e4",
+      "url": "https://api.github.com/repos/google/guava/commits/8f6c43d803901e7d8bd9ca16a3a049969ddc35e4"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMi4wLjE="
+  },
+  {
+    "name": "v32.0.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.0.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.0.0",
+    "commit": {
+      "sha": "6b1f97ced922d48f071153ad9e631d06383033a4",
+      "url": "https://api.github.com/repos/google/guava/commits/6b1f97ced922d48f071153ad9e631d06383033a4"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMi4wLjA="
+  },
+  {
+    "name": "v31.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v31.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v31.1",
+    "commit": {
+      "sha": "0a17f4a429323589396c38d8ce75ca058faa6c64",
+      "url": "https://api.github.com/repos/google/guava/commits/0a17f4a429323589396c38d8ce75ca058faa6c64"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMS4x"
+  },
+  {
+    "name": "v31.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v31.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v31.0.1",
+    "commit": {
+      "sha": "ba824dfb4c4f64d8c3b8d07e2042bf1ecdd53e28",
+      "url": "https://api.github.com/repos/google/guava/commits/ba824dfb4c4f64d8c3b8d07e2042bf1ecdd53e28"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMS4wLjE="
+  },
+  {
+    "name": "v31.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v31.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v31.0",
+    "commit": {
+      "sha": "6edcfc0a649e4031f4a48ea7f41aa0cb4801db2b",
+      "url": "https://api.github.com/repos/google/guava/commits/6edcfc0a649e4031f4a48ea7f41aa0cb4801db2b"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMS4w"
+  },
+  {
+    "name": "v30.1.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v30.1.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v30.1.1",
+    "commit": {
+      "sha": "43a53bc0328c7efd1da152f3b56b1fd241c88d4c",
+      "url": "https://api.github.com/repos/google/guava/commits/43a53bc0328c7efd1da152f3b56b1fd241c88d4c"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMC4xLjE="
+  },
+  {
+    "name": "v30.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v30.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v30.1",
+    "commit": {
+      "sha": "eda0b7f30a1919b7a56136aa1f37700dcc0ca9bd",
+      "url": "https://api.github.com/repos/google/guava/commits/eda0b7f30a1919b7a56136aa1f37700dcc0ca9bd"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMC4x"
+  },
+  {
+    "name": "v30.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v30.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v30.0",
+    "commit": {
+      "sha": "f75cd01d3afe83623bb8bd1a8a816ea5245bf285",
+      "url": "https://api.github.com/repos/google/guava/commits/f75cd01d3afe83623bb8bd1a8a816ea5245bf285"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMC4w"
+  },
+  {
+    "name": "v29.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v29.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v29.0",
+    "commit": {
+      "sha": "2d655e59ee0af2a0cabf877d5f85ababf813ff8e",
+      "url": "https://api.github.com/repos/google/guava/commits/2d655e59ee0af2a0cabf877d5f85ababf813ff8e"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyOS4w"
+  },
+  {
+    "name": "v28.2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v28.2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v28.2",
+    "commit": {
+      "sha": "a1b3c06876803a0b0e5d2f16708e1328da1bac09",
+      "url": "https://api.github.com/repos/google/guava/commits/a1b3c06876803a0b0e5d2f16708e1328da1bac09"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyOC4y"
+  },
+  {
+    "name": "v28.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v28.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v28.1",
+    "commit": {
+      "sha": "e30495f4e09e2511b4f2bb95d2b9e1b262c4215d",
+      "url": "https://api.github.com/repos/google/guava/commits/e30495f4e09e2511b4f2bb95d2b9e1b262c4215d"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyOC4x"
+  },
+  {
+    "name": "v28.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v28.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v28.0",
+    "commit": {
+      "sha": "9957203c956016b485696ce9d1a4d60f1019c5fd",
+      "url": "https://api.github.com/repos/google/guava/commits/9957203c956016b485696ce9d1a4d60f1019c5fd"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyOC4w"
+  },
+  {
+    "name": "v27.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v27.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v27.1",
+    "commit": {
+      "sha": "b34c2da9e5bbf8216a31c6794619689053210f16",
+      "url": "https://api.github.com/repos/google/guava/commits/b34c2da9e5bbf8216a31c6794619689053210f16"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNy4x"
+  },
+  {
+    "name": "v27.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v27.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v27.0.1",
+    "commit": {
+      "sha": "777f0f939dda3feb36263315da5bc39516a076a1",
+      "url": "https://api.github.com/repos/google/guava/commits/777f0f939dda3feb36263315da5bc39516a076a1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNy4wLjE="
+  },
+  {
+    "name": "v27.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v27.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v27.0",
+    "commit": {
+      "sha": "a35bfd9ea855539354b783ee74839e384f7af98a",
+      "url": "https://api.github.com/repos/google/guava/commits/a35bfd9ea855539354b783ee74839e384f7af98a"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNy4w"
+  },
+  {
+    "name": "v26.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v26.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v26.0",
+    "commit": {
+      "sha": "bbf9295088d668c06e573cea03f01375985c1814",
+      "url": "https://api.github.com/repos/google/guava/commits/bbf9295088d668c06e573cea03f01375985c1814"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNi4w"
+  },
+  {
+    "name": "v25.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v25.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v25.1",
+    "commit": {
+      "sha": "b28b5850d11b948a5b0f9240894636e0b5bec22a",
+      "url": "https://api.github.com/repos/google/guava/commits/b28b5850d11b948a5b0f9240894636e0b5bec22a"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNS4x"
+  },
+  {
+    "name": "v25.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v25.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v25.0",
+    "commit": {
+      "sha": "0819c57c91b3ba2695a792b828ae239258681a3e",
+      "url": "https://api.github.com/repos/google/guava/commits/0819c57c91b3ba2695a792b828ae239258681a3e"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNS4w"
+  },
+  {
+    "name": "v24.1.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v24.1.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v24.1.1",
+    "commit": {
+      "sha": "49fad5af840b2a28dd0dc24ecfd58b4baa8d67bc",
+      "url": "https://api.github.com/repos/google/guava/commits/49fad5af840b2a28dd0dc24ecfd58b4baa8d67bc"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNC4xLjE="
+  },
+  {
+    "name": "v24.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v24.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v24.1",
+    "commit": {
+      "sha": "4360cdbb3065c743d6e64e0a5ed5e967682e2086",
+      "url": "https://api.github.com/repos/google/guava/commits/4360cdbb3065c743d6e64e0a5ed5e967682e2086"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNC4x"
+  },
+  {
+    "name": "v24.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v24.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v24.0",
+    "commit": {
+      "sha": "cebf66be35cceb2c04990805f127506b2197fe33",
+      "url": "https://api.github.com/repos/google/guava/commits/cebf66be35cceb2c04990805f127506b2197fe33"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyNC4w"
+  },
+  {
+    "name": "v23.6.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.6.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.6.1",
+    "commit": {
+      "sha": "5a5c62b533b65c32b5d4cf6b796657486709dbbe",
+      "url": "https://api.github.com/repos/google/guava/commits/5a5c62b533b65c32b5d4cf6b796657486709dbbe"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy42LjE="
+  },
+  {
+    "name": "v23.6",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.6",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.6",
+    "commit": {
+      "sha": "a763d18e40634908d7d138899c85f0458202ed3a",
+      "url": "https://api.github.com/repos/google/guava/commits/a763d18e40634908d7d138899c85f0458202ed3a"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy42"
+  },
+  {
+    "name": "v23.5",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.5",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.5",
+    "commit": {
+      "sha": "538d60aed09e945f59077770686df9cbd4e0048d",
+      "url": "https://api.github.com/repos/google/guava/commits/538d60aed09e945f59077770686df9cbd4e0048d"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy41"
+  },
+  {
+    "name": "v23.4",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.4",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.4",
+    "commit": {
+      "sha": "b9bfab0366a89922a72cff8e9ae41f94a4132b43",
+      "url": "https://api.github.com/repos/google/guava/commits/b9bfab0366a89922a72cff8e9ae41f94a4132b43"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy40"
+  },
+  {
+    "name": "v23.3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.3",
+    "commit": {
+      "sha": "a39d0a17e3275120e29e38aff7ba1a5516857f84",
+      "url": "https://api.github.com/repos/google/guava/commits/a39d0a17e3275120e29e38aff7ba1a5516857f84"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy4z"
+  },
+  {
+    "name": "v23.2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.2",
+    "commit": {
+      "sha": "738473319bad6485a1027fcfd6bb63f09a89e054",
+      "url": "https://api.github.com/repos/google/guava/commits/738473319bad6485a1027fcfd6bb63f09a89e054"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy4y"
+  },
+  {
+    "name": "v23.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.1",
+    "commit": {
+      "sha": "2cb235929ce7ae9284482be7572f364bc4bc32e1",
+      "url": "https://api.github.com/repos/google/guava/commits/2cb235929ce7ae9284482be7572f364bc4bc32e1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy4x"
+  },
+  {
+    "name": "v23.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.0",
+    "commit": {
+      "sha": "b48cdeb618388a7b1d1c782e1ce2cc60b4f4efca",
+      "url": "https://api.github.com/repos/google/guava/commits/b48cdeb618388a7b1d1c782e1ce2cc60b4f4efca"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy4w"
+  },
+  {
+    "name": "v23.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v23.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v23.0-rc1",
+    "commit": {
+      "sha": "6dae21fe0e3c77f1cf1e92653134cdd4a05742fc",
+      "url": "https://api.github.com/repos/google/guava/commits/6dae21fe0e3c77f1cf1e92653134cdd4a05742fc"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMy4wLXJjMQ=="
+  },
+  {
+    "name": "v22.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v22.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v22.0",
+    "commit": {
+      "sha": "7bbdb221feb446cbd38202c133818bc383c413ae",
+      "url": "https://api.github.com/repos/google/guava/commits/7bbdb221feb446cbd38202c133818bc383c413ae"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMi4w"
+  },
+  {
+    "name": "v22.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v22.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v22.0-rc1",
+    "commit": {
+      "sha": "4c70a77f1673d493758bc9b9507e3b6d111e9491",
+      "url": "https://api.github.com/repos/google/guava/commits/4c70a77f1673d493758bc9b9507e3b6d111e9491"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMi4wLXJjMQ=="
+  },
+  {
+    "name": "v21.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v21.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v21.0",
+    "commit": {
+      "sha": "0f025e5d5d39a5d1ab709917f725d48a8464df50",
+      "url": "https://api.github.com/repos/google/guava/commits/0f025e5d5d39a5d1ab709917f725d48a8464df50"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMS4w"
+  },
+  {
+    "name": "v21.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v21.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v21.0-rc2",
+    "commit": {
+      "sha": "cef6bdc11c67b01ebca34b3a83e293add2733f24",
+      "url": "https://api.github.com/repos/google/guava/commits/cef6bdc11c67b01ebca34b3a83e293add2733f24"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMS4wLXJjMg=="
+  },
+  {
+    "name": "v21.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v21.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v21.0-rc1",
+    "commit": {
+      "sha": "c963e69c9cbea48eb221b7d5f915f5494875bf30",
+      "url": "https://api.github.com/repos/google/guava/commits/c963e69c9cbea48eb221b7d5f915f5494875bf30"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMS4wLXJjMQ=="
+  },
+  {
+    "name": "v20.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v20.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v20.0",
+    "commit": {
+      "sha": "65f6b4f4b132a051616403bcf74e4034a19d92a1",
+      "url": "https://api.github.com/repos/google/guava/commits/65f6b4f4b132a051616403bcf74e4034a19d92a1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMC4w"
+  },
+  {
+    "name": "v20.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v20.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v20.0-rc1",
+    "commit": {
+      "sha": "32130d5762f306641150ecd2325bb510036b14ff",
+      "url": "https://api.github.com/repos/google/guava/commits/32130d5762f306641150ecd2325bb510036b14ff"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YyMC4wLXJjMQ=="
+  },
+  {
+    "name": "v19.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v19.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v19.0",
+    "commit": {
+      "sha": "daa84b68f31898f67a51207e193ee2ddabb088bf",
+      "url": "https://api.github.com/repos/google/guava/commits/daa84b68f31898f67a51207e193ee2ddabb088bf"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOS4w"
+  },
+  {
+    "name": "v19.0-rc3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v19.0-rc3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v19.0-rc3",
+    "commit": {
+      "sha": "8d4cf0a55f703d31c7e5d4680094b1141dc5ee68",
+      "url": "https://api.github.com/repos/google/guava/commits/8d4cf0a55f703d31c7e5d4680094b1141dc5ee68"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOS4wLXJjMw=="
+  },
+  {
+    "name": "v19.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v19.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v19.0-rc2",
+    "commit": {
+      "sha": "07326071e771c9244123791f00b848cc4f44fd9f",
+      "url": "https://api.github.com/repos/google/guava/commits/07326071e771c9244123791f00b848cc4f44fd9f"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOS4wLXJjMg=="
+  },
+  {
+    "name": "v19.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v19.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v19.0-rc1",
+    "commit": {
+      "sha": "46d6b3cf6b814720b1cae280ac53d27c932d2bde",
+      "url": "https://api.github.com/repos/google/guava/commits/46d6b3cf6b814720b1cae280ac53d27c932d2bde"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOS4wLXJjMQ=="
+  },
+  {
+    "name": "v18.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v18.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v18.0",
+    "commit": {
+      "sha": "798803f026bb9517bcf4e0e9ab2d2e0345023182",
+      "url": "https://api.github.com/repos/google/guava/commits/798803f026bb9517bcf4e0e9ab2d2e0345023182"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOC4w"
+  },
+  {
+    "name": "v18.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v18.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v18.0-rc2",
+    "commit": {
+      "sha": "f294d1e9c59b51e7372a1ce064aefbecbc562498",
+      "url": "https://api.github.com/repos/google/guava/commits/f294d1e9c59b51e7372a1ce064aefbecbc562498"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOC4wLXJjMg=="
+  },
+  {
+    "name": "v18.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v18.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v18.0-rc1",
+    "commit": {
+      "sha": "652d361ff64b539581f93740d0d1c5793c2ef576",
+      "url": "https://api.github.com/repos/google/guava/commits/652d361ff64b539581f93740d0d1c5793c2ef576"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxOC4wLXJjMQ=="
+  },
+  {
+    "name": "v17.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v17.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v17.0",
+    "commit": {
+      "sha": "904234dc2f365314c636d29385780faf72db2477",
+      "url": "https://api.github.com/repos/google/guava/commits/904234dc2f365314c636d29385780faf72db2477"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNy4w"
+  },
+  {
+    "name": "v17.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v17.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v17.0-rc2",
+    "commit": {
+      "sha": "ff75ff6535d4ba6dc0e7a717e178c8408c43adca",
+      "url": "https://api.github.com/repos/google/guava/commits/ff75ff6535d4ba6dc0e7a717e178c8408c43adca"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNy4wLXJjMg=="
+  },
+  {
+    "name": "v17.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v17.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v17.0-rc1",
+    "commit": {
+      "sha": "305f7b5b9f2746ffafcfc16aa12e16fdbd136e72",
+      "url": "https://api.github.com/repos/google/guava/commits/305f7b5b9f2746ffafcfc16aa12e16fdbd136e72"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNy4wLXJjMQ=="
+  },
+  {
+    "name": "v16.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v16.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v16.0.1",
+    "commit": {
+      "sha": "0ba7ccf36f5384a321cb78d62375bf7574e7bc24",
+      "url": "https://api.github.com/repos/google/guava/commits/0ba7ccf36f5384a321cb78d62375bf7574e7bc24"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNi4wLjE="
+  },
+  {
+    "name": "v16.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v16.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v16.0",
+    "commit": {
+      "sha": "2537d1ed4795f8fad737a7bf6d6f93fbdfa28e54",
+      "url": "https://api.github.com/repos/google/guava/commits/2537d1ed4795f8fad737a7bf6d6f93fbdfa28e54"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNi4w"
+  },
+  {
+    "name": "v16.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v16.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v16.0-rc1",
+    "commit": {
+      "sha": "55c550939dcbdf948f96152cadd1b7a018ddb7cf",
+      "url": "https://api.github.com/repos/google/guava/commits/55c550939dcbdf948f96152cadd1b7a018ddb7cf"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNi4wLXJjMQ=="
+  },
+  {
+    "name": "v15.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v15.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v15.0",
+    "commit": {
+      "sha": "7ce15119ae3b8ea71bdfd43bd6a0b96f851187d0",
+      "url": "https://api.github.com/repos/google/guava/commits/7ce15119ae3b8ea71bdfd43bd6a0b96f851187d0"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNS4w"
+  },
+  {
+    "name": "v15.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v15.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v15.0-rc1",
+    "commit": {
+      "sha": "18f29834c588cbe6b937746ce1a133ffd4f0c7e9",
+      "url": "https://api.github.com/repos/google/guava/commits/18f29834c588cbe6b937746ce1a133ffd4f0c7e9"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNS4wLXJjMQ=="
+  },
+  {
+    "name": "v15.0-cdi1.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v15.0-cdi1.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v15.0-cdi1.0",
+    "commit": {
+      "sha": "e6c06b006e143f741bc8b8e8871d8df1d71ed470",
+      "url": "https://api.github.com/repos/google/guava/commits/e6c06b006e143f741bc8b8e8871d8df1d71ed470"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNS4wLWNkaTEuMA=="
+  },
+  {
+    "name": "v14.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v14.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v14.0.1",
+    "commit": {
+      "sha": "c3bd8eb49f9b355a140cbb56ab592e973fea4c0d",
+      "url": "https://api.github.com/repos/google/guava/commits/c3bd8eb49f9b355a140cbb56ab592e973fea4c0d"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNC4wLjE="
+  },
+  {
+    "name": "v14.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v14.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v14.0",
+    "commit": {
+      "sha": "a3c71e0264ee5bf5eebd341c506dda655c3a6356",
+      "url": "https://api.github.com/repos/google/guava/commits/a3c71e0264ee5bf5eebd341c506dda655c3a6356"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNC4w"
+  },
+  {
+    "name": "v14.0-rc3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v14.0-rc3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v14.0-rc3",
+    "commit": {
+      "sha": "469b0d2a43e17fbaddc942de13472dbe6ea188f4",
+      "url": "https://api.github.com/repos/google/guava/commits/469b0d2a43e17fbaddc942de13472dbe6ea188f4"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNC4wLXJjMw=="
+  },
+  {
+    "name": "v14.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v14.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v14.0-rc2",
+    "commit": {
+      "sha": "7da2ed74e1f61d4a9e0ae78212bf18378d972661",
+      "url": "https://api.github.com/repos/google/guava/commits/7da2ed74e1f61d4a9e0ae78212bf18378d972661"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNC4wLXJjMg=="
+  },
+  {
+    "name": "v14.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v14.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v14.0-rc1",
+    "commit": {
+      "sha": "c71e08d074a4af96f5e94041f40e792b877b5c3b",
+      "url": "https://api.github.com/repos/google/guava/commits/c71e08d074a4af96f5e94041f40e792b877b5c3b"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxNC4wLXJjMQ=="
+  },
+  {
+    "name": "v13.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v13.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v13.0.1",
+    "commit": {
+      "sha": "c523556ab7d0f05afadebd20e7768d4c16af8771",
+      "url": "https://api.github.com/repos/google/guava/commits/c523556ab7d0f05afadebd20e7768d4c16af8771"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMy4wLjE="
+  },
+  {
+    "name": "v13.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v13.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v13.0",
+    "commit": {
+      "sha": "c8511677c7827ab687b7412925ccdae76b6bbff1",
+      "url": "https://api.github.com/repos/google/guava/commits/c8511677c7827ab687b7412925ccdae76b6bbff1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMy4w"
+  },
+  {
+    "name": "v13.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v13.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v13.0-rc2",
+    "commit": {
+      "sha": "9df9a23de5323275f5614aa7e732a636029f9b70",
+      "url": "https://api.github.com/repos/google/guava/commits/9df9a23de5323275f5614aa7e732a636029f9b70"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMy4wLXJjMg=="
+  },
+  {
+    "name": "v13.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v13.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v13.0-rc1",
+    "commit": {
+      "sha": "3db22e7a7f468ae268352ad95b3389183162da81",
+      "url": "https://api.github.com/repos/google/guava/commits/3db22e7a7f468ae268352ad95b3389183162da81"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMy4wLXJjMQ=="
+  },
+  {
+    "name": "v13.0-final",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v13.0-final",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v13.0-final",
+    "commit": {
+      "sha": "9df9a23de5323275f5614aa7e732a636029f9b70",
+      "url": "https://api.github.com/repos/google/guava/commits/9df9a23de5323275f5614aa7e732a636029f9b70"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMy4wLWZpbmFs"
+  },
+  {
+    "name": "v12.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v12.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v12.0.1",
+    "commit": {
+      "sha": "75d93f4737a9969d9fc0aedab0375db7629d7ee8",
+      "url": "https://api.github.com/repos/google/guava/commits/75d93f4737a9969d9fc0aedab0375db7629d7ee8"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMi4wLjE="
+  },
+  {
+    "name": "v12.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v12.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v12.0",
+    "commit": {
+      "sha": "72d281266d52f95bc7df228cd37294c9fa6effe3",
+      "url": "https://api.github.com/repos/google/guava/commits/72d281266d52f95bc7df228cd37294c9fa6effe3"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMi4w"
+  },
+  {
+    "name": "v12.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v12.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v12.0-rc2",
+    "commit": {
+      "sha": "3b733e24922c94b2babdd096532b6bf1f04415f6",
+      "url": "https://api.github.com/repos/google/guava/commits/3b733e24922c94b2babdd096532b6bf1f04415f6"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMi4wLXJjMg=="
+  },
+  {
+    "name": "v12.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v12.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v12.0-rc1",
+    "commit": {
+      "sha": "fcd0a111a0b206d70b6054efc869dd33a1757ecd",
+      "url": "https://api.github.com/repos/google/guava/commits/fcd0a111a0b206d70b6054efc869dd33a1757ecd"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMi4wLXJjMQ=="
+  },
+  {
+    "name": "v11.0.2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v11.0.2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v11.0.2",
+    "commit": {
+      "sha": "78c34456423e680ec69059f21a5841296ab23277",
+      "url": "https://api.github.com/repos/google/guava/commits/78c34456423e680ec69059f21a5841296ab23277"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMS4wLjI="
+  },
+  {
+    "name": "v11.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v11.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v11.0.1",
+    "commit": {
+      "sha": "95cd4a6be05b8acb2f02630caa1d11af4ac07db1",
+      "url": "https://api.github.com/repos/google/guava/commits/95cd4a6be05b8acb2f02630caa1d11af4ac07db1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMS4wLjE="
+  },
+  {
+    "name": "v11.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v11.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v11.0",
+    "commit": {
+      "sha": "5a6bf80c7403d77df18adb41b5b15ea34d28186d",
+      "url": "https://api.github.com/repos/google/guava/commits/5a6bf80c7403d77df18adb41b5b15ea34d28186d"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMS4w"
+  },
+  {
+    "name": "v11.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v11.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v11.0-rc1",
+    "commit": {
+      "sha": "5ba62b182d588e3dbc5bf736bf797db8ae9bc439",
+      "url": "https://api.github.com/repos/google/guava/commits/5ba62b182d588e3dbc5bf736bf797db8ae9bc439"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMS4wLXJjMQ=="
+  },
+  {
+    "name": "v10.0.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v10.0.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v10.0.1",
+    "commit": {
+      "sha": "22eb4ada1211093d21b6a209f8e03d107ba48580",
+      "url": "https://api.github.com/repos/google/guava/commits/22eb4ada1211093d21b6a209f8e03d107ba48580"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMC4wLjE="
+  },
+  {
+    "name": "v10.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v10.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v10.0",
+    "commit": {
+      "sha": "baf008c5a3de60e8399852f23979bf69f2660023",
+      "url": "https://api.github.com/repos/google/guava/commits/baf008c5a3de60e8399852f23979bf69f2660023"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMC4w"
+  },
+  {
+    "name": "v10.0-rc3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v10.0-rc3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v10.0-rc3",
+    "commit": {
+      "sha": "b0b6251c2177fdb63ad0f1d0ff0b155950d57fb2",
+      "url": "https://api.github.com/repos/google/guava/commits/b0b6251c2177fdb63ad0f1d0ff0b155950d57fb2"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMC4wLXJjMw=="
+  },
+  {
+    "name": "v10.0-rc2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v10.0-rc2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v10.0-rc2",
+    "commit": {
+      "sha": "014745efe7279bd95e83abe9399be0c294088d89",
+      "url": "https://api.github.com/repos/google/guava/commits/014745efe7279bd95e83abe9399be0c294088d89"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMC4wLXJjMg=="
+  },
+  {
+    "name": "v10.0-rc1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v10.0-rc1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v10.0-rc1",
+    "commit": {
+      "sha": "6f76191d1b1d2b82223088040a8a34bc822704e1",
+      "url": "https://api.github.com/repos/google/guava/commits/6f76191d1b1d2b82223088040a8a34bc822704e1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YxMC4wLXJjMQ=="
+  },
+  {
+    "name": "v9.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v9.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v9.0",
+    "commit": {
+      "sha": "28d17c4fafb4d37b3d540e0e76ff8142d2aaad6b",
+      "url": "https://api.github.com/repos/google/guava/commits/28d17c4fafb4d37b3d540e0e76ff8142d2aaad6b"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3Y5LjA="
+  },
+  {
+    "name": "v8.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v8.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v8.0",
+    "commit": {
+      "sha": "0bb8549ef75fd8a7f367560ade790eae39d9279f",
+      "url": "https://api.github.com/repos/google/guava/commits/0bb8549ef75fd8a7f367560ade790eae39d9279f"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3Y4LjA="
+  },
+  {
+    "name": "v7.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v7.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v7.0",
+    "commit": {
+      "sha": "13bc6c9bf52aa45fe4371357546b7ca66f317df2",
+      "url": "https://api.github.com/repos/google/guava/commits/13bc6c9bf52aa45fe4371357546b7ca66f317df2"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3Y3LjA="
+  }
+]
+
+ succeeded in 351ms:
+b8d5ecd40b9cfbd9cafc08bf50bd2382369812e9	refs/tags/failureaccess-v1.0.1
+76b3b3f16dd95766f4fae27caa61699465cffc78	refs/tags/failureaccess-v1.0.2
+6b1a22f80cd9496f20913c5efbc656c9c4c5f912	refs/tags/failureaccess-v1.0.3
+f31c0f31210fbe756f40ee7b6301de3bdecf4731	refs/tags/jdk5-backport-release
+798803f026bb9517bcf4e0e9ab2d2e0345023182	refs/tags/release
+b62d52926b904a8def90fd427acad53d79fa0e9f	refs/tags/released-all-futures
+14dd2269fa72913d92038876162babb8d9736f9b	refs/tags/v1.0
+5a6bf80c7403d77df18adb41b5b15ea34d28186d	refs/tags/v11.0
+5ba62b182d588e3dbc5bf736bf797db8ae9bc439	refs/tags/v11.0-rc1
+95cd4a6be05b8acb2f02630caa1d11af4ac07db1	refs/tags/v11.0.1
+78c34456423e680ec69059f21a5841296ab23277	refs/tags/v11.0.2
+e6c06b006e143f741bc8b8e8871d8df1d71ed470	refs/tags/v15.0-cdi1.0
+0f025e5d5d39a5d1ab709917f725d48a8464df50	refs/tags/v21.0
+c963e69c9cbea48eb221b7d5f915f5494875bf30	refs/tags/v21.0-rc1
+cef6bdc11c67b01ebca34b3a83e293add2733f24	refs/tags/v21.0-rc2
+6edcfc0a649e4031f4a48ea7f41aa0cb4801db2b	refs/tags/v31.0
+ba824dfb4c4f64d8c3b8d07e2042bf1ecdd53e28	refs/tags/v31.0.1
+53bb66554b195ab3aec3da285f1f140b1abae44d	refs/tags/v32.1.0
+f3e095c3b318f3e6dfeef393146ce5561ec8f859	refs/tags/v33.1.0
+
+exec
+/usr/bin/bash -lc 'git ls-tree -r --name-only v1.0 2>/dev/null | head' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git ls-remote https://github.com/google/guava.git refs/tags/v1.0' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/google/guava/git/trees/v1.0?recursive=1 | rg '\"path\":' | head -100" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 278ms:
+      "path": "COPYING",
+      "path": "build.xml",
+      "path": "lib",
+      "path": "lib/google-collect-1.0-rc2.jar",
+      "path": "lib/jsr305.jar",
+      "path": "src",
+      "path": "src/com",
+      "path": "src/com/google",
+      "path": "src/com/google/common",
+      "path": "src/com/google/common/base",
+      "path": "src/com/google/common/base/CaseFormat.java",
+      "path": "src/com/google/common/base/CharMatcher.java",
+      "path": "src/com/google/common/base/Charsets.java",
+      "path": "src/com/google/common/base/Defaults.java",
+      "path": "src/com/google/common/base/Service.java",
+      "path": "src/com/google/common/base/Splitter.java",
+      "path": "src/com/google/common/base/Throwables.java",
+      "path": "src/com/google/common/io",
+      "path": "src/com/google/common/io/AppendableWriter.java",
+      "path": "src/com/google/common/io/ByteArrayDataInput.java",
+      "path": "src/com/google/common/io/ByteArrayDataOutput.java",
+      "path": "src/com/google/common/io/ByteProcessor.java",
+      "path": "src/com/google/common/io/ByteStreams.java",
+      "path": "src/com/google/common/io/CharStreams.java",
+      "path": "src/com/google/common/io/Closeables.java",
+      "path": "src/com/google/common/io/CountingInputStream.java",
+      "path": "src/com/google/common/io/CountingOutputStream.java",
+      "path": "src/com/google/common/io/FileBackedOutputStream.java",
+      "path": "src/com/google/common/io/Files.java",
+      "path": "src/com/google/common/io/Flushables.java",
+      "path": "src/com/google/common/io/InputSupplier.java",
+      "path": "src/com/google/common/io/LimitInputStream.java",
+      "path": "src/com/google/common/io/LineBuffer.java",
+      "path": "src/com/google/common/io/LineProcessor.java",
+      "path": "src/com/google/common/io/LineReader.java",
+      "path": "src/com/google/common/io/MultiInputStream.java",
+      "path": "src/com/google/common/io/MultiReader.java",
+      "path": "src/com/google/common/io/NullOutputStream.java",
+      "path": "src/com/google/common/io/OutputSupplier.java",
+      "path": "src/com/google/common/io/PatternFilenameFilter.java",
+      "path": "src/com/google/common/io/Resources.java",
+      "path": "src/com/google/common/io/package-info.java",
+      "path": "src/com/google/common/primitives",
+      "path": "src/com/google/common/primitives/Booleans.java",
+      "path": "src/com/google/common/primitives/Bytes.java",
+      "path": "src/com/google/common/primitives/Chars.java",
+      "path": "src/com/google/common/primitives/Doubles.java",
+      "path": "src/com/google/common/primitives/Floats.java",
+      "path": "src/com/google/common/primitives/Ints.java",
+      "path": "src/com/google/common/primitives/Longs.java",
+      "path": "src/com/google/common/primitives/Primitives.java",
+      "path": "src/com/google/common/primitives/Shorts.java",
+      "path": "src/com/google/common/primitives/SignedBytes.java",
+      "path": "src/com/google/common/primitives/UnsignedBytes.java",
+      "path": "src/com/google/common/primitives/generate.sh",
+      "path": "src/com/google/common/util",
+      "path": "src/com/google/common/util/concurrent",
+      "path": "src/com/google/common/util/concurrent/AbstractCheckedFuture.java",
+      "path": "src/com/google/common/util/concurrent/AbstractExecutionThreadService.java",
+      "path": "src/com/google/common/util/concurrent/AbstractFuture.java",
+      "path": "src/com/google/common/util/concurrent/AbstractIdleService.java",
+      "path": "src/com/google/common/util/concurrent/AbstractListenableFuture.java",
+      "path": "src/com/google/common/util/concurrent/AbstractService.java",
+      "path": "src/com/google/common/util/concurrent/Callables.java",
+      "path": "src/com/google/common/util/concurrent/CheckedFuture.java",
+      "path": "src/com/google/common/util/concurrent/DaemonThreadFactory.java",
+      "path": "src/com/google/common/util/concurrent/ExecutionList.java",
+      "path": "src/com/google/common/util/concurrent/Executors.java",
+      "path": "src/com/google/common/util/concurrent/FakeTimeLimiter.java",
+      "path": "src/com/google/common/util/concurrent/ForwardingFuture.java",
+      "path": "src/com/google/common/util/concurrent/ForwardingService.java",
+      "path": "src/com/google/common/util/concurrent/Futures.java",
+      "path": "src/com/google/common/util/concurrent/ListenableFuture.java",
+      "path": "src/com/google/common/util/concurrent/ListenableFutureTask.java",
+      "path": "src/com/google/common/util/concurrent/NamingThreadFactory.java",
+      "path": "src/com/google/common/util/concurrent/SimpleTimeLimiter.java",
+      "path": "src/com/google/common/util/concurrent/TimeLimiter.java",
+      "path": "src/com/google/common/util/concurrent/UncheckedTimeoutException.java",
+      "path": "src/com/google/common/util/concurrent/UninterruptibleFuture.java",
+      "path": "src/com/google/common/util/concurrent/ValueFuture.java",
+
+ succeeded in 503ms:
+14dd2269fa72913d92038876162babb8d9736f9b	refs/tags/v1.0
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/google/guava/git/trees/v1.0?recursive=1 | rg '\"path\": \"(test|src/com/google/common/collect|src-tests|javatests|guava-tests)' | head -200" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/google/guava/v1.0/build.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 273ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 06 May 2026 18:57:22 GMT
+content-type: text/html
+cf-ray: 9f7a35d3dc96bc47-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/collections/google-collections/1.0/google-collections-1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 297ms:
+<?xml version="1.0"?>
+
+<project name="guava" default="compile">
+  <property environment="env"/>
+
+  <!-- can be overridden at the command line with -Dversion=
+       or in IDEA, in the ant properties dialog -->
+  <property name="version" value="snapshot"/>
+
+  <target name="compile" description="Compile Java source.">
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src"
+         debug="on"
+         destdir="build/classes"
+         source="1.6"
+         target="1.6">
+      <classpath>
+        <pathelement location="lib/jsr305.jar"/>
+        <pathelement location="lib/google-collect-1.0-rc2.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="clean"
+      description="Remove generated files.">
+    <delete dir="build"/>
+  </target>
+
+  <target name="javadoc"
+      description="Generate Javadocs.">
+    <delete dir="build/javadoc"/>
+    <mkdir dir="build/javadoc"/>
+    <javadoc packagenames="com.google.common.base,com.google.common.io,com.google.common.util.concurrent,com.google.common.primitives"
+         destdir="build/javadoc"
+         use="true"
+         author="true"
+         protected="true"
+         windowtitle="Guava Libraries PRELIMINARY CODE DROP SUBJECT TO CHANGE">
+      <sourcepath>
+        <pathelement location="src"/>
+      </sourcepath>
+      <!-- workaround for http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6442982 -->
+      <classpath>
+        <pathelement location="lib/google-collect-1.0-rc2.jar"/>
+        <pathelement location="lib/jsr305.jar"/>
+      </classpath>
+      <link href="http://jsr-305.googlecode.com/svn/trunk/javadoc"/>
+      <link href="http://java.sun.com/javase/6/docs/api"/>
+    </javadoc>
+  </target>
+</project>
+
+codex
+Maven Central has source and javadoc jars for `1.0`, but no test-sources jar. The GitHub `google/guava` `v1.0` tag is not the Google Collections artifact itself, so I’m checking the imported historical repository/tags before deciding whether the test URL is available or should be `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/google/guava/tags?per_page=100&page=2 | rg '\"name\": \"(v[0-9]|release|google|collect|jdk)'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'for ref in release jdk5-backport-release released-all-futures v1.0; do echo "$ref"; curl -fsSL "https://api.github.com/repos/google/guava/git/trees/$ref?recursive=1" | rg '"'\"path\": \"(src/com/google/common/collect|test|javatests|.*Test\\.java)' | head -30; done" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ exited 1 in 51ms:
+[
+  {
+    "name": "v33.6.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.6.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.6.0",
+    "commit": {
+      "sha": "de1d87eabff93cb4a7fa8e52df5fc46802c95b17",
+      "url": "https://api.github.com/repos/google/guava/commits/de1d87eabff93cb4a7fa8e52df5fc46802c95b17"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy42LjA="
+  },
+  {
+    "name": "v33.5.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.5.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.5.0",
+    "commit": {
+      "sha": "8868c096cfdabbe38170b6e395369c315cfb72a1",
+      "url": "https://api.github.com/repos/google/guava/commits/8868c096cfdabbe38170b6e395369c315cfb72a1"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy41LjA="
+  },
+  {
+    "name": "v33.4.8",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.8",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.8",
+    "commit": {
+      "sha": "f06690fa3e874f65515e8fd338a74d636e2c792f",
+      "url": "https://api.github.com/repos/google/guava/commits/f06690fa3e874f65515e8fd338a74d636e2c792f"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40Ljg="
+  },
+  {
+    "name": "v33.4.7",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.7",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.7",
+    "commit": {
+      "sha": "b4d0b591c3d5040ee9ad9dd5fd78259d5950fee7",
+      "url": "https://api.github.com/repos/google/guava/commits/b4d0b591c3d5040ee9ad9dd5fd78259d5950fee7"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40Ljc="
+  },
+  {
+    "name": "v33.4.6",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.6",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.6",
+    "commit": {
+      "sha": "e7a6a200d7171c78774d5805be77351b7b84eab5",
+      "url": "https://api.github.com/repos/google/guava/commits/e7a6a200d7171c78774d5805be77351b7b84eab5"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjY="
+  },
+  {
+    "name": "v33.4.5",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.5",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.5",
+    "commit": {
+      "sha": "98154c4859258d2a27cae1d6ba2fda742f4c6b6c",
+      "url": "https://api.github.com/repos/google/guava/commits/98154c4859258d2a27cae1d6ba2fda742f4c6b6c"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjU="
+  },
+  {
+    "name": "v33.4.4",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.4",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.4",
+    "commit": {
+      "sha": "ffe051f548c9919f96f8f05814ddb5eb6eba31dc",
+      "url": "https://api.github.com/repos/google/guava/commits/ffe051f548c9919f96f8f05814ddb5eb6eba31dc"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjQ="
+  },
+  {
+    "name": "v33.4.3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.3",
+    "commit": {
+      "sha": "df7e4b0dfbeb86edde7c9e61798a659b28930008",
+      "url": "https://api.github.com/repos/google/guava/commits/df7e4b0dfbeb86edde7c9e61798a659b28930008"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjM="
+  },
+  {
+    "name": "v33.4.2",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.2",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.2",
+    "commit": {
+      "sha": "66ad09c1eb158c3855e2bf03bc39a4c5b592120e",
+      "url": "https://api.github.com/repos/google/guava/commits/66ad09c1eb158c3855e2bf03bc39a4c5b592120e"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjI="
+  },
+  {
+    "name": "v33.4.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.1",
+    "commit": {
+      "sha": "60431de4bbd1777db70c4254811c85b37cce2e68",
+      "url": "https://api.github.com/repos/google/guava/commits/60431de4bbd1777db70c4254811c85b37cce2e68"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjE="
+  },
+  {
+    "name": "v33.4.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.4.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.4.0",
+    "commit": {
+      "sha": "5c71d2a15435399fa62508d807d5cc83506f7496",
+      "url": "https://api.github.com/repos/google/guava/commits/5c71d2a15435399fa62508d807d5cc83506f7496"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy40LjA="
+  },
+  {
+    "name": "v33.3.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.3.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.3.1",
+    "commit": {
+      "sha": "df9602b6f1dd36414464229e0a441469d06e4575",
+      "url": "https://api.github.com/repos/google/guava/commits/df9602b6f1dd36414464229e0a441469d06e4575"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4zLjE="
+  },
+  {
+    "name": "v33.3.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.3.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.3.0",
+    "commit": {
+      "sha": "0229670c8f305efd745430230dc7782f9406cd44",
+      "url": "https://api.github.com/repos/google/guava/commits/0229670c8f305efd745430230dc7782f9406cd44"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4zLjA="
+  },
+  {
+    "name": "v33.2.1",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.2.1",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.2.1",
+    "commit": {
+      "sha": "0c33dd12b193402cdf6962d43d69743521aa2f76",
+      "url": "https://api.github.com/repos/google/guava/commits/0c33dd12b193402cdf6962d43d69743521aa2f76"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4yLjE="
+  },
+  {
+    "name": "v33.2.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.2.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.2.0",
+    "commit": {
+      "sha": "73856da06403d5d087007d3924c168c822dea23c",
+      "url": "https://api.github.com/repos/google/guava/commits/73856da06403d5d087007d3924c168c822dea23c"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4yLjA="
+  },
+  {
+    "name": "v33.1.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.1.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.1.0",
+    "commit": {
+      "sha": "f3e095c3b318f3e6dfeef393146ce5561ec8f859",
+      "url": "https://api.github.com/repos/google/guava/commits/f3e095c3b318f3e6dfeef393146ce5561ec8f859"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4xLjA="
+  },
+  {
+    "name": "v33.0.0",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v33.0.0",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v33.0.0",
+    "commit": {
+      "sha": "2214c63670fc161da170ac6e1a2d6d07e1531a55",
+      "url": "https://api.github.com/repos/google/guava/commits/2214c63670fc161da170ac6e1a2d6d07e1531a55"
+    },
+    "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy4wLjA="
+  },
+  {
+    "name": "v32.1.3",
+    "zipball_url": "https://api.github.com/repos/google/guava/zipball/refs/tags/v32.1.3",
+    "tarball_url": "https://api.github.com/repos/google/guava/tarball/refs/tags/v32.1.3",
+    "commit": {
+      "sha": "c1088508ddc78bd60d096d2cc3ceef4a82ec909d",
+      "url": "https://api.github.com/repos/google/guava/commits/c1088508ddc78bd60d096d2cc3
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar -o /tmp/google-collections-1.0-sources.jar && jar tf /tmp/google-collections-1.0-sources.jar | head -80 && echo DONE' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 330ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/google/
+com/google/common/
+com/google/common/annotations/
+com/google/common/base/
+com/google/common/base/internal/
+com/google/common/collect/
+com/google/common/annotations/GwtCompatible.java
+com/google/common/annotations/GwtIncompatible.java
+com/google/common/annotations/VisibleForTesting.java
+com/google/common/base/internal/Finalizer.java
+com/google/common/base/FinalizablePhantomReference.java
+com/google/common/base/FinalizableReference.java
+com/google/common/base/FinalizableReferenceQueue.java
+com/google/common/base/FinalizableSoftReference.java
+com/google/common/base/FinalizableWeakReference.java
+com/google/common/base/Function.java
+com/google/common/base/Functions.java
+com/google/common/base/Joiner.java
+com/google/common/base/Objects.java
+com/google/common/base/Platform.java
+com/google/common/base/Preconditions.java
+com/google/common/base/Predicate.java
+com/google/common/base/Predicates.java
+com/google/common/base/Supplier.java
+com/google/common/base/Suppliers.java
+com/google/common/base/package-info.java
+com/google/common/collect/AbstractBiMap.java
+com/google/common/collect/AbstractIterator.java
+com/google/common/collect/AbstractListMultimap.java
+com/google/common/collect/AbstractMapBasedMultiset.java
+com/google/common/collect/AbstractMapEntry.java
+com/google/common/collect/AbstractMultimap.java
+com/google/common/collect/AbstractMultiset.java
+com/google/common/collect/AbstractSetMultimap.java
+com/google/common/collect/AbstractSortedSetMultimap.java
+com/google/common/collect/ArrayListMultimap.java
+com/google/common/collect/AsynchronousComputationException.java
+com/google/common/collect/BiMap.java
+com/google/common/collect/ByFunctionOrdering.java
+com/google/common/collect/ClassToInstanceMap.java
+com/google/common/collect/Collections2.java
+com/google/common/collect/ComparatorOrdering.java
+com/google/common/collect/CompoundOrdering.java
+com/google/common/collect/ComputationException.java
+com/google/common/collect/ConcurrentHashMultiset.java
+com/google/common/collect/ConstrainedMap.java
+com/google/common/collect/CustomConcurrentHashMap.java
+com/google/common/collect/EmptyImmutableList.java
+com/google/common/collect/EmptyImmutableListMultimap.java
+com/google/common/collect/EmptyImmutableMap.java
+com/google/common/collect/EmptyImmutableMultiset.java
+com/google/common/collect/EmptyImmutableSet.java
+com/google/common/collect/EmptyImmutableSetMultimap.java
+com/google/common/collect/EmptyImmutableSortedSet.java
+com/google/common/collect/EnumBiMap.java
+com/google/common/collect/EnumHashBiMap.java
+com/google/common/collect/EnumMultiset.java
+com/google/common/collect/ExpirationTimer.java
+com/google/common/collect/ExplicitOrdering.java
+com/google/common/collect/ForwardingCollection.java
+com/google/common/collect/ForwardingConcurrentMap.java
+com/google/common/collect/ForwardingIterator.java
+com/google/common/collect/ForwardingList.java
+com/google/common/collect/ForwardingListIterator.java
+com/google/common/collect/ForwardingMap.java
+com/google/common/collect/ForwardingMapEntry.java
+com/google/common/collect/ForwardingMultimap.java
+com/google/common/collect/ForwardingMultiset.java
+com/google/common/collect/ForwardingObject.java
+com/google/common/collect/ForwardingQueue.java
+com/google/common/collect/ForwardingSet.java
+com/google/common/collect/ForwardingSortedMap.java
+com/google/common/collect/ForwardingSortedSet.java
+com/google/common/collect/HashBiMap.java
+com/google/common/collect/HashMultimap.java
+com/google/common/collect/HashMultiset.java
+com/google/common/collect/Hashing.java
+DONE
+
+ succeeded in 1614ms:
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/AbstractIteratorTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/CaseFormatTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/CharMatcherTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/CharsetsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/EnumsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/EquivalenceTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/FunctionsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/JoinerTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/ObjectsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/OptionalTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/PreconditionsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/PredicatesTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/SplitterTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/StopwatchTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/StringsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/SuppliersTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/Utf8Test.java",
+      "path": "guava-gwt/test-super/com/google/common/cache/super/com/google/common/cache/CacheBuilderTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractImmutableSetTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractIteratorTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractSequentialIteratorTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractTableReadTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ArrayListMultimapTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ArrayTableTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/Collections2Test.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ConstrainedBiMapTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ConstrainedMapTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ContiguousSetTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/EmptyImmutableTableTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/EnumBiMapTest.java",
+curl: (23) Failure writing output to destination
+jdk5-backport-release
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/AbstractIteratorTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/CaseFormatTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/CharMatcherTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/CharsetsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/EnumsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/EquivalenceTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/FunctionsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/JoinerTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/ObjectsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/OptionalTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/PreconditionsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/PredicatesTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/SplitterTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/StopwatchTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/StringsTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/SuppliersTest.java",
+      "path": "guava-gwt/test-super/com/google/common/base/super/com/google/common/base/Utf8Test.java",
+      "path": "guava-gwt/test-super/com/google/common/cache/super/com/google/common/cache/CacheBuilderTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractImmutableSetTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractIteratorTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractSequentialIteratorTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/AbstractTableReadTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ArrayListMultimapTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ArrayTableTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/Collections2Test.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ConstrainedBiMapTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ConstrainedMapTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/ContiguousSetTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/EmptyImmutableTableTest.java",
+      "path": "guava-gwt/test-super/com/google/common/collect/super/com/google/common/collect/EnumBiMapTest.java",
+released-all-futures
+curl: (23) Failure writing output to destination
+      "path": "android/guava-testlib/src/com/google/common/collect/testing/MapInterfaceTest.java",
+      "path": "android/guava-testlib/src/com/google/common/collect/testing/SortedMapInterfaceTest.java",
+      "path": "android/guava-testlib/src/com/google/common/util/concurrent/testing/AbstractCheckedFutureTest.java",
+      "path": "android/guava-testlib/src/com/google/common/util/concurrent/testing/AbstractListenableFutureTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/FeatureSpecificTestSuiteBuilderTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/HelpersTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/IteratorTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/MinimalCollectionTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/MinimalIterableTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/MinimalSetTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/SafeTreeMapTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/SafeTreeSetTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/features/FeatureEnumTest.java",
+      "path": "android/guava-testlib/test/com/google/common/collect/testing/features/FeatureUtilTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/AbstractPackageSanityTestsTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/ArbitraryInstancesTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/ClassSanityTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/EqualsTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/EquivalenceTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/FakeTickerTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/FreshValueGeneratorTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/GcFinalizationTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/NullPointerTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/RelationshipTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/SerializableTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/TearDownStackTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/TestLogHandlerTest.java",
+      "path": "android/guava-testlib/test/com/google/common/testing/anotherpackage/ForwardingWrapperTesterTest.java",
+      "path": "android/guava-testlib/test/com/google/common/util/concurrent/testing/TestingExecutorsTest.java",
+      "path": "android/guava-tests/test/com/google/common/base/AbstractIteratorTest.java",
+curl: (23) Failure writing output to destination
+v1.0
+
+web search: 
+web search: Google Collections Library 1.0 source tests SVN tag
+web search: 
+web search: 
+web search: 
+web search: com/google/collections/google-collections/1.0/google-collections-1.0.pom
+web search: 
+web search: google-collect-1.0.zip google-collections
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/google-collections/google-collect-1.0.zip || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'curl -fsSLI http://google-collections.googlecode.com/files/google-collect-1.0.zip || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/downloads-page-1.json | head -80' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 134ms:
+HTTP/2 200 
+content-type: application/octet-stream
+x-guploader-uploadid: AAVLpEgpva9e0gyEH6LuKdFw5qXI4byg3eI29pIQPKnpIku31-8bZWB30H29D00_8mkUO4yUfZnP_zg
+expires: Wed, 06 May 2026 19:57:59 GMT
+date: Wed, 06 May 2026 18:57:59 GMT
+cache-control: public, max-age=3600
+last-modified: Sat, 23 Jan 2016 18:16:13 GMT
+etag: "bb2cd98cfd1676d965d22e27eeebd7cf"
+x-goog-generation: 1453572973026000
+x-goog-metageneration: 1
+x-goog-stored-content-encoding: identity
+x-goog-stored-content-length: 1595359
+x-goog-hash: crc32c=xc4pzg==
+x-goog-hash: md5=uyzZjP0Wdtll0i4n7uvXzw==
+x-goog-storage-class: NEARLINE
+accept-ranges: bytes
+content-length: 1595359
+server: UploadServer
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+ succeeded in 178ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Transfer-Encoding: chunked
+Date: Wed, 06 May 2026 18:57:59 GMT
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 206ms:
+{"pageNumber":1,"totalPages":1,"downloads":[{"filename":"google-collect-1.0.zip","summary":"Google Collections Library 1.0 - FINAL","description":"","labels":["Deprecated","Type-Archive"],"releaseDate":0,"fileSize":1595359,"uploadDate":1262198418,"sha1Checksum":"880bce3810c92e7dcdbdfdb03dfc5aa7460da76b","stars":1},{"filename":"google-collect-1.0-rc5.zip","summary":"Google Collections Library 1.0 - release candidate 5","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1596516,"uploadDate":1260381255,"sha1Checksum":"2ccdccf57366a0302ab7ba08c888800ac4f2349b","stars":0},{"filename":"google-collect-1.0-rc4.zip","summary":"Google Collections Library 1.0 - release candidate 4","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1596871,"uploadDate":1257897114,"sha1Checksum":"9c7582da4dce40e4c761afeab593f4547bffa20b","stars":0},{"filename":"google-collect-1.0-rc3.zip","summary":"Google Collections Library 1.0 - release candidate 3","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1597710,"uploadDate":1255724483,"sha1Checksum":"53d4c666442c88f04c213cb546eadfebce051f17","stars":0},{"filename":"collections-connection.pdf","summary":"JavaOne 2009 \"Collections Connection\" BOF slides","description":"","labels":[],"releaseDate":0,"fileSize":250310,"uploadDate":1247686958,"sha1Checksum":"288890e6cb6cb422ee6f1c94f04495a9d361d376","stars":7},{"filename":"google-collect-1.0-rc2.zip","summary":"Google Collections Library 1.0 - release candidate 2","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1759280,"uploadDate":1243987889,"sha1Checksum":"fc2dcc2c5e0835e29b177180f7c058c268df7b7e","stars":0},{"filename":"google-collect-1.0-rc1.zip","summary":"Google Collections Library 1.0 - release candidate 1","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1470175,"uploadDate":1239048240,"sha1Checksum":"da57f3e83597d295badccef38ff8b4ca527d4489","stars":0},{"filename":"google-collect-snapshot-20090211.zip","summary":"2009/02/11 snapshot build","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1469882,"uploadDate":1234387204,"sha1Checksum":"ebe3ec96bad44af732c43c3612c439b5df0e771f","stars":0},{"filename":"google-collect-snapshot-20080820.zip","summary":"2008/08/20 snapshot build  ","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1162341,"uploadDate":1219278032,"sha1Checksum":"75d4fab6edd4d70d5a0c4c740d2000ae837408e7","stars":0},{"filename":"google-collect-snapshot-20080818.zip","summary":"2008/08/18 snapshot build (accidentally built with Java 6)","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1138640,"uploadDate":1219105534,"sha1Checksum":"4fde7555435c2568cf0e638ac357282f922a7aec","stars":0},{"filename":"google-collections-svgtug-2008-08-06.pdf","summary":"Presentation at SV-GTUG 2008-08-06","description":"","labels":[],"releaseDate":0,"fileSize":178001,"uploadDate":1218135017,"sha1Checksum":"a0c8c10bcb412094396f37ecc92629ef3ade2f9a","stars":1},{"filename":"google-collect-snapshot-20080530-bundle.jar","summary":"Maven bundle for 20080530 snapshot","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1237826,"uploadDate":1212429824,"sha1Checksum":"66d0e359fbe89ffe299025bf30fe1738e155d67b","stars":0},{"filename":"google-collect-snapshot-20080530.zip","summary":"2008/05/30 snapshot build","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1073572,"uploadDate":1212180403,"sha1Checksum":"f2b4c79c4e1a1b1221e5d7fa6a2e2e27f0b88390","stars":0},{"filename":"google-collect-snapshot-20080321-bundle.jar","summary":"Maven bundle for 20080321 snapshot","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1117800,"uploadDate":1210288939,"sha1Checksum":"def2590c48cf3a620c274e49196376c29919efd9","stars":0},{"filename":"google-collect-snapshot-20071022-bundle.jar","summary":"Maven bundle for 20071022 snapshot","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1002256,"uploadDate":1210288831,"sha1Checksum":"c077f4326098811fe60d3459fc08946ed3424694","stars":0},{"filename":"google-collect-snapshot-20080321.zip","summary":"2008/03/21 snapshot build","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":997001,"uploadDate":1206145028,"sha1Checksum":"3840aae9c2ad90f04a5a80ea57f1248a3407e960","stars":0},{"filename":"google-collect-snapshot-20071022.zip","summary":"Snapshot release 2007/10/22 (ALPHA)","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":937700,"uploadDate":1193105141,"sha1Checksum":"8edef6d25dbd50008e1c1eb81af5fa1b6e47cec1","stars":0}]}
+exec
+/usr/bin/bash -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/google-collections/google-collect-1.0.zip -o /tmp/google-collect-1.0.zip && unzip -l /tmp/google-collect-1.0.zip | head -120' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc "curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/project.json | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/source-archive.zip -o /tmp/google-collections-source-archive.zip && unzip -l /tmp/google-collections-source-archive.zip | head -120' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ exited 22 in 144ms:
+curl: (22) The requested URL returned error: 403
+
+ succeeded in 178ms:
+{"domain":"code.google.com","name":"google-collections","summary":"Google Collections Library","description":"## This library was renamed to [Guava](http://guava-libraries.googlecode.com)! ##\n\nWhat you see here is ancient and unmaintained.  **Do not use it.**\n\nGuava is a fully compatible _superset_ of the old Google Collections Library. It also includes years worth of bug fixes, doc fixes, and performance fixes, so we strongly encourage you to use Guava instead of Google Collections.\n\nIf your application ever ends up with both google-collect-1.0.jar and guava-r##.jar on the same classpath, simply remove the Google Collections JAR and you should be fine. If you don\u0027t remove it, it will either cause terrible problems (if it comes before guava in the classpath) or will never even be seen anyway (if it comes after).\n\nThe project you\u0027re looking at now will not be maintained.  We apologize for any confusion this causes.\n\n### [Go to the Guava project page now](http://guava-libraries.googlecode.com) ###","stars":1368,"license":"asf20","contentLicense":"","labels":["Java","Collections","Generics","Iterators","Multiset","Multimap","Google","ReferenceMap","SoftReferences","WeakReferences","Predicate","Immutable","Functional","MapMaker"],"creationTime":0,"repoType":"svn","subrepos":[],"hasSource":true,"ancestorRepo":"","logoName":"","movedTo":""}
+ succeeded in 869ms:
+Archive:  /tmp/google-collect-1.0.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2009-12-30 10:35   google-collect-1.0/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/resources/
+    11358  2009-12-30 10:35   google-collect-1.0/COPYING
+   577311  2009-12-30 10:35   google-collect-1.0/google-collect-1.0.jar
+    14885  2009-12-30 10:35   google-collect-1.0/javadoc/allclasses-frame.html
+    12965  2009-12-30 10:35   google-collect-1.0/javadoc/allclasses-noframe.html
+    11590  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/GwtCompatible.html
+    10663  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/GwtIncompatible.html
+     6782  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/VisibleForTesting.html
+    68289  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/GwtCompatible.html
+    19703  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/GwtIncompatible.html
+     6099  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/VisibleForTesting.html
+     1240  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-frame.html
+     7351  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-summary.html
+     7037  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-tree.html
+    10619  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-use.html
+    16105  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizablePhantomReference.html
+     9500  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableReference.html
+    11862  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableReferenceQueue.html
+    16160  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableSoftReference.html
+    15592  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableWeakReference.html
+    12669  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Function.html
+    22480  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Functions.html
+    17485  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Joiner.MapJoiner.html
+    38846  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Joiner.html
+    14200  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Objects.html
+    40428  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Preconditions.html
+    11962  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Predicate.html
+    35265  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Predicates.html
+     8669  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Supplier.html
+    16923  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Suppliers.html
+     6119  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizablePhantomReference.html
+     9174  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableReference.html
+     9743  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableReferenceQueue.html
+     6089  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableSoftReference.html
+     6089  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableWeakReference.html
+    29842  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Function.html
+     5939  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Functions.html
+     9053  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Joiner.MapJoiner.html
+     9880  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Joiner.html
+     5919  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Objects.html
+     5979  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Preconditions.html
+    48759  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Predicate.html
+     5949  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Predicates.html
+    21469  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Supplier.html
+     5939  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Suppliers.html
+     2773  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-frame.html
+    11653  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-summary.html
+    10227  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-tree.html
+    10933  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-use.html
+    21927  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/AbstractIterator.html
+    59162  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ArrayListMultimap.html
+    15498  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/AsynchronousComputationException.html
+    26409  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/BiMap.html
+    17281  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ClassToInstanceMap.html
+    16169  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Collections2.html
+    15221  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ComputationException.html
+    85631  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ConcurrentHashMultiset.html
+    49723  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/EnumBiMap.html
+    50605  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/EnumHashBiMap.html
+    76768  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/EnumMultiset.html
+    47085  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingCollection.html
+    34150  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingConcurrentMap.html
+    20299  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingIterator.html
+    52995  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingList.html
+    31489  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingListIterator.html
+    55956  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMap.html
+    29783  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMapEntry.html
+    64639  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMultimap.html
+    48129  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMultiset.html
+    16887  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingObject.html
+    30131  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingQueue.html
+    29362  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingSet.html
+    38213  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingSortedMap.html
+    36159  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingSortedSet.html
+    48575  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/HashBiMap.html
+    57030  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/HashMultimap.html
+    76900  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/HashMultiset.html
+    21625  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableBiMap.Builder.html
+    67500  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableBiMap.html
+    20007  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableClassToInstanceMap.Builder.html
+    30851  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableClassToInstanceMap.html
+    41692  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableCollection.html
+    22266  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableList.Builder.html
+    66047  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableList.html
+    28770  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableListMultimap.Builder.html
+    42979  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableListMultimap.html
+    19693  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMap.Builder.html
+    64092  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMap.html
+    25134  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultimap.Builder.html
+    75453  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultimap.html
+    27787  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultiset.Builder.html
+    62258  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultiset.html
+    22906  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSet.Builder.html
+    49136  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSet.html
+    28700  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSetMultimap.Builder.html
+    47390  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSetMultimap.html
+    22931  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedMap.Builder.html
+    80611  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedMap.html
+    26522  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedSet.Builder.html
+    70733  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedSet.html
+    72442  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Iterables.html
+    81109  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Iterators.html
+    61498  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/LinkedHashMultimap.html
+    77493  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/LinkedHashMultiset.html
+    73756  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/LinkedListMultimap.html
+    26782  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ListMultimap.html
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/google-collect-1.0.zip | rg -i '(/test/|test.*\\.java|src/.*\\.java|javadoc/index\\.html|README|CHANGES|pom)' | head -220" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+     1419  2009-12-30 10:35   google-collect-1.0/javadoc/index.html
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/source-archive.zip -o /tmp/google-collections-source-archive.zip || true; ls -l /tmp/google-collections-source-archive.zip; file /tmp/google-collections-source-archive.zip' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/source/default/commits-page-1.json | head -80' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 133ms:
+curl: (22) The requested URL returned error: 403
+ls: cannot access '/tmp/google-collections-source-archive.zip': No such file or directory
+/tmp/google-collections-source-archive.zip: cannot open `/tmp/google-collections-source-archive.zip' (No such file or directory)
+
+ succeeded in 130ms:
+curl: (22) The requested URL returned error: 403
+
+web search: 
+web search: 
+web search: 
+web search: code.google.com archive p google-collections source default source
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/google-collections/repo.svndump.gz || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+exec
+/usr/bin/bash -lc 'curl -fsSL https://storage.googleapis.com/storage/v1/b/google-code-archive-source/o/v2%2Fcode.google.com%2Fgoogle-collections%2Frepo.svndump.gz?alt=media -o /tmp/google-collections-repo.svndump.gz || true; ls -lh /tmp/google-collections-repo.svndump.gz 2>/dev/null; file /tmp/google-collections-repo.svndump.gz 2>/dev/null' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 135ms:
+HTTP/2 200 
+content-type: application/octet-stream
+x-guploader-uploadid: AAVLpEi1YlGo8Fo1FvmAByLZh_8VlYCtM6epoqYBeNGcouA4yU8hu56pJLN0h2_5jPqOT7c
+expires: Wed, 06 May 2026 19:58:21 GMT
+date: Wed, 06 May 2026 18:58:21 GMT
+cache-control: public, max-age=3600
+last-modified: Wed, 17 Feb 2016 22:11:03 GMT
+etag: "8b45fafb70e270d0a7d517eba21d2139"
+x-goog-generation: 1455747063912000
+x-goog-metageneration: 1
+x-goog-stored-content-encoding: identity
+x-goog-stored-content-length: 11563268
+x-goog-hash: crc32c=prW/3g==
+x-goog-hash: md5=i0X6+3DicNCn1Rfroh0hOQ==
+x-goog-storage-class: NEARLINE
+accept-ranges: bytes
+content-length: 11563268
+server: UploadServer
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+ succeeded in 1758ms:
+-rw-rw-r-- 1 vjovanov vjovanov 12M May  6 20:58 /tmp/google-collections-repo.svndump.gz
+/tmp/google-collections-repo.svndump.gz: gzip compressed data, last modified: Sat Feb 13 06:20:11 2016, from Unix, original size modulo 2^32 101283310
+
+exec
+/usr/bin/bash -lc 'gzip -cd /tmp/google-collections-repo.svndump.gz | rg -n "''^Node-path: (trunk|tags|branches).*(test|Test|src|1'"\\.0|release|javadoc|pom)\" | head -200" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+827:Node-path: trunk/javadoc
+836:Node-path: trunk/src
+845:Node-path: trunk/src/com
+854:Node-path: trunk/src/com/google
+863:Node-path: trunk/src/com/google/common
+872:Node-path: trunk/src/com/google/common/base
+881:Node-path: trunk/src/com/google/common/base/FinalizablePhantomReference.java
+924:Node-path: trunk/src/com/google/common/base/FinalizableReference.java
+964:Node-path: trunk/src/com/google/common/base/FinalizableReferenceQueue.java
+1048:Node-path: trunk/src/com/google/common/base/FinalizableSoftReference.java
+1090:Node-path: trunk/src/com/google/common/base/FinalizableWeakReference.java
+1132:Node-path: trunk/src/com/google/common/base/Function.java
+1188:Node-path: trunk/src/com/google/common/base/Functions.java
+1340:Node-path: trunk/src/com/google/common/base/Join.java
+1541:Node-path: trunk/src/com/google/common/base/Nullable.java
+1584:Node-path: trunk/src/com/google/common/base/Objects.java
+1738:Node-path: trunk/src/com/google/common/base/Preconditions.java
+1956:Node-path: trunk/src/com/google/common/base/Predicate.java
+2016:Node-path: trunk/src/com/google/common/base/Predicates.java
+2235:Node-path: trunk/src/com/google/common/base/ReferenceType.java
+2298:Node-path: trunk/src/com/google/common/collect
+2307:Node-path: trunk/src/com/google/common/collect/AbstractIterable.java
+2369:Node-path: trunk/src/com/google/common/collect/AbstractIterator.java
+2525:Node-path: trunk/src/com/google/common/collect/AbstractListMultimap.java
+2594:Node-path: trunk/src/com/google/common/collect/AbstractMapBasedMultiset.java
+2995:Node-path: trunk/src/com/google/common/collect/AbstractMapEntry.java
+3068:Node-path: trunk/src/com/google/common/collect/AbstractMultimap.java
+4479:Node-path: trunk/src/com/google/common/collect/AbstractMultiset.java
+4997:Node-path: trunk/src/com/google/common/collect/AbstractMultisetEntry.java
+5067:Node-path: trunk/src/com/google/common/collect/AbstractSetMultimap.java
+5145:Node-path: trunk/src/com/google/common/collect/AbstractSortedSetMultimap.java
+5215:Node-path: trunk/src/com/google/common/collect/ArrayListMultimap.java
+5438:Node-path: trunk/src/com/google/common/collect/BiMap.java
+5539:Node-path: trunk/src/com/google/common/collect/Comparators.java
+6000:Node-path: trunk/src/com/google/common/collect/Constraint.java
+6065:Node-path: trunk/src/com/google/common/collect/Constraints.java
+6447:Node-path: trunk/src/com/google/common/collect/EnumBiMap.java
+6585:Node-path: trunk/src/com/google/common/collect/EnumHashBiMap.java
+6703:Node-path: trunk/src/com/google/common/collect/ForwardingCollection.java
+7005:Node-path: trunk/src/com/google/common/collect/ForwardingIterator.java
+7068:Node-path: trunk/src/com/google/common/collect/ForwardingList.java
+7168:Node-path: trunk/src/com/google/common/collect/ForwardingListIterator.java
+7243:Node-path: trunk/src/com/google/common/collect/ForwardingMap.java
+7352:Node-path: trunk/src/com/google/common/collect/ForwardingMapEntry.java
+7423:Node-path: trunk/src/com/google/common/collect/ForwardingMultimap.java
+7564:Node-path: trunk/src/com/google/common/collect/ForwardingMultiset.java
+7647:Node-path: trunk/src/com/google/common/collect/ForwardingObject.java
+7802:Node-path: trunk/src/com/google/common/collect/ForwardingQueue.java
+7873:Node-path: trunk/src/com/google/common/collect/ForwardingSet.java
+7964:Node-path: trunk/src/com/google/common/collect/ForwardingSortedMap.java
+8040:Node-path: trunk/src/com/google/common/collect/ForwardingSortedSet.java
+8116:Node-path: trunk/src/com/google/common/collect/HashBiMap.java
+8211:Node-path: trunk/src/com/google/common/collect/HashMultimap.java
+8323:Node-path: trunk/src/com/google/common/collect/HashMultiset.java
+8450:Node-path: trunk/src/com/google/common/collect/ImmutableBiMapBuilder.java
+8566:Node-path: trunk/src/com/google/common/collect/ImmutableMapBuilder.java
+8775:Node-path: trunk/src/com/google/common/collect/ImmutableMultimapBuilder.java
+8917:Node-path: trunk/src/com/google/common/collect/IntQueue.java
+9197:Node-path: trunk/src/com/google/common/collect/IntStack.java
+9426:Node-path: trunk/src/com/google/common/collect/Iterables.java
+9903:Node-path: trunk/src/com/google/common/collect/Iterators.java
+10419:Node-path: trunk/src/com/google/common/collect/LinkedHashMultimap.java
+10734:Node-path: trunk/src/com/google/common/collect/LinkedHashMultiset.java
+10837:Node-path: trunk/src/com/google/common/collect/LinkedListMultimap.java
+11636:Node-path: trunk/src/com/google/common/collect/LinkedListMultiset.java
+12191:Node-path: trunk/src/com/google/common/collect/ListMultimap.java
+12251:Node-path: trunk/src/com/google/common/collect/Lists.java
+12918:Node-path: trunk/src/com/google/common/collect/MapConstraint.java
+12982:Node-path: trunk/src/com/google/common/collect/MapConstraints.java
+13629:Node-path: trunk/src/com/google/common/collect/Maps.java
+14718:Node-path: trunk/src/com/google/common/collect/Multimap.java
+15027:Node-path: trunk/src/com/google/common/collect/Multimaps.java
+16637:Node-path: trunk/src/com/google/common/collect/Multiset.java
+16821:Node-path: trunk/src/com/google/common/collect/Multisets.java
+17400:Node-path: trunk/src/com/google/common/collect/ObjectArrays.java
+17528:Node-path: trunk/src/com/google/common/collect/PrefixMap.java
+17583:Node-path: trunk/src/com/google/common/collect/PrefixTrie.java
+17761:Node-path: trunk/src/com/google/common/collect/PrimitiveArrays.java
+17927:Node-path: trunk/src/com/google/common/collect/ReferenceMap.java
+18597:Node-path: trunk/src/com/google/common/collect/SetMultimap.java
+18689:Node-path: trunk/src/com/google/common/collect/Sets.java
+19768:Node-path: trunk/src/com/google/common/collect/SortedArraySet.java
+20287:Node-path: trunk/src/com/google/common/collect/SortedSetMultimap.java
+20351:Node-path: trunk/src/com/google/common/collect/StandardBiMap.java
+20724:Node-path: trunk/src/com/google/common/collect/Synchronized.java
+21926:Node-path: trunk/src/com/google/common/collect/TreeMultimap.java
+22138:Node-path: trunk/src/com/google/common/collect/TreeMultiset.java
+22238:Node-path: trunk/src/com/google/common/collect/UncheckedThrower.java
+22287:Node-path: trunk/src/com/google/common/collect/package-info.java
+22324:Node-path: trunk/test
+22351:Node-path: trunk/src/com/google/common/base/FinalizablePhantomReference.java
+22396:Node-path: trunk/src/com/google/common/base/FinalizableReference.java
+22438:Node-path: trunk/src/com/google/common/base/FinalizableReferenceQueue.java
+22524:Node-path: trunk/src/com/google/common/base/FinalizableSoftReference.java
+22568:Node-path: trunk/src/com/google/common/base/FinalizableWeakReference.java
+22612:Node-path: trunk/src/com/google/common/base/Function.java
+22668:Node-path: trunk/src/com/google/common/base/Functions.java
+22820:Node-path: trunk/src/com/google/common/base/Join.java
+23021:Node-path: trunk/src/com/google/common/base/Nullable.java
+23066:Node-path: trunk/src/com/google/common/base/Objects.java
+23220:Node-path: trunk/src/com/google/common/base/Preconditions.java
+23438:Node-path: trunk/src/com/google/common/base/Predicate.java
+23498:Node-path: trunk/src/com/google/common/base/Predicates.java
+23717:Node-path: trunk/src/com/google/common/base/ReferenceType.java
+23782:Node-path: trunk/src/com/google/common/collect/AbstractIterable.java
+23844:Node-path: trunk/src/com/google/common/collect/AbstractIterator.java
+24000:Node-path: trunk/src/com/google/common/collect/AbstractListMultimap.java
+24069:Node-path: trunk/src/com/google/common/collect/AbstractMapBasedMultiset.java
+24470:Node-path: trunk/src/com/google/common/collect/AbstractMapEntry.java
+24543:Node-path: trunk/src/com/google/common/collect/AbstractMultimap.java
+25954:Node-path: trunk/src/com/google/common/collect/AbstractMultiset.java
+26472:Node-path: trunk/src/com/google/common/collect/AbstractMultisetEntry.java
+26542:Node-path: trunk/src/com/google/common/collect/AbstractSetMultimap.java
+26620:Node-path: trunk/src/com/google/common/collect/AbstractSortedSetMultimap.java
+26690:Node-path: trunk/src/com/google/common/collect/ArrayListMultimap.java
+26913:Node-path: trunk/src/com/google/common/collect/BiMap.java
+27014:Node-path: trunk/src/com/google/common/collect/Comparators.java
+27475:Node-path: trunk/src/com/google/common/collect/Constraint.java
+27540:Node-path: trunk/src/com/google/common/collect/Constraints.java
+27922:Node-path: trunk/src/com/google/common/collect/EnumBiMap.java
+28060:Node-path: trunk/src/com/google/common/collect/EnumHashBiMap.java
+28178:Node-path: trunk/src/com/google/common/collect/ForwardingCollection.java
+28480:Node-path: trunk/src/com/google/common/collect/ForwardingIterator.java
+28543:Node-path: trunk/src/com/google/common/collect/ForwardingList.java
+28643:Node-path: trunk/src/com/google/common/collect/ForwardingListIterator.java
+28718:Node-path: trunk/src/com/google/common/collect/ForwardingMap.java
+28827:Node-path: trunk/src/com/google/common/collect/ForwardingMapEntry.java
+28898:Node-path: trunk/src/com/google/common/collect/ForwardingMultimap.java
+29039:Node-path: trunk/src/com/google/common/collect/ForwardingMultiset.java
+29122:Node-path: trunk/src/com/google/common/collect/ForwardingObject.java
+29277:Node-path: trunk/src/com/google/common/collect/ForwardingQueue.java
+29348:Node-path: trunk/src/com/google/common/collect/ForwardingSet.java
+29439:Node-path: trunk/src/com/google/common/collect/ForwardingSortedMap.java
+29515:Node-path: trunk/src/com/google/common/collect/ForwardingSortedSet.java
+29591:Node-path: trunk/src/com/google/common/collect/HashBiMap.java
+29686:Node-path: trunk/src/com/google/common/collect/HashMultimap.java
+29798:Node-path: trunk/src/com/google/common/collect/HashMultiset.java
+29925:Node-path: trunk/src/com/google/common/collect/ImmutableBiMapBuilder.java
+30041:Node-path: trunk/src/com/google/common/collect/ImmutableMapBuilder.java
+30250:Node-path: trunk/src/com/google/common/collect/ImmutableMultimapBuilder.java
+30392:Node-path: trunk/src/com/google/common/collect/IntQueue.java
+30672:Node-path: trunk/src/com/google/common/collect/IntStack.java
+30901:Node-path: trunk/src/com/google/common/collect/Iterables.java
+31378:Node-path: trunk/src/com/google/common/collect/Iterators.java
+31894:Node-path: trunk/src/com/google/common/collect/LinkedHashMultimap.java
+32209:Node-path: trunk/src/com/google/common/collect/LinkedHashMultiset.java
+32312:Node-path: trunk/src/com/google/common/collect/LinkedListMultimap.java
+33111:Node-path: trunk/src/com/google/common/collect/LinkedListMultiset.java
+33666:Node-path: trunk/src/com/google/common/collect/ListMultimap.java
+33726:Node-path: trunk/src/com/google/common/collect/Lists.java
+34393:Node-path: trunk/src/com/google/common/collect/MapConstraint.java
+34457:Node-path: trunk/src/com/google/common/collect/MapConstraints.java
+35104:Node-path: trunk/src/com/google/common/collect/Maps.java
+36193:Node-path: trunk/src/com/google/common/collect/Multimap.java
+36502:Node-path: trunk/src/com/google/common/collect/Multimaps.java
+38112:Node-path: trunk/src/com/google/common/collect/Multiset.java
+38296:Node-path: trunk/src/com/google/common/collect/Multisets.java
+38875:Node-path: trunk/src/com/google/common/collect/ObjectArrays.java
+39003:Node-path: trunk/src/com/google/common/collect/PrefixMap.java
+39058:Node-path: trunk/src/com/google/common/collect/PrefixTrie.java
+39236:Node-path: trunk/src/com/google/common/collect/PrimitiveArrays.java
+39402:Node-path: trunk/src/com/google/common/collect/ReferenceMap.java
+40072:Node-path: trunk/src/com/google/common/collect/SetMultimap.java
+40164:Node-path: trunk/src/com/google/common/collect/Sets.java
+41243:Node-path: trunk/src/com/google/common/collect/SortedArraySet.java
+41762:Node-path: trunk/src/com/google/common/collect/SortedSetMultimap.java
+41826:Node-path: trunk/src/com/google/common/collect/StandardBiMap.java
+42199:Node-path: trunk/src/com/google/common/collect/Synchronized.java
+43401:Node-path: trunk/src/com/google/common/collect/TreeMultimap.java
+43613:Node-path: trunk/src/com/google/common/collect/TreeMultiset.java
+43713:Node-path: trunk/src/com/google/common/collect/UncheckedThrower.java
+43762:Node-path: trunk/src/com/google/common/collect/package-info.java
+44238:Node-path: trunk/src/com/google/common/base/Functions.java
+44389:Node-path: trunk/src/com/google/common/base/Join.java
+44589:Node-path: trunk/src/com/google/common/base/Predicates.java
+44807:Node-path: trunk/src/com/google/common/collect/AbstractIterator.java
+44962:Node-path: trunk/src/com/google/common/collect/AbstractListMultimap.java
+45030:Node-path: trunk/src/com/google/common/collect/AbstractMapEntry.java
+45102:Node-path: trunk/src/com/google/common/collect/AbstractMultimap.java
+46512:Node-path: trunk/src/com/google/common/collect/AbstractMultiset.java
+47029:Node-path: trunk/src/com/google/common/collect/AbstractSetMultimap.java
+47106:Node-path: trunk/src/com/google/common/collect/AbstractSortedSetMultimap.java
+47175:Node-path: trunk/src/com/google/common/collect/ArrayListMultimap.java
+47396:Node-path: trunk/src/com/google/common/collect/BiMap.java
+47496:Node-path: trunk/src/com/google/common/collect/Comparators.java
+47955:Node-path: trunk/src/com/google/common/collect/Constraints.java
+48336:Node-path: trunk/src/com/google/common/collect/ForwardingCollection.java
+48636:Node-path: trunk/src/com/google/common/collect/ForwardingMultimap.java
+48776:Node-path: trunk/src/com/google/common/collect/ForwardingObject.java
+48930:Node-path: trunk/src/com/google/common/collect/HashMultimap.java
+49041:Node-path: trunk/src/com/google/common/collect/ImmutableMapBuilder.java
+49249:Node-path: trunk/src/com/google/common/collect/ImmutableMultimapBuilder.java
+49390:Node-path: trunk/src/com/google/common/collect/Iterables.java
+49866:Node-path: trunk/src/com/google/common/collect/Iterators.java
+50381:Node-path: trunk/src/com/google/common/collect/LinkedHashMultimap.java
+50695:Node-path: trunk/src/com/google/common/collect/LinkedListMultimap.java
+51492:Node-path: trunk/src/com/google/common/collect/LinkedListMultiset.java
+52045:Node-path: trunk/src/com/google/common/collect/ListMultimap.java
+52104:Node-path: trunk/src/com/google/common/collect/Lists.java
+52770:Node-path: trunk/src/com/google/common/collect/MapConstraints.java
+
+exec
+/usr/bin/bash -lc 'gzip -cd /tmp/google-collections-repo.svndump.gz | rg -n "''^Node-path: (tags|trunk|branches)" | head -200' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+41:Node-path: branches
+50:Node-path: tags
+59:Node-path: trunk
+86:Node-path: trunk/COPYING
+300:Node-path: trunk/build.xml
+418:Node-path: trunk/google-collect.iml
+454:Node-path: trunk/google-collect.ipr
+827:Node-path: trunk/javadoc
+836:Node-path: trunk/src
+845:Node-path: trunk/src/com
+854:Node-path: trunk/src/com/google
+863:Node-path: trunk/src/com/google/common
+872:Node-path: trunk/src/com/google/common/base
+881:Node-path: trunk/src/com/google/common/base/FinalizablePhantomReference.java
+924:Node-path: trunk/src/com/google/common/base/FinalizableReference.java
+964:Node-path: trunk/src/com/google/common/base/FinalizableReferenceQueue.java
+1048:Node-path: trunk/src/com/google/common/base/FinalizableSoftReference.java
+1090:Node-path: trunk/src/com/google/common/base/FinalizableWeakReference.java
+1132:Node-path: trunk/src/com/google/common/base/Function.java
+1188:Node-path: trunk/src/com/google/common/base/Functions.java
+1340:Node-path: trunk/src/com/google/common/base/Join.java
+1541:Node-path: trunk/src/com/google/common/base/Nullable.java
+1584:Node-path: trunk/src/com/google/common/base/Objects.java
+1738:Node-path: trunk/src/com/google/common/base/Preconditions.java
+1956:Node-path: trunk/src/com/google/common/base/Predicate.java
+2016:Node-path: trunk/src/com/google/common/base/Predicates.java
+2235:Node-path: trunk/src/com/google/common/base/ReferenceType.java
+2298:Node-path: trunk/src/com/google/common/collect
+2307:Node-path: trunk/src/com/google/common/collect/AbstractIterable.java
+2369:Node-path: trunk/src/com/google/common/collect/AbstractIterator.java
+2525:Node-path: trunk/src/com/google/common/collect/AbstractListMultimap.java
+2594:Node-path: trunk/src/com/google/common/collect/AbstractMapBasedMultiset.java
+2995:Node-path: trunk/src/com/google/common/collect/AbstractMapEntry.java
+3068:Node-path: trunk/src/com/google/common/collect/AbstractMultimap.java
+4479:Node-path: trunk/src/com/google/common/collect/AbstractMultiset.java
+4997:Node-path: trunk/src/com/google/common/collect/AbstractMultisetEntry.java
+5067:Node-path: trunk/src/com/google/common/collect/AbstractSetMultimap.java
+5145:Node-path: trunk/src/com/google/common/collect/AbstractSortedSetMultimap.java
+5215:Node-path: trunk/src/com/google/common/collect/ArrayListMultimap.java
+5438:Node-path: trunk/src/com/google/common/collect/BiMap.java
+5539:Node-path: trunk/src/com/google/common/collect/Comparators.java
+6000:Node-path: trunk/src/com/google/common/collect/Constraint.java
+6065:Node-path: trunk/src/com/google/common/collect/Constraints.java
+6447:Node-path: trunk/src/com/google/common/collect/EnumBiMap.java
+6585:Node-path: trunk/src/com/google/common/collect/EnumHashBiMap.java
+6703:Node-path: trunk/src/com/google/common/collect/ForwardingCollection.java
+7005:Node-path: trunk/src/com/google/common/collect/ForwardingIterator.java
+7068:Node-path: trunk/src/com/google/common/collect/ForwardingList.java
+7168:Node-path: trunk/src/com/google/common/collect/ForwardingListIterator.java
+7243:Node-path: trunk/src/com/google/common/collect/ForwardingMap.java
+7352:Node-path: trunk/src/com/google/common/collect/ForwardingMapEntry.java
+7423:Node-path: trunk/src/com/google/common/collect/ForwardingMultimap.java
+7564:Node-path: trunk/src/com/google/common/collect/ForwardingMultiset.java
+7647:Node-path: trunk/src/com/google/common/collect/ForwardingObject.java
+7802:Node-path: trunk/src/com/google/common/collect/ForwardingQueue.java
+7873:Node-path: trunk/src/com/google/common/collect/ForwardingSet.java
+7964:Node-path: trunk/src/com/google/common/collect/ForwardingSortedMap.java
+8040:Node-path: trunk/src/com/google/common/collect/ForwardingSortedSet.java
+8116:Node-path: trunk/src/com/google/common/collect/HashBiMap.java
+8211:Node-path: trunk/src/com/google/common/collect/HashMultimap.java
+8323:Node-path: trunk/src/com/google/common/collect/HashMultiset.java
+8450:Node-path: trunk/src/com/google/common/collect/ImmutableBiMapBuilder.java
+8566:Node-path: trunk/src/com/google/common/collect/ImmutableMapBuilder.java
+8775:Node-path: trunk/src/com/google/common/collect/ImmutableMultimapBuilder.java
+8917:Node-path: trunk/src/com/google/common/collect/IntQueue.java
+9197:Node-path: trunk/src/com/google/common/collect/IntStack.java
+9426:Node-path: trunk/src/com/google/common/collect/Iterables.java
+9903:Node-path: trunk/src/com/google/common/collect/Iterators.java
+10419:Node-path: trunk/src/com/google/common/collect/LinkedHashMultimap.java
+10734:Node-path: trunk/src/com/google/common/collect/LinkedHashMultiset.java
+10837:Node-path: trunk/src/com/google/common/collect/LinkedListMultimap.java
+11636:Node-path: trunk/src/com/google/common/collect/LinkedListMultiset.java
+12191:Node-path: trunk/src/com/google/common/collect/ListMultimap.java
+12251:Node-path: trunk/src/com/google/common/collect/Lists.java
+12918:Node-path: trunk/src/com/google/common/collect/MapConstraint.java
+12982:Node-path: trunk/src/com/google/common/collect/MapConstraints.java
+13629:Node-path: trunk/src/com/google/common/collect/Maps.java
+14718:Node-path: trunk/src/com/google/common/collect/Multimap.java
+15027:Node-path: trunk/src/com/google/common/collect/Multimaps.java
+16637:Node-path: trunk/src/com/google/common/collect/Multiset.java
+16821:Node-path: trunk/src/com/google/common/collect/Multisets.java
+17400:Node-path: trunk/src/com/google/common/collect/ObjectArrays.java
+17528:Node-path: trunk/src/com/google/common/collect/PrefixMap.java
+17583:Node-path: trunk/src/com/google/common/collect/PrefixTrie.java
+17761:Node-path: trunk/src/com/google/common/collect/PrimitiveArrays.java
+17927:Node-path: trunk/src/com/google/common/collect/ReferenceMap.java
+18597:Node-path: trunk/src/com/google/common/collect/SetMultimap.java
+18689:Node-path: trunk/src/com/google/common/collect/Sets.java
+19768:Node-path: trunk/src/com/google/common/collect/SortedArraySet.java
+20287:Node-path: trunk/src/com/google/common/collect/SortedSetMultimap.java
+20351:Node-path: trunk/src/com/google/common/collect/StandardBiMap.java
+20724:Node-path: trunk/src/com/google/common/collect/Synchronized.java
+21926:Node-path: trunk/src/com/google/common/collect/TreeMultimap.java
+22138:Node-path: trunk/src/com/google/common/collect/TreeMultiset.java
+22238:Node-path: trunk/src/com/google/common/collect/UncheckedThrower.java
+22287:Node-path: trunk/src/com/google/common/collect/package-info.java
+22324:Node-path: trunk/test
+22351:Node-path: trunk/src/com/google/common/base/FinalizablePhantomReference.java
+22396:Node-path: trunk/src/com/google/common/base/FinalizableReference.java
+22438:Node-path: trunk/src/com/google/common/base/FinalizableReferenceQueue.java
+22524:Node-path: trunk/src/com/google/common/base/FinalizableSoftReference.java
+22568:Node-path: trunk/src/com/google/common/base/FinalizableWeakReference.java
+22612:Node-path: trunk/src/com/google/common/base/Function.java
+22668:Node-path: trunk/src/com/google/common/base/Functions.java
+22820:Node-path: trunk/src/com/google/common/base/Join.java
+23021:Node-path: trunk/src/com/google/common/base/Nullable.java
+23066:Node-path: trunk/src/com/google/common/base/Objects.java
+23220:Node-path: trunk/src/com/google/common/base/Preconditions.java
+23438:Node-path: trunk/src/com/google/common/base/Predicate.java
+23498:Node-path: trunk/src/com/google/common/base/Predicates.java
+23717:Node-path: trunk/src/com/google/common/base/ReferenceType.java
+23782:Node-path: trunk/src/com/google/common/collect/AbstractIterable.java
+23844:Node-path: trunk/src/com/google/common/collect/AbstractIterator.java
+24000:Node-path: trunk/src/com/google/common/collect/AbstractListMultimap.java
+24069:Node-path: trunk/src/com/google/common/collect/AbstractMapBasedMultiset.java
+24470:Node-path: trunk/src/com/google/common/collect/AbstractMapEntry.java
+24543:Node-path: trunk/src/com/google/common/collect/AbstractMultimap.java
+25954:Node-path: trunk/src/com/google/common/collect/AbstractMultiset.java
+26472:Node-path: trunk/src/com/google/common/collect/AbstractMultisetEntry.java
+26542:Node-path: trunk/src/com/google/common/collect/AbstractSetMultimap.java
+26620:Node-path: trunk/src/com/google/common/collect/AbstractSortedSetMultimap.java
+26690:Node-path: trunk/src/com/google/common/collect/ArrayListMultimap.java
+26913:Node-path: trunk/src/com/google/common/collect/BiMap.java
+27014:Node-path: trunk/src/com/google/common/collect/Comparators.java
+27475:Node-path: trunk/src/com/google/common/collect/Constraint.java
+27540:Node-path: trunk/src/com/google/common/collect/Constraints.java
+27922:Node-path: trunk/src/com/google/common/collect/EnumBiMap.java
+28060:Node-path: trunk/src/com/google/common/collect/EnumHashBiMap.java
+28178:Node-path: trunk/src/com/google/common/collect/ForwardingCollection.java
+28480:Node-path: trunk/src/com/google/common/collect/ForwardingIterator.java
+28543:Node-path: trunk/src/com/google/common/collect/ForwardingList.java
+28643:Node-path: trunk/src/com/google/common/collect/ForwardingListIterator.java
+28718:Node-path: trunk/src/com/google/common/collect/ForwardingMap.java
+28827:Node-path: trunk/src/com/google/common/collect/ForwardingMapEntry.java
+28898:Node-path: trunk/src/com/google/common/collect/ForwardingMultimap.java
+29039:Node-path: trunk/src/com/google/common/collect/ForwardingMultiset.java
+29122:Node-path: trunk/src/com/google/common/collect/ForwardingObject.java
+29277:Node-path: trunk/src/com/google/common/collect/ForwardingQueue.java
+29348:Node-path: trunk/src/com/google/common/collect/ForwardingSet.java
+29439:Node-path: trunk/src/com/google/common/collect/ForwardingSortedMap.java
+29515:Node-path: trunk/src/com/google/common/collect/ForwardingSortedSet.java
+29591:Node-path: trunk/src/com/google/common/collect/HashBiMap.java
+29686:Node-path: trunk/src/com/google/common/collect/HashMultimap.java
+29798:Node-path: trunk/src/com/google/common/collect/HashMultiset.java
+29925:Node-path: trunk/src/com/google/common/collect/ImmutableBiMapBuilder.java
+30041:Node-path: trunk/src/com/google/common/collect/ImmutableMapBuilder.java
+30250:Node-path: trunk/src/com/google/common/collect/ImmutableMultimapBuilder.java
+30392:Node-path: trunk/src/com/google/common/collect/IntQueue.java
+30672:Node-path: trunk/src/com/google/common/collect/IntStack.java
+30901:Node-path: trunk/src/com/google/common/collect/Iterables.java
+31378:Node-path: trunk/src/com/google/common/collect/Iterators.java
+31894:Node-path: trunk/src/com/google/common/collect/LinkedHashMultimap.java
+32209:Node-path: trunk/src/com/google/common/collect/LinkedHashMultiset.java
+32312:Node-path: trunk/src/com/google/common/collect/LinkedListMultimap.java
+33111:Node-path: trunk/src/com/google/common/collect/LinkedListMultiset.java
+33666:Node-path: trunk/src/com/google/common/collect/ListMultimap.java
+33726:Node-path: trunk/src/com/google/common/collect/Lists.java
+34393:Node-path: trunk/src/com/google/common/collect/MapConstraint.java
+34457:Node-path: trunk/src/com/google/common/collect/MapConstraints.java
+35104:Node-path: trunk/src/com/google/common/collect/Maps.java
+36193:Node-path: trunk/src/com/google/common/collect/Multimap.java
+36502:Node-path: trunk/src/com/google/common/collect/Multimaps.java
+38112:Node-path: trunk/src/com/google/common/collect/Multiset.java
+38296:Node-path: trunk/src/com/google/common/collect/Multisets.java
+38875:Node-path: trunk/src/com/google/common/collect/ObjectArrays.java
+39003:Node-path: trunk/src/com/google/common/collect/PrefixMap.java
+39058:Node-path: trunk/src/com/google/common/collect/PrefixTrie.java
+39236:Node-path: trunk/src/com/google/common/collect/PrimitiveArrays.java
+39402:Node-path: trunk/src/com/google/common/collect/ReferenceMap.java
+40072:Node-path: trunk/src/com/google/common/collect/SetMultimap.java
+40164:Node-path: trunk/src/com/google/common/collect/Sets.java
+41243:Node-path: trunk/src/com/google/common/collect/SortedArraySet.java
+41762:Node-path: trunk/src/com/google/common/collect/SortedSetMultimap.java
+41826:Node-path: trunk/src/com/google/common/collect/StandardBiMap.java
+42199:Node-path: trunk/src/com/google/common/collect/Synchronized.java
+43401:Node-path: trunk/src/com/google/common/collect/TreeMultimap.java
+43613:Node-path: trunk/src/com/google/common/collect/TreeMultiset.java
+43713:Node-path: trunk/src/com/google/common/collect/UncheckedThrower.java
+43762:Node-path: trunk/src/com/google/common/collect/package-info.java
+43817:Node-path: trunk/google-collect.iml
+43852:Node-path: trunk/google-collect.ipr
+44238:Node-path: trunk/src/com/google/common/base/Functions.java
+44389:Node-path: trunk/src/com/google/common/base/Join.java
+44589:Node-path: trunk/src/com/google/common/base/Predicates.java
+44807:Node-path: trunk/src/com/google/common/collect/AbstractIterator.java
+44962:Node-path: trunk/src/com/google/common/collect/AbstractListMultimap.java
+45030:Node-path: trunk/src/com/google/common/collect/AbstractMapEntry.java
+45102:Node-path: trunk/src/com/google/common/collect/AbstractMultimap.java
+46512:Node-path: trunk/src/com/google/common/collect/AbstractMultiset.java
+47029:Node-path: trunk/src/com/google/common/collect/AbstractSetMultimap.java
+47106:Node-path: trunk/src/com/google/common/collect/AbstractSortedSetMultimap.java
+47175:Node-path: trunk/src/com/google/common/collect/ArrayListMultimap.java
+47396:Node-path: trunk/src/com/google/common/collect/BiMap.java
+47496:Node-path: trunk/src/com/google/common/collect/Comparators.java
+47955:Node-path: trunk/src/com/google/common/collect/Constraints.java
+48336:Node-path: trunk/src/com/google/common/collect/ForwardingCollection.java
+48636:Node-path: trunk/src/com/google/common/collect/ForwardingMultimap.java
+48776:Node-path: trunk/src/com/google/common/collect/ForwardingObject.java
+48930:Node-path: trunk/src/com/google/common/collect/HashMultimap.java
+49041:Node-path: trunk/src/com/google/common/collect/ImmutableMapBuilder.java
+
+exec
+/usr/bin/bash -lc 'gzip -cd /tmp/google-collections-repo.svndump.gz | rg -n "''^Node-path: trunk/test" | head -100' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+22324:Node-path: trunk/test
+binary file matches (found "\0" byte around offset 1990270)
+
+exec
+/usr/bin/bash -lc "gzip -cd /tmp/google-collections-repo.svndump.gz | rg -n \"(Test\\.java|TestCase|junit|src-test|testsrc|tests/)\" | head -200" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+363:        classname="junit.textui.TestRunner"
+365:        taskname="junit">
+443:          <root url="jar://$MODULE_DIR$/lib/build/junit.jar!/" />
+43840:          <root url="jar://$MODULE_DIR$/lib/build/junit.jar!/" />
+binary file matches (found "\0" byte around offset 1990270)
+
+exec
+/usr/bin/bash -lc 'gzip -cd /tmp/google-collections-repo.svndump.gz | rg -n "''^Node-path: tags/" | head -100' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 374ms:
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://code.google.com/archive|\"repository-url\" : \"http://code.google.com|google-code-archive|repo1.maven.org|storage.googleapis.com/google-code-archive' build/discovered-artifact-metadata metadata -S | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"https://repo1.maven.org/maven2/.+-sources.jar\"|\"documentation-url\" : \"https://repo1.maven.org/maven2/.+-javadoc.jar\"' build/discovered-artifact-metadata metadata -S | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/org.crac/crac/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-sources.jar",
+metadata/org.crac/crac/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"N/A\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+codex
+I have enough evidence to patch it: Maven Central has the `sources` and `javadoc` jars for `1.0`, no Maven test artifact exists, and the archived Google Code project does not expose a versioned test-suite URL for this release. The artifact is a JVM `jar` with Java class/source files, so I’m leaving the language and `not-for-native-image` fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..3dc3c08bd48b58a2fff88e1f2162db79b9959c50
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "repository-url" : "https://code.google.com/archive/p/google-collections",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
++  "description" : "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..3dc3c08bd48b58a2fff88e1f2162db79b9959c50
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "repository-url" : "https://code.google.com/archive/p/google-collections",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
++  "description" : "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.collections:google-collections:1.0",
+  "repository-url": "https://code.google.com/archive/p/google-collections",
+  "source-code-url": "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
+  "description": "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar && curl -fsSLI https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..3dc3c08bd48b58a2fff88e1f2162db79b9959c50
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "repository-url" : "https://code.google.com/archive/p/google-collections",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
++  "description" : "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+ }
+
+ succeeded in 190ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 18:59:07 GMT
+content-type: application/java-archive
+content-length: 707958
+cf-ray: 9f7a3864bc1d3d61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 176208
+etag: "0d82345119e2f4dcc4de40f2817e61a4"
+last-modified: Wed, 30 Dec 2009 23:28:04 GMT
+x-checksum-md5: 0d82345119e2f4dcc4de40f2817e61a4
+x-checksum-sha1: 4a02bcc6bb9f9445659551e3c3469b65440c8dd1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.collections:google-collections:1.0",
+  "repository-url" : "https://code.google.com/archive/p/google-collections",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
+  "description" : "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..3dc3c08bd48b58a2fff88e1f2162db79b9959c50
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "repository-url" : "https://code.google.com/archive/p/google-collections",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
++  "description" : "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+ }
+
+ succeeded in 636ms:
+web search: 
+web search: https://code.google.com/archive/p/google-collections
+web search: 
+web search: repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0.pom
+web search: 
+web search: https://maven.gluu.org/maven/com/google/collections/google-collections/1.0/
+web search: 
+web search: central.sonatype.com api artifact maven com.google.collections google-collections 1.0 sources javadoc
+web search: 
+web search: "google-collect-1.0.zip" "Google Collections Library 1.0 - FINAL"
+codex
+Updated [com.google.collections-google-collections-1.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json).
+
+I set the repository, Maven Central source/javadoc URLs with `$version$`, `test-code-url` as `N/A`, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a normal Java/JVM `jar` artifact, not a Kotlin/Groovy/Scala or non-JVM artifact. Maven Central’s POM identifies it as `com.google.collections:google-collections:1.0`, packaging `jar`, Java 5 source/target, with the original Google Code project and source control links. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.collections/google-collections))
+
+Validation done: `jq` parsed the JSON successfully, and the substituted `1.0` source and javadoc URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..3dc3c08bd48b58a2fff88e1f2162db79b9959c50
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "repository-url" : "https://code.google.com/archive/p/google-collections",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-javadoc.jar",
++  "description" : "Google Collections is a Java utility library that adds collection types and helpers such as multimaps, multisets, immutable collections, predicates, functions, and collection builders. It was the predecessor to Guava and provides reusable data-structure and collection-related APIs for Java 5 applications."
+ }
+
+tokens used
+147,320
+Updated [com.google.collections-google-collections-1.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json).
+
+I set the repository, Maven Central source/javadoc URLs with `$version$`, `test-code-url` as `N/A`, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a normal Java/JVM `jar` artifact, not a Kotlin/Groovy/Scala or non-JVM artifact. Maven Central’s POM identifies it as `com.google.collections:google-collections:1.0`, packaging `jar`, Java 5 source/target, with the original Google Code project and source control links. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.collections/google-collections))
+
+Validation done: `jq` parsed the JSON successfully, and the substituted `1.0` source and javadoc URLs returned HTTP 200.
+Ran agent for com.google.collections:google-collections:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/build/agent-artifact-discovery-logs/com.google.collections-google-collections-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-8ecb16e4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 22s
+9 actionable tasks: 9 executed
