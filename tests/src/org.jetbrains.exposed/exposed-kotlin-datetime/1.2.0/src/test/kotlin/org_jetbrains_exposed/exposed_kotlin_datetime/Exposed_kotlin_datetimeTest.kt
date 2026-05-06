@@ -62,6 +62,7 @@ import org.junit.jupiter.api.Test
 import java.sql.Timestamp
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
@@ -143,6 +144,14 @@ public class Exposed_kotlin_datetimeTest {
         assertThat(durationType.fromDuration(duration)).isEqualTo(duration)
         assertThat(durationType.valueFromDB(duration.inWholeNanoseconds)).isEqualTo(duration)
         assertThat(durationType.valueFromDB(7)).isEqualTo(7.nanoseconds)
+    }
+
+    @Test
+    fun durationColumnTypeParsesTextualDurationsAndInfinityFromDatabaseValues() {
+        val durationType = assertKotlinDurationType(DateTimeTable.duration.columnType)
+
+        assertThat(durationType.valueFromDB("2s")).isEqualTo(2.seconds)
+        assertThat(durationType.valueFromDB(Duration.INFINITE.inWholeNanoseconds)).isEqualTo(Duration.INFINITE)
     }
 
     @Test
