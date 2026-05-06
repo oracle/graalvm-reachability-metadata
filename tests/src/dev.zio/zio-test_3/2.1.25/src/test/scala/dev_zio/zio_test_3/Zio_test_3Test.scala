@@ -234,6 +234,33 @@ class Zio_test_3Test {
   }
 
   @Test
+  def testClockSavesAndRestoresVirtualState(): Unit = {
+    val savedTime: Instant = Instant.parse("2024-02-01T00:00:00Z")
+    val changedTime: Instant = Instant.parse("2024-02-01T01:00:00Z")
+    val values = unsafeRun {
+      testClockWith { clock =>
+        for {
+          _ <- clock.setTime(savedTime)
+          _ <- clock.setTimeZone(ZoneId.of("UTC"))
+          restore <- clock.save
+          _ <- clock.setTime(changedTime)
+          _ <- clock.setTimeZone(ZoneId.of("Europe/Paris"))
+          changedInstant <- Clock.instant
+          changedZone <- clock.timeZone
+          _ <- restore
+          restoredInstant <- Clock.instant
+          restoredZone <- clock.timeZone
+        } yield (changedInstant, changedZone, restoredInstant, restoredZone)
+      }.provideLayer(testEnvironment)
+    }
+
+    assertThat(values._1).isEqualTo(changedTime)
+    assertThat(values._2).isEqualTo(ZoneId.of("Europe/Paris"))
+    assertThat(values._3).isEqualTo(savedTime)
+    assertThat(values._4).isEqualTo(ZoneId.of("UTC"))
+  }
+
+  @Test
   def annotationsAndDiffsAccumulateMetadataAndRenderDifferences(): Unit = {
     val retriedMap: TestAnnotationMap = TestAnnotationMap.empty
       .annotate(TestAnnotation.retried, 1)
