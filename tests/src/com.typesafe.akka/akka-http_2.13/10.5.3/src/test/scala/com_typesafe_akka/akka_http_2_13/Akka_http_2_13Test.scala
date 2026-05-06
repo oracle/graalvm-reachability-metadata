@@ -14,6 +14,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.coding.Gzip
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.ContentTypes
 import akka.http.scaladsl.model.FormData
@@ -115,6 +116,26 @@ class Akka_http_2_13Test extends Directives {
       assertThat(marshalledText.contentType).isEqualTo(ContentTypes.`text/plain(UTF-8)`)
       assertThat(unmarshalledText).isEqualTo("Akka HTTP")
       assertThat(decodedForm.fields.toMap).isEqualTo(Map("language" -> "Scala", "library" -> "Akka HTTP"))
+    }
+  }
+
+  @Test
+  def encodesAndDecodesGzipPayloadsAndMessages(): Unit = {
+    withActorSystem("akka-http-gzip-coding") { (_, materializer: Materializer) =>
+      implicit val mat: Materializer = materializer
+
+      val plainText: String = "Akka HTTP supports transparent entity compression"
+      val compressedData: ByteString = Gzip.encode(ByteString(plainText))
+      val decompressedData: ByteString = Await.result(Gzip.decode(compressedData), OperationTimeout)
+      val response: HttpResponse = HttpResponse(entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, plainText))
+      val encodedResponse: HttpResponse = Gzip.encodeMessage(response).asInstanceOf[HttpResponse]
+      val decodedResponse: HttpResponse = Gzip.decodeMessage(encodedResponse).asInstanceOf[HttpResponse]
+
+      assertThat(compressedData).isNotEqualTo(ByteString(plainText))
+      assertThat(decompressedData.utf8String).isEqualTo(plainText)
+      assertThat(headerValue(encodedResponse.headers, "Content-Encoding")).isEqualTo(Some("gzip"))
+      assertThat(decodedResponse.headers.exists(header => header.name().equalsIgnoreCase("Content-Encoding"))).isFalse
+      assertThat(entityText(decodedResponse.entity)).isEqualTo(plainText)
     }
   }
 
