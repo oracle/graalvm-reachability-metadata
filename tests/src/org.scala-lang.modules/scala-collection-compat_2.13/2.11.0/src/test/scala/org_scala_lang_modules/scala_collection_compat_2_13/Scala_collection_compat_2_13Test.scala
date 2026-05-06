@@ -112,6 +112,20 @@ class Scala_collection_compat_2_13Test {
   }
 
   @Test
+  def immutableArraySeqAliasWrapsExistingArraysWithoutCopying(): Unit = {
+    val numbers: Array[Int] = Array(3, 1, 4)
+    val wrappedNumbers: ArraySeq[Int] = ArraySeq.unsafeWrapArray(numbers)
+    val words: Array[String] = Array("alpha", "beta", "gamma")
+    val wrappedWords: ArraySeq[String] = ArraySeq.unsafeWrapArray(words)
+
+    numbers(1) = 10
+    words(2) = "delta"
+
+    assertEquals(List(3, 10, 4), wrappedNumbers.toList)
+    assertEquals(Vector("alpha", "beta", "delta"), wrappedWords.toVector)
+  }
+
+  @Test
   def immutableLazyListAliasEvaluatesOnlyDemandedElements(): Unit = {
     val naturals: LazyList[Int] = LazyList.iterate(1)(_ + 1)
     val fibonacci: LazyList[Int] = fibonacciFrom(0, 1)
