@@ -142,6 +142,31 @@ public class Async_extensions_jvmTest {
     }
 
     @Test
+    fun executableQueryAwaitHelpersConsumeSynchronousCursorResults(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val listQuery: SynchronousUserQuery = SynchronousUserQuery(
+                listOf(User(1L, "Ada", true), User(2L, "Grace", false)),
+            )
+            val oneQuery: SynchronousUserQuery = SynchronousUserQuery(listOf(User(3L, "Katherine", true)))
+            val emptyQuery: SynchronousUserQuery = SynchronousUserQuery(emptyList())
+
+            val listedUsers: List<User> = listQuery.awaitAsList()
+            val singleUser: User = oneQuery.awaitAsOne()
+            val emptyUser: User? = emptyQuery.awaitAsOneOrNull()
+
+            assertThat(listedUsers).containsExactly(User(1L, "Ada", true), User(2L, "Grace", false))
+            assertThat(singleUser).isEqualTo(User(3L, "Katherine", true))
+            assertThat(emptyUser).isNull()
+            assertThat(listQuery.executeCount).isEqualTo(1)
+            assertThat(oneQuery.executeCount).isEqualTo(1)
+            assertThat(emptyQuery.executeCount).isEqualTo(1)
+            assertThat(listQuery.nextCount).isEqualTo(3)
+            assertThat(oneQuery.nextCount).isEqualTo(2)
+            assertThat(emptyQuery.nextCount).isEqualTo(1)
+        }
+    }
+
+    @Test
     fun executableQueryAwaitHelpersReportEmptyAndMultipleRowErrors(): Unit = runBlocking {
         withTimeout(5_000) {
             val emptyQuery: AsyncUserQuery = AsyncUserQuery(emptyList(), label = "emptyUsers")
@@ -253,6 +278,27 @@ public class Async_extensions_jvmTest {
         override fun toString(): String = "AsyncUserQuery:$label"
     }
 
+    private class SynchronousUserQuery(
+        private val rows: List<User>,
+    ) : ExecutableQuery<User>({ cursor: SqlCursor ->
+        User(
+            id = cursor.getLong(0) ?: error("id was null"),
+            name = cursor.getString(1) ?: error("name was null"),
+            active = cursor.getBoolean(2) ?: error("active was null"),
+        )
+    }) {
+        var executeCount: Int = 0
+            private set
+
+        var nextCount: Int = 0
+            private set
+
+        override fun <R> execute(mapper: (SqlCursor) -> QueryResult<R>): QueryResult<R> {
+            executeCount++
+            return mapper(SynchronousUserCursor(rows) { nextCount++ })
+        }
+    }
+
     private class AsyncRecordingDriver(
         private val rows: List<User> = emptyList(),
         private val affectedRows: Long = 1L,
@@ -335,6 +381,49 @@ public class Async_extensions_jvmTest {
 
         override fun bindBoolean(index: Int, boolean: Boolean?): Unit {
             boundValues += BoundValue(index, boolean)
+        }
+    }
+
+    private class SynchronousUserCursor(
+        private val rows: List<User>,
+        private val onNext: () -> Unit,
+    ) : SqlCursor {
+        private var index: Int = -1
+
+        override fun next(): QueryResult<Boolean> {
+            onNext()
+            index++
+            return QueryResult.Value(index < rows.size)
+        }
+
+        override fun getString(index: Int): String? {
+            return when (index) {
+                1 -> currentRow().name
+                else -> null
+            }
+        }
+
+        override fun getLong(index: Int): Long? {
+            return when (index) {
+                0 -> currentRow().id
+                else -> null
+            }
+        }
+
+        override fun getBytes(index: Int): ByteArray? = null
+
+        override fun getDouble(index: Int): Double? = null
+
+        override fun getBoolean(index: Int): Boolean? {
+            return when (index) {
+                2 -> currentRow().active
+                else -> null
+            }
+        }
+
+        private fun currentRow(): User {
+            check(index in rows.indices) { "Cursor is not positioned on a row" }
+            return rows[index]
         }
     }
 
