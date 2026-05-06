@@ -1,0 +1,1898 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfb2d-7c1d-7cf0-8fed-5090aa0ba442
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sksamuel.hoplite:hoplite-core:2.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.9.0" when "$version$" is replaced with "2.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+- Set "coordinates" to "com.sksamuel.hoplite:hoplite-core:2.9.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.9.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against the artifact metadata and upstream release/tag rather than guessing, then patch the JSON in place.
+exec
+/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
+}
+
+exec
+/bin/bash -lc "rg -n \"com\\.sksamuel\\.hoplite|hoplite-core\" -S ." in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ exited 1 in 0ms:
+web search: 
+web search: Maven com.sksamuel.hoplite hoplite-core 2.9.0 POM scm tag sources tests javadoc
+codex
+The artifact is present on Maven Central with source and javadoc jars, so I’m checking those first as requested. I’m also checking the POM and upstream tag so the language/version and test URL are evidence-based.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/hoplite-core-2.9.0.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sksamuel.hoplite</groupId>
+  <artifactId>hoplite-core</artifactId>
+  <version>2.9.0</version>
+  <name>hoplite</name>
+  <description>Configuration for Kotlin</description>
+  <url>http://www.github.com/sksamuel/hoplite</url>
+  <licenses>
+    <license>
+      <name>The Apache 2.0 License</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>sksamuel</id>
+      <name>Stephen Samuel</name>
+      <email>sam@sksamuel.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:http://www.github.com/sksamuel/hoplite/</connection>
+    <developerConnection>scm:git:http://github.com/sksamuel/</developerConnection>
+    <url>http://www.github.com/sksamuel/hoplite/</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>1.9.25</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+      <version>1.6.4</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-jdk8</artifactId>
+      <version>1.6.4</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>1.9.25</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/ | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc "find . -path '*discovered-artifact-metadata*' -name '*.json' | head -40" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 126ms:
+./build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+
+ succeeded in 256ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sksamuel/hoplite/hoplite-core/2.9.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sksamuel/hoplite/hoplite-core/2.9.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hoplite-core-2.9.0-javadoc.jar" title="hoplite-core-2.9.0-javadoc.jar">hoplite-core-2.9.0-javadoc.jar</a>                    2024-11-27 19:27       261      
+<a href="hoplite-core-2.9.0-javadoc.jar.asc" title="hoplite-core-2.9.0-javadoc.jar.asc">hoplite-core-2.9.0-javadoc.jar.asc</a>                2024-11-27 19:27       485      
+<a href="hoplite-core-2.9.0-javadoc.jar.asc.md5" title="hoplite-core-2.9.0-javadoc.jar.asc.md5">hoplite-core-2.9.0-javadoc.jar.asc.md5</a>            2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0-javadoc.jar.asc.sha1" title="hoplite-core-2.9.0-javadoc.jar.asc.sha1">hoplite-core-2.9.0-javadoc.jar.asc.sha1</a>           2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0-javadoc.jar.md5" title="hoplite-core-2.9.0-javadoc.jar.md5">hoplite-core-2.9.0-javadoc.jar.md5</a>                2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0-javadoc.jar.sha1" title="hoplite-core-2.9.0-javadoc.jar.sha1">hoplite-core-2.9.0-javadoc.jar.sha1</a>               2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0-sources.jar" title="hoplite-core-2.9.0-sources.jar">hoplite-core-2.9.0-sources.jar</a>                    2024-11-27 19:27     92073      
+<a href="hoplite-core-2.9.0-sources.jar.asc" title="hoplite-core-2.9.0-sources.jar.asc">hoplite-core-2.9.0-sources.jar.asc</a>                2024-11-27 19:27       485      
+<a href="hoplite-core-2.9.0-sources.jar.asc.md5" title="hoplite-core-2.9.0-sources.jar.asc.md5">hoplite-core-2.9.0-sources.jar.asc.md5</a>            2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0-sources.jar.asc.sha1" title="hoplite-core-2.9.0-sources.jar.asc.sha1">hoplite-core-2.9.0-sources.jar.asc.sha1</a>           2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0-sources.jar.md5" title="hoplite-core-2.9.0-sources.jar.md5">hoplite-core-2.9.0-sources.jar.md5</a>                2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0-sources.jar.sha1" title="hoplite-core-2.9.0-sources.jar.sha1">hoplite-core-2.9.0-sources.jar.sha1</a>               2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0.jar" title="hoplite-core-2.9.0.jar">hoplite-core-2.9.0.jar</a>                            2024-11-27 19:27    777895      
+<a href="hoplite-core-2.9.0.jar.asc" title="hoplite-core-2.9.0.jar.asc">hoplite-core-2.9.0.jar.asc</a>                        2024-11-27 19:27       485      
+<a href="hoplite-core-2.9.0.jar.asc.md5" title="hoplite-core-2.9.0.jar.asc.md5">hoplite-core-2.9.0.jar.asc.md5</a>                    2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0.jar.asc.sha1" title="hoplite-core-2.9.0.jar.asc.sha1">hoplite-core-2.9.0.jar.asc.sha1</a>                   2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0.jar.md5" title="hoplite-core-2.9.0.jar.md5">hoplite-core-2.9.0.jar.md5</a>                        2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0.jar.sha1" title="hoplite-core-2.9.0.jar.sha1">hoplite-core-2.9.0.jar.sha1</a>                       2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0.module" title="hoplite-core-2.9.0.module">hoplite-core-2.9.0.module</a>                         2024-11-27 19:27      5156      
+<a href="hoplite-core-2.9.0.module.asc" title="hoplite-core-2.9.0.module.asc">hoplite-core-2.9.0.module.asc</a>                     2024-11-27 19:27       485      
+<a href="hoplite-core-2.9.0.module.asc.md5" title="hoplite-core-2.9.0.module.asc.md5">hoplite-core-2.9.0.module.asc.md5</a>                 2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0.module.asc.sha1" title="hoplite-core-2.9.0.module.asc.sha1">hoplite-core-2.9.0.module.asc.sha1</a>                2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0.module.md5" title="hoplite-core-2.9.0.module.md5">hoplite-core-2.9.0.module.md5</a>                     2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0.module.sha1" title="hoplite-core-2.9.0.module.sha1">hoplite-core-2.9.0.module.sha1</a>                    2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0.pom" title="hoplite-core-2.9.0.pom">hoplite-core-2.9.0.pom</a>                            2024-11-27 19:27      2246      
+<a href="hoplite-core-2.9.0.pom.asc" title="hoplite-core-2.9.0.pom.asc">hoplite-core-2.9.0.pom.asc</a>                        2024-11-27 19:27       485      
+<a href="hoplite-core-2.9.0.pom.asc.md5" title="hoplite-core-2.9.0.pom.asc.md5">hoplite-core-2.9.0.pom.asc.md5</a>                    2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0.pom.asc.sha1" title="hoplite-core-2.9.0.pom.asc.sha1">hoplite-core-2.9.0.pom.asc.sha1</a>                   2024-11-27 19:27        40      
+<a href="hoplite-core-2.9.0.pom.md5" title="hoplite-core-2.9.0.pom.md5">hoplite-core-2.9.0.pom.md5</a>                        2024-11-27 19:27        32      
+<a href="hoplite-core-2.9.0.pom.sha1" title="hoplite-core-2.9.0.pom.sha1">hoplite-core-2.9.0.pom.sha1</a>                       2024-11-27 19:27        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com/artifact/com.sksamuel.hoplite/hoplite-core/2.9.0 hoplite-core 2.9.0
+exec
+/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' -size +20c | head -20 | xargs -r sed -n '1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
+}
+
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/git/ref/tags/v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/contents/?ref=v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 267ms:
+{
+  "ref": "refs/tags/v2.9.0",
+  "node_id": "MDM6UmVmMTg3NzI3MTMxOnJlZnMvdGFncy92Mi45LjA=",
+  "url": "https://api.github.com/repos/sksamuel/hoplite/git/refs/tags/v2.9.0",
+  "object": {
+    "sha": "502e9800cac34314296cba8b93a50c75cd666084",
+    "type": "commit",
+    "url": "https://api.github.com/repos/sksamuel/hoplite/git/commits/502e9800cac34314296cba8b93a50c75cd666084"
+  }
+}
+
+ succeeded in 336ms:
+[
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "55563bf35beba8f8ece1f88eeea5fa8c570e4c1a",
+    "size": 170,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/.editorconfig?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/.editorconfig",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/55563bf35beba8f8ece1f88eeea5fa8c570e4c1a",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/.editorconfig?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/55563bf35beba8f8ece1f88eeea5fa8c570e4c1a",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/.editorconfig"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "621b3e7116d3f892babf9e2621574d49a88649f1",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/.github?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/.github",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/621b3e7116d3f892babf9e2621574d49a88649f1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/.github?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/621b3e7116d3f892babf9e2621574d49a88649f1",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "a241df7bd5330ef337ab9ba60947c73b54027406",
+    "size": 147,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/.gitignore?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/.gitignore",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/a241df7bd5330ef337ab9ba60947c73b54027406",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/.gitignore?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/a241df7bd5330ef337ab9ba60947c73b54027406",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+    "size": 11357,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/LICENSE?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/LICENSE",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/LICENSE?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "3e19d99f99d2ad8612fa803090aae67678fd8a22",
+    "size": 57435,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/README.md?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/README.md",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/3e19d99f99d2ad8612fa803090aae67678fd8a22",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/README.md?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/3e19d99f99d2ad8612fa803090aae67678fd8a22",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/README.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "build.gradle.kts",
+    "sha": "9b07235045a993a8f9504aa9e9b8a4b572a37c15",
+    "size": 1437,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/build.gradle.kts?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/9b07235045a993a8f9504aa9e9b8a4b572a37c15",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/build.gradle.kts?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/9b07235045a993a8f9504aa9e9b8a4b572a37c15",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/build.gradle.kts"
+    }
+  },
+  {
+    "name": "buildSrc",
+    "path": "buildSrc",
+    "sha": "c50d362bb940323cdca999076b739d9b09a10ddd",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/buildSrc?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/buildSrc",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/c50d362bb940323cdca999076b739d9b09a10ddd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/buildSrc?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/c50d362bb940323cdca999076b739d9b09a10ddd",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/buildSrc"
+    }
+  },
+  {
+    "name": "changelog.md",
+    "path": "changelog.md",
+    "sha": "1cdc4cc3624f01fb9d4a39c09a4518a6b98c3b77",
+    "size": 10223,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/changelog.md?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/changelog.md",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/1cdc4cc3624f01fb9d4a39c09a4518a6b98c3b77",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/changelog.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/changelog.md?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/1cdc4cc3624f01fb9d4a39c09a4518a6b98c3b77",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/changelog.md"
+    }
+  },
+  {
+    "name": "example-maven",
+    "path": "example-maven",
+    "sha": "99a9a8dc679040454cb1eefbaa3645d430c9f28c",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/example-maven?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/example-maven",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/99a9a8dc679040454cb1eefbaa3645d430c9f28c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/example-maven?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/99a9a8dc679040454cb1eefbaa3645d430c9f28c",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/example-maven"
+    }
+  },
+  {
+    "name": "example-native",
+    "path": "example-native",
+    "sha": "6cc238ea507a5e2e6a142800d424c442a91f1dca",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/example-native?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/example-native",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/6cc238ea507a5e2e6a142800d424c442a91f1dca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/example-native?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/6cc238ea507a5e2e6a142800d424c442a91f1dca",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/example-native"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "0f1a189cd8083cf1a8ed33d5078c1bd13938a86e",
+    "size": 188,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/gradle.properties?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/gradle.properties",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/0f1a189cd8083cf1a8ed33d5078c1bd13938a86e",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/gradle.properties?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/0f1a189cd8083cf1a8ed33d5078c1bd13938a86e",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "79fd4ccbe04dfeb760834d2020afa0da471ed7b3",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/gradle?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/gradle",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/79fd4ccbe04dfeb760834d2020afa0da471ed7b3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/gradle?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/79fd4ccbe04dfeb760834d2020afa0da471ed7b3",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "f5feea6d6b116baaca5a2642d4d9fa1f47d574a7",
+    "size": 8762,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/gradlew?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/gradlew",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/f5feea6d6b116baaca5a2642d4d9fa1f47d574a7",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/gradlew?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/f5feea6d6b116baaca5a2642d4d9fa1f47d574a7",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "9b42019c7915b971238526075306ffba3b666dd5",
+    "size": 2966,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/gradlew.bat?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/gradlew.bat",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/9b42019c7915b971238526075306ffba3b666dd5",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/gradlew.bat?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/9b42019c7915b971238526075306ffba3b666dd5",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/gradlew.bat"
+    }
+  },
+  {
+    "name": "hoplite-arrow",
+    "path": "hoplite-arrow",
+    "sha": "43ee78ac99bf8bf04047af361040aa5ebaf781ad",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-arrow?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-arrow",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/43ee78ac99bf8bf04047af361040aa5ebaf781ad",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-arrow?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/43ee78ac99bf8bf04047af361040aa5ebaf781ad",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-arrow"
+    }
+  },
+  {
+    "name": "hoplite-aws-kotlin",
+    "path": "hoplite-aws-kotlin",
+    "sha": "f15dc6935c42536451b93eb9b247b24d3eea88b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-aws-kotlin?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-aws-kotlin",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/f15dc6935c42536451b93eb9b247b24d3eea88b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-aws-kotlin?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/f15dc6935c42536451b93eb9b247b24d3eea88b6",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-aws-kotlin"
+    }
+  },
+  {
+    "name": "hoplite-aws",
+    "path": "hoplite-aws",
+    "sha": "5a23b1d231ec7d35964f3971e4e5a49108189abf",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-aws?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-aws",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/5a23b1d231ec7d35964f3971e4e5a49108189abf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-aws?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/5a23b1d231ec7d35964f3971e4e5a49108189abf",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-aws"
+    }
+  },
+  {
+    "name": "hoplite-aws2",
+    "path": "hoplite-aws2",
+    "sha": "7b3ac8f12954fd11893bf03c1f0433d9965fcacd",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-aws2?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-aws2",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/7b3ac8f12954fd11893bf03c1f0433d9965fcacd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-aws2?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/7b3ac8f12954fd11893bf03c1f0433d9965fcacd",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-aws2"
+    }
+  },
+  {
+    "name": "hoplite-azure",
+    "path": "hoplite-azure",
+    "sha": "076b12dcd4e6b81a87007bcd60b58fb1daea6fae",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-azure?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-azure",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/076b12dcd4e6b81a87007bcd60b58fb1daea6fae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-azure?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/076b12dcd4e6b81a87007bcd60b58fb1daea6fae",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-azure"
+    }
+  },
+  {
+    "name": "hoplite-consul",
+    "path": "hoplite-consul",
+    "sha": "8d329d9b2097fb8e738a53253f6379d8f35f5f40",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-consul?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-consul",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8d329d9b2097fb8e738a53253f6379d8f35f5f40",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-consul?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8d329d9b2097fb8e738a53253f6379d8f35f5f40",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-consul"
+    }
+  },
+  {
+    "name": "hoplite-core",
+    "path": "hoplite-core",
+    "sha": "4fed912fa68102c501478cf8843d26d08dc8fa5b",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/4fed912fa68102c501478cf8843d26d08dc8fa5b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/4fed912fa68102c501478cf8843d26d08dc8fa5b",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core"
+    }
+  },
+  {
+    "name": "hoplite-cronutils",
+    "path": "hoplite-cronutils",
+    "sha": "daf987ab382844e02c709bad1ff949ae09c90dcc",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-cronutils?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-cronutils",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/daf987ab382844e02c709bad1ff949ae09c90dcc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-cronutils?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/daf987ab382844e02c709bad1ff949ae09c90dcc",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-cronutils"
+    }
+  },
+  {
+    "name": "hoplite-datetime",
+    "path": "hoplite-datetime",
+    "sha": "a6dd0b1572869742a7277af8f4578c52e32e2276",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-datetime?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-datetime",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/a6dd0b1572869742a7277af8f4578c52e32e2276",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-datetime?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/a6dd0b1572869742a7277af8f4578c52e32e2276",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-datetime"
+    }
+  },
+  {
+    "name": "hoplite-gcp",
+    "path": "hoplite-gcp",
+    "sha": "f640585c64568d9fc2a8cbce9d4e6dda2e583a07",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-gcp?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-gcp",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/f640585c64568d9fc2a8cbce9d4e6dda2e583a07",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-gcp?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/f640585c64568d9fc2a8cbce9d4e6dda2e583a07",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-gcp"
+    }
+  },
+  {
+    "name": "hoplite-hdfs",
+    "path": "hoplite-hdfs",
+    "sha": "726a2cce8f0ca93cf40d26d57da02ef2c647a77f",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-hdfs?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-hdfs",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/726a2cce8f0ca93cf40d26d57da02ef2c647a77f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-hdfs?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/726a2cce8f0ca93cf40d26d57da02ef2c647a77f",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-hdfs"
+    }
+  },
+  {
+    "name": "hoplite-hikaricp",
+    "path": "hoplite-hikaricp",
+    "sha": "8938538721296be3a4fc80298015542484c5a59f",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-hikaricp?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-hikaricp",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8938538721296be3a4fc80298015542484c5a59f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-hikaricp?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8938538721296be3a4fc80298015542484c5a59f",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-hikaricp"
+    }
+  },
+  {
+    "name": "hoplite-hocon",
+    "path": "hoplite-hocon",
+    "sha": "81738bb1d61cdab7905d4b73e972fc7fd2cd71e4",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-hocon?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-hocon",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/81738bb1d61cdab7905d4b73e972fc7fd2cd71e4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-hocon?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/81738bb1d61cdab7905d4b73e972fc7fd2cd71e4",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-hocon"
+    }
+  },
+  {
+    "name": "hoplite-javax",
+    "path": "hoplite-javax",
+    "sha": "1e8e0533de038a145f190c0802b3cdb8291d32de",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-javax?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-javax",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/1e8e0533de038a145f190c0802b3cdb8291d32de",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-javax?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/1e8e0533de038a145f190c0802b3cdb8291d32de",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-javax"
+    }
+  },
+  {
+    "name": "hoplite-json",
+    "path": "hoplite-json",
+    "sha": "fa6d6be291c9d216904bc56b3a2c1bd1dd62ae74",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-json?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-json",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/fa6d6be291c9d216904bc56b3a2c1bd1dd62ae74",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-json?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/fa6d6be291c9d216904bc56b3a2c1bd1dd62ae74",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-json"
+    }
+  },
+  {
+    "name": "hoplite-micrometer-datadog",
+    "path": "hoplite-micrometer-datadog",
+    "sha": "0637c58f8e869c13eccff52ea763f21941f5582d",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-micrometer-datadog?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-micrometer-datadog",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/0637c58f8e869c13eccff52ea763f21941f5582d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-micrometer-datadog?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/0637c58f8e869c13eccff52ea763f21941f5582d",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-micrometer-datadog"
+    }
+  },
+  {
+    "name": "hoplite-micrometer-prometheus",
+    "path": "hoplite-micrometer-prometheus",
+    "sha": "89ba8a90379ceec01194765c935b289eaa845717",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-micrometer-prometheus?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-micrometer-prometheus",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/89ba8a90379ceec01194765c935b289eaa845717",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-micrometer-prometheus?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/89ba8a90379ceec01194765c935b289eaa845717",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-micrometer-prometheus"
+    }
+  },
+  {
+    "name": "hoplite-micrometer-statsd",
+    "path": "hoplite-micrometer-statsd",
+    "sha": "aacb43709b579db870fe83658c47e17f0a7a397e",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-micrometer-statsd?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-micrometer-statsd",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/aacb43709b579db870fe83658c47e17f0a7a397e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-micrometer-statsd?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/aacb43709b579db870fe83658c47e17f0a7a397e",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-micrometer-statsd"
+    }
+  },
+  {
+    "name": "hoplite-toml",
+    "path": "hoplite-toml",
+    "sha": "d8f9b93126ab896812d47951de595b3444c4948b",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-toml?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-toml",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/d8f9b93126ab896812d47951de595b3444c4948b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-toml?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/d8f9b93126ab896812d47951de595b3444c4948b",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-toml"
+    }
+  },
+  {
+    "name": "hoplite-vault",
+    "path": "hoplite-vault",
+    "sha": "081d10a90144ca11b55c99cd9c53fa1df92f8e88",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-vault?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-vault",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/081d10a90144ca11b55c99cd9c53fa1df92f8e88",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-vault?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/081d10a90144ca11b55c99cd9c53fa1df92f8e88",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-vault"
+    }
+  },
+  {
+    "name": "hoplite-vavr",
+    "path": "hoplite-vavr",
+    "sha": "84d988cd524c8bf18ea2986b88f15544bc99ffdc",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-vavr?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-vavr",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/84d988cd524c8bf18ea2986b88f15544bc99ffdc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-vavr?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/84d988cd524c8bf18ea2986b88f15544bc99ffdc",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-vavr"
+    }
+  },
+  {
+    "name": "hoplite-watch-consul",
+    "path": "hoplite-watch-consul",
+    "sha": "2377885f7edb77229bbc4779c5ce17a0a6d6b7bd",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-watch-consul?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-watch-consul",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/2377885f7edb77229bbc4779c5ce17a0a6d6b7bd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-watch-consul?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/2377885f7edb77229bbc4779c5ce17a0a6d6b7bd",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-watch-consul"
+    }
+  },
+  {
+    "name": "hoplite-watch",
+    "path": "hoplite-watch",
+    "sha": "8ac7cd0cb5563ac008e0668ee1d449090e9f335b",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-watch?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-watch",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8ac7cd0cb5563ac008e0668ee1d449090e9f335b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-watch?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8ac7cd0cb5563ac008e0668ee1d449090e9f335b",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-watch"
+    }
+  },
+  {
+    "name": "hoplite-yaml",
+    "path": "hoplite-yaml",
+    "sha": "8c9591373626c24245f765ffbebc644a1afbb7b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-yaml?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-yaml",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8c9591373626c24245f765ffbebc644a1afbb7b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-yaml?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/8c9591373626c24245f765ffbebc644a1afbb7b6",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-yaml"
+    }
+  },
+  {
+    "name": "logo.png",
+    "path": "logo.png",
+    "sha": "b47639dbf128c4ec3563225d42cff4acef85206c",
+    "size": 68329,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/logo.png?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/logo.png",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/b47639dbf128c4ec3563225d42cff4acef85206c",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/logo.png",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/logo.png?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/b47639dbf128c4ec3563225d42cff4acef85206c",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/logo.png"
+    }
+  },
+  {
+    "name": "publish.gradle.kts",
+    "path": "publish.gradle.kts",
+    "sha": "cefe2856db9ac7851a939982b67417de5550b370",
+    "size": 2243,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/publish.gradle.kts?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/publish.gradle.kts",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/cefe2856db9ac7851a939982b67417de5550b370",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/publish.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/publish.gradle.kts?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/cefe2856db9ac7851a939982b67417de5550b370",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/publish.gradle.kts"
+    }
+  },
+  {
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+    "sha": "e5a7b8be7e5f26f51204826250e28c2cf28b1530",
+    "size": 4838,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/settings.gradle.kts?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/settings.gradle.kts",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/e5a7b8be7e5f26f51204826250e28c2cf28b1530",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/settings.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/settings.gradle.kts?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/e5a7b8be7e5f26f51204826250e28c2cf28b1530",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/settings.gradle.kts"
+    }
+  }
+]
+
+exec
+/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' -S . | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/$version$",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/$version$",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+./metadata/javax.persistence/javax.persistence-api/index.json:7:    "repository-url": "https://github.com/javaee/jpa-spec",
+./metadata/javax.persistence/javax.persistence-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:6:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:21:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:36:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:51:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:52:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:65:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:83:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:84:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:205:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:206:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:209:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:254:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:255:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:258:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:213:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:288:                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:381:        appendUrlField(fields, "test-code-url", testCodeUrl);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:257:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:259:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:29:                    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:49:                        .contains("source-code-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:52:                        .contains("documentation-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java-extended-validation",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-javadoc.jar",
+./metadata/com.google.api/api-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-sources.jar",
+./metadata/com.google.api/api-common/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+./metadata/com.google.api/api-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-tests.jar",
+./metadata/com.google.api/api-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-javadoc.jar",
+./metadata/org.apache-extras.beanshell/bsh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-sources.jar",
+./metadata/org.apache-extras.beanshell/bsh/index.json:6:    "repository-url" : "https://github.com/beanshell/beanshell",
+./metadata/org.apache-extras.beanshell/bsh/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-src.zip",
+./metadata/org.apache-extras.beanshell/bsh/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:55:            "source-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:56:            "test-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:57:            "documentation-url"
+./forge/utility_scripts/source_context.py:26:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:27:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:28:    "documentation": "documentation-url",
+./forge/utility_scripts/source_context.py:228:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core?ref=v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/README.md | sed -n '1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 231ms:
+[
+  {
+    "name": "build.gradle.kts",
+    "path": "hoplite-core/build.gradle.kts",
+    "sha": "7c17debef5c890791c4a1904b5a6c4a5559852ab",
+    "size": 332,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/build.gradle.kts?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/hoplite-core/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/7c17debef5c890791c4a1904b5a6c4a5559852ab",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/hoplite-core/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/build.gradle.kts?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/7c17debef5c890791c4a1904b5a6c4a5559852ab",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/hoplite-core/build.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "hoplite-core/src",
+    "sha": "87a68b6fd43e34c771e783ca24cfecc62d4d0944",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/87a68b6fd43e34c771e783ca24cfecc62d4d0944",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/87a68b6fd43e34c771e783ca24cfecc62d4d0944",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src"
+    }
+  }
+]
+
+ succeeded in 265ms:
+# Hoplite <img src="logo.png" height=40>
+
+Hoplite is a Kotlin library for loading configuration files into typesafe classes in a boilerplate-free way.
+Define your config using Kotlin data classes, and at startup Hoplite will read from one or more config files,
+mapping the values in those files into your config classes. Any missing values, or values that cannot be converted
+into the required type will cause the config to fail with detailed error messages.
+
+![master](https://github.com/sksamuel/hoplite/workflows/master/badge.svg)
+[<img src="https://img.shields.io/maven-central/v/com.sksamuel.hoplite/hoplite-core.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Choplite)
+[<img src="https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/com.sksamuel.hoplite/hoplite-core.svg?label=latest%20snapshot&style=plastic"/>](https://s01.oss.sonatype.org/content/repositories/snapshots/com/sksamuel/hoplite/)
+
+## Features
+
+- **Multiple formats:** Write your configuration in [several formats](#supported-formats): Yaml, JSON, Toml, Hocon, or
+  Java .props files or even mix and match formats in the same system.
+- **Property Sources:** Per-system overrides are possible from JVM system properties,
+  environment variables, JNDI or a per-user local config file.
+- **Batteries included:** Support for many [standard types](#decoders) such as primitives, enums, dates, collection
+  types, inline classes, uuids, nullable types, as well as popular Kotlin third party library types such
+  as `NonEmptyList`, `Option` and `TupleX` from [Arrow](https://arrow-kt.io/).
+- **Custom Data Types:** The `Decoder` interface makes it easy to add support for your custom domain types or standard
+  library types not covered out of the box.
+- **Cascading:** Config files can be [stacked](#cascading-config). Start with a default file and then layer new
+  configurations on top. When resolving config, lookup of values falls through to the first file that contains a
+  definition. Can be used to have a default config file and then an environment specific file.
+- **Beautiful errors:** Fail fast at runtime, with [beautiful errors](#beautiful-errors) showing exactly what went wrong and where.
+- **Preprocessors:** Support for several [preprocessors](https://github.com/sksamuel/hoplite#preprocessors) that will
+  replace placeholders with values resolved from external configs, such as AWS Secrets Manager, Azure KeyVault and so on.
+- **Reloadable config:** Trigger config [reloads](#reloadable-config) on a fixed interval or in response to external
+  events such as consul value changes.
+
+## Changelog
+
+See the list of changes in each release [here](changelog.md).
+
+## Getting Started
+
+Add Hoplite to your build:
+
+```groovy
+implementation 'com.sksamuel.hoplite:hoplite-core:<version>'
+```
+
+You will also need to include a module for the [format(s)](#supported-formats) you to use.
+
+Next define the data classes that are going to contain the config.
+You should create a top level class which can be named simply Config, or ProjectNameConfig. This class then defines a field for each config value you need. It can include nested data classes for grouping together related configs.
+
+For example, if we had a project that needed database config, config for an embedded HTTP server, and a field which contained which environment we were running in (staging, QA, production etc), then we may define our classes like this:
+
+```kotlin
+data class Database(val host: String, val port: Int, val user: String, val pass: String)
+data class Server(val port: Int, val redirectUrl: String)
+data class Config(val env: String, val database: Database, val server: Server)
+```
+
+For our staging environment, we may create a YAML (or Json, etc) file called `application-staging.yaml`.
+The name doesn't matter, you can use any convention you wish.
+
+```yaml
+env: staging
+
+database:
+  host: staging.wibble.com
+  port: 3306
+  user: theboss
+  pass: 0123abcd
+
+server:
+  port: 8080
+  redirectUrl: /404.html
+```
+
+Finally, to build an instance of `Config` from this file, and assuming the config file was on the classpath, we can simply execute:
+
+```kotlin
+val config = ConfigLoaderBuilder.default()
+               .addResourceSource("/application-staging.yml")
+               .build()
+               .loadConfigOrThrow<Config>()
+```
+
+If the values in the config file are compatible, then an instance of `Config` will be returned.
+Otherwise, an exception will be thrown containing details of the errors.
+
+
+
+
+## Config Loader
+
+As you have seen from the getting started guide, `ConfigLoader` is the entry point to using Hoplite. We create an
+instance of this loader class through the `ConfigLoaderBuilder` builder. To this builder we add sources, configuration,
+enable reports, add preprocessors and more.
+
+To create a default builder, use `ConfigLoaderBuilder.default()` and after adding your sources, call `build`.
+Here is an example:
+
+```kotlin
+ConfigLoaderBuilder.default()
+  .addResourceSource("/application-prod.yml")
+  .addResourceSource("/reference.json")
+  .build()
+  .loadConfigOrThrow<MyConfig>()
+```
+
+The `default` method on `ConfigLoaderBuilder` sets up recommended defaults. If you wish to start with a completely empty
+config builder, then use `ConfigLoaderBuilder.empty()`.
+
+There are two ways to retrieve a populated data class from config. The first is to throw an exception if the config
+could not be resolved. We do this via the `loadConfigOrThrow<T>` function. Another is to return a `ConfigResult` validation
+monad via the `loadConfig<T>` function if you want to handle errors manually.
+
+For most cases, when you are resolving config at application startup, the exception based approach is better. This is
+because you typically want any errors in config to abort application bootstrapping, dumping errors immediately to the console.
+
+
+
+## Beautiful Errors
+
+When an error does occur, if you choose to throw an exception, the errors will be formatted in a human-readable way
+
+exec
+/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/build.gradle.kts' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/gradle/libs.versions.toml' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/gradle.properties' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/hoplite-core/build.gradle.kts' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 247ms:
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+buildscript {
+   repositories {
+      mavenLocal()
+      mavenCentral()
+      maven {
+         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+      }
+      maven {
+         url = uri("https://plugins.gradle.org/m2/")
+      }
+   }
+}
+
+plugins {
+   id("java")
+   id("java-library")
+   id("maven-publish")
+   id("signing")
+   alias(libs.plugins.kotlin.jvm)
+}
+
+allprojects {
+   apply(plugin = "org.jetbrains.kotlin.jvm")
+
+   group = "com.sksamuel.hoplite"
+   version = Ci.version
+
+   dependencies {
+      testImplementation("io.kotest:kotest-assertions-core:5.5.5")
+      testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
+   }
+
+   tasks.named<Test>("test") {
+      useJUnitPlatform()
+      testLogging {
+         showExceptions = true
+         showStandardStreams = true
+         exceptionFormat = TestExceptionFormat.FULL
+      }
+   }
+
+   kotlin {
+      jvmToolchain(11)
+      compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+   }
+
+   tasks.compileJava {
+      options.release = 8
+   }
+
+   tasks.compileTestKotlin {
+      compilerOptions.jvmTarget = JvmTarget.JVM_11
+   }
+
+   tasks.compileTestJava {
+      options.release = 11
+   }
+
+   repositories {
+      mavenLocal()
+      mavenCentral()
+      maven {
+         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+      }
+   }
+}
+
+ succeeded in 245ms:
+dependencies {
+   api(libs.kotlin.reflect)
+   testImplementation(libs.postgresql)
+   api(libs.coroutines.core)
+   api(libs.coroutines.jdk8)
+   testImplementation(libs.kotest.extensions.testcontainers)
+   testImplementation(libs.testcontainers)
+   testImplementation(libs.testcontainers.postgresql)
+}
+
+apply("../publish.gradle.kts")
+
+ exited 22 in 246ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 259ms:
+#https://github.com/gradle/gradle/issues/11308
+org.gradle.internal.publish.checksums.insecure=true
+systemProp.org.gradle.internal.publish.checksums.insecure=true
+org.gradle.parallel=false
+
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/settings.gradle.kts | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/contents/gradle?ref=v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/contents/buildSrc/src/main/kotlin?ref=v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 211ms:
+rootProject.name = "hoplite"
+
+pluginManagement {
+   repositories {
+      mavenLocal()
+      mavenCentral()
+      maven {
+         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+      }
+      maven {
+         url = uri("https://plugins.gradle.org/m2/")
+      }
+   }
+}
+
+plugins {
+   id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
+}
+
+include(
+   ":hoplite-core",
+   ":hoplite-azure",
+   ":hoplite-aws",
+   ":hoplite-aws2",
+   ":hoplite-aws-kotlin",
+   ":hoplite-arrow",
+   ":hoplite-consul",
+   ":hoplite-cronutils",
+   ":hoplite-datetime",
+   ":hoplite-gcp",
+   ":hoplite-hdfs",
+   ":hoplite-hikaricp",
+   ":hoplite-hocon",
+   ":hoplite-javax",
+   ":hoplite-json",
+   ":hoplite-micrometer-datadog",
+   ":hoplite-micrometer-prometheus",
+   ":hoplite-micrometer-statsd",
+   ":hoplite-toml",
+   ":hoplite-vault",
+   ":hoplite-vavr",
+   ":hoplite-watch",
+   ":hoplite-watch-consul",
+   ":hoplite-yaml"
+)
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+dependencyResolutionManagement {
+   versionCatalogs {
+      create("libs") {
+         val kotlin = "1.9.25"
+         plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlin)
+         plugin("kotlin-serialization","org.jetbrains.kotlin.plugin.serialization").version(kotlin)
+         library("kotlin-reflect", "org.jetbrains.kotlin:kotlin-reflect:$kotlin")
+
+         val micrometer = "1.14.1"
+         library("micrometer-core", "io.micrometer:micrometer-core:$micrometer")
+         library("micrometer-registry-datadog", "io.micrometer:micrometer-registry-datadog:$micrometer")
+         library("micrometer-registry-prometheus", "io.micrometer:micrometer-registry-prometheus:$micrometer")
+         library("micrometer-registry-statsd", "io.micrometer:micrometer-registry-statsd:$micrometer")
+
+         val coroutines = "1.6.4"
+         library("coroutines-core", "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
+         library("coroutines-jdk8", "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines")
+
+         library("typesafe-config", "com.typesafe:config:1.4.3")
+
+         library("arrow-core", "io.arrow-kt:arrow-core:1.1.3")
+
+         library("spring-vault-core", "org.springframework.vault:spring-vault-core:2.3.4")
+
+         library("vavr-kotlin", "io.vavr:vavr-kotlin:0.10.2")
+
+         library("cron-utils", "com.cronutils:cron-utils:9.2.1")
+
+         library("hikaricp", "com.zaxxer:HikariCP:5.1.0")
+
+         library("kotlinx-serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+         library("kotlinx-datetime", "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
+         library("google-cloud-secretmanager", "com.google.cloud:google-cloud-secretmanager:2.54.0")
+         library("hadoop-common", "org.apache.hadoop:hadoop-common:2.10.2")
+         library("tomlj", "org.tomlj:tomlj:1.1.1")
+         library("embedded-consul", "com.pszymczyk.consul:embedded-consul:2.2.1")
+         library("snakeyaml", "org.yaml:snakeyaml:2.2")
+
+         library("slf4j-api", "org.slf4j:slf4j-api:2.0.14")
+
+         val aws1 = "1.12.767"
+         library("aws-java-sdk-secretsmanager", "com.amazonaws:aws-java-sdk-secretsmanager:$aws1")
+         library("aws-java-sdk-ssm", "com.amazonaws:aws-java-sdk-ssm:$aws1")
+
+         val aws2 = "2.27.0"
+         library("regions", "software.amazon.awssdk:regions:$aws2")
+         library("secretsmanager", "software.amazon.awssdk:secretsmanager:$aws2")
+
+         val awsKotlin = "1.3.54"
+         library("aws-kotlin-ssm", "aws.sdk.kotlin:ssm:$awsKotlin")
+         library("aws-kotlin-secretsmanager", "aws.sdk.kotlin:secretsmanager:$awsKotlin")
+
+         library("postgresql", "org.postgresql:postgresql:42.7.3")
+
+         val jackson = "2.17.2"
+         library("jackson-core", "com.fasterxml.jackson.core:jackson-core:$jackson")
+         library("jackson-databind", "com.fasterxml.jackson.core:jackson-databind:$jackson")
+
+         val testcontainers = "1.19.8"
+         library("testcontainers", "org.testcontainers:testcontainers:$testcontainers")
+         library("testcontainers-postgresql", "org.testcontainers:postgresql:$testcontainers")
+         library("testcontainers-mysql", "org.testcontainers:mysql:$testcontainers")
+         library("testcontainers-localstack", "org.testcontainers:localstack:$testcontainers")
+         library("testcontainers-vault", "org.testcontainers:vault:$testcontainers")
+
+         library("kotest-extensions-testcontainers", "io.kotest.extensions:kotest-extensions-testcontainers:2.0.2")
+
+         library("azure-identity", "com.azure:azure-identity:1.13.2")
+         library("azure-security-keyvault-secrets", "com.azure:azure-security-keyvault-secrets:4.9.0")
+
+         library("consul-client", "com.orbitz.consul:consul-client:1.5.3")
+      }
+   }
+}
+
+ succeeded in 221ms:
+[
+  {
+    "name": "wrapper",
+    "path": "gradle/wrapper",
+    "sha": "0c6203c5bcd35f6511602c473743f6a4ca0c91d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/gradle/wrapper?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/gradle/wrapper",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/0c6203c5bcd35f6511602c473743f6a4ca0c91d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/gradle/wrapper?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/0c6203c5bcd35f6511602c473743f6a4ca0c91d7",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/gradle/wrapper"
+    }
+  }
+]
+
+ succeeded in 228ms:
+[
+  {
+    "name": "Ci.kt",
+    "path": "buildSrc/src/main/kotlin/Ci.kt",
+    "sha": "37120c77cd6f3f21821abbc7036887284d94eba6",
+    "size": 551,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/buildSrc/src/main/kotlin/Ci.kt?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/blob/v2.9.0/buildSrc/src/main/kotlin/Ci.kt",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/37120c77cd6f3f21821abbc7036887284d94eba6",
+    "download_url": "https://raw.githubusercontent.com/sksamuel/hoplite/v2.9.0/buildSrc/src/main/kotlin/Ci.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/buildSrc/src/main/kotlin/Ci.kt?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/blobs/37120c77cd6f3f21821abbc7036887284d94eba6",
+      "html": "https://github.com/sksamuel/hoplite/blob/v2.9.0/buildSrc/src/main/kotlin/Ci.kt"
+    }
+  }
+]
+
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src?ref=v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test?ref=v2.9.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/hoplite-core-2.9.0.module' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/hoplite-core-2.9.0-tests.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 219ms:
+[
+  {
+    "name": "kotlin",
+    "path": "hoplite-core/src/test/kotlin",
+    "sha": "528242edf81cf375976cecfacaa9984ea5f69ac1",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test/kotlin?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test/kotlin",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/528242edf81cf375976cecfacaa9984ea5f69ac1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test/kotlin?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/528242edf81cf375976cecfacaa9984ea5f69ac1",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test/kotlin"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "hoplite-core/src/test/resources",
+    "sha": "fe5162746dce1b3216d19e0c9fcee94789ed2df0",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test/resources?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test/resources",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/fe5162746dce1b3216d19e0c9fcee94789ed2df0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test/resources?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/fe5162746dce1b3216d19e0c9fcee94789ed2df0",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 217ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.sksamuel.hoplite",
+    "module": "hoplite-core",
+    "version": "2.9.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.9"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "1.9.25"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.6.4"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-jdk8",
+          "version": {
+            "requires": "1.6.4"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.9.25"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "hoplite-core-2.9.0.jar",
+          "url": "hoplite-core-2.9.0.jar",
+          "size": 777895,
+          "sha512": "3298131b52620171074a45b9fac13e091201ab96a1fe9225c8dbdda1dea3484149e35462f460d12c9c8dcabcecfd7bf21de4c01f2640d4b5cef80f5824d63f92",
+          "sha256": "556fd402f2ce696760875df539f441614c1413c920ab22aee8015a6578aeb023",
+          "sha1": "664237e8216487d4d3b293f99bc1160f0d49ccb1",
+          "md5": "a1405816188b9d75a0fa8a343b8bd998"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "1.9.25"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.6.4"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-jdk8",
+          "version": {
+            "requires": "1.6.4"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.9.25"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "hoplite-core-2.9.0.jar",
+          "url": "hoplite-core-2.9.0.jar",
+          "size": 777895,
+          "sha512": "3298131b52620171074a45b9fac13e091201ab96a1fe9225c8dbdda1dea3484149e35462f460d12c9c8dcabcecfd7bf21de4c01f2640d4b5cef80f5824d63f92",
+          "sha256": "556fd402f2ce696760875df539f441614c1413c920ab22aee8015a6578aeb023",
+          "sha1": "664237e8216487d4d3b293f99bc1160f0d49ccb1",
+          "md5": "a1405816188b9d75a0fa8a343b8bd998"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "hoplite-core-2.9.0-javadoc.jar",
+          "url": "hoplite-core-2.9.0-javadoc.jar",
+          "size": 261,
+          "sha512": "26590c51ab0b4dacc25704d79f771f7cfa3ad9062dd61c63dfe038754124583158d26b369b71f1d968771eee29cbd1befcec6b88ac48061a197ad151cb833cba",
+          "sha256": "bc99db7546a8ca516d698d291a23180b12d2843d46b52aee03d247071267b443",
+          "sha1": "707ee42ee89ca09a48cea1f247ed4380d37d81d9",
+          "md5": "115ed92767fb4b3ef20f2c47ffb6b147"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "hoplite-core-2.9.0-sources.jar",
+          "url": "hoplite-core-2.9.0-sources.jar",
+          "size": 92073,
+          "sha512": "490b57b608ed7da2b487d1cd280af1cdaffe7122f96f8d3b48c5f952bb7f89d6eda717fc7978a874e61a33c7ac0e2ce8721c3449bc493f8c1f4716c9534aa81a",
+          "sha256": "5f45afd556af26e78289be0acef9d9fa6eb9e0ece431d42147ca3dfeb13dc1e3",
+          "sha1": "1a0cbedf1c072d45e7f757b2854f677c80132934",
+          "md5": "58af8ac04c1ead1b72212b2f4685119f"
+        }
+      ]
+    }
+  ]
+}
+
+ succeeded in 244ms:
+[
+  {
+    "name": "main",
+    "path": "hoplite-core/src/main",
+    "sha": "95dc9223318b2405e3685bc7449ed3bc83aefa1a",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/main?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/main",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/95dc9223318b2405e3685bc7449ed3bc83aefa1a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/main?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/95dc9223318b2405e3685bc7449ed3bc83aefa1a",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "hoplite-core/src/test",
+    "sha": "de6ea3b7ade1c9ac86b2821e6010c54285d0d847",
+    "size": 0,
+    "url": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test?ref=v2.9.0",
+    "html_url": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test",
+    "git_url": "https://api.github.com/repos/sksamuel/hoplite/git/trees/de6ea3b7ade1c9ac86b2821e6010c54285d0d847",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sksamuel/hoplite/contents/hoplite-core/src/test?ref=v2.9.0",
+      "git": "https://api.github.com/repos/sksamuel/hoplite/git/trees/de6ea3b7ade1c9ac86b2821e6010c54285d0d847",
+      "html": "https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test"
+    }
+  }
+]
+
+ succeeded in 273ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 06 May 2026 02:46:44 GMT
+content-type: text/html
+cf-ray: 9f74a7fdeebbe291-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/hoplite-core-2.9.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/
+web search: 
+web search: https://github.com/sksamuel/hoplite/blob/v2.9.0/README.md
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org com.sksamuel.hoplite hoplite-core 2.9.0 kotlin-stdlib 1.9.25
+codex
+I found a standard JVM jar for `hoplite-core`, plus Maven Central sources and javadoc artifacts. There is no Maven tests jar, so the test URL should point at the tagged upstream `hoplite-core/src/test` directory; the language marker should be Kotlin `1.9` based on the 2.9.0 build/dependencies.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+diff --git a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+index ea86a3d9432bfe83453feba6585468e48538c825..b2d96dfc9cb589f500bd0987a6422b5b75d79242
+--- a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
++++ b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
++  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-sources.jar",
++  "repository-url" : "https://github.com/sksamuel/hoplite",
++  "test-code-url" : "https://github.com/sksamuel/hoplite/tree/v$version$/hoplite-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-javadoc.jar",
++  "description" : "Hoplite is a Kotlin configuration library that loads configuration files and maps them into typesafe Kotlin data classes. It supports multiple configuration formats and property sources while failing fast with detailed, human-readable errors when values are missing or cannot be decoded.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.9"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+index ea86a3d9432bfe83453feba6585468e48538c825..b2d96dfc9cb589f500bd0987a6422b5b75d79242
+--- a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
++++ b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
++  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-sources.jar",
++  "repository-url" : "https://github.com/sksamuel/hoplite",
++  "test-code-url" : "https://github.com/sksamuel/hoplite/tree/v$version$/hoplite-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-javadoc.jar",
++  "description" : "Hoplite is a Kotlin configuration library that loads configuration files and maps them into typesafe Kotlin data classes. It supports multiple configuration formats and property sources while failing fast with detailed, human-readable errors when values are missing or cannot be decoded.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.9"
++  }
+ }
+
+codex
+I’ve patched the metadata file. I’m doing a quick validity check and confirming the `$version$` URLs resolve when substituted with `2.9.0`.
+exec
+/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-sources.jar",
+  "repository-url" : "https://github.com/sksamuel/hoplite",
+  "test-code-url" : "https://github.com/sksamuel/hoplite/tree/v$version$/hoplite-core/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-javadoc.jar",
+  "description" : "Hoplite is a Kotlin configuration library that loads configuration files and maps them into typesafe Kotlin data classes. It supports multiple configuration formats and property sources while failing fast with detailed, human-readable errors when values are missing or cannot be decoded.",
+  "language" : {
+    "name" : "kotlin",
+    "version" : "1.9"
+  }
+}
+
+exec
+/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json >/dev/null' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+exec
+/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/hoplite-core-2.9.0-sources.jar | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/hoplite-core-2.9.0-javadoc.jar | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+exec
+/bin/bash -lc "curl -fsSI https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 240ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 02:47:16 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f74a8c71b921778-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "115ed92767fb4b3ef20f2c47ffb6b147"
+last-modified: Wed, 27 Nov 2024 19:27:31 GMT
+x-checksum-md5: 115ed92767fb4b3ef20f2c47ffb6b147
+x-checksum-sha1: 707ee42ee89ca09a48cea1f247ed4380d37d81d9
+server: cloudflare
+
+ succeeded in 247ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 02:47:16 GMT
+content-type: application/java-archive
+content-length: 92073
+cf-ray: 9f74a8c748d45165-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "58af8ac04c1ead1b72212b2f4685119f"
+last-modified: Wed, 27 Nov 2024 19:27:30 GMT
+x-checksum-md5: 58af8ac04c1ead1b72212b2f4685119f
+x-checksum-sha1: 1a0cbedf1c072d45e7f757b2854f677c80132934
+server: cloudflare
+
+diff --git a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+index ea86a3d9432bfe83453feba6585468e48538c825..b2d96dfc9cb589f500bd0987a6422b5b75d79242
+--- a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
++++ b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
++  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-sources.jar",
++  "repository-url" : "https://github.com/sksamuel/hoplite",
++  "test-code-url" : "https://github.com/sksamuel/hoplite/tree/v$version$/hoplite-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-javadoc.jar",
++  "description" : "Hoplite is a Kotlin configuration library that loads configuration files and maps them into typesafe Kotlin data classes. It supports multiple configuration formats and property sources while failing fast with detailed, human-readable errors when values are missing or cannot be decoded.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.9"
++  }
+ }
+
+ succeeded in 650ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 02:47:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bee58256cc92416e2d58403bd4490193"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+index ea86a3d9432bfe83453feba6585468e48538c825..b2d96dfc9cb589f500bd0987a6422b5b75d79242
+--- a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
++++ b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
++  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-sources.jar",
++  "repository-url" : "https://github.com/sksamuel/hoplite",
++  "test-code-url" : "https://github.com/sksamuel/hoplite/tree/v$version$/hoplite-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-javadoc.jar",
++  "description" : "Hoplite is a Kotlin configuration library that loads configuration files and maps them into typesafe Kotlin data classes. It supports multiple configuration formats and property sources while failing fast with detailed, human-readable errors when values are missing or cannot be decoded.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.9"
++  }
+ }
+
+web search: 
+web search: Hoplite is a Kotlin library for loading configuration files into typesafe classes boilerplate-free way
+web search: 
+web search: https://github.com/sksamuel/hoplite/tree/v2.9.0/hoplite-core/src/test
+web search: 
+web search: https://github.com/sksamuel/hoplite/blob/v2.9.0/settings.gradle.kts
+codex
+Updated [com.sksamuel.hoplite-hoplite-core-2.9.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json).
+
+I set Maven Central source and javadoc URLs, the tagged GitHub test suite URL, the repository URL, the two-sentence description, and `language` as Kotlin `1.9`. I left `not-for-native-image` absent because the artifact publishes a normal JVM jar, and Hoplite is explicitly a Kotlin config library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/))
+
+Validation done: JSON parses successfully, and the substituted source, javadoc, and test URLs all return `200`.
+diff --git a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+index ea86a3d9432bfe83453feba6585468e48538c825..b2d96dfc9cb589f500bd0987a6422b5b75d79242
+--- a/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
++++ b/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0"
++  "coordinates" : "com.sksamuel.hoplite:hoplite-core:2.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-sources.jar",
++  "repository-url" : "https://github.com/sksamuel/hoplite",
++  "test-code-url" : "https://github.com/sksamuel/hoplite/tree/v$version$/hoplite-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/$version$/hoplite-core-$version$-javadoc.jar",
++  "description" : "Hoplite is a Kotlin configuration library that loads configuration files and maps them into typesafe Kotlin data classes. It supports multiple configuration formats and property sources while failing fast with detailed, human-readable errors when values are missing or cannot be decoded.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.9"
++  }
+ }
+
+tokens used
+96,546
+Updated [com.sksamuel.hoplite-hoplite-core-2.9.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/build/discovered-artifact-metadata/com.sksamuel.hoplite-hoplite-core-2.9.0.json).
+
+I set Maven Central source and javadoc URLs, the tagged GitHub test suite URL, the repository URL, the two-sentence description, and `language` as Kotlin `1.9`. I left `not-for-native-image` absent because the artifact publishes a normal JVM jar, and Hoplite is explicitly a Kotlin config library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/sksamuel/hoplite/hoplite-core/2.9.0/))
+
+Validation done: JSON parses successfully, and the substituted source, javadoc, and test URLs all return `200`.
+Ran agent for com.sksamuel.hoplite:hoplite-core:2.9.0 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/build/agent-artifact-discovery-logs/com.sksamuel.hoplite-hoplite-core-2.9.0.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5327-47a2612e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 53s
+9 actionable tasks: 9 executed
