@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.scalatest.{Args, ConfigMap, Filter, Outcome, Reporter, Tag}
-import org.scalatest.events.{Event, InfoProvided, TestFailed, TestIgnored, TestPending, TestStarting, TestSucceeded}
+import org.scalatest.events.{Event, InfoProvided, TestCanceled, TestFailed, TestIgnored, TestPending, TestStarting, TestSucceeded}
 import org.scalatest.exceptions.{DuplicateTestNameException, TestRegistrationClosedException}
 import org.scalatest.funsuite.{AnyFunSuite, FixtureAnyFunSuite}
 
@@ -66,6 +66,25 @@ class Scalatest_funsuite_2_13Test {
     assertThat(succeeded.recordedEvents.collect { case event: InfoProvided => event.message }.asJava)
       .containsExactly("diagnostic details")
     assertThat(suite.executionLog.asJava).containsExactly("succeeded", "pending", "failed")
+  }
+
+  @Test
+  def anyFunSuiteReportsCanceledTestsAndContinuesTheSuite(): Unit = {
+    val suite: CancelingFunSuite = new CancelingFunSuite
+    val reporter: RecordingReporter = new RecordingReporter
+
+    val status = suite.run(None, Args(reporter))
+
+    assertThat(status.isCompleted).isTrue()
+    assertThat(status.succeeds()).isTrue()
+    assertThat(suite.executionLog.asJava).containsExactly("before", "cancel", "after")
+    assertThat(reporter.eventsOf[TestSucceeded].map(_.testName).asJava)
+      .containsExactly("test before cancellation", "test after cancellation")
+
+    val canceledEvents: List[TestCanceled] = reporter.eventsOf[TestCanceled]
+    assertThat(canceledEvents.map(_.testName).asJava).containsExactly("canceled test")
+    assertThat(canceledEvents.head.message).contains("external service unavailable")
+    assertThat(reporter.eventsOf[TestFailed].asJava).isEmpty()
   }
 
   @Test
@@ -196,6 +215,23 @@ class OutcomeFunSuite extends AnyFunSuite {
   test("failing test") {
     executionLog += "failed"
     throw new IllegalStateException("intentional failure")
+  }
+}
+
+class CancelingFunSuite extends AnyFunSuite {
+  val executionLog: ListBuffer[String] = ListBuffer.empty
+
+  test("test before cancellation") {
+    executionLog += "before"
+  }
+
+  test("canceled test") {
+    executionLog += "cancel"
+    cancel("external service unavailable")
+  }
+
+  test("test after cancellation") {
+    executionLog += "after"
   }
 }
 
