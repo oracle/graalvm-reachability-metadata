@@ -123,7 +123,7 @@ GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
 PRIORITY_BLOCKING_LIBRARY_THRESHOLD = 10
 PRIORITY_BLOCKING_ISSUE_QUERY_CHUNK_SIZE = 25
-DEFAULT_TAKE_BLOCKED_ISSUES = True
+DEFAULT_TAKE_BLOCKED_ISSUES = False
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
 ISSUE_CLAIM_CACHE_VERSION = 1
@@ -5306,8 +5306,8 @@ def process_issues_with_label(
                     ):
                         continue
                     claim_kwargs: dict[str, bool] = {}
-                    if not take_blocked_issues:
-                        claim_kwargs["take_blocked_issues"] = False
+                    if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+                        claim_kwargs["take_blocked_issues"] = take_blocked_issues
                     claimed_issue = claim_issue_for_processing(
                         issue,
                         label,
@@ -5383,6 +5383,7 @@ def process_work_queues(
         keep_tests_without_dynamic_access_override: bool = False,
         parallelism_default: int = DEFAULT_PARALLELISM,
         random_offset_override: bool | None = None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -5432,6 +5433,9 @@ def process_work_queues(
                 "issue-scan",
                 f"Selected random start offset {issue_scan_offset} for label '{queue_config.label}'",
             )
+        claim_kwargs: dict[str, bool] = {}
+        if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+            claim_kwargs["take_blocked_issues"] = take_blocked_issues
         process_issues_with_label(
             queue_config.label,
             queue_config.limit,
@@ -5443,6 +5447,7 @@ def process_work_queues(
             authenticated_user,
             parallelism,
             environment_already_validated=True,
+            **claim_kwargs,
         )
 
     for review_queue_config in review_queue_configs:
@@ -5577,7 +5582,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         dest="take_blocked_issues",
         action="store_true",
         default=DEFAULT_TAKE_BLOCKED_ISSUES,
-        help="Claim issues even when GitHub shows open blocking issues. Defaults to enabled.",
+        help="Claim issues even when GitHub shows open blocking issues. Defaults to disabled.",
     )
 
     args = parser.parse_args(argv)
@@ -5607,8 +5612,8 @@ def process_single_issue(
     log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
 
     claim_kwargs: dict[str, bool] = {}
-    if not take_blocked_issues:
-        claim_kwargs["take_blocked_issues"] = False
+    if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+        claim_kwargs["take_blocked_issues"] = take_blocked_issues
     claimed_issue = claim_issue_for_processing(
         issue,
         label,
@@ -5645,8 +5650,8 @@ def process_large_library_continuation(
     verify_large_library_previous_part_merged(state)
     issue, label = get_issue_by_number(state.issue_number)
     claim_kwargs: dict[str, bool] = {}
-    if not take_blocked_issues:
-        claim_kwargs["take_blocked_issues"] = False
+    if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+        claim_kwargs["take_blocked_issues"] = take_blocked_issues
     claimed_issue = claim_issue_for_processing(
         issue,
         label,
@@ -5698,6 +5703,7 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 args.parallelism,
                 random_offset_override=args.random_offset,
+                take_blocked_issues=args.take_blocked_issues,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
