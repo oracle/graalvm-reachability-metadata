@@ -61,7 +61,7 @@ final class MessageSchemaInt32ProbeMessage
                 return newMessageInfo(
                         DEFAULT_INSTANCE,
                         MessageSchemaRawMessageInfo.SINGLE_PROTO3_INT32_FIELD_INFO,
-                        new Object[] { "value_" }
+                        new Object[] {"value_" }
                 );
             case NEW_MUTABLE_INSTANCE:
                 return new MessageSchemaInt32ProbeMessage();
@@ -108,7 +108,7 @@ final class MessageSchemaMissingFieldProbeMessage
                 return newMessageInfo(
                         DEFAULT_INSTANCE,
                         MessageSchemaRawMessageInfo.SINGLE_PROTO3_INT32_FIELD_INFO,
-                        new Object[] { "absent_" }
+                        new Object[] {"absent_" }
                 );
             case NEW_MUTABLE_INSTANCE:
                 return new MessageSchemaMissingFieldProbeMessage();
