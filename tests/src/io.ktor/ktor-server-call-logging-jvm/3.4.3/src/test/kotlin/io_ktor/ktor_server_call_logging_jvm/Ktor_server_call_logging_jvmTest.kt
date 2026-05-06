@@ -119,6 +119,35 @@ public class Ktor_server_call_logging_jvmTest {
     }
 
     @Test
+    fun applicationEnvironmentLoggerIsUsedWhenCustomLoggerIsNotConfigured(): Unit = testApplication {
+        val logger = RecordingLogger()
+
+        environment {
+            log = logger
+        }
+        application {
+            install(CallLogging) {
+                format { call -> "environment:${call.request.path()}:${call.response.status()?.value}" }
+            }
+            routing {
+                get("/environment-logger") {
+                    call.respondText("from environment")
+                }
+            }
+        }
+
+        val response = client.get("/environment-logger")
+
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.bodyAsText()).isEqualTo("from environment")
+        assertThat(logger.events).anySatisfy { event ->
+            assertThat(event).isEqualTo(
+                LoggedEvent(Level.INFO, "environment:/environment-logger:200", emptyMap())
+            )
+        }
+    }
+
+    @Test
     fun mdcProviderIsEvaluatedForLoggedCallsThenCleanedUp(): Unit = testApplication {
         val logger = RecordingLogger()
         val providerCalls = AtomicInteger()
