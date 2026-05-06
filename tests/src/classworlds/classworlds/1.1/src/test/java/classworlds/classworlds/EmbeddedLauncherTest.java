@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,21 @@ public class EmbeddedLauncherTest {
         assertThat(EmbeddedApplication.executed).isFalse();
     }
 
+    @Test
+    void launchXInvokesResolvedMethod() throws Exception {
+        EmbeddedApplication.reset();
+        ClassWorld world = new ClassWorld();
+        world.newRealm(REALM_NAME, EmbeddedLauncherTest.class.getClassLoader());
+        MethodFriendlyEmbeddedLauncher launcher = new MethodFriendlyEmbeddedLauncher();
+        launcher.setWorld(world);
+        launcher.setAppMain(EmbeddedApplication.class.getName(), REALM_NAME);
+
+        launcher.launchConfiguredApplication();
+
+        assertThat(EmbeddedApplication.executed).isTrue();
+        assertThat(EmbeddedApplication.world).isSameAs(world);
+    }
+
     private static String configurationFor(Class<?> applicationClass) {
         return """
                 main is %s from %s
@@ -105,16 +121,35 @@ public class EmbeddedLauncherTest {
 
     public static final class EmbeddedApplication {
         private static boolean executed;
+        private static ClassWorld world;
 
         private EmbeddedApplication() {
         }
 
         public static void execute(String[] args, ClassWorld classWorld) {
             executed = true;
+            world = classWorld;
+        }
+
+        public static void execute(ClassWorld classWorld) {
+            executed = true;
+            world = classWorld;
         }
 
         private static void reset() {
             executed = false;
+            world = null;
+        }
+    }
+
+    private static final class MethodFriendlyEmbeddedLauncher extends EmbeddedLauncher {
+        private void launchConfiguredApplication() throws Exception {
+            launchX();
+        }
+
+        @Override
+        protected Method getEnhancedMainMethod() throws NoSuchMethodException {
+            return EmbeddedApplication.class.getMethod("execute", ClassWorld.class);
         }
     }
 
