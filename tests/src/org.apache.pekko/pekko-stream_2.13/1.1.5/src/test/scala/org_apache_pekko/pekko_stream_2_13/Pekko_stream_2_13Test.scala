@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.{AfterEach, BeforeEach, Test}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, Future, Promise}
 
 class Pekko_stream_2_13Test {
   private implicit var system: ActorSystem = _
@@ -79,6 +79,20 @@ class Pekko_stream_2_13Test {
     val result: Future[Seq[String]] = Source(1 to 4).via(graphFlow).runWith(Sink.seq)
 
     assertEquals(List("2:1", "3:4", "4:9", "5:16"), Await.result(result, awaitTimeout).toList)
+  }
+
+  @Test
+  def mapAsyncPreservesInputOrderWhenFuturesCompleteOutOfOrder(): Unit = {
+    val promises: Map[Int, Promise[Unit]] = (1 to 3).map(number => number -> Promise[Unit]()).toMap
+    val result: Future[Seq[Int]] = Source(1 to 3)
+      .mapAsync(3)(number => promises(number).future.map(_ => number))
+      .runWith(Sink.seq)
+
+    promises(3).success(())
+    promises(2).success(())
+    promises(1).success(())
+
+    assertEquals(List(1, 2, 3), Await.result(result, awaitTimeout).toList)
   }
 
   @Test
