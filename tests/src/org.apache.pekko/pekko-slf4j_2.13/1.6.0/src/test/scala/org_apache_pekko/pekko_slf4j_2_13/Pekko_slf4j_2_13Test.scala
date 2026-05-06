@@ -19,6 +19,7 @@ import org.apache.pekko.event.DummyClassForStringSources
 import org.apache.pekko.event.LogMarker
 import org.apache.pekko.event.Logging
 import org.apache.pekko.event.Logging.Debug
+import org.apache.pekko.event.LoggingAdapter
 import org.apache.pekko.event.Logging.Error
 import org.apache.pekko.event.Logging.Info
 import org.apache.pekko.event.Logging.InitializeLogger
@@ -112,6 +113,38 @@ class Pekko_slf4j_2_13Test {
       assertThat(filter.isWarningEnabled(logClass, logSource)).isEqualTo(backingLogger.isWarnEnabled)
       assertThat(filter.isInfoEnabled(logClass, logSource)).isFalse()
       assertThat(filter.isDebugEnabled(logClass, logSource)).isFalse()
+    }
+  }
+
+  @Test
+  def actorSystemUsesConfiguredSlf4jLoggingFilterForLoggingAdapters(): Unit = {
+    val config = ConfigFactory.parseString("""
+        pekko.loggers = []
+        pekko.logging-filter = "org.apache.pekko.event.slf4j.Slf4jLoggingFilter"
+        pekko.stdout-loglevel = "OFF"
+        pekko.loglevel = "DEBUG"
+        pekko.actor.allow-java-serialization = off
+        pekko.actor.warn-about-java-serializer-usage = off
+      """)
+    val system: ActorSystem = ActorSystem("pekko-slf4j-configured-filter-test", config)
+    try {
+      val sourceCategory: String = "configured.filter.source"
+      val log: LoggingAdapter = Logging(system, sourceCategory)
+      val backingLogger: org.slf4j.Logger = Logger(classOf[DummyClassForStringSources], sourceCategory)
+
+      system.eventStream.setLogLevel(Logging.DebugLevel)
+      assertThat(log.isErrorEnabled).isEqualTo(backingLogger.isErrorEnabled)
+      assertThat(log.isWarningEnabled).isEqualTo(backingLogger.isWarnEnabled)
+      assertThat(log.isInfoEnabled).isEqualTo(backingLogger.isInfoEnabled)
+      assertThat(log.isDebugEnabled).isEqualTo(backingLogger.isDebugEnabled)
+
+      system.eventStream.setLogLevel(WarningLevel)
+      assertThat(log.isErrorEnabled).isEqualTo(backingLogger.isErrorEnabled)
+      assertThat(log.isWarningEnabled).isEqualTo(backingLogger.isWarnEnabled)
+      assertThat(log.isInfoEnabled).isFalse()
+      assertThat(log.isDebugEnabled).isFalse()
+    } finally {
+      Await.result(system.terminate(), 10.seconds)
     }
   }
 
