@@ -28,6 +28,8 @@ import zio.test.TestConsole
 import zio.test.TestRandom
 import zio.test.TestResult
 import zio.test.TestSystem
+import zio.test.assertTrue
+import zio.test.checkN
 import zio.test.diff.Diff
 import zio.test.testClockWith
 import zio.test.testConsoleWith
@@ -111,6 +113,24 @@ class Zio_test_3Test {
       assertThat(description).contains("-")
       assertThat(description).isEqualTo(description.toUpperCase)
     }
+  }
+
+  @Test
+  def propertyChecksEvaluateGeneratedSamplesAndReportFailures(): Unit = {
+    val commutativeAddition: TestResult = unsafeRun {
+      checkN(25)(Gen.int(-20, 20), Gen.int(-20, 20)) { (left, right) =>
+        assertTrue(left + right == right + left)
+      }
+    }
+    val failingProperty: TestResult = unsafeRun {
+      checkN(1)(Gen.const(0)) { value =>
+        assertTrue(value > 0)
+      }
+    }
+
+    assertThat(commutativeAddition.isSuccess).isTrue()
+    assertThat(failingProperty.isFailure).isTrue()
+    assertThat(failingProperty.failures.isDefined).isTrue()
   }
 
   @Test
