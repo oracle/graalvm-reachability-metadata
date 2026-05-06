@@ -122,6 +122,29 @@ class Circe_numbers_3Test {
   }
 
   @Test
+  def comparesEquivalentNonZeroValuesAcrossParsingAndConstructors(): Unit = {
+    val reference: BiggerDecimal = parse("1000")
+    val equivalentValues: List[BiggerDecimal] = List(
+      parse("1e3"),
+      parse("1000.000"),
+      parse("10e2"),
+      BiggerDecimal.fromBigInteger(new JBigInteger("1000")),
+      BiggerDecimal.fromBigDecimal(new JBigDecimal("1000.000")),
+      BiggerDecimal.fromLong(1000L),
+      BiggerDecimal.fromDoubleUnsafe(1000.0d),
+      BiggerDecimal.fromFloat(1000.0f)
+    )
+
+    equivalentValues.foreach { (number: BiggerDecimal) =>
+      assertThat(number).isEqualTo(reference)
+      assertThat(number.hashCode()).isEqualTo(reference.hashCode())
+    }
+
+    assertThat(parse("1000.1")).isNotEqualTo(reference)
+    assertThat(BiggerDecimal.fromLong(1001L)).isNotEqualTo(reference)
+  }
+
+  @Test
   def detectsIntegralLongBoundaries(): Unit = {
     val validIntegrals: List[String] = List(
       "0",
