@@ -14,6 +14,8 @@ import io.ktor.client.engine.apache5.Apache5
 import io.ktor.client.engine.apache5.Apache5EngineConfig
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.sse.SSE
+import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
@@ -29,8 +31,10 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.contentType
 import io.ktor.http.withCharset
+import io.ktor.sse.ServerSentEvent
 import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.writeStringUtf8
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -193,6 +197,49 @@ public class KtorClientApache5JvmTest {
                 assertThat(response.status).isEqualTo(HttpStatusCode.PartialContent)
                 assertThat(response.headers["X-Payload-Kind"]).isEqualTo("fibonacci-bytes")
                 assertThat(bytes).isEqualTo(payload)
+            }
+        }
+    }
+
+    @Test
+    fun receivesServerSentEventsWithApache5Engine(): Unit = runBlocking {
+        LocalTestServer().use { server: LocalTestServer ->
+            server.handle("/events") { exchange: HttpExchange ->
+                val acceptHeader: String = exchange.requestHeaders.getFirst(HttpHeaders.Accept)
+                val body: String = "event: greeting\n" +
+                    "id: 1\n" +
+                    "data: accepted $acceptHeader\n" +
+                    "\n" +
+                    "event: finished\n" +
+                    "id: 2\n" +
+                    "data: apache5 sse\n" +
+                    "\n"
+                exchange.respond(
+                    statusCode = HttpStatusCode.OK.value,
+                    body = body,
+                    contentType = ContentType.Text.EventStream.toString(),
+                )
+            }
+            server.start()
+
+            withApacheClient(
+                clientConfig = {
+                    install(SSE)
+                },
+            ) { client: HttpClient ->
+                val events: MutableList<ServerSentEvent> = mutableListOf()
+
+                client.sse(urlString = server.url("/events")) {
+                    val received: List<ServerSentEvent> = withTimeout(5_000) {
+                        incoming.toList()
+                    }
+                    events.addAll(received)
+                }
+
+                assertThat(events.map { it.id }).containsExactly("1", "2")
+                assertThat(events.map { it.event }).containsExactly("greeting", "finished")
+                assertThat(events[0].data).startsWith("accepted ").contains("text/event-stream")
+                assertThat(events[1].data).isEqualTo("apache5 sse")
             }
         }
     }
