@@ -7,7 +7,7 @@
 package io_suzaku.boopickle_2_13
 
 import boopickle.Default._
-import boopickle.{PickleState, Pickler, UnpickleState}
+import boopickle.{DecoderSize, EncoderSize, HeapByteBufferProvider, PickleState, Pickler, UnpickleState}
 import org.junit.jupiter.api.Assertions._
 import org.junit.jupiter.api.Test
 
@@ -166,6 +166,30 @@ final class Boopickle_2_13Test {
 
     assertEquals(shared, decoded._1)
     assertSame(decoded._1, decoded._2)
+  }
+
+  @Test
+  def roundTripsValuesWithSizeOptimizedCodec(): Unit = {
+    val value: Vector[(Int, Long, String, Option[Int])] = Vector(
+      (0, 1L, "small", Some(7)),
+      (-1, 63L, "compact", None),
+      (128, 4096L, "larger", Some(1024))
+    )
+    val sizeOptimizedPickleState: PickleState = new PickleState(
+      new EncoderSize(new HeapByteBufferProvider),
+      true,
+      false
+    )
+    val pickler: Pickler[Vector[(Int, Long, String, Option[Int])]] = implicitly
+
+    val sizeOptimizedBytes: ByteBuffer = Pickle.intoBytes(value)(sizeOptimizedPickleState, pickler)
+    val decoded: Vector[(Int, Long, String, Option[Int])] = Unpickle[Vector[(Int, Long, String, Option[Int])]]
+      .fromBytes(sizeOptimizedBytes.duplicate()) { bytes =>
+        new UnpickleState(new DecoderSize(bytes), true, false)
+      }
+
+    assertTrue(sizeOptimizedBytes.hasRemaining, "Expected the size-optimized codec to produce bytes")
+    assertEquals(value, decoded)
   }
 
   @Test
