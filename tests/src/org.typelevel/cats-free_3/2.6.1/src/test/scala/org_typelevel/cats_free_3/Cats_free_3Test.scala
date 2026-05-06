@@ -29,6 +29,13 @@ final case class Field[A](name: String, value: A)
 
 final case class Encoder[A](encode: A => String)
 
+final case class Setting[A](
+  name: String,
+  primary: String,
+  fallback: String,
+  decode: String => A
+)
+
 class Cats_free_3Test {
   private val optionToList: FunctionK[Option, List] = new FunctionK[Option, List] {
     override def apply[A](fa: Option[A]): List[A] = fa.toList
@@ -105,6 +112,42 @@ class Cats_free_3Test {
     assertThat(fieldNames).isEqualTo(List("host", "port"))
     assertThat(compiledToOption.fold).isEqualTo(Some("db.local:5432/primary"))
     assertThat(asFreeMonad.foldMap(fieldToId)).isEqualTo("db.local:5432/primary")
+  }
+
+  @Test
+  def freeApplicativeFlatCompileExpandsInstructionsIntoTargetApplicatives(): Unit = {
+    type FieldProgram[A] = FreeApplicative[Field, A]
+
+    val host: FreeApplicative[Setting, String] = FreeApplicative.lift(
+      Setting[String]("host", "", "db.local", value => value)
+    )
+    val port: FreeApplicative[Setting, Int] = FreeApplicative.lift(
+      Setting[Int]("port", "5432", "15432", _.toInt)
+    )
+    val endpoint: FreeApplicative[Setting, String] = host.map2(port)((h, p) => s"$h:$p")
+
+    val expanded: FreeApplicative[Field, String] = endpoint.flatCompile(new FunctionK[Setting, FieldProgram] {
+      override def apply[A](setting: Setting[A]): FreeApplicative[Field, A] = {
+        val primary: FreeApplicative[Field, String] = FreeApplicative.lift(
+          Field(s"${setting.name}.primary", setting.primary)
+        )
+        val fallback: FreeApplicative[Field, String] = FreeApplicative.lift(
+          Field(s"${setting.name}.fallback", setting.fallback)
+        )
+
+        primary.map2(fallback) { (primaryValue, fallbackValue) =>
+          setting.decode(if primaryValue.nonEmpty then primaryValue else fallbackValue)
+        }
+      }
+    })
+    val expandedFieldNames: List[String] = expanded.analyze[List[String]](new FunctionK[Field, [A] =>> List[String]] {
+      override def apply[A](fa: Field[A]): List[String] = List(fa.name)
+    })
+
+    assertThat(expanded.foldMap(fieldToId)).isEqualTo("db.local:5432")
+    assertThat(expandedFieldNames).isEqualTo(
+      List("host.primary", "host.fallback", "port.primary", "port.fallback")
+    )
   }
 
   @Test
