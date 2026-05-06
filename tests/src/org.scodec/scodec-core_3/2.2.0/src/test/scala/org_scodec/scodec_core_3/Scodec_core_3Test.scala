@@ -144,6 +144,17 @@ class Scodec_core_3Test:
     assertFalse(Attempt.guard(false, "guard failed").isSuccessful)
 
   @Test
+  def variableSizeDelimitedCodecTerminatesPayloadsAndPreservesRemainders(): Unit =
+    val codec: Codec[String] = variableSizeDelimited(constant(hex("00")), utf8, 8)
+
+    assertEquals(hex("646f6e6500"), codec.encode("done").require)
+
+    val decoded: DecodeResult[String] = codec.decode(hex("646f6e6500cafe")).require
+    assertEquals("done", decoded.value)
+    assertEquals(hex("cafe"), decoded.remainder)
+    assertTrue(codec.decode(hex("646f6e65")).isFailure)
+
+  @Test
   def checksummedCodecAppendsValidatesAndPreservesRemainders(): Unit =
     val checksum: BitVector => BitVector = valueBits => valueBits.take(8).xor(valueBits.drop(8).take(8))
     val framing: Codec[(BitVector, BitVector)] = Codec.fromTuple((bits(16), bits(8)))
