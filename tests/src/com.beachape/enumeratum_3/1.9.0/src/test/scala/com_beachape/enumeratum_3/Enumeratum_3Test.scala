@@ -209,6 +209,21 @@ class Enumeratum_3Test {
     assertSame(FeatureFlag.Disabled, FeatureFlag.withValue("disabled"))
     assertFalse(FeatureFlag.withValueEither("unknown").isRight)
   }
+
+  @Test
+  def explicitEntryNamesReplaceCaseObjectNamesInEnumLookups(): Unit = {
+    assertEquals("scope:read", AccessLevel.ReadOnly.entryName)
+    assertEquals("scope:write", AccessLevel.WriteOnly.entryName)
+    assertEquals(
+      Map("scope:read" -> AccessLevel.ReadOnly, "scope:write" -> AccessLevel.WriteOnly),
+      AccessLevel.namesToValuesMap
+    )
+
+    assertSame(AccessLevel.ReadOnly, AccessLevel.withName("scope:read"))
+    assertSame(AccessLevel.WriteOnly, AccessLevel.withName("scope:write"))
+    assertEquals(None, AccessLevel.withNameOption("ReadOnly"))
+    assertEquals(None, AccessLevel.withNameOption("WriteOnly"))
+  }
 }
 
 sealed trait WorkflowState extends EnumEntry
@@ -253,6 +268,19 @@ object NamingStyle extends Enum[NamingStyle] {
   case object LowercaseValue extends NamingStyle with EnumEntry.Lowercase
   case object UppercaseValue extends NamingStyle with EnumEntry.Uppercase
   case object UncapitalisedValue extends NamingStyle with EnumEntry.Uncapitalised
+}
+
+sealed trait AccessLevel extends EnumEntry
+object AccessLevel extends Enum[AccessLevel] {
+  val values: IndexedSeq[AccessLevel] = findValues
+
+  case object ReadOnly extends AccessLevel {
+    override val entryName: String = "scope:read"
+  }
+
+  case object WriteOnly extends AccessLevel {
+    override val entryName: String = "scope:write"
+  }
 }
 
 sealed abstract class HttpCode(val value: Int) extends IntEnumEntry
