@@ -18,11 +18,13 @@ import scala.util.Try
 import org.junit.jupiter.api.Test
 import org.scalatest.Args
 import org.scalatest.FutureOutcome
+import org.scalatest.GivenWhenThen
 import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
 import org.scalatest.events.Event
+import org.scalatest.events.InfoProvided
 import org.scalatest.events.TestIgnored
 import org.scalatest.events.TestPending
 import org.scalatest.events.TestSucceeded
@@ -105,6 +107,23 @@ class Scalatest_featurespec_2_13Test {
     assert(suite.fixtureNames.asScala.toVector == Vector(scenarioTestName))
     assert(suite.observedFixtures.asScala.toVector == Vector("async-feature-spec"))
     assert(succeededEvents(result.events).map(_.testName) == Vector(scenarioTestName))
+  }
+
+  @Test
+  def anyFeatureSpecPublishesGivenWhenThenMessages(): Unit = {
+    val suite: CheckoutNarrativeFeatureSpec = new CheckoutNarrativeFeatureSpec
+    val scenarioTestName: String = findTestName(suite, "describes checkout steps")
+
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(suite.executed == Vector("narrative"))
+    assert(succeededEvents(result.events).map(_.testName) == Vector(scenarioTestName))
+    assert(recordedInfoMessages(result.events) == Vector(
+      "Given a cart containing a guide",
+      "When the customer checks out",
+      "Then the order summary contains the guide"
+    ))
   }
 
   final class ShoppingCartFeatureSpec extends AnyFeatureSpec {
@@ -209,6 +228,20 @@ class Scalatest_featurespec_2_13Test {
     }
   }
 
+  final class CheckoutNarrativeFeatureSpec extends AnyFeatureSpec with GivenWhenThen {
+    var executed: Vector[String] = Vector.empty
+
+    Feature("Checkout narrative") {
+      Scenario("describes checkout steps") {
+        Given("a cart containing a guide")
+        When("the customer checks out")
+        Then("the order summary contains the guide")
+        executed = executed :+ "narrative"
+        assert(Vector("guide").mkString(",") == "guide")
+      }
+    }
+  }
+
   private def findTestName(suite: Suite, fragment: String): String = {
     suite.testNames.find(_.contains(fragment)).getOrElse {
       throw new AssertionError(s"Could not find test name containing '$fragment'")
@@ -237,6 +270,11 @@ class Scalatest_featurespec_2_13Test {
 
   private def pendingEvents(events: Vector[Event]): Vector[TestPending] =
     events.collect { case event: TestPending => event }
+
+  private def recordedInfoMessages(events: Vector[Event]): Vector[String] =
+    succeededEvents(events).flatMap { event: TestSucceeded =>
+      event.recordedEvents.collect { case info: InfoProvided => info.message }.toVector
+    }
 
   private final class RecordingReporter extends Reporter {
     private val recordedEvents: CopyOnWriteArrayList[Event] = new CopyOnWriteArrayList[Event]()
