@@ -24,6 +24,7 @@ import org.scalatest.Suite
 import org.scalatest.Tag
 import org.scalatest.events.Event
 import org.scalatest.events.TestIgnored
+import org.scalatest.events.TestPending
 import org.scalatest.events.TestSucceeded
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.featurespec.AsyncFeatureSpec
@@ -61,6 +62,20 @@ class Scalatest_featurespec_2_13Test {
     assert(result.succeeded)
     assert(suite.executed.toSet == Set("addition", "multiplication"))
     assert(succeededEvents(result.events).map(_.testName).toSet == Set(additionTestName, multiplicationTestName))
+    assert(ignoredEvents(result.events).isEmpty)
+  }
+
+  @Test
+  def anyFeatureSpecReportsPendingScenariosWithoutFailingTheSuite(): Unit = {
+    val suite: PendingScenarioFeatureSpec = new PendingScenarioFeatureSpec
+    val pendingTestName: String = findTestName(suite, "captures an unfinished payment workflow")
+
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(suite.executed == Vector("pending"))
+    assert(pendingEvents(result.events).map(_.testName) == Vector(pendingTestName))
+    assert(succeededEvents(result.events).isEmpty)
     assert(ignoredEvents(result.events).isEmpty)
   }
 
@@ -138,6 +153,17 @@ class Scalatest_featurespec_2_13Test {
     }
   }
 
+  final class PendingScenarioFeatureSpec extends AnyFeatureSpec {
+    var executed: Vector[String] = Vector.empty
+
+    Feature("Pending payment workflow") {
+      Scenario("captures an unfinished payment workflow") {
+        executed = executed :+ "pending"
+        pending
+      }
+    }
+  }
+
   final class TextFixtureFeatureSpec extends FixtureAnyFeatureSpec {
     type FixtureParam = String
 
@@ -208,6 +234,9 @@ class Scalatest_featurespec_2_13Test {
 
   private def ignoredEvents(events: Vector[Event]): Vector[TestIgnored] =
     events.collect { case event: TestIgnored => event }
+
+  private def pendingEvents(events: Vector[Event]): Vector[TestPending] =
+    events.collect { case event: TestPending => event }
 
   private final class RecordingReporter extends Reporter {
     private val recordedEvents: CopyOnWriteArrayList[Event] = new CopyOnWriteArrayList[Event]()
