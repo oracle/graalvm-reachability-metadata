@@ -27,6 +27,8 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.libs.json.JsonConfiguration
 import play.api.libs.json.JsonNaming
+import play.api.libs.json.KeyReads
+import play.api.libs.json.KeyWrites
 import play.api.libs.json.OFormat
 import play.api.libs.json.OWrites
 import play.api.libs.json.Reads
@@ -45,6 +47,8 @@ object PlayJsonModels {
   final case class Profile(name: String, age: Int, address: Address, tags: Seq[String], newsletter: Option[Boolean])
   final case class Payment(amount: BigDecimal, currency: String, metadata: Map[String, String])
   final case class SnakeProfile(firstName: String, lastName: String, postalCode: String)
+  final case class WarehouseId(value: Int)
+  final case class Inventory(counts: Map[WarehouseId, Int])
 
   object Priority extends Enumeration {
     val Low: Value = Value("low")
@@ -250,6 +254,38 @@ class Play_json_2_13Test {
       priority => throw new AssertionError(s"Unexpected priority: $priority")
     )
     assertTrue(failureMessage.contains("error"))
+  }
+
+  @Test
+  def readsAndWritesMapsWithCustomKeyCodecs(): Unit = {
+    implicit val warehouseIdKeyWrites: KeyWrites[WarehouseId] = KeyWrites { id =>
+      s"warehouse-${id.value}"
+    }
+    implicit val warehouseIdKeyReads: KeyReads[WarehouseId] = KeyReads { key =>
+      val prefix: String = "warehouse-"
+      val number: String = key.stripPrefix(prefix)
+
+      if (key.startsWith(prefix) && number.forall(_.isDigit) && number.nonEmpty) {
+        JsSuccess(WarehouseId(number.toInt))
+      } else {
+        JsError("error.expected.warehouseId")
+      }
+    }
+    implicit val inventoryFormat: OFormat[Inventory] = Json.format[Inventory]
+
+    val inventory: Inventory = Inventory(Map(WarehouseId(10) -> 7, WarehouseId(20) -> 0))
+    val json: JsValue = Json.toJson(inventory)
+
+    assertEquals(7, (json \ "counts" \ "warehouse-10").as[Int])
+    assertEquals(0, (json \ "counts" \ "warehouse-20").as[Int])
+    assertEquals(inventory, json.validate[Inventory].get)
+
+    val invalid: JsValue = Json.obj("counts" -> Json.obj("aisle-10" -> 2))
+    val failureMessage: String = invalid.validate[Inventory].fold(
+      errors => JsError.toJson(errors).toString(),
+      parsed => throw new AssertionError(s"Unexpected inventory: $parsed")
+    )
+    assertTrue(failureMessage.contains("error.expected.warehouseId"))
   }
 
   @Test
