@@ -20,6 +20,7 @@ import io.kotest.assertions.collectErrors
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.createLazyAssertionError
 import io.kotest.assertions.errorCollector
+import io.kotest.assertions.intellijFormattedComparison
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.pushErrors
 import io.kotest.assertions.throwCollectedErrors
@@ -362,6 +363,21 @@ public class Kotest_assertions_shared_jvmTest {
         assertFalse(failure.passed())
         assertEquals("always fails", failure.failureMessage())
         assertEquals("", failure.negatedFailureMessage())
+    }
+
+    @Test
+    fun intellijFormattedComparisonAddsTypeNamesOnlyWhenPrintedTypesDiffer() {
+        val sameTypeComparison = intellijFormattedComparison(
+            Expected(Printed("shared", String::class)),
+            Actual(Printed("actual", String::class)),
+        )
+        val differentTypeComparison = intellijFormattedComparison(
+            Expected(Printed("42", Int::class)),
+            Actual(Printed("42", String::class)),
+        )
+
+        assertEquals("expected:<shared> but was:<actual>", sameTypeComparison)
+        assertEquals("expected:kotlin.Int<42> but was:kotlin.String<42>", differentTypeComparison)
     }
 
     @Test
