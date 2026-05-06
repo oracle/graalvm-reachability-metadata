@@ -111,6 +111,34 @@ public class KtorServerSessionsJvmTest {
     }
 
     @Test
+    fun cookieSessionIncludesConfiguredSecureDomainAndExtensionAttributes(): Unit = testApplication {
+        install(Sessions) {
+            cookie<PreferencesSession>(PreferencesSessionCookie) {
+                serializer = PreferencesSessionSerializer
+                cookie.path = "/preferences"
+                cookie.secure = true
+                cookie.domain = "example.test"
+                cookie.extensions["Priority"] = "High"
+            }
+        }
+        routing {
+            get("/preferences/save") {
+                call.sessions.set(PreferencesSession(theme = "dark", pageSize = 25, compactMode = true))
+                call.respondText("preferences saved")
+            }
+        }
+
+        val saveResponse = client.get("/preferences/save")
+        assertThat(saveResponse.status).isEqualTo(HttpStatusCode.OK)
+        val setCookieHeader: String = saveResponse.headers[HttpHeaders.SetCookie]
+            ?: error("$PreferencesSessionCookie cookie was not set")
+        assertThat(setCookieHeader).startsWith("$PreferencesSessionCookie=")
+        assertThat(setCookieHeader).contains("Secure")
+        assertThat(setCookieHeader).contains("Domain=example.test")
+        assertThat(setCookieHeader).contains("Priority=High")
+    }
+
+    @Test
     fun signedCookieSessionRejectsTamperedTransportValues(): Unit = testApplication {
         install(Sessions) {
             cookie<LoginSession>(LoginSessionCookie) {
@@ -424,6 +452,19 @@ public class KtorServerSessionsJvmTest {
         }
     }
 
+    private object PreferencesSessionSerializer : SessionSerializer<PreferencesSession> {
+        override fun serialize(session: PreferencesSession): String = listOf(
+            session.theme,
+            session.pageSize.toString(),
+            session.compactMode.toString()
+        ).joinToString("|")
+
+        override fun deserialize(text: String): PreferencesSession {
+            val parts: List<String> = text.split('|')
+            return PreferencesSession(parts[0], parts[1].toInt(), parts[2].toBoolean())
+        }
+    }
+
     private object LoginSessionSerializer : SessionSerializer<LoginSession> {
         override fun serialize(session: LoginSession): String = "${session.name}|${session.role}"
 
@@ -462,6 +503,7 @@ public class KtorServerSessionsJvmTest {
 
     private companion object {
         private const val ShoppingSessionCookie: String = "SHOPPING_SESSION"
+        private const val PreferencesSessionCookie: String = "PREFERENCES_SESSION"
         private const val LoginSessionCookie: String = "LOGIN_SESSION"
         private const val ServerSideCookie: String = "SERVER_SIDE_SESSION"
         private const val ApiSessionHeader: String = "X-Api-Session"
@@ -473,6 +515,8 @@ public class KtorServerSessionsJvmTest {
 }
 
 public data class ShoppingSession(val user: String, val itemCount: Int, val coupon: String)
+
+public data class PreferencesSession(val theme: String, val pageSize: Int, val compactMode: Boolean)
 
 public data class LoginSession(val name: String, val role: String)
 
