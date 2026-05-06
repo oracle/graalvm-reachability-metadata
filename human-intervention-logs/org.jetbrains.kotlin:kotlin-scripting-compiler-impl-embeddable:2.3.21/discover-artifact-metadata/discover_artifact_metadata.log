@@ -1,0 +1,2163 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfe21-d239-74b2-8daf-3d5232cfb5bf
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.3.21" when "$version$" is replaced with "2.3.21".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.3.21".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact from primary sources first, then patch the discovered metadata JSON in place. I’m also checking existing repo conventions so the output matches the surrounding generated metadata.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | sed -n '1,20p' && test -f build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json && sed -n '1,200p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
+}
+
+exec
+/usr/bin/bash -lc "rg 'kotlin-scripting-compiler-impl-embeddable|org.jetbrains.kotlin' -n metadata tests build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.kotlin.template:10:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:18:      "org.jetbrains.kotlin.daemon"
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/$version$/kotlin-stdlib-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:55:      "org.jetbrains.kotlin"
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+tests/src/io.github.oshai/kotlin-logging-jvm/8.0.01/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-cbor-jvm/$version$/kotlinx-serialization-cbor-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-properties-jvm/$version$/kotlinx-serialization-properties-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-hocon/$version$/kotlinx-serialization-hocon-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/$version$/kotlinx-serialization-json-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/$version$/atomicfu-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-collections-immutable-jvm/$version$/kotlinx-collections-immutable-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-collections-immutable-jvm/$version$/kotlinx-collections-immutable-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-okio-jvm/$version$/kotlinx-serialization-json-okio-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/$version$/index.html",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/$version$/kotlinx-serialization-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-protobuf-jvm/$version$/kotlinx-serialization-protobuf-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm:0.4.16"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-cli-jvm/$version$/kotlinx-cli-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-cli-jvm/$version$/kotlinx-cli-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-html-jvm/$version$/kotlinx-html-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-html-jvm/$version$/kotlinx-html-jvm-$version$-javadoc.jar",
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-test:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-test_tests'
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/src/test/kotlin/org_jetbrains_kotlin/kotlin_test/Kotlin_testTest.kt:7:package org_jetbrains_kotlin.kotlin_test
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-test:2.0.21
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-test/2.0.21/
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:42:    testImplementation "org.jetbrains.kotlin:kotlin-daemon-embeddable:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:43:    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:44:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-daemon-embeddable_tests'
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:7:package org_jetbrains_kotlin.kotlin_daemon_embeddable;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:29:import org.jetbrains.kotlin.cli.common.CompilerSystemProperties;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:30:import org.jetbrains.kotlin.daemon.RemoteInputStreamClient;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:31:import org.jetbrains.kotlin.daemon.RemoteOutputStreamClient;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:32:import org.jetbrains.kotlin.daemon.RunningCompilations;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:33:import org.jetbrains.kotlin.daemon.common.ClientUtilsKt;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:34:import org.jetbrains.kotlin.daemon.common.CompilerId;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:35:import org.jetbrains.kotlin.daemon.common.DaemonJVMOptions;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:36:import org.jetbrains.kotlin.daemon.common.DaemonOptions;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:37:import org.jetbrains.kotlin.daemon.common.DaemonParamsKt;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:38:import org.jetbrains.kotlin.daemon.common.DaemonReportCategory;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:39:import org.jetbrains.kotlin.daemon.common.DaemonWithMetadata;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:40:import org.jetbrains.kotlin.daemon.common.DummyProfiler;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:41:import org.jetbrains.kotlin.daemon.common.LoopbackNetworkInterface;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:42:import org.jetbrains.kotlin.daemon.common.RemoteInputStream;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:43:import org.jetbrains.kotlin.daemon.common.RemoteOutputStream;
+
+web search: 
+web search: Maven org.jetbrains.kotlin kotlin-scripting-compiler-impl-embeddable 2.3.21
+web search: 
+web search: https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/
+codex
+The local target file only has coordinates right now. Maven Central lists the `2.3.21` directory for this artifact, so I’m checking the concrete POM, classifier jars, and Kotlin tag paths next rather than relying on search snippets.
+exec
+/usr/bin/bash -lc "for p in \\
+  metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json \\
+  metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json \\
+  metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json \\
+  metadata/org.jetbrains.kotlin/kotlin-reflect/index.json; do
+  printf '\\n%s\\n' \""'$p"; sed -n '"'1,80p' \""'$p"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/common/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+    "description" : "Kotlin Scripting Common provides shared scripting APIs for defining script sources, diagnostics, compilation and evaluation configurations, and REPL interactions. It supplies the common types used by Kotlin scripting hosts and compiler integrations to configure, compile, and evaluate Kotlin scripts.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "2.3.21",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin.script.experimental"
+    ]
+  }
+]
+
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.20",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v$version$",
+    "description" : "Provides the core Kotlin scripting runtime types, including standard script templates and dependency-resolution APIs used by Kotlin scripts. It supplies the classes that other Kotlin scripting components and hosts rely on to compile, configure, and run .kts scripts.",
+    "tested-versions" : [
+      "2.3.20",
+      "2.3.21-RC",
+      "2.3.21-RC2",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin.script"
+    ]
+  }
+]
+
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.20",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+    "description" : "This artifact packages the Kotlin compiler daemon implementation for use with the embeddable compiler. It runs compilation work in a separate process so build tools and IDE integrations can invoke Kotlin compilation out of process.",
+    "tested-versions" : [
+      "2.3.20",
+      "2.3.21-RC",
+      "2.3.21-RC2",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "org.jetbrains.kotlin.daemon"
+    ]
+  }
+]
+
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/testData/codegen/box/reflection",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+    "description" : "kotlin-reflect is Kotlin's optional JVM runtime reflection library, providing full support for the kotlin.reflect API and related reflection extensions. It lets applications inspect Kotlin classes, functions, properties, and types at runtime without requiring reflection support in deployments that do not use it.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+      "1.8.21",
+      "1.8.22",
+      "1.9.0",
+      "1.9.10",
+      "1.9.20",
+      "1.9.21",
+      "1.9.22",
+      "1.9.23",
+      "1.9.24",
+      "1.9.25",
+      "2.0.0",
+      "2.0.10",
+      "2.0.20",
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-scripting-compiler-impl-embeddable</artifactId>
+  <version>2.3.21</version>
+  <name>Kotlin Scripting Compiler Impl Embeddable</name>
+  <description>Kotlin Compiler Infrastructure for Scripting for embeddable compiler</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-scripting-common</artifactId>
+      <version>2.3.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-scripting-jvm</artifactId>
+      <version>2.3.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.3.21</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-test-sources.jar; do
+  printf '%s -> ' \""'$u"
+  curl -fsSI "$u" | sed -n '"'1p;/"'^content-length:/Ip;/''^last-modified:/Ip'"'
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 940ms:
+HTTP/2 200 
+content-length: 261
+last-modified: Wed, 22 Apr 2026 09:31:46 GMT
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-tests.jar -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-test-sources.jar -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-sources.jar; jar tf "$tmp/sources.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21.jar; jar tf "$tmp/artifact.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 181ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jetbrains/
+org/jetbrains/kotlin/
+org/jetbrains/kotlin/scripting/
+org/jetbrains/kotlin/scripting/identifiers.kt
+org/jetbrains/kotlin/scripting/utils.kt
+org/jetbrains/kotlin/scripting/configuration/
+org/jetbrains/kotlin/scripting/configuration/ScriptingConfigurationKeys.kt
+org/jetbrains/kotlin/scripting/definitions/
+org/jetbrains/kotlin/scripting/definitions/AutoloadedScriptDefinitions.kt
+org/jetbrains/kotlin/scripting/definitions/LazyScriptDefinitionFromDiscoveredClass.kt
+org/jetbrains/kotlin/scripting/definitions/LazyScriptDefinitionProvider.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptCompilationConfigurationFromDefinition.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptCompilationConfigurationFromLegacyTemplate.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptConfigurationsProvider.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinitionProvider.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinitionsSource.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptEvaluationConfigurationFromHostConfiguration.kt
+org/jetbrains/kotlin/scripting/definitions/ScriptPriorities.java
+org/jetbrains/kotlin/scripting/definitions/ScriptiDefinitionsFromClasspathDiscoverySource.kt
+org/jetbrains/kotlin/scripting/definitions/asmBasedAnnotationsLoading.kt
+org/jetbrains/kotlin/scripting/definitions/definitions.kt
+org/jetbrains/kotlin/scripting/extensions/
+org/jetbrains/kotlin/scripting/extensions/ScriptExtraImportsProviderExtension.kt
+org/jetbrains/kotlin/scripting/extensions/ScriptingResolveExtension.kt
+org/jetbrains/kotlin/scripting/resolve/
+org/jetbrains/kotlin/scripting/resolve/FirReplHistoryScope.kt
+org/jetbrains/kotlin/scripting/resolve/LazyScriptClassMemberScope.kt
+org/jetbrains/kotlin/scripting/resolve/LazyScriptDescriptor.kt
+org/jetbrains/kotlin/scripting/resolve/ReplResultPropertyDescriptor.kt
+org/jetbrains/kotlin/scripting/resolve/ScriptProvidedPropertyDescriptor.kt
+org/jetbrains/kotlin/scripting/resolve/ScriptReportSink.kt
+org/jetbrains/kotlin/scripting/resolve/legacyWrappers.kt
+org/jetbrains/kotlin/scripting/resolve/refineCompilationConfiguration.kt
+org/jetbrains/kotlin/scripting/resolve/resolveCompilationOptions.kt
+org/jetbrains/kotlin/scripting/resolve/scriptAnnotationsPreprocessing.kt
+org/jetbrains/kotlin/scripting/resolve/scriptDescriptorUtil.kt
+
+ succeeded in 249ms:
+META-INF/MANIFEST.MF
+META-INF/kotlin-scripting-compiler-impl.kotlin_module
+org/jetbrains/kotlin/scripting/IdentifiersKt.class
+org/jetbrains/kotlin/scripting/UtilsKt.class
+org/jetbrains/kotlin/scripting/configuration/ScriptingConfigurationKeys.class
+org/jetbrains/kotlin/scripting/definitions/AsmBasedAnnotationsLoadingKt.class
+org/jetbrains/kotlin/scripting/definitions/AsyncDependencyResolverWrapper$resolve$1.class
+org/jetbrains/kotlin/scripting/definitions/AsyncDependencyResolverWrapper.class
+org/jetbrains/kotlin/scripting/definitions/AutoloadedScriptDefinitions$Companion.class
+org/jetbrains/kotlin/scripting/definitions/AutoloadedScriptDefinitions$definitions$1.class
+org/jetbrains/kotlin/scripting/definitions/AutoloadedScriptDefinitions.class
+org/jetbrains/kotlin/scripting/definitions/BinAnnArgData.class
+org/jetbrains/kotlin/scripting/definitions/BinAnnData.class
+org/jetbrains/kotlin/scripting/definitions/CachingSequence$CachingIterator.class
+org/jetbrains/kotlin/scripting/definitions/CachingSequence.class
+org/jetbrains/kotlin/scripting/definitions/ClasspathWithClassLoader.class
+org/jetbrains/kotlin/scripting/definitions/DefinitionsKt$findScriptDefinition$$inlined$runReadAction$1.class
+org/jetbrains/kotlin/scripting/definitions/DefinitionsKt$runReadAction$1.class
+org/jetbrains/kotlin/scripting/definitions/DefinitionsKt.class
+org/jetbrains/kotlin/scripting/definitions/DefinitionsLoadPartitionResult.class
+org/jetbrains/kotlin/scripting/definitions/DependencyResolverWrapper.class
+org/jetbrains/kotlin/scripting/definitions/K1SpecificScriptingServiceAccessor.class
+org/jetbrains/kotlin/scripting/definitions/LazyClasspathWithClassLoader.class
+org/jetbrains/kotlin/scripting/definitions/LazyScriptDefinitionFromDiscoveredClass.class
+org/jetbrains/kotlin/scripting/definitions/LazyScriptDefinitionFromDiscoveredClassKt.class
+org/jetbrains/kotlin/scripting/definitions/LazyScriptDefinitionProvider$Companion.class
+org/jetbrains/kotlin/scripting/definitions/LazyScriptDefinitionProvider.class
+org/jetbrains/kotlin/scripting/definitions/ScriptCompilationConfigurationFromDefinitionKt.class
+org/jetbrains/kotlin/scripting/definitions/ScriptCompilationConfigurationFromLegacyTemplate$WhenMappings.class
+org/jetbrains/kotlin/scripting/definitions/ScriptCompilationConfigurationFromLegacyTemplate.class
+org/jetbrains/kotlin/scripting/definitions/ScriptCompilationConfigurationFromLegacyTemplateKt.class
+org/jetbrains/kotlin/scripting/definitions/ScriptConfigurationsProvider$Companion.class
+org/jetbrains/kotlin/scripting/definitions/ScriptConfigurationsProvider.class
+org/jetbrains/kotlin/scripting/definitions/ScriptContentsFromRefinementContext.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition$Companion$getDefault$1.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition$Companion.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition$FromConfigurations.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition$FromConfigurationsBase.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition$FromNewDefinition.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition$FromTemplate.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinition.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinitionProvider$Companion.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinitionProvider.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinitionsFromClasspathDiscoverySource.class
+org/jetbrains/kotlin/scripting/definitions/ScriptDefinitionsSource.class
+org/jetbrains/kotlin/scripting/definitions/ScriptEvaluationConfigurationFromHostConfiguration.class
+org/jetbrains/kotlin/scripting/definitions/ScriptPriorities.class
+org/jetbrains/kotlin/scripting/definitions/ScriptiDefinitionsFromClasspathDiscoverySourceKt$loadScriptTemplatesFromClasspath$1.class
+org/jetbrains/kotlin/scripting/definitions/ScriptiDefinitionsFromClasspathDiscoverySourceKt$scriptTemplatesDiscoverySequence$1.class
+org/jetbrains/kotlin/scripting/definitions/ScriptiDefinitionsFromClasspathDiscoverySourceKt.class
+org/jetbrains/kotlin/scripting/definitions/TemplateAnnotationVisitor.class
+org/jetbrains/kotlin/scripting/definitions/TemplateClassVisitor.class
+org/jetbrains/kotlin/scripting/extensions/ScriptExtraImportsProviderExtension$ScriptExtraImportImpl.class
+org/jetbrains/kotlin/scripting/extensions/ScriptExtraImportsProviderExtension$getExtraImports$lambda$0$$inlined$runReadAction$1.class
+org/jetbrains/kotlin/scripting/extensions/ScriptExtraImportsProviderExtension.class
+org/jetbrains/kotlin/scripting/extensions/ScriptingResolveExtension.class
+org/jetbrains/kotlin/scripting/resolve/ApiChangeDependencyResolverWrapper$WhenMappings.class
+org/jetbrains/kotlin/scripting/resolve/ApiChangeDependencyResolverWrapper.class
+org/jetbrains/kotlin/scripting/resolve/FirReplHistoryScope.class
+org/jetbrains/kotlin/scripting/resolve/GenericKtSourceFileScriptSource.class
+org/jetbrains/kotlin/scripting/resolve/InvalidScriptResolverAnnotation.class
+org/jetbrains/kotlin/scripting/resolve/KtFileScriptSource.class
+org/jetbrains/kotlin/scripting/resolve/LazyScriptClassMemberScope$Companion.class
+org/jetbrains/kotlin/scripting/resolve/LazyScriptClassMemberScope.class
+org/jetbrains/kotlin/scripting/resolve/LazyScriptDescriptor$ConstructorWithParams.class
+org/jetbrains/kotlin/scripting/resolve/LazyScriptDescriptor$ImportedScriptDescriptorsFinder.class
+org/jetbrains/kotlin/scripting/resolve/LazyScriptDescriptor.class
+org/jetbrains/kotlin/scripting/resolve/LazyTextScriptSource.class
+org/jetbrains/kotlin/scripting/resolve/RefineCompilationConfigurationKt$refineScriptCompilationConfiguration$$inlined$runReadAction$1.class
+org/jetbrains/kotlin/scripting/resolve/RefineCompilationConfigurationKt.class
+org/jetbrains/kotlin/scripting/resolve/ReplResultPropertyDescriptor.class
+org/jetbrains/kotlin/scripting/resolve/ResolveCompilationOptionsKt.class
+org/jetbrains/kotlin/scripting/resolve/ScriptAnnotationsPreprocessingKt.class
+org/jetbrains/kotlin/scripting/resolve/ScriptCompilationConfigurationWrapper.class
+org/jetbrains/kotlin/scripting/resolve/ScriptDescriptorUtilKt.class
+org/jetbrains/kotlin/scripting/resolve/ScriptLightVirtualFile.class
+org/jetbrains/kotlin/scripting/resolve/ScriptProvidedPropertyDescriptor.class
+org/jetbrains/kotlin/scripting/resolve/ScriptReportSink.class
+org/jetbrains/kotlin/scripting/resolve/VirtualFileScriptSource.class
+META-INF/
+org/jetbrains/kotlin/scripting/
+org/jetbrains/kotlin/
+org/jetbrains/
+org/
+org/jetbrains/kotlin/scripting/configuration/
+org/jetbrains/kotlin/scripting/definitions/
+org/jetbrains/kotlin/scripting/extensions/
+org/jetbrains/kotlin/scripting/resolve/
+
+ succeeded in 254ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: "kotlin-scripting-compiler-impl-embeddable" "build.gradle"
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/JetBrains/kotlin.git 'refs/tags/v2.3.21'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc "for u in \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/compiler?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler?ref=v2.3.21; do
+  printf '\\nURL %s\\n' \""'$u"
+  curl -fsSL "$u" | sed -n '"'1,120p'
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 836ms:
+fea1ad8c18995b80d1ca0e3917056104613d23db	refs/tags/v2.3.21
+
+ succeeded in 1015ms:
+[
+  {
+    "name": "common",
+    "path": "libraries/scripting/common",
+    "sha": "647c63c14cd83ad02d68c7d82a213c4dd093c429",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/common?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/common",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/647c63c14cd83ad02d68c7d82a213c4dd093c429",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/common?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/647c63c14cd83ad02d68c7d82a213c4dd093c429",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/common"
+    }
+  },
+  {
+    "name": "dependencies-maven-all",
+    "path": "libraries/scripting/dependencies-maven-all",
+    "sha": "d65347f42d3028c01a2b1a556b57babacc0eca46",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven-all?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven-all",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d65347f42d3028c01a2b1a556b57babacc0eca46",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven-all?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d65347f42d3028c01a2b1a556b57babacc0eca46",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven-all"
+    }
+  },
+  {
+    "name": "dependencies-maven",
+    "path": "libraries/scripting/dependencies-maven",
+    "sha": "a8a234724d119b68178d3bbd87eb41ae42110f5b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/a8a234724d119b68178d3bbd87eb41ae42110f5b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/a8a234724d119b68178d3bbd87eb41ae42110f5b",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven"
+    }
+  },
+  {
+    "name": "dependencies",
+    "path": "libraries/scripting/dependencies",
+    "sha": "52c0faf8f35fd63743efe73f36fae4005dd8fbf2",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/52c0faf8f35fd63743efe73f36fae4005dd8fbf2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/52c0faf8f35fd63743efe73f36fae4005dd8fbf2",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies"
+    }
+  },
+  {
+    "name": "intellij",
+    "path": "libraries/scripting/intellij",
+    "sha": "44aee476a5cb558f9613d26b524bddad7c941eff",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/intellij?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/intellij",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/44aee476a5cb558f9613d26b524bddad7c941eff",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/intellij?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/44aee476a5cb558f9613d26b524bddad7c941eff",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/intellij"
+    }
+  },
+  {
+    "name": "jsr223-embeddable",
+    "path": "libraries/scripting/jsr223-embeddable",
+    "sha": "2168402ce79197b733452409c813aed49220f889",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-embeddable?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-embeddable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2168402ce79197b733452409c813aed49220f889",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-embeddable?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2168402ce79197b733452409c813aed49220f889",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-embeddable"
+    }
+  },
+  {
+    "name": "jsr223-test",
+    "path": "libraries/scripting/jsr223-test",
+    "sha": "6a8a6baaa21c7538b9e5ec8340aa0ec689c23883",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-test?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6a8a6baaa21c7538b9e5ec8340aa0ec689c23883",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-test?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6a8a6baaa21c7538b9e5ec8340aa0ec689c23883",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-test"
+    }
+  },
+  {
+    "name": "jsr223",
+    "path": "libraries/scripting/jsr223",
+    "sha": "e6a7bf9c61e1b444b28f62f8234730521b593634",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223",
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/compiler?ref=v2.3.21
+curl: (22) The requested URL returned error: 404
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting?ref=v2.3.21
+[
+  {
+    "name": "scripting-compiler-embeddable",
+    "path": "plugins/scripting/scripting-compiler-embeddable",
+    "sha": "8e6118833d24d24705d1a9a7b9d2593045b3dd4e",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-embeddable?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-embeddable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/8e6118833d24d24705d1a9a7b9d2593045b3dd4e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-embeddable?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/8e6118833d24d24705d1a9a7b9d2593045b3dd4e",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-embeddable"
+    }
+  },
+  {
+    "name": "scripting-compiler-impl-embeddable",
+    "path": "plugins/scripting/scripting-compiler-impl-embeddable",
+    "sha": "09a141096d17a77ccff312c020398f6915a39946",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl-embeddable?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/09a141096d17a77ccff312c020398f6915a39946",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl-embeddable?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/09a141096d17a77ccff312c020398f6915a39946",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable"
+    }
+  },
+  {
+    "name": "scripting-compiler-impl",
+    "path": "plugins/scripting/scripting-compiler-impl",
+    "sha": "6cf768d00a9cd873cc40ab70c3efcf007bfa4fab",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6cf768d00a9cd873cc40ab70c3efcf007bfa4fab",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6cf768d00a9cd873cc40ab70c3efcf007bfa4fab",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl"
+    }
+  },
+  {
+    "name": "scripting-compiler",
+    "path": "plugins/scripting/scripting-compiler",
+    "sha": "78b2a5ffab871c17b47910fd7baa7d36778bbba9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/78b2a5ffab871c17b47910fd7baa7d36778bbba9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/78b2a5ffab871c17b47910fd7baa7d36778bbba9",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler"
+    }
+  },
+  {
+    "name": "scripting-ide-common",
+    "path": "plugins/scripting/scripting-ide-common",
+    "sha": "b010e05f328e49db1e3583828a68f213093e5c97",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-common?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-common",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b010e05f328e49db1e3583828a68f213093e5c97",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-common?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b010e05f328e49db1e3583828a68f213093e5c97",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-common"
+    }
+  },
+  {
+    "name": "scripting-ide-services-embeddable",
+    "path": "plugins/scripting/scripting-ide-services-embeddable",
+    "sha": "8e344e8777b9650f42235bf7eba6078cf596ba93",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-services-embeddable?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-services-embeddable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/8e344e8777b9650f42235bf7eba6078cf596ba93",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-services-embeddable?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/8e344e8777b9650f42235bf7eba6078cf596ba93",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-services-embeddable"
+    }
+  },
+  {
+    "name": "scripting-ide-services-test",
+    "path": "plugins/scripting/scripting-ide-services-test",
+    "sha": "2e1ffaf1b3f5fd8915b22914d45b1531746b4022",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-services-test?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-services-test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2e1ffaf1b3f5fd8915b22914d45b1531746b4022",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-services-test?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2e1ffaf1b3f5fd8915b22914d45b1531746b4022",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-services-test"
+    }
+  },
+  {
+    "name": "scripting-ide-services",
+    "path": "plugins/scripting/scripting-ide-services",
+    "sha": "eab0f5808a7a3e3ac317c989ba6043ffeb03c467",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-ide-services?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-ide-services",
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler?ref=v2.3.21
+[
+  {
+    "name": "build.gradle.kts",
+    "path": "plugins/scripting/scripting-compiler/build.gradle.kts",
+    "sha": "7bae917f5f555fa6ab5b09a0e0a03df0e61a7717",
+    "size": 5304,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/build.gradle.kts?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/7bae917f5f555fa6ab5b09a0e0a03df0e61a7717",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/build.gradle.kts?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/7bae917f5f555fa6ab5b09a0e0a03df0e61a7717",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/build.gradle.kts"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "plugins/scripting/scripting-compiler/resources",
+    "sha": "c2d09a9a29139733beb495e11f7851ea44bcc523",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/resources?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/resources",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c2d09a9a29139733beb495e11f7851ea44bcc523",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/resources?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c2d09a9a29139733beb495e11f7851ea44bcc523",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/resources"
+    }
+  },
+  {
+    "name": "src",
+    "path": "plugins/scripting/scripting-compiler/src",
+    "sha": "4ca23a488bb41ff870341ff3229d2eb32e97efee",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/src?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/src",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/4ca23a488bb41ff870341ff3229d2eb32e97efee",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/src?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/4ca23a488bb41ff870341ff3229d2eb32e97efee",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/src"
+    }
+  },
+  {
+    "name": "testData",
+    "path": "plugins/scripting/scripting-compiler/testData",
+    "sha": "91a6aac9afccef4d7e1c1c7899be0718bea3acf9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/testData?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/testData",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/91a6aac9afccef4d7e1c1c7899be0718bea3acf9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/testData?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/91a6aac9afccef4d7e1c1c7899be0718bea3acf9",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/testData"
+    }
+  },
+  {
+    "name": "tests",
+    "path": "plugins/scripting/scripting-compiler/tests",
+    "sha": "ea9363f061767e803b53c998aecadbb0461c80de",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/ea9363f061767e803b53c998aecadbb0461c80de",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/ea9363f061767e803b53c998aecadbb0461c80de",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test?ref=v2.3.21; do
+  printf '\\nURL %s\\n' \""'$u"
+  curl -fsSL "$u" | sed -n '"'1,220p'
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc "for u in \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl-embeddable?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/src?ref=v2.3.21 \\
+  https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/tests?ref=v2.3.21; do
+  printf '\\nURL %s\\n' \""'$u"
+  curl -fsSL "$u" | sed -n '"'1,220p'
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 677ms:
+[
+  {
+    "name": "org",
+    "path": "plugins/scripting/scripting-compiler/tests/org",
+    "sha": "9dda41ffdd6fb4e080a7b5e82e61c11dd059bd4e",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/9dda41ffdd6fb4e080a7b5e82e61c11dd059bd4e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/9dda41ffdd6fb4e080a7b5e82e61c11dd059bd4e",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org"
+    }
+  }
+]
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org?ref=v2.3.21
+[
+  {
+    "name": "jetbrains",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains",
+    "sha": "5dd6f56e566d5179cbfe9a79852f7abe12f08bce",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5dd6f56e566d5179cbfe9a79852f7abe12f08bce",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5dd6f56e566d5179cbfe9a79852f7abe12f08bce",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains"
+    }
+  }
+]
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test?ref=v2.3.21
+[
+  {
+    "name": "CollectScriptCompilationDependenciesTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CollectScriptCompilationDependenciesTest.kt",
+    "sha": "e7ed0a929b7f83c44d2364bf880d90142908dc89",
+    "size": 4372,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CollectScriptCompilationDependenciesTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CollectScriptCompilationDependenciesTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/e7ed0a929b7f83c44d2364bf880d90142908dc89",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CollectScriptCompilationDependenciesTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CollectScriptCompilationDependenciesTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/e7ed0a929b7f83c44d2364bf880d90142908dc89",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CollectScriptCompilationDependenciesTest.kt"
+    }
+  },
+  {
+    "name": "CompileTimeFibonacciTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CompileTimeFibonacciTest.kt",
+    "sha": "549eaeb7b74028cc05645b57abdd6b3db74075d6",
+    "size": 8527,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CompileTimeFibonacciTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CompileTimeFibonacciTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/549eaeb7b74028cc05645b57abdd6b3db74075d6",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CompileTimeFibonacciTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CompileTimeFibonacciTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/549eaeb7b74028cc05645b57abdd6b3db74075d6",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CompileTimeFibonacciTest.kt"
+    }
+  },
+  {
+    "name": "ConstructAnnotationTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ConstructAnnotationTest.kt",
+    "sha": "c13c6bd4178a397a9ba26e42c134a26fdbcc4478",
+    "size": 6814,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ConstructAnnotationTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ConstructAnnotationTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/c13c6bd4178a397a9ba26e42c134a26fdbcc4478",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ConstructAnnotationTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ConstructAnnotationTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/c13c6bd4178a397a9ba26e42c134a26fdbcc4478",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ConstructAnnotationTest.kt"
+    }
+  },
+  {
+    "name": "CustomK2ReplTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CustomK2ReplTest.kt",
+    "sha": "79790461ff60645618fee29053941f4cd513b56b",
+    "size": 21177,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CustomK2ReplTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CustomK2ReplTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/79790461ff60645618fee29053941f4cd513b56b",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CustomK2ReplTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CustomK2ReplTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/79790461ff60645618fee29053941f4cd513b56b",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/CustomK2ReplTest.kt"
+    }
+  },
+  {
+    "name": "ScriptCliCompilationTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCliCompilationTest.kt",
+    "sha": "06e44a903227ec7f8f20de2ba14498a29bd89019",
+    "size": 6839,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCliCompilationTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCliCompilationTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/06e44a903227ec7f8f20de2ba14498a29bd89019",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCliCompilationTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCliCompilationTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/06e44a903227ec7f8f20de2ba14498a29bd89019",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCliCompilationTest.kt"
+    }
+  },
+  {
+    "name": "ScriptCompilerTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCompilerTest.kt",
+    "sha": "3e5573fd86085de2d8b9dcd5184e5ea0907777a8",
+    "size": 6920,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCompilerTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCompilerTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/3e5573fd86085de2d8b9dcd5184e5ea0907777a8",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCompilerTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCompilerTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/3e5573fd86085de2d8b9dcd5184e5ea0907777a8",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptCompilerTest.kt"
+    }
+  },
+  {
+    "name": "ScriptDefinitionTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptDefinitionTest.kt",
+    "sha": "f443690e9f61b44546b447b44a2e8745362de52d",
+    "size": 3598,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptDefinitionTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptDefinitionTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f443690e9f61b44546b447b44a2e8745362de52d",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptDefinitionTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptDefinitionTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f443690e9f61b44546b447b44a2e8745362de52d",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptDefinitionTest.kt"
+    }
+  },
+  {
+    "name": "ScriptEvaluationTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptEvaluationTest.kt",
+    "sha": "bda7a572f14bc103311731029ad21a2cddcb6317",
+    "size": 7129,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptEvaluationTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptEvaluationTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/bda7a572f14bc103311731029ad21a2cddcb6317",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptEvaluationTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptEvaluationTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/bda7a572f14bc103311731029ad21a2cddcb6317",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptEvaluationTest.kt"
+    }
+  },
+  {
+    "name": "ScriptTemplateTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTemplateTest.kt",
+    "sha": "b204f2d838a5b9f8df95bba8ce7c4467c274ed2b",
+    "size": 29041,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTemplateTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTemplateTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/b204f2d838a5b9f8df95bba8ce7c4467c274ed2b",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTemplateTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTemplateTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/b204f2d838a5b9f8df95bba8ce7c4467c274ed2b",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTemplateTest.kt"
+    }
+  },
+  {
+    "name": "ScriptTest.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTest.kt",
+    "sha": "15d06bcebb5b832509ea75e89887ccab2634c00d",
+    "size": 6577,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTest.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTest.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/15d06bcebb5b832509ea75e89887ccab2634c00d",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTest.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTest.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/15d06bcebb5b832509ea75e89887ccab2634c00d",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/ScriptTest.kt"
+    }
+  },
+  {
+    "name": "TestScriptDsl.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/TestScriptDsl.kt",
+    "sha": "8920822737a23e76c10fa0a0f6c80a76bfbf6bfa",
+    "size": 1148,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/TestScriptDsl.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/TestScriptDsl.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/8920822737a23e76c10fa0a0f6c80a76bfbf6bfa",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/TestScriptDsl.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/TestScriptDsl.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/8920822737a23e76c10fa0a0f6c80a76bfbf6bfa",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/TestScriptDsl.kt"
+    }
+  },
+  {
+    "name": "scriptTestsUtil.kt",
+    "path": "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/scriptTestsUtil.kt",
+    "sha": "11b77146e4a439b8dab9f08e895f5f843e5a6276",
+    "size": 3598,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/scriptTestsUtil.kt?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/scriptTestsUtil.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/11b77146e4a439b8dab9f08e895f5f843e5a6276",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/scriptTestsUtil.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/scriptTestsUtil.kt?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/11b77146e4a439b8dab9f08e895f5f843e5a6276",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test/scriptTestsUtil.kt"
+    }
+  }
+]
+
+ succeeded in 983ms:
+[
+  {
+    "name": "build.gradle.kts",
+    "path": "plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts",
+    "sha": "97b9e16401d63e06451434206092be216be40fca",
+    "size": 432,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/97b9e16401d63e06451434206092be216be40fca",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/97b9e16401d63e06451434206092be216be40fca",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts"
+    }
+  }
+]
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl?ref=v2.3.21
+[
+  {
+    "name": "build.gradle.kts",
+    "path": "plugins/scripting/scripting-compiler-impl/build.gradle.kts",
+    "sha": "76a93c84154c5447049c9bdd68f65806fb392a45",
+    "size": 1226,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/build.gradle.kts?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler-impl/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/76a93c84154c5447049c9bdd68f65806fb392a45",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler-impl/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/build.gradle.kts?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/76a93c84154c5447049c9bdd68f65806fb392a45",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler-impl/build.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "plugins/scripting/scripting-compiler-impl/src",
+    "sha": "64b66f43848b8e564bb28927b600f7a9810a151a",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/src?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl/src",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/64b66f43848b8e564bb28927b600f7a9810a151a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/src?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/64b66f43848b8e564bb28927b600f7a9810a151a",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl/src"
+    }
+  }
+]
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/src?ref=v2.3.21
+[
+  {
+    "name": "org",
+    "path": "plugins/scripting/scripting-compiler-impl/src/org",
+    "sha": "191a9833358e498bad74d4b44d162dcb01ab1b27",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/src/org?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl/src/org",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/191a9833358e498bad74d4b44d162dcb01ab1b27",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/src/org?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/191a9833358e498bad74d4b44d162dcb01ab1b27",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler-impl/src/org"
+    }
+  }
+]
+
+URL https://api.github.com/repos/JetBrains/kotlin/contents/plugins/scripting/scripting-compiler-impl/tests?ref=v2.3.21
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler-impl/build.gradle.kts | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/plugins/scripting/scripting-compiler/build.gradle.kts | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 190ms:
+description = "Kotlin Compiler Infrastructure for Scripting for embeddable compiler"
+
+plugins {
+    java
+}
+
+dependencies {
+    embedded(project(":kotlin-scripting-compiler-impl")) { isTransitive = false }
+    runtimeOnly(project(":kotlin-scripting-common"))
+    runtimeOnly(project(":kotlin-scripting-jvm"))
+    runtimeOnly(kotlinStdlib())
+}
+
+publish()
+
+runtimeJar(rewriteDefaultJarDepsToShadedCompiler())
+sourcesJar()
+javadocJar()
+
+ succeeded in 215ms:
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
+description = "Kotlin Compiler Infrastructure for Scripting"
+
+plugins {
+    kotlin("jvm")
+}
+
+dependencies {
+    compileOnly(project(":compiler:frontend"))
+    compileOnly(project(":compiler:frontend.java"))
+    compileOnly(project(":compiler:psi:psi-api"))
+    compileOnly(project(":compiler:plugin-api"))
+    compileOnly(project(":compiler:cli"))
+    compileOnly(project(":compiler:ir.serialization.js"))
+    api(project(":kotlin-scripting-common"))
+    api(project(":kotlin-scripting-jvm"))
+    api(kotlinStdlib())
+    compileOnly(commonDependency("org.jetbrains.kotlin:kotlin-reflect")) { isTransitive = false }
+    compileOnly(intellijCore())
+    compileOnly(libs.intellij.asm)
+
+    // FIXME: drop after removing references to LocalFileSystem they don't exist in intellij-core
+    compileOnly(intellijAnalysis())
+
+    runtimeOnly(commonDependency("org.jetbrains.kotlin:kotlin-reflect")) { isTransitive = false }
+}
+
+sourceSets {
+    "main" { projectDefault() }
+    "test" { none() }
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions.freeCompilerArgs.add("-Xskip-metadata-version-check")
+}
+
+publish()
+
+runtimeJar()
+sourcesJar()
+javadocJar()
+
+ succeeded in 222ms:
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
+description = "Kotlin Scripting Compiler Plugin"
+
+plugins {
+    kotlin("jvm")
+    id("project-tests-convention")
+}
+
+val kotlinxSerializationGradlePluginClasspath by configurations.creating
+val kotlinDataFrameGradlePluginClasspath by configurations.creating
+val kotlinxCoroutinesCoreGradlePluginClasspath by configurations.creating
+
+dependencies {
+    compileOnly(project(":compiler:frontend"))
+    compileOnly(project(":compiler:frontend.java"))
+    compileOnly(project(":compiler:psi:psi-api"))
+    compileOnly(project(":compiler:plugin-api"))
+    compileOnly(project(":compiler:fir:entrypoint"))
+    compileOnly(project(":compiler:fir:raw-fir:raw-fir.common"))
+    compileOnly(project(":compiler:fir:tree"))
+    compileOnly(project(":compiler:fir:providers"))
+    compileOnly(project(":compiler:fir:fir2ir:jvm-backend"))
+    compileOnly(project(":compiler:fir:plugin-utils"))
+    compileOnly(project(":compiler:cli"))
+    compileOnly(project(":core:descriptors.runtime"))
+    compileOnly(project(":compiler:ir.tree"))
+    compileOnly(project(":compiler:backend.jvm.entrypoint"))
+    compileOnly(commonDependency("org.jetbrains.kotlin:kotlin-reflect")) { isTransitive = false }
+    api(project(":kotlin-scripting-common"))
+    api(project(":kotlin-scripting-jvm"))
+    api(project(":kotlin-scripting-compiler-impl"))
+    api(kotlinStdlib())
+    api(commonDependency("org.jline", "jline"))
+    compileOnly(intellijCore())
+
+    implementation(project(":kotlin-power-assert-compiler-plugin")) // TODO: KT-74787
+    implementation(commonDependency("org.jetbrains.kotlin:kotlin-reflect")) { isTransitive = false }
+
+    testImplementation(project(":compiler:frontend"))
+    testImplementation(project(":compiler:plugin-api"))
+    testImplementation(project(":compiler:util"))
+    testImplementation(project(":compiler:cli"))
+    testImplementation(project(":compiler:cli-common"))
+    testImplementation(project(":compiler:frontend.java"))
+    testImplementation(project(":compiler:fir:plugin-utils"))
+    testImplementation(testFixtures(project(":compiler:tests-common"))) { // TODO: drop this, it's based on JUnit4
+        if (this is ProjectDependency) {
+            exclude(group = "com.nordstrom.tools", module = "junit-foundation")
+        }
+    }
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(kotlinTest("junit5"))
+
+    testImplementation(project(":kotlin-scripting-dependencies-maven"))
+
+    testImplementation(intellijCore())
+    testImplementation(libs.kotlinx.coroutines.core)
+    testImplementation(commonDependency("org.jetbrains.kotlin:kotlin-reflect")) { isTransitive = false }
+
+    kotlinxSerializationGradlePluginClasspath(project(":kotlinx-serialization-compiler-plugin.embeddable")) { isTransitive = true }
+    kotlinDataFrameGradlePluginClasspath(project(":kotlin-dataframe-compiler-plugin.embeddable")) { isTransitive = true }
+    kotlinxCoroutinesCoreGradlePluginClasspath(libs.kotlinx.coroutines.core) { isTransitive = false }
+}
+
+optInToExperimentalCompilerApi()
+optInToK1Deprecation()
+
+sourceSets {
+    "main" { projectDefault() }
+    "test" { projectDefault() }
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        progressiveMode.set(false)
+        freeCompilerArgs.add("-Xskip-metadata-version-check")
+    }
+}
+
+publish()
+
+runtimeJar()
+sourcesJar()
+javadocJar()
+
+testsJar()
+
+projectTests {
+    testTask(jUnitMode = JUnitMode.JUnit5) {
+        dependsOn(":dist", kotlinxSerializationGradlePluginClasspath, kotlinDataFrameGradlePluginClasspath, kotlinxCoroutinesCoreGradlePluginClasspath)
+        workingDir = rootDir
+        val scriptClasspath = testSourceSet.output.classesDirs.joinToString(File.pathSeparator)
+        val localKotlinxSerializationPluginClasspath: FileCollection = kotlinxSerializationGradlePluginClasspath
+        val localKotlinDataFramePluginClasspath: FileCollection = kotlinDataFrameGradlePluginClasspath
+        val localKotlinxCoroutinesCorePluginClasspath: FileCollection = kotlinxCoroutinesCoreGradlePluginClasspath
+        doFirst {
+            systemProperty("kotlin.test.script.classpath", scriptClasspath)
+            systemProperty("kotlin.script.test.kotlinx.serialization.plugin.classpath", localKotlinxSerializationPluginClasspath.asPath)
+            systemProperty("kotlin.script.test.kotlin.dataframe.plugin.classpath", localKotlinDataFramePluginClasspath.asPath)
+            systemProperty("kotlin.script.test.kotlinx.coroutines.core.classpath", localKotlinxCoroutinesCorePluginClasspath.asPath)
+        }
+    }
+
+    testTask("testWithK1", jUnitMode = JUnitMode.JUnit5, skipInLocalBuild = false) {
+        dependsOn(":dist")
+        workingDir = rootDir
+        val scriptClasspath = testSourceSet.output.classesDirs.joinToString(File.pathSeparator)
+
+        doFirst {
+            systemProperty("kotlin.test.script.classpath", scriptClasspath)
+            systemProperty("kotlin.script.test.base.compiler.arguments", "-language-version 1.9")
+            systemProperty("kotlin.script.base.compiler.arguments", "-language-version 1.9")
+        }
+    }
+
+    withJvmStdlibAndReflect()
+}
+
+codex
+The artifact is a JVM jar with class files, and Maven Central has source and javadoc classifier jars but no tests classifier. The embeddable module itself is a thin published wrapper over `scripting-compiler-impl`, while the relevant upstream tests live under the sibling `scripting-compiler` test suite in the same Kotlin tag.
+exec
+/usr/bin/bash -lc "rg 'discovered-artifact-metadata|metadata-version|source-code-url' -n build.gradle* settings.gradle* buildSrc gradle tools src 2>/dev/null | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'not-for-native-image|\"language\"' -n metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:51:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:69:    "language" : {
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/serialization-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg '\"coordinates\"' -n . | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/resources/contributing/questions.json:3:    "question-key": "coordinates",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/TestInvocationTask.java:51:        String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:68:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:82:        Object prop = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AllCoordinatesExecTask.java:74:            String filter = Objects.toString(getProject().findProperty("coordinates"), "");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AnalyzeExternalLibraryDynamicAccessTask.java:58:    @Option(option = "coordinates", description = "External Maven coordinate in group:artifact:version form")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AnalyzeExternalLibraryDynamicAccessTask.java:160:        Object property = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java:96:        Object prop = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AbstractLibraryStatsTask.java:49:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AbstractLibraryStatsTask.java:59:        Object property = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ComputeAndPullAllowedDockerImagesTask.java:52:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ComputeAndPullAllowedDockerImagesTask.java:66:        Object prop = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:56:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch).")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:206:        Object prop = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:59:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:66:        String prop = (String) getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:39:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:62:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ContributionTask.java:140:        ContributingQuestion question = questions.get("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:91:    @Option(option = "coordinates", description = "GAV coordinates of the library")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:98:        String coordinates = (String) getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:37:        Object coordsProp = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./build.gradle:278:                    def coords = (parsed["coordinates"] as List) ?: []
+./build.gradle:281:                                .collect { it instanceof Map ? it["coordinates"] : null }
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CoordinatesAwareTask.java:60:            String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:172:                - Set "coordinates" to "%s".
+./forge/utility_scripts/gradle_test_runner.py:116:    return match.group("coordinates").strip("'\"")
+./forge/utility_scripts/local_ci_verification.py:324:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:340:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:378:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:531:    coordinates = matrix.get("coordinates")
+./forge/utility_scripts/local_ci_verification.py:624:            str(entry.get("coordinates") or ""),
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/TckExtension.java:278:                        "coordinates", coordinates + ":" + metadataVersion,
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/TckExtension.java:469:                batch.put("coordinates", coordinates);
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:80:String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:289:        writeGithubOutput("coordinates", coords.join(' '))
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:471:                    "coordinates": matrixEntry["coordinates"],
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:501:                "coordinates": entry["coordinates"],
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:516:                "coordinates": matchingCoordinates
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:534:                        (1..batches).collect { i -> ["coordinates": "${i}/${batches}"] },
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:556:                                diffCoordinates.collect { coordinate -> ["coordinates": coordinate] },
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:618:            println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:641:                "coordinates": noneFound ? [] : diffCoordinates
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:708:                        selected.collect { coordinate -> ["coordinates": coordinate] },
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:797:        if (!project.hasProperty("coordinates")) {
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:800:        def coordsStr = project.findProperty("coordinates").toString()
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:812:        if (!project.hasProperty("coordinates")) {
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:815:        def coordsStr = project.findProperty("coordinates").toString()
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:827:        if (!project.hasProperty("coordinates")) {
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:830:        def coordsStr = project.findProperty("coordinates").toString()
+./forge/tests/test_local_ci_verification.py:281:                [{"coordinates": "org.example:demo:1.0.0", "versions": ["1.0.0"]}],
+./forge/tests/test_local_ci_verification.py:293:                "coordinates": "org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:300:                "coordinates": "org.example:other:2.0.0",
+./forge/tests/test_local_ci_verification.py:309:                "coordinates": "org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:358:                        {"coordinates": "org.example:plain-demo:1.0.0", "versions": ["1.0.0"]},
+./forge/tests/test_local_ci_verification.py:359:                        {"coordinates": "org.example:docker-demo:1.0.0", "versions": ["1.0.0"]},
+./forge/tests/test_local_ci_verification.py:417:                    [{"coordinates": "org.example:demo:2.0.1", "versions": ["2.0.1"]}],
+./forge/tests/test_local_ci_verification.py:563:                [{"coordinates": "org.example:demo:1.0.0", "version": "25", "nativeImageMode": "future-defaults-all"}],
+./forge/tests/test_local_ci_verification.py:607:                    [{"coordinates": "org.example:demo:1.0.0"}],
+./forge/tests/test_local_ci_verification.py:675:                return {"include": [{"coordinates": "org.example:demo:1.0.0"}]}
+./docs/support/index.html:454:              <input id="coordinates" name="coordinates" autocomplete="off" spellcheck="false" placeholder="org.postgresql:postgresql:42.7.3" required>
+./docs/support/index.html:491:        coordinates: document.getElementById("coordinates"),
+./docs/support/index.html:685:          url.searchParams.set("coordinates", coordinates.gav);
+./docs/support/index.html:714:        const value = params.get("coordinates") || params.get("q");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:109:                List.of(Map.of("coordinates", "1/2")),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:121:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:127:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:133:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:139:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:150:                List.of(Map.of("coordinates", "1/2")),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:162:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:168:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:174:                        "coordinates", "1/2",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:148:                                "coordinates", "com.example:demo:1.0.0",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:153:                                "coordinates", "com.example:demo:1.0.0",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:158:                                "coordinates", "com.example:demo:1.0.0",
+./docs/DEVELOPING.md:108:In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
+./tests/src/org.apache.maven/maven-api-di/4.0.0-rc-5/src/test/java/org_apache_maven/maven_api_di/Maven_api_diTest.java:371:        ArtifactResolver(SessionState sessionState, @Named("coordinates") String coordinates) {
+
+exec
+/usr/bin/bash -lc "sed -n '150,230p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "repository-url" to the discovered repository root URL.
+                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString(),
+                parsedCoordinates.version()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+                invocation.add(token.replace(PROMPT_PLACEHOLDER, prompt));
+                replaced = true;
+            } else {
+                invocation.add(token);
+            }
+        }
+        if (!replaced) {
+            invocation.add(prompt);
+        }
+        return invocation;
+    }
+
+    private int runAndLogInvocation(List<String> invocation, File logFile) throws IOException, InterruptedException {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT).format(new Date());
+        String header = "==== [" + timestamp + "] " + coordinates + System.lineSeparator() +
+                "COMMAND: " + String.join(" ", invocation) + System.lineSeparator();
+        Files.writeString(logFile.toPath(), header, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(invocation);
+        processBuilder.directory(getProject().getProjectDir());
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        process.getOutputStream().close();
+        try (OutputStream logOutput = Files.newOutputStream(logFile.toPath(), StandardOpenOption.APPEND)) {
+            TeeOutputStream teeOutputStream = new TeeOutputStream(logOutput, System.out);
+            process.getInputStream().transferTo(teeOutputStream);
+            teeOutputStream.flush();
+        }
+        int exit = process.waitFor();
+
+        String footer = System.lineSeparator() + "EXIT_CODE: " + exit + System.lineSeparator();
+        Files.writeString(logFile.toPath(), footer, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        getLogger().lifecycle("Ran agent for {} (exit {}). Log: {}", coordinates, exit, logFile);
+        return exit;
+    }
+
+    private static List<String> tokenizeCommand(String command) {
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
+  "type": "array",
+  "minItems": 1,
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "#/$defs/metadataIndexEntry"
+      }
+    },
+    {
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/notForNativeImageEntry"
+      }
+    }
+  ],
+  "$defs": {
+    "metadataIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed-packages",
+        "metadata-version",
+        "tested-versions"
+      ],
+      "properties": {
+        "metadata-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+        },
+        "tested-versions": {
+          "type": "array",
+          "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "test-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+        },
+        "source-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the metadata source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "repository-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the canonical project repository for this entry."
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+
+exec
+/usr/bin/bash -lc "sed -n '120,280p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+        },
+        "requires": {
+          "type": "array",
+          "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/moduleCoordinate"
+          }
+        }
+      }
+    },
+    "notForNativeImageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "not-for-native-image",
+        "reason"
+      ],
+      "properties": {
+        "not-for-native-image": {
+          "type": "boolean",
+          "const": true,
+          "description": "Marks this artifact as intentionally not applicable to GraalVM Native Image metadata."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reason this artifact is not a Native Image metadata target."
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional replacement artifact or guidance for users."
+        }
+      }
+    },
+    "moduleCoordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+$"
+    },
+    "libraryLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [ "name", "version" ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [ "kotlin", "scala" ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "scala"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "enum": [ "2", "3" ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "kotlin"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    [
+      {
+        "metadata-version": "0.0.1",
+        "tested-versions": [ "0.0.1", "0.0.2" ],
+        "default-for": "0\\.0\\..*",
+        "test-version": "0.0.1",
+        "source-code-url": "https://github.com/example/project/tree/main/metadata/org.example/library/$version$",
+        "repository-url": "https://github.com/example/project",
+        "test-code-url": "https://github.com/example/project/tree/main/tests/src/org.example/library/$version$",
+        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+        "description": "Example Library provides the core APIs for the example project. It focuses on simple integration points used by downstream applications.",
+        "language": {
+          "name": "kotlin",
+          "version": "2.0"
+        },
+        "allowed-packages": [ "org.example.library" ]
+      },
+      {
+        "latest": true,
+        "metadata-version": "1.0.0",
+        "tested-versions": [ "1.0.0", "1.1.0" , "1.2.0"],
+        "allowed-packages": [ "org.example.library" ]
+      },
+      {
+        "metadata-version": "1.19.0",
+        "tested-versions": [ "1.19.0" ],
+        "override": true,
+        "allowed-packages": [ "io.opentelemetry" ],
+        "skipped-versions": [
+          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+        ]
+      }
+    ],
+    [
+      {
+        "not-for-native-image": true,
+        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+        "replacement": "Use the JVM artifact if one exists."
+      }
+    ]
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/JetBrains/kotlin \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-sources.jar \\
+  https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-javadoc.jar; do
+  printf '%s -> ' \""'$u"
+  curl -fsSI -L "$u" | sed -n '"'1p;/"'^content-type:/Ip;/''^content-length:/Ip'"' | head -3
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21.jar; class_count=$(jar tf "$tmp/artifact.jar" | rg -c '"'\\.class"'$'"' || true); printf 'class files: %s\\n' \""'$class_count"; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 107ms:
+class files: 77
+
+ succeeded in 1702ms:
+HTTP/2 200 
+content-type: text/html; charset=utf-8
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-sources.jar -> HTTP/2 200 
+content-type: application/java-archive
+content-length: 42652
+https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test -> HTTP/2 200 
+content-type: text/html; charset=utf-8
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-javadoc.jar -> HTTP/2 200 
+content-type: application/java-archive
+content-length: 261
+
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21 kotlin-scripting-compiler-impl-embeddable-2.3.21.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-javadoc.jar
+web search: 
+web search: "plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test" "v2.3.21"
+codex
+I’m going to write the discovered metadata now. I’m leaving `not-for-native-image` out because the published jar has JVM `.class` files, and I’m using the Kotlin `2.3` language marker because this is a Kotlin compiler/scripting artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+index 5c5e6d47481b82434969ed2c9d9f9d10d65631fc..798cbd8803a47966812e0d8524695136c08561f0
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+index 5c5e6d47481b82434969ed2c9d9f9d10d65631fc..798cbd8803a47966812e0d8524695136c08561f0
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
+  "description": "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json >/dev/null && printf 'json ok\\n'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+exec
+/usr/bin/bash -lc "file=build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json; jq -r '.\"source-code-url\", .\"test-code-url\", .\"documentation-url\"' \""'$file" | sed '"'s/\\"'$version'"\\"'$/2.3.21/g'"' | while IFS= read -r u; do printf '%s -> ' \""'$u"; curl -fsSI -L "$u" | sed -n '"'1p' | head -1; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 107ms:
+json ok
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+index 5c5e6d47481b82434969ed2c9d9f9d10d65631fc..798cbd8803a47966812e0d8524695136c08561f0
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 236ms:
+HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21-javadoc.jar -> HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+index 5c5e6d47481b82434969ed2c9d9f9d10d65631fc..798cbd8803a47966812e0d8524695136c08561f0
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test
+web search: 
+web search: central.sonatype.com artifact org.jetbrains.kotlin kotlin-scripting-compiler-impl-embeddable 2.3.21
+web search: 
+web search: https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "jq -r '.description' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json | awk -v RS='[.] ' 'NF{c++} END{print \"description sentence chunks:\", c}'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+ succeeded in 0ms:
+description sentence chunks: 2
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.3.21/kotlin-scripting-compiler-impl-embeddable-2.3.21.jar; jar tf "$tmp/artifact.jar" | rg -q '"'\\.class"'$'"' && printf 'jvm class files present\\n'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+index 5c5e6d47481b82434969ed2c9d9f9d10d65631fc..798cbd8803a47966812e0d8524695136c08561f0
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 202ms:
+jvm class files present
+
+web search: 
+web search: JetBrains kotlin scripting compiler impl embeddable build.gradle.kts
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.21/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test
+web search: 
+web search: https://github.com/JetBrains/kotlin/blob/v2.3.21/plugins/scripting/scripting-compiler-impl-embeddable/build.gradle.kts
+web search: 
+web search: https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/
+web search: 
+web search: 
+codex
+Updated [metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json) with repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Kotlin language metadata.
+
+I verified Maven Central lists `2.3.21`, the embeddable module publishes source/javadoc jars and wraps `kotlin-scripting-compiler-impl`, and the selected test URL points at the `v2.3.21` scripting compiler tests. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/)) The JSON parses cleanly, the three `$version$` URLs resolve with `2.3.21`, and I left `not-for-native-image` absent because the jar contains JVM class files.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+index 5c5e6d47481b82434969ed2c9d9f9d10d65631fc..798cbd8803a47966812e0d8524695136c08561f0
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/$version$/kotlin-scripting-compiler-impl-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting Compiler Impl Embeddable provides the embeddable implementation layer for Kotlin scripting compiler infrastructure, including script definition discovery, configuration, and compiler integration support. It is intended for JVM tools and hosts that embed Kotlin scripting compilation without depending on the unshaded compiler implementation directly.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+tokens used
+143,216
+Updated [metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.json) with repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Kotlin language metadata.
+
+I verified Maven Central lists `2.3.21`, the embeddable module publishes source/javadoc jars and wraps `kotlin-scripting-compiler-impl`, and the selected test URL points at the `v2.3.21` scripting compiler tests. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/)) The JSON parses cleanly, the three `$version$` URLs resolve with `2.3.21`, and I left `not-for-native-image` absent because the jar contains JVM class files.
+Ran agent for org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.3.21 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-scripting-compiler-impl-embeddable-2.3.21.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5306-8f0d25d8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 51s
+9 actionable tasks: 9 executed
