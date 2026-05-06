@@ -28,6 +28,9 @@ import akka.http.scaladsl.model.MediaRanges
 import akka.http.scaladsl.model.MessageEntity
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.Uri
+import akka.http.scaladsl.model.ws.Message
+import akka.http.scaladsl.model.ws.TextMessage
+import akka.http.scaladsl.model.ws.WebSocketRequest
 import akka.http.scaladsl.model.headers.Accept
 import akka.http.scaladsl.model.headers.Allow
 import akka.http.scaladsl.model.headers.Cookie
@@ -40,6 +43,8 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import akka.stream.SystemMaterializer
+import akka.stream.scaladsl.Flow
+import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
@@ -218,6 +223,36 @@ class Akka_http_2_13Test extends Directives {
       assertThat(entityText(notFound.entity)).contains("The requested resource could not be found")
       assertThat(wrongMethod.status).isEqualTo(StatusCodes.MethodNotAllowed)
       assertThat(allowHeader.methods).isEqualTo(List(HttpMethods.GET))
+    }
+  }
+
+  @Test
+  def exchangesStrictTextMessagesOverWebSockets(): Unit = {
+    withActorSystem("akka-http-websocket") { (system: ActorSystem, materializer: Materializer) =>
+      implicit val actorSystem: ActorSystem = system
+      implicit val mat: Materializer = materializer
+      implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+
+      val route: Route = path("ws" / Segment) { prefix: String =>
+        val websocketFlow: Flow[Message, Message, akka.NotUsed] = Flow[Message].collect {
+          case TextMessage.Strict(text) => TextMessage.Strict(s"$prefix:${text.reverse}")
+        }
+        handleWebSocketMessages(websocketFlow)
+      }
+      val binding: Http.ServerBinding = Await.result(Http().newServerAt("127.0.0.1", 0).bind(route), OperationTimeout)
+
+      try {
+        val port: Int = binding.localAddress.getPort
+        val incomingMessage: Future[String] = Source
+          .single(TextMessage.Strict("scala"))
+          .via(Http().webSocketClientFlow(WebSocketRequest(s"ws://127.0.0.1:$port/ws/native")))
+          .collect { case TextMessage.Strict(text) => text }
+          .runWith(Sink.head)
+
+        assertThat(Await.result(incomingMessage, OperationTimeout)).isEqualTo("native:alacs")
+      } finally {
+        Await.result(binding.terminate(OperationTimeout), OperationTimeout)
+      }
     }
   }
 
