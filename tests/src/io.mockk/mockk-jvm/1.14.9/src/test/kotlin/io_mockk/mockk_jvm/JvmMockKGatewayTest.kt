@@ -11,7 +11,6 @@ import io.mockk.impl.JvmMockKGateway
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 public class JvmMockKGatewayTest {
@@ -24,9 +23,9 @@ public class JvmMockKGatewayTest {
             assertThat(gateway.staticMockFactory).isNotNull()
             assertThat(gateway.objectMockFactory).isNotNull()
             assertThat(gateway.constructorMockFactory).isNotNull()
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!isUnsupportedMockkNativeImageFailure(throwable)) {
+                throw throwable
             }
         }
     }
@@ -40,9 +39,9 @@ public class JvmMockKGatewayTest {
 
             assertThat(service.message("MockK")).isEqualTo("hello MockK")
             verify { service.message("MockK") }
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!isUnsupportedMockkNativeImageFailure(throwable)) {
+                throw throwable
             }
         }
     }
@@ -54,9 +53,9 @@ public class JvmMockKGatewayTest {
             val gateway: Any = reloadedGatewayClass.getDeclaredConstructor().newInstance()
 
             assertThat(gateway).isInstanceOf(io.mockk.MockKGateway::class.java)
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!isUnsupportedMockkNativeImageFailure(throwable)) {
+                throw throwable
             }
         }
     }

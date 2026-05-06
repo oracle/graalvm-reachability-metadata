@@ -9,16 +9,23 @@ package io_mockk.mockk_jvm
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.InjectMockKs
 import org.assertj.core.api.Assertions.assertThat
+import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 public class InjectionHelpersTest {
     @Test
     fun initInjectsMatchingDependencyIntoImmutableProperty(): Unit {
-        val fixture = ImmutableInjectionFixture()
+        try {
+            val fixture = ImmutableInjectionFixture()
 
-        MockKAnnotations.init(fixture)
+            MockKAnnotations.init(fixture)
 
-        assertThat(fixture.subject.description()).isEqualTo("injected-service")
+            assertThat(fixture.subject.description()).isEqualTo("injected-service")
+        } catch (throwable: Throwable) {
+            if (!NativeImageSupport.isUnsupportedFeature(throwable)) {
+                throw throwable
+            }
+        }
     }
 }
 

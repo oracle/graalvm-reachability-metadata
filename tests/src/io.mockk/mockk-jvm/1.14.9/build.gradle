@@ -26,6 +26,11 @@ compileTestKotlin {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs("--enable-monitoring=jcmd,jvmstat")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
@@ -34,4 +39,10 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("nativeTest").configure {
+    runtimeArgs.add("-Djdk.attach.allowAttachSelf=true")
+    runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+    runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
 }

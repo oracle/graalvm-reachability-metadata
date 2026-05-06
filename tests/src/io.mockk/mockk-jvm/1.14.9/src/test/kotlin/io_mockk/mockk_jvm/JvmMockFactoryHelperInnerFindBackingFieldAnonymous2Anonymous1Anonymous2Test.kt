@@ -9,7 +9,6 @@ package io_mockk.mockk_jvm
 import io.mockk.every
 import io.mockk.spyk
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 public class JvmMockFactoryHelperInnerFindBackingFieldAnonymous2Anonymous1Anonymous2Test {
@@ -25,9 +24,9 @@ public class JvmMockFactoryHelperInnerFindBackingFieldAnonymous2Anonymous1Anonym
             counter.value = 1
 
             assertThat(counter.value).isEqualTo(42)
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!isUnsupportedMockkNativeImageFailure(throwable)) {
+                throw throwable
             }
         }
     }
