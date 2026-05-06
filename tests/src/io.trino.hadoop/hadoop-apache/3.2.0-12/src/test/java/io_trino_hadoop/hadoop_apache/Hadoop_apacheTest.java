@@ -19,6 +19,7 @@ import org.apache.hadoop.fs.permission.AclEntry;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapFile;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.BZip2Codec;
@@ -194,6 +195,53 @@ public class Hadoop_apacheTest {
                 assertThat(value.get()).isEqualTo(3);
                 assertThat(reader.next(key, value)).isFalse();
             }
+        }
+    }
+
+    @Test
+    void mapFileIndexesSortedWritableRecordsAndSupportsKeyLookups() throws Exception {
+        Configuration configuration = new Configuration();
+        configuration.setBoolean("fs.file.impl.disable.cache", true);
+        Path mapDirectory = new Path(new File(temporaryDirectory, "indexed-records.map").toURI());
+
+        try (MapFile.Writer writer = new MapFile.Writer(
+                configuration,
+                mapDirectory,
+                MapFile.Writer.keyClass(Text.class),
+                MapFile.Writer.valueClass(IntWritable.class))) {
+            writer.setIndexInterval(1);
+            writer.append(new Text("alpha"), new IntWritable(10));
+            writer.append(new Text("beta"), new IntWritable(20));
+            writer.append(new Text("delta"), new IntWritable(40));
+            writer.append(new Text("gamma"), new IntWritable(30));
+        }
+
+        try (MapFile.Reader reader = new MapFile.Reader(mapDirectory, configuration)) {
+            assertThat(reader.getKeyClass()).isEqualTo(Text.class);
+            assertThat(reader.getValueClass()).isEqualTo(IntWritable.class);
+
+            IntWritable value = new IntWritable();
+            assertThat(reader.get(new Text("beta"), value)).isSameAs(value);
+            assertThat(value.get()).isEqualTo(20);
+
+            value.set(-1);
+            assertThat(reader.get(new Text("missing"), value)).isNull();
+            assertThat(value.get()).isEqualTo(-1);
+
+            Text nextKey = (Text) reader.getClosest(new Text("blueberry"), value);
+            assertThat(nextKey.toString()).isEqualTo("delta");
+            assertThat(value.get()).isEqualTo(40);
+
+            Text previousKey = (Text) reader.getClosest(new Text("blueberry"), value, true);
+            assertThat(previousKey.toString()).isEqualTo("beta");
+            assertThat(value.get()).isEqualTo(20);
+
+            Text finalKey = new Text();
+            reader.finalKey(finalKey);
+            assertThat(finalKey.toString()).isEqualTo("gamma");
+
+            assertThat(reader.seek(new Text("delta"))).isTrue();
+            assertThat(reader.seek(new Text("blueberry"))).isFalse();
         }
     }
 
