@@ -173,6 +173,44 @@ class Slick_hikaricp_2_13Test {
   }
 
   @Test
+  def configuresAdditionalHikariPoolOptionsAndIsolationAlias(): Unit = {
+    val driver: TestJdbcDriver = new TestJdbcDriver
+    withRegisteredDriver(driver) {
+      val dataSource: HikariCPJdbcDataSource = HikariCPJdbcDataSource.forConfig(
+        ConfigFactory.parseString(s"""
+          jdbcUrl = "$JdbcUrl"
+          maximumPoolSize = 1
+          minimumIdle = 0
+          initializationFailTimeout = 1000 ms
+          connectionTimeout = 250 ms
+          validationTimeout = 250 ms
+          keepAliveTime = 30000
+          registerMbeans = true
+          isolation = SERIALIZABLE
+        """),
+        driver,
+        "additional-options-pool",
+        getClass.getClassLoader
+      )
+
+      try {
+        assertThat(dataSource.hconf.getKeepaliveTime).isEqualTo(30000L)
+        assertThat(dataSource.hconf.isRegisterMbeans).isTrue
+        assertThat(dataSource.hconf.getTransactionIsolation).isEqualTo("TRANSACTION_SERIALIZABLE")
+
+        val connection: Connection = dataSource.createConnection()
+        try {
+          assertThat(connection.getTransactionIsolation).isEqualTo(Connection.TRANSACTION_SERIALIZABLE)
+        } finally {
+          connection.close()
+        }
+      } finally {
+        dataSource.close()
+      }
+    }
+  }
+
+  @Test
   def configuresLazyInitializationAndConnectionLifecycleSettings(): Unit = {
     val driver: TestJdbcDriver = new TestJdbcDriver
     withRegisteredDriver(driver) {
