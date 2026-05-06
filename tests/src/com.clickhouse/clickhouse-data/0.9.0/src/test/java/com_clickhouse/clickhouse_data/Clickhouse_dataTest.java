@@ -8,7 +8,7 @@ package com_clickhouse.clickhouse_data;
 
 import org.junit.jupiter.api.Test;
 
-class Clickhouse_dataTest {
+public class Clickhouse_dataTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
