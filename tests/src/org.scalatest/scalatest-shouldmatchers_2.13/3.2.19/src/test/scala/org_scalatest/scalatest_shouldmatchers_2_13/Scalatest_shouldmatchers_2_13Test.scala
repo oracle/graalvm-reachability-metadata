@@ -8,6 +8,9 @@ package org_scalatest.scalatest_shouldmatchers_2_13
 
 import java.util
 
+import scala.util.Success
+import scala.util.Try
+
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.scalatest.exceptions.TestFailedException
@@ -93,6 +96,17 @@ class Scalatest_shouldmatchers_2_13Test extends Matchers {
     atMost(1, statusLines) should include("ERROR")
     exactly(2, statusLines) should startWith("20")
     no(statusLines) should endWith("PENDING")
+  }
+
+  @Test
+  def matchesValuesWithPatternMatching(): Unit = {
+    val parsedNumber: Try[Int] = Try("42".toInt)
+    val response: Either[String, (String, Int)] = Right(("created", 201))
+    val measurements: Vector[Int] = Vector(1, 2, 3, 5)
+
+    parsedNumber should matchPattern { case Success(42) => }
+    response should matchPattern { case Right(("created", status: Int)) if status >= 200 && status < 300 => }
+    measurements should matchPattern { case Vector(1, 2, _*) => }
   }
 
   @Test
