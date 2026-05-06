@@ -134,6 +134,22 @@ final class Izumi_reflect_thirdparty_boopickle_shaded_2_13Test {
   }
 
   @Test
+  def immutableStringDeduplicationCanBeDisabledForSharedStates(): Unit = {
+    val repeated = new String("shared immutable value λ".toCharArray)
+    implicit val state: PickleState = new PickleState(new EncoderSize(), false)
+    state.pickle(repeated)
+      .pickle(repeated)
+
+    implicit val unpickleState: UnpickleState = new UnpickleState(new DecoderSize(state.toByteBuffer), true, false)
+    val first = unpickleState.unpickle[String]
+    val second = unpickleState.unpickle[String]
+
+    assertThat(first).isEqualTo(repeated)
+    assertThat(second).isEqualTo(repeated)
+    assertThat(first.asInstanceOf[AnyRef]).isNotSameAs(second.asInstanceOf[AnyRef])
+  }
+
+  @Test
   def xmapBuildsDomainPicklersWithoutMacrosOrReflection(): Unit = {
     implicit val addressPickler: Pickler[Address] = implicitly[Pickler[(String, Int)]].xmap {
       case (street, number) => Address(street, number)
