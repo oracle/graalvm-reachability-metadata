@@ -30,6 +30,7 @@ import io.getquill.ast.Entity
 import io.getquill.ast.EqualityOperator
 import io.getquill.ast.Filter
 import io.getquill.ast.Ident
+import io.getquill.ast.If
 import io.getquill.ast.Infix
 import io.getquill.ast.InnerJoin
 import io.getquill.ast.Insert
@@ -281,6 +282,26 @@ class Quill_engine_2_13Test {
     assertThat(sql)
       .contains("p.firstName")
       .contains("a.city")
+  }
+
+  @Test
+  def mirrorSqlDialectTranslatesConditionalExpressionsToCaseStatements(): Unit = {
+    val p: Ident = Ident("p", personQuat)
+    val ageGroup: If = If(
+      BinaryOperation(Property(p, "age"), NumericOperator.`<`, Constant.auto(18)),
+      Constant.auto("minor"),
+      If(
+        BinaryOperation(Property(p, "age"), NumericOperator.`>=`, Constant.auto(65)),
+        Constant.auto("senior"),
+        Constant.auto("adult")
+      )
+    )
+    val query: Map = Map(person, p, ageGroup)
+
+    assertThat(translateSql(query))
+      .isEqualTo(
+        "SELECT CASE WHEN p.age < 18 THEN 'minor' WHEN p.age >= 65 THEN 'senior' ELSE 'adult' END FROM Person p"
+      )
   }
 
   @Test
