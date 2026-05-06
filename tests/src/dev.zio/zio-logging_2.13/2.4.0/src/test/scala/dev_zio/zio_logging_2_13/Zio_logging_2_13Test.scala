@@ -194,6 +194,30 @@ class Zio_logging_2_13Test {
   }
 
   @Test
+  def parsesPatternDslIntoStructuredTextFormat(): Unit = {
+    val pattern: LogFormat.Pattern = LogFormat.Pattern
+      .parse("prefix %% %label{message}{%message} %fixed{7}{%level} %kv{request-id} %span{database} %label{failure}{%cause}")
+      .fold(error => throw new AssertionError(error.toString), identity)
+
+    val output: String = render(
+      pattern.toLogFormat.toLogger,
+      "loaded profile",
+      level = LogLevel.Info,
+      cause = Cause.fail("database unavailable"),
+      spans = List(LogSpan("database", System.currentTimeMillis() - 5L)),
+      annotations = Map("request-id" -> "r-200")
+    )
+
+    assertThat(output).contains("prefix %")
+    assertThat(output).contains("message=loaded profile")
+    assertThat(output).contains("INFO")
+    assertThat(output).contains("request-id=r-200")
+    assertThat(output).contains("database=")
+    assertThat(output).contains("failure=")
+    assertThat(output).contains("database unavailable")
+  }
+
+  @Test
   def writesFormattedMessagesWithFileLogger(): Unit = {
     val path: Path = Files.createTempFile("zio-logging-test", ".log")
 
