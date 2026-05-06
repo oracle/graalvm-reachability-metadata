@@ -17,6 +17,7 @@ import io.circe.KeyDecoder
 import io.circe.KeyEncoder
 import io.circe.Printer
 import io.circe.derivation.ConfiguredCodec
+import io.circe.derivation.ConfiguredEnumCodec
 import io.circe.derivation.Configuration
 import io.circe.syntax._
 import org.assertj.core.api.Assertions.assertThat
@@ -61,6 +62,10 @@ final case class Command(action: String, target: Option[String])
 given Configuration = Configuration.default.withSnakeCaseMemberNames.withDefaults.withStrictDecoding
 
 final case class DerivedJob(jobId: String, ownerName: String, maxRetries: Int = 3) derives ConfiguredCodec
+
+enum TicketState derives ConfiguredEnumCodec {
+  case Open, InProgress, Closed
+}
 
 object Command {
   given Decoder[Command] = Decoder.instance { (cursor: HCursor) =>
@@ -251,6 +256,16 @@ class Circe_core_3Test {
       "unexpected" -> Json.True
     ).as[DerivedJob]
     assertThat(decodedWithUnknownField.isLeft).isTrue
+  }
+
+  @Test
+  def derivesCodecsForSingletonEnums(): Unit = {
+    assertThat(TicketState.Open.asJson).isEqualTo(Json.fromString("Open"))
+    assertThat(TicketState.InProgress.asJson).isEqualTo(Json.fromString("InProgress"))
+    assertThat(Json.fromString("Closed").as[TicketState]).isEqualTo(Right(TicketState.Closed))
+
+    val invalid: Either[DecodingFailure, TicketState] = Json.fromString("Blocked").as[TicketState]
+    assertThat(invalid.isLeft).isTrue
   }
 
   @Test
