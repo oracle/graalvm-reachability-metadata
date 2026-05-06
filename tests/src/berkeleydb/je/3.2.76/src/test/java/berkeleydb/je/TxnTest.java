@@ -44,7 +44,12 @@ public class TxnTest {
             Class<?> isolatedTxnClass = Class.forName(TXN_CLASS_NAME, true, classLoader);
 
             assertThat(isolatedTxnClass.getName()).isEqualTo(TXN_CLASS_NAME);
-            assertThat(isolatedTxnClass.getClassLoader()).isSameAs(classLoader);
+            if (isNativeImageRuntime()) {
+                assertThat(isolatedTxnClass.getClassLoader())
+                        .isIn(classLoader, ClassLoader.getSystemClassLoader());
+            } else {
+                assertThat(isolatedTxnClass.getClassLoader()).isSameAs(classLoader);
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -152,6 +157,10 @@ public class TxnTest {
 
         assertThat(codeSource).isNotNull();
         return codeSource.getLocation();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class ChildFirstClassLoader extends URLClassLoader {
