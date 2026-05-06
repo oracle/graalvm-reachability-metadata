@@ -1,0 +1,1208 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfdae-2151-7073-b4f4-15220cecb84f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.quarkus:quarkus-junit:3.33.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.33.1" when "$version$" is replaced with "3.33.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+- Set "coordinates" to "io.quarkus:quarkus-junit:3.33.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.33.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream Quarkus repository, then patch the generated metadata file with version-templated URLs.
+exec
+/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+{
+  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
+}
+
+exec
+/bin/bash -lc "rg -n '\"coordinates\"\\s*:\\s*\"io\\.quarkus:quarkus-junit|quarkus-junit' build/discovered-artifact-metadata metadata tests || true" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json:2:  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
+
+web search: 
+web search: Maven io.quarkus quarkus-junit 3.33.1 source jar
+codex
+The Maven listing confirms `quarkus-junit` exists at `3.33.1`. I’m checking the published classifiers now because this repo prefers Maven-hosted sources and tests when they exist.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/quarkus/quarkus-junit/3.33.1/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-tests.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 102ms:
+ succeeded in 267ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/quarkus/quarkus-junit/3.33.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/quarkus/quarkus-junit/3.33.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="quarkus-junit-3.33.1-javadoc.jar" title="quarkus-junit-3.33.1-javadoc.jar">quarkus-junit-3.33.1-javadoc.jar</a>                  2026-03-25 09:37    501012      
+<a href="quarkus-junit-3.33.1-javadoc.jar.asc" title="quarkus-junit-3.33.1-javadoc.jar.asc">quarkus-junit-3.33.1-javadoc.jar.asc</a>              2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1-javadoc.jar.md5" title="quarkus-junit-3.33.1-javadoc.jar.md5">quarkus-junit-3.33.1-javadoc.jar.md5</a>              2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1-javadoc.jar.sha1" title="quarkus-junit-3.33.1-javadoc.jar.sha1">quarkus-junit-3.33.1-javadoc.jar.sha1</a>             2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1-javadoc.jar.sha256" title="quarkus-junit-3.33.1-javadoc.jar.sha256">quarkus-junit-3.33.1-javadoc.jar.sha256</a>           2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1-javadoc.jar.sha512" title="quarkus-junit-3.33.1-javadoc.jar.sha512">quarkus-junit-3.33.1-javadoc.jar.sha512</a>           2026-03-25 09:37       128      
+<a href="quarkus-junit-3.33.1-sources.jar" title="quarkus-junit-3.33.1-sources.jar">quarkus-junit-3.33.1-sources.jar</a>                  2026-03-25 09:37    105852      
+<a href="quarkus-junit-3.33.1-sources.jar.asc" title="quarkus-junit-3.33.1-sources.jar.asc">quarkus-junit-3.33.1-sources.jar.asc</a>              2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1-sources.jar.md5" title="quarkus-junit-3.33.1-sources.jar.md5">quarkus-junit-3.33.1-sources.jar.md5</a>              2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1-sources.jar.sha1" title="quarkus-junit-3.33.1-sources.jar.sha1">quarkus-junit-3.33.1-sources.jar.sha1</a>             2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1-sources.jar.sha256" title="quarkus-junit-3.33.1-sources.jar.sha256">quarkus-junit-3.33.1-sources.jar.sha256</a>           2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1-sources.jar.sha512" title="quarkus-junit-3.33.1-sources.jar.sha512">quarkus-junit-3.33.1-sources.jar.sha512</a>           2026-03-25 09:37       128      
+<a href="quarkus-junit-3.33.1.jar" title="quarkus-junit-3.33.1.jar">quarkus-junit-3.33.1.jar</a>                          2026-03-25 09:37    203251      
+<a href="quarkus-junit-3.33.1.jar.asc" title="quarkus-junit-3.33.1.jar.asc">quarkus-junit-3.33.1.jar.asc</a>                      2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1.jar.md5" title="quarkus-junit-3.33.1.jar.md5">quarkus-junit-3.33.1.jar.md5</a>                      2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1.jar.sha1" title="quarkus-junit-3.33.1.jar.sha1">quarkus-junit-3.33.1.jar.sha1</a>                     2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1.jar.sha256" title="quarkus-junit-3.33.1.jar.sha256">quarkus-junit-3.33.1.jar.sha256</a>                   2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1.jar.sha512" title="quarkus-junit-3.33.1.jar.sha512">quarkus-junit-3.33.1.jar.sha512</a>                   2026-03-25 09:37       128      
+<a href="quarkus-junit-3.33.1.pom" title="quarkus-junit-3.33.1.pom">quarkus-junit-3.33.1.pom</a>                          2026-03-25 09:37      2344      
+<a href="quarkus-junit-3.33.1.pom.asc" title="quarkus-junit-3.33.1.pom.asc">quarkus-junit-3.33.1.pom.asc</a>                      2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1.pom.md5" title="quarkus-junit-3.33.1.pom.md5">quarkus-junit-3.33.1.pom.md5</a>                      2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1.pom.sha1" title="quarkus-junit-3.33.1.pom.sha1">quarkus-junit-3.33.1.pom.sha1</a>                     2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1.pom.sha256" title="quarkus-junit-3.33.1.pom.sha256">quarkus-junit-3.33.1.pom.sha256</a>                   2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1.pom.sha512" title="quarkus-junit-3.33.1.pom.sha512">quarkus-junit-3.33.1.pom.sha512</a>                   2026-03-25 09:37       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 443ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 06 May 2026 14:25:57 GMT
+content-type: text/html
+cf-ray: 9f78a83b9c9ab01e-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: github quarkus quarkus 3.33.1 quarkus-junit
+exec
+/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/quarkusio/quarkus\"' build/discovered-artifact-metadata metadata | head -50" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+metadata/io.quarkus/quarkus-classloader-commons/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-value-registry/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:20:    "repository-url" : "https://github.com/quarkusio/quarkus",
+metadata/io.quarkus/quarkus-development-mode-spi/index.json:6:    "repository-url" : "https://github.com/quarkusio/quarkus",
+
+exec
+/bin/bash -lc "rg -n '\"source-code-url\".*repo1.maven.org/maven2/io/quarkus|\"documentation-url\".*quarkus.*\\"'$version'"\\"'$'"' build/discovered-artifact-metadata metadata | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+metadata/io.quarkus.gizmo/gizmo2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/gizmo/gizmo2/$version$/gizmo2-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-classloader-commons/$version$/quarkus-classloader-commons-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-value-registry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-value-registry/$version$/quarkus-value-registry-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-class-change-agent/$version$/quarkus-class-change-agent-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-development-mode-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/$version$/quarkus-development-mode-spi-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-fs-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-fs-util/$version$/quarkus-fs-util-$version$-javadoc.jar",
+
+exec
+/bin/bash -lc "rg -n 'quarkus-junit5|quarkus-junit' metadata tests | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/io.quarkus/quarkus-classloader-commons/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.33.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-classloader-commons/$version$/quarkus-classloader-commons-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/classloader-commons/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-classloader-commons/$version$/quarkus-classloader-commons-$version$-javadoc.jar",
+    "description" : "Quarkus Classloader Commons provides small shared utilities for Quarkus bootstrap class loading. It converts between Java class names and .class resource names and identifies JDK-internal package names used by class loader logic.",
+    "tested-versions" : [
+      "3.33.1",
+      "3.34.0",
+      "3.34.1",
+      "3.34.2",
+      "3.34.3",
+      "3.34.4",
+      "3.34.5",
+      "3.34.6",
+      "3.35.0",
+      "3.35.1",
+      "3.35.2"
+    ],
+    "allowed-packages" : [
+      "io.quarkus.commons.classloading"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/io.quarkus/quarkus-bootstrap-app-model/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.34.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/app-model/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+    "description" : "Quarkus Bootstrap App Model provides Java classes for representing the dependency graph, workspace modules, platform imports, capabilities, JVM options, and other metadata used while Quarkus bootstraps and builds an application. It is part of Quarkus' bootstrap infrastructure and is used by resolvers, build tools, and extension tooling to exchange a structured model of an application and its artifacts.",
+    "tested-versions" : [
+      "3.34.0"
+    ],
+    "allowed-packages" : [
+      "io.quarkus"
+    ]
+  },
+  {
+    "metadata-version" : "3.33.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/app-model/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+    "description" : "Quarkus Bootstrap App Model provides Java classes for representing the dependency graph, workspace modules, platform imports, capabilities, JVM options, and other metadata used while Quarkus bootstraps and builds an application. It is part of Quarkus' bootstrap infrastructure and is used by resolvers, build tools, and extension tooling to exchange a structured model of an application and its artifacts.",
+    "tested-versions" : [
+      "3.33.1"
+    ],
+    "allowed-packages" : [
+      "io.quarkus"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc 'find metadata/io.quarkus -maxdepth 2 -name index.json | wc -l && find metadata/io.quarkus -maxdepth 2 -name index.json | head -20' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+8
+metadata/io.quarkus/quarkus-fs-util/index.json
+metadata/io.quarkus/quarkus-development-mode-spi/index.json
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json
+metadata/io.quarkus/quarkus-class-change-agent/index.json
+metadata/io.quarkus/quarkus-value-registry/index.json
+metadata/io.quarkus/quarkus-bootstrap-json/index.json
+metadata/io.quarkus/quarkus-classloader-commons/index.json
+
+web search: 
+web search: 
+web search: 
+web search: site:github.com/quarkusio/quarkus quarkus-junit artifactId quarkus-junit
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/test-framework?ref=3.33.1' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit5?ref=3.33.1' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-sources.jar; jar tf "$tmp/sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/quarkus-junit.jar" https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1.jar; jar tf "$tmp/quarkus-junit.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ exited 22 in 233ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 231ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/services/
+io/
+io/quarkus/
+io/quarkus/test/
+io/quarkus/test/junit/
+io/quarkus/test/junit/buildchain/
+io/quarkus/test/junit/callback/
+io/quarkus/test/junit/classloading/
+io/quarkus/test/junit/internal/
+io/quarkus/test/junit/launcher/
+io/quarkus/test/junit/main/
+io/quarkus/test/junit/nativeimage/
+io/quarkus/test/junit/util/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-junit/
+META-INF/LICENSE
+META-INF/services/io.quarkus.test.junit.callback.QuarkusTestAfterConstructCallback
+META-INF/services/io.quarkus.test.junit.launcher.ArtifactLauncherProvider
+META-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener
+META-INF/services/org.junit.platform.launcher.LauncherSessionListener
+META-INF/services/org.junit.platform.launcher.TestExecutionListener
+io/quarkus/test/junit/AbstractJvmQuarkusTestExtension.class
+io/quarkus/test/junit/AbstractQuarkusTestWithContextExtension.class
+io/quarkus/test/junit/AbstractTestWithCallbacksExtension.class
+io/quarkus/test/junit/AppMakerHelper.class
+io/quarkus/test/junit/ArtifactTypeUtil.class
+io/quarkus/test/junit/ClassCoercingTestProfile.class
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMNewerThan.class
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMNewerThanCondition.class
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMOlderThan.class
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMOlderThanCondition.class
+io/quarkus/test/junit/DisabledOnIntegrationTest$ArtifactType.class
+io/quarkus/test/junit/DisabledOnIntegrationTest.class
+io/quarkus/test/junit/DisabledOnIntegrationTestCondition.class
+io/quarkus/test/junit/DotNames.class
+io/quarkus/test/junit/GraalVMVersion.class
+io/quarkus/test/junit/IntegrationTestExtensionState.class
+io/quarkus/test/junit/IntegrationTestUtil$1.class
+io/quarkus/test/junit/IntegrationTestUtil$2.class
+io/quarkus/test/junit/IntegrationTestUtil$3.class
+io/quarkus/test/junit/IntegrationTestUtil$DefaultDevServicesLaunchResult.class
+io/quarkus/test/junit/IntegrationTestUtil$TestLauncher.class
+io/quarkus/test/junit/IntegrationTestUtil.class
+io/quarkus/test/junit/MockSupport.class
+io/quarkus/test/junit/NativeDevServicesHandler.class
+io/quarkus/test/junit/PrepareResult.class
+io/quarkus/test/junit/QuarkusIntegrationTest.class
+io/quarkus/test/junit/QuarkusIntegrationTestExtension$1.class
+io/quarkus/test/junit/QuarkusIntegrationTestExtension$2.class
+io/quarkus/test/junit/QuarkusIntegrationTestExtension$3.class
+io/quarkus/test/junit/QuarkusIntegrationTestExtension$DefaultArtifactLauncherCreateContext.class
+io/quarkus/test/junit/QuarkusIntegrationTestExtension$IntegrationTestExtensionStateResource.class
+io/quarkus/test/junit/QuarkusIntegrationTestExtension.class
+io/quarkus/test/junit/QuarkusMainIntegrationTestExtension$1.class
+io/quarkus/test/junit/QuarkusMainIntegrationTestExtension$2.class
+io/quarkus/test/junit/QuarkusMainIntegrationTestExtension$DefaultArtifactLauncherCreateContext.class
+io/quarkus/test/junit/QuarkusMainIntegrationTestExtension.class
+io/quarkus/test/junit/QuarkusMainTestExtension$1.class
+io/quarkus/test/junit/QuarkusMainTestExtension$2.class
+io/quarkus/test/junit/QuarkusMainTestExtension.class
+io/quarkus/test/junit/QuarkusMock$Options.class
+io/quarkus/test/junit/QuarkusMock.class
+io/quarkus/test/junit/QuarkusTest.class
+io/quarkus/test/junit/QuarkusTestExtension$1.class
+io/quarkus/test/junit/QuarkusTestExtension$2.class
+io/quarkus/test/junit/QuarkusTestExtension$3.class
+io/quarkus/test/junit/QuarkusTestExtension$4.class
+io/quarkus/test/junit/QuarkusTestExtension$ExtensionState.class
+io/quarkus/test/junit/QuarkusTestExtension$FailedCleanup.class
+io/quarkus/test/junit/QuarkusTestExtension.class
+io/quarkus/test/junit/QuarkusTestExtensionState$1.class
+io/quarkus/test/junit/QuarkusTestExtensionState.class
+io/quarkus/test/junit/QuarkusTestProfile$TestResourceEntry.class
+io/quarkus/test/junit/QuarkusTestProfile.class
+io/quarkus/test/junit/TestBuildChainFunction$1$1$1.class
+io/quarkus/test/junit/TestBuildChainFunction$1$1.class
+io/quarkus/test/junit/TestBuildChainFunction$1$2$1.class
+
+ succeeded in 232ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/test/
+io/quarkus/test/junit/
+io/quarkus/test/junit/buildchain/
+io/quarkus/test/junit/callback/
+io/quarkus/test/junit/classloading/
+io/quarkus/test/junit/internal/
+io/quarkus/test/junit/launcher/
+io/quarkus/test/junit/main/
+io/quarkus/test/junit/nativeimage/
+io/quarkus/test/junit/util/
+META-INF/services/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-junit/
+io/quarkus/test/junit/AbstractJvmQuarkusTestExtension.java
+io/quarkus/test/junit/AbstractQuarkusTestWithContextExtension.java
+io/quarkus/test/junit/AbstractTestWithCallbacksExtension.java
+io/quarkus/test/junit/AppMakerHelper.java
+io/quarkus/test/junit/ArtifactTypeUtil.java
+io/quarkus/test/junit/ClassCoercingTestProfile.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMNewerThan.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMNewerThanCondition.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMOlderThan.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMOlderThanCondition.java
+io/quarkus/test/junit/DisabledOnIntegrationTest.java
+io/quarkus/test/junit/DisabledOnIntegrationTestCondition.java
+io/quarkus/test/junit/DotNames.java
+io/quarkus/test/junit/GraalVMVersion.java
+io/quarkus/test/junit/IntegrationTestExtensionState.java
+io/quarkus/test/junit/IntegrationTestUtil.java
+io/quarkus/test/junit/MockSupport.java
+io/quarkus/test/junit/NativeDevServicesHandler.java
+io/quarkus/test/junit/PrepareResult.java
+io/quarkus/test/junit/QuarkusIntegrationTest.java
+io/quarkus/test/junit/QuarkusIntegrationTestExtension.java
+io/quarkus/test/junit/QuarkusMainIntegrationTestExtension.java
+io/quarkus/test/junit/QuarkusMainTestExtension.java
+io/quarkus/test/junit/QuarkusMock.java
+io/quarkus/test/junit/QuarkusTest.java
+io/quarkus/test/junit/QuarkusTestExtension.java
+io/quarkus/test/junit/QuarkusTestExtensionState.java
+io/quarkus/test/junit/QuarkusTestProfile.java
+io/quarkus/test/junit/TestBuildChainFunction.java
+io/quarkus/test/junit/TestProfile.java
+io/quarkus/test/junit/TestProfileAndProperties.java
+io/quarkus/test/junit/TestResourceUtil.java
+io/quarkus/test/junit/ValueRegistryInjector.java
+io/quarkus/test/junit/ValueRegistryParameterResolver.java
+io/quarkus/test/junit/buildchain/TestBuildChainCustomizerProducer.java
+io/quarkus/test/junit/callback/QuarkusTestAfterAllCallback.java
+io/quarkus/test/junit/callback/QuarkusTestAfterConstructCallback.java
+io/quarkus/test/junit/callback/QuarkusTestAfterEachCallback.java
+io/quarkus/test/junit/callback/QuarkusTestAfterTestExecutionCallback.java
+io/quarkus/test/junit/callback/QuarkusTestBeforeClassCallback.java
+io/quarkus/test/junit/callback/QuarkusTestBeforeEachCallback.java
+io/quarkus/test/junit/callback/QuarkusTestBeforeTestExecutionCallback.java
+io/quarkus/test/junit/callback/QuarkusTestContext.java
+io/quarkus/test/junit/callback/QuarkusTestMethodContext.java
+io/quarkus/test/junit/classloading/FacadeClassLoader.java
+io/quarkus/test/junit/classloading/ParentLastURLClassLoader.java
+io/quarkus/test/junit/classloading/QuarkusTestConfigProviderResolver.java
+io/quarkus/test/junit/internal/TestInfoImpl.java
+io/quarkus/test/junit/internal/VerifyMockitoMocksCallback.java
+io/quarkus/test/junit/launcher/ArtifactLauncherProvider.java
+io/quarkus/test/junit/launcher/CustomLauncherInterceptor.java
+io/quarkus/test/junit/launcher/DefaultInitContextBase.java
+io/quarkus/test/junit/launcher/DockerContainerLauncherProvider.java
+io/quarkus/test/junit/launcher/ExecutionListener.java
+io/quarkus/test/junit/launcher/JarLauncherProvider.java
+io/quarkus/test/junit/launcher/NativeImageLauncherProvider.java
+io/quarkus/test/junit/main/Launch.java
+io/quarkus/test/junit/main/LaunchResult.java
+io/quarkus/test/junit/main/QuarkusMainIntegrationTest.java
+io/quarkus/test/junit/main/QuarkusMainLauncher.java
+io/quarkus/test/junit/main/QuarkusMainTest.java
+io/quarkus/test/junit/nativeimage/ClassInclusionReport.java
+io/quarkus/test/junit/util/QuarkusTestProfileAwareClassOrderer.java
+META-INF/services/io.quarkus.test.junit.callback.QuarkusTestAfterConstructCallback
+META-INF/services/io.quarkus.test.junit.launcher.ArtifactLauncherProvider
+META-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener
+META-INF/services/org.junit.platform.launcher.LauncherSessionListener
+META-INF/services/org.junit.platform.launcher.TestExecutionListener
+META-INF/maven/io.quarkus/quarkus-junit/pom.xml
+META-INF/maven/io.quarkus/quarkus-junit/pom.properties
+
+ succeeded in 401ms:
+[
+  {
+    "name": "arquillian",
+    "path": "test-framework/arquillian",
+    "sha": "a36e98606d6b39be7ecdbf30126f7744314e52cf",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/arquillian?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/arquillian",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/a36e98606d6b39be7ecdbf30126f7744314e52cf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/arquillian?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/a36e98606d6b39be7ecdbf30126f7744314e52cf",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/arquillian"
+    }
+  },
+  {
+    "name": "common",
+    "path": "test-framework/common",
+    "sha": "e58e1b2368da9dd529200a617a50bb8c7520fc93",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/common?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/common",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/e58e1b2368da9dd529200a617a50bb8c7520fc93",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/common?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/e58e1b2368da9dd529200a617a50bb8c7520fc93",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/common"
+    }
+  },
+  {
+    "name": "devmode-test-utils",
+    "path": "test-framework/devmode-test-utils",
+    "sha": "5db394539e82ce38234cbdcc4ef26dddff001aff",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/devmode-test-utils?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/devmode-test-utils",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5db394539e82ce38234cbdcc4ef26dddff001aff",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/devmode-test-utils?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5db394539e82ce38234cbdcc4ef26dddff001aff",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/devmode-test-utils"
+    }
+  },
+  {
+    "name": "google-cloud-functions",
+    "path": "test-framework/google-cloud-functions",
+    "sha": "d46ac2f167768935a435b026ab86a4778d1fa711",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/google-cloud-functions?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/google-cloud-functions",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/d46ac2f167768935a435b026ab86a4778d1fa711",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/google-cloud-functions?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/d46ac2f167768935a435b026ab86a4778d1fa711",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/google-cloud-functions"
+    }
+  },
+  {
+    "name": "grpc",
+    "path": "test-framework/grpc",
+    "sha": "50ab1ca5f6734ea42c06ccbb63f4d742ae698e40",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/grpc?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/grpc",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/50ab1ca5f6734ea42c06ccbb63f4d742ae698e40",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/grpc?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/50ab1ca5f6734ea42c06ccbb63f4d742ae698e40",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/grpc"
+    }
+  },
+  {
+    "name": "h2",
+    "path": "test-framework/h2",
+    "sha": "20527e327fdc5c85da07cff41b5b038fea57244c",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/h2?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/h2",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/20527e327fdc5c85da07cff41b5b038fea57244c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/h2?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/20527e327fdc5c85da07cff41b5b038fea57244c",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/h2"
+    }
+  },
+  {
+    "name": "hibernate-reactive-panache",
+    "path": "test-framework/hibernate-reactive-panache",
+    "sha": "2179d14fcd793418ccdfbeab968c6622c240364a",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/hibernate-reactive-panache?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/hibernate-reactive-panache",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/2179d14fcd793418ccdfbeab968c6622c240364a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/hibernate-reactive-panache?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/2179d14fcd793418ccdfbeab968c6622c240364a",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/hibernate-reactive-panache"
+    }
+  },
+  {
+    "name": "jacoco",
+    "path": "test-framework/jacoco",
+    "sha": "0505db054c9e84696fcf1627eba1ba988d2cff23",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/jacoco?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/jacoco",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/0505db054c9e84696fcf1627eba1ba988d2cff23",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/jacoco?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/0505db054c9e84696fcf1627eba1ba988d2cff23",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/jacoco"
+    }
+  },
+  {
+    "name": "junit-common",
+    "path": "test-framework/junit-common",
+    "sha": "0c9104171358e29fe84fcec26cc80ac275094ad2",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-common?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-common",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/0c9104171358e29fe84fcec26cc80ac275094ad2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-common?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/0c9104171358e29fe84fcec26cc80ac275094ad2",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-common"
+    }
+  },
+  {
+    "name": "junit-component",
+    "path": "test-framework/junit-component",
+    "sha": "a50f375d3a0f9fa57a2a374dec02457da77830ab",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-component?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-component",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/a50f375d3a0f9fa57a2a374dec02457da77830ab",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-component?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/a50f375d3a0f9fa57a2a374dec02457da77830ab",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-component"
+    }
+  },
+  {
+    "name": "junit-config",
+    "path": "test-framework/junit-config",
+    "sha": "7c5ae87370f219eacbf2280a862e1e537759a89c",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-config?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-config",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/7c5ae87370f219eacbf2280a862e1e537759a89c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-config?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/7c5ae87370f219eacbf2280a862e1e537759a89c",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-config"
+    }
+  },
+  {
+    "name": "junit-internal",
+    "path": "test-framework/junit-internal",
+    "sha": "f42d415d1050320349a67031ca7e52266ae84db5",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-internal?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-internal",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/f42d415d1050320349a67031ca7e52266ae84db5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-internal?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/f42d415d1050320349a67031ca7e52266ae84db5",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-internal"
+    }
+  },
+  {
+    "name": "junit-mockito-config",
+    "path": "test-framework/junit-mockito-config",
+    "sha": "49180e16d3ae0b22c7875a5904ca2e2a5c041adb",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-mockito-config?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-mockito-config",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/49180e16d3ae0b22c7875a5904ca2e2a5c041adb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-mockito-config?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/49180e16d3ae0b22c7875a5904ca2e2a5c041adb",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-mockito-config"
+    }
+  },
+  {
+    "name": "junit-mockito",
+    "path": "test-framework/junit-mockito",
+    "sha": "575f215c3e52a9970d58e9997e6556a482ebeaee",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-mockito?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-mockito",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/575f215c3e52a9970d58e9997e6556a482ebeaee",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit-mockito?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/575f215c3e52a9970d58e9997e6556a482ebeaee",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit-mockito"
+    }
+  },
+  {
+    "name": "junit",
+    "path": "test-framework/junit",
+    "sha": "d7c36ea259fdbe3e492a77c122824b336bc6c220",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/d7c36ea259fdbe3e492a77c122824b336bc6c220",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/d7c36ea259fdbe3e492a77c122824b336bc6c220",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit"
+    }
+  },
+  {
+    "name": "kafka-companion",
+    "path": "test-framework/kafka-companion",
+    "sha": "8088cfce4445d2f241fbdaec9f3192ff57ed0100",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/kafka-companion?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/kafka-companion",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/8088cfce4445d2f241fbdaec9f3192ff57ed0100",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/kafka-companion?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/8088cfce4445d2f241fbdaec9f3192ff57ed0100",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/kafka-companion"
+    }
+  },
+  {
+    "name": "keycloak-server",
+    "path": "test-framework/keycloak-server",
+    "sha": "f79b9ea82dabcda602f899ed3474604b667c07dc",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/keycloak-server?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/keycloak-server",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/f79b9ea82dabcda602f899ed3474604b667c07dc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/keycloak-server?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/f79b9ea82dabcda602f899ed3474604b667c07dc",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/keycloak-server"
+    }
+  },
+  {
+    "name": "kubernetes-client",
+    "path": "test-framework/kubernetes-client",
+    "sha": "5a710297d3dd7bd42075105122a665c81c69982a",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/kubernetes-client?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/kubernetes-client",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5a710297d3dd7bd42075105122a665c81c69982a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/kubernetes-client?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5a710297d3dd7bd42075105122a665c81c69982a",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/kubernetes-client"
+    }
+  },
+  {
+    "name": "ldap",
+    "path": "test-framework/ldap",
+    "sha": "d3a6ab9a56b042ea0cdbf45af2a1b8d0ac86a292",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/ldap?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/ldap",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/d3a6ab9a56b042ea0cdbf45af2a1b8d0ac86a292",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/ldap?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/d3a6ab9a56b042ea0cdbf45af2a1b8d0ac86a292",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/ldap"
+    }
+  },
+  {
+    "name": "maven",
+    "path": "test-framework/maven",
+    "sha": "e3fc312d5631e259bf4e27d21f5ef3608ea6d64d",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/maven?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/maven",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/e3fc312d5631e259bf4e27d21f5ef3608ea6d64d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/maven?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/e3fc312d5631e259bf4e27d21f5ef3608ea6d64d",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/maven"
+    }
+  },
+  {
+    "name": "mongodb",
+    "path": "test-framework/mongodb",
+    "sha": "8a7c4207cee8ebf0084e915156180af818f4fa3f",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/mongodb?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/mongodb",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/8a7c4207cee8ebf0084e915156180af818f4fa3f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/mongodb?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/8a7c4207cee8ebf0084e915156180af818f4fa3f",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/mongodb"
+    }
+  },
+  {
+    "name": "observability",
+    "path": "test-framework/observability",
+    "sha": "13ac882fb24e2cc5ea1e80d0770950a66ae63411",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/observability?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/observability",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/13ac882fb24e2cc5ea1e80d0770950a66ae63411",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/observability?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/13ac882fb24e2cc5ea1e80d0770950a66ae63411",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/observability"
+    }
+  },
+  {
+    "name": "oidc-server",
+    "path": "test-framework/oidc-server",
+    "sha": "2c4eef79a7fd060e1e49279eb21a4d6550e9ab4b",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/oidc-server?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/oidc-server",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/2c4eef79a7fd060e1e49279eb21a4d6550e9ab4b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/oidc-server?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/2c4eef79a7fd060e1e49279eb21a4d6550e9ab4b",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/oidc-server"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "test-framework/pom.xml",
+    "sha": "a75f423985b65105bb85ccb8435b7047ad56eb53",
+    "size": 3110,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/pom.xml?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/test-framework/pom.xml",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/a75f423985b65105bb85ccb8435b7047ad56eb53",
+    "download_url": "https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/pom.xml?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/a75f423985b65105bb85ccb8435b7047ad56eb53",
+      "html": "https://github.com/quarkusio/quarkus/blob/3.33.1/test-framework/pom.xml"
+    }
+  },
+  {
+    "name": "security-jwt",
+    "path": "test-framework/security-jwt",
+    "sha": "ab73a6f4f410cd912e6ae394a5360416b7a87d8a",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security-jwt?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security-jwt",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/ab73a6f4f410cd912e6ae394a5360416b7a87d8a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security-jwt?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/ab73a6f4f410cd912e6ae394a5360416b7a87d8a",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security-jwt"
+    }
+  },
+  {
+    "name": "security-oidc",
+    "path": "test-framework/security-oidc",
+    "sha": "56828f9d0a0db9fdb59a98c9b1101304f86d7c09",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security-oidc?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security-oidc",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/56828f9d0a0db9fdb59a98c9b1101304f86d7c09",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security-oidc?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/56828f9d0a0db9fdb59a98c9b1101304f86d7c09",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security-oidc"
+    }
+  },
+  {
+    "name": "security-webauthn",
+    "path": "test-framework/security-webauthn",
+    "sha": "380b1b649270f1023f715d9b2dcd1c43c8a21079",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security-webauthn?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security-webauthn",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/380b1b649270f1023f715d9b2dcd1c43c8a21079",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security-webauthn?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/380b1b649270f1023f715d9b2dcd1c43c8a21079",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security-webauthn"
+    }
+  },
+  {
+    "name": "security",
+    "path": "test-framework/security",
+    "sha": "5e74d0016982b542cb83a67c1b670022bf64262f",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5e74d0016982b542cb83a67c1b670022bf64262f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/security?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5e74d0016982b542cb83a67c1b670022bf64262f",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/security"
+    }
+  },
+  {
+    "name": "vertx",
+    "path": "test-framework/vertx",
+    "sha": "a1e2ac3cfa8d7e3b50f54a0faaa864510c92110c",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/vertx?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/vertx",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/a1e2ac3cfa8d7e3b50f54a0faaa864510c92110c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/vertx?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/a1e2ac3cfa8d7e3b50f54a0faaa864510c92110c",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/vertx"
+    }
+  }
+]
+
+codex
+There is no Maven `tests.jar`, but the artifact publishes both sources and Javadoc jars and the normal jar contains JVM `.class` files. The upstream module is under `test-framework/junit` at the `3.33.1` tag, so I’ll use that tag-templated test path.
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit?ref=3.33.1' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/pom.xml | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-javadoc.jar" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+exec
+/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 108ms:
+200 https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-javadoc.jar
+
+ succeeded in 294ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "test-framework/junit/pom.xml",
+    "sha": "2e17e06e82c332782e83774ddbf5940b1b2a1be7",
+    "size": 2344,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/pom.xml?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/test-framework/junit/pom.xml",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/2e17e06e82c332782e83774ddbf5940b1b2a1be7",
+    "download_url": "https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/pom.xml?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/2e17e06e82c332782e83774ddbf5940b1b2a1be7",
+      "html": "https://github.com/quarkusio/quarkus/blob/3.33.1/test-framework/junit/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "test-framework/junit/src",
+    "sha": "5fe3246826ab9d59ca5a4a0388f6f3db3a4f1308",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5fe3246826ab9d59ca5a4a0388f6f3db3a4f1308",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5fe3246826ab9d59ca5a4a0388f6f3db3a4f1308",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src"
+    }
+  }
+]
+
+ succeeded in 424ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-test-framework</artifactId>
+        <version>3.33.1</version>
+    </parent>
+
+    <artifactId>quarkus-junit</artifactId>
+    <name>Quarkus - Test Framework - JUnit</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.sisu</groupId>
+                    <artifactId>org.eclipse.sisu.inject</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.inject</artifactId>
+            <!-- We don't want the annotation processor to run
+             as it leaves junk files in the project-->
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+		    <groupId>org.assertj</groupId>
+		    <artifactId>assertj-core</artifactId>
+		    <scope>test</scope>
+		</dependency>
+    </dependencies>
+
+</project>
+
+ succeeded in 888ms:
+200 https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test
+
+exec
+/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -10 | xargs -r -n1 sed -n '1,40p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+{
+  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
+}
+
+exec
+/bin/bash -lc "rg -n '\"metadata-version\"' build/discovered-artifact-metadata | head -20" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+codex
+I’m patching the JSON now with Maven-hosted sources and Javadoc, GitHub-hosted tests at the matching tag, and no language or `not-for-native-image` fields because this is a normal Java/JVM jar.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..c5da9a2dd9e076e9f3931a530125c840f238d0af
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..c5da9a2dd9e076e9f3931a530125c840f238d0af
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+{
+  "coordinates": "io.quarkus:quarkus-junit:3.33.1",
+  "repository-url": "https://github.com/quarkusio/quarkus",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
+  "test-code-url": "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
+  "description": "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+exec
+/bin/bash -lc "curl -fsSL -o /dev/null -w 'source %{http_code}\\n' https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-sources.jar && curl -fsSL -o /dev/null -w 'tests %{http_code}\\n' https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test && curl -fsSL -o /dev/null -w 'docs %{http_code}\\n' https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-javadoc.jar" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..c5da9a2dd9e076e9f3931a530125c840f238d0af
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+ }
+
+ succeeded in 530ms:
+tests 200
+docs 200
+
+web search: 
+web search: https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit
+web search: 
+web search: repo.maven.apache.org maven2 io/quarkus/quarkus-junit/3.33.1 quarkus-junit-3.33.1-sources.jar
+exec
+/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
+     3	  "repository-url" : "https://github.com/quarkusio/quarkus",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
+     7	  "description" : "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..c5da9a2dd9e076e9f3931a530125c840f238d0af
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+ }
+
+web search: 
+web search: https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit
+web search: 
+web search: Maven Central io.quarkus quarkus-junit 3.33.1 javadoc sources jar
+codex
+Updated [io.quarkus-quarkus-junit-3.33.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json:1).
+
+I used Maven-hosted sources and Javadoc, and the Quarkus `3.33.1` tag’s `test-framework/junit/src/test` path for tests. I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM jar with class files. Verified JSON validity with `jq`, and the substituted source, test, and docs URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..c5da9a2dd9e076e9f3931a530125c840f238d0af
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit 5 test extension and annotations used to run Quarkus application tests, integration tests, and main-method tests. It manages Quarkus test bootstrapping, test profiles, mock installation, launchers, and callbacks so tests can exercise Quarkus applications on the JVM or against packaged/native artifacts."
+ }
+
+tokens used
+67,654
+Updated [io.quarkus-quarkus-junit-3.33.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json:1).
+
+I used Maven-hosted sources and Javadoc, and the Quarkus `3.33.1` tag’s `test-framework/junit/src/test` path for tests. I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM jar with class files. Verified JSON validity with `jq`, and the substituted source, test, and docs URLs all returned HTTP 200.
+Ran agent for io.quarkus:quarkus-junit:3.33.1 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/build/agent-artifact-discovery-logs/io.quarkus-quarkus-junit-3.33.1.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-d4b63dcd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 39s
+9 actionable tasks: 9 executed
