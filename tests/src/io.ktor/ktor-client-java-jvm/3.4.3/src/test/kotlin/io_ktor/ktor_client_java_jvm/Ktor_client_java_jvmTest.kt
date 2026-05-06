@@ -13,6 +13,8 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.java.Java
 import io.ktor.client.engine.java.JavaHttpConfig
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
@@ -24,18 +26,30 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.withCharset
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.io.BufferedInputStream
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.ServerSocket
+import java.net.Socket
 import java.net.URI
 import java.net.URL
 import java.net.http.HttpClient as JdkHttpClient
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.util.Base64
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 public class Ktor_client_java_jvmTest {
@@ -152,6 +166,27 @@ public class Ktor_client_java_jvmTest {
         }
     }
 
+    @Test
+    fun `websocket session sends and receives text frames through java engine`(): Unit = runBlocking {
+        LocalWebSocketServer { message: String -> "echo:$message" }.use { server: LocalWebSocketServer ->
+            server.start()
+
+            withJavaClient(clientConfig = { install(WebSockets) }) { client: HttpClient ->
+                client.webSocket(urlString = server.url("/chat")) {
+                    send(Frame.Text("native-image websocket"))
+
+                    val frame: Frame = withTimeout(5_000) {
+                        incoming.receive()
+                    }
+                    assertThat(frame).isInstanceOf(Frame.Text::class.java)
+                    assertThat((frame as Frame.Text).readText()).isEqualTo("echo:native-image websocket")
+                }
+            }
+
+            server.awaitHandled()
+        }
+    }
+
     private suspend fun <T> withJavaClient(
         engineConfig: JavaHttpConfig.() -> Unit = {},
         clientConfig: HttpClientConfig<JavaHttpConfig>.() -> Unit = {},
@@ -216,7 +251,101 @@ public class Ktor_client_java_jvmTest {
             executor.shutdownNow()
         }
     }
+
+    private class LocalWebSocketServer(
+        private val responseFor: (String) -> String,
+    ) : AutoCloseable {
+        private val serverSocket: ServerSocket = ServerSocket(0, 1, InetAddress.getLoopbackAddress())
+        private val executor: ExecutorService = Executors.newSingleThreadExecutor { runnable: Runnable ->
+            Thread(runnable, "ktor-java-test-websocket-server").apply {
+                isDaemon = true
+            }
+        }
+        private var handler: Future<*>? = null
+
+        fun start(): Unit {
+            handler = executor.submit {
+                serverSocket.use { listeningSocket: ServerSocket ->
+                    val socket: Socket = listeningSocket.accept()
+                    socket.soTimeout = 5_000
+                    socket.use { acceptedSocket: Socket ->
+                        handleConnection(acceptedSocket)
+                    }
+                }
+            }
+        }
+
+        fun url(path: String): String {
+            val hostAddress: String = serverSocket.inetAddress.hostAddress
+            val host: String = if (hostAddress.contains(':')) "[$hostAddress]" else hostAddress
+            return "ws://$host:${serverSocket.localPort}$path"
+        }
+
+        fun awaitHandled(): Unit {
+            handler?.get(10, TimeUnit.SECONDS)
+        }
+
+        override fun close(): Unit {
+            serverSocket.close()
+            executor.shutdownNow()
+        }
+
+        private fun handleConnection(socket: Socket): Unit {
+            val input: BufferedInputStream = BufferedInputStream(socket.getInputStream())
+            val output: OutputStream = socket.getOutputStream()
+            val requestLine: String = input.readHttpLine()
+            check(requestLine.startsWith("GET ")) { "Expected WebSocket upgrade request" }
+
+            val headers: MutableMap<String, String> = mutableMapOf()
+            while (true) {
+                val line: String = input.readHttpLine()
+                if (line.isEmpty()) {
+                    break
+                }
+                val separatorIndex: Int = line.indexOf(':')
+                if (separatorIndex != -1) {
+                    headers[line.substring(0, separatorIndex).lowercase()] = line.substring(separatorIndex + 1).trim()
+                }
+            }
+
+            val webSocketKey: String = checkNotNull(headers["sec-websocket-key"]) {
+                "Missing WebSocket key"
+            }
+            writeHandshakeResponse(output, webSocketKey)
+
+            val incomingFrame: WebSocketFrameData = input.readWebSocketFrame()
+            check(incomingFrame.opcode == TEXT_OPCODE) { "Expected text frame" }
+            output.writeTextFrame(responseFor(incomingFrame.payload.toString(StandardCharsets.UTF_8)))
+
+            val closeFrame: WebSocketFrameData = input.readWebSocketFrame()
+            check(closeFrame.opcode == CLOSE_OPCODE) { "Expected close frame" }
+            output.writeCloseFrame()
+        }
+
+        private fun writeHandshakeResponse(output: OutputStream, webSocketKey: String): Unit {
+            val acceptBytes: ByteArray = MessageDigest.getInstance("SHA-1").digest(
+                (webSocketKey + WEB_SOCKET_ACCEPT_GUID).toByteArray(StandardCharsets.US_ASCII),
+            )
+            val acceptHeader: String = Base64.getEncoder().encodeToString(acceptBytes)
+            val response: String = "HTTP/1.1 101 Switching Protocols\r\n" +
+                "Upgrade: websocket\r\n" +
+                "Connection: Upgrade\r\n" +
+                "Sec-WebSocket-Accept: $acceptHeader\r\n" +
+                "\r\n"
+            output.write(response.toByteArray(StandardCharsets.US_ASCII))
+            output.flush()
+        }
+    }
 }
+
+private const val TEXT_OPCODE: Int = 0x1
+private const val CLOSE_OPCODE: Int = 0x8
+private const val WEB_SOCKET_ACCEPT_GUID: String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+
+private data class WebSocketFrameData(
+    val opcode: Int,
+    val payload: ByteArray,
+)
 
 private fun HttpExchange.respond(
     statusCode: Int,
@@ -235,4 +364,86 @@ private fun HttpExchange.respond(
     responseBody.use { output ->
         output.write(bodyBytes)
     }
+}
+
+private fun BufferedInputStream.readHttpLine(): String {
+    val bytes: ByteArrayOutputStream = ByteArrayOutputStream()
+    while (true) {
+        val nextByte: Int = read()
+        check(nextByte != -1) { "Unexpected end of HTTP headers" }
+        if (nextByte == '\n'.code) {
+            return bytes.toString(StandardCharsets.US_ASCII).removeSuffix("\r")
+        }
+        bytes.write(nextByte)
+    }
+}
+
+private fun BufferedInputStream.readWebSocketFrame(): WebSocketFrameData {
+    val firstByte: Int = readRequiredByte()
+    val secondByte: Int = readRequiredByte()
+    val opcode: Int = firstByte and 0x0f
+    val masked: Boolean = (secondByte and 0x80) != 0
+    val payloadLength: Int = when (val initialLength: Int = secondByte and 0x7f) {
+        126 -> readUnsignedShort()
+        127 -> readLongPayloadLength()
+        else -> initialLength
+    }
+    val mask: ByteArray = if (masked) readRequiredBytes(4) else ByteArray(0)
+    val payload: ByteArray = readRequiredBytes(payloadLength)
+    if (masked) {
+        for (index: Int in payload.indices) {
+            payload[index] = (payload[index].toInt() xor mask[index % mask.size].toInt()).toByte()
+        }
+    }
+    return WebSocketFrameData(opcode = opcode, payload = payload)
+}
+
+private fun BufferedInputStream.readRequiredByte(): Int {
+    val value: Int = read()
+    check(value != -1) { "Unexpected end of WebSocket frame" }
+    return value
+}
+
+private fun BufferedInputStream.readRequiredBytes(size: Int): ByteArray {
+    val bytes: ByteArray = readNBytes(size)
+    check(bytes.size == size) { "Unexpected end of WebSocket frame" }
+    return bytes
+}
+
+private fun BufferedInputStream.readUnsignedShort(): Int {
+    val bytes: ByteArray = readRequiredBytes(2)
+    return ((bytes[0].toInt() and 0xff) shl 8) or (bytes[1].toInt() and 0xff)
+}
+
+private fun BufferedInputStream.readLongPayloadLength(): Int {
+    val bytes: ByteArray = readRequiredBytes(8)
+    var value: Long = 0
+    for (byte: Byte in bytes) {
+        value = (value shl 8) or (byte.toLong() and 0xff)
+    }
+    check(value <= Int.MAX_VALUE) { "WebSocket frame is too large" }
+    return value.toInt()
+}
+
+private fun OutputStream.writeTextFrame(text: String): Unit {
+    writeWebSocketFrame(opcode = TEXT_OPCODE, payload = text.toByteArray(StandardCharsets.UTF_8))
+}
+
+private fun OutputStream.writeCloseFrame(): Unit {
+    writeWebSocketFrame(opcode = CLOSE_OPCODE, payload = ByteArray(0))
+}
+
+private fun OutputStream.writeWebSocketFrame(opcode: Int, payload: ByteArray): Unit {
+    write(0x80 or opcode)
+    when {
+        payload.size < 126 -> write(payload.size)
+        payload.size <= 65_535 -> {
+            write(126)
+            write((payload.size ushr 8) and 0xff)
+            write(payload.size and 0xff)
+        }
+        else -> error("Test WebSocket payload is too large")
+    }
+    write(payload)
+    flush()
 }
