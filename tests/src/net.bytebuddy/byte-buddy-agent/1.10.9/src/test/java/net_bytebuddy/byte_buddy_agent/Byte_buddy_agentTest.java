@@ -8,7 +8,7 @@ package net_bytebuddy.byte_buddy_agent;
 
 import org.junit.jupiter.api.Test;
 
-class Byte_buddy_agentTest {
+public class Byte_buddy_agentTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
