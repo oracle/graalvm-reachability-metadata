@@ -6,14 +6,24 @@
  */
 package velocity.velocity_dep;
 
+import java.lang.reflect.Field;
+
 import org.apache.velocity.test.IntrospectorTestCase;
 import org.junit.jupiter.api.Test;
 
 public class IntrospectorTestCaseTest {
     @Test
-    void resolvesPrimitiveMethodsThroughVelocityIntrospector() {
-        IntrospectorTestCase testCase = new IntrospectorTestCase("primitiveMethods");
+    void resolvesPrimitiveMethodsThroughVelocityIntrospector() throws Exception {
+        clearMethodProviderClassLiteralCache();
+        final IntrospectorTestCase testCase = new IntrospectorTestCase("primitiveMethods");
 
         testCase.runTest();
+    }
+
+    private static void clearMethodProviderClassLiteralCache() throws Exception {
+        final Field cacheField = IntrospectorTestCase.class.getDeclaredField(
+                "class$org$apache$velocity$test$IntrospectorTestCase$MethodProvider");
+        cacheField.setAccessible(true);
+        cacheField.set(null, null);
     }
 }
