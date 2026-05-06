@@ -10,11 +10,13 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import org.http4s.Header
 import org.http4s.Method
+import org.http4s.ProductId
 import org.http4s.Request
 import org.http4s.Response
 import org.http4s.Status
 import org.http4s.Uri
 import org.http4s.ember.client.EmberClientBuilder
+import org.http4s.headers.`User-Agent`
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -216,6 +218,43 @@ class Http4s_ember_client_3Test {
       }
 
       assertEquals(List("response-1", "response-2"), bodies)
+      server.awaitHandledRequests()
+    } finally {
+      server.close()
+    }
+  }
+
+  @Test
+  def configuredUserAgentIsSentWhenRequestDoesNotSetOne(): Unit = {
+    val server: LocalHttpServer = LocalHttpServer { request =>
+      assertEquals("GET", request.method)
+      assertEquals("/builder-user-agent", request.target)
+      assertEquals(List("test-suite-client"), request.header("user-agent"))
+      TestResponse(
+        status = 200,
+        reason = "OK",
+        headers = List("Content-Type" -> "text/plain"),
+        body = utf8("builder user agent")
+      )
+    }
+
+    try {
+      val response: ReceivedResponse = run {
+        val builderUserAgent: `User-Agent` = `User-Agent`(ProductId("test-suite-client"))
+
+        EmberClientBuilder
+          .default[IO]
+          .withUserAgent(builderUserAgent)
+          .build
+          .use { client =>
+            client
+              .run(Request[IO](Method.GET, uri(server, "/builder-user-agent")))
+              .use(readTextResponse)
+          }
+      }
+
+      assertEquals(Status.Ok, response.status)
+      assertEquals("builder user agent", response.body)
       server.awaitHandledRequests()
     } finally {
       server.close()
