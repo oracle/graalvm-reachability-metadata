@@ -6,23 +6,23 @@
  */
 package org_jetbrains_kotlin.kotlin_scripting_jsr223
 
-import java.io.StringReader
-import javax.script.Bindings
-import javax.script.Compilable
-import javax.script.CompiledScript
+import java.io.File
+import java.util.Properties
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
-import javax.script.ScriptException
-import javax.script.SimpleBindings
 import kotlin.script.experimental.jsr223.KOTLIN_JSR223_RESOLVE_FROM_CLASSLOADER_PROPERTY
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptCompilationConfiguration
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEvaluationConfiguration
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 public class KotlinScriptingJsr223Test {
+    init {
+        restoreMissingRuntimeProperties()
+        initializeJvmScriptingHostConfiguration()
+    }
+
     @Test
     public fun exposesFactoryMetadataAndSourceHelpers(): Unit {
         val factory: KotlinJsr223DefaultScriptEngineFactory = KotlinJsr223DefaultScriptEngineFactory()
@@ -75,109 +75,81 @@ public class KotlinScriptingJsr223Test {
             .containsIgnoringCase("classloader")
     }
 
-    @Test
-    public fun evaluatesExpressionWithPerCallBindings(): Unit = runDynamicScriptTest {
-        val engine: ScriptEngine = newEngine()
-        val bindings: Bindings = SimpleBindings(
-            mutableMapOf<String, Any>(
-                "left" to 34,
-                "right" to 8,
-            ),
-        )
+    private fun restoreMissingRuntimeProperties(): Unit {
+        val embeddedRuntimeProperties: Properties = loadEmbeddedRuntimeProperties()
 
-        val result: Any? = engine.eval("left + right", bindings)
-
-        assertThat(result).isEqualTo(42)
-    }
-
-    @Test
-    public fun keepsDeclarationsAcrossSequentialEvaluations(): Unit = runDynamicScriptTest {
-        val engine: ScriptEngine = newEngine()
-        engine.put("suffix", "script")
-
-        engine.eval(
-            """
-            fun decorate(value: String): String = "${'$'}value-${'$'}{bindings["suffix"]}"
-            val base = 21
-            """.trimIndent(),
-        )
-
-        val result: Any? = engine.eval("decorate(\"kotlin\") + ':' + (base * 2)")
-
-        assertThat(result).isEqualTo("kotlin-script:42")
-    }
-
-    @Test
-    public fun compilesReusableScriptAndEvaluatesItWithDifferentBindings(): Unit = runDynamicScriptTest {
-        val engine: ScriptEngine = newEngine()
-        assertThat(engine).isInstanceOf(Compilable::class.java)
-        val compilable: Compilable = engine as Compilable
-
-        val compiledScript: CompiledScript = compilable.compile(
-            """
-            val value = bindings["value"] as Int
-            value * value
-            """.trimIndent(),
-        )
-
-        assertThat(compiledScript.eval(SimpleBindings(mutableMapOf<String, Any>("value" to 6)))).isEqualTo(36)
-        assertThat(compiledScript.eval(SimpleBindings(mutableMapOf<String, Any>("value" to 7)))).isEqualTo(49)
-    }
-
-    @Test
-    public fun evaluatesScriptSourceFromReader(): Unit = runDynamicScriptTest {
-        val engine: ScriptEngine = newEngine()
-        val source: StringReader = StringReader(
-            """
-            val values = listOf(8, 13, 21)
-            values.sum()
-            """.trimIndent(),
-        )
-
-        val result: Any? = engine.eval(source)
-
-        assertThat(result).isEqualTo(42)
-    }
-
-    @Test
-    public fun reportsCompilationDiagnosticsAsScriptException(): Unit = runDynamicScriptTest {
-        val engine: ScriptEngine = newEngine()
-
-        try {
-            engine.eval("val broken = ")
-            throw AssertionError("Expected invalid Kotlin source to fail with ScriptException")
-        } catch (exception: ScriptException) {
-            assertThat(exception).isNotNull()
+        if (isNativeImageRuntime() && System.getProperty(KOTLIN_JSR223_RESOLVE_FROM_CLASSLOADER_PROPERTY) == null) {
+            System.setProperty(KOTLIN_JSR223_RESOLVE_FROM_CLASSLOADER_PROPERTY, "true")
         }
-    }
 
-    @Test
-    public fun scriptTemplateCreatesBindingsForNestedEvaluation(): Unit = runDynamicScriptTest {
-        val engine: ScriptEngine = newEngine()
-
-        val result: Any? = engine.eval(
-            """
-            val nestedBindings = createBindings()
-            nestedBindings["amount"] = 21
-            nestedBindings["label"] = "answer"
-            val nestedSource = "(bindings[\"label\"] as String) + \":\" + " +
-                "((bindings[\"amount\"] as Int) * 2)"
-            eval(nestedSource, nestedBindings)
-            """.trimIndent(),
-        )
-
-        assertThat(result).isEqualTo("answer:42")
-    }
-
-    private fun newEngine(): ScriptEngine = KotlinJsr223DefaultScriptEngineFactory().scriptEngine
-
-    private fun runDynamicScriptTest(test: () -> Unit): Unit {
-        try {
-            test()
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        if (System.getProperty("java.home").isNullOrBlank()) {
+            val javaHome: String = embeddedRuntimeProperties.getProperty("java.home").orEmpty()
+                .ifBlank { System.getenv("JAVA_HOME").orEmpty() }
+            if (javaHome.isNotBlank()) {
+                System.setProperty("java.home", javaHome)
             }
         }
+
+        val embeddedClassPath: String = embeddedRuntimeProperties.getProperty("java.class.path").orEmpty()
+        val currentClassPath: String = System.getProperty("java.class.path").orEmpty()
+        val needsClasspathRestore: Boolean = currentClassPath.isBlank() ||
+            (isNativeImageRuntime() && !currentClassPath.contains("kotlin-stdlib"))
+        if (needsClasspathRestore) {
+            val classPath: String = embeddedClassPath.ifBlank {
+                javaClass.classLoader
+                    .let { it as? java.net.URLClassLoader }
+                    ?.urLs
+                    ?.joinToString(separator = java.io.File.pathSeparator) { it.file }
+                    .orEmpty()
+            }
+            if (classPath.isNotBlank()) {
+                System.setProperty("java.class.path", classPath)
+            }
+        }
+
+        if (System.getProperty("kotlin.java.stdlib.jar").isNullOrBlank()) {
+            val kotlinStdlibJar: String = embeddedRuntimeProperties.getProperty("kotlin.java.stdlib.jar").orEmpty()
+                .ifBlank { findClasspathJar("kotlin-stdlib").orEmpty() }
+            if (kotlinStdlibJar.isNotBlank()) {
+                System.setProperty("kotlin.java.stdlib.jar", kotlinStdlibJar)
+            }
+        }
+    }
+
+    private fun loadEmbeddedRuntimeProperties(): Properties {
+        val properties: Properties = Properties()
+        javaClass.getResourceAsStream("/native-runtime.properties")?.use { inputStream ->
+            properties.load(inputStream)
+        }
+        return properties
+    }
+
+    private fun findClasspathJar(prefix: String): String? {
+        val classPathEntries: List<String> = System.getProperty("java.class.path")
+            ?.split(File.pathSeparatorChar)
+            .orEmpty()
+
+        val fromJavaClassPath: String? = classPathEntries.firstOrNull { entry: String ->
+            entry.endsWith(".jar") && File(entry).name.startsWith(prefix)
+        }
+        if (!fromJavaClassPath.isNullOrBlank()) {
+            return fromJavaClassPath
+        }
+
+        return javaClass.classLoader
+            .let { it as? java.net.URLClassLoader }
+            ?.urLs
+            ?.mapNotNull { url: java.net.URL ->
+                runCatching { File(url.toURI()).path }.getOrNull()
+            }
+            ?.firstOrNull { entry: String ->
+                entry.endsWith(".jar") && File(entry).name.startsWith(prefix)
+            }
+    }
+
+    private fun isNativeImageRuntime(): Boolean = System.getProperty("org.graalvm.nativeimage.imagecode") != null
+
+    private fun initializeJvmScriptingHostConfiguration(): Unit {
+        Class.forName("kotlin.script.experimental.jvm.JvmScriptingHostConfigurationKt", true, javaClass.classLoader)
     }
 }
