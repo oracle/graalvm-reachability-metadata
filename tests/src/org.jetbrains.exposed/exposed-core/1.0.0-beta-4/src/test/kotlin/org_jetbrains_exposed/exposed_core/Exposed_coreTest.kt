@@ -10,9 +10,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jetbrains.exposed.v1.core.Alias
 import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.DatabaseConfig
+import org.jetbrains.exposed.v1.core.ExperimentalKeywordApi
 import org.jetbrains.exposed.v1.core.Index
 import org.jetbrains.exposed.v1.core.Join
 import org.jetbrains.exposed.v1.core.QueryBuilder
+import org.jetbrains.exposed.v1.core.Schema
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.Version
@@ -185,6 +188,62 @@ public class ExposedCoreTest {
         assertThat(version.covers("1.2.0")).isTrue()
         assertThat(version.covers("1.2.1")).isFalse()
         assertThat(Version.from("2").covers(1, 9, 9)).isTrue()
+    }
+
+    @Test
+    @OptIn(ExperimentalKeywordApi::class)
+    fun databaseConfigBuilderAppliesDefaultsCustomizationsAndValidation(): Unit {
+        val defaultConfig: DatabaseConfig = DatabaseConfig()
+
+        assertThat(defaultConfig.useNestedTransactions).isFalse()
+        assertThat(defaultConfig.defaultFetchSize).isNull()
+        assertThat(defaultConfig.defaultIsolationLevel).isEqualTo(-1)
+        assertThat(defaultConfig.defaultMaxAttempts).isEqualTo(3)
+        assertThat(defaultConfig.defaultMinRetryDelay).isZero()
+        assertThat(defaultConfig.defaultMaxRetryDelay).isZero()
+        assertThat(defaultConfig.defaultReadOnly).isFalse()
+        assertThat(defaultConfig.warnLongQueriesDuration).isNull()
+        assertThat(defaultConfig.maxEntitiesToStoreInCachePerEntity).isEqualTo(Int.MAX_VALUE)
+        assertThat(defaultConfig.keepLoadedReferencesOutOfTransaction).isFalse()
+        assertThat(defaultConfig.explicitDialect).isNull()
+        assertThat(defaultConfig.defaultSchema).isNull()
+        assertThat(defaultConfig.logTooMuchResultSetsThreshold).isZero()
+        assertThat(defaultConfig.preserveKeywordCasing).isTrue()
+
+        val schema = Schema("analytics")
+        val customConfig: DatabaseConfig = DatabaseConfig {
+            useNestedTransactions = true
+            defaultFetchSize = 64
+            defaultIsolationLevel = 8
+            defaultMaxAttempts = 2
+            defaultMinRetryDelay = 10L
+            defaultMaxRetryDelay = 20L
+            defaultReadOnly = true
+            warnLongQueriesDuration = 250L
+            maxEntitiesToStoreInCachePerEntity = 5
+            keepLoadedReferencesOutOfTransaction = true
+            defaultSchema = schema
+            logTooMuchResultSetsThreshold = 3
+            preserveKeywordCasing = false
+        }
+
+        assertThat(customConfig.useNestedTransactions).isTrue()
+        assertThat(customConfig.defaultFetchSize).isEqualTo(64)
+        assertThat(customConfig.defaultIsolationLevel).isEqualTo(8)
+        assertThat(customConfig.defaultMaxAttempts).isEqualTo(2)
+        assertThat(customConfig.defaultMinRetryDelay).isEqualTo(10L)
+        assertThat(customConfig.defaultMaxRetryDelay).isEqualTo(20L)
+        assertThat(customConfig.defaultReadOnly).isTrue()
+        assertThat(customConfig.warnLongQueriesDuration).isEqualTo(250L)
+        assertThat(customConfig.maxEntitiesToStoreInCachePerEntity).isEqualTo(5)
+        assertThat(customConfig.keepLoadedReferencesOutOfTransaction).isTrue()
+        assertThat(customConfig.defaultSchema).isEqualTo(schema)
+        assertThat(customConfig.logTooMuchResultSetsThreshold).isEqualTo(3)
+        assertThat(customConfig.preserveKeywordCasing).isFalse()
+
+        assertThatThrownBy { DatabaseConfig { defaultMaxAttempts = 0 } }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("defaultMaxAttempts")
     }
 }
 
