@@ -72,6 +72,26 @@ class Http4s_ember_server_3Test {
   }
 
   @Test
+  def serverAcceptsChunkedRequestBodies(): Unit = {
+    withServer(echoApplication) { port =>
+      val responseText: String = rawHttpExchange(
+        port,
+        "POST /echo HTTP/1.1\r\n" +
+          "Host: 127.0.0.1\r\n" +
+          "Transfer-Encoding: chunked\r\n" +
+          "Connection: close\r\n" +
+          "\r\n" +
+          "6\r\nnative\r\n" +
+          "5\r\nimage\r\n" +
+          "0\r\n\r\n",
+      )
+
+      assertTrue(responseText.startsWith("HTTP/1.1 201"), responseText)
+      assertTrue(responseText.contains("egamievitan"), responseText)
+    }
+  }
+
+  @Test
   def serverStreamsResponseBodies(): Unit = {
     val streamingApplication: HttpApp[IO] = HttpApp[IO] { request =>
       (request.method, request.uri.path.renderString) match {
