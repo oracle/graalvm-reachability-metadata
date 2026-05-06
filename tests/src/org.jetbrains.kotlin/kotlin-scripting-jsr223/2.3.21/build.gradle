@@ -13,6 +13,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-scripting-jsr223:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
@@ -25,6 +26,14 @@ compileTestKotlin {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs(
+                    "--exclude-config",
+                    ".*kotlin-compiler-embeddable.*",
+                    ".*META-INF/native-image/org\\.jline/.*")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
