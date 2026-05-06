@@ -2032,6 +2032,90 @@ class InterruptHandlingTests(unittest.TestCase):
         handle_failed_claimed_issue.assert_called_once()
         cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
 
+    def test_gradle_bootstrap_failure_reverts_claim_without_human_intervention_follow_up(self) -> None:
+        claimed_issue = _claimed_issue()
+        failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
+
+        with patch.object(forge_metadata, "run_claimed_issue", side_effect=failure), \
+                patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
+                patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+            with self.assertRaises(KeyboardInterrupt):
+                forge_metadata.process_claimed_issue_lifecycle(
+                    claimed_issue,
+                    strategy_name=None,
+                    keep_tests_without_dynamic_access=False,
+                    canonical_metrics_repo_path="/tmp/metrics",
+                )
+
+        self.assertEqual(
+            forge_metadata.get_user_interrupt_reason(),
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
+        handle_completed_run.assert_not_called()
+        handle_failed_claimed_issue.assert_not_called()
+        revert_claimed_issue.assert_called_once_with(
+            claimed_issue,
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
+        cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
+
+    def test_gradle_bootstrap_failure_stops_issue_queue(self) -> None:
+        claimed_issue = _claimed_issue()
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:lib:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+        failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
+
+        with patch.object(forge_metadata, "is_shutdown_requested", return_value=False), \
+                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata,
+                    "get_prioritized_issues_with_label",
+                    return_value=([issue], 0, 1, True, False),
+                ), \
+                patch.object(forge_metadata, "get_cached_issue_claim_skips", return_value={}), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_next_issue_claim_candidate_batch",
+                    return_value=[(issue, _preflight(), None)],
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "claim_issue_for_processing",
+                    return_value=claimed_issue,
+                ) as claim_issue_for_processing, \
+                patch.object(forge_metadata, "run_claimed_issue", side_effect=failure), \
+                patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                patch.object(forge_metadata, "revert_claimed_issue"), \
+                patch.object(forge_metadata, "cleanup_issue_workspace"):
+            with self.assertRaises(KeyboardInterrupt):
+                forge_metadata.process_issues_with_label(
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    2,
+                    0,
+                    "/tmp/reachability",
+                    "/tmp/metrics",
+                    None,
+                    False,
+                    "automation-user",
+                    1,
+                    environment_already_validated=True,
+                )
+
+        claim_issue_for_processing.assert_called_once()
+        handle_completed_run.assert_not_called()
+        handle_failed_claimed_issue.assert_not_called()
+        self.assertEqual(
+            forge_metadata.get_user_interrupt_reason(),
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
+
     def test_failed_run_analysis_uses_fallback_when_worktree_is_invalid(self) -> None:
         claimed_issue = _claimed_issue()
         candidate = forge_metadata.HumanInterventionCandidate(

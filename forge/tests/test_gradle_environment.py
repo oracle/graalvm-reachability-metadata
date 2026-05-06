@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -26,6 +27,26 @@ class GradleEnvironmentTests(unittest.TestCase):
             self.assertEqual(os.path.dirname(os.path.dirname(gradle_home)), tempfile.gettempdir())
             self.assertEqual(os.path.basename(os.path.dirname(gradle_home)), "metadata-forge-gradle")
             self.assertEqual(gradle_home, equivalent_gradle_home)
+
+    def test_git_worktrees_share_gradle_home_with_main_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = os.path.join(temp_dir, "repo")
+            worktree_path = os.path.join(temp_dir, "linked")
+            os.makedirs(repo_path)
+            subprocess.run(["git", "init", "-b", "main"], cwd=repo_path, check=True, stdout=subprocess.DEVNULL)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo_path, check=True)
+            subprocess.run(["git", "config", "user.name", "Test User"], cwd=repo_path, check=True)
+            with open(os.path.join(repo_path, "README.md"), "w", encoding="utf-8") as readme_file:
+                readme_file.write("test\n")
+            subprocess.run(["git", "add", "README.md"], cwd=repo_path, check=True)
+            subprocess.run(["git", "commit", "-m", "initial"], cwd=repo_path, check=True, stdout=subprocess.DEVNULL)
+            subprocess.run(["git", "worktree", "add", worktree_path], cwd=repo_path, check=True, stdout=subprocess.DEVNULL)
+
+            with patch.dict(os.environ, {}, clear=True):
+                main_gradle_home = gradle_user_home_for_repo(repo_path)
+                worktree_gradle_home = gradle_user_home_for_repo(worktree_path)
+
+            self.assertEqual(main_gradle_home, worktree_gradle_home)
 
     def test_command_environment_preserves_base_env_and_sets_gradle_user_home(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
