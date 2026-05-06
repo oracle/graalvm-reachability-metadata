@@ -19,6 +19,7 @@ import sbt.testing.SuiteSelector;
 import sbt.testing.Task;
 import sbt.testing.TaskDef;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +30,12 @@ public class JUnitTaskTest {
     void executesTaskThroughFrameworkRunnerWithCategoryFilters() {
         JUnitFramework framework = new JUnitFramework();
         String[] args = {
-                "--include-categories=" + FastCategory.class.getName(),
-                "--exclude-categories=" + SlowCategory.class.getName()
+                "--include-categories=" + Serializable.class.getName(),
+                "--exclude-categories=" + Cloneable.class.getName()
         };
         Runner runner = framework.runner(args, new String[0], JUnitTaskTest.class.getClassLoader());
         TaskDef taskDef = new TaskDef(
-                JUnitTaskTest.class.getName(),
+                CategorizedJUnit4Fixture.class.getName(),
                 framework.fingerprints()[1],
                 true,
                 new Selector[] {new SuiteSelector()});
@@ -48,12 +49,6 @@ public class JUnitTaskTest {
                 .extracting(Event::status)
                 .containsExactly(Status.Success);
         runner.done();
-    }
-
-    @org.junit.Test
-    @Category(FastCategory.class)
-    public void categorizedJUnit4Fixture() {
-        assertThat(System.getProperty("java.version")).isNotBlank();
     }
 
     private static final class RecordingEventHandler implements EventHandler {
@@ -91,10 +86,12 @@ public class JUnitTaskTest {
         public void trace(Throwable throwable) {
         }
     }
-}
 
-interface FastCategory {
-}
-
-interface SlowCategory {
+    public static class CategorizedJUnit4Fixture {
+        @org.junit.Test
+        @Category(Serializable.class)
+        public void categorizedJUnit4Fixture() {
+            assertThat(System.getProperty("java.version")).isNotBlank();
+        }
+    }
 }
