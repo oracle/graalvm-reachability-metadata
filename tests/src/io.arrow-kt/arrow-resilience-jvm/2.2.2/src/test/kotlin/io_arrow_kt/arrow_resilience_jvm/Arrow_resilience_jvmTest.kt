@@ -88,6 +88,29 @@ public class Arrow_resilience_jvmTest {
     }
 
     @Test
+    fun scheduleOrContinuesUntilBothSchedulesAreDone(): Unit = runBlocking {
+        var executions: Int = 0
+
+        val outputs: List<Pair<Long?, Long?>> = Schedule.recurs<Unit>(1)
+            .or(
+                other = Schedule.recurs<Unit>(3),
+                transform = { left, right -> left to right },
+                combineDuration = { left, right -> left ?: right ?: 0.milliseconds },
+            )
+            .collect()
+            .repeat {
+                executions += 1
+            }
+
+        assertThat(outputs).containsExactly(
+            0L to 0L,
+            null to 1L,
+            null to 2L,
+        )
+        assertThat(executions).isEqualTo(4)
+    }
+
+    @Test
     fun sagaTransactReturnsValueWithoutCompensatingSuccessfulTransaction(): Unit = runBlocking {
         val events: MutableList<String> = mutableListOf()
 
