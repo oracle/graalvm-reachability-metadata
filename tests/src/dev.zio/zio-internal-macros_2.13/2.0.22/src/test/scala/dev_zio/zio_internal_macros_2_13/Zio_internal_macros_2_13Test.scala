@@ -54,6 +54,15 @@ class Zio_internal_macros_2_13Test {
   }
 
   @Test
+  def ansiStringExtensionsComposeMultipleStylesInOrder(): Unit = {
+    val styledFailure: String = "failure".red.bold.underlined
+    val invertedWarning: String = "warning".yellow.inverted
+
+    assertThat(styledFailure).isEqualTo("\u001b[4m\u001b[1m\u001b[31mfailure\u001b[0m\u001b[0m\u001b[0m")
+    assertThat(invertedWarning).isEqualTo("\u001b[7m\u001b[33mwarning\u001b[0m\u001b[0m")
+  }
+
+  @Test
   def terminalStringExtensionsIndentAndCenterMultilineText(): Unit = {
     assertThat("dependency".center(2)).isEqualTo("  dependency  ")
     val indented: String = "first\nsecond".indent(3)
