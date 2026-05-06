@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -104,6 +106,32 @@ public class Jackson_databindTest {
         JsonNode roundTrippedTree = mapper.valueToTree(order);
         assertThat(roundTrippedTree.at("/shipTo/postalCode").asText()).isEqualTo("SW1A 1AA");
         assertThat(roundTrippedTree.findValue("sku").asText()).isEqualTo("book");
+    }
+
+    @Test
+    void capturesAndEmitsDynamicExtensionProperties() throws Exception {
+        ExtensionEvent event = mapper.readValue(
+                """
+                {
+                  "type": "purchase",
+                  "source": "mobile",
+                  "retryable": true
+                }
+                """,
+                ExtensionEvent.class);
+
+        assertThat(event.getType()).isEqualTo("purchase");
+        assertThat(event.getExtensionProperties())
+                .containsEntry("source", "mobile")
+                .containsEntry("retryable", Boolean.TRUE);
+
+        event.putExtensionProperty("processedBy", "fraud-check");
+        JsonNode serialized = mapper.readTree(mapper.writeValueAsString(event));
+        assertThat(serialized.get("type").asText()).isEqualTo("purchase");
+        assertThat(serialized.get("source").asText()).isEqualTo("mobile");
+        assertThat(serialized.get("retryable").asBoolean()).isTrue();
+        assertThat(serialized.get("processedBy").asText()).isEqualTo("fraud-check");
+        assertThat(serialized.has("extensionProperties")).isFalse();
     }
 
     @Test
@@ -267,6 +295,29 @@ public class Jackson_databindTest {
     }
 
     public record Drawing(List<Shape> shapes) {
+    }
+
+    public static final class ExtensionEvent {
+        private String type;
+        private final Map<String, Object> extensionProperties = new LinkedHashMap<>();
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        @JsonAnyGetter
+        public Map<String, Object> getExtensionProperties() {
+            return extensionProperties;
+        }
+
+        @JsonAnySetter
+        public void putExtensionProperty(String name, Object value) {
+            extensionProperties.put(name, value);
+        }
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
