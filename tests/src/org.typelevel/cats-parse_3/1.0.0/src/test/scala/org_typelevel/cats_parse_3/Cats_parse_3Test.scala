@@ -13,6 +13,7 @@ import cats.parse.Numbers
 import cats.parse.Parser
 import cats.parse.Parser0
 import cats.parse.SemVer
+import cats.parse.strings.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -185,6 +186,23 @@ class Cats_parse_3Test {
     assertEquals(Right(("way", "yes")), yesNo.parse("yesway"))
     assertEquals(Right('O'), vowels.parseAll("O"))
     assertTrue(Parser.ignoreCase("select").parseAll("insert").isLeft)
+  }
+
+  @Test
+  def jsonStringCodecsDecodeEscapesAndEncodeControlCharacters(): Unit = {
+    val original: String = "line\nquote\"slash\\tab\t"
+    val encoded: String = Json.delimited.encode(original)
+
+    assertEquals("\"line\\nquote\\\"slash\\\\tab\\t\"", encoded)
+    assertEquals(Right(original), Json.delimited.parser.parseAll(encoded))
+    assertEquals(Right(("tail", "snowman ☃")), Json.delimited.parser.parse("\"snowman \\u2603\"tail"))
+    assertTrue(Json.delimited.parser.parseAll("\"unterminated").isLeft)
+
+    val undelimited: String = Json.undelimited.encode(original)
+    assertEquals("line\\nquote\\\"slash\\\\tab\\t", undelimited)
+    assertEquals(Right(original), Json.undelimited.parser.parseAll(undelimited))
+    assertEquals(Right("plain text"), Json.undelimited.parser.parseAll("plain text"))
+    assertEquals(Right(""), Json.undelimited.parser.parseAll(""))
   }
 
   @Test
