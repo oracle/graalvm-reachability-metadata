@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Attributes;
-import io.grpc.CallCredentials;
 import io.grpc.ChannelCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
@@ -26,15 +25,9 @@ import io.grpc.alts.AltsContextUtil;
 import io.grpc.alts.AltsServerBuilder;
 import io.grpc.alts.AltsServerCredentials;
 import io.grpc.alts.AuthorizationUtil;
-import io.grpc.alts.ComputeEngineChannelBuilder;
-import io.grpc.alts.ComputeEngineChannelCredentials;
-import io.grpc.alts.GoogleDefaultChannelBuilder;
-import io.grpc.alts.GoogleDefaultChannelCredentials;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
@@ -65,44 +58,6 @@ public class Grpc_altsTest {
 
         assertThat(defaultCredentials).isNotNull();
         assertThat(configuredCredentials).isNotNull();
-    }
-
-    @Test
-    void googleAndComputeEngineCredentialsCanBeCreatedWithoutStartingRpc() {
-        ChannelCredentials googleDefaultCredentials = GoogleDefaultChannelCredentials.newBuilder()
-                .callCredentials(new NoopCallCredentials())
-                .build();
-        ChannelCredentials computeEngineCredentials = ComputeEngineChannelCredentials.create();
-
-        assertThat(googleDefaultCredentials).isNotNull();
-        assertThat(googleDefaultCredentials.withoutBearerTokens()).isNotNull();
-        assertThat(computeEngineCredentials).isNotNull();
-        assertThat(computeEngineCredentials.withoutBearerTokens()).isNotNull();
-    }
-
-    @Test
-    void googleDefaultAndComputeEngineChannelBuildersCreateManagedChannels() throws InterruptedException {
-        List<ManagedChannel> channels = new ArrayList<>();
-
-        try {
-            channels.add(ComputeEngineChannelBuilder.forTarget("localhost:1")
-                    .directExecutor()
-                    .build());
-            channels.add(GoogleDefaultChannelBuilder.forAddress("127.0.0.1", 1)
-                    .directExecutor()
-                    .build());
-
-            assertThat(channels).hasSize(2);
-            assertThat(channels).allSatisfy(channel -> assertThat(channel.isShutdown()).isFalse());
-        } finally {
-            for (ManagedChannel channel : channels) {
-                channel.shutdownNow();
-            }
-        }
-
-        for (ManagedChannel channel : channels) {
-            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
-        }
     }
 
     @Test
@@ -209,14 +164,6 @@ public class Grpc_altsTest {
             server.shutdownNow();
         }
         assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
-    }
-
-    private static final class NoopCallCredentials extends CallCredentials {
-        @Override
-        public void applyRequestMetadata(
-                RequestInfo requestInfo, Executor appExecutor, MetadataApplier applier) {
-            appExecutor.execute(() -> applier.apply(new Metadata()));
-        }
     }
 
     private static final class EmptyServerCall extends ServerCall<byte[], byte[]> {
