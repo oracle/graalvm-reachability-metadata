@@ -8,7 +8,7 @@ package com_softwaremill_sttp_shared.pekko_3
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
-import org.apache.pekko.stream.scaladsl.{Sink, Source}
+import org.apache.pekko.stream.scaladsl.{Keep, Sink, Source}
 import org.apache.pekko.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -92,6 +92,22 @@ class Pekko_3Test {
       )
 
       assertThat(exception).isSameAs(original)
+    }
+  }
+
+  @Test
+  def limitBytesPreservesSourceMaterializedValue(): Unit = {
+    withMaterializer { materializer =>
+      val source: Source[ByteString, String] =
+        Source.single(ByteString("payload")).mapMaterializedValue(_ => "source-materialized")
+      val limited: Source[ByteString, Any] = PekkoStreams.limitBytes(source, 10L)
+
+      val materialized: (Any, Future[Seq[ByteString]]) = limited.toMat(Sink.seq)(Keep.both).run()(materializer)
+      val materializedValue: Any = materialized._1
+      val result: Seq[ByteString] = await(materialized._2)
+
+      assertThat(materializedValue).isEqualTo("source-materialized")
+      assertThat(result.map(_.utf8String).asJava).containsExactly("payload")
     }
   }
 
