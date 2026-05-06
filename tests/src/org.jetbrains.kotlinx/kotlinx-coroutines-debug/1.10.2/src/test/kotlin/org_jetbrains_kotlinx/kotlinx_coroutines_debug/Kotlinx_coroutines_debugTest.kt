@@ -58,6 +58,25 @@ public class Kotlinx_coroutines_debugTest {
     }
 
     @Test
+    public fun withDebugProbesInstallsProbesForTheDurationOfTheBlock(): Unit = runDynamicAttachTest {
+        var blockWasCalled: Boolean = false
+
+        try {
+            DebugProbes.withDebugProbes {
+                blockWasCalled = true
+                assertThat(DebugProbes.isInstalled).isTrue()
+            }
+
+            assertThat(blockWasCalled).isTrue()
+            assertThat(DebugProbes.isInstalled).isFalse()
+        } finally {
+            if (DebugProbes.isInstalled) {
+                uninstallDebugProbesAfterTest()
+            }
+        }
+    }
+
+    @Test
     public fun introspectionMethodsRequireInstalledDebugProbes(): Unit {
         assertThat(DebugProbes.isInstalled).isFalse()
 
