@@ -8,9 +8,9 @@ package org_springframework.spring_beans;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_beansTest {
+public class Spring_beansTest {
     @Test
-    void test() throws Exception {
+    public void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
