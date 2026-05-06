@@ -93,6 +93,36 @@ class Circe_generic_3Test {
   }
 
   @Test
+  def semiautomaticDerivationSupportsParameterizedProductTypes(): Unit = {
+    val envelope: ApiEnvelope[ApiEvent] = ApiEnvelope(
+      requestId = "req-7",
+      payload = ApiEvent(kind = "created", retryCount = 1),
+      tags = List("generic", "semiauto")
+    )
+
+    val expectedJson = Json.obj(
+      "requestId" -> Json.fromString("req-7"),
+      "payload" -> Json.obj(
+        "kind" -> Json.fromString("created"),
+        "retryCount" -> Json.fromInt(1)
+      ),
+      "tags" -> Json.arr(Json.fromString("generic"), Json.fromString("semiauto"))
+    )
+
+    val encoded = envelope.asJson
+
+    assertThat(encoded).isEqualTo(expectedJson)
+    assertDecodesTo(encoded, envelope)
+    assertFailsToDecode[ApiEnvelope[ApiEvent]](
+      Json.obj(
+        "requestId" -> Json.fromString("req-8"),
+        "payload" -> Json.obj("kind" -> Json.fromString("updated")),
+        "tags" -> Json.arr()
+      )
+    )
+  }
+
+  @Test
   def semiautomaticDerivationSupportsSealedTraitCoproducts(): Unit = {
     val card: PaymentMethod = CreditCard(id = "card-1", lastFour = "4242")
     val wire: PaymentMethod = WireTransfer(iban = "DE89370400440532013000", urgent = false)
@@ -166,6 +196,18 @@ class Circe_generic_3Test {
   private object AuditRecord {
     given Encoder[AuditRecord] = deriveEncoder[AuditRecord]
     given Decoder[AuditRecord] = deriveDecoder[AuditRecord]
+  }
+
+  private final case class ApiEvent(kind: String, retryCount: Int)
+
+  private object ApiEvent {
+    given Codec[ApiEvent] = deriveCodec[ApiEvent]
+  }
+
+  private final case class ApiEnvelope[A](requestId: String, payload: A, tags: List[String])
+
+  private object ApiEnvelope {
+    given [A: Codec]: Codec[ApiEnvelope[A]] = deriveCodec[ApiEnvelope[A]]
   }
 
   private sealed trait PaymentMethod
