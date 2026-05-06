@@ -18,6 +18,23 @@ import org.junit.jupiter.api.Test
 class GeneratedMessageLiteTest {
   @Test
   def defaultInstanceLookupInitializesLiteClassByName(): Unit = {
+    val defaultInstance: GeneratedMessageLite[_, _] = lookupDefaultInstance(
+      classOf[GeneratedMessageLiteSchemaMessage]
+    )
+
+    assertThat(defaultInstance).isInstanceOf(classOf[GeneratedMessageLiteSchemaMessage])
+  }
+
+  @Test
+  def defaultInstanceLookupLoadsLazyLiteClassByName(): Unit = {
+    val defaultInstance: GeneratedMessageLite[_, _] = lookupDefaultInstance(
+      classOf[GeneratedMessageLiteLazyDefaultMessage]
+    )
+
+    assertThat(defaultInstance).isInstanceOf(classOf[GeneratedMessageLiteLazyDefaultMessage])
+  }
+
+  private def lookupDefaultInstance(messageClass: Class[_]): GeneratedMessageLite[_, _] = {
     val lookup: MethodHandles.Lookup = MethodHandles.privateLookupIn(
       classOf[GeneratedMessageLite[_, _]],
       MethodHandles.lookup()
@@ -31,11 +48,7 @@ class GeneratedMessageLiteTest {
       )
     )
 
-    val defaultInstance: Object = getDefaultInstance.invokeWithArguments(
-      classOf[GeneratedMessageLiteSchemaMessage]
-    )
-
-    assertThat(defaultInstance).isInstanceOf(classOf[GeneratedMessageLiteSchemaMessage])
+    getDefaultInstance.invokeWithArguments(messageClass).asInstanceOf[GeneratedMessageLite[_, _]]
   }
 
   @Test
