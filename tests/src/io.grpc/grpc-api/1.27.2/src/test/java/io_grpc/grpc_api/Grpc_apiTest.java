@@ -8,7 +8,7 @@ package io_grpc.grpc_api;
 
 import org.junit.jupiter.api.Test;
 
-class Grpc_apiTest {
+public class Grpc_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
