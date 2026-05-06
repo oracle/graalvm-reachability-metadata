@@ -162,6 +162,22 @@ public class Kotlinx_coroutines_guavaTest {
     }
 
     @Test
+    fun cancellingCoroutineAwaitingNonCancellationPropagatingFutureLeavesSourceUsable(): Unit = runBlocking {
+        val source: SettableFuture<String> = SettableFuture.create()
+        val nonPropagating = Futures.nonCancellationPropagating(source)
+        val job = launch { nonPropagating.await() }
+        yield()
+
+        job.cancelAndJoin()
+
+        assertThat(nonPropagating.isCancelled).isTrue()
+        assertThat(source.isCancelled).isFalse()
+        assertThat(source.isDone).isFalse()
+        assertThat(source.set("completed-after-await-cancelled")).isTrue()
+        assertThat(source.get(5, TimeUnit.SECONDS)).isEqualTo("completed-after-await-cancelled")
+    }
+
+    @Test
     fun asDeferredMirrorsListenableFutureCompletionFailureAndCancellation(): Unit = runBlocking {
         val successfulSource: SettableFuture<String> = SettableFuture.create()
         val successfulDeferred = successfulSource.asDeferred()
