@@ -1,0 +1,69 @@
+import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
+
+plugins {
+    id "java-library"
+}
+
+Properties rootProperties = new Properties()
+file("../gradle.properties").withInputStream { InputStream input ->
+    rootProperties.load(input)
+}
+
+group = "com.jcraft"
+version = providers.gradleProperty("library.version")
+        .orElse(providers.provider { rootProperties.getProperty("library.version") })
+        .get()
+
+base {
+    archivesName = "jsch"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "com.jcraft:jzlib:1.0.7"
+}
+
+Provider<RegularFile> sourceArchive = layout.buildDirectory.file("downloads/jsch-${version}-sources.jar")
+Provider<Directory> extractedSources = layout.buildDirectory.dir("generated/sources/jsch")
+
+tasks.register("downloadJschSources") { task ->
+    task.outputs.file(sourceArchive)
+    task.doLast {
+        File target = sourceArchive.get().asFile
+        target.parentFile.mkdirs()
+        URI sourceUri = new URI("https://repo.maven.apache.org/maven2/com/jcraft/jsch/${version}/jsch-${version}-sources.jar")
+        sourceUri.toURL().withInputStream { InputStream input ->
+            target.withOutputStream { OutputStream output ->
+                output << input
+            }
+        }
+    }
+}
+
+tasks.register("unpackJschSources", Sync) { task ->
+    task.dependsOn(tasks.named("downloadJschSources"))
+    task.from(provider { zipTree(sourceArchive.get().asFile) })
+    task.into(extractedSources)
+}
+
+sourceSets {
+    main {
+        java.srcDir(tasks.named("unpackJschSources"))
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile).configureEach { task ->
+    task.options.debug = true
+    task.options.debugOptions.debugLevel = "source,lines,vars"
+    task.options.encoding = "UTF-8"
+}
