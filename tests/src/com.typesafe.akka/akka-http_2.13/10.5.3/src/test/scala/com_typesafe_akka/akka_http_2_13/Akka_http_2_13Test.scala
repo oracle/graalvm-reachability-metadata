@@ -20,6 +20,7 @@ import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.MediaTypes
 import akka.http.scaladsl.model.MessageEntity
+import akka.http.scaladsl.model.Multipart
 import akka.http.scaladsl.model.RequestEntity
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.Uri
@@ -159,6 +160,41 @@ class Akka_http_2_13Test {
 
     assertEquals(ContentTypes.`text/plain(UTF-8)`, strictEntity.contentType)
     assertEquals("first second", strictEntity.data.utf8String)
+  }
+
+  @Test
+  def multipartFormDataEncodesAndDecodesStrictBodyParts(): Unit = {
+    val multipart: Multipart.FormData = Multipart.FormData(
+      Multipart.FormData.BodyPart.Strict(
+        "description",
+        HttpEntity(ContentTypes.`text/plain(UTF-8)`, "sample upload")
+      ),
+      Multipart.FormData.BodyPart.Strict(
+        "payload",
+        HttpEntity(ContentTypes.`application/octet-stream`, ByteString("abc123")),
+        Map("filename" -> "payload.bin")
+      )
+    )
+
+    val entity: RequestEntity = multipart.toEntity()
+    val strictEntity = Await.result(entity.toStrict(Timeout), Timeout)
+    assertTrue(strictEntity.contentType.mediaType.value.startsWith("multipart/form-data; boundary="))
+
+    val decoded: Multipart.FormData = Await.result(Unmarshal(strictEntity).to[Multipart.FormData], Timeout)
+    val strictParts: Seq[Multipart.FormData.BodyPart.Strict] = Await.result(
+      decoded.parts.mapAsync(1)(_.toStrict(Timeout)).runWith(Sink.seq),
+      Timeout
+    )
+
+    assertEquals(2, strictParts.size)
+    val descriptionPart: Multipart.FormData.BodyPart.Strict = strictParts.head
+    assertEquals("description", descriptionPart.name)
+    assertEquals("sample upload", descriptionPart.entity.data.utf8String)
+
+    val payloadPart: Multipart.FormData.BodyPart.Strict = strictParts(1)
+    assertEquals("payload", payloadPart.name)
+    assertEquals("abc123", payloadPart.entity.data.utf8String)
+    assertEquals(Some("payload.bin"), payloadPart.filename)
   }
 
   @Test
