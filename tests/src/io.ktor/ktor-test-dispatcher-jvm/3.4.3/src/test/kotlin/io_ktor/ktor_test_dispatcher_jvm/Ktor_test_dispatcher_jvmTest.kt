@@ -9,6 +9,7 @@ package io_ktor.ktor_test_dispatcher_jvm
 import io.ktor.test.dispatcher.runTestWithRealTime
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
@@ -55,6 +56,18 @@ public class Ktor_test_dispatcher_jvmTest {
             val context = currentCoroutineContext()
 
             assertThat(context[CoroutineName]?.name).isEqualTo(coroutineName)
+            assertThat(context[ContinuationInterceptor]).isNotInstanceOf(TestDispatcher::class.java)
+        }
+    }
+
+    @Test
+    fun runTestWithRealTimeIgnoresNonTestDispatcherContext() {
+        val coroutineName = "ignored-non-test-dispatcher-context"
+
+        runTestWithRealTime(Dispatchers.Unconfined + CoroutineName(coroutineName), timeout = 5.seconds) {
+            val context = currentCoroutineContext()
+
+            assertThat(context[CoroutineName]).isNull()
             assertThat(context[ContinuationInterceptor]).isNotInstanceOf(TestDispatcher::class.java)
         }
     }
