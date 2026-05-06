@@ -14,6 +14,7 @@ import akka.stream.KillSwitches
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
 import akka.stream.QueueOfferResult
+import akka.stream.RestartSettings
 import akka.stream.Supervision
 import akka.stream.SystemMaterializer
 import akka.stream.scaladsl.Broadcast
@@ -23,6 +24,7 @@ import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Framing
 import akka.stream.scaladsl.GraphDSL
 import akka.stream.scaladsl.Keep
+import akka.stream.scaladsl.RestartSource
 import akka.stream.scaladsl.RunnableGraph
 import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
@@ -36,6 +38,7 @@ import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -209,6 +212,28 @@ class Akka_stream_2_13Test {
       )
 
       assertEquals(Seq(1, 4, -1), result)
+  }
+
+  @Test
+  def restartSourceRetriesFailedSourcesWithBackoff(): Unit = withStreamSystem("AkkaStreamRestartSource") {
+    (_: ActorSystem, materializer: Materializer) =>
+      implicit val implicitMaterializer: Materializer = materializer
+      val attempts: AtomicInteger = new AtomicInteger(0)
+      val restartSettings: RestartSettings = RestartSettings(10.millis, 50.millis, 0.0)
+        .withMaxRestarts(3, 1.second)
+
+      val result: Seq[Int] = await(
+        RestartSource
+          .onFailuresWithBackoff(restartSettings) { () =>
+            val attempt: Int = attempts.incrementAndGet()
+            if (attempt < 3) Source.failed[Int](new IllegalStateException(s"attempt $attempt failed"))
+            else Source(List(7, 11, 13))
+          }
+          .runWith(Sink.seq)
+      )
+
+      assertEquals(Seq(7, 11, 13), result)
+      assertEquals(3, attempts.get())
   }
 
   @Test
