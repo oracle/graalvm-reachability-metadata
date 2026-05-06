@@ -131,6 +131,18 @@ class Parboiled_2_13Test {
     assertThat(singleValueQuery).isEqualTo(IdQuery("feature_42", Seq(21)))
   }
 
+  @Test
+  def usesLookaheadPredicatesWithoutConsumingInput(): Unit = {
+    val directive: String = new LookaheadDirectiveParser(ParserInput("token:release-2026")).Directive.run().get
+    val nonReservedIdentifier: String = new LookaheadDirectiveParser(ParserInput("token:debugger")).Directive.run().get
+    val reservedIdentifier: Failure[String] =
+      new LookaheadDirectiveParser(ParserInput("token:debug")).Directive.run().asInstanceOf[Failure[String]]
+
+    assertThat(directive).isEqualTo("release-2026")
+    assertThat(nonReservedIdentifier).isEqualTo("debugger")
+    assertThat(reservedIdentifier.exception).isInstanceOf(classOf[ParseError])
+  }
+
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
     new AssignmentParser(ParserInput(input)).InputLine.run()
 }
@@ -199,6 +211,14 @@ final class IdQueryParser(val input: ParserInput) extends Parser {
   def Ids: Rule1[Seq[Int]] = rule { oneOrMore(Id).separatedBy(',') }
 
   def Id: Rule1[Int] = rule { capture(oneOrMore(CharPredicate.Digit)) ~> ((digits: String) => digits.toInt) }
+}
+
+final class LookaheadDirectiveParser(val input: ParserInput) extends Parser {
+  def Directive: Rule1[String] = rule { &("token:") ~ "token:" ~ !ReservedIdentifier ~ Identifier ~ EOI }
+
+  def ReservedIdentifier: Rule0 = rule { ignoreCase("debug") ~ &(EOI) }
+
+  def Identifier: Rule1[String] = rule { capture(CharPredicate.Alpha ~ zeroOrMore(CharPredicate.AlphaNum ++ '-')) }
 }
 
 final class DynamicTokenParser(val input: ParserInput) extends Parser with DynamicRuleHandler[DynamicTokenParser, String :: HNil] {
