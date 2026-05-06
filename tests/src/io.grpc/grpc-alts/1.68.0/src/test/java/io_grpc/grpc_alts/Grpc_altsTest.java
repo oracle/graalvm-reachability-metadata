@@ -26,9 +26,12 @@ import io.grpc.alts.AltsContextUtil;
 import io.grpc.alts.AltsServerBuilder;
 import io.grpc.alts.AltsServerCredentials;
 import io.grpc.alts.AuthorizationUtil;
+import io.grpc.alts.ComputeEngineChannelBuilder;
 import io.grpc.alts.ComputeEngineChannelCredentials;
+import io.grpc.alts.GoogleDefaultChannelBuilder;
 import io.grpc.alts.GoogleDefaultChannelCredentials;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +77,31 @@ public class Grpc_altsTest {
         assertThat(googleDefaultCredentials.withoutBearerTokens()).isNotNull();
         assertThat(computeEngineCredentials).isNotNull();
         assertThat(computeEngineCredentials.withoutBearerTokens()).isNotNull();
+    }
+
+    @Test
+    void googleDefaultAndComputeEngineChannelBuildersCreateManagedChannels() throws InterruptedException {
+        List<ManagedChannel> channels = new ArrayList<>();
+
+        try {
+            channels.add(ComputeEngineChannelBuilder.forTarget("localhost:1")
+                    .directExecutor()
+                    .build());
+            channels.add(GoogleDefaultChannelBuilder.forAddress("127.0.0.1", 1)
+                    .directExecutor()
+                    .build());
+
+            assertThat(channels).hasSize(2);
+            assertThat(channels).allSatisfy(channel -> assertThat(channel.isShutdown()).isFalse());
+        } finally {
+            for (ManagedChannel channel : channels) {
+                channel.shutdownNow();
+            }
+        }
+
+        for (ManagedChannel channel : channels) {
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
