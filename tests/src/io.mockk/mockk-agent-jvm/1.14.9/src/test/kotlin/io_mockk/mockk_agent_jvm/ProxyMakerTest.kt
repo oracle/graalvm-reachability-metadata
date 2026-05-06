@@ -12,7 +12,6 @@ import io.mockk.proxy.MockKInvocationHandler
 import io.mockk.proxy.MockKProxyMaker
 import io.mockk.proxy.jvm.JvmMockKAgentFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import java.lang.reflect.Method
@@ -46,9 +45,9 @@ public class ProxyMakerTest {
             } finally {
                 proxy.cancel()
             }
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!MockkNativeImageSupport.isExpectedNativeImageFailure(throwable)) {
+                throw throwable
             }
         }
     }

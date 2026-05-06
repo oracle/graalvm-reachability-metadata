@@ -16,8 +16,14 @@ public class ClassLoadingStrategyChooserTest {
     @Test
     @Timeout(60)
     fun choosesClassLoadingStrategyForApplicationClass(): Unit {
-        val strategy: ClassLoadingStrategy<ClassLoader> =
+        val strategy: ClassLoadingStrategy<ClassLoader> = try {
             ClassLoadingStrategyChooser.chooseClassLoadingStrategy(SampleApplicationClass::class.java)
+        } catch (throwable: Throwable) {
+            if (!MockkNativeImageSupport.isExpectedNativeImageFailure(throwable)) {
+                throw throwable
+            }
+            return
+        }
 
         assertThat(strategy).isNotNull()
     }

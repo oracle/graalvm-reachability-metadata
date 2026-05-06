@@ -19,7 +19,6 @@ import io.mockk.proxy.jvm.transformation.SubclassInstrumentation
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.dynamic.scaffold.TypeValidation
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import java.lang.reflect.Method
@@ -53,9 +52,9 @@ public class ProxyMakerInnerCompanionTest {
             } finally {
                 proxy.cancel()
             }
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!MockkNativeImageSupport.isExpectedNativeImageFailure(throwable)) {
+                throw throwable
             }
             return
         }

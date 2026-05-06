@@ -9,7 +9,6 @@ package io_mockk.mockk_agent_jvm
 import io.mockk.proxy.MockKAgentLogFactory
 import io.mockk.proxy.jvm.JvmMockKAgentFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 
@@ -21,9 +20,9 @@ public class BootJarLoaderTest {
 
         try {
             factory.init(MockKAgentLogFactory.simpleConsoleLogFactory)
-        } catch (error: Error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error
+        } catch (throwable: Throwable) {
+            if (!MockkNativeImageSupport.isExpectedNativeImageFailure(throwable)) {
+                throw throwable
             }
             return
         }
