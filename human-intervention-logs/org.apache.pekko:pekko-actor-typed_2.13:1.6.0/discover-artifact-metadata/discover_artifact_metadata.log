@@ -1,0 +1,1077 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfbb2-a3fc-7d92-91d3-ddb51f06cdf2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-actor-typed_2.13:1.6.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.6.0" when "$version$" is replaced with "1.6.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+- Set "coordinates" to "org.apache.pekko:pekko-actor-typed_2.13:1.6.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.6.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Pekko repository, then patch the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && ls build/discovered-artifact-metadata | rg 'org.apache.pekko-pekko-actor-typed' || true" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+
+exec
+/usr/bin/bash -lc "rg 'pekko-actor-typed|source-code-url|test-code-url|documentation-url|language' -n metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json:2:  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:19:    "description" : "JetBrains Java Annotations is a set of annotations for code inspection support and code documentation. It provides annotations for nullability, contracts, API status, language injection, and related metadata used by IDEs and static analysis tools."
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+metadata/com.ongres.stringprep/stringprep/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-util/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-util/src/test/java",
+metadata/org.apache.kerby/kerby-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+metadata/com.ongres.stringprep/saslprep/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ongres/stringprep/saslprep/$version$/saslprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/saslprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/com.ongres.stringprep/saslprep/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/ongres/stringprep/saslprep/$version$/saslprep-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-sources.jar",
+metadata/org.jetbrains/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:7:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_$version$/integration-tests/",
+metadata/com.android.databinding/baseLibrary/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:21:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_1.5.0/integration-tests/",
+metadata/com.android.databinding/baseLibrary/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+
+web search: 
+web search: Maven org.apache.pekko pekko-actor-typed_2.13 1.6.0 sources javadoc test-sources
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor-typed_2.13
+codex
+The local file currently only has the coordinates. Maven Central identifies this as a normal `jar` artifact with Scala 2.13 in the artifact suffix, so I’m treating it as a JVM Native Image metadata target and adding the Scala 2 language marker rather than `not-for-native-image`.
+exec
+/usr/bin/bash -lc "rg '\"language\"' -n metadata build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/co.fs2/fs2-reactive-streams_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/co.fs2/fs2-core_3/index.json:10:    "language": {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/serialization-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-core-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-okhttp-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/dev.zio/zio_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-java-jvm/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jwt-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:31:    "language" : {
+metadata/io.ktor/ktor-server-cio-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/com.lihaoyi/unroll-annotation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/pekko.git 'v1.6.0' '1.6.0' 'pekko-1.6.0'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/pekko-actor-typed_2.13-1.6.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 107ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-actor-typed_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>1.6.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Actor Typed</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko</url>
+        <connection>scm:git:https://github.com/apache/pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/1.6.0</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor_2.13</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-slf4j_2.13</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 119ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-actor-typed_2.13/1.6.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-actor-typed_2.13/1.6.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-actor-typed_2.13-1.6.0-cyclonedx.json" title="pekko-actor-typed_2.13-1.6.0-cyclonedx.json">pekko-actor-typed_2.13-1.6.0-cyclonedx.json</a>       2026-04-24 09:34      8894      
+<a href="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.asc" title="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.asc">pekko-actor-typed_2.13-1.6.0-cyclonedx.json.a...</a>  2026-04-24 09:34       833      
+<a href="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.asc.md5" title="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.asc.md5">pekko-actor-typed_2.13-1.6.0-cyclonedx.json.a...</a>  2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.asc.sha1" title="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.asc.sha1">pekko-actor-typed_2.13-1.6.0-cyclonedx.json.a...</a>  2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.md5" title="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.md5">pekko-actor-typed_2.13-1.6.0-cyclonedx.json.m...</a>  2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.sha1" title="pekko-actor-typed_2.13-1.6.0-cyclonedx.json.sha1">pekko-actor-typed_2.13-1.6.0-cyclonedx.json.s...</a>  2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0-javadoc.jar" title="pekko-actor-typed_2.13-1.6.0-javadoc.jar">pekko-actor-typed_2.13-1.6.0-javadoc.jar</a>          2026-04-24 09:34   2584483      
+<a href="pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc" title="pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc">pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc</a>      2026-04-24 09:34       833      
+<a href="pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc.md5" title="pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc.md5">pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc....</a>  2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc.sha1" title="pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc.sha1">pekko-actor-typed_2.13-1.6.0-javadoc.jar.asc....</a>  2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0-javadoc.jar.md5" title="pekko-actor-typed_2.13-1.6.0-javadoc.jar.md5">pekko-actor-typed_2.13-1.6.0-javadoc.jar.md5</a>      2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0-javadoc.jar.sha1" title="pekko-actor-typed_2.13-1.6.0-javadoc.jar.sha1">pekko-actor-typed_2.13-1.6.0-javadoc.jar.sha1</a>     2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0-sources.jar" title="pekko-actor-typed_2.13-1.6.0-sources.jar">pekko-actor-typed_2.13-1.6.0-sources.jar</a>          2026-04-24 09:34    199266      
+<a href="pekko-actor-typed_2.13-1.6.0-sources.jar.asc" title="pekko-actor-typed_2.13-1.6.0-sources.jar.asc">pekko-actor-typed_2.13-1.6.0-sources.jar.asc</a>      2026-04-24 09:34       833      
+<a href="pekko-actor-typed_2.13-1.6.0-sources.jar.asc.md5" title="pekko-actor-typed_2.13-1.6.0-sources.jar.asc.md5">pekko-actor-typed_2.13-1.6.0-sources.jar.asc....</a>  2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0-sources.jar.asc.sha1" title="pekko-actor-typed_2.13-1.6.0-sources.jar.asc.sha1">pekko-actor-typed_2.13-1.6.0-sources.jar.asc....</a>  2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0-sources.jar.md5" title="pekko-actor-typed_2.13-1.6.0-sources.jar.md5">pekko-actor-typed_2.13-1.6.0-sources.jar.md5</a>      2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0-sources.jar.sha1" title="pekko-actor-typed_2.13-1.6.0-sources.jar.sha1">pekko-actor-typed_2.13-1.6.0-sources.jar.sha1</a>     2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0.buildinfo" title="pekko-actor-typed_2.13-1.6.0.buildinfo">pekko-actor-typed_2.13-1.6.0.buildinfo</a>            2026-04-24 09:34       782      
+<a href="pekko-actor-typed_2.13-1.6.0.buildinfo.asc" title="pekko-actor-typed_2.13-1.6.0.buildinfo.asc">pekko-actor-typed_2.13-1.6.0.buildinfo.asc</a>        2026-04-24 09:34       833      
+<a href="pekko-actor-typed_2.13-1.6.0.buildinfo.asc.md5" title="pekko-actor-typed_2.13-1.6.0.buildinfo.asc.md5">pekko-actor-typed_2.13-1.6.0.buildinfo.asc.md...</a>  2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0.buildinfo.asc.sha1" title="pekko-actor-typed_2.13-1.6.0.buildinfo.asc.sha1">pekko-actor-typed_2.13-1.6.0.buildinfo.asc.sh...</a>  2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0.buildinfo.md5" title="pekko-actor-typed_2.13-1.6.0.buildinfo.md5">pekko-actor-typed_2.13-1.6.0.buildinfo.md5</a>        2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0.buildinfo.sha1" title="pekko-actor-typed_2.13-1.6.0.buildinfo.sha1">pekko-actor-typed_2.13-1.6.0.buildinfo.sha1</a>       2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0.jar" title="pekko-actor-typed_2.13-1.6.0.jar">pekko-actor-typed_2.13-1.6.0.jar</a>                  2026-04-24 09:34   1267275      
+<a href="pekko-actor-typed_2.13-1.6.0.jar.asc" title="pekko-actor-typed_2.13-1.6.0.jar.asc">pekko-actor-typed_2.13-1.6.0.jar.asc</a>              2026-04-24 09:34       833      
+<a href="pekko-actor-typed_2.13-1.6.0.jar.asc.md5" title="pekko-actor-typed_2.13-1.6.0.jar.asc.md5">pekko-actor-typed_2.13-1.6.0.jar.asc.md5</a>          2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0.jar.asc.sha1" title="pekko-actor-typed_2.13-1.6.0.jar.asc.sha1">pekko-actor-typed_2.13-1.6.0.jar.asc.sha1</a>         2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0.jar.md5" title="pekko-actor-typed_2.13-1.6.0.jar.md5">pekko-actor-typed_2.13-1.6.0.jar.md5</a>              2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0.jar.sha1" title="pekko-actor-typed_2.13-1.6.0.jar.sha1">pekko-actor-typed_2.13-1.6.0.jar.sha1</a>             2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0.pom" title="pekko-actor-typed_2.13-1.6.0.pom">pekko-actor-typed_2.13-1.6.0.pom</a>                  2026-04-24 09:34      2536      
+<a href="pekko-actor-typed_2.13-1.6.0.pom.asc" title="pekko-actor-typed_2.13-1.6.0.pom.asc">pekko-actor-typed_2.13-1.6.0.pom.asc</a>              2026-04-24 09:34       833      
+<a href="pekko-actor-typed_2.13-1.6.0.pom.asc.md5" title="pekko-actor-typed_2.13-1.6.0.pom.asc.md5">pekko-actor-typed_2.13-1.6.0.pom.asc.md5</a>          2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0.pom.asc.sha1" title="pekko-actor-typed_2.13-1.6.0.pom.asc.sha1">pekko-actor-typed_2.13-1.6.0.pom.asc.sha1</a>         2026-04-24 09:34        40      
+<a href="pekko-actor-typed_2.13-1.6.0.pom.md5" title="pekko-actor-typed_2.13-1.6.0.pom.md5">pekko-actor-typed_2.13-1.6.0.pom.md5</a>              2026-04-24 09:34        32      
+<a href="pekko-actor-typed_2.13-1.6.0.pom.sha1" title="pekko-actor-typed_2.13-1.6.0.pom.sha1">pekko-actor-typed_2.13-1.6.0.pom.sha1</a>             2026-04-24 09:34        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 473ms:
+codex
+Maven Central has sources and javadocs but no test-sources jar for this release directory. I’m checking the upstream tag naming now so the test URL points at the actual 1.6.0 release tree.
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json && sed -n '1,40p' metadata/co.fs2/fs2-reactive-streams_3/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.6.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.6.21",
+      "2.7.0",
+      "2.7.1",
+      "2.8.0",
+      "2.8.1",
+      "2.8.2",
+      "2.8.3",
+      "2.8.4",
+      "2.8.5",
+      "2.8.6",
+      "2.8.7"
+    ],
+    "allowed-packages" : [
+      "akka.protobufv3.internal"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.13.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/co/fs2/fs2-reactive-streams_3/$version$/fs2-reactive-streams_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/fs2",
+    "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/reactive-streams/src/test/scala",
+    "documentation-url" : "https://repo1.maven.org/maven2/co/fs2/fs2-reactive-streams_3/$version$/fs2-reactive-streams_3-$version$-javadoc.jar",
+    "description" : "FS2 Reactive Streams provides interoperability between FS2 streams and the Reactive Streams Publisher, Subscriber, and Subscription interfaces. It lets Scala 3 JVM applications bridge FS2 streaming code with libraries that consume or expose Reactive Streams APIs.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.13.0"
+    ],
+    "allowed-packages" : [
+      "fs2.interop.reactivestreams"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/pekko.git | rg '1\\.6\\.0|1\\.5\\.|v1\\.' | tail -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko/git/matching-refs/tags | rg '1\\.6\\.0|1\\.5\\.|v1\\.|pekko' | tail -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc 'for p in actor-typed/src/test scala/typed/src/test actor-typed-tests/src/test; do code=$(curl -o /dev/null -s -w '"'%{http_code}' \"https://github.com/apache/pekko/tree/v1.6.0/"'$p"); printf '"'%s %s\\n' \""'$code" "$p"; done' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 272ms:
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.1.4",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/99c710339cbbb83a6aeab35f0501c880b37fcc58"
+    "ref": "refs/tags/v1.1.4-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.1.4-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/a6573622fe106a4c0da6d4f41c28e2b24b25fb91"
+    "ref": "refs/tags/v1.1.5",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.1.5",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/f6f0a2dd364928c8842fcf9fdb65e4b37ce7edbe"
+    "ref": "refs/tags/v1.1.5-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.1.5-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/701511e36ccee79b9b5de937b0bb7e9b6f616099"
+    "ref": "refs/tags/v1.2.0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/38ead3238bf9e316d0de90cedbaa1763f39103b2"
+    "ref": "refs/tags/v1.2.0-M0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0-M0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/ed2e9f6ba4fba1b6df7842abb878078b7f737cf6"
+    "ref": "refs/tags/v1.2.0-M1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0-M1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/5fe3b3c2be7e271f4a9a07306ced88a4373db336"
+    "ref": "refs/tags/v1.2.0-M1-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0-M1-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/dca530002e465ff1283513e70fa5675e800ebdef"
+    "ref": "refs/tags/v1.2.0-M2",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0-M2",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/328365a9245eaf143714456cbe4ccb1378edcf57"
+    "ref": "refs/tags/v1.2.0-M2-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0-M2-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/ac75d80d3a44c7bcbe25509b0256a3f277067cf2"
+    "ref": "refs/tags/v1.2.0-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.0-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/b3fc8a1de1b1e36fe439c3156d55ff227e5e39c0"
+    "ref": "refs/tags/v1.2.1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/b3ad4e683b3a29ffd199530a37d17de916efff6f"
+    "ref": "refs/tags/v1.2.1-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.2.1-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/67c7a267fff470ac500f780606f761bc0b37f892"
+    "ref": "refs/tags/v1.3.0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.3.0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/d1eeadf63bf47c293ea1786b746f5ef70bd5c0dc"
+    "ref": "refs/tags/v1.3.0-M0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.3.0-M0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/a0c2d980be8a968ca5551267f07380e9132427f7"
+    "ref": "refs/tags/v1.3.0-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.3.0-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/b156707cc4404d6098208718206d82753b1c8fed"
+    "ref": "refs/tags/v1.4.0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.4.0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/41ddcff335ec2a279ac1bfa37a30533b30747138"
+    "ref": "refs/tags/v1.4.0-M0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.4.0-M0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/87723e2d9bde9d55a27cfa65b116d427402e7e5e"
+    "ref": "refs/tags/v1.4.0-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.4.0-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/4a3fc031e521f61c00201bd8a44e7d0f6a38a3fc"
+    "ref": "refs/tags/v1.4.0-RC2",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.4.0-RC2",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/6479a4492fb2d26a23151212789b0679c49fe5ef"
+    "ref": "refs/tags/v1.5.0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.5.0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/25876c8bb4df5d85e321166631f2b7ab8f6e1428"
+    "ref": "refs/tags/v1.5.0-M0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.5.0-M0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/9bb8581b24ffc727b24cc03a7c8bf41fd3b25e9d"
+    "ref": "refs/tags/v1.5.0-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.5.0-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/cc63adcee501094a9e92afd7d00c3662684f78f5"
+    "ref": "refs/tags/v1.6.0-M0",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.6.0-M0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/865cac8f47f580102f98fa925f48947f53fd31d2"
+    "ref": "refs/tags/v1.6.0-RC1",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.6.0-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/55650e79c7d5266b96641c9ab8c278ab7f93c995"
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v2.0.0-M0",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/dad9ec09e3a5b8fa0f693e064de784a5af2f95be"
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v2.0.0-M1",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/015da836a4530defe7c42656ac8263e379658531"
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v2.0.0-M1-RC1",
+      "url": "https://api.github.com/repos/apache/pekko/git/commits/9ed4003fa2838b50fac3dbf5e26eb12f3d738b80"
+
+ succeeded in 325ms:
+a22d4b58e3160123956bbf48ab9ee80a049fbb8c	refs/tags/v1.0.2
+58fa510455190bd62d04f92a83c9506a7588d29c	refs/tags/v1.0.2^{}
+110b66244932da167bfd830e2a40c5ef7ffd7be2	refs/tags/v1.0.2-RC1
+58fa510455190bd62d04f92a83c9506a7588d29c	refs/tags/v1.0.2-RC1^{}
+824c3b189faf0443d0baefb93802e49c79266996	refs/tags/v1.0.3
+4f77c8108aaf548a65531d2c8807da13dbba8146	refs/tags/v1.0.3^{}
+7bdd230acc228ba0e99fe027165af1cf5451ffc8	refs/tags/v1.0.3-M1
+7bdd230acc228ba0e99fe027165af1cf5451ffc8	refs/tags/v1.0.3-M1-RC1
+407cd0f30bf16a9e5ed1be53fda0a244c3f58d0e	refs/tags/v1.0.3-RC1
+4f77c8108aaf548a65531d2c8807da13dbba8146	refs/tags/v1.0.3-RC1^{}
+0ee59c3ff26b76cb4711718c234537692f92379a	refs/tags/v1.1.0
+d1ec2243300425bca4ec1c142e32e83c2cc7c2f8	refs/tags/v1.1.0^{}
+49836d7dd25f03b2c6eb98b6df5d238869e43799	refs/tags/v1.1.0-M0
+b1f2f37a8a65ce0c0e223ab164263bbd2e32b189	refs/tags/v1.1.0-M0^{}
+07777ded9dce8c7f2f37ac129853f6ba541f40c4	refs/tags/v1.1.0-M1
+b34d529f344f50801b4dd9f4df966b03d3464c2f	refs/tags/v1.1.0-M1^{}
+74e9c19eb6ed1ed77e505127d56bbdbb220df4b6	refs/tags/v1.1.0-M1-RC1
+b34d529f344f50801b4dd9f4df966b03d3464c2f	refs/tags/v1.1.0-M1-RC1^{}
+99f7c3234110f92f2b69afb26a988ea8e4b5e89a	refs/tags/v1.1.0-RC1
+d1ec2243300425bca4ec1c142e32e83c2cc7c2f8	refs/tags/v1.1.0-RC1^{}
+498c4713ab1eade7b0c792f375badd7095074a13	refs/tags/v1.1.1
+498c4713ab1eade7b0c792f375badd7095074a13	refs/tags/v1.1.1-RC1
+10dde89e4b296bdadd527896d53561afb8f3b9e2	refs/tags/v1.1.2
+4f95c405e68e9e21ae943fb4c61aea3cc9e2c761	refs/tags/v1.1.2^{}
+1266e0e174eeca573e88c6b9b5e7cf3584328277	refs/tags/v1.1.2-RC1
+4f95c405e68e9e21ae943fb4c61aea3cc9e2c761	refs/tags/v1.1.2-RC1^{}
+bbefd75fdb7e7637b339d89b2a67bebd388fae95	refs/tags/v1.1.3
+38facf752b4e7d5fb43ed7c671eb91888b41bd10	refs/tags/v1.1.3^{}
+b55a22816bf4c5dc375d88d8daf667b2387f445c	refs/tags/v1.1.3-RC1
+38facf752b4e7d5fb43ed7c671eb91888b41bd10	refs/tags/v1.1.3-RC1^{}
+99c710339cbbb83a6aeab35f0501c880b37fcc58	refs/tags/v1.1.4
+de435b7325b954e280cda4e0b0c29b0150afa622	refs/tags/v1.1.4^{}
+a6573622fe106a4c0da6d4f41c28e2b24b25fb91	refs/tags/v1.1.4-RC1
+de435b7325b954e280cda4e0b0c29b0150afa622	refs/tags/v1.1.4-RC1^{}
+f6f0a2dd364928c8842fcf9fdb65e4b37ce7edbe	refs/tags/v1.1.5
+4655e057844d2c4dbc602b6928b5609f4f04b7d1	refs/tags/v1.1.5^{}
+701511e36ccee79b9b5de937b0bb7e9b6f616099	refs/tags/v1.1.5-RC1
+4655e057844d2c4dbc602b6928b5609f4f04b7d1	refs/tags/v1.1.5-RC1^{}
+38ead3238bf9e316d0de90cedbaa1763f39103b2	refs/tags/v1.2.0
+eaf5bc9c9abc25b7b80c5aa8d86b46eb82205315	refs/tags/v1.2.0^{}
+ed2e9f6ba4fba1b6df7842abb878078b7f737cf6	refs/tags/v1.2.0-M0
+8473abe00dcdb7ee8b8c77e313770ed5b3c738fc	refs/tags/v1.2.0-M0^{}
+5fe3b3c2be7e271f4a9a07306ced88a4373db336	refs/tags/v1.2.0-M1
+425b3f90a04a7f98d57e8eb638b457ca081f0110	refs/tags/v1.2.0-M1^{}
+dca530002e465ff1283513e70fa5675e800ebdef	refs/tags/v1.2.0-M1-RC1
+425b3f90a04a7f98d57e8eb638b457ca081f0110	refs/tags/v1.2.0-M1-RC1^{}
+328365a9245eaf143714456cbe4ccb1378edcf57	refs/tags/v1.2.0-M2
+0199e84444e5b1e88759afca1015de78b4cdde0f	refs/tags/v1.2.0-M2^{}
+ac75d80d3a44c7bcbe25509b0256a3f277067cf2	refs/tags/v1.2.0-M2-RC1
+0199e84444e5b1e88759afca1015de78b4cdde0f	refs/tags/v1.2.0-M2-RC1^{}
+b3fc8a1de1b1e36fe439c3156d55ff227e5e39c0	refs/tags/v1.2.0-RC1
+eaf5bc9c9abc25b7b80c5aa8d86b46eb82205315	refs/tags/v1.2.0-RC1^{}
+b3ad4e683b3a29ffd199530a37d17de916efff6f	refs/tags/v1.2.1
+2545f88078c4a3e9ab574f0606d7305ed84dc4df	refs/tags/v1.2.1^{}
+67c7a267fff470ac500f780606f761bc0b37f892	refs/tags/v1.2.1-RC1
+2545f88078c4a3e9ab574f0606d7305ed84dc4df	refs/tags/v1.2.1-RC1^{}
+d1eeadf63bf47c293ea1786b746f5ef70bd5c0dc	refs/tags/v1.3.0
+594e0572e135ff01733ee85d0e3ae0c38ebd2c3b	refs/tags/v1.3.0^{}
+a0c2d980be8a968ca5551267f07380e9132427f7	refs/tags/v1.3.0-M0
+2aa46afb1c45f17fc1291213e55dde1ba61c9e26	refs/tags/v1.3.0-M0^{}
+b156707cc4404d6098208718206d82753b1c8fed	refs/tags/v1.3.0-RC1
+594e0572e135ff01733ee85d0e3ae0c38ebd2c3b	refs/tags/v1.3.0-RC1^{}
+41ddcff335ec2a279ac1bfa37a30533b30747138	refs/tags/v1.4.0
+2884b12f06df09a38040add82e78361dcb5c51c2	refs/tags/v1.4.0^{}
+87723e2d9bde9d55a27cfa65b116d427402e7e5e	refs/tags/v1.4.0-M0
+886ea10c3fdd3c05f01afe15b2a328a9887f0b60	refs/tags/v1.4.0-M0^{}
+4a3fc031e521f61c00201bd8a44e7d0f6a38a3fc	refs/tags/v1.4.0-RC1
+1fcfc9d9942818d70262e9e5b48a730c4bc05709	refs/tags/v1.4.0-RC1^{}
+6479a4492fb2d26a23151212789b0679c49fe5ef	refs/tags/v1.4.0-RC2
+2884b12f06df09a38040add82e78361dcb5c51c2	refs/tags/v1.4.0-RC2^{}
+25876c8bb4df5d85e321166631f2b7ab8f6e1428	refs/tags/v1.5.0
+8ec2e2eca69ae85d6c4632778aff6bed516979d8	refs/tags/v1.5.0^{}
+9bb8581b24ffc727b24cc03a7c8bf41fd3b25e9d	refs/tags/v1.5.0-M0
+07b19b07d699b1dd089fc0095e542ff8c38afdc0	refs/tags/v1.5.0-M0^{}
+cc63adcee501094a9e92afd7d00c3662684f78f5	refs/tags/v1.5.0-RC1
+8ec2e2eca69ae85d6c4632778aff6bed516979d8	refs/tags/v1.5.0-RC1^{}
+865cac8f47f580102f98fa925f48947f53fd31d2	refs/tags/v1.6.0-M0
+a1c929c0b489c3fd0dd2b9dfaa65245ab9361bde	refs/tags/v1.6.0-M0^{}
+55650e79c7d5266b96641c9ab8c278ab7f93c995	refs/tags/v1.6.0-RC1
+1e705905c9120d5dc16485727774030847650ff7	refs/tags/v1.6.0-RC1^{}
+
+ succeeded in 1622ms:
+404 actor-typed/src/test
+404 scala/typed/src/test
+404 actor-typed-tests/src/test
+
+web search: 
+web search: site:github.com/apache/pekko pekko-actor-typed tests 1.6.0 actor typed src/test
+exec
+/usr/bin/bash -lc "curl -i -fsSL https://api.github.com/repos/apache/pekko/git/matching-refs/tags/v1.6.0 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc 'for tag in v1.6.0 v1.6.0-RC1 v1.5.0; do for p in actor-typed-tests/src/test actor-tests/src/test actor-typed/src/test docs/src/test; do code=$(curl -L -o /dev/null -s -w '"'%{http_code}' \"https://github.com/apache/pekko/tree/"'$tag/$p"); printf '"'%s %s %s\\n' \""'$code" "$tag" "$p"; done; done' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/pekko-actor-typed_2.13-1.6.0-sources.jar -o /tmp/pekko-actor-typed-sources.jar && jar tf /tmp/pekko-actor-typed-sources.jar | head -80' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko/main/project/Dependencies.scala | rg -n 'scala213|scalaVersion|2\\.13' | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 498ms:
+38:  val nettyVersion = "4.2.13.Final"
+45:  val scala213Version = "2.13.18"
+47:  val allScalaVersions = Seq(scala213Version, scala3Version)
+55:  val Versions = Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head)
+420:    libraryDependencies ++= modules.flatMap(m => m.modules(scalaVersion.value))
+
+ succeeded in 536ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 05:12:02 GMT
+content-type: application/json; charset=utf-8
+cache-control: public, max-age=60, s-maxage=60
+vary: Accept,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4e9c7f168ab05dc975c9e97fee165638326a0e6c76606dd41f354d8197af0295"
+last-modified: Tue, 05 May 2026 18:12:26 GMT
+x-poll-interval: 300
+x-github-media-type: github.v3; format=json
+x-github-api-version-selected: 2022-11-28
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+accept-ranges: bytes
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 52
+x-ratelimit-used: 8
+x-ratelimit-resource: core
+x-ratelimit-reset: 1778047258
+content-length: 785
+x-github-request-id: 5122:1F37CC:140C2DB:134F2F6:69FACDA2
+
+[
+  {
+    "ref": "refs/tags/v1.6.0-M0",
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjEuNi4wLU0w",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.6.0-M0",
+    "object": {
+      "sha": "865cac8f47f580102f98fa925f48947f53fd31d2",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/865cac8f47f580102f98fa925f48947f53fd31d2"
+    }
+  },
+  {
+    "ref": "refs/tags/v1.6.0-RC1",
+    "node_id": "REF_kwDOIV69lrRyZWZzL3RhZ3MvdjEuNi4wLVJDMQ",
+    "url": "https://api.github.com/repos/apache/pekko/git/refs/tags/v1.6.0-RC1",
+    "object": {
+      "sha": "55650e79c7d5266b96641c9ab8c278ab7f93c995",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/pekko/git/tags/55650e79c7d5266b96641c9ab8c278ab7f93c995"
+    }
+  }
+]
+
+ succeeded in 675ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/pekko/
+org/apache/pekko/actor/
+org/apache/pekko/actor/typed/
+org/apache/pekko/actor/typed/delivery/
+org/apache/pekko/actor/typed/delivery/internal/
+org/apache/pekko/actor/typed/eventstream/
+org/apache/pekko/actor/typed/internal/
+org/apache/pekko/actor/typed/internal/adapter/
+org/apache/pekko/actor/typed/internal/pubsub/
+org/apache/pekko/actor/typed/internal/receptionist/
+org/apache/pekko/actor/typed/internal/routing/
+org/apache/pekko/actor/typed/javadsl/
+org/apache/pekko/actor/typed/pubsub/
+org/apache/pekko/actor/typed/receptionist/
+org/apache/pekko/actor/typed/scaladsl/
+org/apache/pekko/actor/typed/scaladsl/adapter/
+META-INF/LICENSE
+META-INF/NOTICE
+org/apache/pekko/actor/typed/ActorRef.scala
+org/apache/pekko/actor/typed/ActorRefResolver.scala
+org/apache/pekko/actor/typed/ActorSystem.scala
+org/apache/pekko/actor/typed/Behavior.scala
+org/apache/pekko/actor/typed/BehaviorInterceptor.scala
+org/apache/pekko/actor/typed/Dispatchers.scala
+org/apache/pekko/actor/typed/Extensions.scala
+org/apache/pekko/actor/typed/LogOptions.scala
+org/apache/pekko/actor/typed/MessageAndSignals.scala
+org/apache/pekko/actor/typed/Props.scala
+org/apache/pekko/actor/typed/Scheduler.scala
+org/apache/pekko/actor/typed/SpawnProtocol.scala
+org/apache/pekko/actor/typed/SupervisorStrategy.scala
+org/apache/pekko/actor/typed/TypedActorContext.scala
+org/apache/pekko/actor/typed/delivery/ConsumerController.scala
+org/apache/pekko/actor/typed/delivery/DurableProducerQueue.scala
+org/apache/pekko/actor/typed/delivery/ProducerController.scala
+org/apache/pekko/actor/typed/delivery/WorkPullingProducerController.scala
+org/apache/pekko/actor/typed/delivery/internal/ChunkedMessage.scala
+org/apache/pekko/actor/typed/delivery/internal/ConsumerControllerImpl.scala
+org/apache/pekko/actor/typed/delivery/internal/DeliverySerializable.scala
+org/apache/pekko/actor/typed/delivery/internal/ProducerControllerImpl.scala
+org/apache/pekko/actor/typed/delivery/internal/WorkPullingProducerControllerImpl.scala
+org/apache/pekko/actor/typed/eventstream/EventStream.scala
+org/apache/pekko/actor/typed/internal/ActorContextImpl.scala
+org/apache/pekko/actor/typed/internal/ActorFlightRecorder.scala
+org/apache/pekko/actor/typed/internal/ActorMdc.scala
+org/apache/pekko/actor/typed/internal/ActorRefImpl.scala
+org/apache/pekko/actor/typed/internal/BehaviorImpl.scala
+org/apache/pekko/actor/typed/internal/EventStreamExtension.scala
+org/apache/pekko/actor/typed/internal/ExtensionsImpl.scala
+org/apache/pekko/actor/typed/internal/InterceptorImpl.scala
+org/apache/pekko/actor/typed/internal/InternalMessage.scala
+org/apache/pekko/actor/typed/internal/InternalRecipientRef.scala
+org/apache/pekko/actor/typed/internal/LoggerClass.scala
+org/apache/pekko/actor/typed/internal/MiscMessageSerializer.scala
+org/apache/pekko/actor/typed/internal/PoisonPill.scala
+org/apache/pekko/actor/typed/internal/PropsImpl.scala
+org/apache/pekko/actor/typed/internal/StashBufferImpl.scala
+org/apache/pekko/actor/typed/internal/Supervision.scala
+org/apache/pekko/actor/typed/internal/SystemMessage.scala
+org/apache/pekko/actor/typed/internal/TimerSchedulerImpl.scala
+org/apache/pekko/actor/typed/internal/WithMdcBehaviorInterceptor.scala
+org/apache/pekko/actor/typed/internal/adapter/ActorAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/ActorContextAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/ActorRefAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/ActorRefFactoryAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/ActorSystemAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/AdapterExtension.scala
+org/apache/pekko/actor/typed/internal/adapter/EventStreamAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/GuardianStartupBehavior.scala
+org/apache/pekko/actor/typed/internal/adapter/PropsAdapter.scala
+org/apache/pekko/actor/typed/internal/adapter/SchedulerAdapter.scala
+org/apache/pekko/actor/typed/internal/pubsub/TopicImpl.scala
+org/apache/pekko/actor/typed/internal/receptionist/LocalReceptionist.scala
+org/apache/pekko/actor/typed/internal/receptionist/Platform.scala
+org/apache/pekko/actor/typed/internal/receptionist/ReceptionistImpl.scala
+org/apache/pekko/actor/typed/internal/receptionist/ReceptionistMessages.scala
+
+ succeeded in 8266ms:
+404 v1.6.0 actor-typed-tests/src/test
+404 v1.6.0 actor-tests/src/test
+404 v1.6.0 actor-typed/src/test
+404 v1.6.0 docs/src/test
+200 v1.6.0-RC1 actor-typed-tests/src/test
+200 v1.6.0-RC1 actor-tests/src/test
+404 v1.6.0-RC1 actor-typed/src/test
+200 v1.6.0-RC1 docs/src/test
+200 v1.5.0 actor-typed-tests/src/test
+200 v1.5.0 actor-tests/src/test
+404 v1.5.0 actor-typed/src/test
+200 v1.5.0 docs/src/test
+
+exec
+/usr/bin/bash -lc "curl -L -o /dev/null -s -w '%{http_code}\\n' https://github.com/apache/pekko/tree/1.6.0/actor-typed-tests/src/test && curl -L -o /dev/null -s -w '%{http_code}\\n' https://github.com/apache/pekko/tree/pekko-1.6.0/actor-typed-tests/src/test && curl -L -o /dev/null -s -w '%{http_code}\\n' https://github.com/apache/pekko/tree/release-1.6/actor-typed-tests/src/test" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/apache/pekko.git | rg '1\\.6|release|main' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko/v1.6.0-RC1/build.sbt | rg -n 'actor-typed|actorTyped|project' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko/v1.6.0-RC1/actor-typed-tests/src/test/scala/org/apache/pekko/actor/typed/ActorSpec.scala | sed -n '1,60p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 134ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 178ms:
+7: * This file is part of the Apache Pekko project, which was derived from Akka.
+46:  loadSystemProperties("project/pekko-build.properties")
+59:  actorTyped,
+87:  actorTypedTests,
+113:    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
+140:  .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
+226:    actorTyped,
+233:    actorTyped % "compile->compile;test->test",
+237:    actorTypedTests % "compile->compile;test->test",
+259:    actorTyped % "optional->compile",
+364:    exportJars := true, // in dependent projects, use assembled and shaded jar
+481:lazy val actorTyped = pekkoModule("actor-typed")
+484:  .settings(Dependencies.actorTyped)
+485:  .settings(OSGi.actorTyped)
+505:    actorTyped,
+526:    actorTyped,
+531:    actorTypedTests % "test->test",
+545:    actorTyped % "compile->CompileJdk9",
+549:    actorTypedTests % "test->test",
+565:    actorTyped,
+569:    actorTypedTests % "test->test")
+580:  .dependsOn(actorTyped, slf4j, testkit % "compile->compile;test->test")
+584:lazy val actorTypedTests = pekkoModule("actor-typed-tests")
+585:  .dependsOn(actorTyped % "compile->CompileJdk9", actorTestkitTyped % "compile->compile;test->test", actor)
+665:    commandValue(actorTyped, Some(actorTypedTests)),
+
+ succeeded in 322ms:
+0cbd8afb7df18b5223e7bf9cb17619365734e50e	refs/heads/1.6.x
+d324a8c09c1b0701f685a52e13a970c63f41b233	refs/heads/gha-stage-release-candidate
+1d3c313dad9456e432b401e3c8f02954c03f1d40	refs/heads/main
+
+ succeeded in 1517ms:
+404
+404
+404
+
+codex
+The release directory exposes `jar`, `sources.jar`, and `javadoc.jar`, but no Maven test artifact. The upstream repository has `actor-typed-tests/src/test`, yet there is no final `v1.6.0` tag available, only milestone/RC tags and a `1.6.x` branch, so I’m setting the test URL to `N/A` rather than pointing metadata at a non-release or non-rendering URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+index 93ea837a5dd31efa1f780e08c6e547babcbc6f5a..9f4351243f170fbe464956e45c22a705c5777eff
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/pekko",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+index 93ea837a5dd31efa1f780e08c6e547babcbc6f5a..9f4351243f170fbe464956e45c22a705c5777eff
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/pekko",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2 org/apache/pekko/pekko-actor-typed_2.13/1.6.0
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor-typed_2.13
+web search: 
+web search: github apache pekko tags v1.6.0-RC1 v1.6.0-M0
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/pekko",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
+  "description": "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fI -s https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/pekko-actor-typed_2.13-1.6.0-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 05:12:50 GMT
+content-type: application/java-archive
+content-length: 199266
+cf-ray: 9f757e040beedc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 252421
+etag: "12b827bd39b343d35cd42658527ef0b4"
+last-modified: Fri, 24 Apr 2026 09:34:34 GMT
+x-checksum-md5: 12b827bd39b343d35cd42658527ef0b4
+x-checksum-sha1: 9826eb4eccdfd058127e5d8ef16ac3f6a8e88863
+
+exec
+/usr/bin/bash -lc "curl -fI -s https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/pekko-actor-typed_2.13-1.6.0-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/pekko-actor-typed_2.13-1.6.0.jar -o /tmp/pekko-actor-typed.jar && jar tf /tmp/pekko-actor-typed.jar | rg '\\.class"'$'"' | head -10" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 410ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 05:12:51 GMT
+content-type: application/java-archive
+content-length: 2584483
+cf-ray: 9f757e045b4423f7-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "d892984d9a323c780d4608099774a577"
+last-modified: Fri, 24 Apr 2026 09:34:34 GMT
+x-checksum-md5: d892984d9a323c780d4608099774a577
+x-checksum-sha1: 59f4fd4e93cf7be64af77e42e0ee005654a5ff92
+server: cloudflare
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+index 93ea837a5dd31efa1f780e08c6e547babcbc6f5a..9f4351243f170fbe464956e45c22a705c5777eff
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/pekko",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 542ms:
+org/apache/pekko/actor/typed/AbstractExtensionSetup$$anonfun$$lessinit$greater$1.class
+org/apache/pekko/actor/typed/AbstractExtensionSetup.class
+org/apache/pekko/actor/typed/ActorRef$.class
+org/apache/pekko/actor/typed/ActorRef$ActorRefOps$.class
+org/apache/pekko/actor/typed/ActorRef$ActorRefOps.class
+org/apache/pekko/actor/typed/ActorRef.class
+org/apache/pekko/actor/typed/ActorRefResolver$.class
+org/apache/pekko/actor/typed/ActorRefResolver.class
+org/apache/pekko/actor/typed/ActorRefResolverImpl.class
+org/apache/pekko/actor/typed/ActorRefResolverSetup$.class
+
+codex
+The patched JSON is valid, the Maven source and javadoc URLs return `200`, and the artifact jar contains JVM `.class` files. I’m doing one final diff check so the close-out names exactly what changed.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+index 93ea837a5dd31efa1f780e08c6e547babcbc6f5a..9f4351243f170fbe464956e45c22a705c5777eff
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/pekko",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 191ms:
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/1.6.0/
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor-typed_2.13
+web search: 
+web search: "pekko-actor-typed_2.13-1.6.0-sources.jar"
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
+     3	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
+     4	  "repository-url" : "https://github.com/apache/pekko",
+     5	  "test-code-url" : "N/A",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
+     7	  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "2"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+index 93ea837a5dd31efa1f780e08c6e547babcbc6f5a..9f4351243f170fbe464956e45c22a705c5777eff
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/pekko",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: org.apache.pekko pekko-actor-typed_2.13 1.6.0 Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor-typed_2.13
+web search: 
+web search: https://pekko.apache.org/api/pekko/current/org/apache/pekko/index.html
+codex
+Updated [org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json:1).
+
+I set Maven Central source/javadoc URLs, the GitHub repository root, a two-sentence description, and `"language": { "name": "scala", "version": "2" }`. I left `test-code-url` as `"N/A"` because there is no Maven test artifact and I could not find a final `v1.6.0` upstream tag to point at; I did not set `not-for-native-image` because this is a JVM `jar` artifact with `.class` files. Maven Central metadata also confirms the artifact identity, `jar` packaging, SCM root, and Scala dependency. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor-typed_2.13))
+
+Verification: JSON parses with `jq`; source and javadoc URLs return `200`; downloaded artifact jar contains JVM class files.
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+index 93ea837a5dd31efa1f780e08c6e547babcbc6f5a..9f4351243f170fbe464956e45c22a705c5777eff
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor-typed_2.13:1.6.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/pekko",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-typed_2.13/$version$/pekko-actor-typed_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor Typed provides the typed actor API for building concurrent, distributed, and resilient message-driven JVM applications in Scala and Java. It adds type-safe actor references, behaviors, supervision, scheduling, event streams, receptionists, routing, and adapters over the core Pekko actor runtime.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+92,967
+Updated [org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.json:1).
+
+I set Maven Central source/javadoc URLs, the GitHub repository root, a two-sentence description, and `"language": { "name": "scala", "version": "2" }`. I left `test-code-url` as `"N/A"` because there is no Maven test artifact and I could not find a final `v1.6.0` upstream tag to point at; I did not set `not-for-native-image` because this is a JVM `jar` artifact with `.class` files. Maven Central metadata also confirms the artifact identity, `jar` packaging, SCM root, and Scala dependency. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor-typed_2.13))
+
+Verification: JSON parses with `jq`; source and javadoc URLs return `200`; downloaded artifact jar contains JVM class files.
+Ran agent for org.apache.pekko:pekko-actor-typed_2.13:1.6.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/build/agent-artifact-discovery-logs/org.apache.pekko-pekko-actor-typed_2.13-1.6.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5364-14fa7814/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 35s
+9 actionable tasks: 9 executed
