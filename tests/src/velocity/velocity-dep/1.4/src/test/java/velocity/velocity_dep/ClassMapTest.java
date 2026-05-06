@@ -1,0 +1,39 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package velocity.velocity_dep;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Method;
+
+import org.apache.velocity.util.introspection.ClassMap;
+import org.junit.jupiter.api.Test;
+
+public class ClassMapTest {
+    @Test
+    void resolvesPublicInterfaceMethodForNonPublicImplementation() throws Exception {
+        final Method implementationMethod = HiddenGreeter.class.getMethod("greet", String.class);
+
+        final Method publicMethod = ClassMap.getPublicMethod(implementationMethod);
+
+        assertThat(publicMethod).isNotNull();
+        assertThat(publicMethod.getDeclaringClass()).isSameAs(Greeter.class);
+        assertThat(publicMethod.getName()).isEqualTo("greet");
+        assertThat(publicMethod.getParameterTypes()).containsExactly(String.class);
+    }
+
+    public interface Greeter {
+        String greet(String name);
+    }
+
+    private static final class HiddenGreeter implements Greeter {
+        @Override
+        public String greet(final String name) {
+            return "Hello " + name;
+        }
+    }
+}
