@@ -13,6 +13,9 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "org.wildfly.common:wildfly-common:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testRuntimeOnly('org.graalvm.compiler:compiler:1.0.0-rc9') {
+        transitive = false
+    }
 }
 
 graalvmNative {
