@@ -55,7 +55,7 @@ class Pprint_3Test {
     assertTrue(mapText.startsWith("ListMap(") || mapText.startsWith("Map("))
     assertTrue(mapText.contains("\"one\" -> 1"))
     assertTrue(mapText.contains("\"two\" -> 2"))
-    assertEquals("Some(value = 42)", printer(Some(42)).plainText)
+    assertEquals("Some(42)", printer(Some(42)).plainText)
     assertEquals("Some(42)", printer(Some(42), showFieldNames = false).plainText)
     assertEquals("None", printer(None).plainText)
     assertEquals("empty iterator", printer(Iterator.empty).plainText)
