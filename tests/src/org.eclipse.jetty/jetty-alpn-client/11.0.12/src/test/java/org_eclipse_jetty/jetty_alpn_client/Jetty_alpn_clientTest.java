@@ -120,6 +120,25 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
+    void endOfInputCompletesNegotiationAndUpgradesToProtocolConnection() throws Exception {
+        ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
+        Map<String, Object> context = new HashMap<>();
+        TestClientConnectionFactory connectionFactory = new TestClientConnectionFactory();
+        ALPNClientConnection connection = newAlpnConnection(endPoint, connectionFactory, context);
+        endPoint.setConnection(connection);
+        endPoint.addInputEOF();
+
+        connection.onFillable();
+
+        assertThat(connection.getProtocol()).isNull();
+        assertThat(connectionFactory.createdConnections).hasSize(1);
+        assertThat(connectionFactory.seenEndPoints).containsExactly(endPoint);
+        assertThat(connectionFactory.seenContexts).containsExactly(context);
+        assertThat(endPoint.getConnection()).isSameAs(connectionFactory.createdConnections.get(0));
+        assertThat(connectionFactory.createdConnections.get(0).opened).isTrue();
+    }
+
+    @Test
     void closeShutsDownEndPointOutput() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
         TestClientConnectionFactory connectionFactory = new TestClientConnectionFactory();
