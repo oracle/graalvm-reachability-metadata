@@ -72,6 +72,15 @@ final class Scalac_compat_annotation_2_13Test {
   }
 
   @Test
+  def nowarnAliasesCanAnnotateExpressionCallSites(): Unit = {
+    val surface: ExpressionNowarnSurface = new ExpressionNowarnSurface
+
+    assertThat(surface.callWithNowarn()).isEqualTo(42)
+    assertThat(surface.callWithNowarn2()).isEqualTo(42)
+    assertThat(surface.callWithNowarn213()).isEqualTo(42)
+  }
+
+  @Test
   def staticAndThreadUnsafeCompatibilityAnnotationsDoNotChangeScala213Semantics(): Unit = {
     val cache: ThreadUnsafeCache = new ThreadUnsafeCache
 
@@ -174,6 +183,20 @@ final class Scalac_compat_annotation_2_13Test {
 
     @nowarn3("ignored on Scala 2.13")
     def cleanScala3OnlyMethod(): Int = 42
+  }
+
+  private final class ExpressionNowarnSurface {
+    def callWithNowarn(): Int = {
+      DeprecatedApi.value: @nowarn("cat=deprecation")
+    }
+
+    def callWithNowarn2(): Int = {
+      DeprecatedApi.value: @nowarn2("cat=deprecation")
+    }
+
+    def callWithNowarn213(): Int = {
+      DeprecatedApi.value: @nowarn213("cat=deprecation")
+    }
   }
 
   private object AnnotatedFactory {
