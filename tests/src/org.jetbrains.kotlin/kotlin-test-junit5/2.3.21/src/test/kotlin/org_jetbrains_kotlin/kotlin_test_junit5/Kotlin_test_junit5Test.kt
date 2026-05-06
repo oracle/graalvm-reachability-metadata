@@ -20,6 +20,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import kotlin.test.fail
 import kotlin.test.junit5.JUnit5Asserter
 import kotlin.test.junit5.JUnit5Contributor
 import org.opentest4j.AssertionFailedError
@@ -148,5 +149,15 @@ public class Kotlin_test_junit5Test {
         }
 
         assertEquals("invalid argument", exception.message)
+    }
+
+    @Test
+    fun explicitKotlinTestFailureIsReportedAsJUnit5AssertionFailure(): Unit {
+        val failure = assertFailsWith<AssertionFailedError> {
+            fail("explicit failure from kotlin.test")
+        }
+
+        assertContains(assertNotNull(failure.message), "explicit failure from kotlin.test")
+        assertNull(failure.cause)
     }
 }
