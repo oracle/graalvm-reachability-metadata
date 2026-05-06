@@ -6,6 +6,7 @@
  */
 package org_jetbrains_kotlin.kotlin_scripting_jsr223
 
+import java.io.StringReader
 import javax.script.Bindings
 import javax.script.Compilable
 import javax.script.CompiledScript
@@ -121,6 +122,21 @@ public class KotlinScriptingJsr223Test {
 
         assertThat(compiledScript.eval(SimpleBindings(mutableMapOf<String, Any>("value" to 6)))).isEqualTo(36)
         assertThat(compiledScript.eval(SimpleBindings(mutableMapOf<String, Any>("value" to 7)))).isEqualTo(49)
+    }
+
+    @Test
+    public fun evaluatesScriptSourceFromReader(): Unit = runDynamicScriptTest {
+        val engine: ScriptEngine = newEngine()
+        val source: StringReader = StringReader(
+            """
+            val values = listOf(8, 13, 21)
+            values.sum()
+            """.trimIndent(),
+        )
+
+        val result: Any? = engine.eval(source)
+
+        assertThat(result).isEqualTo(42)
     }
 
     @Test
