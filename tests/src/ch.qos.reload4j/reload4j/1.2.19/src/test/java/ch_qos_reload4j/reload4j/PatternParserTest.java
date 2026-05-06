@@ -36,7 +36,7 @@ public class PatternParserTest {
         assertThat(formattingInfos).hasSize(1);
         assertThat(patternConverters.get(0)).isInstanceOf(FactoryMethodPatternConverter.class);
 
-        StringBuffer formatted = new StringBuffer();
+        StringBuffer formatted = new java.lang.StringBuffer();
         patternConverters.get(0).format("ignored", formatted);
         assertThat(formatted).hasToString("factory:alpha,beta");
     }
@@ -59,7 +59,7 @@ public class PatternParserTest {
         assertThat(formattingInfos).hasSize(1);
         assertThat(patternConverters.get(0)).isInstanceOf(DefaultConstructorPatternConverter.class);
 
-        StringBuffer formatted = new StringBuffer();
+        StringBuffer formatted = new java.lang.StringBuffer();
         patternConverters.get(0).format("ignored", formatted);
         assertThat(formatted).hasToString("default-constructor");
     }

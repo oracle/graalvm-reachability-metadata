@@ -176,7 +176,7 @@ public class DOMConfiguratorTest {
 
         @Override
         public String[] doRender(Throwable throwable) {
-            return new String[] { throwable.toString() };
+            return new String[] {throwable.toString() };
         }
     }
 }
