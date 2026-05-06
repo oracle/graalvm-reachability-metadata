@@ -8,7 +8,9 @@ package org_typelevel.cats_free_3
 
 import cats.Contravariant
 import cats.Eval
+import cats.Foldable
 import cats.Id
+import cats.Traverse
 import cats.arrow.FunctionK
 import cats.catsInstancesForId
 import cats.data.EitherK
@@ -82,6 +84,31 @@ class Cats_free_3Test {
 
     assertThat(freeOption.runTailRec).isEqualTo(Some(44))
     assertThat(compiled.foldMap(listIdentity)).isEqualTo(List(44))
+  }
+
+  @Test
+  def freeTraverseAndFoldableVisitEveryCompletedBranch(): Unit = {
+    val choices: Free[List, Int] = Free.liftF[List, Int](List(1, 2, 3))
+      .flatMap(value => Free.liftF[List, Int](List(value, value * 10)))
+      .map(_ + 1)
+
+    val branchValues: List[Int] = Foldable[[A] =>> Free[List, A]].foldLeft(choices, List.empty[Int])(_ :+ _)
+    val branchSum: Int = Foldable[[A] =>> Free[List, A]]
+      .foldRight(choices, Eval.now(0))((value, total) => total.map(_ + value))
+      .value
+    val traversed: Option[Free[List, String]] = Traverse[[A] =>> Free[List, A]].traverse(choices) { value =>
+      Option(s"leaf=$value")
+    }
+    val rejected: Option[Free[List, String]] = Traverse[[A] =>> Free[List, A]].traverse(choices) { value =>
+      if value < 20 then Option(s"small=$value") else Option.empty[String]
+    }
+
+    assertThat(branchValues).isEqualTo(List(2, 11, 3, 21, 4, 31))
+    assertThat(branchSum).isEqualTo(72)
+    assertThat(traversed.map(_.runTailRec)).isEqualTo(
+      Some(List("leaf=2", "leaf=11", "leaf=3", "leaf=21", "leaf=4", "leaf=31"))
+    )
+    assertThat(rejected).isEqualTo(None)
   }
 
   @Test
