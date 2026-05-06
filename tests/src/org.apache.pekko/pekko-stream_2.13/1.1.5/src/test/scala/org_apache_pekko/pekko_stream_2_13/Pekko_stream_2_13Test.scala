@@ -34,6 +34,7 @@ import java.nio.file.Path
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.concurrent.Promise
 import scala.concurrent.duration.DurationInt
 import scala.jdk.CollectionConverters._
 
@@ -205,6 +206,31 @@ class Pekko_stream_2_13Test {
         Timeout
       )
       assertThat(decompressed.utf8String).isEqualTo(text)
+    }
+  }
+
+  @Test
+  def preservesElementOrderAcrossAsynchronousStages(): Unit = {
+    withStreamSystem("map-async") { (_, materializer, executionContext) =>
+      implicit val implicitMaterializer: Materializer = materializer
+      implicit val implicitExecutionContext: ExecutionContext = executionContext
+      val first: Promise[Int] = Promise[Int]()
+      val second: Promise[Int] = Promise[Int]()
+      val third: Promise[Int] = Promise[Int]()
+      val completions: Map[Int, Promise[Int]] = Map(1 -> first, 2 -> second, 3 -> third)
+
+      val resultFuture: Future[Seq[Int]] = Source(List(1, 2, 3))
+        .mapAsync(parallelism = 3) { value =>
+          completions(value).future.map(_ * 10)
+        }
+        .runWith(Sink.seq[Int])
+
+      third.success(3)
+      second.success(2)
+      first.success(1)
+
+      val result: Seq[Int] = Await.result(resultFuture, Timeout)
+      assertThat(result.toList.asJava).containsExactly(10, 20, 30)
     }
   }
 
