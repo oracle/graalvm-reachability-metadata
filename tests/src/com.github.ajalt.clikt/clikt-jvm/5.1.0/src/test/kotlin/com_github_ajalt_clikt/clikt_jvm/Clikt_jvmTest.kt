@@ -21,6 +21,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.testing.test
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -96,6 +97,26 @@ public class Clikt_jvmTest {
     }
 
     @Test
+    fun `jvm path parameter type validates and converts filesystem paths`(@TempDir tempDir: Path) {
+        val configFile = tempDir.resolve("application.conf")
+        Files.writeString(configFile, "name=native")
+
+        val success = PathConfigCommand().test(listOf("--config", configFile.toString()))
+
+        assertThat(success.statusCode).isZero()
+        assertThat(success.stdout).contains("config=application.conf content=name=native")
+        assertThat(success.stderr).isEmpty()
+
+        val directory = PathConfigCommand().test(listOf("--config", tempDir.toString()))
+
+        assertThat(directory.statusCode).isEqualTo(1)
+        assertThat(directory.stdout).isEmpty()
+        assertThat(directory.stderr)
+            .contains("--config")
+            .contains(tempDir.toString())
+    }
+
+    @Test
     fun `chained commands pass returned values through multiple subcommands`() {
         val root = ChainRootCommand().subcommands(
             ChainAddCommand(),
@@ -160,6 +181,16 @@ public class Clikt_jvmTest {
 
         override fun run() {
             echo("title=$title items=${items.joinToString(",")}")
+        }
+    }
+
+    private class PathConfigCommand : CliktCommand("path-config") {
+        private val config: Path by option("--config")
+            .path(mustExist = true, canBeDir = false, mustBeReadable = true)
+            .required()
+
+        override fun run() {
+            echo("config=${config.fileName} content=${Files.readString(config)}")
         }
     }
 
