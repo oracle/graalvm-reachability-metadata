@@ -9,7 +9,9 @@ package com_typesafe_akka.akka_slf4j_2_13
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorSystem
+import akka.actor.DiagnosticActorLogging
 import akka.actor.Props
+import akka.event.Logging.{MDC => AkkaMDC}
 import akka.event.slf4j.{Logger => Slf4jEventLogger, Slf4jLogMarker}
 import akka.pattern.ask
 import akka.util.Timeout
@@ -99,6 +101,21 @@ class Akka_slf4j_2_13Test {
     }
   }
 
+  @Test
+  def diagnosticActorLoggingPublishesMappedDiagnosticContext(): Unit = {
+    withActorSystem("Slf4jDiagnosticActorLoggingTest") { system =>
+      implicit val timeout: Timeout = Timeout(RequestTimeout)
+      val logger = system.actorOf(Props(new DiagnosticLoggingActor), "diagnostic-logger")
+
+      val result = Await.result(
+        logger ? DiagnosticLoggingActor.LogWithContext("echo", "correlation-7"),
+        RequestTimeout
+      )
+
+      assertThat(result).isEqualTo(DiagnosticLoggingActor.Ack("diagnostic", "echo", "correlation-7"))
+    }
+  }
+
   private def withActorSystem[T](name: String)(body: ActorSystem => T): T = {
     val system = ActorSystem(name, Slf4jAkkaConfig)
     try {
@@ -138,6 +155,28 @@ class Akka_slf4j_2_13Test {
       case LogFailureAndAck(payload) =>
         log.error(new IllegalStateException("simulated failure"), s"failed payload $payload")
         sender() ! Ack("failure", payload)
+    }
+  }
+
+  private object DiagnosticLoggingActor {
+    final case class LogWithContext(payload: String, correlationId: String)
+    final case class Ack(source: String, payload: String, correlationId: String)
+  }
+
+  private final class DiagnosticLoggingActor extends Actor with DiagnosticActorLogging {
+    import DiagnosticLoggingActor._
+
+    override def mdc(currentMessage: Any): AkkaMDC = currentMessage match {
+      case LogWithContext(_, correlationId) =>
+        Map("correlationId" -> correlationId, "component" -> "diagnostic-actor")
+      case _ =>
+        Map.empty
+    }
+
+    override def receive: Receive = {
+      case LogWithContext(payload, correlationId) =>
+        log.info("diagnostic payload {}", payload)
+        sender() ! Ack("diagnostic", payload, correlationId)
     }
   }
 }
