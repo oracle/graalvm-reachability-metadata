@@ -20,6 +20,8 @@ import com.sleepycat.persist.model.SecondaryKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 
 import static com.sleepycat.persist.model.Relationship.MANY_TO_ONE;
@@ -29,6 +31,48 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Exercises Berkeley DB DPL reflection access for private persistent classes.
  */
 public class ReflectionAccessorTest {
+
+    @Test
+    void reflectionAccessorGetsAndSetsPersistentFields(@TempDir Path tmp) throws Exception {
+        Environment environment = openEnvironment(tmp);
+        EntityStore store = null;
+        try {
+            store = openStore(environment);
+            store.getPrimaryIndex(RecordKey.class, CustomerRecord.class);
+
+            Object accessor = getObjectAccessor(store, CustomerRecord.class);
+            CustomerRecord record = new CustomerRecord(
+                new RecordKey("customer", 7),
+                "retail",
+                "original",
+                new Address("Paris", "Rue Cler"),
+                new Address[0]);
+
+            Method setField = accessor.getClass().getDeclaredMethod(
+                "setField",
+                Object.class,
+                int.class,
+                int.class,
+                boolean.class,
+                Object.class);
+            setField.setAccessible(true);
+            Address updatedAddress = new Address("Berlin", "Unter den Linden");
+            setField.invoke(accessor, record, 0, 0, false, updatedAddress);
+
+            Method getField = accessor.getClass().getDeclaredMethod(
+                "getField", Object.class, int.class, int.class, boolean.class);
+            getField.setAccessible(true);
+            Object value = getField.invoke(accessor, record, 0, 0, false);
+
+            assertThat(value).isSameAs(updatedAddress);
+            assertThat(record.billingAddress.city).isEqualTo("Berlin");
+        } finally {
+            if (store != null) {
+                store.close();
+            }
+            environment.close();
+        }
+    }
 
     @Test
     void persistsAndReadsCompositeKeyEntityWithNestedObjectArray(@TempDir Path tmp) throws Exception {
@@ -85,6 +129,26 @@ public class ReflectionAccessorTest {
         config.setAllowCreate(true);
         config.setTransactional(true);
         return new EntityStore(environment, "reflectionAccessorStore", config);
+    }
+
+    private static Object getObjectAccessor(EntityStore store,
+                                            Class<?> entityClass) throws Exception {
+        Object format = store.getModel().getRawType(entityClass.getName());
+        Field accessorField = findField(format.getClass(), "objAccessor");
+        accessorField.setAccessible(true);
+        return accessorField.get(format);
+    }
+
+    private static Field findField(Class<?> type, String name) throws Exception {
+        Class<?> current = type;
+        while (current != null) {
+            try {
+                return current.getDeclaredField(name);
+            } catch (NoSuchFieldException e) {
+                current = current.getSuperclass();
+            }
+        }
+        throw new NoSuchFieldException(name);
     }
 
     @Entity
