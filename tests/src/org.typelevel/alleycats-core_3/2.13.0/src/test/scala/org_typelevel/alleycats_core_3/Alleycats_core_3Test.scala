@@ -18,6 +18,7 @@ import alleycats.Zero
 import cats.Alternative
 import cats.Bimonad
 import cats.Eval
+import cats.FlatMap
 import cats.Foldable
 import cats.Hash
 import cats.Monad
@@ -130,6 +131,55 @@ class Alleycats_core_3Test {
     val successfulTry: Try[String] = Success("syntax")
     assertEquals("syntax", successfulTry.extract)
     assertThrows(classOf[RuntimeException], () => tryExtract.extract(Failure(new RuntimeException("expected"))))
+  }
+
+  @Test
+  def derivesMonadFromPureAndFlatMapForCustomContext(): Unit = {
+    import alleycats.Pure.pureFlatMapIsMonad
+
+    final case class Logged[A](value: A, log: Vector[String])
+
+    given Pure[Logged] with
+      override def pure[A](a: A): Logged[A] = Logged(a, Vector("pure"))
+
+    given FlatMap[Logged] with
+      override def map[A, B](fa: Logged[A])(f: A => B): Logged[B] = Logged(f(fa.value), fa.log :+ "map")
+
+      override def flatMap[A, B](fa: Logged[A])(f: A => Logged[B]): Logged[B] = {
+        val next: Logged[B] = f(fa.value)
+        Logged(next.value, fa.log ++ Vector("flatMap") ++ next.log)
+      }
+
+      override def tailRecM[A, B](a: A)(f: A => Logged[Either[A, B]]): Logged[B] = {
+        var current: A = a
+        var accumulatedLog: Vector[String] = Vector.empty
+        var result: Option[B] = None
+
+        while result.isEmpty do
+          val next: Logged[Either[A, B]] = f(current)
+          accumulatedLog = accumulatedLog ++ next.log
+          next.value match
+            case Left(remaining) => current = remaining
+            case Right(value)    => result = Some(value)
+
+        Logged(result.get, accumulatedLog :+ "tailRecM")
+      }
+
+    val monad: Monad[Logged] = Monad[Logged]
+
+    assertEquals(Logged("created", Vector("pure")), monad.pure("created"))
+    assertEquals(Logged(6, Vector("start", "map")), monad.map(Logged(3, Vector("start")))(_ * 2))
+    assertEquals(
+      Logged(6, Vector("start", "flatMap", "times-three")),
+      monad.flatMap(Logged(2, Vector("start")))(n => Logged(n * 3, Vector("times-three")))
+    )
+    assertEquals(
+      Logged(3, Vector("step-0", "step-1", "step-2", "step-3", "tailRecM")),
+      monad.tailRecM(0) { n =>
+        val step: Either[Int, Int] = if n < 3 then Left(n + 1) else Right(n)
+        Logged(step, Vector(s"step-$n"))
+      }
+    )
   }
 
   @Test
