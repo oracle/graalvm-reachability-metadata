@@ -54,6 +54,31 @@ public class Kotlinx_coroutines_slf4jTest {
     }
 
     @Test
+    fun defaultMdcContextCapturesSnapshotAtConstructionTime(): Unit = runBlocking {
+        MDC.put(REQUEST_ID, "captured")
+        val element: MDCContext = MDCContext()
+
+        MDC.put(REQUEST_ID, "parent-updated")
+        MDC.put(TENANT, "parent-only")
+        val parentContext: Map<String, String>? = MDC.getCopyOfContextMap()
+
+        val coroutineContextMap: Map<String, String>? = withTimeout(5_000) {
+            withContext(Dispatchers.Default + element) {
+                yield()
+                MDC.getCopyOfContextMap()
+            }
+        }
+
+        assertThat(element.contextMap)
+            .containsEntry(REQUEST_ID, "captured")
+            .doesNotContainKey(TENANT)
+        assertThat(coroutineContextMap)
+            .containsEntry(REQUEST_ID, "captured")
+            .doesNotContainKey(TENANT)
+        assertThat(MDC.getCopyOfContextMap()).isEqualTo(parentContext)
+    }
+
+    @Test
     fun mdcChangesInsideCoroutineAreRestoredToCapturedSnapshotAfterSuspension(): Unit = runBlocking {
         MDC.put(REQUEST_ID, "captured")
 
