@@ -32,24 +32,12 @@ jobs:
             ).filter(Boolean);
             const hasLibraryNewRequestLabel = labelNames.includes("library-new-request");
 
-            function extractCoordinatesFromBody(body) {
-              const lines = String(body || "").replace(/\r/g, "").split("\n");
-              let foundHeader = false;
-              for (const line of lines) {
-                if (foundHeader) {
-                  if (line.trim() === "") {
-                    continue;
-                  }
-                  return line.trim();
-                }
-                if (/^###[ \t]+Full Maven coordinates[ \t]*$/.test(line)) {
-                  foundHeader = true;
-                }
-              }
-              return null;
+            function extractCoordinatesFromTitle(title) {
+              const match = String(title || "").match(/([^:\s]+:[^:\s]+:[^\s]+)/);
+              return match ? match[1] : null;
             }
 
-            const coords = extractCoordinatesFromBody(issue.body);
+            const coords = extractCoordinatesFromTitle(issue.title);
             const hasLibraryRequestTitle = Boolean(coords) && issue.title === `Support for ${coords}`;
             const isUnlabeledLibraryRequest = labelNames.length === 0 && hasLibraryRequestTitle;
             if (isUnlabeledLibraryRequest) {
@@ -75,15 +63,14 @@ jobs:
         if: ${{ steps.classify.outputs.should_triage == 'true' }}
         id: extract
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           set -Eeuo pipefail
-          # Normalize CRLF and capture the first non-empty line that follows the "Full Maven coordinates" header
-          COORDS="$(printf '%s\n' "$ISSUE_BODY" | tr -d '\r' | awk '
-            f { if ($0 ~ /^[[:space:]]*$/) next; print; exit }
-            /^###[[:space:]]+Full Maven coordinates[[:space:]]*$/ { f=1 }
-          ')"
-          COORDS="$(echo "$COORDS" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          if [[ "$ISSUE_TITLE" =~ ([^[:space:]:]+:[^[:space:]:]+:[^[:space:]]+) ]]; then
+            COORDS="${BASH_REMATCH[1]}"
+          else
+            COORDS=""
+          fi
           echo "coords=$COORDS" >> "$GITHUB_OUTPUT"
 
       - name: "Validate coordinates format"
@@ -108,7 +95,7 @@ jobs:
             const repo = context.repo.repo;
             const issue_number = context.issue.number;
             const coords = "${{ steps.extract.outputs.coords }}";
-            const reason = `Full Maven coordinates format is invalid: '${coords}'.`;
+            const reason = `Maven coordinates in the issue title are invalid: '${coords}'.`;
             const body = [
               "Automated triage: " + reason,
               "",
@@ -124,7 +111,7 @@ jobs:
               "org.hibernate.orm:hibernate-core:1.2.3",
               "```",
               "",
-              "This issue will be closed. Please open a new issue with the correct format under the '### Full Maven coordinates' section.",
+              "This issue will be closed. Please open a new issue with the correct format in the issue title.",
               "Reopening will not re-run automation; maintainers will review manually."
             ].join("\n");
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
@@ -142,21 +129,9 @@ jobs:
             const coords = "${{ steps.extract.outputs.coords }}";
             const exactTitle = `Support for ${coords}`;
 
-            function extractCoordinatesFromBody(body) {
-              const lines = (body || "").replace(/\r/g, "").split("\n");
-              let foundHeader = false;
-              for (const line of lines) {
-                if (foundHeader) {
-                  if (line.trim() === "") {
-                    continue;
-                  }
-                  return line.trim();
-                }
-                if (/^###[ \t]+Full Maven coordinates[ \t]*$/.test(line)) {
-                  foundHeader = true;
-                }
-              }
-              return null;
+            function extractCoordinatesFromTitle(title) {
+              const match = String(title || "").match(/([^:\s]+:[^:\s]+:[^\s]+)/);
+              return match ? match[1] : null;
             }
 
             const openIssues = await github.paginate(github.rest.issues.listForRepo, {
@@ -170,7 +145,7 @@ jobs:
               if (issue.pull_request || issue.number === issue_number) {
                 return false;
               }
-              return issue.title === exactTitle || extractCoordinatesFromBody(issue.body) === coords;
+              return issue.title === exactTitle || extractCoordinatesFromTitle(issue.title) === coords;
             });
 
             if (!duplicateIssue) {
