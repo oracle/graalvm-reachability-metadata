@@ -16,6 +16,9 @@ dependencies {
 }
 
 List<String> securityManagerArgs = ["-Djava.security.manager=allow"]
+def securityManagerTestLauncher = javaToolchains.launcherFor {
+    languageVersion = JavaLanguageVersion.of(21)
+}
 
 graalvmNative {
     binaries {
@@ -36,8 +39,16 @@ graalvmNative {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+}
+
 tasks.withType(Test).configureEach {
     if ((JavaVersion.current().majorVersion as int) < 24) {
+        jvmArgs += securityManagerArgs
+    } else {
+        // The SecurityManager branch in DisposableBeanAdapter is not reachable on JDK 24+.
+        javaLauncher = securityManagerTestLauncher
         jvmArgs += securityManagerArgs
     }
 }
