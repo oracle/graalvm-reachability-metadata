@@ -53,6 +53,9 @@ class Circe_3Test {
     } yield ApiError(code, message)
   }
 
+  private given eitherDecoder[L: Decoder, R: Decoder]: Decoder[Either[L, R]] =
+    summon[Decoder[L]].either(summon[Decoder[R]])
+
   @Test
   def asJsonSerializesRequestBodyUsingEncoderAndPrinter(): Unit = {
     val widget: Widget = Widget(7, "demo widget", active = true)
@@ -115,6 +118,29 @@ class Circe_3Test {
     )
     assertEquals("""{"code":"missing","message":"not found"}""", unexpected.body)
     assertEquals(StatusCode.NotFound, unexpected.response.code)
+  }
+
+  @Test
+  def asJsonDecodesEmptyBodiesAsNoneWhenEitherSideIsOptional(): Unit = {
+    val leftOptionalBackend: SyncBackendStub = SyncBackendStub.whenAnyRequest.thenRespondAdjust("")
+    val leftOptional = basicRequest
+      .response(asJson[Either[Option[ApiError], Widget]])
+      .get(uri"http://example.com/optional-left")
+      .send(leftOptionalBackend)
+      .body
+
+    val leftExpected: Either[ResponseException[String], Either[Option[ApiError], Widget]] = Right(Left(None))
+    assertEquals(leftExpected, leftOptional)
+
+    val rightOptionalBackend: SyncBackendStub = SyncBackendStub.whenAnyRequest.thenRespondAdjust("")
+    val rightOptional = basicRequest
+      .response(asJson[Either[ApiError, Option[Widget]]])
+      .get(uri"http://example.com/optional-right")
+      .send(rightOptionalBackend)
+      .body
+
+    val rightExpected: Either[ResponseException[String], Either[ApiError, Option[Widget]]] = Right(Right(None))
+    assertEquals(rightExpected, rightOptional)
   }
 
   @Test
