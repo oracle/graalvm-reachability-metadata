@@ -15,7 +15,9 @@ import io.ktor.client.engine.okhttp.OkHttpConfig
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
@@ -24,6 +26,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsBytes
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
@@ -144,6 +147,54 @@ public class KtorClientOkhttpJvmTest {
                 "contentType=application/x-www-form-urlencoded",
                 "name=Ktor+OkHttp",
                 "feature=url+encoded+forms",
+            )
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
+    fun submitsMultipartFormDataWithTextAndBinaryParts(): Unit = withServer { server: TestServer ->
+        server.createContext("/upload") { exchange: HttpExchange ->
+            val contentType: String = exchange.requestHeaders.getFirst(HttpHeaders.ContentType)
+            val requestBody: String = exchange.readRequestBody()
+            val response: String = buildString {
+                appendLine("contentType=$contentType")
+                appendLine("hasDescription=${requestBody.contains("native multipart upload")}")
+                appendLine("hasFileName=${requestBody.contains("filename=\"greeting.txt\"")}")
+                appendLine("hasPayload=${requestBody.contains("hello from a multipart file")}")
+                append("hasPayloadContentType=${requestBody.contains("Content-Type: text/plain")}")
+            }
+            exchange.respond(HttpStatusCode.OK.value, response, "text/plain; charset=utf-8")
+        }
+
+        val client: HttpClient = HttpClient(OkHttp) {
+            installShortTimeouts()
+        }
+        try {
+            val responseText: String = runBlocking {
+                client.submitFormWithBinaryData(
+                    url = server.url("/upload"),
+                    formData = formData {
+                        append("description", "native multipart upload")
+                        append(
+                            "payload",
+                            "hello from a multipart file".toByteArray(UTF_8),
+                            Headers.build {
+                                append(HttpHeaders.ContentType, ContentType.Text.Plain.toString())
+                                append(HttpHeaders.ContentDisposition, "filename=\"greeting.txt\"")
+                            },
+                        )
+                    },
+                ).bodyAsText()
+            }
+
+            assertThat(responseText).contains(
+                "contentType=multipart/form-data",
+                "hasDescription=true",
+                "hasFileName=true",
+                "hasPayload=true",
+                "hasPayloadContentType=true",
             )
         } finally {
             client.close()
