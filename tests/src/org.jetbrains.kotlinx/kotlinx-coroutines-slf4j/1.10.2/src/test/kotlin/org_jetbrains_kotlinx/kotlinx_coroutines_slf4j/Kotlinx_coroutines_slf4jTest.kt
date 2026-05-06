@@ -6,6 +6,10 @@
  */
 package org_jetbrains_kotlinx.kotlinx_coroutines_slf4j
 
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.read.ListAppender
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -17,6 +21,7 @@ import kotlinx.coroutines.yield
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -174,6 +179,47 @@ public class Kotlinx_coroutines_slf4jTest {
         assertThat(context[MDCContext.Key]).isSameAs(element)
         assertThat(context[CoroutineName]?.name).isEqualTo("named")
         assertThat(element.contextMap).containsEntry(REQUEST_ID, "keyed")
+    }
+
+    @Test
+    fun slf4jLogEventsIncludeCoroutineMdcAfterSuspension(): Unit = runBlocking {
+        val logger = LoggerFactory.getLogger(
+            "org_jetbrains_kotlinx.kotlinx_coroutines_slf4j.slf4jLogEventsIncludeCoroutineMdcAfterSuspension",
+        ) as Logger
+        val appender = object : ListAppender<ILoggingEvent>() {
+            override fun append(eventObject: ILoggingEvent): Unit {
+                eventObject.prepareForDeferredProcessing()
+                super.append(eventObject)
+            }
+        }
+        appender.name = "coroutine-mdc-list-appender"
+        appender.start()
+        val previousLevel: Level? = logger.level
+        val previousAdditive: Boolean = logger.isAdditive
+        logger.level = Level.INFO
+        logger.isAdditive = false
+        logger.addAppender(appender)
+
+        try {
+            withTimeout(5_000) {
+                withContext(Dispatchers.Default + MDCContext(mapOf(REQUEST_ID to "logged", TENANT to "tenant-log"))) {
+                    yield()
+                    LoggerFactory.getLogger(logger.name).info("coroutine log event")
+                }
+            }
+
+            assertThat(appender.list).hasSize(1)
+            val event: ILoggingEvent = appender.list.single()
+            assertThat(event.formattedMessage).isEqualTo("coroutine log event")
+            assertThat(event.mdcPropertyMap)
+                .containsEntry(REQUEST_ID, "logged")
+                .containsEntry(TENANT, "tenant-log")
+        } finally {
+            logger.detachAppender(appender)
+            appender.stop()
+            logger.level = previousLevel
+            logger.isAdditive = previousAdditive
+        }
     }
 
     private companion object {
