@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.atomic.AtomicBoolean
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -206,6 +207,29 @@ class Pekko_stream_2_13Test {
         Timeout
       )
       assertThat(decompressed.utf8String).isEqualTo(text)
+    }
+  }
+
+  @Test
+  def streamsElementsFromManagedResourcesAndClosesThem(): Unit = {
+    withStreamSystem("unfold-resource") { (_, materializer, _) =>
+      implicit val implicitMaterializer: Materializer = materializer
+      val closed: AtomicBoolean = new AtomicBoolean(false)
+
+      val result: Seq[String] = Await.result(
+        Source
+          .unfoldResource[String, Iterator[String]](
+            create = () => Iterator("red", "green", "blue"),
+            read = iterator => Option.when(iterator.hasNext)(iterator.next()),
+            close = _ => closed.set(true)
+          )
+          .map(_.toUpperCase)
+          .runWith(Sink.seq[String]),
+        Timeout
+      )
+
+      assertThat(result.toList.asJava).containsExactly("RED", "GREEN", "BLUE")
+      assertThat(closed.get()).isTrue
     }
   }
 
