@@ -97,7 +97,7 @@ class Sourcepos_3Test {
 
     assertEquals(SourcePos("Macro.scala", 19), fromTuple)
     assertEquals(SourcePos("Macro.scala", 19), SourcePos.unapply(fromTuple))
-    assertEquals("SourcePos", SourcePos.toString)
+    assertTrue(SourcePos.toString.startsWith(SourcePos.getClass.getName + "@"))
   }
 
   private def captureContextualSourcePosition(using sourcePos: SourcePos): SourcePos = sourcePos
