@@ -88,6 +88,22 @@ public class Exposed_jsonTest {
     }
 
     @Test
+    fun tableExtensionsUseDefaultSerializersWhenSerializerIsOmitted() {
+        val table = object : Table("default_serializer_documents") {
+            val jsonTags = json<List<String>>("json_tags", Json)
+            val jsonbFlags = jsonb<List<Boolean>>("jsonb_flags", Json, castToJsonFormat = false)
+        }
+        val tags = listOf("default", "serializer", "json")
+        val flags = listOf(true, false, true)
+
+        assertThat(table.jsonTags.columnType.notNullValueToDB(tags)).isEqualTo("""["default","serializer","json"]""")
+        assertThat(table.jsonTags.columnType.valueFromDB("""["default","serializer","json"]""")).isEqualTo(tags)
+        assertThat(table.jsonbFlags.columnType.notNullValueToDB(flags)).isEqualTo("""[true,false,true]""")
+        assertThat(table.jsonbFlags.columnType.valueFromDB("""[true,false,true]""".encodeToByteArray()))
+            .isEqualTo(flags)
+    }
+
+    @Test
     fun jsonConditionExtensionsCreateExpressionsWithTargetCandidateAndPathMetadata() {
         val table = object : Table("condition_documents") {
             val payload = json("payload", ::encodeProfile, ::decodeProfile)
