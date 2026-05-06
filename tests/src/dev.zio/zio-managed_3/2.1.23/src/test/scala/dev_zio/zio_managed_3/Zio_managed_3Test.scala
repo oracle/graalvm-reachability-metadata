@@ -259,6 +259,47 @@ class Zio_managed_3Test {
   }
 
   @Test
+  def reservationsDeferAcquisitionAndReleaseWithUseExit(): Unit = {
+    val values = unsafeRun {
+      for {
+        ref <- Ref.make(List.empty[String])
+        managed: ZManaged[Any, Nothing, String] = ZManaged.fromReservationZIO {
+          ref.update("reserved" :: _) *> ZIO.succeed {
+            Reservation[Any, Nothing, String](
+              acquire = ref.update("acquired" :: _).as("reserved-value"),
+              release = exit => ref.update(s"released-${exitLabel(exit)}" :: _)
+            )
+          }
+        }
+        beforeUse <- ref.get.map(_.reverse)
+        success <- managed.use(value => ref.update(s"used-$value" :: _).as(value))
+        afterSuccess <- ref.get.map(_.reverse)
+        failure <- managed.use(_ => ZIO.fail("reservation-failed")).either
+        afterFailure <- ref.get.map(_.reverse)
+      } yield (beforeUse, success, afterSuccess, failure, afterFailure)
+    }
+
+    assertThat(values._1).isEqualTo(List.empty[String])
+    assertThat(values._2).isEqualTo("reserved-value")
+    assertThat(values._3).isEqualTo(List(
+      "reserved",
+      "acquired",
+      "used-reserved-value",
+      "released-success"
+    ))
+    assertThat(values._4).isEqualTo(Left("reservation-failed"))
+    assertThat(values._5).isEqualTo(List(
+      "reserved",
+      "acquired",
+      "used-reserved-value",
+      "released-success",
+      "reserved",
+      "acquired",
+      "released-failure"
+    ))
+  }
+
+  @Test
   def releaseMapOperationsRegisterReplaceRemoveAndCloseFinalizers(): Unit = {
     val events = unsafeRun {
       for {
