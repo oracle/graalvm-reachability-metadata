@@ -8,7 +8,7 @@ package com_beust.jcommander;
 
 import org.junit.jupiter.api.Test;
 
-class JcommanderTest {
+public class JcommanderTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
