@@ -7,6 +7,7 @@
 package org_jetbrains_kotlinx.kotlinx_coroutines_rx2
 
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -43,6 +44,7 @@ import kotlinx.coroutines.rx2.awaitFirstOrNull
 import kotlinx.coroutines.rx2.awaitLast
 import kotlinx.coroutines.rx2.awaitSingle
 import kotlinx.coroutines.rx2.awaitSingleOrNull
+import kotlinx.coroutines.rx2.collect
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.rx2.rxMaybe
@@ -196,6 +198,26 @@ public class Kotlinx_coroutines_rx2Test {
                 .assertValues(4, 5, 6)
                 .assertComplete()
                 .assertNoErrors()
+        }
+    }
+
+    @Test
+    fun rxSourceCollectExtensionsProcessObservableAndMaybeValues(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val observableValues: MutableList<Int> = mutableListOf()
+            Observable.just(2, 4, 6).collect { value: Int ->
+                observableValues += value
+            }
+            assertThat(observableValues).containsExactly(2, 4, 6)
+
+            val maybeValues: MutableList<String> = mutableListOf()
+            Maybe.just("present").collect { value: String ->
+                maybeValues += value
+            }
+            Maybe.empty<String>().collect { value: String ->
+                maybeValues += value
+            }
+            assertThat(maybeValues).containsExactly("present")
         }
     }
 
