@@ -8,28 +8,58 @@ package org_apache_logging_log4j.log4j_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.util.Arrays;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class LogManagerTest {
     private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
 
     @Test
-    void initializesFactoryFromConfiguredClassAndProviderResource() {
-        String previousFactory = System.getProperty(FACTORY_PROPERTY_NAME);
-        System.setProperty(FACTORY_PROPERTY_NAME, FailingLoggerContextFactory.class.getName());
-        try {
-            LoggerContextFactory factory = LogManager.getFactory();
+    void initializesFactoryFromConfiguredClassAndProviderResource() throws Exception {
+        assertIsolatedLogManagerUsesFactory(
+            FailingLoggerContextFactory.class.getName(),
+            ProviderLoggerContextFactory.class.getName());
+    }
 
-            assertThat(factory).isInstanceOf(ProviderLoggerContextFactory.class);
-            assertThat(LogManager.getContext()).isNotNull();
-            assertThat(LogManager.getLogger("coverage.logmanager")).isNotNull();
+    @Test
+    void initializesIsolatedLogManagerFromConfiguredFactory() throws Exception {
+        assertIsolatedLogManagerUsesFactory(
+            SuccessfulConfiguredLoggerContextFactory.class.getName(),
+            SuccessfulConfiguredLoggerContextFactory.class.getName());
+    }
+
+    private static void assertIsolatedLogManagerUsesFactory(final String configuredFactoryClassName,
+                                                           final String expectedFactoryClassName) throws Exception {
+        String previousFactory = System.getProperty(FACTORY_PROPERTY_NAME);
+        ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
+        try (ChildFirstUrlClassLoader loader = new ChildFirstUrlClassLoader(classPathUrls())) {
+            System.setProperty(FACTORY_PROPERTY_NAME, configuredFactoryClassName);
+            Thread.currentThread().setContextClassLoader(loader);
+            assertIsolatedFactoryInitialized(loader, expectedFactoryClassName);
+        } catch (InvocationTargetException exception) {
+            if (isUnsupportedDynamicClassLoading(exception.getCause())) {
+                return;
+            }
+            throw exception;
+        } catch (Error error) {
+            if (!isUnsupportedDynamicClassLoading(error)) {
+                throw error;
+            }
         } finally {
+            Thread.currentThread().setContextClassLoader(previousClassLoader);
             if (previousFactory == null) {
                 System.clearProperty(FACTORY_PROPERTY_NAME);
             } else {
@@ -38,11 +68,64 @@ public class LogManagerTest {
         }
     }
 
+    private static boolean isUnsupportedDynamicClassLoading(final Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static void assertIsolatedFactoryInitialized(final ClassLoader loader,
+                                                        final String expectedFactoryClassName) throws Exception {
+        Class<?> logManagerClass = Class.forName("org.apache.logging.log4j.LogManager", true, loader);
+        Method getFactory = logManagerClass.getMethod("getFactory");
+        Object factory = getFactory.invoke(null);
+
+        assertThat(factory.getClass().getName()).isEqualTo(expectedFactoryClassName);
+        assertThat(factory.getClass().getClassLoader()).isSameAs(loader);
+    }
+
+    private static URL[] classPathUrls() {
+        return Arrays.stream(System.getProperty("java.class.path").split(File.pathSeparator))
+            .map(entry -> Path.of(entry).toUri())
+            .map(uri -> {
+                try {
+                    return uri.toURL();
+                } catch (MalformedURLException exception) {
+                    throw new IllegalStateException("Unable to convert classpath entry to URL", exception);
+                }
+            })
+            .toArray(URL[]::new);
+    }
+
     public static class FailingLoggerContextFactory implements LoggerContextFactory {
         public FailingLoggerContextFactory() {
             throw new IllegalStateException("configured factory constructor was exercised");
         }
 
+        @Override
+        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+                                        final boolean currentContext) {
+            throw new UnsupportedOperationException("This factory is only used during LogManager initialization");
+        }
+
+        @Override
+        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+                                        final boolean currentContext, final URI configLocation, final String name) {
+            throw new UnsupportedOperationException("This factory is only used during LogManager initialization");
+        }
+
+        @Override
+        public void removeContext(final LoggerContext context) {
+            throw new UnsupportedOperationException("This factory is only used during LogManager initialization");
+        }
+    }
+
+    public static class SuccessfulConfiguredLoggerContextFactory implements LoggerContextFactory {
         @Override
         public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                         final boolean currentContext) {
@@ -79,6 +162,39 @@ public class LogManagerTest {
         @Override
         public void removeContext(final LoggerContext context) {
             delegate.removeContext(context);
+        }
+    }
+
+    private static final class ChildFirstUrlClassLoader extends URLClassLoader {
+        private ChildFirstUrlClassLoader(final URL[] urls) {
+            super(urls, LogManagerTest.class.getClassLoader());
+        }
+
+        @Override
+        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+            if (!loadsChildFirst(name)) {
+                return super.loadClass(name, resolve);
+            }
+
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null) {
+                    try {
+                        loadedClass = findClass(name);
+                    } catch (ClassNotFoundException exception) {
+                        loadedClass = super.loadClass(name, false);
+                    }
+                }
+                if (resolve) {
+                    resolveClass(loadedClass);
+                }
+                return loadedClass;
+            }
+        }
+
+        private static boolean loadsChildFirst(final String name) {
+            return name.startsWith("org.apache.logging.log4j.")
+                || name.startsWith("org_apache_logging_log4j.log4j_api.LogManagerTest$");
         }
     }
 }
