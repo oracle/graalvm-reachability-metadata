@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test
 import sttp.model.sse.ServerSentEvent
 import sttp.tapir.ztapir.*
 import zio.stream.ZStream
-import zio.{RIO, Runtime, Unsafe, ZIO}
+import zio.{RIO, Runtime, Unsafe, ZEnvironment, ZIO}
 
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
 class Tapir_zio_3Test {
+  private final case class GreetingSettings(prefix: String)
+
   private val monad: RIOMonadError[Any] = new RIOMonadError[Any]
 
   @Test
@@ -68,6 +70,26 @@ class Tapir_zio_3Test {
     assertEquals(Right(()), unsafeRun(serverEndpoint.securityLogic(monad)(())))
     assertEquals(Right("Hello, Ada!"), unsafeRun(serverEndpoint.logic(monad)(())("Ada")))
     assertEquals(Left("empty-name"), unsafeRun(serverEndpoint.logic(monad)(())("")))
+  }
+
+  @Test
+  def zServerLogicCanUseProvidedZioEnvironment(): Unit = {
+    val api = endpoint.get
+      .in("greet")
+      .in(query[String]("name"))
+      .errorOut(stringBody)
+      .out(stringBody)
+
+    val serverEndpoint = api.zServerLogic[GreetingSettings] { name =>
+      ZIO.serviceWith[GreetingSettings](settings => s"${settings.prefix}, $name")
+    }
+
+    val envMonad: RIOMonadError[GreetingSettings] = new RIOMonadError[GreetingSettings]
+    val effect = serverEndpoint
+      .logic(envMonad)(())("Grace")
+      .provideEnvironment(ZEnvironment(GreetingSettings("Welcome")))
+
+    assertEquals(Right("Welcome, Grace"), unsafeRun(effect))
   }
 
   @Test
