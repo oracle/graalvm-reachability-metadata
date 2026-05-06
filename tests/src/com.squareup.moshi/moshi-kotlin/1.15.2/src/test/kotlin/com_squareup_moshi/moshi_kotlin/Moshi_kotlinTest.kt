@@ -7,9 +7,14 @@
 package com_squareup_moshi.moshi_kotlin
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.JsonQualifier
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.lang.reflect.Type
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -151,6 +156,32 @@ public class MoshiKotlinTest {
             """.trimIndent(),
         )
     }
+
+    @Test
+    fun appliesJsonQualifierAnnotationsOnKotlinConstructorProperties(): Unit {
+        val qualifiedMoshi = Moshi.Builder()
+            .add(NormalizedChannelStringAdapterFactory)
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+        val adapter = qualifiedMoshi.adapter(SupportTicket::class.java)
+
+        val ticket = adapter.fromJson(
+            """
+            {
+              "channel": "email",
+              "summary": "Needs HELP"
+            }
+            """.trimIndent(),
+        )
+
+        assertThat(ticket).isEqualTo(
+            SupportTicket(
+                channel = "EMAIL",
+                summary = "Needs HELP",
+            ),
+        )
+        assertThat(adapter.toJson(ticket)).isEqualTo("""{"channel":"email","summary":"Needs HELP"}""")
+    }
 }
 
 public data class UserProfile(
@@ -191,3 +222,32 @@ public data class IncidentReport(
     val entries: List<AuditEntry>,
     val countsByActor: Map<String, Int>,
 )
+
+@JsonQualifier
+@Retention(AnnotationRetention.RUNTIME)
+public annotation class NormalizedChannel
+
+public data class SupportTicket(
+    @NormalizedChannel
+    val channel: String,
+    val summary: String,
+)
+
+public object NormalizedChannelStringAdapterFactory : JsonAdapter.Factory {
+    override fun create(type: Type, annotations: Set<Annotation>, moshi: Moshi): JsonAdapter<*>? {
+        if (type != String::class.java || annotations.none { it is NormalizedChannel }) {
+            return null
+        }
+        return NormalizedChannelStringAdapter
+    }
+}
+
+public object NormalizedChannelStringAdapter : JsonAdapter<String>() {
+    override fun fromJson(reader: JsonReader): String {
+        return reader.nextString().uppercase()
+    }
+
+    override fun toJson(writer: JsonWriter, value: String?) {
+        writer.value(requireNotNull(value) { "channel == null" }.lowercase())
+    }
+}
