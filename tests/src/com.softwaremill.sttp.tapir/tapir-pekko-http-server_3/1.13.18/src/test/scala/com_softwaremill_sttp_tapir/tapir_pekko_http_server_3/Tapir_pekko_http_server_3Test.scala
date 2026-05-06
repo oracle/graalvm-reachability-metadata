@@ -10,9 +10,10 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.Http
 import org.apache.pekko.http.scaladsl.model.HttpEntity
 import org.apache.pekko.http.scaladsl.server.{RequestContext, Route}
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.{Flow, Source}
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.StatusCode
 import sttp.model.sse.ServerSentEvent
 import sttp.tapir._
@@ -20,9 +21,12 @@ import sttp.tapir.server.interceptor.RequestInterceptor
 import sttp.tapir.server.pekkohttp.{PekkoHttpServerInterpreter, PekkoHttpServerOptions, serverSentEventsBody}
 
 import java.net.URI
-import java.net.http.{HttpClient, HttpRequest as JHttpRequest, HttpResponse as JHttpResponse}
+import java.net.http.{HttpClient, HttpRequest as JHttpRequest, HttpResponse as JHttpResponse, WebSocket}
 import java.nio.charset.StandardCharsets
 import java.time.Duration
+import java.util.Locale
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{CompletableFuture, CompletionStage, CopyOnWriteArrayList, CountDownLatch, TimeUnit}
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{Await, ExecutionContext, Future}
 
@@ -179,6 +183,39 @@ class Tapir_pekko_http_server_3Test {
   }
 
   @Test
+  def upgradesEndpointToWebSocketAndStreamsTextFrames(): Unit = {
+    withServer {
+      val websocketEndpoint = endpoint.get
+        .in("ws" / "echo")
+        .out(webSocketBody[String, CodecFormat.TextPlain, String, CodecFormat.TextPlain](PekkoStreams))
+        .serverLogicSuccess[Future] { _ =>
+          Future.successful(Flow[String].map(message => s"echo:${message.toUpperCase(Locale.ROOT)}"))
+        }
+
+      PekkoHttpServerInterpreter().toRoute(websocketEndpoint)
+    } { baseUri =>
+      val listener = new CollectingWebSocketListener(expectedMessages = 2)
+      val webSocket = client
+        .newWebSocketBuilder()
+        .connectTimeout(RequestTimeout)
+        .buildAsync(webSocketUri(baseUri, "/ws/echo"), listener)
+        .get(RequestTimeout.toSeconds, TimeUnit.SECONDS)
+
+      try {
+        webSocket.sendText("alpha", true).get(RequestTimeout.toSeconds, TimeUnit.SECONDS)
+        webSocket.sendText("beta", true).get(RequestTimeout.toSeconds, TimeUnit.SECONDS)
+
+        assertThat(listener.awaitMessages(RequestTimeout)).isTrue()
+        assertThat(listener.failure.get()).isNull()
+        assertThat(listener.messages).containsExactly("echo:ALPHA", "echo:BETA")
+      } finally {
+        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "done").get(RequestTimeout.toSeconds, TimeUnit.SECONDS)
+        listener.awaitClose(RequestTimeout)
+      }
+    }
+  }
+
+  @Test
   def appliesCustomRequestInterceptorBeforeEndpointLogic(): Unit = {
     withServer {
       val interceptedEndpoint = endpoint.post
@@ -230,5 +267,46 @@ class Tapir_pekko_http_server_3Test {
 
   private def sendText(request: JHttpRequest): JHttpResponse[String] = {
     client.send(request, JHttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+  }
+
+  private def webSocketUri(baseUri: URI, path: String): URI = {
+    URI.create(s"ws://${baseUri.getHost}:${baseUri.getPort}$path")
+  }
+
+  private class CollectingWebSocketListener(expectedMessages: Int) extends WebSocket.Listener {
+    val messages: java.util.List[String] = new CopyOnWriteArrayList[String]()
+    val failure: AtomicReference[Throwable] = new AtomicReference[Throwable]()
+    private val messagesLatch: CountDownLatch = new CountDownLatch(expectedMessages)
+    private val closeLatch: CountDownLatch = new CountDownLatch(1)
+
+    override def onOpen(webSocket: WebSocket): Unit = {
+      webSocket.request(1)
+    }
+
+    override def onText(webSocket: WebSocket, data: CharSequence, last: Boolean): CompletionStage[_] = {
+      messages.add(data.toString)
+      messagesLatch.countDown()
+      webSocket.request(1)
+      CompletableFuture.completedFuture(null)
+    }
+
+    override def onError(webSocket: WebSocket, error: Throwable): Unit = {
+      failure.set(error)
+      messagesLatch.countDown()
+      closeLatch.countDown()
+    }
+
+    override def onClose(webSocket: WebSocket, statusCode: Int, reason: String): CompletionStage[_] = {
+      closeLatch.countDown()
+      CompletableFuture.completedFuture(null)
+    }
+
+    def awaitMessages(timeout: Duration): Boolean = {
+      messagesLatch.await(timeout.toMillis, TimeUnit.MILLISECONDS)
+    }
+
+    def awaitClose(timeout: Duration): Boolean = {
+      closeLatch.await(timeout.toMillis, TimeUnit.MILLISECONDS)
+    }
   }
 }
