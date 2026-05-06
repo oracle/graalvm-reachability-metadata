@@ -24,8 +24,11 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.OutgoingContent
 import io.ktor.http.contentType
 import io.ktor.http.withCharset
+import io.ktor.utils.io.ByteWriteChannel
+import io.ktor.utils.io.writeStringUtf8
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.job
@@ -124,6 +127,41 @@ public class Ktor_client_java_jvmTest {
                     .contains("body=$payload")
                     .contains("contentType=text/plain; charset=UTF-8")
                     .contains("requestId=abc-123")
+            }
+        }
+    }
+
+    @Test
+    fun `post request streams write channel content through java engine`(): Unit = runBlocking {
+        LocalTestServer().use { server: LocalTestServer ->
+            server.handle("/stream") { exchange: HttpExchange ->
+                val requestBody: String = exchange.requestBody.readBytes().toString(Charsets.UTF_8)
+                exchange.respond(
+                    statusCode = 200,
+                    body = "streamed=$requestBody",
+                    headers = mapOf("X-Observed-Method" to exchange.requestMethod),
+                )
+            }
+            server.start()
+
+            withJavaClient { client: HttpClient ->
+                val chunks: List<String> = listOf("alpha", "-beta", "-gamma")
+                val response = client.post(server.url("/stream")) {
+                    setBody(
+                        object : OutgoingContent.WriteChannelContent() {
+                            override suspend fun writeTo(channel: ByteWriteChannel): Unit {
+                                for (chunk: String in chunks) {
+                                    channel.writeStringUtf8(chunk)
+                                    channel.flush()
+                                }
+                            }
+                        },
+                    )
+                }
+
+                assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+                assertThat(response.headers["X-Observed-Method"]).isEqualTo("POST")
+                assertThat(response.bodyAsText()).isEqualTo("streamed=alpha-beta-gamma")
             }
         }
     }
