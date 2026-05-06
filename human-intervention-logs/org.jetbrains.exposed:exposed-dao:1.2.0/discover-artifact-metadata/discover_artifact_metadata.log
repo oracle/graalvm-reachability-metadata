@@ -1,0 +1,2180 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfbcd-cd9d-7242-96b5-a1d988b0584f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.exposed:exposed-dao:1.2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.2.0" when "$version$" is replaced with "1.2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+- Set "coordinates" to "org.jetbrains.exposed:exposed-dao:1.2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll check the existing metadata conventions first, then verify the artifact’s published Maven coordinates and upstream tag URLs before editing the JSON.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|not-for-native-image' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:26:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-sources.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:6:    "repository-url" : "https://github.com/lukas-krecan/JsonUnit",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json/classic/src/test",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:6:    "repository-url" : "https://github.com/jknack/handlebars.java",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:21:    "repository-url" : "https://github.com/jknack/handlebars.java",
+metadata/com.github.jknack/handlebars/index.json:22:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/$version$/freemarker-$version$-sources.jar",
+metadata/org.freemarker/freemarker/index.json:10:    "repository-url": "https://github.com/apache/freemarker",
+metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v$version$/src/test",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0"
+}
+
+web search: 
+web search: Maven Central org.jetbrains.exposed exposed-dao 1.2.0 pom sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.jetbrains.exposed/exposed-dao
+codex
+The existing metadata usually prefers Maven Central source and Javadoc jars when published, and uses a GitHub tag path for tests only when no Maven tests jar exists. I’m checking those artifacts now and then I’ll confirm the Exposed tag layout.
+exec
+/usr/bin/bash -lc 'curl -sI https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 05:41:21 GMT
+content-type: application/java-archive
+content-length: 42172
+cf-ray: 9f75a7cbed0a03a9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1675755
+etag: "a00266d3455a352fce31713be10e3ea8"
+last-modified: Wed, 01 Apr 2026 08:26:27 GMT
+x-checksum-md5: a00266d3455a352fce31713be10e3ea8
+x-checksum-sha1: 8d593ea9833d4a7eec59778c5dfbf5ea98711ce7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -sI https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 05:41:21 GMT
+content-type: application/java-archive
+content-length: 1165102
+cf-ray: 9f75a7cbfef503a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 127786
+etag: "99b2cc1d518582488c6b1b0c1ebf3b4f"
+last-modified: Wed, 01 Apr 2026 08:26:28 GMT
+x-checksum-md5: 99b2cc1d518582488c6b1b0c1ebf3b4f
+x-checksum-sha1: 892239b4049a2d4049ed5b29499d17297c4fa927
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -s https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.exposed</groupId>
+  <artifactId>exposed-dao</artifactId>
+  <version>1.2.0</version>
+  <name>exposed-dao</name>
+  <description>Exposed, an ORM framework for Kotlin</description>
+  <url>https://github.com/JetBrains/Exposed</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>JetBrains</id>
+      <name>JetBrains Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/JetBrains/Exposed.git</connection>
+    <developerConnection>scm:git:git@github.com:JetBrains/Exposed.git</developerConnection>
+    <url>https://github.com/JetBrains/Exposed</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.exposed</groupId>
+      <artifactId>exposed-core</artifactId>
+      <version>1.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.2.20</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.exposed</groupId>
+      <artifactId>exposed-jdbc</artifactId>
+      <version>1.2.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -s https://api.github.com/repos/JetBrains/Exposed/git/refs/tags/1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc 'curl -sI https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 220ms:
+{
+  "ref": "refs/tags/1.2.0",
+  "node_id": "MDM6UmVmMTE3NjUwMTc6cmVmcy90YWdzLzEuMi4w",
+  "url": "https://api.github.com/repos/JetBrains/Exposed/git/refs/tags/1.2.0",
+  "object": {
+    "sha": "d8abeaad8ab02583c664a0e3869b1a80ce151fdf",
+    "type": "commit",
+    "url": "https://api.github.com/repos/JetBrains/Exposed/git/commits/d8abeaad8ab02583c664a0e3869b1a80ce151fdf"
+  }
+}
+
+ succeeded in 241ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 05:41:22 GMT
+content-type: text/html
+cf-ray: 9f75a7cc0f4bbbf3-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/exposed-tests?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/exposed-dao?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/documentation-website?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 163ms:
+    "name": ".claude",
+    "path": ".claude",
+    "type": "dir",
+    "name": ".devcontainer",
+    "path": ".devcontainer",
+    "type": "dir",
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "type": "file",
+    "name": ".github",
+    "path": ".github",
+    "type": "dir",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "type": "file",
+    "name": ".idea",
+    "path": ".idea",
+    "type": "dir",
+    "name": ".junie",
+    "path": ".junie",
+    "type": "dir",
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "type": "file",
+    "name": "CLAUDE.md",
+    "path": "CLAUDE.md",
+    "type": "file",
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "type": "file",
+    "name": "README.md",
+    "path": "README.md",
+    "type": "file",
+    "name": "api",
+    "path": "api",
+    "type": "dir",
+    "name": "build.gradle.kts",
+    "path": "build.gradle.kts",
+    "type": "file",
+    "name": "buildScripts",
+    "path": "buildScripts",
+    "type": "dir",
+    "name": "buildSrc",
+    "path": "buildSrc",
+    "type": "dir",
+    "name": "detekt",
+    "path": "detekt",
+    "type": "dir",
+    "name": "docs",
+    "path": "docs",
+    "type": "dir",
+    "name": "documentation-website",
+    "path": "documentation-website",
+    "type": "dir",
+    "name": "exposed-bom",
+    "path": "exposed-bom",
+    "type": "dir",
+    "name": "exposed-core",
+    "path": "exposed-core",
+    "type": "dir",
+    "name": "exposed-crypt",
+    "path": "exposed-crypt",
+    "type": "dir",
+    "name": "exposed-dao",
+    "path": "exposed-dao",
+    "type": "dir",
+    "name": "exposed-java-time",
+    "path": "exposed-java-time",
+    "type": "dir",
+    "name": "exposed-jdbc-r2dbc-tests",
+    "path": "exposed-jdbc-r2dbc-tests",
+    "type": "dir",
+    "name": "exposed-jdbc",
+    "path": "exposed-jdbc",
+    "type": "dir",
+    "name": "exposed-jodatime",
+    "path": "exposed-jodatime",
+    "type": "dir",
+    "name": "exposed-json",
+    "path": "exposed-json",
+    "type": "dir",
+    "name": "exposed-kotlin-datetime",
+    "path": "exposed-kotlin-datetime",
+    "type": "dir",
+    "name": "exposed-migration-core",
+    "path": "exposed-migration-core",
+    "type": "dir",
+    "name": "exposed-migration-jdbc",
+    "path": "exposed-migration-jdbc",
+    "type": "dir",
+    "name": "exposed-migration-r2dbc",
+    "path": "exposed-migration-r2dbc",
+    "type": "dir",
+    "name": "exposed-money",
+    "path": "exposed-money",
+    "type": "dir",
+    "name": "exposed-r2dbc-tests",
+    "path": "exposed-r2dbc-tests",
+    "type": "dir",
+    "name": "exposed-r2dbc",
+    "path": "exposed-r2dbc",
+    "type": "dir",
+    "name": "exposed-spring-boot-starter",
+    "path": "exposed-spring-boot-starter",
+    "type": "dir",
+    "name": "exposed-spring-boot4-starter",
+    "path": "exposed-spring-boot4-starter",
+    "type": "dir",
+    "name": "exposed-tests",
+    "path": "exposed-tests",
+    "type": "dir",
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "type": "file",
+    "name": "gradle",
+    "path": "gradle",
+    "type": "dir",
+    "name": "gradlew",
+    "path": "gradlew",
+    "type": "file",
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "type": "file",
+    "name": "samples",
+    "path": "samples",
+    "type": "dir",
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+    "type": "file",
+    "name": "spring-transaction",
+    "path": "spring-transaction",
+    "type": "dir",
+    "name": "spring7-transaction",
+    "path": "spring7-transaction",
+    "type": "dir",
+
+ succeeded in 168ms:
+    "name": "api",
+    "path": "exposed-dao/api",
+    "type": "dir",
+    "name": "build.gradle.kts",
+    "path": "exposed-dao/build.gradle.kts",
+    "type": "file",
+    "name": "src",
+    "path": "exposed-dao/src",
+    "type": "dir",
+
+ succeeded in 179ms:
+    "name": ".gitignore",
+    "path": "exposed-tests/.gitignore",
+    "type": "file",
+    "name": "build.gradle.kts",
+    "path": "exposed-tests/build.gradle.kts",
+    "type": "file",
+    "name": "src",
+    "path": "exposed-tests/src",
+    "type": "dir",
+
+ succeeded in 163ms:
+    "name": "Writerside",
+    "path": "documentation-website/Writerside",
+    "type": "dir",
+
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/exposed-dao/src?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/exposed-dao/src/test?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/exposed-tests/src?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/docs?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 177ms:
+    "name": "main",
+    "path": "exposed-dao/src/main",
+    "type": "dir",
+
+ exited 1 in 166ms:
+ succeeded in 189ms:
+    "name": "main",
+    "path": "exposed-tests/src/main",
+    "type": "dir",
+    "name": "test",
+    "path": "exposed-tests/src/test",
+    "type": "dir",
+
+ succeeded in 237ms:
+    "name": "about.html",
+    "path": "docs/about.html",
+    "type": "file",
+    "name": "api",
+    "path": "docs/api",
+    "type": "dir",
+    "name": "breaking-changes.html",
+    "path": "docs/breaking-changes.html",
+    "type": "file",
+    "name": "contributing.html",
+    "path": "docs/contributing.html",
+    "type": "file",
+    "name": "dao-crud-operations.html",
+    "path": "docs/dao-crud-operations.html",
+    "type": "file",
+    "name": "dao-entity-definition.html",
+    "path": "docs/dao-entity-definition.html",
+    "type": "file",
+    "name": "dao-field-transformations.html",
+    "path": "docs/dao-field-transformations.html",
+    "type": "file",
+    "name": "dao-relationships.html",
+    "path": "docs/dao-relationships.html",
+    "type": "file",
+    "name": "dao-table-types.html",
+    "path": "docs/dao-table-types.html",
+    "type": "file",
+    "name": "data-types.html",
+    "path": "docs/data-types.html",
+    "type": "file",
+    "name": "dsl-crud-operations.html",
+    "path": "docs/dsl-crud-operations.html",
+    "type": "file",
+    "name": "dsl-joining-tables.html",
+    "path": "docs/dsl-joining-tables.html",
+    "type": "file",
+    "name": "dsl-querying-data.html",
+    "path": "docs/dsl-querying-data.html",
+    "type": "file",
+    "name": "dsl-table-types.html",
+    "path": "docs/dsl-table-types.html",
+    "type": "file",
+    "name": "exposed-modules.html",
+    "path": "docs/exposed-modules.html",
+    "type": "file",
+    "name": "frequently-asked-questions.html",
+    "path": "docs/frequently-asked-questions.html",
+    "type": "file",
+    "name": "getting-started-with-exposed.html",
+    "path": "docs/getting-started-with-exposed.html",
+    "type": "file",
+    "name": "home.html",
+    "path": "docs/home.html",
+    "type": "file",
+    "name": "index.html",
+    "path": "docs/index.html",
+    "type": "file",
+    "name": "migration-guide.html",
+    "path": "docs/migration-guide.html",
+    "type": "file",
+    "name": "sql-functions.html",
+    "path": "docs/sql-functions.html",
+    "type": "file",
+    "name": "transactions.html",
+    "path": "docs/transactions.html",
+    "type": "file",
+    "name": "working-with-database.html",
+    "path": "docs/working-with-database.html",
+    "type": "file",
+    "name": "working-with-datasource.html",
+    "path": "docs/working-with-datasource.html",
+    "type": "file",
+    "name": "working-with-schema.html",
+    "path": "docs/working-with-schema.html",
+    "type": "file",
+    "name": "working-with-sequence.html",
+    "path": "docs/working-with-sequence.html",
+    "type": "file",
+    "name": "working-with-tables.html",
+    "path": "docs/working-with-tables.html",
+    "type": "file",
+
+codex
+The DAO module does not publish a Maven tests jar and does not have its own `src/test` directory at the tag; Exposed keeps the relevant tests in the shared `exposed-tests` module. I’m narrowing that to the DAO/entity test directory instead of pointing at the whole repository.
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/git/trees/1.2.0?recursive=1 | jq -r '.tree[].path' | rg 'exposed-tests/src/test|exposed-dao/src/test|Entity|entity|dao' | head -200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/git/trees/1.2.0?recursive=1 | jq -r '.tree[].path' | rg '"'^exposed-tests/src/test/.+'"\\.kt"'$'"' | head -200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://api.github.com/repos/JetBrains/Exposed/contents/exposed-tests/src/test/kotlin?ref=1.2.0 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 196ms:
+    "name": "org",
+    "path": "exposed-tests/src/test/kotlin/org",
+    "type": "dir",
+
+ succeeded in 652ms:
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java/-u-u-i-d-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java/-u-u-i-d-table/-u-u-i-d-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java/-u-u-i-d-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java/-u-u-i-d-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java/-u-u-i-d-table/primary-key.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id.java/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/-companion
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/-companion/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/-companion/invoke.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/contains.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/equals.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/get.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/hash-code.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/set.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-i-d/to-string.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-id-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-id-table/-composite-id-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-id-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-composite-id-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d-factory
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d-factory/create-entity-i-d.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d-factory/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d-function-provider
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d-function-provider/create-entity-i-d.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d-function-provider/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/-entity-i-d.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/_value.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/equals.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/hash-code.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/to-string.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-entity-i-d/value.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-id-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-id-table/-id-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-id-table/id-columns.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-id-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-id-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-int-id-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-int-id-table/-int-id-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-int-id-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-int-id-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-int-id-table/primary-key.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-long-id-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-long-id-table/-long-id-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-long-id-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-long-id-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-long-id-table/primary-key.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-int-id-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-int-id-table/-u-int-id-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-int-id-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-int-id-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-int-id-table/primary-key.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-long-id-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-long-id-table/-u-long-id-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-long-id-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-long-id-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-u-long-id-table/primary-key.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-uuid-table
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-uuid-table/-uuid-table.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-uuid-table/id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-uuid-table/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/-uuid-table/primary-key.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core.dao.id/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-database-config/-builder/max-entities-to-store-in-cache-per-entity.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-database-config/max-entities-to-store-in-cache-per-entity.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/-entity-i-d-column-type.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/equals.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/hash-code.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/id-column.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/index.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/non-null-value-to-string.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/not-null-value-to-d-b.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/read-object.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/sql-type.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-entity-i-d-column-type/value-from-d-b.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-table/entity-id.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-transaction/full-identity.html
+docs/api/exposed-core/org.jetbrains.exposed.v1.core/-transaction/identity.html
+docs/api/exposed-dao
+docs/api/exposed-dao/index.html
+docs/api/exposed-dao/navigation.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions/-entity-not-found-exception
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions/-entity-not-found-exception/-entity-not-found-exception.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions/-entity-not-found-exception/entity.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions/-entity-not-found-exception/id.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions/-entity-not-found-exception/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.exceptions/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/-u-u-i-d-entity-class
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/-u-u-i-d-entity-class/-u-u-i-d-entity-class.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/-u-u-i-d-entity-class/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/-u-u-i-d-entity
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/-u-u-i-d-entity/-u-u-i-d-entity.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/-u-u-i-d-entity/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao.java/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-composite-entity-class
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-composite-entity-class/-composite-entity-class.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-composite-entity-class/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-composite-entity
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-composite-entity/-composite-entity.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-composite-entity/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d-factory
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d-factory/-dao-entity-i-d-factory.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d-factory/create-entity-i-d.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d-factory/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d/-dao-entity-i-d.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-dao-entity-i-d/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-batch-update
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-batch-update/-entity-batch-update.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-batch-update/add-batch.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-batch-update/execute.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-batch-update/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-batch-update/set.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/-companion
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/-companion/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/-companion/invalidate-global-caches.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/-entity-cache.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/clear-referrers-cache.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/clear.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/data.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/find-all.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/find.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/flush.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/get-or-put-referrers.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/get-referrers.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/max-entities-to-store.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/remove.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/schedule-insert.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/schedule-update.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-cache/store.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/-created
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/-created/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/-removed
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/-removed/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/-updated
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/-updated/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/entries.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/value-of.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change-type/values.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change/-entity-change.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change/change-type.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change/entity-class.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change/entity-id.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-change/transaction-id.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/-entity-class.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/all.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/back-referenced-on.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/count.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/depends-on-columns.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/depends-on-tables.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/find-by-id-and-update.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/find-by-id.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/find-single-by-and-update.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/find-with-cache-condition.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/find.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/for-entity-ids.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/for-ids.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/get.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/index.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/is-assignable-to.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/memoized-transform.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/new.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/optional-back-referenced-on.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/optional-referenced-on.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/optional-referrers-on.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/referenced-on.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/referrers-on.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/reload.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/remove-from-cache.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/search-query.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/table.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/test-cache.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/transform.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/view.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/warm-up-linked-references.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/warm-up-opt-references.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/warm-up-references.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/wrap-row.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/wrap-rows.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-class/wrap.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-field-with-transform
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-field-with-transform/-entity-field-with-transform.html
+docs/api/exposed-dao/org.jetbrains.exposed.v1.dao/-entity-field-with-transform/column.html
+
+ succeeded in 734ms:
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/VersionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/demo/dao/SamplesDao.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/demo/sql/SamplesSQL.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/h2/ConnectionPoolTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/h2/EntityReferenceCacheTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/h2/H2Tests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/h2/MultiDatabaseEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/h2/MultiDatabaseTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/mysql/MysqlTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/oracle/OracleTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/postgresql/ConnectionPoolTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/postgresql/PostgresqlTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/AliasesTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ConnectionExceptions.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ConnectionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ConnectionTimeoutTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/CoroutineTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/CustomTransactionManagerTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/DDLTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/DataSourceStub.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/NestedTransactionsTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ParameterizationTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/QueryTimeoutTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/RollbackTransactionTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/SchemaTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/StatementInterceptorTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/SuspendTransactionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ThreadLocalManagerTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/TransactionCoroutineContextTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/TransactionExecTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/TransactionIsolationTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/TransactionStackCorruptionTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/UserCreatedTransactionsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/ColumnCommentTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/ColumnDefinitionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/CreateDatabaseTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/CreateIndexTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/CreateMissingTablesAndColumnsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/CreateTableTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/EnumerationTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/ReplaceColumnTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/SequencesTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/ddl/WhereConditionsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/AdjustQueryTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ArithmeticTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ColumnCaseSensitivityTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ColumnWithTransformTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ConditionsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/CountTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/DMLTestData.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/DeleteTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/DistinctOnTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/DualTableTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ExistsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ExplainTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/FetchBatchedResultsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/GroupByTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/InsertSelectTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/InsertTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/JoinTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/LateralJoinTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/LikeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/MergeBaseTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/MergeSelectTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/MergeTableTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/OrderByTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ReplaceTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/ReturningTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/SelectTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/UnionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/UpdateTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/dml/UpsertTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/CompositeIdTableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityBugsRegressionTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityCacheRefreshTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityCacheTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityFieldWithTransformTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityHookTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/EntityWithBlobTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/ForeignIdEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/ImmutableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/JavaUUIDTableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/LongIdTableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/NonAutoIncEntities.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/OrderedReferenceTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/SelfReferenceTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/UIntIdTableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/ULongIdTableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/UuidTableEntityTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/ViaTest.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities/WarmUpLinkedReferencesTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/functions/FunctionsTestBase.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/functions/FunctionsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/functions/MathFunctionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/functions/StatisticsFunctionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/functions/TrigonometricalFunctionTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/functions/WindowFunctionsTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/ArrayColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/BlobColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/BooleanColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/CharColumnType.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/DoubleColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/JavaUUIDColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/MultiArrayColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/NumericColumnTypesTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/UnsignedColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/types/UuidColumnTypeTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/sqlite/ForeignKeyConstraintTests.kt
+exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/sqlite/MultipleDatabaseBugTest.kt
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0.module | jq '.variants[] | {name, attributes}' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+{
+  "name": "apiElements",
+  "attributes": {
+    "org.gradle.category": "library",
+    "org.gradle.dependency.bundling": "external",
+    "org.gradle.jvm.environment": "standard-jvm",
+    "org.gradle.jvm.version": 8,
+    "org.gradle.libraryelements": "jar",
+    "org.gradle.usage": "java-api",
+    "org.jetbrains.kotlin.platform.type": "jvm"
+  }
+}
+{
+  "name": "runtimeElements",
+  "attributes": {
+    "org.gradle.category": "library",
+    "org.gradle.dependency.bundling": "external",
+    "org.gradle.jvm.environment": "standard-jvm",
+    "org.gradle.jvm.version": 8,
+    "org.gradle.libraryelements": "jar",
+    "org.gradle.usage": "java-runtime",
+    "org.jetbrains.kotlin.platform.type": "jvm"
+  }
+}
+{
+  "name": "sourcesElements",
+  "attributes": {
+    "org.gradle.category": "documentation",
+    "org.gradle.dependency.bundling": "external",
+    "org.gradle.docstype": "sources",
+    "org.gradle.usage": "java-runtime"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0.jar -o /tmp/exposed-dao-1.2.0.jar && jar tf /tmp/exposed-dao-1.2.0.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://raw.githubusercontent.com/JetBrains/Exposed/1.2.0/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+exec
+/usr/bin/bash -lc "curl -s https://raw.githubusercontent.com/JetBrains/Exposed/1.2.0/exposed-dao/build.gradle.kts | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 156ms:
+<div align="center">
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./documentation-website/Writerside/images/exposed-text-light.png">
+    <img alt="Exposed logo" src="./documentation-website/Writerside/images/exposed-text-dark.png" width="215">
+  </picture>
+
+</div>
+<br>
+
+<div align="center">
+
+[![JetBrains team project](https://jb.gg/badges/team.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![Kotlin](https://img.shields.io/badge/dynamic/toml?url=https://raw.githubusercontent.com/JetBrains/Exposed/refs/heads/main/gradle/libs.versions.toml&query=%24.versions.kotlin&logo=kotlin&label=kotlin&color=blue)](http://kotlinlang.org)
+[![Slack Channel](https://img.shields.io/badge/chat-exposed-yellow.svg?logo=slack)](https://kotlinlang.slack.com/messages/exposed/)
+[![TC Build status](https://exposed.teamcity.com/app/rest/builds/buildType:id:Exposed_Build/statusIcon.svg)](https://exposed.teamcity.com/viewType.html?buildTypeId=Exposed_Build&guest=1)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-core?label=maven+central)](https://central.sonatype.com/search?namespace=org.jetbrains.exposed)
+[![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+
+</div>
+
+## Welcome to **Exposed**, an ORM framework for [Kotlin](https://github.com/JetBrains/kotlin).
+
+[Exposed](https://www.jetbrains.com/exposed/) is a lightweight SQL library on top of a database connectivity driver for the Kotlin programming language,
+with support for both JDBC and R2DBC (since version 1.0.0-*) drivers. 
+It offers two approaches for database access: a typesafe SQL-wrapping Domain-Specific Language (DSL) and a lightweight Data Access Object (DAO) API.
+
+Our official mascot is the cuttlefish, which is well-known for its outstanding mimicry ability that enables it to blend seamlessly into any environment.
+Similar to our mascot, Exposed can be used to mimic a variety of database engines, which helps you to build applications without dependencies on any specific database engine and to switch between them with very little or no changes.
+
+## Supported Databases
+
+- H2 (versions 2.x)
+- [![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)](https://github.com/mariadb-corporation/mariadb-connector-j)
+- [![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)](https://github.com/mysql/mysql-connector-j)
+- [![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)](https://www.oracle.com/ca-en/database/technologies/appdev/jdbc-downloads.html)
+- [![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://jdbc.postgresql.org/)
+  (Also, PostgreSQL using the [pgjdbc-ng](https://impossibl.github.io/pgjdbc-ng/) JDBC driver)
+- [![MicrosoftSQLServer](https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white)](https://github.com/microsoft/mssql-jdbc)
+- [![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)](https://github.com/xerial/sqlite-jdbc)
+
+## Dependencies
+
+Releases of Exposed are available in the [Maven Central repository](https://search.maven.org/search?q=org.jetbrains.exposed).
+For details on how to configure this repository and how to add Exposed dependencies to an existing Gradle/Maven project,
+see the full [guide on modules](https://www.jetbrains.com/help/exposed/exposed-modules.html).
+
+### Exposed modules
+
+`Exposed` consists of the following core modules:
+
+| Module          | Function                                                                                                                                                         |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `exposed-core`  | Provides the foundational components and abstractions needed to work with databases in a type-safe manner and includes the Domain-Specific Language (DSL) API    |
+| `exposed-dao`   | (Optional) Allows you to work with the Data Access Object (DAO) API. <br> It is only compatible with `exposed-jdbc` and does not work with `exposed-r2dbc`.</br> |
+| `exposed-jdbc`  | Provides support for Java Database Connectivity (JDBC) with a transport-level implementation based on the Java JDBC API                                          |
+| `exposed-r2dbc` | Provides support for Reactive Relational Database Connectivity (R2DBC)                                                                                           |
+
+As well as the following extension modules:
+
+| Module                         | Function                                                                                                                                                                        |
+|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `exposed-crypt`                | Provides additional column types to store encrypted data in the database and encode/decode it on the client-side                                                                |
+| `exposed-java-time`            | Date-time extensions based on the [Java 8 Time API](https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html)                                                   |
+| `exposed-jodatime`             | Date-time extensions based on the [Joda-Time](https://www.joda.org/joda-time/) library                                                                                          |
+| `exposed-json`                 | JSON and JSONB data type extensions                                                                                                                                             |
+| `exposed-kotlin-datetime`      | Date-time extensions based on the [`kotlinx-datetime`](https://kotlinlang.org/api/kotlinx-datetime/) library                                                                    |
+| `exposed-migration-core`       | Provides core common functionality for database schema migrations                                                                                                               |
+| `exposed-migration-jdbc`       | Provides utilities to support database schema migrations, with a reliance on a JDBC driver                                                                                      |
+| `exposed-migration-r2dbc`      | Provides utilities to support database schema migrations, with a reliance on a R2DBC driver                                                                                     |
+| `exposed-money`                | Extensions to support [`MonetaryAmount`](https://javamoney.github.io/apidocs/java.money/javax/money/MonetaryAmount.html) from the [JavaMoney API](https://javamoney.github.io/) |
+| `exposed-spring-boot-starter`  | A starter for [Spring Boot 3](https://spring.io/projects/spring-boot) to utilize Exposed as the ORM                                                                             |
+| `exposed-spring-boot4-starter` | A starter for [Spring Boot 4](https://spring.io/projects/spring-boot) to utilize Exposed as the ORM                                                                             |
+| `spring-transaction`           | Transaction manager that builds on top of the standard transaction workflow from Spring Framework 6                                                                             |
+| `spring7-transaction`          | Transaction manager that builds on top of the standard transaction workflow from Spring Framework 7                                                                             |
+
+### Requirements
+
+Kotlin version 2.1.+
+
+The following module(s) require JDK 17 or newer:
+* `spring-transaction` - depends on Spring Framework 6
+* `spring7-transaction` - depends on Spring Framework 7
+* `exposed-spring-boot-starter` - depends on Spring Boot 3
+* `exposed-spring-boot4-starter` - depends on Spring Boot 4
+* `exposed-crypt` - depends on Spring Security 7
+
+The following module(s) require JDK 11 or newer:
+* `exposed-r2dbc`
+* `exposed-migration-r2dbc`
+
+All other modules have a minimum requirement of JDK 8.
+
+## Samples using Exposed
+
+Follow the [Getting Started with DSL tutorial](https://www.jetbrains.com/help/exposed/getting-started-with-exposed.html) for a quick start or check out the [samples](samples/README.md) for more in-depth projects.
+
+## Documentation
+
+For complete documentation, samples, and tutorials, see the following links:
+
+-   [Documentation](https://www.jetbrains.com/help/exposed/home.html)
+-   [Migration Guide](https://www.jetbrains.com/help/exposed/migration-guide-1-0-0.html)
+-   [Breaking changes](https://www.jetbrains.com/help/exposed/breaking-changes.html)
+
+## Contributing
+
+### Reporting issues
+
+We encourage your feedback in any form, such as feature requests, bug reports, documentation updates, and questions.
+
+Please use [our issue tracker](https://youtrack.jetbrains.com/issues/EXPOSED) to report any issues or to log new requests.
+
+While issues are visible publicly, either creating a new issue or commenting on an existing one does require logging in to YouTrack.
+
+### Submitting pull requests
+
+We actively welcome your pull requests and encourage you to link your work to an [existing issue](https://youtrack.jetbrains.com/issues/EXPOSED).
+
+
+
+ succeeded in 184ms:
+org/jetbrains/exposed/v1/dao/OptionalReference.class
+org/jetbrains/exposed/v1/dao/InnerTableLink.class
+org/jetbrains/exposed/v1/dao/UuidEntity.class
+org/jetbrains/exposed/v1/dao/UIntEntityClass.class
+org/jetbrains/exposed/v1/dao/OptionalBackReference.class
+org/jetbrains/exposed/v1/dao/CompositeEntity.class
+org/jetbrains/exposed/v1/dao/LinkedIdentityHashSet.class
+org/jetbrains/exposed/v1/dao/ULongEntity.class
+org/jetbrains/exposed/v1/dao/EntityHook.class
+org/jetbrains/exposed/v1/dao/IntEntityClass.class
+org/jetbrains/exposed/v1/dao/java/UUIDEntityClass.class
+org/jetbrains/exposed/v1/dao/java/UUIDEntity.class
+org/jetbrains/exposed/v1/dao/IntEntity.class
+org/jetbrains/exposed/v1/dao/BackReference.class
+org/jetbrains/exposed/v1/dao/Referrers.class
+org/jetbrains/exposed/v1/dao/LongEntityClass.class
+org/jetbrains/exposed/v1/dao/View.class
+org/jetbrains/exposed/v1/dao/Reference.class
+org/jetbrains/exposed/v1/dao/EntityCache$LimitedHashMap.class
+org/jetbrains/exposed/v1/dao/EntityCache.class
+
+ succeeded in 153ms:
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    kotlin("jvm")
+    alias(libs.plugins.dokka)
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    api(project(":exposed-core"))
+
+    implementation(project(":exposed-jdbc"))
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    targetCompatibility = "8"
+}
+
+web search: 
+web search: site:central.sonatype.com/artifact/org.jetbrains.exposed/exposed-dao 1.2.0 Exposed ORM framework Kotlin
+web search: 
+web search: https://github.com/JetBrains/Exposed/tree/1.2.0/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0.pom
+exec
+/usr/bin/bash -lc "find metadata -path '*/index.json' | head -5 | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-javadoc.jar",
+    "description" : "Jetty ALPN Server provides the server-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It integrates Jetty's server connector layer with ALPN so the server can select the correct protocol implementation for each secure connection.",
+    "tested-versions" : [
+      "11.0.24",
+      "11.0.25",
+      "11.0.26",
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.0.4",
+      "12.0.5",
+      "12.0.6",
+      "12.0.7",
+      "12.0.8",
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+      "12.0.13",
+      "12.0.14",
+      "12.0.15",
+      "12.0.16",
+      "12.0.17",
+      "12.0.18",
+      "12.0.19",
+      "12.0.20",
+      "12.0.21",
+      "12.0.22",
+      "12.0.23",
+      "12.0.24",
+      "12.0.25",
+      "12.0.26",
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata build -g '*.json' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-core-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+metadata/org.typelevel/alleycats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"reason\"|\"replacement\"' metadata build -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrency-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrency/index.json:5:    "replacement": "co.touchlab:stately-concurrency-jvm:2.1.0"
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-strict-jvm:2.1.0.",
+metadata/co.touchlab/stately-strict/index.json:5:    "replacement": "co.touchlab:stately-strict-jvm:2.1.0"
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrent-collections-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrent-collections/index.json:5:    "replacement": "co.touchlab:stately-concurrent-collections-jvm:2.1.0"
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup.wire/wire-runtime/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup.wire:wire-runtime-jvm:5.3.3.",
+metadata/com.squareup.wire/wire-runtime/index.json:5:    "replacement": "com.squareup.wire:wire-runtime-jvm:5.3.3"
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; the POM declares org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2 for JVM consumption.",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:4:    "reason": "The published sangria_3 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the JVM implementation classes are in sangria-core_3 and sangria-derivation_3.",
+metadata/org.sangria-graphql/sangria_3/index.json:5:    "replacement": "org.sangria-graphql:sangria-core_3:4.2.9 and org.sangria-graphql:sangria-derivation_3:4.2.9"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:4:    "reason": "The root multiplatform artifact publishes a non-JVM Kotlin metadata jar with no JVM class files; JVM consumers resolve the separate JVM variant.",
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm:0.4.16"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:156:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:186:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:243:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:282:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:344:    "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:108:            "required": [ "version", "reason" ],
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:114:              "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:137:        "reason"
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:145:        "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:150:        "replacement": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:243:          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:250:        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:251:        "replacement": "Use the JVM artifact if one exists."
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-codec-classes-quic:0.0.34.Final"
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-transport-classes-io_uring:0.0.26.Final"
+metadata/org.webjars/jquery/index.json:3:    "not-for-native-image": true,
+metadata/org.webjars/jquery/index.json:4:    "reason": "The published JAR contains jQuery static web assets under META-INF/resources/webjars and Maven metadata, but no JVM class files."
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to app.cash.sqldelight:runtime-jvm:2.3.2.",
+metadata/app.cash.sqldelight/runtime/index.json:5:    "replacement": "app.cash.sqldelight:runtime-jvm:2.3.2"
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/primitive-adapters/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to app.cash.sqldelight:primitive-adapters-jvm:2.3.2.",
+metadata/app.cash.sqldelight/primitive-adapters/index.json:5:    "replacement": "app.cash.sqldelight:primitive-adapters-jvm:2.3.2"
+metadata/com.google.protobuf/protobuf-java-util/index.json:37:        "reason" : "Published POM for com.google.protobuf:protobuf-java-util:3.22.1 is malformed: dependency com.google.protobuf:protobuf-java uses invalid groupId '$com.google.protobuf' and omits the version."
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:4:    "reason": "The published root JAR contains Kotlin metadata and no JVM class files; Gradle module metadata redirects JVM variants to com.github.h0tk3y.betterParse:better-parse-jvm:0.4.4.",
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:5:    "replacement": "com.github.h0tk3y.betterParse:better-parse-jvm:0.4.4"
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup:kotlinpoet-jvm:2.3.0.",
+metadata/com.squareup/kotlinpoet/index.json:5:    "replacement": "com.squareup:kotlinpoet-jvm:2.3.0"
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+
+exec
+/usr/bin/bash -lc "sed -n '1,26p' metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/mordant",
+    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+    "description" : "Mordant Core is a Kotlin multiplatform library for rendering styled terminal output, including ANSI colors, text styling, widgets, tables, input handling, and terminal capability detection. The mordant-core-jvm artifact provides the JVM variant of the core APIs for command-line applications that need rich terminal rendering and interaction.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "3.0.2"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.mordant"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,24p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+
+exec
+/usr/bin/bash -lc "sed -n '1,24p' metadata/com.softwaremill.sttp.model/core_3/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.12",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/model/core_3/$version$/core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/softwaremill/sttp-model",
+    "test-code-url" : "https://github.com/softwaremill/sttp-model/tree/v$version$/core/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/model/core_3/$version$/core_3-$version$-javadoc.jar",
+    "description" : "sttp model provides Scala HTTP model classes such as URI, method, status code, media type, headers, query parameters, multipart parts, and server-sent events. It includes parsing and serialization helpers for these values and is used by sttp client and tapir as a shared HTTP modeling layer.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.7.12",
+      "1.7.13",
+      "1.7.14",
+      "1.7.15",
+      "1.7.16",
+      "1.7.17"
+    ],
+    "allowed-packages" : [
+      "sttp.model"
+    ]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f -name '*.json' -print | wc -l" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|coordinates\"|metadata-version' build.gradle.kts gradle buildSrc src -g '*.kt' -g '*.groovy' -g '*.java' -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+rg: build.gradle.kts: No such file or directory (os error 2)
+rg: buildSrc: No such file or directory (os error 2)
+rg: src: No such file or directory (os error 2)
+
+exec
+/usr/bin/bash -lc 'ls -la' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+total 456
+drwxrwxr-x  16 vjovanov vjovanov   4096 May  6 07:41 .
+drwxrwxr-x   5 vjovanov vjovanov   4096 May  6 07:40 ..
+drwxrwxr-x   2 vjovanov vjovanov   4096 May  6 07:40 .antigravity
+drwxrwxr-x   2 vjovanov vjovanov   4096 May  6 07:40 .claude
+drwxrwxr-x   2 vjovanov vjovanov   4096 May  6 07:40 .codex
+-rw-rw-r--   1 vjovanov vjovanov     97 May  6 07:40 .git
+drwxrwxr-x   5 vjovanov vjovanov   4096 May  6 07:40 .github
+-rw-rw-r--   1 vjovanov vjovanov   1801 May  6 07:40 .gitignore
+drwxrwxr-x   6 vjovanov vjovanov   4096 May  6 07:40 .gradle
+drwxrwxr-x   2 vjovanov vjovanov   4096 May  6 07:40 .pi
+-rw-rw-r--   1 vjovanov vjovanov   4137 May  6 07:40 AGENTS.md
+lrwxrwxrwx   1 vjovanov vjovanov      9 May  6 07:40 CLAUDE.md -> AGENTS.md
+-rw-rw-r--   1 vjovanov vjovanov 262414 May  6 07:40 COVERAGE.md
+-rw-rw-r--   1 vjovanov vjovanov   7121 May  6 07:40 LICENSE
+-rw-rw-r--   1 vjovanov vjovanov   6122 May  6 07:40 README.md
+drwxrwxr-x   4 vjovanov vjovanov   4096 May  6 07:41 build
+-rw-rw-r--   1 vjovanov vjovanov  27359 May  6 07:40 build.gradle
+-rw-rw-r--   1 vjovanov vjovanov    346 May  6 07:40 build_spec.yaml
+-rwxrwxr-x   1 vjovanov vjovanov   1348 May  6 07:40 check-library-support.sh
+-rw-rw-r--   1 vjovanov vjovanov   1244 May  6 07:40 ci.json
+drwxrwxr-x   4 vjovanov vjovanov   4096 May  6 07:40 docs
+drwxrwxr-x  19 vjovanov vjovanov   4096 May  6 07:40 forge
+drwxrwxr-x   3 vjovanov vjovanov   4096 May  6 07:40 gradle
+-rw-rw-r--   1 vjovanov vjovanov     24 May  6 07:40 gradle.properties
+-rwxrwxr-x   1 vjovanov vjovanov   8618 May  6 07:40 gradlew
+-rw-rw-r--   1 vjovanov vjovanov   2896 May  6 07:40 gradlew.bat
+drwxrwxr-x 436 vjovanov vjovanov  20480 May  6 07:40 metadata
+-rw-rw-r--   1 vjovanov vjovanov    385 May  6 07:40 settings.gradle
+drwxrwxr-x  11 vjovanov vjovanov   4096 May  6 07:40 skills
+drwxrwxr-x 430 vjovanov vjovanov  20480 May  6 07:40 stats
+drwxrwxr-x   5 vjovanov vjovanov   4096 May  6 07:40 tests
+
+exec
+/usr/bin/bash -lc "rg --files | rg '("'^|/)build.gradle|buildSrc|discovered-artifact|metadata-library-index-schema'"' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+tests/tck-test-support/build.gradle
+tests/tck-build-logic/build.gradle
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.groovy.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala3.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala2.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.kotlin.template
+build.gradle
+tests/src/org.junit.jupiter/junit-jupiter-params/5.9.2/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/build.gradle
+tests/src/org.awaitility/awaitility/4.2.1/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/build.gradle
+tests/src/org.eclipse.jetty/jetty-util-ajax/10.0.0/build.gradle
+tests/src/org.awaitility/awaitility/4.2.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/build.gradle
+tests/src/org.scalatest/scalatest-compatible/3.2.19/build.gradle
+tests/src/com.aayushatharva.brotli4j/brotli4j/1.18.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-session/12.0.10/build.gradle
+tests/src/com.aayushatharva.brotli4j/service/1.18.0/build.gradle
+tests/src/com.diffplug.durian/durian-swt.os/4.2.2/build.gradle
+tests/src/org.eclipse.jetty/jetty-io/9.3.19.v20170502/build.gradle
+tests/src/biz.aQute.bnd/biz.aQute.bnd.util/6.4.1/build.gradle
+tests/src/com.diffplug.durian/durian-core/1.2.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-io/9.4.0.M0/build.gradle
+tests/src/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/build.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/build.gradle
+tests/src/org.eclipse.jetty/jetty-io/9.4.0.RC0/build.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/build.gradle
+tests/src/io.github.oshai/kotlin-logging-jvm/8.0.01/build.gradle
+tests/src/org.eclipse.jetty/jetty-http/9.3.19.v20170502/build.gradle
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-http/9.4.0.M0/build.gradle
+tests/src/org.jline/jline-terminal-jni/3.30.7/build.gradle
+tests/src/org.eclipse.jetty/jetty-http/9.4.1.v20170120/build.gradle
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/build.gradle
+tests/src/org.jline/jline-terminal-jni/3.27.1/build.gradle
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-util/12.0.9/build.gradle
+tests/src/org.jline/jline-terminal-jna/3.20.0/build.gradle
+tests/src/org.apache.yetus/audience-annotations/0.12.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-client/12.0.0/build.gradle
+tests/src/org.jline/jline-console/3.22.0/build.gradle
+tests/src/org.apache.yetus/audience-annotations/0.14.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-client/11.0.12/build.gradle
+tests/src/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/build.gradle
+tests/src/org.jline/jline-console/3.21.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/build.gradle
+tests/src/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/build.gradle
+tests/src/org.jline/jline-console/3.28.0/build.gradle
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/build.gradle
+tests/src/org.eclipse.jetty/jetty-server/11.0.12/build.gradle
+tests/src/org.jline/jline-reader/3.19.0/build.gradle
+tests/src/io.suzaku/boopickle_3/1.4.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-server/12.0.1/build.gradle
+tests/src/org.jline/jline/3.21.0/build.gradle
+tests/src/com.google.javascript/closure-compiler-externs/v20150505/build.gradle
+tests/src/org.jline/jline-native/3.27.1/build.gradle
+tests/src/jakarta.json.bind/jakarta.json.bind-api/3.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-ee/12.0.10/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-server/11.0.24/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-firestore-v1/3.31.6/build.gradle
+tests/src/org.jvnet.staxex/stax-ex/1.8.2/build.gradle
+tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/build.gradle
+tests/src/org.jvnet.staxex/stax-ex/2.0.0/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/build.gradle
+tests/src/org.jvnet.staxex/stax-ex/1.8/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/build.gradle
+tests/src/org.ehcache/ehcache/3.10.8-jakarta/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/6.116.1/build.gradle
+tests/src/io.opencensus/opencensus-api/0.31.1/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/build.gradle
+tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-v1/6.116.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-monitoring-v3/3.52.0/build.gradle
+tests/src/org.playframework/play-exceptions/3.0.0/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/build.gradle
+tests/src/org.playframework/play-build-link/3.0.0/build.gradle
+tests/src/com.google.api.grpc/proto-google-common-protos/2.41.0/build.gradle
+tests/src/org.datanucleus/javax.jdo/3.2.0-m13/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/build.gradle
+tests/src/com.github.mwiede/jsch/2.27.7/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/build.gradle
+tests/src/io.zipkin.zipkin2/zipkin/2.23.2/build.gradle
+tests/src/jakarta.json/jakarta.json-api/2.1.0/build.gradle
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/build.gradle
+tests/src/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/build.gradle
+tests/src/com.google.re2j/re2j/1.1/build.gradle
+tests/src/org.wildfly.openssl/wildfly-openssl-java/1.0.7.Final/build.gradle
+tests/src/org.wildfly.openssl/wildfly-openssl-java/2.0.0.Alpha1/build.gradle
+tests/src/io.prometheus/simpleclient_caffeine/0.16.0/build.gradle
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/build.gradle
+tests/src/io.prometheus/simpleclient/0.16.0/build.gradle
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/build.gradle
+tests/src/io.prometheus/simpleclient_tracer_otel_agent/0.16.0/build.gradle
+tests/src/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/build.gradle
+tests/src/io.prometheus/simpleclient_tracer_common/0.16.0/build.gradle
+tests/src/log4j/log4j/1.2.17/build.gradle
+tests/src/io.prometheus/simpleclient_tracer_otel/0.16.0/build.gradle
+tests/src/net.postgis/postgis-geometry/2.5.0/build.gradle
+tests/src/com.thoughtworks.paranamer/paranamer/2.8.1/build.gradle
+tests/src/net.postgis/postgis-jdbc/2.5.0/build.gradle
+tests/src/com.thoughtworks.paranamer/paranamer/2.3/build.gradle
+metadata/schemas/metadata-library-index-schema-v2.0.1.json
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.14.3/build.gradle
+tests/src/com.github.ajalt.mordant/mordant-core-jvm/3.0.2/build.gradle
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/build.gradle
+tests/src/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/3.0.2/build.gradle
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/build.gradle
+tests/src/org.glassfish.hk2/hk2-utils/2.5.0-b05/build.gradle
+tests/src/com.rabbitmq/amqp-client/5.12.0/build.gradle
+tests/src/org.glassfish.hk2/hk2-utils/2.5.0/build.gradle
+tests/src/org.springframework/spring-instrument/5.3.31/build.gradle
+tests/src/org.springframework/spring-aspects/5.3.31/build.gradle
+tests/src/org.apache.directory.api/api-i18n/1.0.0/build.gradle
+tests/src/org.apache.directory.api/api-i18n/2.0.0/build.gradle
+tests/src/org.springframework/spring-jcl/5.3.15/build.gradle
+tests/src/org.apache.directory.api/api-util/1.0.0/build.gradle
+tests/src/jakarta.authentication/jakarta.authentication-api/3.0.0/build.gradle
+tests/src/org.openjfx/javafx-base/11.0.2/build.gradle
+tests/src/org.apache.thrift/libthrift/0.13.0/build.gradle
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
+  "type": "array",
+  "minItems": 1,
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "#/$defs/metadataIndexEntry"
+      }
+    },
+    {
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/notForNativeImageEntry"
+      }
+    }
+  ],
+  "$defs": {
+    "metadataIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed-packages",
+        "metadata-version",
+        "tested-versions"
+      ],
+      "properties": {
+        "metadata-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+        },
+        "tested-versions": {
+          "type": "array",
+          "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "test-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+        },
+        "source-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the metadata source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "repository-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the canonical project repository for this entry."
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "requires": {
+          "type": "array",
+          "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/moduleCoordinate"
+          }
+        }
+      }
+    },
+    "notForNativeImageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "not-for-native-image",
+        "reason"
+      ],
+      "properties": {
+        "not-for-native-image": {
+          "type": "boolean",
+          "const": true,
+          "description": "Marks this artifact as intentionally not applicable to GraalVM Native Image metadata."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reason this artifact is not a Native Image metadata target."
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional replacement artifact or guidance for users."
+        }
+      }
+    },
+    "moduleCoordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+$"
+    },
+    "libraryLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [ "name", "version" ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [ "kotlin", "scala" ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "scala"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "enum": [ "2", "3" ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "kotlin"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    [
+      {
+        "metadata-version": "0.0.1",
+        "tested-versions": [ "0.0.1", "0.0.2" ],
+        "default-for": "0\\.0\\..*",
+        "test-version": "0.0.1",
+        "source-code-url": "https://github.com/example/project/tree/main/metadata/org.example/library/$version$",
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|build/discovered|coordinates' build.gradle forge gradle tests -g '*.groovy' -g '*.gradle' -g '*.java' -g '*.kt' | head -160" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+build.gradle:153:        [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}"]]
+build.gradle:190:                        Options: -Pcoordinate or -Pcoordinates to specify the target; -Pparallelism to control the number of concurrent tasks.""")
+build.gradle:193:        def coordinateProp = ((project.findProperty('coordinate') ?: project.findProperty('coordinates')) ?: '').toString().trim()
+build.gradle:195:            throw new GradleException("Missing -Pcoordinate=<group:artifact:version|k/n|all> (or -Pcoordinates).")
+build.gradle:204:            throw new GradleException("No matching coordinates found for '${coordinateProp}'.")
+build.gradle:213:        // Helper to run pull + command set for a given target (artifact or coordinates)
+build.gradle:224:                        [gradleCmd, "clean", "-Pcoordinates=${coordinate}"],
+build.gradle:245:            def pullArgs = [gradleCmd, "pullAllowedDockerImages", "-Pcoordinates=${coordinate}"]
+build.gradle:262:    t.setDescription("Determines one artifact coordinate via generateInfrastructureChangedCoordinatesMatrix (or uses -Pcoordinate/-Pcoordinates if provided), then runs testInfra for that coordinate and also for 1/64. Options: -Pparallelism to control concurrency.")
+build.gradle:268:        String artifactCoordinate = ((project.findProperty('coordinate') ?: project.findProperty('coordinates')) ?: '').toString().trim()
+build.gradle:278:                    def coords = (parsed["coordinates"] as List) ?: []
+build.gradle:281:                                .collect { it instanceof Map ? it["coordinates"] : null }
+build.gradle:292:                throw new GradleException("No coordinates found in generateInfrastructureChangedCoordinatesMatrix output. Provide -Pcoordinate or -Pcoordinates to override.")
+build.gradle:454:        println("Some commands failed (coordinates=${coordinate}). Logs in: ${logsDir}")
+build.gradle:474:        println("All commands succeeded for coordinates=${coordinate}. Logs in: ${logsDir}")
+build.gradle:556:        throw new GradleException("Invalid coordinates '${coordinate}'. Expected 'group:artifact:version'.")
+build.gradle:576:        def baseGenArgs = [gradleCmd, "generateMetadata", "-Pcoordinates=${coordinate}", "--agentAllowedPackages=org.postgresql"]
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:149:            execSpec.setArgs(List.of("test", "-Pcoordinates=" + coords));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:39:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:41:        Coordinates coordinates = Coordinates.parse(coords);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:42:        String coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getPath();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:43:        Path requiredDockerImagesFile = Paths.get(coordinatesTestRoot + "/required-docker-images.txt");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:38:        Coordinates coordinates = Coordinates.parse("org.lz4:lz4-java:1.8.0");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:39:        installLibraryArtifact(coordinates, List.of(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:46:        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:47:        TestGenerateMetadataTask task = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:56:        assertThat(readTestBuildGradle(coordinates))
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:69:        Coordinates coordinates = Coordinates.parse("com.example:demo:1.0.0");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:70:        installLibraryArtifact(coordinates, List.of(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:75:        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:76:        TestGenerateMetadataTask task = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:89:        Coordinates coordinates = Coordinates.parse("org.postgresql:postgresql:42.7.3");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:91:        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:92:        TestGenerateMetadataTask task = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:103:    private void prepareTestProject(Coordinates coordinates, String buildGradleContent) throws IOException {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:105:                .resolve(coordinates.group())
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:106:                .resolve(coordinates.artifact())
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:107:                .resolve(coordinates.version());
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:113:    private String readTestBuildGradle(Coordinates coordinates) throws IOException {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:115:                .resolve(coordinates.group())
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:116:                .resolve(coordinates.artifact())
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:117:                .resolve(coordinates.version())
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:152:    private TestGenerateMetadataTask registerGenerateMetadataTask(Project project, String taskName, Coordinates coordinates) {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:154:        task.setCoordinates(coordinates.toString());
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:158:    private void installLibraryArtifact(Coordinates coordinates, List<String> jarEntries) throws IOException {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:160:                .resolve(coordinates.group().replace('.', '/'))
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:161:                .resolve(coordinates.artifact())
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:162:                .resolve(coordinates.version());
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:165:                artifactDirectory.resolve(coordinates.artifact() + "-" + coordinates.version() + ".jar"),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:169:                artifactDirectory.resolve(coordinates.artifact() + "-" + coordinates.version() + ".pom"),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/GenerateMetadataTaskTests.java:179:                """.formatted(coordinates.group(), coordinates.artifact(), coordinates.version()),
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:129:String libraryGAV = System.getenv("GVM_TCK_LC") ?: providers.gradleProperty('library.coordinates').getOrElse(null)
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:243:                        "{{library.coordinates}}": libraryGAV
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:285:        // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:59:                library.coordinates = com.example:demo:1.0.0-RC1
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:137:                .contains("library.coordinates = com.example:demo:1.0.0")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:80:String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:154:// gradle checkstyle -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:160:// gradle compileTestJava -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:166:// gradle javaTest -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:172:// gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:178:// gradle nativeTraceImage -Pcoordinates=<maven-coordinates> [-PmetadataConfigDirs=<dir1,dir2,...>]
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:180:    task.setDescription("Builds trace-enabled native tests for matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:189:// gradle runNativeTraceImage -Pcoordinates=<maven-coordinates> -PtraceMetadataPath=<path> [-PtraceMetadataConditionPackages=<pkg1,pkg2,...>]
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:191:    task.setDescription("Runs trace-enabled native tests once for matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:215:// gradle jacocoTestReport -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:221:// gradle clean -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:235:// gradle test -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:238:        t.setDescription("Runs Native Image tests for all matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:243:        t.setDescription("Runs Native Image tests for all matching coordinates (TCK)")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:250:    task.setDescription("Checks content of index.json files for matching coordinates or files")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:254:// gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:256:    task.setDescription("Checks content of metadata files for matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:265:    task.setDescription("Lists all matching GAV coordinates (one per line) honoring -Pcoordinates filter; use -PstrictCoordinates=true for strict matching")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:285:            println "No matching coordinates found!"
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:289:        writeGithubOutput("coordinates", coords.join(' '))
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:304:    task.setDescription("Lists resolved tested-library JARs for matching coordinates (one per line)")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:309:    task.setDescription("Builds native tests and prints generated dynamic-access JSON report files for matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:314:    task.setDescription("Generates a per-class dynamic-access coverage report for matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:344:// gradle generateDependencyGraph -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:346:    task.setDescription("Prints deps.dev dependency graph for matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:471:                    "coordinates": matrixEntry["coordinates"],
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:501:                "coordinates": entry["coordinates"],
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:510:// gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:512:    task.setDescription("Returns matrix definition populated with all matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:516:                "coordinates": matchingCoordinates
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:525:    task.setDescription("Returns matrix definition populated with fractional batch coordinates (k/n)")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:534:                        (1..batches).collect { i -> ["coordinates": "${i}/${batches}"] },
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:544:    task.setDescription("Returns matrix definition populated with coordinates of changed libraries")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:556:                                diffCoordinates.collect { coordinate -> ["coordinates": coordinate] },
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:561:            println "No changed coordinates were found!"
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:572:    task.setDescription("Returns matrix definition populated with artifact coordinates and newly added tested versions from changed metadata index files")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:597:    task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:618:            println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:628:    task.setDescription("Returns a coordinate-only matrix definition populated with changed coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:637:            println "No changed coordinates were found!"
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:641:                "coordinates": noneFound ? [] : diffCoordinates
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:649:    task.setDescription("Returns a list of changed coordinates for validation based on git diff")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:668:        writeGithubOutput("changed-coordinates", changedIndexFileCoordinates.join(' '))
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:675:    task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:708:                        selected.collect { coordinate -> ["coordinates": coordinate] },
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:720:    task.setDescription("Returns list of all libraries coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:757:    task.setDescription("Computes and pulls allowed docker images required by matching coordinates")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:774:// gradle generateMetadata -Pcoordinates=<maven-coordinates> [or --coordinates=<maven-coordinates>] --agentAllowedPackages=<comma-separated list of packages|fromJar|->
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:780:// gradle splitTestOnlyMetadata -Pcoordinates=<maven-coordinates>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:786:// gradle fixTestNIRun -PtestLibraryCoordinates=<maven-coordinates> -PnewLibraryVersion=<library version which needs fix>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:792:// gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:794:    task.setDescription("Marks given coordinates as latest in metadata/group/artifact/index.json")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:797:        if (!project.hasProperty("coordinates")) {
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:798:            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:800:        def coordsStr = project.findProperty("coordinates").toString()
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:807:// gradle addLibraryMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:809:    task.setDescription("Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:812:        if (!project.hasProperty("coordinates")) {
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:813:            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:815:        def coordsStr = project.findProperty("coordinates").toString()
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:822:// gradle extractLibraryTestParams -Pcoordinates=<group:artifact[:version]>
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:824:    task.setDescription("Extracts TEST_PATH, LATEST_VERSION and TEST_COORDINATES for given coordinates (group:artifact[:version]). Writes them into GITHUB_ENV.")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:827:        if (!project.hasProperty("coordinates")) {
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:828:            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact[:version]>")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:830:        def coordsStr = project.findProperty("coordinates").toString()
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:833:            throw new GradleException("Invalid 'coordinates' value; expected group:artifact or group:artifact:version, got: ${coordsStr}")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:55:     * Resolves the binary JAR for the given coordinates and derives minimal package roots.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:57:    public static List<String> derivePackageRootsFromJar(Project project, Coordinates coordinates) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:60:                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:69:            throw new GradleException("Failed to resolve JAR for " + coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:76:            project.getLogger().log(LogLevel.WARN, "No packages found in JAR for {}, falling back to group ID", coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:77:            return List.of(coordinates.group());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:80:        project.getLogger().log(LogLevel.INFO, "Derived package roots for {}: {}", coordinates, roots);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:188:     * the results into the computed metadata directory for the given coordinates.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:190:    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:191:        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:202:     * and then copies the results into the computed metadata directory for the given coordinates.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:204:    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:205:        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:219:    public static void setAllowedPackagesInIndexJson(ProjectLayout layout, Coordinates coordinates, List<String> packages) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:226:                CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:235:            if (!matchesGeneratedCoordinate(entry, coordinates)) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:259:    private static boolean matchesGeneratedCoordinate(Map<String, Object> entry, Coordinates coordinates) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:261:        if (coordinates.version().equals(metadataVersion)) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:267:            return versions.contains(coordinates.version());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:32: * Run with {@code gradle checkMetadataFiles -Pcoordinates com.example:library:1.0.0}.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:54:    Coordinates coordinates;
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:59:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:65:        // Prefer task option, fallback to -Pcoordinates when it looks like a single coordinate (group:artifact:version)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:66:        String prop = (String) getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:79:        this.coordinates = Coordinates.parse(c);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:80:        File coordinatesMetadataRoot = resolveMetadataRoot(this.coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:81:        getMetadataRoot().set(coordinatesMetadataRoot);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:83:        File index = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:90:    private File resolveMetadataRoot(Coordinates coordinates) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:91:        File conventionalRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:96:        File artifactRoot = getProject().file("metadata/" + coordinates.group() + "/" + coordinates.artifact());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:105:            if (testedVersions instanceof List<?> versions && versions.contains(coordinates.version())) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:118:        File coordinatesMetadataRoot = getMetadataRoot().get().getAsFile();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:119:        if (!coordinatesMetadataRoot.exists()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:120:            throw new IllegalArgumentException("ERROR: Cannot find metadata directory for given coordinates: " + this.coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:124:        List<File> filesInMetadata = getConfigFilesForMetadataDir(coordinatesMetadataRoot);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:132:            throw new IllegalStateException("Errors above found for: " + this.coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:389:        String groupId = coordinates.group();
+
+codex
+I found enough evidence to edit: the published artifact is a standard JVM Kotlin library with class files, so it stays applicable to Native Image metadata. I’m going to add the Maven source/Javadoc URLs, the GitHub DAO/entity test path for tag `1.2.0`, and the Kotlin language marker from the published Kotlin dependency.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+index ef08e506c4be602cb2c0ecafc5ef04643bd13eac..2fb6371ee20c2e67c3fa145b429773bce82eb6d5
+--- a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+@@ -1,3 +1,13 @@
+ {
+-  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0"
++  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0",
++  "metadata-version" : "1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/Exposed",
++  "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
++  "description" : "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+index ef08e506c4be602cb2c0ecafc5ef04643bd13eac..2fb6371ee20c2e67c3fa145b429773bce82eb6d5
+--- a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+@@ -1,3 +1,13 @@
+ {
+-  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0"
++  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0",
++  "metadata-version" : "1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/Exposed",
++  "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
++  "description" : "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.exposed:exposed-dao:1.2.0",
+  "metadata-version": "1.2.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
+  "repository-url": "https://github.com/JetBrains/Exposed",
+  "test-code-url": "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
+  "description": "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -sI https://github.com/JetBrains/Exposed/tree/1.2.0/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities | sed -n '1,16p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+index ef08e506c4be602cb2c0ecafc5ef04643bd13eac..2fb6371ee20c2e67c3fa145b429773bce82eb6d5
+--- a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+@@ -1,3 +1,13 @@
+ {
+-  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0"
++  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0",
++  "metadata-version" : "1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/Exposed",
++  "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
++  "description" : "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+ succeeded in 699ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 05:42:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"56e8f2ac67fffb5cd148e84b0441f870"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=z9l1mKZTiUY09EVjJJk2n8DtJZEfz%2FHEMfbzeWogmQ1a58Siv%2B2UejJW30CGujVS4wzsIYFSm0OLIkvqSXk8ypJh2iEaq7DBEO9fiUEwt86gIungbSOTV8DnSp2Y7nsRfAzpTspz5AxiGWiqTmQJ0ewrJNvLPWuPrhEPtc2kvhzYcW93uTNPhPqJjbkbCg4fZ7bqWqQPmS%2FJ6cvkrTrRWxWQl4jz20tSUlQIG%2BYZ9zFtimic0KQmoWCn9l0%2F1Ab3g8AdXnqP4Urfgj481dfIdw%3D%3D--Q9Zc55KxmmYZtKrp--I2g%2FoZcuR8a7SND2Wn0MuA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2079208171.1778046160; expires=Thu, 06 May 2027 05:42:40 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0",
+  "metadata-version" : "1.2.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
+  "repository-url" : "https://github.com/JetBrains/Exposed",
+  "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
+  "description" : "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
+  "language" : {
+    "name" : "kotlin",
+    "version" : "2.2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+index ef08e506c4be602cb2c0ecafc5ef04643bd13eac..2fb6371ee20c2e67c3fa145b429773bce82eb6d5
+--- a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+@@ -1,3 +1,13 @@
+ {
+-  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0"
++  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0",
++  "metadata-version" : "1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/Exposed",
++  "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
++  "description" : "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+ succeeded in 455ms:
+web search: 
+web search: https://github.com/JetBrains/Exposed/tree/1.2.0/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities
+web search: 
+web search: repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/1.2.0/exposed-dao-1.2.0.pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.jetbrains.exposed/exposed-dao
+web search: 
+web search: https://www.jetbrains.com/help/exposed/get-started-with-exposed-dao.html
+codex
+Updated [org.jetbrains.exposed-exposed-dao-1.2.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json:1).
+
+I used Maven Central for the published POM data, including repository URL and Kotlin dependency version, and used the GitHub `1.2.0` tag for the DAO/entity test suite path. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jetbrains.exposed/exposed-dao)) The description is based on JetBrains’ Exposed DAO documentation for relational database DAO usage. ([jetbrains.com](https://www.jetbrains.com/help/exposed/get-started-with-exposed-dao.html))
+
+Validation: `jq` parses the JSON; Maven source and Javadoc artifacts returned HTTP 200; no Maven tests jar exists, so the GitHub test URL was used. I left `not-for-native-image` absent because the artifact is a standard JVM jar with class files.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+index ef08e506c4be602cb2c0ecafc5ef04643bd13eac..2fb6371ee20c2e67c3fa145b429773bce82eb6d5
+--- a/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json
+@@ -1,3 +1,13 @@
+ {
+-  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0"
++  "coordinates" : "org.jetbrains.exposed:exposed-dao:1.2.0",
++  "metadata-version" : "1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/Exposed",
++  "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test/kotlin/org/jetbrains/exposed/v1/tests/shared/entities",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-dao/$version$/exposed-dao-$version$-javadoc.jar",
++  "description" : "Exposed DAO is the optional Data Access Object module of JetBrains Exposed, a Kotlin SQL framework for relational database access. It provides entity classes, identity types, relationship delegates, and caching helpers for modeling database rows as Kotlin objects on top of Exposed's JDBC-backed core.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+tokens used
+111,087
+Updated [org.jetbrains.exposed-exposed-dao-1.2.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/build/discovered-artifact-metadata/org.jetbrains.exposed-exposed-dao-1.2.0.json:1).
+
+I used Maven Central for the published POM data, including repository URL and Kotlin dependency version, and used the GitHub `1.2.0` tag for the DAO/entity test suite path. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jetbrains.exposed/exposed-dao)) The description is based on JetBrains’ Exposed DAO documentation for relational database DAO usage. ([jetbrains.com](https://www.jetbrains.com/help/exposed/get-started-with-exposed-dao.html))
+
+Validation: `jq` parses the JSON; Maven source and Javadoc artifacts returned HTTP 200; no Maven tests jar exists, so the GitHub test URL was used. I left `not-for-native-image` absent because the artifact is a standard JVM jar with class files.
+Ran agent for org.jetbrains.exposed:exposed-dao:1.2.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/build/agent-artifact-discovery-logs/org.jetbrains.exposed-exposed-dao-1.2.0.log
+
+> Task :discoverArtifactMetadata FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5322-bc173752/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':discoverArtifactMetadata'.
+> com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "metadata-version" (class org.graalvm.internal.tck.model.DiscoveredArtifactMetadata), not marked as ignorable (10 known properties: "source-code-url", "replacement", "not-for-native-image", "reason", "language", "test-code-url", "coordinates", "repository-url", "documentation-url", "description"])
+   at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 13, column: 2] (through reference chain: org.graalvm.internal.tck.model.DiscoveredArtifactMetadata["metadata-version"])
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 54s
+9 actionable tasks: 9 executed
