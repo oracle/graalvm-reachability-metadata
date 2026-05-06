@@ -21,6 +21,7 @@ import akka.parboiled2.Rule1
 import akka.parboiled2.RuleRunner
 import akka.parboiled2.support.hlist.::
 import akka.parboiled2.support.hlist.HNil
+import akka.parboiled2.util.Base64
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -117,6 +118,21 @@ class Akka_parsing_2_13Test {
     val error: ParseError = rejected.exception.asInstanceOf[ParseError]
 
     assertThat(error.position.index).isEqualTo(0)
+  }
+
+  @Test
+  def encodesAndDecodesBase64Payloads(): Unit = {
+    val payload: Array[Byte] = "Akka parsing?".getBytes(StandardCharsets.UTF_8)
+    val rfc2045: Base64 = Base64.rfc2045()
+    val custom: Base64 = Base64.custom()
+
+    val rfcEncoded: String = rfc2045.encodeToString(payload, false)
+    val customEncoded: String = custom.encodeToString(payload, false)
+
+    assertThat(rfcEncoded).isEqualTo("QWtrYSBwYXJzaW5nPw==")
+    assertThat(customEncoded).isEqualTo("QWtrYSBwYXJzaW5nPw__")
+    assertThat(new String(rfc2045.decode("\n" + rfcEncoded + "\r\n"), StandardCharsets.UTF_8)).isEqualTo("Akka parsing?")
+    assertThat(new String(custom.decodeFast(customEncoded), StandardCharsets.UTF_8)).isEqualTo("Akka parsing?")
   }
 
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
