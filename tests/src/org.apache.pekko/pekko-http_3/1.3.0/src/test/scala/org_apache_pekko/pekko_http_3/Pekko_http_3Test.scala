@@ -23,6 +23,8 @@ import org.apache.pekko.http.scaladsl.model.RequestEntity
 import org.apache.pekko.http.scaladsl.model.ResponseEntity
 import org.apache.pekko.http.scaladsl.model.StatusCodes
 import org.apache.pekko.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.headers.Cookie
+import org.apache.pekko.http.scaladsl.model.headers.HttpCookie
 import org.apache.pekko.http.scaladsl.model.headers.RawHeader
 import org.apache.pekko.http.scaladsl.model.sse.ServerSentEvent
 import org.apache.pekko.http.scaladsl.server.Directives
@@ -138,6 +140,30 @@ class Pekko_http_3Test extends Directives {
       val decodedResponse: HttpResponse = Coders.Gzip.decodeMessage(encodedResponse)
       assertThat(decodedResponse.headers.map(_.lowercaseName()).asJava).doesNotContain("content-encoding")
       assertThat(strictText(decodedResponse.entity)).isEqualTo(payload.utf8String)
+    }
+
+  @Test
+  def cookieDirectivesReadRequestCookiesAndSetResponseCookies(): Unit =
+    withSystem("pekko-http-cookie-test") { system =>
+      implicit val actorSystem: ActorSystem = system
+      implicit val materializer: Materializer = SystemMaterializer(system).materializer
+      implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+
+      val route: Route = cookie("session") { sessionCookie =>
+        setCookie(HttpCookie("visited", "true")) {
+          complete(s"session=${sessionCookie.value}")
+        }
+      }
+
+      val handler: HttpRequest => Future[HttpResponse] = Route.toFunction(route)
+      val request: HttpRequest = HttpRequest().withHeaders(Cookie("session", "alpha-123"))
+      val response: HttpResponse = await(handler(request))
+
+      assertThat(response.status).isEqualTo(StatusCodes.OK)
+      assertThat(strictText(response.entity)).isEqualTo("session=alpha-123")
+      val setCookieHeader = response.getHeader("Set-Cookie")
+      assertThat(setCookieHeader.isPresent).isTrue()
+      assertThat(setCookieHeader.get().value()).contains("visited=true")
     }
 
   @Test
