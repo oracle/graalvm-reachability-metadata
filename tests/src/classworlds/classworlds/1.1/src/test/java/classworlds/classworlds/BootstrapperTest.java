@@ -7,6 +7,7 @@
 package classworlds.classworlds;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import org.codehaus.classworlds.uberjar.boot.Bootstrapper;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 public class BootstrapperTest {
     @Test
     void bootstrapLoadsLauncherClassDiscoversMainMethodAndInvokesIt() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Bootstrapper relies on an uber-jar resource URL");
         BootstrapApplication.reset();
         RecordingClassLoader classLoader = new RecordingClassLoader();
         String previousBootstrapped = System.getProperty("classworlds.bootstrapped");
@@ -42,6 +44,10 @@ public class BootstrapperTest {
         } else {
             System.setProperty(name, value);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static final class BootstrapApplication {
