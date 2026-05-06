@@ -16,6 +16,7 @@ import scala.collection.compat.Factory
 import scala.collection.compat.IterableOnce
 import scala.collection.compat.immutable.ArraySeq
 import scala.collection.compat.immutable.LazyList
+import scala.collection.immutable.Queue
 import scala.util.control.compat.ControlThrowable
 import scala.util.matching.compat.Regex
 
@@ -65,6 +66,21 @@ class Scala_collection_compat_2_13Test {
     assertArrayEquals(Array(8, 13, 21), arrayBuilder.result())
     assertEquals(List("one", "two", "three"), listBuilder.result())
     assertEquals(Map("first" -> 1, "second" -> 2), mapBuilder.result())
+  }
+
+  @Test
+  def buildFromAliasTransformsSourcesWithDirectFactoryOperations(): Unit = {
+    val source: Queue[Int] = Queue(2, 3, 5)
+    val queueBuildFrom: BuildFrom[Queue[Int], String, Queue[String]] =
+      implicitly[BuildFrom[Queue[Int], String, Queue[String]]]
+
+    val labels: Queue[String] =
+      queueBuildFrom.fromSpecific(source)(source.iterator.map(value => s"prime-${value * value}"))
+    val queueFactory: Factory[String, Queue[String]] = queueBuildFrom.toFactory(source)
+    val rebuilt: Queue[String] = queueFactory.fromSpecific(Iterator("left", "right"))
+
+    assertEquals(Queue("prime-4", "prime-9", "prime-25"), labels)
+    assertEquals(Queue("left", "right"), rebuilt)
   }
 
   @Test
