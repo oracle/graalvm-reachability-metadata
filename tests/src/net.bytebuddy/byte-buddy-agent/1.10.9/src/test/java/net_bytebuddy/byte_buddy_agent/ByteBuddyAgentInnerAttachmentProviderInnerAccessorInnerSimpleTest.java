@@ -6,8 +6,8 @@
  */
 package net_bytebuddy.byte_buddy_agent;
 
+import com.ibm.tools.attach.VirtualMachine;
 import net.bytebuddy.agent.ByteBuddyAgent;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -15,7 +15,6 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest {
     @Test
@@ -37,26 +36,16 @@ public class ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest {
     }
 
     @Test
-    void createsUnavailableAccessorWhenJ9VirtualMachineClassIsMissing() {
-        try {
-            ByteBuddyAgent.AttachmentProvider.Accessor accessor =
-                    ByteBuddyAgent.AttachmentProvider.Accessor.Simple.ofJ9();
+    void createsExternalAttachmentAccessorForJ9VirtualMachineClassFromSystemClassLoader() {
+        ByteBuddyAgent.AttachmentProvider.Accessor accessor =
+                ByteBuddyAgent.AttachmentProvider.Accessor.Simple.ofJ9();
 
-            if (accessor.isAvailable()) {
-                assertThat(accessor.getVirtualMachineType().getName())
-                        .isEqualTo(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME_J9);
-                assertThat(accessor.isExternalAttachmentRequired()).isTrue();
-                assertThat(accessor.getExternalAttachment().getClassPath()).isEmpty();
-            } else {
-                assertThatThrownBy(accessor::getVirtualMachineType)
-                        .isInstanceOf(IllegalStateException.class)
-                        .hasMessageContaining("unavailable accessor");
-            }
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
-        }
+        assertThat(accessor.isAvailable()).isTrue();
+        assertThat(accessor.isExternalAttachmentRequired()).isTrue();
+        assertThat(accessor.getVirtualMachineType()).isEqualTo(VirtualMachine.class);
+        assertThat(accessor.getExternalAttachment().getVirtualMachineType())
+                .isEqualTo(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME_J9);
+        assertThat(accessor.getExternalAttachment().getClassPath()).isEmpty();
     }
 
     private static final class RecordingClassLoader extends ClassLoader {
