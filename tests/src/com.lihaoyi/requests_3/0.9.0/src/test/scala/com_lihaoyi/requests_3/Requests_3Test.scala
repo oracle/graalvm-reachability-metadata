@@ -301,6 +301,30 @@ class Requests_3Test {
     }
   }
 
+  @Test
+  def headRequesterReturnsHeadersWithoutResponseBody(): Unit = {
+    withServer { exchange =>
+      assertEquals("HEAD", exchange.getRequestMethod)
+      exchange.getResponseHeaders.add("Content-Type", "text/plain; charset=UTF-8")
+      exchange.getResponseHeaders.add("X-Head-Result", "metadata-only")
+      exchange.sendResponseHeaders(200, -1)
+      exchange.close()
+    } { baseUrl =>
+      val response: requests.Response = requests.head(
+        s"$baseUrl/metadata",
+        readTimeout = 5000,
+        connectTimeout = 5000
+      )
+
+      assertEquals(200, response.statusCode)
+      assertTrue(response.is2xx)
+      assertEquals("", response.text())
+      assertArrayEquals(Array.empty[Byte], response.bytes)
+      assertTrue(response.contentType.exists(_.startsWith("text/plain")))
+      assertEquals(Seq("metadata-only"), response.headers("x-head-result"))
+    }
+  }
+
   private def withServer(handler: HttpExchange => Unit)(test: String => Unit): Unit = {
     val server: HttpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0)
     val executor: ExecutorService = Executors.newCachedThreadPool { (runnable: Runnable) =>
