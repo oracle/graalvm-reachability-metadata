@@ -186,6 +186,23 @@ class Scala_parser_combinators_3Test {
   }
 
   @Test
+  def longestAlternativeCombinatorSelectsParserConsumingMostInput(): Unit = {
+    val longestMatch: LongestAlternativeParser.ParseResult[String] = LongestAlternativeParser.parseAll(
+      LongestAlternativeParser.longestKeyword,
+      "selective"
+    )
+    val firstSuccessfulMatch: LongestAlternativeParser.ParseResult[String] = LongestAlternativeParser.parseAll(
+      LongestAlternativeParser.firstKeyword,
+      "selective"
+    )
+
+    assertThat(longestMatch.successful).isTrue()
+    assertThat(longestMatch.get).isEqualTo("long")
+    assertThat(firstSuccessfulMatch.successful).isFalse()
+    assertThat(firstSuccessfulMatch.toString).contains("end of input")
+  }
+
+  @Test
   def characterReadersExposeContentOffsetsAndHumanReadablePositions(): Unit = {
     val sequenceReader: CharSequenceReader = new CharSequenceReader("alpha\nβeta")
     val secondLineReader: CharSequenceReader = sequenceReader.drop(6)
@@ -363,6 +380,14 @@ class Scala_parser_combinators_3Test {
     private def identifier: Parser[String] = acceptIf(_.matches("[A-Za-z][A-Za-z0-9_-]*")) { token =>
       s"identifier expected instead of $token"
     }
+  }
+
+  private object LongestAlternativeParser extends RegexParsers {
+    override val skipWhitespace: Boolean = false
+
+    def longestKeyword: Parser[String] = ("select" ^^^ "short") ||| ("selective" ^^^ "long")
+
+    def firstKeyword: Parser[String] = ("select" ^^^ "short") | ("selective" ^^^ "long")
   }
 
   private final case class TokenReader(tokens: IndexedSeq[String], override val offset: Int = 0) extends Reader[String] {
