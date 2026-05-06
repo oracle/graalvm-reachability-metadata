@@ -22,6 +22,7 @@ import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 
 public class Arrow_resilience_jvmTest {
     @Test
@@ -145,6 +146,43 @@ public class Arrow_resilience_jvmTest {
             "void-payment",
             "release-inventory",
         )
+    }
+
+    @Test
+    fun circuitBreakerSlidingWindowIgnoresExpiredFailuresBeforeOpening(): Unit = runBlocking {
+        val breaker: CircuitBreaker = CircuitBreaker(
+            resetTimeout = 1_000.milliseconds,
+            openingStrategy = CircuitBreaker.OpeningStrategy.SlidingWindow(
+                timeSource = TimeSource.Monotonic,
+                windowDuration = 50.milliseconds,
+                maxFailures = 1,
+            ),
+        )
+
+        try {
+            breaker.protectOrThrow { throw IllegalStateException("first failure") }
+            throw AssertionError("Expected first call to fail")
+        } catch (error: IllegalStateException) {
+            assertThat(error).hasMessage("first failure")
+        }
+        assertThat(breaker.state() is CircuitBreaker.State.Closed).isTrue()
+
+        delay(150.milliseconds)
+        try {
+            breaker.protectOrThrow { throw IllegalStateException("second failure") }
+            throw AssertionError("Expected second call to fail")
+        } catch (error: IllegalStateException) {
+            assertThat(error).hasMessage("second failure")
+        }
+        assertThat(breaker.state() is CircuitBreaker.State.Closed).isTrue()
+
+        try {
+            breaker.protectOrThrow { throw IllegalStateException("third failure") }
+            throw AssertionError("Expected third call to open the circuit breaker")
+        } catch (error: IllegalStateException) {
+            assertThat(error).hasMessage("third failure")
+        }
+        assertThat(breaker.state() is CircuitBreaker.State.Open).isTrue()
     }
 
     @Test
