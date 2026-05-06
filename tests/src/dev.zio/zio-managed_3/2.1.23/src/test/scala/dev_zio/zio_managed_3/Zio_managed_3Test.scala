@@ -155,6 +155,47 @@ class Zio_managed_3Test {
   }
 
   @Test
+  def memoizedManagedSharesSingleAcquisitionAcrossMultipleUses(): Unit = {
+    val values = unsafeRun {
+      for {
+        ref <- Ref.make(List.empty[String])
+        result <- ZManaged
+          .acquireReleaseExitWith(ref.update("acquire-shared" :: _).as("shared-resource")) { (_, exit) =>
+            ref.update(s"release-shared-${exitLabel(exit)}" :: _)
+          }
+          .memoize
+          .use { memoized =>
+            for {
+              first <- memoized.use(value => ref.update(s"use-first-$value" :: _).as(value))
+              afterFirst <- ref.get.map(_.reverse)
+              second <- memoized.use(value => ref.update(s"use-second-$value" :: _).as(value))
+              afterSecond <- ref.get.map(_.reverse)
+            } yield (first, second, afterFirst, afterSecond)
+          }
+        finalEvents <- ref.get.map(_.reverse)
+      } yield (result, finalEvents)
+    }
+
+    assertThat(values._1._1).isEqualTo("shared-resource")
+    assertThat(values._1._2).isEqualTo("shared-resource")
+    assertThat(values._1._3).isEqualTo(List(
+      "acquire-shared",
+      "use-first-shared-resource"
+    ))
+    assertThat(values._1._4).isEqualTo(List(
+      "acquire-shared",
+      "use-first-shared-resource",
+      "use-second-shared-resource"
+    ))
+    assertThat(values._2).isEqualTo(List(
+      "acquire-shared",
+      "use-first-shared-resource",
+      "use-second-shared-resource",
+      "release-shared-success"
+    ))
+  }
+
+  @Test
   def environmentServiceLayerAndScopedConversionsProvideDependencies(): Unit = {
     val layer: ZLayer[Any, Nothing, GreetingService] = ZLayer.succeed(new GreetingService {
       override def greet(name: String): String = s"hello-$name"
