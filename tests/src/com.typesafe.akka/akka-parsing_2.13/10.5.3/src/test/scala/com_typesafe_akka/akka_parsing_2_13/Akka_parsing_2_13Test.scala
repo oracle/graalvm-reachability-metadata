@@ -135,11 +135,27 @@ class Akka_parsing_2_13Test {
     assertThat(new String(custom.decodeFast(customEncoded), StandardCharsets.UTF_8)).isEqualTo("Akka parsing?")
   }
 
+  @Test
+  def parsesFixedWidthRepetitionsAndOptionalRuleValues(): Unit = {
+    val colorWithAlpha: HexColor = new HexColorParser(ParserInput("#1a2B3c/80")).Color.run().get
+    val opaqueColor: HexColor = new HexColorParser(ParserInput("#AABBCC")).Color.run().get
+
+    assertThat(colorWithAlpha).isEqualTo(HexColor(26, 43, 60, Some(128)))
+    assertThat(opaqueColor).isEqualTo(HexColor(170, 187, 204, None))
+
+    val rejected: Failure[HexColor] = new HexColorParser(ParserInput("#ff00xz")).Color.run().asInstanceOf[Failure[HexColor]]
+    val error: ParseError = rejected.exception.asInstanceOf[ParseError]
+
+    assertThat(error.position.index).isEqualTo(5)
+  }
+
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
     new AssignmentParser(ParserInput(input)).InputLine.run()
 }
 
 final case class Assignment(name: String, value: Int)
+
+final case class HexColor(red: Int, green: Int, blue: Int, alpha: Option[Int])
 
 final case class IdQuery(resource: String, ids: Seq[Int], verbose: Boolean)
 
@@ -198,6 +214,19 @@ final class IdQueryParser(val input: ParserInput) extends Parser {
 
 final class DelimitedTokenParser(val input: ParserInput) extends Parser {
   def Token: Rule1[String] = rule { !ch(',') ~ capture(oneOrMore(noneOf(","))) ~ (&(ch(',')) | EOI) }
+}
+
+final class HexColorParser(val input: ParserInput) extends Parser {
+  def Color: Rule1[HexColor] = rule {
+    '#' ~ Component ~ Component ~ Component ~ optional('/' ~ Component) ~ EOI ~> (
+      (red: Int, green: Int, blue: Int, alpha: Option[Int]) => HexColor(red, green, blue, alpha))
+  }
+
+  def Component: Rule1[Int] = rule {
+    capture(2.times(HexDigit)) ~> ((digits: String) => Integer.parseInt(digits, 16))
+  }
+
+  def HexDigit: Rule0 = rule { predicate(CharPredicate.HexDigit) }
 }
 
 final class DynamicTokenParser(val input: ParserInput) extends Parser with DynamicRuleHandler[DynamicTokenParser, String :: HNil] {
