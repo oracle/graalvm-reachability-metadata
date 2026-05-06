@@ -99,6 +99,31 @@ class Enumeratum_3Test {
   }
 
   @Test
+  def extraNamesMapProvidesLegacyAliasesForLookups(): Unit = {
+    assertEquals(
+      Map("queued" -> DocumentState.Draft, "archived" -> DocumentState.Retired),
+      DocumentState.extraNamesToValuesMap
+    )
+    assertEquals(
+      Map(
+        "Draft" -> DocumentState.Draft,
+        "Published" -> DocumentState.Published,
+        "Retired" -> DocumentState.Retired,
+        "queued" -> DocumentState.Draft,
+        "archived" -> DocumentState.Retired
+      ),
+      DocumentState.namesToValuesMap
+    )
+
+    assertSame(DocumentState.Draft, DocumentState.withName("queued"))
+    assertEquals(Some(DocumentState.Retired), DocumentState.withNameOption("archived"))
+    assertEquals(Right(DocumentState.Draft), DocumentState.withNameEither("queued"))
+    assertSame(DocumentState.Retired, DocumentState.withNameInsensitive("ARCHIVED"))
+    assertEquals(Some(DocumentState.Draft), DocumentState.withNameUppercaseOnlyOption("QUEUED"))
+    assertEquals(Some(DocumentState.Retired), DocumentState.withNameLowercaseOnlyOption("archived"))
+  }
+
+  @Test
   def namingConventionTraitsTransformEntryNamesAndLookups(): Unit = {
     val expectedNames: Map[NamingStyle, String] = Map(
       NamingStyle.SnakeCaseValue -> "snake_case_value",
@@ -193,6 +218,18 @@ object WorkflowState extends Enum[WorkflowState] {
   case object Submitted extends WorkflowState
   case object InProgress extends WorkflowState
   case object Completed extends WorkflowState
+}
+
+sealed trait DocumentState extends EnumEntry
+object DocumentState extends Enum[DocumentState] {
+  val values: IndexedSeq[DocumentState] = findValues
+
+  override def extraNamesToValuesMap: Map[String, DocumentState] =
+    Map("queued" -> Draft, "archived" -> Retired)
+
+  case object Draft extends DocumentState
+  case object Published extends DocumentState
+  case object Retired extends DocumentState
 }
 
 sealed trait NamingStyle extends EnumEntry
