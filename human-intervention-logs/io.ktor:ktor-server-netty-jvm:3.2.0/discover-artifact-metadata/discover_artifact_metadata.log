@@ -1,0 +1,1749 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfc81-e4c6-7800-b8a8-51dd49b212ad
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.ktor:ktor-server-netty-jvm:3.2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.2.0" when "$version$" is replaced with "3.2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+- Set "coordinates" to "io.ktor:ktor-server-netty-jvm:3.2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata shape first, then verify the Ktor artifact URLs against Maven Central and the upstream repository tag before editing the JSON.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+
+exec
+/usr/bin/bash -lc "if [ -f build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json ]; then sed -n '1,200p' build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json; fi" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+{
+  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"documentation-url\"|\"source-code-url\"|\"test-code-url\"|\"repository-url\"' metadata build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:23:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+
+web search: 
+web search: Maven io.ktor ktor-server-netty-jvm 3.2.0 pom scm kotlin version
+web search: 
+web search: https://github.com/ktorio/ktor/tree/3.2.0
+web search: 
+web search: repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0-sources.jar
+codex
+The existing file only has coordinates. I found the upstream Ktor tag and Maven Central entry; next I’m checking the published artifacts and the tagged repository layout so the test path is precise rather than guessed.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.ktor</groupId>
+  <artifactId>ktor-server-netty-jvm</artifactId>
+  <version>3.2.0</version>
+  <name>ktor-server-netty</name>
+  <description>Ktor is a framework for quickly creating web applications in Kotlin with minimal effort.</description>
+  <url>https://github.com/ktorio/ktor</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>JetBrains</id>
+      <name>Jetbrains Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://github.com/ktorio/ktor.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-server-core-jvm</artifactId>
+      <version>3.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http2</artifactId>
+      <version>4.2.2.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.alpn</groupId>
+      <artifactId>alpn-api</artifactId>
+      <version>1.1.3.v20160715</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-kqueue</artifactId>
+      <version>4.2.2.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>4.2.2.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+      <version>1.10.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.1.21</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ktorio/ktor/git/trees/3.2.0?recursive=1 | rg 'ktor-server-netty|jvmTest|commonTest|test' | head -200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/ktorio/ktor.git 'refs/tags/3.2.0' 'refs/tags/v3.2.0'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 210ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/ktor/ktor-server-netty-jvm/3.2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/ktor/ktor-server-netty-jvm/3.2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar" title="ktor-server-netty-jvm-3.2.0-javadoc.jar">ktor-server-netty-jvm-3.2.0-javadoc.jar</a>           2025-06-12 12:32       261      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc">ktor-server-netty-jvm-3.2.0-javadoc.jar.asc</a>       2025-06-12 12:32       689      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.md5" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.md5">ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.m...</a>  2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.sha1" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.sha1">ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.s...</a>  2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.sha256" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.sha256">ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.s...</a>  2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.sha512" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.sha512">ktor-server-netty-jvm-3.2.0-javadoc.jar.asc.s...</a>  2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.md5" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.md5">ktor-server-netty-jvm-3.2.0-javadoc.jar.md5</a>       2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.sha1" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.sha1">ktor-server-netty-jvm-3.2.0-javadoc.jar.sha1</a>      2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.sha256" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.sha256">ktor-server-netty-jvm-3.2.0-javadoc.jar.sha25...</a>  2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0-javadoc.jar.sha512" title="ktor-server-netty-jvm-3.2.0-javadoc.jar.sha512">ktor-server-netty-jvm-3.2.0-javadoc.jar.sha51...</a>  2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar" title="ktor-server-netty-jvm-3.2.0-sources.jar">ktor-server-netty-jvm-3.2.0-sources.jar</a>           2025-06-12 12:32     37450      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.asc" title="ktor-server-netty-jvm-3.2.0-sources.jar.asc">ktor-server-netty-jvm-3.2.0-sources.jar.asc</a>       2025-06-12 12:32       689      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.asc.md5" title="ktor-server-netty-jvm-3.2.0-sources.jar.asc.md5">ktor-server-netty-jvm-3.2.0-sources.jar.asc.m...</a>  2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.asc.sha1" title="ktor-server-netty-jvm-3.2.0-sources.jar.asc.sha1">ktor-server-netty-jvm-3.2.0-sources.jar.asc.s...</a>  2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.asc.sha256" title="ktor-server-netty-jvm-3.2.0-sources.jar.asc.sha256">ktor-server-netty-jvm-3.2.0-sources.jar.asc.s...</a>  2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.asc.sha512" title="ktor-server-netty-jvm-3.2.0-sources.jar.asc.sha512">ktor-server-netty-jvm-3.2.0-sources.jar.asc.s...</a>  2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.md5" title="ktor-server-netty-jvm-3.2.0-sources.jar.md5">ktor-server-netty-jvm-3.2.0-sources.jar.md5</a>       2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.sha1" title="ktor-server-netty-jvm-3.2.0-sources.jar.sha1">ktor-server-netty-jvm-3.2.0-sources.jar.sha1</a>      2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.sha256" title="ktor-server-netty-jvm-3.2.0-sources.jar.sha256">ktor-server-netty-jvm-3.2.0-sources.jar.sha25...</a>  2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0-sources.jar.sha512" title="ktor-server-netty-jvm-3.2.0-sources.jar.sha512">ktor-server-netty-jvm-3.2.0-sources.jar.sha51...</a>  2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0.jar" title="ktor-server-netty-jvm-3.2.0.jar">ktor-server-netty-jvm-3.2.0.jar</a>                   2025-06-12 12:32    172555      
+<a href="ktor-server-netty-jvm-3.2.0.jar.asc" title="ktor-server-netty-jvm-3.2.0.jar.asc">ktor-server-netty-jvm-3.2.0.jar.asc</a>               2025-06-12 12:32       689      
+<a href="ktor-server-netty-jvm-3.2.0.jar.asc.md5" title="ktor-server-netty-jvm-3.2.0.jar.asc.md5">ktor-server-netty-jvm-3.2.0.jar.asc.md5</a>           2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0.jar.asc.sha1" title="ktor-server-netty-jvm-3.2.0.jar.asc.sha1">ktor-server-netty-jvm-3.2.0.jar.asc.sha1</a>          2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0.jar.asc.sha256" title="ktor-server-netty-jvm-3.2.0.jar.asc.sha256">ktor-server-netty-jvm-3.2.0.jar.asc.sha256</a>        2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0.jar.asc.sha512" title="ktor-server-netty-jvm-3.2.0.jar.asc.sha512">ktor-server-netty-jvm-3.2.0.jar.asc.sha512</a>        2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0.jar.md5" title="ktor-server-netty-jvm-3.2.0.jar.md5">ktor-server-netty-jvm-3.2.0.jar.md5</a>               2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0.jar.sha1" title="ktor-server-netty-jvm-3.2.0.jar.sha1">ktor-server-netty-jvm-3.2.0.jar.sha1</a>              2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0.jar.sha256" title="ktor-server-netty-jvm-3.2.0.jar.sha256">ktor-server-netty-jvm-3.2.0.jar.sha256</a>            2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0.jar.sha512" title="ktor-server-netty-jvm-3.2.0.jar.sha512">ktor-server-netty-jvm-3.2.0.jar.sha512</a>            2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0.module" title="ktor-server-netty-jvm-3.2.0.module">ktor-server-netty-jvm-3.2.0.module</a>                2025-06-12 12:32      5820      
+<a href="ktor-server-netty-jvm-3.2.0.module.asc" title="ktor-server-netty-jvm-3.2.0.module.asc">ktor-server-netty-jvm-3.2.0.module.asc</a>            2025-06-12 12:32       689      
+<a href="ktor-server-netty-jvm-3.2.0.module.asc.md5" title="ktor-server-netty-jvm-3.2.0.module.asc.md5">ktor-server-netty-jvm-3.2.0.module.asc.md5</a>        2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0.module.asc.sha1" title="ktor-server-netty-jvm-3.2.0.module.asc.sha1">ktor-server-netty-jvm-3.2.0.module.asc.sha1</a>       2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0.module.asc.sha256" title="ktor-server-netty-jvm-3.2.0.module.asc.sha256">ktor-server-netty-jvm-3.2.0.module.asc.sha256</a>     2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0.module.asc.sha512" title="ktor-server-netty-jvm-3.2.0.module.asc.sha512">ktor-server-netty-jvm-3.2.0.module.asc.sha512</a>     2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0.module.md5" title="ktor-server-netty-jvm-3.2.0.module.md5">ktor-server-netty-jvm-3.2.0.module.md5</a>            2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0.module.sha1" title="ktor-server-netty-jvm-3.2.0.module.sha1">ktor-server-netty-jvm-3.2.0.module.sha1</a>           2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0.module.sha256" title="ktor-server-netty-jvm-3.2.0.module.sha256">ktor-server-netty-jvm-3.2.0.module.sha256</a>         2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0.module.sha512" title="ktor-server-netty-jvm-3.2.0.module.sha512">ktor-server-netty-jvm-3.2.0.module.sha512</a>         2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0.pom" title="ktor-server-netty-jvm-3.2.0.pom">ktor-server-netty-jvm-3.2.0.pom</a>                   2025-06-12 12:32      3017      
+<a href="ktor-server-netty-jvm-3.2.0.pom.asc" title="ktor-server-netty-jvm-3.2.0.pom.asc">ktor-server-netty-jvm-3.2.0.pom.asc</a>               2025-06-12 12:32       689      
+<a href="ktor-server-netty-jvm-3.2.0.pom.asc.md5" title="ktor-server-netty-jvm-3.2.0.pom.asc.md5">ktor-server-netty-jvm-3.2.0.pom.asc.md5</a>           2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0.pom.asc.sha1" title="ktor-server-netty-jvm-3.2.0.pom.asc.sha1">ktor-server-netty-jvm-3.2.0.pom.asc.sha1</a>          2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0.pom.asc.sha256" title="ktor-server-netty-jvm-3.2.0.pom.asc.sha256">ktor-server-netty-jvm-3.2.0.pom.asc.sha256</a>        2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0.pom.asc.sha512" title="ktor-server-netty-jvm-3.2.0.pom.asc.sha512">ktor-server-netty-jvm-3.2.0.pom.asc.sha512</a>        2025-06-12 12:32       128      
+<a href="ktor-server-netty-jvm-3.2.0.pom.md5" title="ktor-server-netty-jvm-3.2.0.pom.md5">ktor-server-netty-jvm-3.2.0.pom.md5</a>               2025-06-12 12:32        32      
+<a href="ktor-server-netty-jvm-3.2.0.pom.sha1" title="ktor-server-netty-jvm-3.2.0.pom.sha1">ktor-server-netty-jvm-3.2.0.pom.sha1</a>              2025-06-12 12:32        40      
+<a href="ktor-server-netty-jvm-3.2.0.pom.sha256" title="ktor-server-netty-jvm-3.2.0.pom.sha256">ktor-server-netty-jvm-3.2.0.pom.sha256</a>            2025-06-12 12:32        64      
+<a href="ktor-server-netty-jvm-3.2.0.pom.sha512" title="ktor-server-netty-jvm-3.2.0.pom.sha512">ktor-server-netty-jvm-3.2.0.pom.sha512</a>            2025-06-12 12:32       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 366ms:
+4f3f69731810842e58f5c51091441d4335a16ea7	refs/tags/3.2.0
+
+web search: 
+web search: site:github.com/ktorio/ktor/tree/3.2.0 ktor-server-netty src test
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0.module' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../ktor-server-netty/3.2.0/ktor-server-netty-3.2.0.module",
+    "group": "io.ktor",
+    "module": "ktor-server-netty",
+    "version": "3.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvmApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.17"
+          }
+        },
+        {
+          "group": "io.ktor",
+          "module": "ktor-server-core",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "io.netty",
+          "module": "netty-codec-http2",
+          "version": {
+            "requires": "4.2.2.Final"
+          }
+        },
+        {
+          "group": "org.eclipse.jetty.alpn",
+          "module": "alpn-api",
+          "version": {
+            "requires": "1.1.3.v20160715"
+          }
+        },
+        {
+          "group": "io.netty",
+          "module": "netty-transport-native-kqueue",
+          "version": {
+            "requires": "4.2.2.Final"
+          }
+        },
+        {
+          "group": "io.netty",
+          "module": "netty-transport-native-epoll",
+          "version": {
+            "requires": "4.2.2.Final"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.1.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ktor-server-netty-jvm-3.2.0.jar",
+          "url": "ktor-server-netty-jvm-3.2.0.jar",
+          "size": 172555,
+          "sha512": "f17181b7b90b1b7b23c0bef46eaac40279b3c270fd28f3d06e760a61faf48177901ba122477eaa3e26da6d8ace4d816798d72199d7743cd53ebb6d3b609205c3",
+          "sha256": "74b30ff6e28338d6a6e72463c09889f98eea620f918c3123dc43c24cf8392dfe",
+          "sha1": "256f1f46998668d1155c40f79227a3bba0e0b8f2",
+          "md5": "672b33ff64c17247a947b79d49758a66"
+        }
+      ]
+    },
+    {
+      "name": "jvmRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.17"
+          }
+        },
+        {
+          "group": "io.ktor",
+          "module": "ktor-server-core",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "io.netty",
+          "module": "netty-codec-http2",
+          "version": {
+            "requires": "4.2.2.Final"
+          }
+        },
+        {
+          "group": "org.eclipse.jetty.alpn",
+          "module": "alpn-api",
+          "version": {
+            "requires": "1.1.3.v20160715"
+          }
+        },
+        {
+          "group": "io.netty",
+          "module": "netty-transport-native-kqueue",
+          "version": {
+            "requires": "4.2.2.Final"
+          }
+        },
+        {
+          "group": "io.netty",
+          "module": "netty-transport-native-epoll",
+          "version": {
+            "requires": "4.2.2.Final"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.1.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ktor-server-netty-jvm-3.2.0.jar",
+          "url": "ktor-server-netty-jvm-3.2.0.jar",
+          "size": 172555,
+          "sha512": "f17181b7b90b1b7b23c0bef46eaac40279b3c270fd28f3d06e760a61faf48177901ba122477eaa3e26da6d8ace4d816798d72199d7743cd53ebb6d3b609205c3",
+          "sha256": "74b30ff6e28338d6a6e72463c09889f98eea620f918c3123dc43c24cf8392dfe",
+          "sha1": "256f1f46998668d1155c40f79227a3bba0e0b8f2",
+          "md5": "672b33ff64c17247a947b79d49758a66"
+        }
+      ]
+    },
+    {
+      "name": "jvmSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "ktor-server-netty-jvm-3.2.0-sources.jar",
+          "url": "ktor-server-netty-jvm-3.2.0-sources.jar",
+          "size": 37450,
+          "sha512": "919ced9323f10594ceac2d00106390b7cfdef4c3ace45511306bdfe90e01238f2970c36bc9c2a0911a6eefd13530bbfabaf7ae5af3d830d0f20789f4664559f4",
+          "sha256": "a14d6fb17f2f67a68c79a2fb7a37d029483e4b2cf9ec8c6a0086fc9767e26817",
+          "sha1": "91d7ad459ae2687b7c8f3ff79fd472310e3db7f2",
+          "md5": "ffd61c755002b3c13619293336fa3722"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/common/test \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/src; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "curl -fsSL https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm | rg -n 'test|src|build.gradle|Netty|react-app' | head -100" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0.jar -o "$tmp/a.jar" && jar tf "$tmp/a.jar" | head -80; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/ktor-server-netty.kotlin_module
+io/
+io/ktor/
+io/ktor/server/
+io/ktor/server/netty/
+io/ktor/server/netty/CIOKt.class
+io/ktor/server/netty/CoroutineListener.class
+io/ktor/server/netty/EngineMain.class
+io/ktor/server/netty/EventLoopGroupProxy$Companion.class
+io/ktor/server/netty/EventLoopGroupProxy.class
+io/ktor/server/netty/KtorReadTimeoutHandler.class
+io/ktor/server/netty/Netty.class
+io/ktor/server/netty/NettyApplicationCall$finishSuspend$1.class
+io/ktor/server/netty/NettyApplicationCall.class
+io/ktor/server/netty/NettyApplicationCallHandler$Companion.class
+io/ktor/server/netty/NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.class
+io/ktor/server/netty/NettyApplicationCallHandler$handleRequest$1.class
+io/ktor/server/netty/NettyApplicationCallHandler.class
+io/ktor/server/netty/NettyApplicationCallHandlerKt.class
+io/ktor/server/netty/NettyApplicationEngine$1.class
+io/ktor/server/netty/NettyApplicationEngine$Configuration$httpServerCodec$1.class
+io/ktor/server/netty/NettyApplicationEngine$Configuration.class
+io/ktor/server/netty/NettyApplicationEngine.class
+io/ktor/server/netty/NettyApplicationEngineKt.class
+io/ktor/server/netty/NettyApplicationRequest$queryParameters$1.class
+io/ktor/server/netty/NettyApplicationRequest.class
+io/ktor/server/netty/NettyApplicationRequestCookies.class
+io/ktor/server/netty/NettyApplicationRequestHeaders$entries$1$1.class
+io/ktor/server/netty/NettyApplicationRequestHeaders.class
+io/ktor/server/netty/NettyApplicationResponse$Companion.class
+io/ktor/server/netty/NettyApplicationResponse$respondOutgoingContent$1.class
+io/ktor/server/netty/NettyApplicationResponse$responseChannel$1.class
+io/ktor/server/netty/NettyApplicationResponse.class
+io/ktor/server/netty/NettyChannelInitializer$Companion.class
+io/ktor/server/netty/NettyChannelInitializer$NegotiatedPipelineInitializer.class
+io/ktor/server/netty/NettyChannelInitializer.class
+io/ktor/server/netty/NettyDirectDecoder.class
+io/ktor/server/netty/NettyDirectEncoder.class
+io/ktor/server/netty/NettyDispatcher$CurrentContext.class
+io/ktor/server/netty/NettyDispatcher$CurrentContextKey.class
+io/ktor/server/netty/NettyDispatcher.class
+io/ktor/server/netty/NettyHttpHandlerState.class
+io/ktor/server/netty/cio/
+io/ktor/server/netty/cio/NettyHttpResponsePipeline$handleRequestMessage$1.class
+io/ktor/server/netty/cio/NettyHttpResponsePipeline$respondWithBigBody$1.class
+io/ktor/server/netty/cio/NettyHttpResponsePipeline$respondWithBodyAndTrailerMessage$1.class
+io/ktor/server/netty/cio/NettyHttpResponsePipeline$respondWithSmallBody$1.class
+io/ktor/server/netty/cio/NettyHttpResponsePipeline.class
+io/ktor/server/netty/cio/NettyHttpResponsePipelineKt.class
+io/ktor/server/netty/cio/NettyResponsePipelineException.class
+io/ktor/server/netty/cio/RequestBodyHandler$Upgrade.class
+io/ktor/server/netty/cio/RequestBodyHandler$job$1.class
+io/ktor/server/netty/cio/RequestBodyHandler$processContent$1.class
+io/ktor/server/netty/cio/RequestBodyHandler$processContent$2.class
+io/ktor/server/netty/cio/RequestBodyHandler.class
+io/ktor/server/netty/cio/ShouldFlush.class
+io/ktor/server/netty/http1/
+io/ktor/server/netty/http1/NettyConnectionPoint.class
+io/ktor/server/netty/http1/NettyConnectionPointKt.class
+io/ktor/server/netty/http1/NettyHttp1ApplicationCall.class
+io/ktor/server/netty/http1/NettyHttp1ApplicationRequest.class
+io/ktor/server/netty/http1/NettyHttp1ApplicationResponse$headers$1.class
+io/ktor/server/netty/http1/NettyHttp1ApplicationResponse$respondUpgrade$1.class
+io/ktor/server/netty/http1/NettyHttp1ApplicationResponse.class
+io/ktor/server/netty/http1/NettyHttp1Handler.class
+io/ktor/server/netty/http2/
+io/ktor/server/netty/http2/Http2LocalConnectionPoint.class
+io/ktor/server/netty/http2/HttpFrameAdapterKt$http2frameLoop$1.class
+io/ktor/server/netty/http2/HttpFrameAdapterKt.class
+io/ktor/server/netty/http2/NettyHttp2ApplicationCall.class
+io/ktor/server/netty/http2/NettyHttp2ApplicationRequest$contentActor$1.class
+io/ktor/server/netty/http2/NettyHttp2ApplicationRequest.class
+io/ktor/server/netty/http2/NettyHttp2ApplicationResponse$Http2ResponseHeaders.class
+io/ktor/server/netty/http2/NettyHttp2ApplicationResponse$respondOutgoingContent$1.class
+io/ktor/server/netty/http2/NettyHttp2ApplicationResponse.class
+io/ktor/server/netty/http2/NettyHttp2Handler$Companion.class
+io/ktor/server/netty/http2/NettyHttp2Handler$Http2ClosedChannelException.class
+io/ktor/server/netty/http2/NettyHttp2Handler.class
+
+ succeeded in 669ms:
+53:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/high-contrast-cookie-218067197ba03c91.js"></script>
+54:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/wp-runtime-fc091446489192ee.js" defer="defer"></script>
+55:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/fetch-utilities-3140609b5732710f.js" defer="defer"></script>
+56:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/28839-7adfdde5afeb1a03.js" defer="defer"></script>
+57:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/85924-ac5602ef611dc506.js" defer="defer"></script>
+58:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/34646-4c7883eb242d5210.js" defer="defer"></script>
+59:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/environment-8e8857b66d545299.js" defer="defer"></script>
+60:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/runtime-helpers-cb4dfbc9d23f30be.js" defer="defer"></script>
+61:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/2966-d68f2b4558d86113.js" defer="defer"></script>
+62:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/96232-540ff5f81016a9ca.js" defer="defer"></script>
+63:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/41013-647932573fc130af.js" defer="defer"></script>
+64:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/51210-45dfb7dd106f6b96.js" defer="defer"></script>
+65:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/64247-73a9861fe185671f.js" defer="defer"></script>
+66:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/81683-382ccc88e034ea1d.js" defer="defer"></script>
+67:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/9338-f6bee5a8d66d930f.js" defer="defer"></script>
+68:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/46740-5a373320e5ef9c01.js" defer="defer"></script>
+69:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/67466-79abcbf599986a00.js" defer="defer"></script>
+70:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/github-elements-61af8f0198be4afd.js" defer="defer"></script>
+71:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/element-registry-26c9dcb845cc276b.js" defer="defer"></script>
+72:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/react-core-94e4964ff6ec294c.js" defer="defer"></script>
+73:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/react-lib-1353f2cef82bcdc0.js" defer="defer"></script>
+74:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/58889-5b136bc717e57a8b.js" defer="defer"></script>
+75:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/79039-69acf717ffc901a4.js" defer="defer"></script>
+76:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/61110-073153e0413daf3a.js" defer="defer"></script>
+77:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/2887-91b9c645d570616a.js" defer="defer"></script>
+78:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/26533-f22c29ae5e9b1ed2.js" defer="defer"></script>
+79:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/86483-c3a819d46503a3da.js" defer="defer"></script>
+80:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/37460-fcd4830a1194eace.js" defer="defer"></script>
+81:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/60481-24b13ea726837f7b.js" defer="defer"></script>
+82:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/46287-853bfcb69bb5b3f9.js" defer="defer"></script>
+83:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/33805-da9f821452a32f15.js" defer="defer"></script>
+84:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/89627-40275597692dc855.js" defer="defer"></script>
+85:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/79087-4f706db8aa2ec0fb.js" defer="defer"></script>
+86:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/49029-42bd0899fca05960.js" defer="defer"></script>
+87:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/99328-a2c6b180d25cb160.js" defer="defer"></script>
+88:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/behaviors-a147bcb1355dbbdd.js" defer="defer"></script>
+90:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/4244-97fb660009234136.js" defer="defer"></script>
+91:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/notifications-global-442a23b66c306470.js" defer="defer"></script>
+92:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/19262-5205138a8edaff8d.js" defer="defer"></script>
+93:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/17432-837b4cd081f2b657.js" defer="defer"></script>
+94:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/19930-11b17300f073690b.js" defer="defer"></script>
+95:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/codespaces-766b2e8ceab33ba1.js" defer="defer"></script>
+96:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/81730-7197e307b5dcca64.js" defer="defer"></script>
+97:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/70206-97357262fbb75ecf.js" defer="defer"></script>
+98:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/repositories-05a5cb9945e2b263.js" defer="defer"></script>
+99:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/39373-075d662e5ab13538.js" defer="defer"></script>
+100:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/code-menu-ad3e18f5935a3ed8.js" defer="defer"></script>
+102:  <script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/primer-react-6003dd2da1ba0935.js" defer="defer"></script>
+103:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/octicons-react-60e727d7a1b6f52c.js" defer="defer"></script>
+104:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/37869-3811d0fa923a406d.js" defer="defer"></script>
+105:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/26175-6e280b7aa0afba3f.js" defer="defer"></script>
+106:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/68751-830b37204cdf7847.js" defer="defer"></script>
+107:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/7463-30e02617b93e1c07.js" defer="defer"></script>
+108:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/15272-0fca7ba11b03440f.js" defer="defer"></script>
+109:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/32769-abc9916acf2cd4f1.js" defer="defer"></script>
+110:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/36505-9798da05fe2143ec.js" defer="defer"></script>
+111:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/46148-264173ef30e2e838.js" defer="defer"></script>
+112:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/57712-4410161645619b65.js" defer="defer"></script>
+113:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/61545-6a3a31f92bb5e61a.js" defer="defer"></script>
+114:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/20999-9b5648501d55c42d.js" defer="defer"></script>
+115:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/98228-7a59d90d972526cc.js" defer="defer"></script>
+116:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/63991-466700d8cea41498.js" defer="defer"></script>
+117:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/59852-fc77b3df0a08d405.js" defer="defer"></script>
+118:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/3624-8994f1218d2c78b0.js" defer="defer"></script>
+119:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/66231-1c23457f5bdc1770.js" defer="defer"></script>
+120:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/71001-d6e92c16d157f7b0.js" defer="defer"></script>
+121:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/33684-bbaee6839ab84dd8.js" defer="defer"></script>
+122:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/18222-8b85d637a2041072.js" defer="defer"></script>
+123:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/96755-770967b1236437cd.js" defer="defer"></script>
+124:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/4916-0bb8c44ba1b3d0f7.js" defer="defer"></script>
+125:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/75674-f7efb2518345dc67.js" defer="defer"></script>
+126:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/75601-d9eafa1fbbb5172b.js" defer="defer"></script>
+127:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/8987-366fbcea269300af.js" defer="defer"></script>
+128:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/41371-cf8b083f97b1e3cd.js" defer="defer"></script>
+129:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/38184-d1564fd6d02bbc0f.js" defer="defer"></script>
+130:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/2231-1a033fb503a839f6.js" defer="defer"></script>
+131:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/41110-df3d2329c8277a27.js" defer="defer"></script>
+132:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/88466-a08cd6d07304655f.js" defer="defer"></script>
+133:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/81587-bc07bc51c3c473ba.js" defer="defer"></script>
+134:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/58085-77d3143b51231967.js" defer="defer"></script>
+135:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/6597-eae895bee75bd650.js" defer="defer"></script>
+136:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/50110-0f4d902364ca3e5b.js" defer="defer"></script>
+137:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/26497-80bc8bd748aa55ca.js" defer="defer"></script>
+138:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/49135-83e58d929426d4a6.js" defer="defer"></script>
+139:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/71920-723318c28b0f8f3a.js" defer="defer"></script>
+140:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/code-view-2324af9b3f6b5b25.js" defer="defer"></script>
+144:  <script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/70234-1ee48b3a4eebdc7d.js" defer="defer"></script>
+145:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/88041-3cee7e90dc484b22.js" defer="defer"></script>
+146:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/notifications-subscriptions-menu-30bbfbc2cd34927c.js" defer="defer"></script>
+299:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/46752-7bd8967216f7ea42.js" defer="defer"></script>
+300:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/90350-89ca7e5359af8f77.js" defer="defer"></script>
+301:<script crossorigin="anonymous" type="application/javascript" src="https://github.githubassets.com/assets/sessions-e0da6ce03532723c.js" defer="defer"></script>
+441:          <!-- '"` --><!-- </textarea></xmp> --></option></form><form id="query-builder-test-form" action="" accept-charset="UTF-8" method="get">
+442:  <query-builder data-target="qbsearch-input.queryBuilder" id="query-builder-query-builder-test" data-filter-key=":" data-view-component="true" class="QueryBuilder search-query-builder">
+444:      <label id="query-builder-test-label" for="query-builder-test" class="FormControl-label sr-only">
+451:          <span id="query-builder-test-leadingvisual-wrap" class="FormControl-input-leadingVisualWrap QueryBuilder-leadingVisualWrap">
+464:            <input id="query-builder-test" name="query-builder-test" value="" autocomplete="off" type="text" role="combobox" spellcheck="false" aria-expanded="false" aria-describedby="validation-218f2ef8-8382-43e1-b49f-0894504980ee" data-target="query-builder.input" data-action="
+473:            <span class="sr-only" id="query-builder-test-clear">Clear</span>
+474:            <button role="button" id="query-builder-test-clear-button" aria-labelledby="query-builder-test-clear query-builder-test-label" data-action="
+700:              id="query-builder-test-results"
+curl: (23) Failure writing output to destination
+
+ succeeded in 2937ms:
+200 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test
+404 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty
+404 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/common/test
+200 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/src
+
+exec
+/usr/bin/bash -lc 'command -v svn >/dev/null && svn ls https://github.com/ktorio/ktor/tags/3.2.0/ktor-server/ktor-server-netty/jvm/test || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ktorio/ktor/3.2.0/ktor-server/ktor-server-netty/jvm/build.gradle.kts | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "curl -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://api.ktor.io/3.2.0/ktor-server/ktor-server-netty/io.ktor.server.netty/" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0-sources.jar -o "$tmp/sources.jar" && jar tf "$tmp/sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+jvmMain/
+jvmMain/io/
+jvmMain/io/ktor/
+jvmMain/io/ktor/server/
+jvmMain/io/ktor/server/netty/
+jvmMain/io/ktor/server/netty/CIO.kt
+jvmMain/io/ktor/server/netty/Embedded.kt
+jvmMain/io/ktor/server/netty/EngineMain.kt
+jvmMain/io/ktor/server/netty/EventLoopGroupProxy.kt
+jvmMain/io/ktor/server/netty/NettyApplicationCall.kt
+jvmMain/io/ktor/server/netty/NettyApplicationCallHandler.kt
+jvmMain/io/ktor/server/netty/NettyApplicationEngine.kt
+jvmMain/io/ktor/server/netty/NettyApplicationRequest.kt
+jvmMain/io/ktor/server/netty/NettyApplicationRequestCookies.kt
+jvmMain/io/ktor/server/netty/NettyApplicationRequestHeaders.kt
+jvmMain/io/ktor/server/netty/NettyApplicationResponse.kt
+jvmMain/io/ktor/server/netty/NettyChannelInitializer.kt
+jvmMain/io/ktor/server/netty/NettyDirectDecoder.kt
+jvmMain/io/ktor/server/netty/NettyDirectEncoder.kt
+jvmMain/io/ktor/server/netty/NettyHttpHandlerState.kt
+jvmMain/io/ktor/server/netty/cio/
+jvmMain/io/ktor/server/netty/cio/NettyHttpResponsePipeline.kt
+jvmMain/io/ktor/server/netty/cio/RequestBodyHandler.kt
+jvmMain/io/ktor/server/netty/http1/
+jvmMain/io/ktor/server/netty/http1/NettyConnectionPoint.kt
+jvmMain/io/ktor/server/netty/http1/NettyHttp1ApplicationCall.kt
+jvmMain/io/ktor/server/netty/http1/NettyHttp1ApplicationRequest.kt
+jvmMain/io/ktor/server/netty/http1/NettyHttp1ApplicationResponse.kt
+jvmMain/io/ktor/server/netty/http1/NettyHttp1Handler.kt
+jvmMain/io/ktor/server/netty/http2/
+jvmMain/io/ktor/server/netty/http2/Http2LocalConnectionPoint.kt
+jvmMain/io/ktor/server/netty/http2/HttpFrameAdapter.kt
+jvmMain/io/ktor/server/netty/http2/NettyHttp2ApplicationCall.kt
+jvmMain/io/ktor/server/netty/http2/NettyHttp2ApplicationRequest.kt
+jvmMain/io/ktor/server/netty/http2/NettyHttp2ApplicationResponse.kt
+jvmMain/io/ktor/server/netty/http2/NettyHttp2Handler.kt
+
+ succeeded in 162ms:
+404 https://api.ktor.io/3.2.0/ktor-server/ktor-server-netty/io.ktor.server.netty/
+
+ succeeded in 174ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://api.ktor.io/ktor-server/ktor-server-netty/io.ktor.server.netty/ \\
+  https://api.ktor.io/3.2.x/ktor-server/ktor-server-netty/io.ktor.server.netty/ \\
+  https://api.ktor.io/ktor-server/ktor-server-netty-jvm/io.ktor.server.netty/ \\
+  https://api.ktor.io/older/3.2.0/ktor-server/ktor-server-netty/io.ktor.server.netty/ \\
+  https://api.ktor.io/3.2.0/; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code} %{url_effective}' \""'$url")
+  printf '"'%s\\n' \""'$code"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "for path in \\
+  ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationEngine.kt \\
+  ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/EngineMain.kt \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty/NettyApplicationEngineTest.kt \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty/NettyEngineTest.kt \\
+  ktor-server/ktor-server-netty/jvm/test/NettyApplicationEngineTest.kt \\
+  ktor-server/ktor-server-netty/build.gradle.kts; do
+  url=\"https://raw.githubusercontent.com/ktorio/ktor/3.2.0/"'$path"
+  code=$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$path"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/src \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 776ms:
+404 https://api.ktor.io/ktor-server/ktor-server-netty/io.ktor.server.netty/
+404 https://api.ktor.io/3.2.x/ktor-server/ktor-server-netty/io.ktor.server.netty/
+404 https://api.ktor.io/ktor-server/ktor-server-netty-jvm/io.ktor.server.netty/
+404 https://api.ktor.io/older/3.2.0/ktor-server/ktor-server-netty/io.ktor.server.netty/
+404 https://api.ktor.io/3.2.0/
+
+ succeeded in 1215ms:
+200 ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationEngine.kt
+200 ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/EngineMain.kt
+404 ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty/NettyApplicationEngineTest.kt
+404 ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty/NettyEngineTest.kt
+404 ktor-server/ktor-server-netty/jvm/test/NettyApplicationEngineTest.kt
+200 ktor-server/ktor-server-netty/build.gradle.kts
+
+ succeeded in 1360ms:
+200 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty
+200 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/src
+404 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty
+200 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ktorio/ktor/3.2.0/ktor-server/ktor-server-netty/build.gradle.kts | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+/*
+ * Copyright 2014-2025 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
+
+description = ""
+
+plugins {
+    id("ktorbuild.project.library")
+}
+
+val enableAlpnProp = project.hasProperty("enableAlpn")
+val osName = System.getProperty("os.name").lowercase()
+val nativeClassifier: String? = if (enableAlpnProp) {
+    when {
+        osName.contains("win") -> "windows-x86_64"
+        osName.contains("linux") -> "linux-x86_64"
+        osName.contains("mac") -> "osx-x86_64"
+        else -> throw InvalidUserDataException("Unsupported os family $osName")
+    }
+} else {
+    null
+}
+
+kotlin {
+    sourceSets {
+        jvmMain.dependencies {
+            api(projects.ktorServerCore)
+
+            api(libs.netty.codec.http2)
+            api(libs.jetty.alpn.api)
+
+            api(libs.netty.transport.native.kqueue)
+            api(libs.netty.transport.native.epoll)
+            if (nativeClassifier != null) {
+                api(libs.netty.tcnative.boringssl.static)
+            }
+        }
+        jvmTest.dependencies {
+            api(projects.ktorServerTestBase)
+            api(projects.ktorServerTestSuites)
+            api(projects.ktorServerCore)
+
+            api(libs.netty.tcnative)
+            api(libs.netty.tcnative.boringssl.static)
+            api(libs.mockk)
+        }
+    }
+}
+
+tasks.named<KotlinJvmTest>("jvmTest") {
+    systemProperty("enable.http2", "true")
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test | rg -o 'href=\"["'^"]+"|name":"[''^"]+"|path":"[''^"]+"|Netty[A-Za-z0-9]+Test|[A-Za-z0-9]+'"\\.kt' | head -200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "for f in \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyApplicationEngineTest.kt \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyEngineTest.kt \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyHttp2Test.kt \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettySpecificTest.kt \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyTestSuite.kt; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \"https://raw.githubusercontent.com/ktorio/ktor/3.2.0/"'$f")
+  printf '"'%s %s\\n' \""'$code" "$f"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "for p in \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty/ \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/ \\
+  ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/ \\
+  ktor-server/ktor-server-netty/jvm/test/; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \"https://github.com/ktorio/ktor/tree/3.2.0/"'$p")
+  printf '"'%s %s\\n' \""'$code" "$p"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 134ms:
+href="https://github.githubassets.com"
+href="https://avatars.githubusercontent.com"
+href="https://github-cloud.s3.amazonaws.com"
+href="https://user-images.githubusercontent.com/"
+href="https://github.githubassets.com"
+href="https://avatars.githubusercontent.com"
+href="https://github.githubassets.com/assets/light-2ff56e1b36116ee2.css"
+href="https://github.githubassets.com/assets/light_high_contrast-f7f95d7633592089.css"
+href="https://github.githubassets.com/assets/dark-2d1fe43dbc9adf1f.css"
+href="https://github.githubassets.com/assets/dark_high_contrast-d530ee188d165539.css"
+href="https://github.githubassets.com/assets/light-2ff56e1b36116ee2.css"
+href="https://github.githubassets.com/assets/light_high_contrast-f7f95d7633592089.css"
+href="https://github.githubassets.com/assets/light_colorblind-e4bbc49fc7b82570.css"
+href="https://github.githubassets.com/assets/light_colorblind_high_contrast-cc3f126b45166b83.css"
+href="https://github.githubassets.com/assets/light_tritanopia-652ca611ea4e33fe.css"
+href="https://github.githubassets.com/assets/light_tritanopia_high_contrast-9e82d635cb6c3f49.css"
+href="https://github.githubassets.com/assets/dark-2d1fe43dbc9adf1f.css"
+href="https://github.githubassets.com/assets/dark_high_contrast-d530ee188d165539.css"
+href="https://github.githubassets.com/assets/dark_colorblind-3ad0ec21150df75b.css"
+href="https://github.githubassets.com/assets/dark_colorblind_high_contrast-5691ff467f71a3f6.css"
+href="https://github.githubassets.com/assets/dark_tritanopia-abee7710893cd168.css"
+href="https://github.githubassets.com/assets/dark_tritanopia_high_contrast-eafcf6cd46158360.css"
+href="https://github.githubassets.com/assets/dark_dimmed-c7974682a1a84c8d.css"
+href="https://github.githubassets.com/assets/dark_dimmed_high_contrast-f8dab3e04f94c501.css"
+href="https://github.githubassets.com/assets/primer-primitives-7f694b60439d06c0.css"
+href="https://github.githubassets.com/assets/primer-b48faa60c69660fa.css"
+href="https://github.githubassets.com/assets/global-81a5f61ff87ac6f0.css"
+href="https://github.githubassets.com/assets/github-f825c0edd7ad57f8.css"
+href="https://github.githubassets.com/assets/repository-0751f482f5210958.css"
+href="https://github.githubassets.com/assets/code-c22301b4e838281c.css"
+href="https://github.githubassets.com/assets/react-core.c54d2a84efdb1c75.module.css"
+href="https://github.githubassets.com/assets/primer-react-css.284b508046914c02.module.css"
+href="https://github.githubassets.com/assets/code-view.e90633fbe9f1a35a.module.css"
+href="https://github.githubassets.com/assets/primer-react-css.284b508046914c02.module.css"
+href="https://github.githubassets.com/assets/notifications-subscriptions-menu.8c4fb85e38c40b34.module.css"
+href="https://github.githubassets.com/"
+href="/opensearch.xml"
+href="https://github.com/fluidicon.png"
+href="https://github.githubassets.com/assets/pinned-octocat-093da3e6fa40.svg"
+href="https://github.githubassets.com/favicons/favicon.png"
+href="https://github.githubassets.com/favicons/favicon.svg"
+href="https://github.githubassets.com/favicons/favicon"
+href="/manifest.json"
+href="#start-of-content"
+href="https://github.githubassets.com/assets/primer-react-css.284b508046914c02.module.css"
+href="https://github.githubassets.com/assets/keyboard-shortcuts-dialog.094b740f3c5e4a11.module.css"
+href="/"
+href="/login?return_to=https%3A%2F%2Fgithub.com%2Fktorio%2Fktor%2Ftree%2F3.2.0%2Fktor-server%2Fktor-server-netty%2Fjvm%2Ftest"
+href="https://github.githubassets.com/assets/primer-react-css.284b508046914c02.module.css"
+href="https://github.githubassets.com/assets/appearance-settings.8457ca7984002aa0.module.css"
+href="https://github.githubassets.com/assets/primer-react-css.284b508046914c02.module.css"
+href="https://github.githubassets.com/assets/marketing-navigation.02dbcce276da12ab.module.css"
+href="https://github.com/features/copilot"
+href="https://github.com/features/spark"
+href="https://github.com/features/models"
+href="https://github.com/mcp"
+href="https://github.com/features/actions"
+href="https://github.com/features/codespaces"
+href="https://github.com/features/issues"
+href="https://github.com/features/code-review"
+href="https://github.com/security/advanced-security"
+href="https://github.com/security/advanced-security/code-security"
+href="https://github.com/security/advanced-security/secret-protection"
+href="https://github.com/why-github"
+href="https://docs.github.com"
+href="https://github.blog"
+href="https://github.blog/changelog"
+href="https://github.com/marketplace"
+href="https://github.com/features"
+href="https://github.com/enterprise"
+href="https://github.com/team"
+href="https://github.com/enterprise/startups"
+href="https://github.com/solutions/industry/nonprofits"
+href="https://github.com/solutions/use-case/app-modernization"
+href="https://github.com/solutions/use-case/devsecops"
+href="https://github.com/solutions/use-case/devops"
+href="https://github.com/solutions/use-case/ci-cd"
+href="https://github.com/solutions/use-case"
+href="https://github.com/solutions/industry/healthcare"
+href="https://github.com/solutions/industry/financial-services"
+href="https://github.com/solutions/industry/manufacturing"
+href="https://github.com/solutions/industry/government"
+href="https://github.com/solutions/industry"
+href="https://github.com/solutions"
+href="https://github.com/resources/articles?topic=ai"
+href="https://github.com/resources/articles?topic=software-development"
+href="https://github.com/resources/articles?topic=devops"
+href="https://github.com/resources/articles?topic=security"
+href="https://github.com/resources/articles"
+href="https://github.com/customer-stories"
+href="https://github.com/resources/events"
+href="https://github.com/resources/whitepapers"
+href="https://github.com/solutions/executive-insights"
+href="https://skills.github.com"
+href="https://docs.github.com"
+href="https://support.github.com"
+href="https://github.com/orgs/community/discussions"
+href="https://github.com/trust-center"
+href="https://github.com/partners"
+href="https://github.com/resources"
+href="https://github.com/sponsors"
+href="https://securitylab.github.com"
+href="https://maintainers.github.com"
+href="https://github.com/accelerator"
+href="https://stars.github.com"
+href="https://archiveprogram.github.com"
+href="https://github.com/topics"
+href="https://github.com/trending"
+href="https://github.com/collections"
+href="https://github.com/enterprise"
+href="https://github.com/security/advanced-security"
+href="https://github.com/features/copilot/copilot-business"
+href="https://github.com/premium-support"
+href="https://github.com/pricing"
+href="https://docs.github.com/search-github/github-code-search/understanding-github-code-search-syntax"
+href="https://docs.github.com/search-github/github-code-search/understanding-github-code-search-syntax"
+href="/login?return_to=https%3A%2F%2Fgithub.com%2Fktorio%2Fktor%2Ftree%2F3.2.0%2Fktor-server%2Fktor-server-netty%2Fjvm%2Ftest"
+href="/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Ffiles%2Fdisambiguate&amp;source=header-repo&amp;source_repo=ktorio%2Fktor"
+href="https://github.githubassets.com/assets/primer-react-css.284b508046914c02.module.css"
+href="https://github.githubassets.com/assets/appearance-settings.8457ca7984002aa0.module.css"
+href="/ktorio"
+href="/ktorio/ktor"
+href="/login?return_to=%2Fktorio%2Fktor"
+href="/login?return_to=%2Fktorio%2Fktor"
+href="/login?return_to=%2Fktorio%2Fktor"
+href="/ktorio/ktor/tree/3.2.0"
+href="/ktorio/ktor/issues"
+href="/ktorio/ktor/pulls"
+href="/ktorio/ktor/discussions"
+href="/ktorio/ktor/actions"
+href="/ktorio/ktor/security"
+href="/ktorio/ktor/pulse"
+href="/ktorio/ktor/tree/3.2.0"
+href="/ktorio/ktor/issues"
+href="/ktorio/ktor/pulls"
+href="/ktorio/ktor/discussions"
+href="/ktorio/ktor/actions"
+href="/ktorio/ktor/security"
+href="/ktorio/ktor/pulse"
+path":"ktor-server/ktor-server-netty/jvm/test"
+name":"3.2.0"
+name":"io/ktor/tests/server/netty"
+path":"ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty"
+name":"ktor"
+path":"ktor-server/ktor-server-netty/jvm/test"
+name":"3.2.0"
+name":"io"
+path":"ktor-server/ktor-server-netty/jvm/test/io"
+name":"src"
+path":"ktor-server/ktor-server-netty/jvm/src"
+name":"test"
+path":"ktor-server/ktor-server-netty/jvm/test"
+name":"api"
+path":"ktor-server/ktor-server-netty/api"
+name":"jvm"
+path":"ktor-server/ktor-server-netty/jvm"
+name":"build.gradle.kts"
+path":"ktor-server/ktor-server-netty/build.gradle.kts"
+name":"api"
+path":"ktor-server/api"
+name":"common"
+path":"ktor-server/common"
+name":"jvm"
+path":"ktor-server/jvm"
+name":"ktor-server-cio"
+path":"ktor-server/ktor-server-cio"
+name":"ktor-server-config-yaml"
+path":"ktor-server/ktor-server-config-yaml"
+name":"ktor-server-core"
+path":"ktor-server/ktor-server-core"
+name":"ktor-server-host-common"
+path":"ktor-server/ktor-server-host-common"
+name":"ktor-server-jetty-jakarta"
+path":"ktor-server/ktor-server-jetty-jakarta"
+name":"ktor-server-jetty"
+path":"ktor-server/ktor-server-jetty"
+name":"ktor-server-netty"
+path":"ktor-server/ktor-server-netty"
+name":"ktor-server-plugins"
+path":"ktor-server/ktor-server-plugins"
+name":"ktor-server-servlet-jakarta"
+path":"ktor-server/ktor-server-servlet-jakarta"
+name":"ktor-server-servlet"
+path":"ktor-server/ktor-server-servlet"
+name":"ktor-server-test-base"
+path":"ktor-server/ktor-server-test-base"
+name":"ktor-server-test-host"
+path":"ktor-server/ktor-server-test-host"
+name":"ktor-server-test-suites"
+path":"ktor-server/ktor-server-test-suites"
+name":"ktor-server-tests"
+path":"ktor-server/ktor-server-tests"
+name":"ktor-server-tomcat-jakarta"
+path":"ktor-server/ktor-server-tomcat-jakarta"
+name":"ktor-server-tomcat"
+path":"ktor-server/ktor-server-tomcat"
+name":"build.gradle.kts"
+path":"ktor-server/build.gradle.kts"
+name":"gradle.properties"
+path":"ktor-server/gradle.properties"
+
+ succeeded in 1002ms:
+404 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyApplicationEngineTest.kt
+200 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyEngineTest.kt
+404 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyHttp2Test.kt
+200 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettySpecificTest.kt
+404 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyTestSuite.kt
+
+ succeeded in 2635ms:
+404 ktor-server/ktor-server-netty/jvm/test/io/ktor/server/netty/
+200 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/
+200 ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/
+200 ktor-server/ktor-server-netty/jvm/test/
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ktorio/ktor/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyEngineTest.kt | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+/*
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
+
+package io.ktor.tests.server.netty
+
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.websocket.cio.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.netty.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.test.base.*
+import io.ktor.server.testing.suites.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.flow.*
+import kotlin.test.*
+
+class NettyCompressionTest : CompressionTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty) {
+    init {
+        enableSsl = true
+    }
+
+    override fun configure(configuration: NettyApplicationEngine.Configuration) {
+        configuration.shareWorkGroup = true
+    }
+}
+
+class NettyContentTest : ContentTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty) {
+    init {
+        enableSsl = true
+    }
+
+    override fun configure(configuration: NettyApplicationEngine.Configuration) {
+        configuration.shareWorkGroup = true
+    }
+}
+
+class NettyHttpServerCommonTest :
+    HttpServerCommonTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty)
+
+class NettyHttpServerJvmTest :
+    HttpServerJvmTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty) {
+    init {
+        enableSsl = true
+    }
+
+    override fun configure(configuration: NettyApplicationEngine.Configuration) {
+        configuration.shareWorkGroup = true
+        configuration.tcpKeepAlive = true
+    }
+}
+
+class NettyHttp2ServerCommonTest :
+    HttpServerCommonTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty)
+
+class NettyHttp2ServerJvmTest :
+    HttpServerJvmTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty) {
+    init {
+        enableSsl = true
+        enableHttp2 = true
+    }
+
+    override fun configure(configuration: NettyApplicationEngine.Configuration) {
+        configuration.shareWorkGroup = true
+    }
+}
+
+class NettyDisabledHttp2Test :
+    EngineTestBase<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty) {
+
+    init {
+        enableSsl = true
+        enableHttp2 = true
+    }
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0-javadoc.jar -o "$tmp/javadoc.jar" && (jar tf "$tmp/javadoc.jar" || true); rm -rf "$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ktorio/ktor/3.2.0/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ktorio/ktor/3.2.0/gradle/libs.versions.toml | rg -n 'kotlin =|kotlinVersion|kotlinx|kotlin-' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 150ms:
+3:kotlin = "2.1.21"
+4:kotlinx-html = "0.12.0"
+5:kotlinx-datetime = "0.6.2"
+6:kotlinx-io = "0.7.0"
+14:kotlinx-browser = "0.3"
+87:kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+88:kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+89:kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+90:kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+91:kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+92:kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+95:ktor-serialization-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx", version.ref = "ktor" }
+110:kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+111:kotlinx-atomicfu-gradlePlugin = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "atomicfu" }
+113:kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "coroutines" }
+114:kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+115:kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+116:kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "coroutines" }
+117:kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "coroutines" }
+119:kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
+120:kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+121:kotlinx-serialization-json-io = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-io", version.ref = "serialization" }
+122:kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "serialization" }
+123:kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
+125:kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html", version.ref = "kotlinx-html" }
+127:kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+129:kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+131:kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
+133:kotlinx-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
+180:jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+218:jte-kotlin = { module = "gg.jte:jte-kotlin", version.ref = "jte" }
+240:binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
+241:kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+
+ succeeded in 168ms:
+<div align="center">
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ktorio/ktor/main/.github/images/ktor-logo-for-dark.svg">
+    <img alt="Ktor logo" src="https://raw.githubusercontent.com/ktorio/ktor/main/.github/images/ktor-logo-for-light.svg">
+  </picture>
+
+</div>
+
+[![Official JetBrains project](http://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![Maven Central](https://img.shields.io/maven-central/v/io.ktor/ktor-server)](https://central.sonatype.com/search?namespace=io.ktor)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.1.21-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Slack channel](https://img.shields.io/badge/chat-slack-green.svg?logo=slack)](https://kotlinlang.slack.com/messages/ktor/)
+[![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Contribute with Gitpod](https://img.shields.io/badge/Contribute%20with-Gitpod-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/ktorio/ktor)
+
+Ktor is an asynchronous framework for creating microservices, web applications and more. Written in Kotlin from the
+ground up.
+
+First add the dependency to your project:
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
+}
+```
+
+Then create an `Application` and install some features:
+
+```kotlin
+import io.ktor.server.netty.*
+import io.ktor.server.routing.*
+import io.ktor.server.application.*
+import io.ktor.http.*
+import io.ktor.server.response.*
+import io.ktor.server.engine.*
+
+fun main(args: Array<String>) {
+    embeddedServer(Netty, 8080) {
+        routing {
+            get("/") {
+                call.respondText("Hello, world!", ContentType.Text.Html)
+            }
+        }
+    }.start(wait = true)
+}
+```
+
+You also can use [Ktor Gradle Plugin](https://github.com/ktorio/ktor-build-plugins) to configure bom, run tasks and deployment:
+```kotlin
+plugins {
+    id("io.ktor.plugin") version "3.1.1"
+}
+
+dependencies {
+    implementation("io.ktor:ktor-server-netty")
+}
+```
+
+To run the created application, execute:
+```shell
+./gradlew run
+```
+
+* Runs embedded web server on `localhost:8080`
+* Installs routing and responds with `Hello, world!` when receiving a GET http request for the root path
+
+## Start using Ktor
+
+Build your first Kotlin HTTP or RESTful application using Ktor: [start.ktor.io](https://start.ktor.io)
+
+## Principles
+
+#### Unopinionated
+
+Ktor Framework doesn't impose a lot of constraints on what technology a project is going to use – logging,
+templating, messaging, persistence, serialization, dependency injection, etc.
+Sometimes it may be required to implement a simple interface, but usually it is a matter of writing a
+transforming or intercepting function. Features are installed into the application using a unified *interception*
+mechanism
+which allows building arbitrary pipelines.
+
+Ktor Applications can be hosted in any servlet container with Servlet 3.0+ API support such as Tomcat, or
+standalone using Netty or Jetty. Support for other hosts can be added through the unified hosting API.
+
+Ktor APIs are mostly functions calls with lambdas. Thanks to Kotlin DSL capabilities, the code looks declarative.
+Application composition is entirely up to the developer's choice – with functions or classes, using dependency injection
+framework or doing it all manually in the main function.
+
+#### Asynchronous
+
+The Ktor pipeline machinery and API are utilising Kotlin coroutines to provide easy-to-use asynchronous
+programming model without making it too cumbersome. All host implementations are using asynchronous I/O facilities
+to avoid thread blocking.
+
+#### Testable
+
+Ktor applications can be hosted in a special test environment, which emulates a web server to some
+extent without actually doing any networking. It provides easy way to test an application without mocking
+too much stuff, and still achieve good performance while validating application calls. Running integration tests with a
+real
+embedded web server are of course possible, too.
+
+## JetBrains Product
+
+Ktor is an official [JetBrains](https://jetbrains.com) product and is primarily developed by the team at JetBrains, with
+contributions
+from the community.
+
+## Documentation
+
+Please visit [ktor.io](http://ktor.io) for Quick Start and detailed explanations of features, usage and machinery.
+
+* Getting started with [Gradle](https://ktor.io/docs/gradle.html)
+* Getting started with [Maven](https://ktor.io/docs/maven.html)
+* Getting started with [IDEA](https://ktor.io/docs/intellij-idea.html)
+
+ succeeded in 293ms:
+META-INF/
+META-INF/MANIFEST.MF
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+codex
+The artifact is a standard JVM Kotlin library: the Gradle metadata advertises `standard-jvm`, and the published JAR contains JVM class files. I’m doing one last pass over the tagged tree for artifact-specific docs before writing the metadata.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); git clone --depth 1 --filter=blob:none --sparse --branch 3.2.0 https://github.com/ktorio/ktor.git "$tmp/ktor" >/tmp/ktor-clone.log 2>&1 && cd "$tmp/ktor" && git ls-tree -r --name-only HEAD | rg '"'("'^ktor-server/ktor-server-netty/|documentation|docs|README|server.*engine|netty)'"' | head -300; status="'$?; rm -rf "$tmp"; exit $status' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 1102ms:
+README.md
+build-logic/README.md
+docs/develocity.md
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/ApplicationEngine.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/ApplicationEnvironmentBuilder.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/BaseApplicationCall.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/BaseApplicationEngine.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/BaseApplicationRequest.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/BaseApplicationResponse.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/CommandLine.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/DefaultEnginePipeline.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/DefaultTransform.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/DefaultUncaughtExceptionHandler.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/EmbeddedServer.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/EngineConnectorConfig.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/EngineContextCancellationHelper.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/EnginePipeline.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/Long.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/ServerEngineUtils.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/ShutdownHook.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/internal/ApplicationUtils.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/internal/EngineUtils.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/internal/ExceptionPageContent.kt
+ktor-server/ktor-server-core/common/src/io/ktor/server/engine/internal/ExceptionUtils.kt
+ktor-server/ktor-server-core/common/test/io/ktor/server/engine/CommandLineConfigTest.kt
+ktor-server/ktor-server-core/common/test/io/ktor/server/engine/EnvironmentUtilsTest.kt
+ktor-server/ktor-server-core/js/src/io/ktor/server/engine/EnvironmentUtils.js.kt
+ktor-server/ktor-server-core/jsAndWasmShared/src/io/ktor/server/engine/DefaultTransform.jsAndWasmShared.kt
+ktor-server/ktor-server-core/jsAndWasmShared/src/io/ktor/server/engine/EmbeddedServer.jsAndWasmShared.kt
+ktor-server/ktor-server-core/jsAndWasmShared/src/io/ktor/server/engine/EnvironmentUtils.jsAndWasmShared.kt
+ktor-server/ktor-server-core/jsAndWasmShared/src/io/ktor/server/engine/ShutdownHook.jsAndWasmShared.kt
+ktor-server/ktor-server-core/jsAndWasmShared/src/io/ktor/server/engine/internal/ApplicationUtils.jsAndWasmShared.kt
+ktor-server/ktor-server-core/jsAndWasmShared/src/io/ktor/server/engine/internal/EngineUtils.jsAndWasmShared.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/ApplicationEngineJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/ApplicationEnvironmentJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/ClassLoaders.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/DefaultTransformJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/EmbeddedServerJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/EngineConnectorConfigJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/EnvironmentUtilsJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/OverridingClassLoader.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/ServerHostUtils.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/ShutDownUrl.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/ShutdownHookJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/internal/ApplicationUtilsJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/internal/AutoReloadUtils.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/internal/CallableUtils.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/internal/EngineUtilsJvm.kt
+ktor-server/ktor-server-core/jvm/src/io/ktor/server/engine/internal/ExceptionUtilsJvm.kt
+ktor-server/ktor-server-core/jvm/test/io/ktor/server/engine/EmbeddedServerTest.kt
+ktor-server/ktor-server-core/jvm/test/io/ktor/tests/server/engine/MultiPartDataTest.kt
+ktor-server/ktor-server-core/jvm/test/io/ktor/tests/server/engine/OverridingClassLoaderTest.kt
+ktor-server/ktor-server-core/mingwX64/src/io/ktor/server/engine/EnvironmentUtils.mingwX64.kt
+ktor-server/ktor-server-core/nix/src/io/ktor/server/engine/EnvironmentUtils.nix.kt
+ktor-server/ktor-server-core/nonJvm/src/io/ktor/server/engine/ApplicationEngineEnvironment.nonJvm.kt
+ktor-server/ktor-server-core/nonJvm/src/io/ktor/server/engine/EngineConnectorConfing.nonJvm.kt
+ktor-server/ktor-server-core/nonJvm/src/io/ktor/server/engine/internal/ExceptionUtils.nonJvm.kt
+ktor-server/ktor-server-core/posix/src/io/ktor/server/engine/DefaultTransformNix.kt
+ktor-server/ktor-server-core/posix/src/io/ktor/server/engine/EmbeddedServerNix.kt
+ktor-server/ktor-server-core/posix/src/io/ktor/server/engine/EnvironmentUtilsNix.kt
+ktor-server/ktor-server-core/posix/src/io/ktor/server/engine/ShutdownHookNative.kt
+ktor-server/ktor-server-core/posix/src/io/ktor/server/engine/internal/ApplicationUtilsNix.kt
+ktor-server/ktor-server-core/posix/src/io/ktor/server/engine/internal/EngineUtilsNix.kt
+ktor-server/ktor-server-core/wasmJs/src/io/ktor/server/engine/EnvironmentUtils.wasmJs.kt
+ktor-server/ktor-server-netty/api/ktor-server-netty.api
+ktor-server/ktor-server-netty/api/ktor-server-netty.klib.api
+ktor-server/ktor-server-netty/build.gradle.kts
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/CIO.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/Embedded.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/EngineMain.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/EventLoopGroupProxy.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationCall.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationCallHandler.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationEngine.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationRequest.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationRequestCookies.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationRequestHeaders.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyApplicationResponse.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyChannelInitializer.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyDirectDecoder.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyDirectEncoder.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/NettyHttpHandlerState.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/cio/NettyHttpResponsePipeline.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/cio/RequestBodyHandler.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http1/NettyConnectionPoint.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http1/NettyHttp1ApplicationCall.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http1/NettyHttp1ApplicationRequest.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http1/NettyHttp1ApplicationResponse.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http1/NettyHttp1Handler.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http2/Http2LocalConnectionPoint.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http2/HttpFrameAdapter.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http2/NettyHttp2ApplicationCall.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http2/NettyHttp2ApplicationRequest.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http2/NettyHttp2ApplicationResponse.kt
+ktor-server/ktor-server-netty/jvm/src/io/ktor/server/netty/http2/NettyHttp2Handler.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/EngineMainTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyConfigurationTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyCustomChannelPipelineConfigurationTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyEngineTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyHttp2ApplicationResponseTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyHttp2LocalConnectionPointTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyReadRequestTimeoutTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettySpecificTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyStressTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyUtilityTest.kt
+ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty/NettyWebSocketTest.kt
+ktor-server/ktor-server-plugins/ktor-server-openapi/jvm/test-resources/openapi/documentation.yaml
+ktor-server/ktor-server-plugins/ktor-server-swagger/jvm/test-resources/openapi/documentation.yaml
+ktor-test-server/README.md
+
+web search: 
+web search: Ktor 3.2.0 Netty documentation server engines
+codex
+I’m going to write the discovered metadata now. I’ll use the Maven Central source and javadoc artifacts, the tagged GitHub test directory for the Netty JVM tests, and Kotlin `2.1` from the artifact’s published Kotlin dependency/version catalog.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+diff --git a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+index bb13f6aff932ef3d47d5d08f5eb3a9affd6ea242..b7fefe3b86661a2769cab7842bbe51f44c00cb13
+--- a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
++++ b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0"
++  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/ktorio/ktor",
++  "test-code-url" : "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
++  "description" : "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+index bb13f6aff932ef3d47d5d08f5eb3a9affd6ea242..b7fefe3b86661a2769cab7842bbe51f44c00cb13
+--- a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
++++ b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0"
++  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/ktorio/ktor",
++  "test-code-url" : "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
++  "description" : "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+{
+  "coordinates": "io.ktor:ktor-server-netty-jvm:3.2.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
+  "repository-url": "https://github.com/ktorio/ktor",
+  "test-code-url": "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
+  "description": "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.1"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0-sources.jar \\
+  https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty \\
+  https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0-javadoc.jar; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+diff --git a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+index bb13f6aff932ef3d47d5d08f5eb3a9affd6ea242..b7fefe3b86661a2769cab7842bbe51f44c00cb13
+--- a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
++++ b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0"
++  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/ktorio/ktor",
++  "test-code-url" : "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
++  "description" : "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+ succeeded in 841ms:
+200 https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty
+200 https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/3.2.0/ktor-server-netty-jvm-3.2.0-javadoc.jar
+
+exec
+/usr/bin/bash -lc 'git check-ignore -v build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+ succeeded in 0ms:
+{
+  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
+  "repository-url" : "https://github.com/ktorio/ktor",
+  "test-code-url" : "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
+  "description" : "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
+  "language" : {
+    "name" : "kotlin",
+    "version" : "2.1"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd
+diff --git a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+index bb13f6aff932ef3d47d5d08f5eb3a9affd6ea242..b7fefe3b86661a2769cab7842bbe51f44c00cb13
+--- a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
++++ b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0"
++  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/ktorio/ktor",
++  "test-code-url" : "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
++  "description" : "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+ succeeded in 213ms:
+web search: 
+web search: https://github.com/ktorio/ktor/tree/3.2.0/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty
+web search: 
+web search: io.ktor ktor-server-netty-jvm 3.2.0 Maven Central sources javadoc
+codex
+Updated [io.ktor-ktor-server-netty-jvm-3.2.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json) with repository, source, test, documentation, description, and Kotlin language metadata.
+
+I left `not-for-native-image` absent because this is a JVM artifact: it is published as `jar:3.2.0`, depends on Kotlin stdlib `2.1.21`, and the tagged repo contains the Netty JVM test suite. ([mvnrepository.com](https://mvnrepository.com/artifact/io.ktor/ktor-server-netty-jvm/3.2.0?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the resolved source, test, and documentation URLs all returned HTTP `200`.
+diff --git a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+index bb13f6aff932ef3d47d5d08f5eb3a9affd6ea242..b7fefe3b86661a2769cab7842bbe51f44c00cb13
+--- a/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
++++ b/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0"
++  "coordinates" : "io.ktor:ktor-server-netty-jvm:3.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-sources.jar",
++  "repository-url" : "https://github.com/ktorio/ktor",
++  "test-code-url" : "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-netty/jvm/test/io/ktor/tests/server/netty",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-netty-jvm/$version$/ktor-server-netty-jvm-$version$-javadoc.jar",
++  "description" : "Ktor Server Netty JVM provides the Netty-based server engine for running Ktor applications on the JVM. It lets Kotlin services handle HTTP and HTTP/2 requests through Ktor's coroutine-based server APIs while using Netty for network transport.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+tokens used
+94,798
+Updated [io.ktor-ktor-server-netty-jvm-3.2.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/build/discovered-artifact-metadata/io.ktor-ktor-server-netty-jvm-3.2.0.json) with repository, source, test, documentation, description, and Kotlin language metadata.
+
+I left `not-for-native-image` absent because this is a JVM artifact: it is published as `jar:3.2.0`, depends on Kotlin stdlib `2.1.21`, and the tagged repo contains the Netty JVM test suite. ([mvnrepository.com](https://mvnrepository.com/artifact/io.ktor/ktor-server-netty-jvm/3.2.0?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the resolved source, test, and documentation URLs all returned HTTP `200`.
+Ran agent for io.ktor:ktor-server-netty-jvm:3.2.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/build/agent-artifact-discovery-logs/io.ktor-ktor-server-netty-jvm-3.2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4496-fab8c0bd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 4s
+9 actionable tasks: 9 executed
