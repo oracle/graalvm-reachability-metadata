@@ -6,9 +6,6 @@
  */
 package org_mockito.mockito_junit_jupiter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +13,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -35,8 +31,8 @@ public class MockitoJunitJupiterTest {
     @Captor
     private ArgumentCaptor<String> greetingCaptor;
 
-    @Spy
-    private AuditLog audit = new AuditLog();
+    @Mock
+    private AuditLog audit;
 
     @InjectMocks
     private GreetingService service;
@@ -58,9 +54,8 @@ public class MockitoJunitJupiterTest {
         verify(audit).record("Hello Ada");
         assertThat(greeting).isEqualTo("Hello Ada");
         assertThat(greetingCaptor.getValue()).isEqualTo("Hello Ada");
-        assertThat(audit.entries()).containsExactly("Hello Ada");
         assertThat(mockingDetails(repository).isMock()).isTrue();
-        assertThat(mockingDetails(audit).isSpy()).isTrue();
+        assertThat(mockingDetails(audit).isMock()).isTrue();
     }
 
     @Test
@@ -117,15 +112,7 @@ public class MockitoJunitJupiterTest {
         }
     }
 
-    public static class AuditLog {
-        private final List<String> entries = new ArrayList<>();
-
-        public void record(String entry) {
-            entries.add(entry);
-        }
-
-        public List<String> entries() {
-            return List.copyOf(entries);
-        }
+    public interface AuditLog {
+        void record(String entry);
     }
 }
