@@ -302,6 +302,39 @@ class Requests_3Test {
   }
 
   @Test
+  def requestObjectCanBeExecutedWithPatchRequester(): Unit = {
+    withServer { exchange =>
+      assertEquals("PATCH", exchange.getRequestMethod)
+      assertEquals("/configured", exchange.getRequestURI.getPath)
+
+      val params: Map[String, Seq[String]] = queryParams(exchange.getRequestURI)
+      assertEquals(Seq("42"), params("id"))
+      assertEquals(Seq("request object"), params("mode"))
+      assertEquals("yes", exchange.getRequestHeaders.getFirst("X-Configured"))
+      val cookieHeader: String = exchange.getRequestHeaders.getFirst("Cookie")
+      assertTrue(cookieHeader.contains("request-cookie"))
+      assertTrue(cookieHeader.contains("configured"))
+      assertEquals("patch-body", new String(readRequestBody(exchange), StandardCharsets.UTF_8))
+
+      sendText(exchange, 200, "patched", Seq("X-Patched" -> "true"))
+    } { baseUrl =>
+      val request: requests.Request = requests.Request(
+        url = s"$baseUrl/configured",
+        params = Seq("id" -> "42", "mode" -> "request object"),
+        headers = Seq("X-Configured" -> "yes"),
+        cookieValues = Map("request-cookie" -> "configured"),
+        readTimeout = 5000,
+        connectTimeout = 5000
+      )
+
+      val response: requests.Response = requests.patch(request, stringBlob("patch-body"), chunkedUpload = false)
+      assertEquals(200, response.statusCode)
+      assertEquals("patched", response.text())
+      assertEquals(Seq("true"), response.headers("x-patched"))
+    }
+  }
+
+  @Test
   def headRequesterReturnsHeadersWithoutResponseBody(): Unit = {
     withServer { exchange =>
       assertEquals("HEAD", exchange.getRequestMethod)
