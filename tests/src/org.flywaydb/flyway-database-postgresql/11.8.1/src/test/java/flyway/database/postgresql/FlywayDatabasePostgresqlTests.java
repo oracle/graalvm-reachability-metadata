@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 import org.awaitility.Awaitility;
@@ -54,20 +55,26 @@ public class FlywayDatabasePostgresqlTests {
     }
 
     @AfterAll
-    static void tearDown() {
+    static void tearDown() throws InterruptedException {
         if (process != null && process.isAlive()) {
             System.out.println("Shutting down PostgreSQL");
             process.destroy();
+            if (!process.waitFor(10, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+            }
         }
     }
 
     @Test
     void migrate() {
         DataSource dataSource = getDataSource();
+        String schema = "flyway_database_postgresql_" + Long.toUnsignedString(System.nanoTime(), 36);
 
         Configuration configuration = new FluentConfiguration()
                 .dataSource(dataSource)
                 .encoding(StandardCharsets.UTF_8)
+                .schemas(schema)
+                .defaultSchema(schema)
                 .resourceProvider(new FixedResourceProvider());
         configuration.getPluginRegister()
                 .getPlugin(PostgreSQLConfigurationExtension.class)
