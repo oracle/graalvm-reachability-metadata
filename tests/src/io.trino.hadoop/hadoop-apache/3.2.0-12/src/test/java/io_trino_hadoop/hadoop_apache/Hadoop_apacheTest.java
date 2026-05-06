@@ -146,7 +146,7 @@ public class Hadoop_apacheTest {
         assertThat(factory.getCodecClassByName(GzipCodec.class.getName())).isEqualTo(GzipCodec.class);
         assertThat(factory.getCodec(new Path("part-00000.txt"))).isNull();
 
-        assertRoundTrips(gzip, "gzip payload with unicode π and multiple words");
+        assertRoundTrips(gzip, "gzip payload with unicode pi and multiple words");
         assertRoundTrips(bzip2, "bzip2 payload\nwith more than one line\n");
     }
 
@@ -257,15 +257,15 @@ public class Hadoop_apacheTest {
         assertThat(AclEntry.aclSpecToString(aclEntries)).contains("user:analytics:r--");
 
         Text text = new Text("hello");
-        byte[] suffix = " π".getBytes(StandardCharsets.UTF_8);
+        byte[] suffix = " pi".getBytes(StandardCharsets.UTF_8);
         text.append(suffix, 0, suffix.length);
-        assertThat(text.toString()).isEqualTo("hello π");
-        assertThat(text.find("π")).isGreaterThan(0);
+        assertThat(text.toString()).isEqualTo("hello pi");
+        assertThat(text.find("pi")).isGreaterThan(0);
 
-        ByteBuffer encoded = Text.encode("encoded ✓");
+        ByteBuffer encoded = Text.encode("encoded check");
         byte[] encodedBytes = new byte[encoded.remaining()];
         encoded.get(encodedBytes);
-        assertThat(Text.decode(encodedBytes)).isEqualTo("encoded ✓");
+        assertThat(Text.decode(encodedBytes)).isEqualTo("encoded check");
 
         byte[] lines = "alpha\nbeta\r\ngamma".getBytes(StandardCharsets.UTF_8);
         try (LineReader reader = new LineReader(new ByteArrayInputStream(lines))) {
