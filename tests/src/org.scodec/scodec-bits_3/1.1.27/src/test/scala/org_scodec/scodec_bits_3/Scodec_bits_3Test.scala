@@ -13,7 +13,7 @@ import java.util.UUID
 
 import org.junit.jupiter.api.Assertions.{assertArrayEquals, assertEquals, assertFalse, assertThrows, assertTrue}
 import org.junit.jupiter.api.Test
-import scodec.bits.{Bases, BitVector, ByteOrdering, ByteVector, crc}
+import scodec.bits.{Bases, BitVector, ByteOrdering, ByteVector, bin, crc, hex}
 
 class Scodec_bits_3Test {
   @Test
@@ -124,6 +124,19 @@ class Scodec_bits_3Test {
     assertEquals(None, ByteVector.fromHex("not hex"))
     assertTrue(ByteVector.fromHexDescriptive("01xz").isLeft)
     assertTrue(ByteVector.fromBase64Descriptive("%%%%").isLeft)
+  }
+
+  @Test
+  def literalInterpolatorsCreateByteAndBitVectors(): Unit = {
+    val bytes: ByteVector = hex"deadbeef"
+    val bits: BitVector = bin"1010101010"
+
+    assertEquals(4L, bytes.size)
+    assertEquals("deadbeef", bytes.toHex)
+    assertEquals(ByteVector(0xde, 0xad, 0xbe, 0xef), bytes)
+    assertEquals(10L, bits.size)
+    assertEquals("1010101010", bits.toBin)
+    assertEquals(5L, bits.populationCount)
   }
 
   @Test
