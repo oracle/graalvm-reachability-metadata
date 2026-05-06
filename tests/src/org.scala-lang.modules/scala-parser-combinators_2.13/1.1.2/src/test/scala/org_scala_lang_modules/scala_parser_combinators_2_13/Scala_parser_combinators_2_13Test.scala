@@ -104,6 +104,29 @@ class Scala_parser_combinators_2_13Test {
   }
 
   @Test
+  def syntacticPredicatesPerformLookaheadWithoutConsumingInput(): Unit = {
+    val guarded: LookaheadParser.ParseResult[String] = LookaheadParser.parseAll(
+      LookaheadParser.casePrefixedIdentifier,
+      "case"
+    )
+    val ordinaryIdentifier: LookaheadParser.ParseResult[String] = LookaheadParser.parseAll(
+      LookaheadParser.nonReservedIdentifier,
+      "caseValue"
+    )
+    val reservedWord: LookaheadParser.ParseResult[String] = LookaheadParser.parseAll(
+      LookaheadParser.nonReservedIdentifier,
+      "case"
+    )
+
+    assertThat(guarded.successful).isTrue()
+    assertThat(guarded.get).isEqualTo("case")
+    assertThat(ordinaryIdentifier.successful).isTrue()
+    assertThat(ordinaryIdentifier.get).isEqualTo("caseValue")
+    assertThat(reservedWord.successful).isFalse()
+    assertThat(reservedWord.toString).contains("case")
+  }
+
+  @Test
   def characterReadersExposeContentOffsetsAndHumanReadablePositions(): Unit = {
     val sequenceReader: CharSequenceReader = new CharSequenceReader("alpha\nβeta")
     val secondLineReader: CharSequenceReader = sequenceReader.drop(6)
@@ -182,6 +205,18 @@ class Scala_parser_combinators_2_13Test {
         ("true" | "false") ^^ (_.toBoolean)
 
     private def unquote(text: String): String = text.substring(1, text.length - 1)
+  }
+
+  private object LookaheadParser extends RegexParsers {
+    override val skipWhitespace: Boolean = true
+
+    def nonReservedIdentifier: Parser[String] = not(caseKeyword) ~> identifier
+
+    def casePrefixedIdentifier: Parser[String] = guard(caseKeyword) ~> identifier
+
+    private def identifier: Parser[String] = """[A-Za-z_][A-Za-z0-9_]*""".r
+
+    private def caseKeyword: Parser[String] = """case(?![A-Za-z0-9_])""".r
   }
 
   private final case class Declaration(name: String, value: Int) extends Positional
