@@ -51,6 +51,21 @@ class Pureconfig_generic_base_3Test {
   }
 
   @Test
+  def productHintDefersMissingFieldsToDefaultArgumentHandling(): Unit = {
+    val cursor: ConfigObjectCursor = objectCursor("""
+      host-name = "service.local"
+      """)
+    val hint: ProductHint[ServerSettings] = summon[ProductHint[ServerSettings]]
+
+    hint.from(cursor, "connectionTimeout") match {
+      case ProductHint.UseOrDefault(fieldCursor, field) =>
+        assertThat(field).isEqualTo("connection-timeout")
+        assertThat(left(fieldCursor.asInt).prettyPrint()).contains("connection-timeout")
+      case other => fail(s"Expected ProductHint.UseOrDefault, got $other")
+    }
+  }
+
+  @Test
   def strictProductHintReportsUnknownKeysAndDoesNotUseDefaults(): Unit = {
     val cursor: ConfigObjectCursor = objectCursor("""
       host-name = "localhost"
