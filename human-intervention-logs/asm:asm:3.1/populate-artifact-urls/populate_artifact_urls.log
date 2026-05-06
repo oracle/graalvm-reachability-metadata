@@ -1,0 +1,931 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfe8f-5324-75b1-96a2-a788472cbfc0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: asm:asm:3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/metadata/asm/asm/index.json
+- Entry selector: "metadata-version" = "3.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar
+- repository-url: https://gitlab.ow2.org/asm/asm
+- test-code-url: https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test
+- documentation-url: https://javadoc.io/doc/asm/asm/$version$/index.html
+- description: ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1
+- Entry metadata-version: 3.1
+- Entry test-version: 3.1
+- Entry tested-versions: [3.1]
+codex
+I’ll verify the current metadata entry and check the versioned URLs before deciding whether any field is actually missing or stale. Since this is URL maintenance for an old artifact, I’ll verify the rendered locations rather than relying on the existing values.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"' metadata/asm/asm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+4:    "metadata-version" : "3.1",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+6:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+8:    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
+9:    "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/asm/asm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
+    "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+    "tested-versions" : [
+      "3.1"
+    ],
+    "allowed-packages" : [
+      "org.objectweb.asm"
+    ]
+  }
+]
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 asm asm 3.1 asm-3.1-sources.jar
+codex
+The metadata entry already has non-blank URL and description values. I’m checking whether those rendered version URLs actually resolve, and whether a Maven-hosted test artifact exists before leaving or updating the test-suite URL.
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://repo.maven.apache.org/maven2/asm/asm/3.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: asm/asm/3.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>asm/asm/3.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="asm-3.1-sources.jar" title="asm-3.1-sources.jar">asm-3.1-sources.jar</a>                               2008-01-20 10:31    108730      
+<a href="asm-3.1-sources.jar.asc" title="asm-3.1-sources.jar.asc">asm-3.1-sources.jar.asc</a>                           2008-01-20 10:31       833      
+<a href="asm-3.1-sources.jar.md5" title="asm-3.1-sources.jar.md5">asm-3.1-sources.jar.md5</a>                           2008-01-20 10:31        33      
+<a href="asm-3.1-sources.jar.sha1" title="asm-3.1-sources.jar.sha1">asm-3.1-sources.jar.sha1</a>                          2008-01-20 10:31        41      
+<a href="asm-3.1.jar" title="asm-3.1.jar">asm-3.1.jar</a>                                       2008-01-20 10:31     43033      
+<a href="asm-3.1.jar.md5" title="asm-3.1.jar.md5">asm-3.1.jar.md5</a>                                   2008-01-20 10:31        32      
+<a href="asm-3.1.jar.sha1" title="asm-3.1.jar.sha1">asm-3.1.jar.sha1</a>                                  2008-01-20 10:31        40      
+<a href="asm-3.1.pom" title="asm-3.1.pom">asm-3.1.pom</a>                                       2008-01-20 10:31       278      
+<a href="asm-3.1.pom.md5" title="asm-3.1.pom.md5">asm-3.1.pom.md5</a>                                   2008-01-20 10:31        32      
+<a href="asm-3.1.pom.sha1" title="asm-3.1.pom.sha1">asm-3.1.pom.sha1</a>                                  2008-01-20 10:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -L -I --fail --silent --show-error https://repo.maven.apache.org/maven2/asm/asm/3.1/asm-3.1-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'curl -L -I --fail --silent --show-error https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'curl -L -I --fail --silent --show-error https://javadoc.io/doc/asm/asm/3.1/index.html' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'curl -L -I --fail --silent --show-error https://gitlab.ow2.org/asm/asm' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 119ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 18:32:00 GMT
+content-type: application/java-archive
+content-length: 108730
+cf-ray: 9f7a10a97ab0bc6b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1487719
+etag: "0c0e3e83d9ce7907334c5eb519dab10c"
+last-modified: Wed, 30 Nov 2011 08:50:19 GMT
+x-checksum-md5: 0c0e3e83d9ce7907334c5eb519dab10c
+x-checksum-sha1: 2eaa4de56203f433f287a6df5885ef9ad3c5bcae
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 209ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 18:32:00 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/asm/asm/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=TpAhQZby4o2qu2%2FUkyC2%2FbTTuQl0xeaF8hs0S7fKuEsdyd3%2BNgPqZAIz%2FwGOtkCa1rs9y2LGXhg4WWA046%2BUYYxtYSKCHyQcTWgK0D5h%2FqGdZjNRvkeTp0ZQiP8GB0%2BOn9gb0964db%2By"}]}
+server: cloudflare
+cf-ray: 9f7a10a96f25bac2-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 11244ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Wed, 06 May 2026 18:32:11 GMT
+etag: W/"0ce9aee77065ffa86d68ca9fbe8914d0"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=1632170745e39aa66766c687a766f20a; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQZ8ZM7FMH04WD5JA07CFFEA","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQZ8ZM7FMH04WD5JA07CFFEA
+x-runtime: 0.123650
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+ succeeded in 11286ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Wed, 06 May 2026 18:32:11 GMT
+etag: W/"d25ee7486c7d0d5995fcc48a8a70d3df"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: event_filter=all; path=/; Secure; SameSite=None
+set-cookie: _gitlab_session=62dfd61d4250881028aae36118381e6d; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQZ8ZM95DDYS61K4TY8PZD9Z","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQZ8ZM95DDYS61K4TY8PZD9Z
+x-runtime: 0.123401
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/asm/asm/3.1/ asm-3.1-sources.jar
+web search: 
+web search: ASM 3.1 API documentation org.objectweb.asm ClassVisitor 3.1
+codex
+Maven Central has the 3.1 sources jar but no javadoc or test jar in that artifact directory. The existing javadoc.io URL returns HTTP 200, but the page says no JavaDoc was released for `asm:asm:3.1`, so I’m checking the tagged source tree for a versioned documentation location before writing `N/A`.
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&per_page=100'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&recursive=true&per_page=100' | head -c 20000" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=test&per_page=100'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://javadoc.io/doc/asm/asm/3.1/index.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 148ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>asm 3.1 javadoc (asm)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/asm">asm</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						asm
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/asm/asm" class="dropdown-item">
+							asm
+						</a>
+						
+						<a href="/doc/asm/asm-all" class="dropdown-item">
+							asm-all
+						</a>
+						
+						<a href="/doc/asm/asm-attrs" class="dropdown-item">
+							asm-attrs
+						</a>
+						
+						<a href="/doc/asm/asm-commons" class="dropdown-item">
+							asm-commons
+						</a>
+						
+						<a href="/doc/asm/asm-debug-all" class="dropdown-item">
+							asm-debug-all
+						</a>
+						
+						<a href="/doc/asm/asm-tree" class="dropdown-item">
+							asm-tree
+						</a>
+						
+						<a href="/doc/asm/asm-util" class="dropdown-item">
+							asm-util
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						3.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/asm/asm/latest/index.html" class="dropdown-item">
+							4.0_RC2
+						</a>
+
+						
+						<a href="/doc/asm/asm/4.0_RC1/index.html" class="dropdown-item">
+							4.0_RC1
+						</a>
+						
+						<a href="/doc/asm/asm/3.3.1/index.html" class="dropdown-item">
+							3.3.1
+						</a>
+						
+						<a href="/doc/asm/asm/3.3/index.html" class="dropdown-item">
+							3.3
+						</a>
+						
+						<a href="/doc/asm/asm/3.2/index.html" class="dropdown-item">
+							3.2
+						</a>
+						
+						<a href="/doc/asm/asm/3.1/index.html" class="dropdown-item">
+							3.1
+						</a>
+						
+						<a href="/doc/asm/asm/3.0_RC1/index.html" class="dropdown-item">
+							3.0_RC1
+						</a>
+						
+						<a href="/doc/asm/asm/3.0/index.html" class="dropdown-item">
+							3.0
+
+ succeeded in 10449ms:
+[{"id":"9623778a6d723936d4e703e6f4e24c48621ab3e6","name":".settings","type":"tree","path":".settings","mode":"040000"},{"id":"106c725ac988a117dc98b85aa09dd86e4a16321d","name":"archive","type":"tree","path":"archive","mode":"040000"},{"id":"f711440472f0b364ae3a8ffa4e4d7017301ac126","name":"config","type":"tree","path":"config","mode":"040000"},{"id":"5bc4e08bf9ae9850b012f5a9a68a808dba4c4b1c","name":"doc","type":"tree","path":"doc","mode":"040000"},{"id":"139b41ea3a728d0898ff99318a1dfc0dfa578b7c","name":"examples","type":"tree","path":"examples","mode":"040000"},{"id":"201ccc17b859dc59e7f61356387494254b947cc6","name":"jdoc","type":"tree","path":"jdoc","mode":"040000"},{"id":"807c9f07491cb162ab902c8b52a76591518c064c","name":"src","type":"tree","path":"src","mode":"040000"},{"id":"0e293eab63f29aa0b33a780ccc53a6644c69b32b","name":"test","type":"tree","path":"test","mode":"040000"},{"id":"fb47c090a196a2e1af37eac0c9b0dcb2e59cdd77","name":".classpath","type":"blob","path":".classpath","mode":"100644"},{"id":"6b50e54d9383e6ea278dc9649a416f0882a80b2a","name":".gitignore","type":"blob","path":".gitignore","mode":"100644"},{"id":"8f5439fab4b7331861013963e9a7ce3b28dedc1f","name":".project","type":"blob","path":".project","mode":"100644"},{"id":"d0cd82defe0ab5eb38a10104ecffe848ccf8bf21","name":"LICENSE.txt","type":"blob","path":"LICENSE.txt","mode":"100644"},{"id":"abfc162e96f6384f7f5ae03f32a7df681950e171","name":"README.txt","type":"blob","path":"README.txt","mode":"100644"},{"id":"452caf896b1bddc1bc56c1d4fe3e5dd52e881bdc","name":"build.config","type":"blob","path":"build.config","mode":"100644"},{"id":"3e82a032cc49ee663caeed8f5caef31e2107d7f2","name":"build.properties","type":"blob","path":"build.properties","mode":"100644"},{"id":"0ddf02a862c97f620f3e6be38347513aaa77d83a","name":"build.xml","type":"blob","path":"build.xml","mode":"100644"}]
+ succeeded in 10437ms:
+[{"id":"67d4b7557f68d3cbce08231d9bcc122efafc75c6","name":"conform","type":"tree","path":"test/conform","mode":"040000"},{"id":"35cb6544f5dd8d14782328d1448d20d3281a9bc8","name":"lib","type":"tree","path":"test/lib","mode":"040000"},{"id":"c6c3c9fcbe65c01f07234d87509b6bb4dcc3f2de","name":"perf","type":"tree","path":"test/perf","mode":"040000"},{"id":"f4d1e7e76d502fef9f60fae03e409398ed1872f9","name":"README.txt","type":"blob","path":"test/README.txt","mode":"100644"},{"id":"5919ee14b15baee9bf0c53b204753a24365528bd","name":"build.xml","type":"blob","path":"test/build.xml","mode":"100644"}]
+ succeeded in 10509ms:
+[{"id":"9623778a6d723936d4e703e6f4e24c48621ab3e6","name":".settings","type":"tree","path":".settings","mode":"040000"},{"id":"106c725ac988a117dc98b85aa09dd86e4a16321d","name":"archive","type":"tree","path":"archive","mode":"040000"},{"id":"f711440472f0b364ae3a8ffa4e4d7017301ac126","name":"config","type":"tree","path":"config","mode":"040000"},{"id":"5bc4e08bf9ae9850b012f5a9a68a808dba4c4b1c","name":"doc","type":"tree","path":"doc","mode":"040000"},{"id":"139b41ea3a728d0898ff99318a1dfc0dfa578b7c","name":"examples","type":"tree","path":"examples","mode":"040000"},{"id":"f9f2744ee80157db37235fc5f95332e4e2105387","name":"adapt","type":"tree","path":"examples/adapt","mode":"040000"},{"id":"0f178af5a82fb78912f3bea238901ed785682b2e","name":"etc","type":"tree","path":"examples/adapt/etc","mode":"040000"},{"id":"85a474852cc158438e94f482927bdb060a53e059","name":"src","type":"tree","path":"examples/adapt/src","mode":"040000"},{"id":"fb19bd01d46bb4417e188ef4e2213f2f2cf5b1f2","name":"analysis","type":"tree","path":"examples/analysis","mode":"040000"},{"id":"6c1ac2c78787e81803e79a884a955a55445ad466","name":"etc","type":"tree","path":"examples/analysis/etc","mode":"040000"},{"id":"ad315ea6ddf862e4309e8037c24ec43c3c2516d4","name":"src","type":"tree","path":"examples/analysis/src","mode":"040000"},{"id":"e39da4e4af1408332ea8087cadef6f0ca69656bc","name":"annotations","type":"tree","path":"examples/annotations","mode":"040000"},{"id":"c80465b1d7772e518418ffe6054b6fe04ec7cad3","name":"etc","type":"tree","path":"examples/annotations/etc","mode":"040000"},{"id":"a7e0627505afacf5b60441d8496a635f03862b81","name":"src","type":"tree","path":"examples/annotations/src","mode":"040000"},{"id":"7ffda7a5fb247a9357501138634e74f2c0103730","name":"attributes","type":"tree","path":"examples/attributes","mode":"040000"},{"id":"3e78462cdc1228df75884266339e67c65a129b39","name":"etc","type":"tree","path":"examples/attributes/etc","mode":"040000"},{"id":"7436245040815b59645c8ba42ffbf4337c43d41f","name":"src","type":"tree","path":"examples/attributes/src","mode":"040000"},{"id":"d13f623cad210e04e4d1578521a280887a82fcdb","name":"common","type":"tree","path":"examples/common","mode":"040000"},{"id":"c4eca00ead490a579294dd6210bb88ead008a578","name":"etc","type":"tree","path":"examples/common/etc","mode":"040000"},{"id":"c02d20a05ef3898fbedef81499e33eaa82c85311","name":"compile","type":"tree","path":"examples/compile","mode":"040000"},{"id":"72094b08776d2d206a657ebb14b0a3bc095c21f6","name":"etc","type":"tree","path":"examples/compile/etc","mode":"040000"},{"id":"f79370a8fc05cffdd21fc13f11222947c3802055","name":"src","type":"tree","path":"examples/compile/src","mode":"040000"},{"id":"6bdd64efe38c08b38cc10175b4bc460218e7dbe1","name":"dependencies","type":"tree","path":"examples/dependencies","mode":"040000"},{"id":"88ee8810ea4046c34497898a6571f340bc15a439","name":"src","type":"tree","path":"examples/dependencies/src","mode":"040000"},{"id":"08e034b8161e696fd760b53514479bc8d1808554","name":"org","type":"tree","path":"examples/dependencies/src/org","mode":"040000"},{"id":"b77b839058aa90b38b2e3e4abe8c06a8ac44dd46","name":"objectweb","type":"tree","path":"examples/dependencies/src/org/objectweb","mode":"040000"},{"id":"c6f7d88655ef4f9a4a8ffb583a8d374354941d9d","name":"asm","type":"tree","path":"examples/dependencies/src/org/objectweb/asm","mode":"040000"},{"id":"59b93875d2ce8e2b9fcbe333d67f50d1e9b4df06","name":"depend","type":"tree","path":"examples/dependencies/src/org/objectweb/asm/depend","mode":"040000"},{"id":"b9ee4d5bc082562f333c94d91a153f74c34cf376","name":"helloworld","type":"tree","path":"examples/helloworld","mode":"040000"},{"id":"c477ce828d9ea171771382bec752fb8761d804a4","name":"etc","type":"tree","path":"examples/helloworld/etc","mode":"040000"},{"id":"0f6928c140ae5dee9e465055230d26127204280c","name":"src","type":"tree","path":"examples/helloworld/src","mode":"040000"},{"id":"4fdeaa539e2efef72d3ed4d247c875d2e879baac","name":"jbfc","type":"tree","path":"examples/jbfc","mode":"040000"},{"id":"9a60d82bbb6f12d70232e65c83c233e2580a0dfb","name":"src","type":"tree","path":"examples/jbfc/src","mode":"040000"},{"id":"adbe3ceb3eb048aa95e7e1f358fe7574d8f141d2","name":"org","type":"tree","path":"examples/jbfc/src/org","mode":"040000"},{"id":"069cfa0494d8b8c06abfb3b74aa4cb6292f5ee95","name":"objectweb","type":"tree","path":"examples/jbfc/src/org/objectweb","mode":"040000"},{"id":"965aba46a6f0bee794be02ecbe14e96e411065e0","name":"asm","type":"tree","path":"examples/jbfc/src/org/objectweb/asm","mode":"040000"},{"id":"47b2ce8a13cc16ea6411352ca354520ab8f4d108","name":"jbfc","type":"tree","path":"examples/jbfc/src/org/objectweb/asm/jbfc","mode":"040000"},{"id":"5243b53e578e4505432e5df6b0046f1152ab9c01","name":"xml","type":"tree","path":"examples/xml","mode":"040000"},{"id":"201ccc17b859dc59e7f61356387494254b947cc6","name":"jdoc","type":"tree","path":"jdoc","mode":"040000"},{"id":"807c9f07491cb162ab902c8b52a76591518c064c","name":"src","type":"tree","path":"src","mode":"040000"},{"id":"de35e03c62668a143c643e9a0cfea57fb36a233a","name":"org","type":"tree","path":"src/org","mode":"040000"},{"id":"d3d9c83fe6418130a7d2c6516dd69096f733f627","name":"objectweb","type":"tree","path":"src/org/objectweb","mode":"040000"},{"id":"f1c6e3f2f7e21964636227075880c80105592a1e","name":"asm","type":"tree","path":"src/org/objectweb/asm","mode":"040000"},{"id":"c03de46575596e9d37b502a53bc3b5ae71724fb0","name":"attrs","type":"tree","path":"src/org/objectweb/asm/attrs","mode":"040000"},{"id":"a442805eb75ed42389e38d6d738e443466f7dbd0","name":"commons","type":"tree","path":"src/org/objectweb/asm/commons","mode":"040000"},{"id":"862abafa7c72a3872c082909ef23894f31773388","name":"optimizer","type":"tree","path":"src/org/objectweb/asm/optimizer","mode":"040000"},{"id":"8a8bdaa09bd869398e11c7a2c70d12ed44711805","name":"signature","type":"tree","path":"src/org/objectweb/asm/signature","mode":"040000"},{"id":"f4b6401347f3cdf1ff446288471d305d7593c2bc","name":"tree","type":"tree","path":"src/org/objectweb/asm/tree","mode":"040000"},{"id":"d4ad7de159290e3b6afbea001b24f5a074fe9f42","name":"analysis","type":"tree","path":"src/org/objectweb/asm/tree/analysis","mode":"040000"},{"id":"bf70fe70316696bb7f604800f3e6b7ee15690e1a","name":"util","type":"tree","path":"src/org/objectweb/asm/util","mode":"040000"},{"id":"c1c5afc21f7bd81719ff14e01ac8c0c8e3b8697c","name":"xml","type":"tree","path":"src/org/objectweb/asm/xml","mode":"040000"},{"id":"0e293eab63f29aa0b33a780ccc53a6644c69b32b","name":"test","type":"tree","path":"test","mode":"040000"},{"id":"67d4b7557f68d3cbce08231d9bcc122efafc75c6","name":"conform","type":"tree","path":"test/conform","mode":"040000"},{"id":"70c883195ad48018f4194e9a3331eb566d78d34f","name":"org","type":"tree","path":"test/conform/org","mode":"040000"},{"id":"7c0fd7342ef50705fdb90c2812da683993920fad","name":"objectweb","type":"tree","path":"test/conform/org/objectweb","mode":"040000"},{"id":"e38c47211b31d048af02945f73ff5a507d25bb30","name":"asm","type":"tree","path":"test/conform/org/objectweb/asm","mode":"040000"},{"id":"108523653e85ad11c871b3abc9b8c4115a1619ab","name":"attrs","type":"tree","path":"test/conform/org/objectweb/asm/attrs","mode":"040000"},{"id":"893d7ee54ddf1ecd87dd4fa4f74a235695e6bec1","name":"commons","type":"tree","path":"test/conform/org/objectweb/asm/commons","mode":"040000"},{"id":"6e26a65e3cebac56e7387359b27455e7d9ce938d","name":"signature","type":"tree","path":"test/conform/org/objectweb/asm/signature","mode":"040000"},{"id":"51ac8b6bb3da98d03b1b38b4d8b9805a806d7d97","name":"test","type":"tree","path":"test/conform/org/objectweb/asm/test","mode":"040000"},{"id":"dab038b91cc183122ad99c3f95be6cef530e3927","name":"cases","type":"tree","path":"test/conform/org/objectweb/asm/test/cases","mode":"040000"},{"id":"c1d9cc93625c4902adaf4fc54d8810c9431052fa","name":"tree","type":"tree","path":"test/conform/org/objectweb/asm/tree","mode":"040000"},{"id":"929e18f1efa32de13cf75b30eaa407837765594b","name":"analysis","type":"tree","path":"test/conform/org/objectweb/asm/tree/analysis","mode":"040000"},{"id":"ac42108299f62c4868a460f17c93636f6ca74eb3","name":"util","type":"tree","path":"test/conform/org/objectweb/asm/util","mode":"040000"},{"id":"3a686c8de074fc0ac83d6b2d33f426269cbacdf4","name":"xml","type":"tree","path":"test/conform/org/objectweb/asm/xml","mode":"040000"},{"id":"35cb6544f5dd8d14782328d1448d20d3281a9bc8","name":"lib","type":"tree","path":"test/lib","mode":"040000"},{"id":"c6c3c9fcbe65c01f07234d87509b6bb4dcc3f2de","name":"perf","type":"tree","path":"test/perf","mode":"040000"},{"id":"a54b9e98ec871bfb6b030f64d28716dd90ac5d28","name":"org","type":"tree","path":"test/perf/org","mode":"040000"},{"id":"399ff3e0846a5e4d518ef4ab40b5908e7dbe5f79","name":"apache","type":"tree","path":"test/perf/org/apache","mode":"040000"},{"id":"f1a898be566a761aaec1090ba284ee1f664ecddd","name":"bcel","type":"tree","path":"test/perf/org/apache/bcel","mode":"040000"},{"id":"dba08ce1c151bf187c06405605b6b276b1347eca","name":"classfile","type":"tree","path":"test/perf/org/apache/bcel/classfile","mode":"040000"},{"id":"ed641abc72fedc075246687b847fe256c8043ec4","name":"verifier","type":"tree","path":"test/perf/org/apache/bcel/verifier","mode":"040000"},{"id":"f2d1d25a680c9d7424ff9bde4f6bbec6c4b78994","name":"statics","type":"tree","path":"test/perf/org/apache/bcel/verifier/statics","mode":"040000"},{"id":"47ba327b810b3716180ed065fae87422c565b19f","name":"structurals","type":"tree","path":"test/perf/org/apache/bcel/verifier/structurals","mode":"040000"},{"id":"bc64d71b2a66774cb2a3c3298d20b3c60e13985d","name":"aspectj","type":"tree","path":"test/perf/org/aspectj","mode":"040000"},{"id":"febe2577a988d87e06e09111034db6e1d49a2170","name":"apache","type":"tree","path":"test/perf/org/aspectj/apache","mode":"040000"},{"id":"492191a94138a30d63ab3cc3243b668860258360","name":"bcel","type":"tree","path":"test/perf/org/aspectj/apache/bcel","mode":"040000"},{"id":"9da9f205fc26a0a4ce4c9f23a353fef8260b708e","name":"classfile","type":"tree","path":"test/perf/org/aspectj/apache/bcel/classfile","mode":"040000"},{"id":"8d79c710b14332def69a299fc02862b72dbd09df","name":"verifier","type":"tree","path":"test/perf/org/aspectj/apache/bcel/verifier","mode":"040000"},{"id":"2042b35b0f64d623d9d9a053edc262b3dc9174d7","name":"statics","type":"tree","path":"test/perf/org/aspectj/apache/bcel/verifier/statics","mode":"040000"},{"id":"4c64068189b4fb24aef541d914ded31c20ef8f89","name":"structurals","type":"tree","path":"test/perf/org/aspectj/apache/bcel/verifier/structurals","mode":"040000"},{"id":"79c8d3e3fac5a52dc3d011773aaeede3e5cf7b6a","name":"objectweb","type":"tree","path":"test/perf/org/objectweb","mode":"040000"},{"id":"f23fbf53150d0899b1eaaf7265d904957b79368d","name":"asm","type":"tree","path":"test/perf/org/objectweb/asm","mode":"040000"},{"id":"fa245a3a25ac67ccdd12b28080ffb02d433daabe","name":"xml","type":"tree","path":"test/perf/org/objectweb/asm/xml","mode":"040000"},{"id":"fb47c090a196a2e1af37eac0c9b0dcb2e59cdd77","name":".classpath","type":"blob","path":".classpath","mode":"100644"},{"id":"6b50e54d9383e6ea278dc9649a416f0882a80b2a","name":".gitignore","type":"blob","path":".gitignore","mode":"100644"},{"id":"8f5439fab4b7331861013963e9a7ce3b28dedc1f","name":".project","type":"blob","path":".project","mode":"100644"},{"id":"5b97d00761fd97ac20c60610c3981f8d34b9dcfa","name":"org.eclipse.jdt.core.prefs","type":"blob","path":".settings/org.eclipse.jdt.core.prefs","mode":"100644"},{"id":"3c450c07a0e2572a18ecb2f0f458dd27555cc241","name":"org.eclipse.jdt.ui.prefs","type":"blob","path":".settings/org.eclipse.jdt.ui.prefs","mode":"100644"},{"id":"1c406936b8ed75b8bb4807c9bbf77a5ed0f98627","name":"org.eclipse.mylar.tasklist.prefs","type":"blob","path":".settings/org.eclipse.mylar.tasklist.prefs","mode":"100644"},{"id":"d0cd82defe0ab5eb38a10104ecffe848ccf8bf21","name":"LICENSE.txt","type":"blob","path":"LICENSE.txt","mode":"100644"},{"id":"abfc162e96f6384f7f5ae03f32a7df681950e171","name":"README.txt","type":"blob","path":"README.txt","mode":"100644"},{"id":"e0d72a77eeab2c75774e256e42b338274737fa5d","name":"README.txt","type":"blob","path":"archive/README.txt","mode":"100644"},{"id":"99ce8df9a742ed2a4b2ad4fab70396d3a0aa4bda","name":"asm-all.pom","type":"blob","path":"archive/asm-all.pom","mode":"100644"},{"id":"0e32e6c4e3f11e3d714c59aac77cce670e209b56","name":"asm-all.xml","type":"blob","path":"archive/asm-all.xml","mode":"100644"},{"id":"3b3cdd148b80a446076779bc95f87da17ee6989e","name":"asm-analysis.pom","type":"blob","path":"archive/asm-analysis.pom","mode":"100644"},{"id":"c9ea974395fbe7d2cd6bdda35a152c2a823412cb","name":"asm-analysis.xml","type":"blob","path":"archive/asm-analysis.xml","mode":"100644"},{"id":"98bffdea7a33ee1b6ab809cce3a8c9cb78f2be1e","name":"asm-commons.pom","type":"blob","path":"archive/asm-commons.pom","mode":"100644"},{"id":"43056a528c67cf5afa259c94a2a2ec9a7a94edcc","name":"asm-commons.xml","type":"blob","path":"archive/asm-commons.xml","mode":"100644"},{"id":"ec07b687994f5114704bc85bc1f3f2f55d499e3f","name":"asm-parent.pom","type":"blob","path":"archive/asm-parent.pom","mode":"100644"}]
+web search: 
+web search: 
+web search: 
+web search: Central Repository asm/asm/3.1 asm-3.1-sources.jar
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://javadoc.io/doc/asm/asm/3.1/index.html | rg -n 'No JavaDoc|org/objectweb/asm|ClassReader|ClassVisitor|Overview|package-list|All Classes'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://javadoc.io/doc/asm/asm/3.1/package-list | sed -n '1,40p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'curl -L -I --silent --show-error https://repo.maven.apache.org/maven2/asm/asm/3.1/asm-3.1-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 18:33:02 GMT
+content-type: text/html
+cf-ray: 9f7a122d68eb3dba-ZRH
+cf-cache-status: HIT
+age: 2931
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/asm/asm/3.1/asm-3.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -L -I --silent --show-error https://repo.maven.apache.org/maven2/asm/asm/3.1/asm-3.1-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 127ms:
+249:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+251:						https://javadoc.io/doc/asm/asm/3.1/package-list
+252:						<a href="/doc/asm/asm/3.1/package-list" target="_blank" class="float-right">
+269:  No JavaDoc is released for artifact <span class="font-italic">asm:asm:3.1</span>.
+
+ succeeded in 157ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 261ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 18:33:02 GMT
+content-type: text/html
+cf-ray: 9f7a122da87f931a-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/asm/asm/3.1/asm-3.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The documentation check found a real issue: the current javadoc.io URL is versioned but reports “No JavaDoc is released for artifact asm:asm:3.1,” and Maven Central has no javadoc jar. I’m moving to the tagged OW2 tree now, where the `ASM_3_1` tag includes `doc` and `jdoc` directories, and I’ll use a versioned tag URL if it renders.
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=doc&per_page=100'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=jdoc&per_page=100'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'curl -L -I --fail --silent --show-error https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/jdoc' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'curl -L -I --fail --silent --show-error https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/doc' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 10252ms:
+[{"id":"84303fee616679f69995c94e1dd7d4198b338d64","name":"README.txt","type":"blob","path":"doc/README.txt","mode":"100644"}]
+ succeeded in 10221ms:
+[{"id":"a78cb67fa8d1679fe5fd3fe8efc3aab86e5b6db8","name":"README.txt","type":"blob","path":"jdoc/README.txt","mode":"100644"},{"id":"6159048ec254f83652443e2c63a3f60c515d86db","name":"package-list","type":"blob","path":"jdoc/package-list","mode":"100644"},{"id":"08ca1b0b167a47d529f98b6a447450f8bb11d247","name":"user.xml","type":"blob","path":"jdoc/user.xml","mode":"100644"}]
+ succeeded in 10230ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Wed, 06 May 2026 18:33:19 GMT
+etag: W/"52d011b2a77946981bc6e494f48af132"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=25b64a1129be3fb8acd059c98262bc2a; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQZ91PK734XEVFKD85NV0EZ7","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQZ91PK734XEVFKD85NV0EZ7
+x-runtime: 0.124047
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+ succeeded in 10244ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Wed, 06 May 2026 18:33:19 GMT
+etag: W/"41bc736322273a69f5429adb595b6b62"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=6def2fb06fe0d720b1d6c1810055db57; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQZ91PKGTGWWS5BRTTPGE7D1","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQZ91PKGTGWWS5BRTTPGE7D1
+x-runtime: 0.129396
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/jdoc%2FREADME.txt/raw?ref=ASM_3_1' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/doc%2FREADME.txt/raw?ref=ASM_3_1' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/jdoc%2Fuser.xml/raw?ref=ASM_3_1' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/README.txt/raw?ref=ASM_3_1' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 13621ms:
+This directory contains the documentation of the product.
+
+ succeeded in 13655ms:
+This directory contains ant files to build the javadocs of the product.
+The following rules describe the convention to write such files:
+
+- An ant file must build only one javadoc.
+
+- As there may exist several javadocs, all javadocs must be produced
+  in a sub dir of ${out.dist.jdoc}. For example the user javadoc could be 
+  produced into the ${out.dist.jdoc}/user directory
+
+- The name of the ant file must be the name of the destination directory of the 
+  javadoc it builds.
+
+- Only the default task is called on an xml file.
+
+Sample ant file:
+
+<project name="FOO" default="dist.jdoc">
+
+  <property name="jdoc.name" value="user"/>
+  <property name="jdoc.dir" value="${out.dist.jdoc}/${jdoc.name}"/>
+
+  <target name="dist.jdoc">
+    <uptodate property="jdoc.required" targetfile="${jdoc.dir}/index.html">
+      <srcfiles dir="${src}" includes="**/*.java"/>
+    </uptodate>
+    <antcall target="dist.jdoc.${jdoc.name}"/>
+  </target>
+
+  <target name="dist.jdoc.user" unless="jdoc.required">
+    <mkdir dir="${jdoc.dir}"/>
+    <javadoc destdir="${jdoc.dir}"
+             windowtitle="FOO User Documentation"
+             doctitle="FOO User Documentation">
+
+       ...
+       
+    </javadoc>
+  </target>
+</project>
+
+ succeeded in 13557ms:
+This directory is the base directory of the product.
+It contains(*) the following items:
+
+- archive: ant files to build the jar(s) of the product,
+- build.properties: properties to configure the build process,
+- build.xml: main ant file to build the product,
+- config: external libraries required only for building the product,
+- doc: documentation of the product,
+- etc: scripts to run the product,
+- examples: examples of use of the product,
+- externals: external libraires required for running the product,
+- jdoc: ant files to build the javadoc documentation(s) of the product,
+- sr': sources of the product,
+- test: tests of the product,
+- web: source of the web site of the product.
+
+(*) some items may not be present, depending on the product.
+
+
+ succeeded in 13648ms:
+<project name="asm" default="dist.jdoc">
+
+  <property name="jdoc.name" value="user"/>
+  <property name="jdoc.dir" value="${out.dist.jdoc}/${jdoc.name}"/>
+
+  <target name="dist.jdoc">
+    <uptodate property="jdoc.required" targetfile="${jdoc.dir}/index.html">
+      <srcfiles dir="${src}" includes="**/*.java,**/*.html"/>
+    </uptodate>
+    <antcall target="dist.jdoc.${jdoc.name}"/>
+  </target>
+
+  <target name="dist.jdoc.user" unless="jdoc.required">
+    <mkdir dir="${jdoc.dir}"/>
+    <javadoc destdir="${jdoc.dir}"
+             windowtitle="ASM ${product.version} Documentation"
+             doctitle="ASM ${product.version} Documentation">
+
+      <sourcepath path="${src}"/>
+      <package name="org.objectweb.asm"/>
+      <package name="org.objectweb.asm.attrs"/>
+      <package name="org.objectweb.asm.commons"/>
+      <package name="org.objectweb.asm.signature"/>
+      <package name="org.objectweb.asm.tree"/>
+      <package name="org.objectweb.asm.tree.analysis"/>
+      <package name="org.objectweb.asm.util"/>
+      <package name="org.objectweb.asm.util.attrs"/>
+      <package name="org.objectweb.asm.xml"/>
+
+      <link href="${jdk.url}" offline="true" packagelistLoc="${jdoc}"/>
+
+    </javadoc>
+
+    <copy todir="${jdoc.dir}">
+      <fileset dir="${src}" includes="**/*.dtd"/>
+    </copy>
+  </target>
+
+</project>
+
+web search: 
+web search: ASM 3.1 documentation "ASM 3.1 Documentation"
+web search: 
+web search: site:asm.ow2.io/javadoc ASM 3.1 org.objectweb.asm
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://gitlab\\.ow2\\.org/asm/asm/.*/tree/.*/(doc|jdoc)' metadata | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"N/A\"' metadata/asm metadata | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/com.google.code.findbugs/jsr305/index.json:7:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:25:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:40:    "documentation-url" : "N/A",
+metadata/org.codehaus.plexus/plexus-container-default/index.json:8:    "documentation-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/org.glassfish/javax.ejb/index.json:8:    "documentation-url" : "N/A",
+metadata/org.glassfish/javax.annotation/index.json:14:    "documentation-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://gitlab.*tree' metadata | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://javadoc.io/doc/asm/asm/\\"'$version'"\\"'$/index.html"'"' metadata | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+metadata/asm/asm/index.json:8:    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://asm.ow2.io/javadoc/asm/3.1/ \\
+  https://asm.ow2.io/javadoc/asm/3.1/index.html \\
+  https://asm.ow2.io/javadoc/asm-3.1/ \\
+  https://asm.ow2.io/javadoc/asm-3.1/index.html \\
+  https://asm.ow2.io/javadoc/3.1/ \\
+  https://asm.ow2.io/javadoc/3.1/index.html \\
+  https://asm.ow2.io/asm3-guide.pdf \\
+  https://asm.ow2.io/asm3-guide.html; do
+  printf '%s -> ' \""'$u"
+  curl -L -I --max-time 10 --silent --show-error "$u" | awk '"'NR==1{print "'$0}'"'
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://asm.ow2.io/documentation.html | rg -n 'ASM [0-9]|guide|javadoc|3\\.1|ASMifier|ASM' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L --fail --silent --show-error https://repo.maven.apache.org/maven2/asm/asm/3.1/asm-3.1-sources.jar -o "$tmp/s.jar" && jar tf "$tmp/s.jar" | rg -n '"'("'^|/)package'"\\.html"'$|(''^|/)overview|doc|README|'"\\.html"'$'"' | head -80; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 168ms:
+25:org/objectweb/asm/package.html
+27:org/objectweb/asm/signature/package.html
+
+ succeeded in 10258ms:
+6:  <title>ASM - Documentation</title>
+18:  <span class="asm-title">ASM</span>
+30:        <li><a href="asm4-guide.pdf">User guide</a></li>
+31:        <li><a href="javadoc/overview-summary.html">Javadoc</a></li>
+33:        <li><a href="developer-guide.html">Developer guide</a></li>
+49:    <p>ASM comes with an extensive documentation, in the form of a <a href=
+50:    "asm4-guide.pdf">user guide</a>, completed with a detailed <a href=
+51:    "javadoc/overview-summary.html">Javadoc</a>. If this is not sufficient, you
+54:    found a bug in ASM, use the Gitlab <a href=
+
+ succeeded in 71172ms:
+curl: (28) Connection timed out after 10001 milliseconds
+https://asm.ow2.io/javadoc/asm/3.1/index.html -> HTTP/2 404 
+https://asm.ow2.io/javadoc/asm-3.1/ -> curl: (28) Connection timed out after 10001 milliseconds
+https://asm.ow2.io/javadoc/asm-3.1/index.html -> https://asm.ow2.io/javadoc/3.1/ -> curl: (28) Connection timed out after 10001 milliseconds
+HTTP/2 404 
+https://asm.ow2.io/javadoc/3.1/index.html -> HTTP/2 404 
+https://asm.ow2.io/asm3-guide.pdf -> curl: (28) Connection timed out after 10002 milliseconds
+https://asm.ow2.io/asm3-guide.html -> curl: (28) Connection timed out after 10001 milliseconds
+
+codex
+I found no Maven javadoc artifact and the versioned javadoc.io page explicitly reports no released JavaDoc for this coordinate. The only tagged OW2 documentation-related directories are source/build inputs, not a rendered project documentation page, so I’m going to mark the documentation URL as `N/A` and leave the already-valid source, repository, test URL, description, and absent language field unchanged.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/metadata/asm/asm/index.json
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+codex
+The metadata file is updated. I’m doing a quick validity check and reviewing the diff to make sure only the intended field changed.
+exec
+/usr/bin/bash -lc "jq empty metadata/asm/asm/index.json && jq '.[] | select(.\"metadata-version\" == \"3.1\")' metadata/asm/asm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+  "repository-url": "https://gitlab.ow2.org/asm/asm",
+  "test-code-url": "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+  "documentation-url": "N/A",
+  "description": "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+  "tested-versions": [
+    "3.1"
+  ],
+  "allowed-packages": [
+    "org.objectweb.asm"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/asm/asm/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/asm/asm/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+?? metadata/asm/asm/index.json
+
+exec
+/usr/bin/bash -lc 'git diff --stat -- metadata/asm/asm/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff HEAD -- metadata/asm/asm/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+codex
+`jq` confirms the file is valid and the selected entry now has `documentation-url: "N/A"`. This path is currently untracked in git, so `git diff` has no base to compare against; I’m running the targeted metadata checker against the coordinate to catch schema issues.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=asm:asm:3.1 --stacktrace' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+ succeeded in 12215ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for asm:asm:3.1
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 11s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: 
+web search: 
+web search: Central Repository asm/asm/3.1 asm-3.1-sources.jar
+web search: 
+web search: "ASM_3_1/test" "gitlab.ow2.org/asm/asm"
+exec
+/usr/bin/bash -lc "nl -ba metadata/asm/asm/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "3.1",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     6	    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     7	    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+     8	    "documentation-url" : "N/A",
+     9	    "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+    10	    "tested-versions" : [
+    11	      "3.1"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.objectweb.asm"
+    15	    ]
+    16	  }
+    17	]
+
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+web search: 
+web search: 
+web search: 
+web search: Central Repository asm/asm/3.1 asm-3.1-sources.jar
+web search: 
+web search: "No JavaDoc is released for artifact" "asm:asm:3.1"
+web search: 
+web search: 
+codex
+Updated [metadata/asm/asm/index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/metadata/asm/asm/index.json:8): `documentation-url` is now `"N/A"` because the versioned javadoc.io page reports no released JavaDoc for `asm:asm:3.1`, and Maven Central lists sources but no test or javadoc artifact for that version. ([javadoc.io](https://javadoc.io/doc/asm/asm/3.1?utm_source=openai))
+
+I left the existing source, repository, test URL, and two-sentence description unchanged. ASM is a Java bytecode manipulation and analysis framework, not a Kotlin/Groovy/Scala-specific library, so the `language` field remains absent. ([asm.ow2.io](https://asm.ow2.io/?utm_source=openai))
+
+Verification passed: `./gradlew checkMetadataFiles -Pcoordinates=asm:asm:3.1 --stacktrace`.
+diff --git a/metadata/asm/asm/index.json b/metadata/asm/asm/index.json
+index 3555cc00730603ffa20d69ac02cb89d75fa24a51..444dc478937e387174b2fe8c2faa33917c086219
+--- a/metadata/asm/asm/index.json
++++ b/metadata/asm/asm/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo.maven.apache.org/maven2/asm/asm/$version$/asm-$version$-sources.jar",
+     "repository-url" : "https://gitlab.ow2.org/asm/asm",
+     "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test",
+-    "documentation-url" : "https://javadoc.io/doc/asm/asm/$version$/index.html",
++    "documentation-url" : "N/A",
+     "description" : "ASM is a small and fast Java bytecode manipulation framework for reading, writing, and transforming Java class files. The core asm artifact provides the visitor-based API used by compilers, profilers, and other tools to inspect or generate bytecode.",
+     "tested-versions" : [
+       "3.1"
+
+tokens used
+113,469
+Updated [metadata/asm/asm/index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/metadata/asm/asm/index.json:8): `documentation-url` is now `"N/A"` because the versioned javadoc.io page reports no released JavaDoc for `asm:asm:3.1`, and Maven Central lists sources but no test or javadoc artifact for that version. ([javadoc.io](https://javadoc.io/doc/asm/asm/3.1?utm_source=openai))
+
+I left the existing source, repository, test URL, and two-sentence description unchanged. ASM is a Java bytecode manipulation and analysis framework, not a Kotlin/Groovy/Scala-specific library, so the `language` field remains absent. ([asm.ow2.io](https://asm.ow2.io/?utm_source=openai))
+
+Verification passed: `./gradlew checkMetadataFiles -Pcoordinates=asm:asm:3.1 --stacktrace`.
+Ran agent for asm:asm:3.1 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/build/agent-url-discovery-logs/asm-asm-3.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2405-1b08c815/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5m 16s
+9 actionable tasks: 1 executed, 8 up-to-date
