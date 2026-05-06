@@ -106,6 +106,26 @@ public class Kotlinx_coroutines_swingTest {
     }
 
     @Test
+    fun swingDispatcherPostsNestedWorkInsteadOfRunningInlineOnEventDispatchThread(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val events: MutableList<String> = mutableListOf()
+
+            withContext(Dispatchers.Swing) {
+                events += "outer-start"
+                val job = launch(Dispatchers.Swing) {
+                    assertThat(SwingUtilities.isEventDispatchThread()).isTrue()
+                    events += "nested"
+                }
+
+                assertThat(job.isCompleted).isFalse()
+                events += "outer-after-launch"
+            }
+
+            assertThat(events).containsExactly("outer-start", "outer-after-launch", "nested")
+        }
+    }
+
+    @Test
     fun delayResumesOnEventDispatchThreadAndCancellationStopsPendingContinuation(): Unit = runBlocking {
         withTimeout(5_000) {
             val events: MutableList<String> = mutableListOf()
