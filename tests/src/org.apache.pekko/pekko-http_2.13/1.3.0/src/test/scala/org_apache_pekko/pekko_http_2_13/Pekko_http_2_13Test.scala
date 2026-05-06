@@ -17,6 +17,7 @@ import org.apache.pekko.http.scaladsl.server.Directives._
 import org.apache.pekko.http.scaladsl.server.Route
 import org.apache.pekko.http.scaladsl.settings.RoutingSettings
 import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshal
+import org.apache.pekko.stream.scaladsl.Sink
 import org.apache.pekko.stream.{Materializer, SystemMaterializer}
 import org.junit.jupiter.api.Assertions._
 import org.junit.jupiter.api.Test
@@ -134,6 +135,43 @@ class Pekko_http_2_13Test {
       val response = Await.result(Marshal(StatusCodes.Created -> "created body").to[HttpResponse], 5.seconds)
       assertEquals(StatusCodes.Created, response.status)
       assertEquals("created body", strictUtf8(response.entity))
+    }
+  }
+
+  @Test
+  def multipartFormDataRoundTripsNamedPartsWithContentTypes(): Unit = {
+    withActorSystem("pekko-http-multipart") { implicit system =>
+      implicit val materializer: Materializer = SystemMaterializer(system).materializer
+      implicit val executionContext = system.dispatcher
+
+      val formData = Multipart.FormData(
+        Multipart.FormData.BodyPart.Strict("title", HttpEntity(ContentTypes.`text/plain(UTF-8)`, "Apache Pekko")),
+        Multipart.FormData.BodyPart.Strict("payload", HttpEntity(ContentTypes.`application/json`, """{"ok":true}"""))
+      )
+      val entity = formData.toEntity()
+
+      assertEquals("multipart", entity.contentType.mediaType.mainType)
+      assertEquals("form-data", entity.contentType.mediaType.subType)
+
+      val parsedFormData = Await.result(Unmarshal(entity).to[Multipart.FormData], 5.seconds)
+      val parsedParts = Await.result(
+        parsedFormData.parts
+          .mapAsync(1) { part =>
+            part.entity.toStrict(3.seconds).map { strictEntity =>
+              (part.name, strictEntity.contentType, strictEntity.data.utf8String)
+            }
+          }
+          .runWith(Sink.seq),
+        5.seconds
+      )
+
+      assertEquals(
+        Seq(
+          ("title", ContentTypes.`text/plain(UTF-8)`, "Apache Pekko"),
+          ("payload", ContentTypes.`application/json`, """{"ok":true}""")
+        ),
+        parsedParts
+      )
     }
   }
 
