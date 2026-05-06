@@ -16,6 +16,8 @@ import cats.instances.all._
 import doobie.free.Embedded
 import doobie.free.KleisliInterpreter
 import doobie.free.blob
+import doobie.free.callablestatement
+import doobie.free.callablestatement.CallableStatementOp
 import doobie.free.clob
 import doobie.free.connection
 import doobie.free.connection.ConnectionOp
@@ -291,6 +293,56 @@ class Doobie_free_3Test {
     assertEquals(50, maxRows)
     assertEquals(
       Seq("connection.setAutoCommit:false", "statement.addBatch:insert into audit values (1)"),
+      events.toSeq
+    )
+  }
+
+  @Test
+  def callableStatementAlgebraSupportsStoredProcedureParameters(): Unit = {
+    val events: ArrayBuffer[String] = ArrayBuffer.empty[String]
+    val callableInterpreter: CallableStatementOp ~> Id = new (CallableStatementOp ~> Id) {
+      override def apply[A](operation: CallableStatementOp[A]): Id[A] = operation match {
+        case CallableStatementOp.SetString1(name, value) =>
+          events += s"setString:$name:$value"
+          ().asInstanceOf[A]
+        case CallableStatementOp.RegisterOutParameter6(name, sqlType) =>
+          events += s"registerOutParameter:$name:$sqlType"
+          ().asInstanceOf[A]
+        case CallableStatementOp.Execute => true.asInstanceOf[A]
+        case CallableStatementOp.GetInt1(name) =>
+          events += s"getInt:$name"
+          123.asInstanceOf[A]
+        case CallableStatementOp.GetString1(name) =>
+          events += s"getString:$name"
+          "approved".asInstanceOf[A]
+        case CallableStatementOp.WasNull => false.asInstanceOf[A]
+        case other => fail(s"Unexpected callable statement operation: $other")
+      }
+    }
+
+    val program: callablestatement.CallableStatementIO[(Boolean, Int, String, Boolean)] =
+      for {
+        _ <- callablestatement.setString("customer_name", "Ada")
+        _ <- callablestatement.registerOutParameter("new_id", Types.INTEGER)
+        executed <- callablestatement.execute
+        generatedId <- callablestatement.getInt("new_id")
+        status <- callablestatement.getString("status")
+        wasNull <- callablestatement.wasNull
+      } yield (executed, generatedId, status, wasNull)
+
+    val (executed, generatedId, status, wasNull) = program.foldMap(callableInterpreter)
+
+    assertTrue(executed)
+    assertEquals(123, generatedId)
+    assertEquals("approved", status)
+    assertFalse(wasNull)
+    assertEquals(
+      Seq(
+        "setString:customer_name:Ada",
+        s"registerOutParameter:new_id:${Types.INTEGER}",
+        "getInt:new_id",
+        "getString:status"
+      ),
       events.toSeq
     )
   }
