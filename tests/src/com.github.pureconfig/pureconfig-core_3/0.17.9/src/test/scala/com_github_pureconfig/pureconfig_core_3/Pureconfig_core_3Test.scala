@@ -73,6 +73,44 @@ class Pureconfig_core_3Test {
   }
 
   @Test
+  def derivesSealedTraitReadersWithTypeDiscriminator(): Unit = {
+    val result: ConfigReader.Result[RetryPolicy] = ConfigSource
+      .string(
+        """
+          |type = "exponential-backoff"
+          |initial-delay = "100 millis"
+          |max-delay = "2 seconds"
+          |multiplier = 2.5
+          |""".stripMargin
+      )
+      .load[RetryPolicy]
+
+    assertRight(
+      RetryPolicy.ExponentialBackoff(
+        initialDelay = 100.millis,
+        maxDelay = 2.seconds,
+        multiplier = 2.5d
+      ),
+      result
+    )
+
+    ConfigSource.string("type = \"linear\"").load[RetryPolicy] match {
+      case Left(failures) =>
+        failures.head match {
+          case ConvertFailure(CannotConvert(value, toType, because), _, path) =>
+            assertEquals("linear", value)
+            assertEquals("RetryPolicy", toType)
+            assertEquals("The value is not a valid option.", because)
+            assertEquals("type", path)
+          case other =>
+            throw new AssertionError(s"Expected an invalid coproduct option failure, but got: $other")
+        }
+      case Right(policy) =>
+        throw new AssertionError(s"Expected invalid retry policy to fail, but loaded: $policy")
+    }
+  }
+
+  @Test
   def mergesFileSourcesSupportsOptionalFilesAndReportsReadFailures(): Unit = {
     val tempDirectory: Path = Files.createTempDirectory("pureconfig-core")
     val fallbackFile: Path = tempDirectory.resolve("fallback.conf")
@@ -305,6 +343,16 @@ object Pureconfig_core_3Test {
   final case class Port(value: Int)
 
   final case class FeatureFlag(enabled: Boolean)
+
+  sealed trait RetryPolicy derives ConfigReader
+
+  object RetryPolicy {
+    final case class FixedDelay(delay: FiniteDuration, attempts: Int) extends RetryPolicy derives ConfigReader
+
+    final case class ExponentialBackoff(initialDelay: FiniteDuration, maxDelay: FiniteDuration, multiplier: Double)
+        extends RetryPolicy
+        derives ConfigReader
+  }
 
   enum AccessMode derives EnumConfigConvert {
     case ReadOnly, ReadWrite
