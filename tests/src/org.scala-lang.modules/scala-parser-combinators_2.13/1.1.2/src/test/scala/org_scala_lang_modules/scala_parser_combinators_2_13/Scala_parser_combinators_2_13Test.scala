@@ -127,6 +127,23 @@ class Scala_parser_combinators_2_13Test {
   }
 
   @Test
+  def chainCombinatorsApplyOperatorAssociativity(): Unit = {
+    val leftAssociative: OperatorChainParser.ParseResult[Int] = OperatorChainParser.parseAll(
+      OperatorChainParser.leftAssociativeSubtraction,
+      "20 - 5 - 3"
+    )
+    val rightAssociative: OperatorChainParser.ParseResult[Int] = OperatorChainParser.parseAll(
+      OperatorChainParser.rightAssociativeExponentiation,
+      "2 ^ 3 ^ 2"
+    )
+
+    assertThat(leftAssociative.successful).isTrue()
+    assertThat(leftAssociative.get).isEqualTo(12)
+    assertThat(rightAssociative.successful).isTrue()
+    assertThat(rightAssociative.get).isEqualTo(512)
+  }
+
+  @Test
   def characterReadersExposeContentOffsetsAndHumanReadablePositions(): Unit = {
     val sequenceReader: CharSequenceReader = new CharSequenceReader("alpha\nβeta")
     val secondLineReader: CharSequenceReader = sequenceReader.drop(6)
@@ -217,6 +234,19 @@ class Scala_parser_combinators_2_13Test {
     private def identifier: Parser[String] = """[A-Za-z_][A-Za-z0-9_]*""".r
 
     private def caseKeyword: Parser[String] = """case(?![A-Za-z0-9_])""".r
+  }
+
+  private object OperatorChainParser extends RegexParsers {
+    override val skipWhitespace: Boolean = true
+
+    private val subtract: (Int, Int) => Int = (left: Int, right: Int) => left - right
+    private val exponentiate: (Int, Int) => Int = (base: Int, exponent: Int) => BigInt(base).pow(exponent).toInt
+
+    def leftAssociativeSubtraction: Parser[Int] = chainl1(integer, "-" ^^^ subtract)
+
+    def rightAssociativeExponentiation: Parser[Int] = chainr1(integer, "^" ^^^ exponentiate, exponentiate, 1)
+
+    private def integer: Parser[Int] = """\d+""".r ^^ (_.toInt)
   }
 
   private final case class Declaration(name: String, value: Int) extends Positional
