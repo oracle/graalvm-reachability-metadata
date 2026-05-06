@@ -209,6 +209,52 @@ public class KtorNetworkTlsCertificatesJvmTest {
     }
 
     @Test
+    fun buildKeyStoreDslSignsCertificateWithExplicitIssuerName(): Unit {
+        val caAlias: String = "explicit-name-ca"
+        val serviceAlias: String = "explicit-name-service"
+        val caSubject: X500Principal = X500Principal("CN=actual-ca.example.test, OU=Ktor Tests, O=GraalVM, C=US")
+        val explicitIssuer: X500Principal = caSubject
+        val caKeyStore: KeyStore = buildKeyStore {
+            certificate(caAlias) {
+                password = CA_PASSWORD
+                subject = caSubject
+                keySizeInBits = TEST_KEY_SIZE
+                keyType = KeyType.CA
+                daysValid = 5
+            }
+        }
+        val caCertificate: X509Certificate = caKeyStore.x509Certificate(caAlias)
+        val caKeyPair: KeyPair = KeyPair(
+            caCertificate.publicKey,
+            caKeyStore.getKey(caAlias, CA_PASSWORD.toCharArray()) as PrivateKey,
+        )
+
+        val serviceKeyStore: KeyStore = buildKeyStore {
+            certificate(serviceAlias) {
+                password = SERVER_PASSWORD
+                subject = X500Principal("CN=explicit-name-service.example.test, OU=Ktor Tests, O=GraalVM, C=US")
+                keySizeInBits = TEST_KEY_SIZE
+                keyType = KeyType.Server
+                domains = listOf("explicit-name-service.example.test")
+                signWith(caKeyPair, caCertificate as Certificate, explicitIssuer)
+            }
+        }
+
+        val certificateChain: Array<out Certificate> = serviceKeyStore.getCertificateChain(serviceAlias)
+        assertThat(certificateChain).hasSize(2)
+        val serviceCertificate: X509Certificate = certificateChain[0] as X509Certificate
+        val issuerCertificate: X509Certificate = certificateChain[1] as X509Certificate
+        assertThat(issuerCertificate.encoded).isEqualTo(caCertificate.encoded)
+        assertThat(caCertificate.subjectX500Principal).isEqualTo(caSubject)
+        assertThat(serviceCertificate.issuerX500Principal).isEqualTo(explicitIssuer)
+        assertThat(serviceCertificate.subjectX500Principal.name).contains("CN=explicit-name-service.example.test")
+        assertThat(serviceCertificate.extendedKeyUsage).contains(SERVER_AUTH_OID)
+        assertThat(serviceCertificate.subjectAlternativeNamesOfType(DNS_ALT_NAME))
+            .contains("explicit-name-service.example.test")
+        serviceCertificate.verify(caCertificate.publicKey)
+    }
+
+    @Test
     fun saveToFileWritesReloadableKeyStoreCreatedByBuilder(@TempDir temporaryDirectory: Path): Unit {
         val keyStore: KeyStore = buildKeyStore {
             certificate("persisted-client") {
