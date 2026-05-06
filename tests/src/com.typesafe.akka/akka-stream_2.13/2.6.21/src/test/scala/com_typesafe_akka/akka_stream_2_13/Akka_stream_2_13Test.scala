@@ -134,6 +134,18 @@ class Akka_stream_2_13Test {
   }
 
   @Test
+  def prefixAndTailProcessesInitialElementsSeparatelyFromTail(): Unit = {
+    val result: Future[Seq[Int]] = Source(1 to 5)
+      .prefixAndTail(2)
+      .flatMapConcat { case (prefix, tail) =>
+        Source.single(prefix.sum).concat(tail.map(_ * 10))
+      }
+      .runWith(Sink.seq)
+
+    assertEquals(Seq(3, 30, 40, 50), awaitResult(result))
+  }
+
+  @Test
   def killSwitchCanStopATickingSourcePromptly(): Unit = {
     val (killSwitch, result) = Source.tick(0.seconds, 100.millis, "tick")
       .viaMat(KillSwitches.single)(Keep.right)
