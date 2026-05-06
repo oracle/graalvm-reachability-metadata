@@ -25,3 +25,13 @@ graalvmNative {
         }
     }
 }
+
+tasks.named("test") {
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        File allPermissionsPolicy = layout.projectDirectory.file("src/test/resources/all-permissions.policy").asFile
+        jvmArgs += [
+                "-Djava.security.manager=default",
+                "-Djava.security.policy==${allPermissionsPolicy.toURI()}"
+        ]
+    }
+}
