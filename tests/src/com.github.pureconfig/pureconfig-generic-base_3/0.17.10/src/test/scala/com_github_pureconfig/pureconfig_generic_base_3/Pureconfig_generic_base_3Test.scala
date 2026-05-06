@@ -10,6 +10,7 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigObject
 import com.typesafe.config.ConfigValue
 import com.typesafe.config.ConfigValueFactory
+import com.typesafe.config.ConfigValueType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -19,7 +20,10 @@ import pureconfig.ConfigFieldMapping
 import pureconfig.ConfigObjectCursor
 import pureconfig.KebabCase
 import pureconfig.error.ConfigReaderFailures
+import pureconfig.error.ConvertFailure
+import pureconfig.error.KeyNotFound
 import pureconfig.error.UnknownKey
+import pureconfig.error.WrongType
 import pureconfig.generic.CoproductHint
 import pureconfig.generic.FieldCoproductHint
 import pureconfig.generic.FirstSuccessCoproductHint
@@ -143,6 +147,37 @@ class Pureconfig_generic_base_3Test {
   }
 
   @Test
+  def fieldCoproductHintRequiresAStringDiscriminatorField(): Unit = {
+    val missingDiscriminator: ConfigObjectCursor = objectCursor("""
+      port = 8080
+      enabled = true
+      """)
+    val objectDiscriminator: ConfigObjectCursor = objectCursor("""
+      type {
+        name = "http-server"
+      }
+      port = 8080
+      """)
+    val hint: CoproductHint[Transport] = new FieldCoproductHint[Transport]("type")
+
+    val missingReason: KeyNotFound = singleConvertFailureReason(
+      left(hint.from(missingDiscriminator, Seq("HttpServer", "UnixSocket")))
+    ) match {
+      case reason: KeyNotFound => reason
+      case other => fail(s"Expected KeyNotFound, got $other")
+    }
+    assertThat(missingReason.key).isEqualTo("type")
+
+    val wrongTypeReason: WrongType = singleConvertFailureReason(
+      left(hint.from(objectDiscriminator, Seq("HttpServer", "UnixSocket")))
+    ) match {
+      case reason: WrongType => reason
+      case other => fail(s"Expected WrongType, got $other")
+    }
+    assertThat(wrongTypeReason.foundType).isEqualTo(ConfigValueType.OBJECT)
+  }
+
+  @Test
   def fieldCoproductHintWritesDiscriminatorAndRejectsInvalidTargetValues(): Unit = {
     val hint: CoproductHint[Transport] = new FieldCoproductHint[Transport]("type")
     val encoded: ConfigObject = hint.to(configObject("port = 8080"), "HttpServer") match {
@@ -230,6 +265,12 @@ class Pureconfig_generic_base_3Test {
     result match {
       case Right(value) => fail(s"Expected Left, got $value")
       case Left(failures) => failures
+    }
+
+  private def singleConvertFailureReason(failures: ConfigReaderFailures): AnyRef =
+    failures.toList match {
+      case ConvertFailure(reason, _, _) :: Nil => reason
+      case other => fail(s"Expected a single ConvertFailure, got $other")
     }
 
   private def fail(message: String): Nothing =
