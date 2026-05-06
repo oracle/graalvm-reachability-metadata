@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.kqueue.AcceptFilter;
 import io.netty.channel.kqueue.KQueue;
 import io.netty.channel.kqueue.KQueueChannelConfig;
@@ -21,7 +22,7 @@ import io.netty.channel.kqueue.KQueueDatagramChannel;
 import io.netty.channel.kqueue.KQueueDomainDatagramChannel;
 import io.netty.channel.kqueue.KQueueDomainSocketChannel;
 import io.netty.channel.kqueue.KQueueDomainSocketChannelConfig;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueIoHandler;
 import io.netty.channel.kqueue.KQueueServerDomainSocketChannel;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
@@ -89,8 +90,7 @@ public class Netty_transport_classes_kqueueTest {
         List<ChannelOption<?>> options = List.of(
                 KQueueChannelOption.SO_SNDLOWAT,
                 KQueueChannelOption.TCP_NOPUSH,
-                KQueueChannelOption.SO_ACCEPTFILTER,
-                KQueueChannelOption.RCV_ALLOC_TRANSPORT_PROVIDES_GUESS
+                KQueueChannelOption.SO_ACCEPTFILTER
         );
 
         assertThat(options).doesNotContainNull();
@@ -114,7 +114,8 @@ public class Netty_transport_classes_kqueueTest {
 
     @Test
     void eventLoopGroupConstructorRespectsTransportAvailability() {
-        assertEventLoopGroupConstructorMatchesAvailability(() -> new KQueueEventLoopGroup(1));
+        assertEventLoopGroupConstructorMatchesAvailability(
+                () -> new MultiThreadIoEventLoopGroup(1, KQueueIoHandler.newFactory()));
     }
 
     @Test
@@ -139,7 +140,7 @@ public class Netty_transport_classes_kqueueTest {
             return;
         }
 
-        assertThatThrownBy(KQueueSocketChannel::new).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailable(catchThrowable(KQueueSocketChannel::new));
     }
 
     @Test
@@ -166,7 +167,7 @@ public class Netty_transport_classes_kqueueTest {
             return;
         }
 
-        assertThatThrownBy(KQueueDomainSocketChannel::new).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailable(catchThrowable(KQueueDomainSocketChannel::new));
     }
 
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
@@ -175,26 +176,27 @@ public class Netty_transport_classes_kqueueTest {
             try {
                 assertThat(channel.isOpen()).isTrue();
                 assertThat(channel.config()).isInstanceOf(KQueueChannelConfig.class);
-                assertTransportProvidesGuessOptionRoundTrips((KQueueChannelConfig) channel.config());
+                assertChannelConfigOptionsRoundTrip((KQueueChannelConfig) channel.config());
             } finally {
                 channel.close().syncUninterruptibly();
             }
             return;
         }
 
-        assertThatThrownBy(constructor::get).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailable(catchThrowable(constructor::get));
     }
 
-    private static void assertTransportProvidesGuessOptionRoundTrips(KQueueChannelConfig config) {
-        assertThat(config.getRcvAllocTransportProvidesGuess()).isFalse();
-        assertThat(config.getOption(KQueueChannelOption.RCV_ALLOC_TRANSPORT_PROVIDES_GUESS)).isFalse();
+    private static void assertChannelConfigOptionsRoundTrip(KQueueChannelConfig config) {
+        assertThat(config.setConnectTimeoutMillis(1234)).isSameAs(config);
+        assertThat(config.getConnectTimeoutMillis()).isEqualTo(1234);
 
-        assertThat(config.setOption(KQueueChannelOption.RCV_ALLOC_TRANSPORT_PROVIDES_GUESS, true)).isTrue();
-        assertThat(config.getRcvAllocTransportProvidesGuess()).isTrue();
-        assertThat(config.getOption(KQueueChannelOption.RCV_ALLOC_TRANSPORT_PROVIDES_GUESS)).isTrue();
+        assertThat(config.setWriteSpinCount(8)).isSameAs(config);
+        assertThat(config.getWriteSpinCount()).isEqualTo(8);
 
-        assertThat(config.setRcvAllocTransportProvidesGuess(false)).isSameAs(config);
-        assertThat(config.getRcvAllocTransportProvidesGuess()).isFalse();
+        assertThat(config.setAutoRead(false)).isSameAs(config);
+        assertThat(config.isAutoRead()).isFalse();
+        assertThat(config.setOption(ChannelOption.AUTO_READ, true)).isTrue();
+        assertThat(config.isAutoRead()).isTrue();
     }
 
     private static void assertEventLoopGroupConstructorMatchesAvailability(
@@ -203,17 +205,23 @@ public class Netty_transport_classes_kqueueTest {
             EventLoopGroup group = constructor.get();
             try {
                 assertThat(group.isShuttingDown()).isFalse();
-                ((KQueueEventLoopGroup) group).setIoRatio(25);
-                assertThatThrownBy(() -> ((KQueueEventLoopGroup) group).setIoRatio(0))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("ioRatio");
+                assertThat(group.next()).isNotNull();
             } finally {
-                group.shutdownGracefully().syncUninterruptibly();
+                assertThat(group.shutdownGracefully().awaitUninterruptibly(5000)).isTrue();
             }
             return;
         }
 
-        assertThatThrownBy(constructor::get).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailable(catchThrowable(constructor::get));
+    }
+
+    private static void assertTransportUnavailable(Throwable throwable) {
+        assertThat(throwable).isInstanceOfAny(UnsatisfiedLinkError.class, NoClassDefFoundError.class);
+        if (throwable instanceof UnsatisfiedLinkError) {
+            assertThat(KQueue.unavailabilityCause()).isNotNull();
+        } else {
+            assertThat(throwable).hasMessageContaining("Could not initialize class");
+        }
     }
 
     private static String rootCauseMessage(Throwable throwable) {
