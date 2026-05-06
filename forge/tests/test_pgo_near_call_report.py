@@ -36,6 +36,10 @@ class PgoNearCallReportTests(unittest.TestCase):
             guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
 
         self.assertIn("Target uncovered dynamic-access call:", guidance)
+        self.assertIn("PGO sample profile:", guidance)
+        self.assertIn("- PGO file: {path}".format(path=os.path.join(tmpdir, "native-test.iprof")), guidance)
+        self.assertIn("- Total sample count: 7", guidance)
+        self.assertIn("- Sampling contexts: 1", guidance)
         self.assertIn("Closest sampled stack from an existing test to the PGO/call-graph join point:", guidance)
         self.assertIn(
             "at example.Test.main():void @sample-bci=10  <-- existing test entry point",
@@ -85,6 +89,20 @@ class PgoNearCallReportTests(unittest.TestCase):
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0].static_path_edges[-1]["bci"], "30")
 
+    def test_format_guidance_includes_pgo_profile_summary_when_no_call_site_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            guidance = format_pgo_near_call_guidance(
+                tmpdir,
+                [self._call_site(tracked_api="java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])")],
+            )
+
+        self.assertTrue(guidance.startswith("- PGO near-call guidance unavailable:"))
+        self.assertIn("no static call-tree edge matched the uncovered call sites", guidance)
+        self.assertIn("- PGO file: {path}".format(path=os.path.join(tmpdir, "native-test.iprof")), guidance)
+        self.assertIn("- Total sample count: 7", guidance)
+        self.assertIn("- Sampling contexts: 1", guidance)
+
     def test_matching_returns_all_identical_call_site_edges(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             self._write_report_fixture(
@@ -113,6 +131,27 @@ class PgoNearCallReportTests(unittest.TestCase):
             )
 
         self.assertEqual(len(records), 1)
+
+    def test_matching_accepts_object_input_stream_read_object_lowering(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(
+                tmpdir,
+                extra_methods=[
+                    ["6", "java.io.ObjectInputStream", "readObject", "java.lang.Class", "java.lang.Object", "false"],
+                ],
+                target_targets=[["14", "6"]],
+            )
+            records = build_pgo_near_call_records(
+                tmpdir,
+                [self._call_site(tracked_api="java.io.ObjectInputStream#readObject()")],
+            )
+            guidance = format_pgo_near_call_guidance(
+                tmpdir,
+                [self._call_site(tracked_api="java.io.ObjectInputStream#readObject()")],
+            )
+
+        self.assertEqual(len(records), 1)
+        self.assertIn("java.io.ObjectInputStream.readObject(java.lang.Class):java.lang.Object", guidance)
 
     @staticmethod
     def _call_site(tracked_api: str = "java.lang.Class#forName(java.lang.String)") -> DynamicAccessCallSite:

@@ -63,21 +63,36 @@ class PgoNearCallRecord:
         return max(len(self.static_path) - self.prefix_length, 0)
 
 
+@dataclass(frozen=True)
+class PgoNearCallAnalysis:
+    records: list[PgoNearCallRecord]
+    pgo_file: str
+    total_sample_count: int
+    sampling_context_count: int
+
+
 def format_pgo_near_call_guidance(
         report_dir: str,
         call_sites: list[DynamicAccessCallSite],
 ) -> str:
     """Return prompt-ready PGO path guidance for the best uncovered call site."""
     try:
-        records = build_pgo_near_call_records(report_dir, call_sites)
+        analysis = _build_pgo_near_call_analysis(report_dir, call_sites)
     except (FileNotFoundError, ValueError, KeyError, json.JSONDecodeError) as error:
         return "- PGO near-call guidance unavailable: {error}".format(error=error)
 
-    if not records:
-        return "- PGO near-call guidance unavailable: no sampled path matched the uncovered call sites."
+    pgo_profile_lines = _format_pgo_profile_summary(analysis)
+    if not analysis.records:
+        return "\n".join([
+            "- PGO near-call guidance unavailable: no static call-tree edge matched the uncovered call sites.",
+            "",
+            pgo_profile_lines,
+        ])
 
-    best = records[0]
+    best = analysis.records[0]
     lines = [
+        pgo_profile_lines,
+        "",
         "Target uncovered dynamic-access call:",
         _format_call_site(best.call_site),
         "",
@@ -87,7 +102,7 @@ def format_pgo_near_call_guidance(
         "Static path from the PGO-reached method to the uncovered call:",
         _format_path(best.static_path, best.methods, best.static_path_edges),
     ]
-    alternate_records = [record for record in records[1:] if record.call_site == best.call_site]
+    alternate_records = [record for record in analysis.records[1:] if record.call_site == best.call_site]
     if alternate_records:
         lines.extend([
             "",
@@ -139,12 +154,20 @@ def build_pgo_near_call_records(
         report_dir: str,
         call_sites: list[DynamicAccessCallSite],
 ) -> list[PgoNearCallRecord]:
+    return _build_pgo_near_call_analysis(report_dir, call_sites).records
+
+
+def _build_pgo_near_call_analysis(
+        report_dir: str,
+        call_sites: list[DynamicAccessCallSite],
+) -> PgoNearCallAnalysis:
     reports_dir = os.path.join(report_dir, "reports")
     if not os.path.isdir(reports_dir):
         reports_dir = report_dir
 
     methods, edges, adjacency, reverse_adjacency, roots = _load_static_call_tree(reports_dir)
-    iprof, iprof_methods = _load_iprof(_find_file(report_dir, "native-test.iprof"))
+    pgo_file = _find_file(report_dir, "native-test.iprof")
+    iprof, iprof_methods = _load_iprof(pgo_file)
     static_key_to_id = {method["key"]: method_id for method_id, method in methods.items()}
     samples = _sample_paths(iprof, iprof_methods, static_key_to_id)
 
@@ -164,7 +187,12 @@ def build_pgo_near_call_records(
                 samples,
             ))
     records.sort(key=_record_sort_key, reverse=True)
-    return records
+    return PgoNearCallAnalysis(
+        records=records,
+        pgo_file=pgo_file,
+        total_sample_count=_total_sample_count(iprof),
+        sampling_context_count=len(iprof.get("samplingProfiles", [])),
+    )
 
 
 def _build_record_for_target_edge(
@@ -439,6 +467,13 @@ def _sample_paths(iprof: dict, iprof_methods: dict, static_key_to_id: dict) -> l
     return paths
 
 
+def _total_sample_count(iprof: dict) -> int:
+    total = 0
+    for profile in iprof.get("samplingProfiles", []):
+        total += sum(int(record) for record in profile.get("records", []))
+    return total
+
+
 def _find_static_edges_to_call_site(edges: list[dict], methods: dict, call_site: DynamicAccessCallSite) -> list[dict]:
     holder, method_name = _frame_holder_and_method(call_site.frame)
     tracked_holder, tracked_method, tracked_parameters = _tracked_holder_method_and_parameters(call_site.tracked_api)
@@ -468,7 +503,36 @@ def _find_static_edges_to_call_site(edges: list[dict], methods: dict, call_site:
                 and _parameters_match(callee[2], tracked_parameters)
         ):
             lowered_matches.append(edge)
+    if lowered_matches:
+        return lowered_matches
+
+    for edge in edges:
+        caller = methods[edge["caller"]]["key"]
+        callee = methods[edge["callee"]]["key"]
+        if (
+                caller[0] == holder and caller[1] == method_name
+                and _is_native_image_lowered_dynamic_access_target(callee, tracked_holder, tracked_method, tracked_parameters)
+        ):
+            lowered_matches.append(edge)
     return lowered_matches
+
+
+def _is_native_image_lowered_dynamic_access_target(
+        callee: tuple[str, str, tuple[str, ...], str],
+        tracked_holder: str,
+        tracked_method: str,
+        tracked_parameters: tuple[str, ...] | None,
+) -> bool:
+    """Recognize Native Image call-tree lowering for known JDK dynamic-access APIs."""
+    if tracked_parameters != ():
+        return False
+    return (
+        callee[0] == tracked_holder
+        and callee[1] == tracked_method
+        and tracked_holder == "java.io.ObjectInputStream"
+        and tracked_method == "readObject"
+        and callee[2] == ("java.lang.Class",)
+    )
 
 
 def _frame_holder_and_method(frame: str) -> tuple[str | None, str | None]:
@@ -585,6 +649,15 @@ def _format_path(path: list, methods: dict, path_edges: list[dict] | None = None
             suffix=suffix,
         ))
     return "\n".join(lines) if lines else "- None"
+
+
+def _format_pgo_profile_summary(analysis: PgoNearCallAnalysis) -> str:
+    return "\n".join([
+        "PGO sample profile:",
+        "- PGO file: {path}".format(path=analysis.pgo_file),
+        "- Total sample count: {count}".format(count=analysis.total_sample_count),
+        "- Sampling contexts: {count}".format(count=analysis.sampling_context_count),
+    ])
 
 
 def _format_existing_test_stack_to_join(record: PgoNearCallRecord) -> str:
