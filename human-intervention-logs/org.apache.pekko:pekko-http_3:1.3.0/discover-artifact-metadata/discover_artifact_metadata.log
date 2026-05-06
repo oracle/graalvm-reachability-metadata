@@ -1,0 +1,1451 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfd40-c48e-7e20-99d8-7f558601d3c9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-http_3:1.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.3.0" when "$version$" is replaced with "1.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+- Set "coordinates" to "org.apache.pekko:pekko-http_3:1.3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the project’s release-tag layout, then patch the JSON directly. First I’m checking the existing file and nearby metadata conventions so the new entry matches this repository’s format.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"language\"|not-for-native-image|org.apache.pekko' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json:2:  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
+metadata/com.ning/compress-lzf/index.json:6:    "repository-url" : "https://github.com/ning/compress",
+metadata/org.scalacheck/scalacheck_2.13/index.json:6:    "repository-url" : "https://github.com/typelevel/scalacheck",
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:7:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:22:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:37:    "repository-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/commons-io/commons-io/index.json:6:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/commons-io/commons-io/index.json:25:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+metadata/org.crac/crac/index.json:6:    "repository-url" : "https://github.com/CRaC/org.crac",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:6:    "repository-url" : "https://github.com/charleskorn/kaml",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/org.springframework.security/spring-security-crypto/index.json:49:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:101:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:14:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:29:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:35:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:48:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.openejb/javaee-api/index.json:6:    "repository-url": "https://github.com/apache/openejb",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/org.apache.lucene/lucene-core/index.json:6:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:25:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:43:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:59:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/org.apache.lucene/lucene-core/index.json:73:    "repository-url" : "https://github.com/apache/lucene-solr",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.r2dbc/r2dbc-spi/index.json:6:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/io.r2dbc/r2dbc-spi/index.json:20:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:6:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:24:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/net.postgis/postgis-jdbc/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/javax.el/javax.el-api/index.json:6:    "repository-url" : "https://github.com/javaee/el-spec",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/org.tpolecat/sourcepos_3/index.json:6:    "repository-url" : "https://github.com/typelevel/SourcePos",
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.apache.commons/commons-exec/index.json:6:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-exec/index.json:22:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-dbcp2/index.json:9:    "repository-url": "https://github.com/apache/commons-dbcp",
+metadata/org.tpolecat/skunk-core_3/index.json:6:    "repository-url" : "https://github.com/typelevel/skunk",
+
+web search: 
+web search: org.apache.pekko pekko-http_3 1.3.0 Maven Central sources jar tests jar
+codex
+The artifact is a Scala-suffixed JVM jar (`_3`), so I’m treating language detection as part of the metadata instead of marking it out of scope for Native Image. Next I’m checking Maven Central classifiers and the upstream tag names so the URLs can use `$version$` and still resolve.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-http_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko Http: Modern, fast, asynchronous, streaming-first HTTP server and client.</description>
+    <version>1.3.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Http</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko-http</url>
+        <connection>git@github.com:apache/pekko-http.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-http-contributors</id>
+            <name>Apache Pekko HTTP Contributors</name>
+            <url>https://github.com/apache/pekko-http/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko-http/1.3.0/</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-http-core_3</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-stream_3</artifactId>
+            <version>1.1.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/pekko-http/tree/v1.3.0 && curl -fsSI https://github.com/apache/pekko-http/tree/1.3.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc 'curl -fsSI https://pekko.apache.org/docs/pekko-http/1.3.0/ && curl -fsSI https://pekko.apache.org/docs/pekko-http/current/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 109ms:
+HTTP/2 200 
+server: Apache
+x-frame-options: SAMEORIGIN
+last-modified: Sat, 25 Oct 2025 11:40:29 GMT
+etag: "61fc-641fa2218c396"
+content-type: text/html
+via: 1.1 www.apache.org, 1.1 varnish, 1.1 varnish
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin
+accept-ranges: bytes
+age: 0
+date: Wed, 06 May 2026 12:26:29 GMT
+x-served-by: cache-hel1410026-HEL, cache-fra-eddf8230095-FRA
+x-cache: HIT, MISS
+x-cache-hits: 0, 0
+x-timer: S1778070390.861200,VS0,VE32
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 25084
+
+
+ succeeded in 309ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-http_3/1.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-http_3/1.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-http_3-1.3.0-javadoc.jar" title="pekko-http_3-1.3.0-javadoc.jar">pekko-http_3-1.3.0-javadoc.jar</a>                    2025-10-21 21:14   8147837      
+<a href="pekko-http_3-1.3.0-javadoc.jar.asc" title="pekko-http_3-1.3.0-javadoc.jar.asc">pekko-http_3-1.3.0-javadoc.jar.asc</a>                2025-10-21 21:14       488      
+<a href="pekko-http_3-1.3.0-javadoc.jar.asc.md5" title="pekko-http_3-1.3.0-javadoc.jar.asc.md5">pekko-http_3-1.3.0-javadoc.jar.asc.md5</a>            2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0-javadoc.jar.asc.sha1" title="pekko-http_3-1.3.0-javadoc.jar.asc.sha1">pekko-http_3-1.3.0-javadoc.jar.asc.sha1</a>           2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0-javadoc.jar.md5" title="pekko-http_3-1.3.0-javadoc.jar.md5">pekko-http_3-1.3.0-javadoc.jar.md5</a>                2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0-javadoc.jar.sha1" title="pekko-http_3-1.3.0-javadoc.jar.sha1">pekko-http_3-1.3.0-javadoc.jar.sha1</a>               2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0-sources.jar" title="pekko-http_3-1.3.0-sources.jar">pekko-http_3-1.3.0-sources.jar</a>                    2025-10-21 21:14    260115      
+<a href="pekko-http_3-1.3.0-sources.jar.asc" title="pekko-http_3-1.3.0-sources.jar.asc">pekko-http_3-1.3.0-sources.jar.asc</a>                2025-10-21 21:14       488      
+<a href="pekko-http_3-1.3.0-sources.jar.asc.md5" title="pekko-http_3-1.3.0-sources.jar.asc.md5">pekko-http_3-1.3.0-sources.jar.asc.md5</a>            2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0-sources.jar.asc.sha1" title="pekko-http_3-1.3.0-sources.jar.asc.sha1">pekko-http_3-1.3.0-sources.jar.asc.sha1</a>           2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0-sources.jar.md5" title="pekko-http_3-1.3.0-sources.jar.md5">pekko-http_3-1.3.0-sources.jar.md5</a>                2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0-sources.jar.sha1" title="pekko-http_3-1.3.0-sources.jar.sha1">pekko-http_3-1.3.0-sources.jar.sha1</a>               2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0.buildinfo" title="pekko-http_3-1.3.0.buildinfo">pekko-http_3-1.3.0.buildinfo</a>                      2025-10-21 21:14       742      
+<a href="pekko-http_3-1.3.0.buildinfo.asc" title="pekko-http_3-1.3.0.buildinfo.asc">pekko-http_3-1.3.0.buildinfo.asc</a>                  2025-10-21 21:14       488      
+<a href="pekko-http_3-1.3.0.buildinfo.asc.md5" title="pekko-http_3-1.3.0.buildinfo.asc.md5">pekko-http_3-1.3.0.buildinfo.asc.md5</a>              2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0.buildinfo.asc.sha1" title="pekko-http_3-1.3.0.buildinfo.asc.sha1">pekko-http_3-1.3.0.buildinfo.asc.sha1</a>             2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0.buildinfo.md5" title="pekko-http_3-1.3.0.buildinfo.md5">pekko-http_3-1.3.0.buildinfo.md5</a>                  2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0.buildinfo.sha1" title="pekko-http_3-1.3.0.buildinfo.sha1">pekko-http_3-1.3.0.buildinfo.sha1</a>                 2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0.jar" title="pekko-http_3-1.3.0.jar">pekko-http_3-1.3.0.jar</a>                            2025-10-21 21:14   2567029      
+<a href="pekko-http_3-1.3.0.jar.asc" title="pekko-http_3-1.3.0.jar.asc">pekko-http_3-1.3.0.jar.asc</a>                        2025-10-21 21:14       488      
+<a href="pekko-http_3-1.3.0.jar.asc.md5" title="pekko-http_3-1.3.0.jar.asc.md5">pekko-http_3-1.3.0.jar.asc.md5</a>                    2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0.jar.asc.sha1" title="pekko-http_3-1.3.0.jar.asc.sha1">pekko-http_3-1.3.0.jar.asc.sha1</a>                   2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0.jar.md5" title="pekko-http_3-1.3.0.jar.md5">pekko-http_3-1.3.0.jar.md5</a>                        2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0.jar.sha1" title="pekko-http_3-1.3.0.jar.sha1">pekko-http_3-1.3.0.jar.sha1</a>                       2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0.pom" title="pekko-http_3-1.3.0.pom">pekko-http_3-1.3.0.pom</a>                            2025-10-21 21:14      2227      
+<a href="pekko-http_3-1.3.0.pom.asc" title="pekko-http_3-1.3.0.pom.asc">pekko-http_3-1.3.0.pom.asc</a>                        2025-10-21 21:14       488      
+<a href="pekko-http_3-1.3.0.pom.asc.md5" title="pekko-http_3-1.3.0.pom.asc.md5">pekko-http_3-1.3.0.pom.asc.md5</a>                    2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0.pom.asc.sha1" title="pekko-http_3-1.3.0.pom.asc.sha1">pekko-http_3-1.3.0.pom.asc.sha1</a>                   2025-10-21 21:14        40      
+<a href="pekko-http_3-1.3.0.pom.md5" title="pekko-http_3-1.3.0.pom.md5">pekko-http_3-1.3.0.pom.md5</a>                        2025-10-21 21:14        32      
+<a href="pekko-http_3-1.3.0.pom.sha1" title="pekko-http_3-1.3.0.pom.sha1">pekko-http_3-1.3.0.pom.sha1</a>                       2025-10-21 21:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 1529ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 12:26:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bf72417bbbe74508260bc14e56a0ad8d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=hZY487XJX5zXjSlDBCO367xSXrfKzBUELwV%2Bl0j%2FQEZY%2FNdZ2nawJq7hX0kndqIV4n8LQS9r2W5OEjQ3wOO00qOylagxS%2Fam1FLik71jo9ZZZhjgTARfwKxUqbX57WSc%2FwicSpO2e6crNVcfWLe75R3kgzE8CAkMnWi3lSv367N%2FANfgM7so3Ac9JE%2B%2Bj99hlk%2BvqwFIz8TkwPRX%2BTtZxxXostyoCS6nYcc%2FFJ2viOEFCsZj%2FB%2BZSrNdi0u0yJMIMrN4zGAT4Z9hGVmNhvc1xw%3D%3D--DzLrZ0pGr535WEUF--N0X8E0S63n0%2BnHnnNeX1iA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.11949047.1778070389; expires=Thu, 06 May 2027 12:26:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 12:26:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5100:263966:22DCA1:1BB759:69FB3375
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 06 May 2026 12:26:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=g5H6NjovgoJcoR8ojcVq9zdulgMqlr6%2BoZI8XLghm7cXyPF8rI781oE8OlyzEeiji9TD9VQe5WgJvsUxwPGlroIbvD0fgPvQ1dUcd0yLWX1XOovpq%2FkpyO5b6q5008cOe4mjduBUBDfXIXhUVQZtbKh2WJH2rpbRU3NmMpFGmoMeFTdpuDmODIDPH5K3MtBhujRmzelGNrB8IJWObuVipuHG5phafwMTwjjW2Lyt%2Fu4X4FXVrMdHRsu7jLbSBVEPiFOKHVlfds99XWZKL5HjKg%3D%3D--IQ9%2BQVOD5nmZERIS--qxaPVzem1ydsxUTpKF2HVQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1254574439.1778070390; expires=Thu, 06 May 2027 12:26:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 12:26:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5105:20310F:22D51C:1BAE1D:69FB3376
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.tpolecat/sourcepos_3/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/SourcePos",
+    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-javadoc.jar",
+    "description" : "SourcePos is a Scala micro-library that provides a SourcePos value containing the source file path and line number for a call site. Its inline macro supplies an implicit SourcePos automatically when one is not already available, making it useful for diagnostics, logging, and error reporting.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.1.0"
+    ],
+    "allowed-packages" : [
+      "org.tpolecat.sourcepos"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/clikt",
+    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+    "description" : "Clikt is a Kotlin multiplatform library for building command-line interfaces with declarative command, option, and argument parsing. The clikt-core-jvm artifact provides the JVM variant of the core parser, including help output, shell completion support, parameter conversion, value sources, and JVM-specific file and path types.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "5.1.0"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.clikt"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.scalacheck/scalacheck_2.13/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.18.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/scalacheck",
+    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+    "description" : "ScalaCheck is a Scala property-based testing library for generating test data and checking properties over many randomized cases. It can be used standalone or with Scala test frameworks to exercise Scala and Java code and shrink failing examples.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.18.1"
+    ],
+    "allowed-packages" : [
+      "org.scalacheck"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata -name index.json -print0 | xargs -0 rg -n 'sources.jar|test.*jar|repo.maven.apache.org' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+metadata/org.antlr/antlr/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/$version$/smallrye-common-classloader-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/$version$/smallrye-common-classloader-$version$-javadoc.jar",
+metadata/junit/junit/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/junit/junit/$version$/junit-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-sources.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-sources.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-sources.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-javadoc.jar",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/$version$/mssql-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-guava/$version$/kotlinx-coroutines-guava-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/$version$/kotlinx-coroutines-slf4j-$version$-sources.jar",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/$version$/org.osgi.service.serviceloader-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-javadoc.jar",
+metadata/org.typelevel/cats-parse_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-parse_3/$version$/cats-parse_3-$version$-sources.jar",
+metadata/org.typelevel/cats-parse_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-parse_3/$version$/cats-parse_3-$version$-javadoc.jar",
+metadata/org.sangria-graphql/sangria-core_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-core_3/$version$/sangria-core_3-$version$-sources.jar",
+
+web search: 
+web search: Maven Central org.apache.pekko pekko-http_3 1.3.0 sources javadoc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko-http/contents?ref=v1.3.0 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0.buildinfo' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/build.sbt | rg -n 'pekko-http|http-tests|crossScalaVersions|scalaVersion' -C 2" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/README.md | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 221ms:
+[
+  {
+    "name": ".asf.yaml",
+    "path": ".asf.yaml",
+    "sha": "7adb5411a72f8492574f413266c42ea1446b989e",
+    "size": 2775,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.asf.yaml?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.asf.yaml",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/7adb5411a72f8492574f413266c42ea1446b989e",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.asf.yaml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.asf.yaml?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/7adb5411a72f8492574f413266c42ea1446b989e",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.asf.yaml"
+    }
+  },
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "1d7f779c9a880cd054ed2270bd1897b13934fd9b",
+    "size": 278,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.git-blame-ignore-revs?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/1d7f779c9a880cd054ed2270bd1897b13934fd9b",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.git-blame-ignore-revs?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/1d7f779c9a880cd054ed2270bd1897b13934fd9b",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "9dde9b97632bec8ca597ec3ea55bd1b312a08aa9",
+    "size": 244,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.gitattributes?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/9dde9b97632bec8ca597ec3ea55bd1b312a08aa9",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.gitattributes?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/9dde9b97632bec8ca597ec3ea55bd1b312a08aa9",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "49c6de2bc4501e25a185145f0b2979d978a66475",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.github?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/tree/v1.3.0/.github",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/trees/49c6de2bc4501e25a185145f0b2979d978a66475",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.github?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/trees/49c6de2bc4501e25a185145f0b2979d978a66475",
+      "html": "https://github.com/apache/pekko-http/tree/v1.3.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "d57c4ee89e9a12738da7f916ea761731dde07fc3",
+    "size": 70,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.gitignore?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.gitignore",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/d57c4ee89e9a12738da7f916ea761731dde07fc3",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.gitignore?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/d57c4ee89e9a12738da7f916ea761731dde07fc3",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.gitignore"
+    }
+  },
+  {
+    "name": ".jvmopts",
+    "path": ".jvmopts",
+    "sha": "4f11df03447511d0e940063498b541504290ac43",
+    "size": 88,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.jvmopts?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.jvmopts",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/4f11df03447511d0e940063498b541504290ac43",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.jvmopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.jvmopts?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/4f11df03447511d0e940063498b541504290ac43",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.jvmopts"
+    }
+  },
+  {
+    "name": ".jvmopts-ci",
+    "path": ".jvmopts-ci",
+    "sha": "384134aeac844cca5efe2d91a8913b4a079f0e38",
+    "size": 100,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.jvmopts-ci?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.jvmopts-ci",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/384134aeac844cca5efe2d91a8913b4a079f0e38",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.jvmopts-ci",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.jvmopts-ci?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/384134aeac844cca5efe2d91a8913b4a079f0e38",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.jvmopts-ci"
+    }
+  },
+  {
+    "name": ".scala-steward.conf",
+    "path": ".scala-steward.conf",
+    "sha": "ed54511c628e14e009e18315840ce2b94cdea20f",
+    "size": 1324,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.scala-steward.conf?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.scala-steward.conf",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/ed54511c628e14e009e18315840ce2b94cdea20f",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.scala-steward.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.scala-steward.conf?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/ed54511c628e14e009e18315840ce2b94cdea20f",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.scala-steward.conf"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "a9facf9fbc2c2315f152041ccee661f7d86da123",
+    "size": 2074,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/.scalafmt.conf?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/a9facf9fbc2c2315f152041ccee661f7d86da123",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/.scalafmt.conf?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/a9facf9fbc2c2315f152041ccee661f7d86da123",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "sha": "d92383d8449d8fa42ac61a11c1d38b5f0efbe8fe",
+    "size": 446,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/CHANGELOG.md?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/d92383d8449d8fa42ac61a11c1d38b5f0efbe8fe",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/CHANGELOG.md?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/d92383d8449d8fa42ac61a11c1d38b5f0efbe8fe",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "44e939c37442518a6ea787bdcd52bfa7c60ef908",
+    "size": 26965,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/CONTRIBUTING.md?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/44e939c37442518a6ea787bdcd52bfa7c60ef908",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/CONTRIBUTING.md?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/44e939c37442518a6ea787bdcd52bfa7c60ef908",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "5782dafd891ab082de63afaca8f3d30b34017463",
+    "size": 17469,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/LICENSE?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/LICENSE",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/5782dafd891ab082de63afaca8f3d30b34017463",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/LICENSE?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/5782dafd891ab082de63afaca8f3d30b34017463",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/LICENSE"
+    }
+  },
+  {
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "sha": "f76872945751495042891b436af228885d104542",
+    "size": 1686,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/NOTICE?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/NOTICE",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/f76872945751495042891b436af228885d104542",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/NOTICE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/NOTICE?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/f76872945751495042891b436af228885d104542",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/NOTICE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "86aacc73d7b394b08383a66d1a67eb46f8ee7709",
+    "size": 6269,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/README.md?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/README.md",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/86aacc73d7b394b08383a66d1a67eb46f8ee7709",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/README.md?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/86aacc73d7b394b08383a66d1a67eb46f8ee7709",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/README.md"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "55e8e4c168aeacfeaff738b14e0ebc0e4770bf61",
+    "size": 21581,
+    "url": "https://api.github.com/repos/apache/pekko-http/contents/build.sbt?ref=v1.3.0",
+    "html_url": "https://github.com/apache/pekko-http/blob/v1.3.0/build.sbt",
+    "git_url": "https://api.github.com/repos/apache/pekko-http/git/blobs/55e8e4c168aeacfeaff738b14e0ebc0e4770bf61",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko-http/v1.3.0/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko-http/contents/build.sbt?ref=v1.3.0",
+      "git": "https://api.github.com/repos/apache/pekko-http/git/blobs/55e8e4c168aeacfeaff738b14e0ebc0e4770bf61",
+      "html": "https://github.com/apache/pekko-http/blob/v1.3.0/build.sbt"
+    }
+
+ succeeded in 291ms:
+buildinfo.version=0.1-SNAPSHOT
+name=pekko-http
+group-id=org.apache.pekko
+artifact-id=pekko-http_3
+version=1.3.0
+java.version=1.8.0_462
+os.name=Mac OS X
+build-tool=sbt
+sbt.version=1.11.7
+scala.version=3.3.6
+scala.binary-version=3
+date=1761081068767
+outputs.0.filename=pekko-http_3-1.3.0.pom
+outputs.0.length=2227
+outputs.0.checksums.sha512=fdc61c64a5ad887316a2d843579a36c74d23b4834a2abade6e983668758b674deaa4a40561ff40f1c83871b12e3231efe9b7b54fc92c7b1936890ac8ec94b8ef
+outputs.1.filename=pekko-http_3-1.3.0.jar
+outputs.1.length=2567029
+outputs.1.checksums.sha512=cf35a8990361ffb9cc5b6768190e25b67ead91e093336a9a8c224e8a0e95f1f09e2088c63d0d464752f4b15a586a91575051f4ddd0e3f3b1748895be3f0b534f
+source.scm.uri=git@github.com:apache/pekko-http.git
+ succeeded in 482ms:
+# Apache Pekko HTTP
+
+<!--
+[![pekko-http-core Scala version support](https://index.scala-lang.org/pekko/pekko-http/pekko-http-core/latest-by-scala-version.svg)](https://index.scala-lang.org/pekko/pekko-http/pekko-http-core)
+-->
+
+The Pekko HTTP modules implement a full server- and client-side HTTP stack on top
+of pekko-actor and pekko-stream. It's not a web-framework but rather a more
+general toolkit for providing and consuming HTTP-based services. While
+interaction with a browser is of course also in scope it is not the primary
+focus of Pekko HTTP.
+
+Pekko HTTP is a fork of [Akka HTTP](https://github.com/akka/akka-http) 10.2.x release, prior to the Akka project's adoption of the Business Source License.
+
+Pekko HTTP follows a rather open design and many times offers several different
+API levels for "doing the same thing". You get to pick the API level of
+abstraction that is most suitable for your application. This means that, if you
+have trouble achieving something using a high-level API, there's a good chance
+that you can get it done with a low-level API, which offers more flexibility but
+might require you to write more application code.
+
+## Documentation
+
+The documentation is available at
+[pekko.apache.org](https://pekko.apache.org/docs/pekko-http/current/), for
+[Scala](https://pekko.apache.org/docs/pekko-http/current/scala/http/) and
+[Java](https://pekko.apache.org/docs/pekko-http/current/java/http/).
+
+## Building from Source
+
+### Prerequisites
+- Make sure you have installed a Java Development Kit (JDK) version 8 or later.
+- Make sure you have [sbt](https://www.scala-sbt.org/) installed.
+- [Graphviz](https://graphviz.gitlab.io/download/) is needed for the scaladoc generation build task, which is part of the release.
+
+### h2spec
+
+Some tests for HTTP/2 compliance use [h2spec](https://github.com/summerwind/h2spec). The sbt build downloads
+pre-built binaries from the GitHub releases page for the h2spec project. These binaries are not available for all
+operating systems. Apple Mac Silicon users may need to install [Rosetta](https://support.apple.com/en-us/HT211861) if
+they do not have it installed already.
+
+### Running the Build
+- Open a command window and change directory to your preferred base directory
+- Use git to clone the [repo](https://github.com/apache/pekko-http) or download a source release from https://pekko.apache.org (and unzip or untar it, as appropriate)
+- Change directory to the directory where you installed the source (you should have a file called `build.sbt` in this directory)
+- `sbt compile` compiles the main source for project default version of Scala (2.13)
+    - `sbt +compile` will compile for all supported versions of Scala
+- `sbt test` will compile the code and run the unit tests
+- `sbt testQuick` similar to `test` but when repeated in shell mode will only run failing tests
+- `sbt package` will build the jars
+    - the jars will built into target dirs of the various modules
+    - for the the 'http-core' module, the jar will be built to `http-core/target/scala-2.13/`
+- `sbt publishLocal` will push the jars to your local Apache Ivy repository
+- `sbt publishM2` will push the jars to your local Apache Maven repository
+- `sbt docs/paradox` will build the docs (the ones describing the module features)
+     - `sbt docs/paradoxBrowse` does the same but will open the docs in your browser when complete
+     - the `index.html` file will appear in `target/paradox/site/main/`
+- `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphviz, see Prerequisites above)
+     - the `index.html` file will appear in `target/scala-2.13/unidoc/`
+- `sbt sourceDistGenerate` will generate source release to `target/dist/`
+- The version number that appears in filenames and docs is derived, by default. The derived version contains the most git commit id or the date/time (if the directory is not under git control). 
+    - You can set the version number explicitly when running sbt commands
+        - eg `sbt "set ThisBuild / version := \"1.0.0\"; sourceDistGenerate"`  
+    - Or you can add a file called `version.sbt` to the same directory that has the `build.sbt` containing something like
+        - `ThisBuild / version := "1.0.0"`
+
+## Community
+
+If you have questions about the contribution process or discuss specific issues, please interact with the community using the following resources.
+
+- [GitHub discussions](https://github.com/apache/pekko-http/discussions): for questions and general discussion.
+- [Pekko users mailing list](https://lists.apache.org/list.html?users@pekko.apache.org): for Pekko development discussions.
+- [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
+- [GitHub issues](https://github.com/apache/pekko-http/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
+
+<!--
+[stackoverflow-badge]: https://img.shields.io/badge/stackoverflow%3A-pekko--http-blue.svg?style=flat-square
+[stackoverflow]:       https://stackoverflow.com/questions/tagged/pekko-http
+[github-issues-badge]: https://img.shields.io/badge/github%3A-issues-blue.svg?style=flat-square
+[github-issues]:       https://github.com/apache/pekko-http/issues
+[scaladex-badge]:      https://index.scala-lang.org/count.svg?q=dependencies:pekko/pekko-http*&subject=scaladex:&color=blue&style=flat-square
+[scaladex-projects]:   https://index.scala-lang.org/search?q=dependencies:pekko/pekko-http*
+-->
+
+## Contributing
+
+Contributions are *very* welcome!
+
+If you see an issue that you'd like to see fixed, the best way to make it happen is to help out by submitting a pull request.
+For ideas of where to contribute, [tickets marked as "help wanted"](https://github.com/apache/pekko-http/labels/help%20wanted) are a good starting point.
+
+Refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file for more details about the workflow,
+and general hints on how to prepare your pull request. You can also ask for clarifications or guidance in GitHub issues directly.
+
+
+## License
+
+Apache Pekko HTTP is Open Source and available under the Apache 2 License.
+
+ succeeded in 609ms:
+20-import com.lightbend.paradox.apidoc.ApidocPlugin.autoImport.apidocRootPackage
+21-
+22:sourceDistName := "apache-pekko-http"
+23-sourceDistIncubating := false
+24-
+--
+31-  apiURL := {
+32-    val apiVersion = if (isSnapshot.value) "current" else version.value
+33:    Some(url(s"https://pekko.apache.org/api/pekko-http/$apiVersion/"))
+34-  },
+35-  scmInfo := Some(
+36:    ScmInfo(url("https://github.com/apache/pekko-http"), "git@github.com:apache/pekko-http.git")),
+37-  description := "Apache Pekko Http: Modern, fast, asynchronous, streaming-first HTTP server and client.",
+38-  testOptions ++= Seq(
+--
+44-  onLoad in Global := {
+45-    sLog.value.info(
+46:      s"Building Pekko HTTP ${version.value} against Pekko ${PekkoCoreDependency.version} on Scala ${(httpCore / scalaVersion).value}")
+47-    (onLoad in Global).value
+48-  },
+--
+74-  billOfMaterials)
+75-lazy val root = Project(
+76:  id = "pekko-http",
+77-  base = file("."))
+78-  .enablePlugins(UnidocRoot, NoPublish, AggregatePRValidation, NoScala3)
+79-  .disablePlugins(MimaPlugin)
+80-  .settings(
+81:    name := "pekko-http-root",
+82-    // Unidoc doesn't like macro definitions
+83-    // compatibilityTests temporarily disabled
+--
+96-  config / unmanagedSourceDirectories += {
+97-    val sourceDir = (config / sourceDirectory).value
+98:    CrossVersion.partialVersion(scalaVersion.value) match {
+99-      case Some((e, n)) if e > 2 || (e == 2 && n >= 13) => sourceDir / "scala-2.13+"
+100-      case _                                            => sourceDir / "scala-2.13-"
+--
+108-val scalaMacroSupport = Seq(
+109-  scalacOptions ++= {
+110:    CrossVersion.partialVersion(scalaVersion.value) match {
+111-      case Some((2, n)) if n >= 13 =>
+112-        Seq("-Ymacro-annotations")
+--
+115-    }
+116-  },
+117:  libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+118-    case Some((2, n)) if n < 13 =>
+119-      Seq(compilerPlugin(("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)))
+--
+234-  .disablePlugins(MimaPlugin) // testkit, no bin compat guaranteed
+235-
+236:lazy val httpTests = project("http-tests")
+237-  .settings(commonSettings)
+238-  .settings(Dependencies.httpTests)
+--
+304-lazy val httpCaching = project("http-caching")
+305-  .settings(
+306:    name := "pekko-http-caching")
+307-  .settings(commonSettings)
+308-  .settings(AutomaticModuleName.settings("pekko.http.caching"))
+--
+315-lazy val httpCors = project("http-cors")
+316-  .settings(
+317:    name := "pekko-http-cors")
+318-  .settings(commonSettings)
+319-  .settings(AutomaticModuleName.settings("pekko.http.cors"))
+--
+335-    .dependsOn(http)
+336-    .settings(
+337:      name := s"pekko-http-$moduleName")
+338-    .settings(commonSettings)
+339-    .enablePlugins(BootstrapGenjavadoc)
+--
+345-    base = file(s"http-marshallers-java/http-$moduleName"))
+346-    .settings(
+347:      name := s"pekko-http-$moduleName")
+348-    .dependsOn(http)
+349-    .settings(commonSettings)
+--
+359-  Project(id = "http-scalafix-rules", base = file("http-scalafix/scalafix-rules"))
+360-    .settings(
+361:      name := "pekko-http-scalafix-rules",
+362-      libraryDependencies += Dependencies.Compile.scalafix)
+363-    .enablePlugins(NoScala3)
+--
+390-    .disablePlugins(MimaPlugin)
+391-    .settings(
+392:      name := "pekko-http-scalafix-tests",
+393-      publish / skip := true,
+394-      libraryDependencies += ("ch.epfl.scala" % "scalafix-testkit" % Dependencies.scalafixVersion % Test).cross(
+--
+418-  .settings(Dependencies.docs)
+419-  .settings(
+420:    name := "pekko-http-docs",
+421-    scalacOptions ++= Seq(
+422-      // Make sure we don't accidentally keep documenting deprecated calls
+--
+425-      "-Wconf:msg=The outer reference in this type test cannot be checked at run time:s"),
+426-    scalacOptions ++= (
+427:      if (scalaVersion.value.startsWith("3")) Seq.empty
+428-      else Seq(
+429-        // In docs adding an unused variable can be helpful, for example
+--
+441-    Compile / paradoxProperties ++= Map(
+442-      "project.name" -> "Apache Pekko HTTP",
+443:      "canonical.base_url" -> "https://pekko.apache.org/docs/pekko-http/current",
+444-      "pekko.version" -> PekkoCoreDependency.version,
+445-      "jackson.xml.version" -> Dependencies.jacksonXmlVersion,
+--
+452-      "scaladoc.org.apache.pekko.base_url" -> s"https://pekko.apache.org/api/pekko/${PekkoCoreDependency.default.link}",
+453-      "scaladoc.org.apache.pekko.link_style" -> "direct",
+454:      "javadoc.org.apache.pekko.http.base_url" -> s"https://pekko.apache.org/japi/pekko-http/${projectInfoVersion.value}",
+455:      "scaladoc.org.apache.pekko.http.base_url" -> s"https://pekko.apache.org/api/pekko-http/${projectInfoVersion.value}",
+456-      "github.base_url" -> GitHub.url(version.value, isSnapshot.value)),
+457-    apidocRootPackage := "org.apache.pekko",
+--
+466-  .settings(
+467-    libraryDependencies ++= Seq(
+468:      "org.apache.pekko" %% "pekko-http" % MiMa.latest101Version % "provided",
+469-    ),
+470-    (Test / dependencyClasspath) := {
+--
+481-  .disablePlugins(MimaPlugin)
+482-  .settings(
+483:    name := "pekko-http-bom",
+484-    bomIncludeProjects := userProjects)
+485-
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/pekko-http/git/trees/v1.3.0?recursive=1' | rg '\"path\": \"(http|http-tests|docs)/' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/pekko-http/git/trees/v1.3.0?recursive=1' | rg '\"path\": \"http-tests/src/test' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/pekko-http/git/trees/v1.3.0?recursive=1' | rg '\"path\": \"http/src/(main|test)' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+exec
+/usr/bin/bash -lc "for url in \\
+'https://github.com/apache/pekko-http/tree/v1.3.0/http/src/main' \\
+'https://github.com/apache/pekko-http/tree/v1.3.0/http-tests/src/test' \\
+'https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-sources.jar' \\
+'https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-javadoc.jar'; do printf '%s ' \""'$url"; curl -fsSI "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 395ms:
+      "path": "docs/src",
+      "path": "docs/src/main",
+      "path": "docs/src/main/paradox",
+      "path": "docs/src/main/paradox/.htaccess",
+      "path": "docs/src/main/paradox/DispatcherBehaviourOnBadCode.png",
+      "path": "docs/src/main/paradox/DispatcherBehaviourOnGoodCode.png",
+      "path": "docs/src/main/paradox/client-side",
+      "path": "docs/src/main/paradox/client-side/client-https-support.md",
+      "path": "docs/src/main/paradox/client-side/client-transport.md",
+      "path": "docs/src/main/paradox/client-side/configuration.md",
+      "path": "docs/src/main/paradox/client-side/connection-level.md",
+      "path": "docs/src/main/paradox/client-side/host-level.md",
+      "path": "docs/src/main/paradox/client-side/http2.md",
+      "path": "docs/src/main/paradox/client-side/index.md",
+      "path": "docs/src/main/paradox/client-side/pool-overflow.md",
+      "path": "docs/src/main/paradox/client-side/request-and-response.md",
+      "path": "docs/src/main/paradox/client-side/request-level.md",
+      "path": "docs/src/main/paradox/client-side/websocket-support.md",
+      "path": "docs/src/main/paradox/common",
+      "path": "docs/src/main/paradox/common/caching.md",
+      "path": "docs/src/main/paradox/common/cors.md",
+      "path": "docs/src/main/paradox/common/encoding.md",
+      "path": "docs/src/main/paradox/common/http-model.md",
+      "path": "docs/src/main/paradox/common/index.md",
+      "path": "docs/src/main/paradox/common/json-support.md",
+      "path": "docs/src/main/paradox/common/marshalling.md",
+      "path": "docs/src/main/paradox/common/sse-support.md",
+      "path": "docs/src/main/paradox/common/timeouts.md",
+      "path": "docs/src/main/paradox/common/unmarshalling.md",
+      "path": "docs/src/main/paradox/common/uri-model.md",
+      "path": "docs/src/main/paradox/common/xml-support.md",
+      "path": "docs/src/main/paradox/compatibility-guidelines.md",
+      "path": "docs/src/main/paradox/configuration.md",
+      "path": "docs/src/main/paradox/contributing.md",
+      "path": "docs/src/main/paradox/examples-and-extensions.md",
+      "path": "docs/src/main/paradox/handling-blocking-operations-in-pekko-http-routes.md",
+      "path": "docs/src/main/paradox/implications-of-streaming-http-entity.md",
+      "path": "docs/src/main/paradox/index.md",
+      "path": "docs/src/main/paradox/introduction.md",
+      "path": "docs/src/main/paradox/migration-guide",
+      "path": "docs/src/main/paradox/migration-guide/index.md",
+      "path": "docs/src/main/paradox/org",
+      "path": "docs/src/main/paradox/org/apache",
+      "path": "docs/src/main/paradox/org/apache/pekko-http-file-listing.png",
+      "path": "docs/src/main/paradox/reference.md",
+      "path": "docs/src/main/paradox/release-notes",
+      "path": "docs/src/main/paradox/release-notes/index.md",
+      "path": "docs/src/main/paradox/release-notes/releases-1.0.md",
+      "path": "docs/src/main/paradox/release-notes/releases-1.1.md",
+      "path": "docs/src/main/paradox/release-notes/releases-1.2.md",
+      "path": "docs/src/main/paradox/routing-dsl",
+      "path": "docs/src/main/paradox/routing-dsl/case-class-extraction.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives",
+      "path": "docs/src/main/paradox/routing-dsl/directives/alphabetically.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/attribute-directives",
+      "path": "docs/src/main/paradox/routing-dsl/directives/attribute-directives/attribute.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/attribute-directives/index.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/attribute-directives/optionalAttribute.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/cancelRejection.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/cancelRejections.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extract.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractActorSystem.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractDataBytes.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractExecutionContext.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractLog.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractMatchedPath.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractMaterializer.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractParserSettings.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractRequest.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractRequestContext.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractRequestEntity.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractSettings.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractStrictEntity.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractUnmatchedPath.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/extractUri.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/index.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/mapInnerRoute.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/mapRejections.md",
+      "path": "docs/src/main/paradox/routing-dsl/directives/basic-directives/mapRequest.md",
+curl: (23) Failure writing output to destination
+
+ succeeded in 524ms:
+      "path": "http-tests/src/test",
+      "path": "http-tests/src/test/extra-libs.zip",
+      "path": "http-tests/src/test/extra-libs.zip.README",
+      "path": "http-tests/src/test/java",
+      "path": "http-tests/src/test/java/AllJavaTests.java",
+      "path": "http-tests/src/test/java/docs",
+      "path": "http-tests/src/test/java/docs/http",
+      "path": "http-tests/src/test/java/docs/http/javadsl",
+      "path": "http-tests/src/test/java/docs/http/javadsl/server",
+      "path": "http-tests/src/test/java/docs/http/javadsl/server/HandlerExampleDocTest.java",
+      "path": "http-tests/src/test/java/docs/http/javadsl/server/RouteJavaScalaDslConversionTest.java",
+      "path": "http-tests/src/test/java/org",
+      "path": "http-tests/src/test/java/org/apache",
+      "path": "http-tests/src/test/java/org/apache/pekko",
+      "path": "http-tests/src/test/java/org/apache/pekko/http",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/HttpAPIsTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/marshalling",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/marshalling/sse",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/marshalling/sse/EventStreamMarshallingTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/CompleteTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/HandlerBindingTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/JavaRouteTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/JavaTestServer.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/MarshallerTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/MinimalHttpApp.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/SneakHttpApp.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/UnmarshallerTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/AttributeDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/CodingDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/ComposingDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/CookieDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/ExecutionDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/HeaderDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/HostDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/MarshallingDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/MiscDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/ParameterDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/PathDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/RouteDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/SchemeDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/directives/SecurityDirectivesTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/examples",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/examples/petstore",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/examples/petstore/PetStoreAPITest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/examples/simple",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/examples/simple/SimpleServerTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/values",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/values/FormFieldsTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/server/values/HeadersTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/settings",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/settings/OversizedSseStrategySimpleTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/settings/RoutingSettingsTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/unmarshalling",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/unmarshalling/sse",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/unmarshalling/sse/EventStreamUnmarshallingOversizedTest.java",
+      "path": "http-tests/src/test/java/org/apache/pekko/http/javadsl/unmarshalling/sse/EventStreamUnmarshallingTest.java",
+      "path": "http-tests/src/test/resources",
+      "path": "http-tests/src/test/resources/application.conf",
+      "path": "http-tests/src/test/resources/sample.html",
+      "path": "http-tests/src/test/resources/sample.xyz",
+      "path": "http-tests/src/test/resources/someDir",
+      "path": "http-tests/src/test/resources/someDir/fileA.txt",
+      "path": "http-tests/src/test/resources/someDir/fileB.xml",
+      "path": "http-tests/src/test/resources/someDir/sub",
+      "path": "http-tests/src/test/resources/someDir/sub/file.html",
+      "path": "http-tests/src/test/resources/subDirectory",
+      "path": "http-tests/src/test/resources/subDirectory/empty.pdf",
+      "path": "http-tests/src/test/resources/subDirectory/fileA.txt",
+      "path": "http-tests/src/test/resources/sübdir",
+      "path": "http-tests/src/test/resources/sübdir/sample späce.PDF",
+      "path": "http-tests/src/test/scala-2.13+",
+      "path": "http-tests/src/test/scala-2.13+/org",
+      "path": "http-tests/src/test/scala-2.13+/org/apache",
+      "path": "http-tests/src/test/scala-2.13+/org/apache/pekko",
+      "path": "http-tests/src/test/scala-2.13+/org/apache/pekko/http",
+      "path": "http-tests/src/test/scala-2.13+/org/apache/pekko/http/scaladsl",
+      "path": "http-tests/src/test/scala-2.13+/org/apache/pekko/http/scaladsl/server",
+curl: (23) Failure writing output to destination
+
+ succeeded in 600ms:
+      "path": "http/src/main",
+      "path": "http/src/main/boilerplate",
+      "path": "http/src/main/boilerplate/org",
+      "path": "http/src/main/boilerplate/org/apache",
+      "path": "http/src/main/boilerplate/org/apache/pekko",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/javadsl",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/javadsl/server",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/javadsl/server/JavaPathMatchers.scala.template",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/directives",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/directives/FormFieldDirectivesInstances.scala.template",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/directives/ParameterDirectivesInstances.scala.template",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/util",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/util/ApplyConverterInstances.scala.template",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/util/ConstructFromTupleInstances.scala.template",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/util/TupleAppendOneInstances.scala.template",
+      "path": "http/src/main/boilerplate/org/apache/pekko/http/scaladsl/server/util/TupleFoldInstances.scala.template",
+      "path": "http/src/main/java",
+      "path": "http/src/main/java/org",
+      "path": "http/src/main/java/org/apache",
+      "path": "http/src/main/java/org/apache/pekko",
+      "path": "http/src/main/java/org/apache/pekko/http",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/coding",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/coding/Coder.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/common",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/common/RegexConverters.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/server",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/server/ExceptionHandlerBuilder.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/server/HttpApp.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/server/directives",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/server/directives/ContentTypeResolver.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/server/directives/CorrespondsTo.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/settings",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/settings/OversizedSseStrategy.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/unmarshalling",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/unmarshalling/StringUnmarshallers.java",
+      "path": "http/src/main/java/org/apache/pekko/http/javadsl/unmarshalling/Unmarshallers.java",
+      "path": "http/src/main/resources",
+      "path": "http/src/main/resources/reference.conf",
+      "path": "http/src/main/scala",
+      "path": "http/src/main/scala/org",
+      "path": "http/src/main/scala/org/apache",
+      "path": "http/src/main/scala/org/apache/pekko",
+      "path": "http/src/main/scala/org/apache/pekko/http",
+      "path": "http/src/main/scala/org/apache/pekko/http/impl",
+      "path": "http/src/main/scala/org/apache/pekko/http/impl/settings",
+      "path": "http/src/main/scala/org/apache/pekko/http/impl/settings/RoutingSettingsImpl.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/impl/settings/ServerSentEventSettingsImpl.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/common",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/common/EntityStreamingSupport.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/common/PartialApplication.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/marshalling",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/marshalling/Marshaller.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/marshalling/sse",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/marshalling/sse/EventStreamMarshalling.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/Directives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/ExceptionHandler.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/PathMatchers.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/RejectionHandler.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/Rejections.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/RequestContext.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/Route.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/RouteResult.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/RoutingJavaMapping.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/AttributeDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/BasicDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/CacheConditionDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/CodingDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/CookieDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/DebuggingDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/ExecutionDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/FileAndResourceDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/FileUploadDirectives.scala",
+      "path": "http/src/main/scala/org/apache/pekko/http/javadsl/server/directives/FormFieldDirectives.scala",
+
+ succeeded in 1968ms:
+HTTP/2 200 
+https://github.com/apache/pekko-http/tree/v1.3.0/http-tests/src/test HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-sources.jar HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-javadoc.jar HTTP/2 200 
+
+codex
+I found Maven Central has the published `sources` and `javadoc` jars for `1.3.0`, but no test classifier in that artifact directory. I’m using Maven for source/docs, the `v$version$` GitHub tag for tests, and adding Scala 3 language metadata because the artifact is `pekko-http_3` and the build info says `scala.binary-version=3`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+index 8cd3bc6dd8fdd554947b5122c0ae32b7a302a414..cabe9ef868c6bb9cf6dbee4b5853c1c50fa9ca3d
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
++  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0",
++  "repository-url" : "https://github.com/apache/pekko-http",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko HTTP provides an asynchronous, streaming-first HTTP server and client toolkit built on Apache Pekko actors and streams. The pekko-http_3 artifact contains the Scala 3 JVM API for defining routes, marshalling and unmarshalling entities, and consuming or serving HTTP-based services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+index 8cd3bc6dd8fdd554947b5122c0ae32b7a302a414..cabe9ef868c6bb9cf6dbee4b5853c1c50fa9ca3d
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
++  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0",
++  "repository-url" : "https://github.com/apache/pekko-http",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko HTTP provides an asynchronous, streaming-first HTTP server and client toolkit built on Apache Pekko actors and streams. The pekko-http_3 artifact contains the Scala 3 JVM API for defining routes, marshalling and unmarshalling entities, and consuming or serving HTTP-based services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.pekko:pekko-http_3:1.3.0",
+  "repository-url": "https://github.com/apache/pekko-http",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/pekko-http/tree/v$version$/http-tests/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-javadoc.jar",
+  "description": "Apache Pekko HTTP provides an asynchronous, streaming-first HTTP server and client toolkit built on Apache Pekko actors and streams. The pekko-http_3 artifact contains the Scala 3 JVM API for defining routes, marshalling and unmarshalling entities, and consuming or serving HTTP-based services.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+'https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-sources.jar' \\
+'https://github.com/apache/pekko-http/tree/v1.3.0/http-tests/src/test' \\
+'https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-javadoc.jar'; do printf '%s -> ' \""'$url"; curl -fsSI "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+index 8cd3bc6dd8fdd554947b5122c0ae32b7a302a414..cabe9ef868c6bb9cf6dbee4b5853c1c50fa9ca3d
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
++  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0",
++  "repository-url" : "https://github.com/apache/pekko-http",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko HTTP provides an asynchronous, streaming-first HTTP server and client toolkit built on Apache Pekko actors and streams. The pekko-http_3 artifact contains the Scala 3 JVM API for defining routes, marshalling and unmarshalling entities, and consuming or serving HTTP-based services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 148ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+index 8cd3bc6dd8fdd554947b5122c0ae32b7a302a414..cabe9ef868c6bb9cf6dbee4b5853c1c50fa9ca3d
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
++  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0",
++  "repository-url" : "https://github.com/apache/pekko-http",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko HTTP provides an asynchronous, streaming-first HTTP server and client toolkit built on Apache Pekko actors and streams. The pekko-http_3 artifact contains the Scala 3 JVM API for defining routes, marshalling and unmarshalling entities, and consuming or serving HTTP-based services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 332ms:
+web search: 
+web search: https://github.com/apache/pekko-http/tree/v1.3.0/http-tests/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/1.3.0/pekko-http_3-1.3.0-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-http_3/1.3.0
+codex
+Updated [org.apache.pekko-pekko-http_3-1.3.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json) with the repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Scala 3 language metadata. The artifact is a JVM jar and Scala 3 target, so I did not set `not-for-native-image`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.pekko/pekko-http_3/1.3.0))
+
+Verified the JSON with `jq`, and verified the substituted source, test, and documentation URLs for `1.3.0` all return HTTP 200; the GitHub test URL points at the `v1.3.0` `http-tests/src/test` tree. ([github.com](https://github.com/apache/pekko-http/tree/v1.3.0/http-tests/src/test))
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+index 8cd3bc6dd8fdd554947b5122c0ae32b7a302a414..cabe9ef868c6bb9cf6dbee4b5853c1c50fa9ca3d
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0"
++  "coordinates" : "org.apache.pekko:pekko-http_3:1.3.0",
++  "repository-url" : "https://github.com/apache/pekko-http",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-http_3/$version$/pekko-http_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko HTTP provides an asynchronous, streaming-first HTTP server and client toolkit built on Apache Pekko actors and streams. The pekko-http_3 artifact contains the Scala 3 JVM API for defining routes, marshalling and unmarshalling entities, and consuming or serving HTTP-based services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+80,546
+Updated [org.apache.pekko-pekko-http_3-1.3.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/build/discovered-artifact-metadata/org.apache.pekko-pekko-http_3-1.3.0.json) with the repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Scala 3 language metadata. The artifact is a JVM jar and Scala 3 target, so I did not set `not-for-native-image`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.pekko/pekko-http_3/1.3.0))
+
+Verified the JSON with `jq`, and verified the substituted source, test, and documentation URLs for `1.3.0` all return HTTP 200; the GitHub test URL points at the `v1.3.0` `http-tests/src/test` tree. ([github.com](https://github.com/apache/pekko-http/tree/v1.3.0/http-tests/src/test))
+Ran agent for org.apache.pekko:pekko-http_3:1.3.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/build/agent-artifact-discovery-logs/org.apache.pekko-pekko-http_3-1.3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4869-1624369b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 58s
+9 actionable tasks: 9 executed
