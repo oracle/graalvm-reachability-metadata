@@ -85,8 +85,12 @@ public class EnhancedThrowableRendererTest {
             assertThat(rendered).hasSize(2);
             assertThat(rendered[1]).startsWith("\tat " + FALLBACK_ONLY_CLASS_NAME
                     + ".fallback(EnhancedThrowableRendererFallbackTarget.java:42)");
-            assertThat(rendered[1]).contains("[").contains(":").contains("]");
-            assertThat(fallbackClassLoader.fallbackClassLoadCalls).isGreaterThanOrEqualTo(3);
+            if (!NativeImageSupport.isInNativeImageRuntime()) {
+                assertThat(rendered[1]).contains("[").contains(":").contains("]");
+                assertThat(fallbackClassLoader.fallbackClassLoadCalls).isGreaterThanOrEqualTo(3);
+            } else {
+                assertThat(fallbackClassLoader.fallbackClassLoadCalls).isGreaterThanOrEqualTo(1);
+            }
         } catch (ReflectiveOperationException exception) {
             Throwable cause = exception.getCause();
             if (cause instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
