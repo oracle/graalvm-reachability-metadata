@@ -13,11 +13,15 @@ import akka.actor.ExtendedActorSystem
 import akka.serialization.Serialization
 import akka.serialization.SerializationExtension
 import akka.serialization.SerializerWithStringManifest
+import akka.serialization.jackson.JacksonMigration
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+import java.nio.charset.StandardCharsets
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.duration.FiniteDuration
@@ -62,6 +66,38 @@ class Akka_serialization_jackson_2_13Test {
     }
   }
 
+  @Test
+  def jsonSerializerAppliesConfiguredMigrationForOlderManifest(): Unit = {
+    val currentClassName: String = classOf[MigratedOrder].getName
+    val legacyClassName: String = s"$currentClassName.Legacy"
+    val config: Config = ConfigFactory.parseString(
+      s"""
+        akka.loglevel = "WARNING"
+        akka.actor.allow-java-serialization = off
+        akka.actor.serialization-bindings {
+          "$currentClassName" = jackson-json
+        }
+        akka.serialization.jackson.migrations {
+          "$currentClassName" = "${classOf[MigratedOrderMigration].getName}"
+          "$legacyClassName" = "${classOf[MigratedOrderMigration].getName}"
+        }
+        """
+    ).withFallback(ConfigFactory.load())
+
+    withActorSystem("JacksonJsonMigration", config) { system =>
+      val serialization: Serialization = SerializationExtension(system)
+      val serializer: SerializerWithStringManifest =
+        serialization.serializerFor(classOf[MigratedOrder]).asInstanceOf[SerializerWithStringManifest]
+      val legacyJson: Array[Byte] = """{"orderId":"order-17","quantity":2}""".getBytes(StandardCharsets.UTF_8)
+
+      val manifest: String = serializer.manifest(MigratedOrder(id = "order-17", quantity = 2, priority = "standard"))
+      val migrated: MigratedOrder = serializer.fromBinary(legacyJson, s"$legacyClassName#1").asInstanceOf[MigratedOrder]
+
+      assertThat(manifest).isEqualTo(s"$currentClassName#2")
+      assertThat(migrated).isEqualTo(MigratedOrder(id = "order-17", quantity = 2, priority = "standard"))
+    }
+  }
+
   private def withActorSystem(name: String, config: Config)(test: ActorSystem => Unit): Unit = {
     val system: ActorSystem = ActorSystem(name, config)
     try {
@@ -78,3 +114,19 @@ final case class AkkaModulePayload(
     timeout: FiniteDuration,
     labels: Vector[String]
 )
+
+final case class MigratedOrder(id: String, quantity: Int, priority: String)
+
+class MigratedOrderMigration extends JacksonMigration {
+  override def currentVersion(): Int = 2
+
+  override def transformClassName(fromVersion: Int, className: String): String = classOf[MigratedOrder].getName
+
+  override def transform(fromVersion: Int, json: JsonNode): JsonNode = {
+    val root: ObjectNode = json.deepCopy[ObjectNode]()
+    val orderId: JsonNode = root.remove("orderId")
+    root.set[JsonNode]("id", orderId)
+    root.put("priority", "standard")
+    root
+  }
+}
