@@ -34,6 +34,7 @@ import zio.logging.LogGroup
 import zio.logging.LoggerNameExtractor
 import zio.logging.loggerNameAnnotationKey
 import zio.logging.makeFileLogger
+import zio.logging._
 
 class Zio_logging_2_13Test {
   private val trace: Trace = Tracer.instance.empty.asInstanceOf[Trace]
@@ -215,6 +216,51 @@ class Zio_logging_2_13Test {
     assertThat(output).contains("database=")
     assertThat(output).contains("failure=")
     assertThat(output).contains("database unavailable")
+  }
+
+  @Test
+  def scopesTypedLogAnnotationsAroundZioEffects(): Unit = {
+    val retries: LogAnnotation[Int] = LogAnnotation[Int]("retries", _ + _, _.toString)
+
+    val observed: (Option[Int], Option[Int], Option[Int], Option[Int]) = unsafeRun(
+      for {
+        before <- logContext.get
+        nested <- (for {
+          outer <- logContext.get
+          inner <- logContext.get.logAnnotate(retries, 3)
+        } yield (outer.get(retries), inner.get(retries))).logAnnotate(retries, 2)
+        after <- logContext.get
+      } yield (before.get(retries), nested._1, nested._2, after.get(retries))
+    )
+
+    assertThat(observed._1).isEqualTo(None)
+    assertThat(observed._2).isEqualTo(Some(2))
+    assertThat(observed._3).isEqualTo(Some(5))
+    assertThat(observed._4).isEqualTo(None)
+  }
+
+  @Test
+  def appliesLoggerNameAspectsToZioLogAnnotations(): Unit = {
+    val observed: (Option[String], Option[String], Option[String], Option[String]) = unsafeRun(
+      for {
+        before <- ZIO.logAnnotations
+        namedAndAppended <- (for {
+          named <- ZIO.logAnnotations
+          appended <- ZIO.logAnnotations @@ appendLoggerName("worker")
+        } yield (named.get(loggerNameAnnotationKey), appended.get(loggerNameAnnotationKey))) @@ loggerName("orders")
+        after <- ZIO.logAnnotations
+      } yield (
+        before.get(loggerNameAnnotationKey),
+        namedAndAppended._1,
+        namedAndAppended._2,
+        after.get(loggerNameAnnotationKey)
+      )
+    )
+
+    assertThat(observed._1).isEqualTo(None)
+    assertThat(observed._2).isEqualTo(Some("orders"))
+    assertThat(observed._3).isEqualTo(Some("orders.worker"))
+    assertThat(observed._4).isEqualTo(None)
   }
 
   @Test
