@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test
 
 import scala.concurrent.Await
 import scala.concurrent.Future
+import scala.concurrent.Promise
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.duration.FiniteDuration
 
@@ -109,6 +110,24 @@ class Akka_stream_2_13Test {
       .runWith(Sink.seq)
 
     assertEquals(Seq(1, 3), awaitResult(result))
+  }
+
+  @Test
+  def mapAsyncPreservesElementOrderWhenFuturesCompleteOutOfOrder(): Unit = {
+    val first: Promise[String] = Promise[String]()
+    val second: Promise[String] = Promise[String]()
+    val third: Promise[String] = Promise[String]()
+    val promises: Map[Int, Promise[String]] = Map(1 -> first, 2 -> second, 3 -> third)
+
+    val result: Future[Seq[String]] = Source(1 to 3)
+      .mapAsync(parallelism = 3)(value => promises(value).future)
+      .runWith(Sink.seq)
+
+    third.success("third")
+    second.success("second")
+    first.success("first")
+
+    assertEquals(Seq("first", "second", "third"), awaitResult(result))
   }
 
   @Test
