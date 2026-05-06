@@ -49,6 +49,7 @@ object PlayJsonModels {
   final case class SnakeProfile(firstName: String, lastName: String, postalCode: String)
   final case class WarehouseId(value: Int)
   final case class Inventory(counts: Map[WarehouseId, Int])
+  final case class Category(name: String, children: Seq[Category])
 
   object Priority extends Enumeration {
     val Low: Value = Value("low")
@@ -286,6 +287,38 @@ class Play_json_2_13Test {
       parsed => throw new AssertionError(s"Unexpected inventory: $parsed")
     )
     assertTrue(failureMessage.contains("error.expected.warehouseId"))
+  }
+
+  @Test
+  def supportsRecursiveJsonFormatsWithLazyReadsAndWrites(): Unit = {
+    implicit lazy val categoryReads: Reads[Category] = (
+      (__ \ "name").read[String] and
+        (__ \ "children").lazyRead(Reads.seq[Category](categoryReads))
+    )(Category.apply _)
+    implicit lazy val categoryWrites: OWrites[Category] = (
+      (__ \ "name").write[String] and
+        (__ \ "children").lazyWrite(Writes.seq[Category](categoryWrites))
+    )(category => (category.name, category.children))
+
+    val catalog: Category = Category(
+      "catalog",
+      Seq(
+        Category("books", Seq(Category("fiction", Seq.empty))),
+        Category("games", Seq.empty)
+      )
+    )
+
+    val json: JsValue = Json.toJson(catalog)
+    assertEquals("catalog", (json \ "name").as[String])
+    assertEquals("fiction", (json \ "children" \ 0 \ "children" \ 0 \ "name").as[String])
+    assertEquals(catalog, json.validate[Category].get)
+
+    val invalid: JsValue = Json.obj("name" -> "broken", "children" -> Json.arr(Json.obj("children" -> Json.arr())))
+    val failureMessage: String = invalid.validate[Category].fold(
+      errors => JsError.toJson(errors).toString(),
+      parsed => throw new AssertionError(s"Unexpected category: $parsed")
+    )
+    assertTrue(failureMessage.contains("error.path.missing"))
   }
 
   @Test
