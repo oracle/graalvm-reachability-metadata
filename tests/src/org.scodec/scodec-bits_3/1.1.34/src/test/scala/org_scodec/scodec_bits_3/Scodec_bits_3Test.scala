@@ -15,6 +15,7 @@ import scodec.bits.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
+import java.nio.channels.Channels
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import scala.jdk.CollectionConverters.*
@@ -148,6 +149,28 @@ final class Scodec_bits_3Test {
     assertThat(edited.grouped(4).map(_.toBin).toList.asJava).containsExactly("0111", "1000", "0111")
     assertThat(edited.compare(BitVector.fromValidBin("01111001000"))).isLessThan(0)
     assertThat(edited.acquire(99).isLeft).isTrue()
+  }
+
+  @Test
+  def bitVectorReadsFromJavaStreamsAndChannels(): Unit = {
+    val expected: BitVector = ByteVector.fromValidHex("0123456789abcdef").bits
+    val inputStream: ByteArrayInputStream = new ByteArrayInputStream(expected.toByteArray)
+    val channelStream: ByteArrayInputStream = new ByteArrayInputStream(expected.toByteArray)
+    val channel = Channels.newChannel(channelStream)
+
+    try {
+      val fromInputStream: BitVector = BitVector.fromInputStream(inputStream, 2).force
+      val fromChannel: BitVector = BitVector.fromChannel(channel, 3).force
+
+      assertThat(fromInputStream).isEqualTo(expected)
+      assertThat(fromInputStream.toHex).isEqualTo("0123456789abcdef")
+      assertThat(fromChannel).isEqualTo(expected)
+      assertThat(fromChannel.toHex).isEqualTo("0123456789abcdef")
+    } finally {
+      channel.close()
+      channelStream.close()
+      inputStream.close()
+    }
   }
 
   @Test
