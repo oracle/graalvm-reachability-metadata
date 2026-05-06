@@ -178,6 +178,23 @@ public class TurbineJvmTest {
     }
 
     @Test
+    fun standaloneTurbineExposesChannelForSendingAndClosing(): Unit = runBlocking {
+        withTimeout(5_000.milliseconds) {
+            val turbine: Turbine<String> = Turbine(name = "channelBacked")
+            val channel: Channel<String> = turbine.asChannel()
+
+            channel.trySend("first").getOrThrow()
+            channel.trySend("second").getOrThrow()
+            channel.close()
+
+            assertThat(turbine.awaitItem()).isEqualTo("first")
+            assertThat(turbine.awaitItem()).isEqualTo("second")
+            turbine.awaitComplete()
+            turbine.ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
     fun standaloneTurbineReportsErrorsAndClosedAdds(): Unit {
         val failure: IllegalArgumentException = IllegalArgumentException("bad input")
         val turbine: Turbine<String> = Turbine(name = "errors")
