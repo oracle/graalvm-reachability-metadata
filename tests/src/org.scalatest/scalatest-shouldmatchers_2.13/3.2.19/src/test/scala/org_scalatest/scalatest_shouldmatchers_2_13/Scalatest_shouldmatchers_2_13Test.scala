@@ -110,6 +110,22 @@ class Scalatest_shouldmatchers_2_13Test extends Matchers {
   }
 
   @Test
+  def matchesThrownExceptionsAndCapturedMessages(): Unit = {
+    val failure: IllegalArgumentException = the[IllegalArgumentException] thrownBy {
+      throw new IllegalArgumentException("invalid port", new NumberFormatException("not numeric"))
+    }
+
+    an[IllegalStateException] should be thrownBy {
+      throw new IllegalStateException("service unavailable")
+    }
+    noException should be thrownBy {
+      List(1, 2, 3).sum
+    }
+    failure should have message "invalid port"
+    failure.getCause shouldBe a[NumberFormatException]
+  }
+
+  @Test
   def supportsCustomPublicMatchersAndNegation(): Unit = {
     val bePalindrome: Matcher[String] = Matcher { (left: String) =>
       val normalized: String = left.filter(_.isLetterOrDigit).toLowerCase
