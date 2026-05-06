@@ -6,18 +6,15 @@
  */
 package org_typelevel.cats_effect_3
 
-import cats.effect.Blocker
-import cats.effect.ConcurrentEffect
-import cats.effect.ContextShift
-import cats.effect.ExitCase
+import cats.effect.Deferred
 import cats.effect.IO
+import cats.effect.OutcomeIO
+import cats.effect.Ref
 import cats.effect.Resource
 import cats.effect.SyncIO
-import cats.effect.Timer
-import cats.effect.concurrent.Deferred
-import cats.effect.concurrent.MVar
-import cats.effect.concurrent.Ref
-import cats.effect.concurrent.Semaphore
+import cats.effect.std.Queue
+import cats.effect.std.Semaphore
+import cats.effect.unsafe.implicits.global
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
@@ -31,10 +28,6 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 class Cats_effect_3Test {
-  private implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
-  private implicit val effect: ConcurrentEffect[IO] = IO.ioConcurrentEffect(contextShift)
-  private implicit val timer: Timer[IO] = IO.timer(ExecutionContext.global)
-
   private def await[A](io: IO[A]): A = {
     io.unsafeRunTimed(5.seconds).getOrElse(throw new AssertionError("IO did not complete within the expected timeout"))
   }
@@ -51,7 +44,7 @@ class Cats_effect_3Test {
         40
       }.map(_ + 2)
       recovered <- IO.raiseError[Int](failure).attempt.map(_.fold(_.getMessage, _.toString))
-      asynchronous <- IO.async[Int](callback => callback(Right(21))).map(_ * 2)
+      asynchronous <- IO.async_[Int](callback => callback(Right(21))).map(_ * 2)
     } yield (delayed, recovered, asynchronous)
 
     val result: (Int, String, Int) = await(program)
@@ -125,7 +118,7 @@ class Cats_effect_3Test {
       fiber <- gate.get.flatMap(value => observed.update(_ :+ value).map(_ => value.reverse)).start
       beforeComplete <- observed.get
       _ <- gate.complete("ready")
-      joined <- fiber.join
+      joined <- fiber.joinWithNever
       afterComplete <- observed.get
     } yield (s"$beforeComplete:$joined", afterComplete)
 
@@ -136,18 +129,18 @@ class Cats_effect_3Test {
 
   @Test
   @Timeout(value = 10, unit = TimeUnit.SECONDS)
-  def semaphoreAndMVarCoordinatePermitProtectedExchange(): Unit = {
+  def semaphoreAndQueueCoordinatePermitProtectedExchange(): Unit = {
     val program: IO[(Boolean, Boolean, String, Long)] = for {
       semaphore <- Semaphore[IO](1L)
-      mailbox <- MVar[IO].empty[String]
+      mailbox <- Queue.bounded[IO, String](1)
       _ <- semaphore.acquire
       acquireWhileHeld <- semaphore.tryAcquire
       _ <- semaphore.release
       acquireAfterRelease <- semaphore.tryAcquire
       _ <- if (acquireAfterRelease) semaphore.release else IO.unit
-      producer <- semaphore.withPermit(mailbox.put("payload")).start
+      producer <- semaphore.permit.use(_ => mailbox.offer("payload")).start
       received <- mailbox.take
-      _ <- producer.join
+      _ <- producer.joinWithNever
       permits <- semaphore.available
     } yield (acquireWhileHeld, acquireAfterRelease, received, permits)
 
@@ -158,28 +151,28 @@ class Cats_effect_3Test {
 
   @Test
   @Timeout(value = 10, unit = TimeUnit.SECONDS)
-  def cancelingFiberRunsBracketCaseFinalizerWithCanceledExitCase(): Unit = {
-    val program: IO[ExitCase[Throwable]] = for {
+  def cancelingFiberRunsBracketCaseFinalizerWithCanceledOutcome(): Unit = {
+    val program: IO[OutcomeIO[Unit]] = for {
       started <- Deferred[IO, Unit]
-      canceled <- Deferred[IO, ExitCase[Throwable]]
-      fiber <- started.complete(()).bracketCase(_ => IO.never) { (_, exitCase) =>
-        canceled.complete(exitCase)
+      canceled <- Deferred[IO, OutcomeIO[Unit]]
+      fiber <- IO.unit.bracketCase(_ => started.complete(()).flatMap(_ => IO.never[Unit])) { (_, outcome) =>
+        canceled.complete(outcome).map(_ => ())
       }.start
       _ <- started.get
       _ <- fiber.cancel
-      exitCase <- canceled.get.timeoutTo(1.second, IO.raiseError(new AssertionError("cancellation finalizer did not run")))
-    } yield exitCase
+      outcome <- canceled.get.timeoutTo(1.second, IO.raiseError(new AssertionError("cancellation finalizer did not run")))
+    } yield outcome
 
-    val result: ExitCase[Throwable] = await(program)
+    val result: OutcomeIO[Unit] = await(program)
 
-    assertThat(result).isEqualTo(ExitCase.Canceled)
+    assertThat(result.fold("canceled", _ => "errored", _ => "succeeded")).isEqualTo("canceled")
   }
 
   @Test
   @Timeout(value = 10, unit = TimeUnit.SECONDS)
   def raceReturnsTheFirstCompletedEffect(): Unit = {
     val program: IO[Either[String, String]] = IO.race(
-      timer.sleep(1.second).map(_ => "slow"),
+      IO.sleep(1.second).map(_ => "slow"),
       IO.pure("fast")
     )
 
@@ -190,12 +183,12 @@ class Cats_effect_3Test {
 
   @Test
   @Timeout(value = 10, unit = TimeUnit.SECONDS)
-  def timerAndTimeoutToProduceBoundedFallbacks(): Unit = {
+  def monotonicClockAndTimeoutToProduceBoundedFallbacks(): Unit = {
     val neverCompletes: IO[Int] = IO.never
     val program: IO[(Int, Boolean)] = for {
-      before <- timer.clock.monotonic(TimeUnit.MILLISECONDS)
+      before <- IO.monotonic
       value <- neverCompletes.timeoutTo(25.millis, IO.pure(99))
-      after <- timer.clock.monotonic(TimeUnit.MILLISECONDS)
+      after <- IO.monotonic
     } yield (value, after >= before)
 
     val result: (Int, Boolean) = await(program)
@@ -205,7 +198,7 @@ class Cats_effect_3Test {
 
   @Test
   @Timeout(value = 10, unit = TimeUnit.SECONDS)
-  def contextShiftEvaluatesEffectsOnSpecifiedExecutionContext(): Unit = {
+  def evalOnEvaluatesEffectsOnSpecifiedExecutionContext(): Unit = {
     val executor: ExecutorService = Executors.newSingleThreadExecutor(new ThreadFactory {
       override def newThread(runnable: Runnable): Thread = {
         val thread: Thread = new Thread(runnable)
@@ -218,7 +211,7 @@ class Cats_effect_3Test {
 
     try {
       val program: IO[(String, String)] = for {
-        shiftedThreadName <- contextShift.evalOn(dedicatedExecutionContext)(IO(Thread.currentThread().getName))
+        shiftedThreadName <- IO(Thread.currentThread().getName).evalOn(dedicatedExecutionContext)
         resumedThreadName <- IO(Thread.currentThread().getName)
       } yield (shiftedThreadName, resumedThreadName)
 
@@ -234,13 +227,11 @@ class Cats_effect_3Test {
 
   @Test
   @Timeout(value = 10, unit = TimeUnit.SECONDS)
-  def blockerEvaluatesBlockingWorkInsideManagedResource(): Unit = {
-    val program: IO[(String, Int)] = Blocker[IO].use { blocker =>
-      for {
-        threadName <- blocker.blockOn(IO(Thread.currentThread().getName))
-        computed <- blocker.delay(21 + 21)
-      } yield (threadName, computed)
-    }
+  def ioBlockingEvaluatesBlockingWorkOnBlockingPool(): Unit = {
+    val program: IO[(String, Int)] = for {
+      threadName <- IO.blocking(Thread.currentThread().getName)
+      computed <- IO.blocking(21 + 21)
+    } yield (threadName, computed)
 
     val result: (String, Int) = await(program)
 
