@@ -111,6 +111,19 @@ public class Kotlin_test_junit5Test {
     }
 
     @Test
+    fun junit5AsserterUsesReadableDefaultMessagesWhenMessageIsOmitted(): Unit {
+        val notNullFailure = assertFailsWith<AssertionFailedError> {
+            JUnit5Asserter.assertNotNull(null, null)
+        }
+        assertContains(assertNotNull(notNullFailure.message), "actual value is null")
+
+        val nullFailure = assertFailsWith<AssertionFailedError> {
+            JUnit5Asserter.assertNull(null, "present")
+        }
+        assertContains(assertNotNull(nullFailure.message), "actual value is not null")
+    }
+
+    @Test
     fun kotlinTestAssertionsAreRoutedThroughJUnit5(): Unit {
         val sameReference = StringBuilder("kotlin-test")
         val differentReference = StringBuilder("kotlin-test")
