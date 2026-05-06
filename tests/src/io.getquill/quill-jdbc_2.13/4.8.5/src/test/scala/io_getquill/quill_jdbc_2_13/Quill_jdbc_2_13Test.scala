@@ -122,6 +122,33 @@ class Quill_jdbc_2_13Test {
   }
 
   @Test
+  def quotedJoinsComposeQueriesAcrossRelatedTables(): Unit = {
+    val departments = quote(querySchema[Department]("departments"))
+    val employees = quote(querySchema[Employee]("employees"))
+    createOrganizationTables()
+
+    context.run(departments.insertValue(lift(Department(1, "Research"))))
+    context.run(departments.insertValue(lift(Department(2, "Operations"))))
+    context.run(employees.insertValue(lift(Employee(1, 1, "Ada"))))
+    context.run(employees.insertValue(lift(Employee(2, 1, "Grace"))))
+    context.run(employees.insertValue(lift(Employee(3, 2, "Katherine"))))
+
+    val assignments: List[(String, String)] = context.run(
+      employees
+        .join(departments)
+        .on((employee, department) => employee.departmentId == department.id)
+        .sortBy { case (employee, _) => employee.name }
+        .map { case (employee, department) => (employee.name, department.name) }
+    )
+
+    assertThat(assignments.asJava).containsExactly(
+      ("Ada", "Research"),
+      ("Grace", "Research"),
+      ("Katherine", "Operations")
+    )
+  }
+
+  @Test
   def customEncodersAndDecodersAreAppliedForUserDefinedValueTypes(): Unit = {
     implicit val encodeEmail: Encoder[Email] = encoder[Email](
       Types.VARCHAR,
@@ -188,6 +215,27 @@ class Quill_jdbc_2_13Test {
     )
   }
 
+  private def createOrganizationTables(): Unit = {
+    requireSuccessfulProbe(
+      """
+        |create table departments (
+        |  id int primary key,
+        |  name varchar(64) not null
+        |)
+        |""".stripMargin
+    )
+    requireSuccessfulProbe(
+      """
+        |create table employees (
+        |  id int primary key,
+        |  department_id int not null,
+        |  name varchar(64) not null,
+        |  constraint employees_department foreign key (department_id) references departments(id)
+        |)
+        |""".stripMargin
+    )
+  }
+
   private def requireSuccessfulProbe(sql: String): Unit = {
     val result = context.probe(sql)
     assertThat(result.isSuccess).describedAs(result.failed.toOption.map(_.getMessage).getOrElse(sql)).isTrue()
@@ -210,6 +258,10 @@ object Quill_jdbc_2_13Test {
   )
 
   final case class Email(value: String)
+
+  final case class Department(id: Int, name: String)
+
+  final case class Employee(id: Int, departmentId: Int, name: String)
 
   final case class Contact(id: Int, email: Email)
 
