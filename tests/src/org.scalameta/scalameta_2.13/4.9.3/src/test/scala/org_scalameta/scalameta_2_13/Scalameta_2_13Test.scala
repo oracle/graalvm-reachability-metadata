@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 
 import scala.collection.mutable
 import scala.meta._
+import scala.meta.contrib.AssociatedComments
 import scala.meta.contrib.DocToken
 import scala.meta.contrib.ScaladocParser
 import scala.meta.parsers.Parsed
@@ -220,6 +221,41 @@ class Scalameta_2_13Test {
     assertTrue(param.body.exists(_.contains("user name")))
     assertTrue(returns.body.exists(_.contains("greeting text")))
     assertEquals(None, ScaladocParser.parseScaladoc(ordinaryComment))
+  }
+
+  @Test
+  def associateLeadingAndTrailingCommentsWithDefinitions(): Unit = {
+    val input: Input.VirtualFile = Input.VirtualFile(
+      "Comments.scala",
+      """
+        |object Comments {
+        |  // documents size calculation
+        |  val size = users.size // cached expression
+        |  val empty = users.isEmpty
+        |}
+        |""".stripMargin
+    )
+    val source: Source = parse(input.parse[Source])
+    val associatedComments: AssociatedComments = AssociatedComments(source)
+    val values: List[Defn.Val] = source match {
+      case Source(List(obj: Defn.Object)) =>
+        obj.templ.stats.collect { case value: Defn.Val => value }
+      case other =>
+        throw new AssertionError(s"Unexpected source shape: ${other.structure}")
+    }
+    val size: Defn.Val = values.find(_.pats.exists(_.syntax == "size")).getOrElse {
+      throw new AssertionError(s"Could not find size definition in ${source.structure}")
+    }
+    val empty: Defn.Val = values.find(_.pats.exists(_.syntax == "empty")).getOrElse {
+      throw new AssertionError(s"Could not find empty definition in ${source.structure}")
+    }
+
+    assertEquals(Set("// documents size calculation"), associatedComments.leading(size).map(_.text))
+    assertEquals(Set("// cached expression"), associatedComments.trailing(size).map(_.text))
+    assertTrue(associatedComments.hasComment(size))
+    assertTrue(associatedComments.leading(empty).isEmpty)
+    assertTrue(associatedComments.trailing(empty).isEmpty)
+    assertFalse(associatedComments.hasComment(empty))
   }
 
   @Test
