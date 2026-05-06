@@ -37,6 +37,9 @@ final case class DeleteValue(key: String) extends WireCommand
 
 final case class Money(cents: Long)
 
+sealed trait MetricSample
+final case class CounterSample(name: String, value: Long) extends MetricSample
+
 final case class SharedNode(label: String, ordinal: Int)
 
 final class DomainFailure(message: String) extends RuntimeException(message)
@@ -157,6 +160,26 @@ final class Boopickle_2_13Test {
     val prices: Seq[Money] = Seq(Money(199), Money(2500), Money(123456789L))
 
     assertEquals(prices, roundTrip(prices))
+  }
+
+  @Test
+  def usesCompositeTransformEntriesForPolymorphicProtocols(): Unit = {
+    implicit val metricSamplePickler: Pickler[MetricSample] = compositePickler[MetricSample]
+      .addTransform[CounterSample, (String, Long)](
+        sample => (sample.name, sample.value),
+        { case (name, value) => CounterSample(name, value) }
+      )
+
+    val samples: Vector[MetricSample] = Vector(
+      CounterSample("requests", 123L),
+      CounterSample("failures", 4L),
+      CounterSample("latency-buckets", 8L)
+    )
+
+    val decoded: Vector[MetricSample] = roundTrip(samples)
+
+    assertEquals(samples, decoded)
+    assertEquals(samples.map(_.getClass), decoded.map(_.getClass))
   }
 
   @Test
