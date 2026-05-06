@@ -218,6 +218,28 @@ class Circe_3Test {
   }
 
   @Test
+  def asJsonAlwaysReportsDeserializationErrorsEvenForUnsuccessfulResponses(): Unit = {
+    val payload: String = """{"id":"broken","name":"bad","active":true}"""
+    val backend: SyncBackendStub = SyncBackendStub.whenAnyRequest.thenRespondAdjust(
+      payload,
+      StatusCode.InternalServerError
+    )
+    val result: Either[DeserializationException, Widget] = basicRequest
+      .response(asJsonAlways[Widget])
+      .get(uri"http://example.com/error-with-invalid-body")
+      .send(backend)
+      .body
+
+    val failure: DeserializationException = assertInstanceOf(
+      classOf[DeserializationException],
+      result.swap.toOption.get
+    )
+    assertEquals(payload, failure.body)
+    assertEquals(StatusCode.InternalServerError, failure.response.code)
+    assertTrue(failure.cause.getMessage.contains("Int"))
+  }
+
+  @Test
   def asJsonEitherDecodesErrorAndSuccessBodiesUsingTheirOwnDecoders(): Unit = {
     val successBackend: SyncBackendStub = SyncBackendStub.whenAnyRequest.thenRespondAdjust(
       """{"id":4,"name":"either-success","active":true}"""
