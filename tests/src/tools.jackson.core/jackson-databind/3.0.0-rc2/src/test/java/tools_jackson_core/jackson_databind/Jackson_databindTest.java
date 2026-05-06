@@ -33,6 +33,8 @@ import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.node.ArrayNode;
@@ -144,6 +146,30 @@ public class Jackson_databindTest {
         Invoice restored = moneyMapper.readValue(json, Invoice.class);
         assertThat(restored.id()).isEqualTo("INV-1");
         assertThat(restored.total()).isEqualTo(new Money("EUR", new BigDecimal("19.95")));
+    }
+
+    @Test
+    void deserializesValueObjectsThroughAnnotatedBuilders() throws Exception {
+        ProductCatalog catalog = mapper.readValue(
+                """
+                {
+                  "name": "featured",
+                  "items": [
+                    { "code": "BK-1", "displayName": "Graph Theory", "available": true },
+                    { "code": "PN-2", "displayName": "Fountain Pen", "available": false }
+                  ]
+                }
+                """,
+                ProductCatalog.class);
+
+        assertThat(catalog.getName()).isEqualTo("featured");
+        assertThat(catalog.getItems()).hasSize(2);
+        assertThat(catalog.getItems().get(0).getCode()).isEqualTo("BK-1");
+        assertThat(catalog.getItems().get(0).getDisplayName()).isEqualTo("Graph Theory");
+        assertThat(catalog.getItems().get(0).isAvailable()).isTrue();
+        assertThat(catalog.getItems().get(1).getCode()).isEqualTo("PN-2");
+        assertThat(catalog.getItems().get(1).getDisplayName()).isEqualTo("Fountain Pen");
+        assertThat(catalog.getItems().get(1).isAvailable()).isFalse();
     }
 
     @Test
@@ -302,6 +328,96 @@ public class Jackson_databindTest {
     }
 
     public record Invoice(String id, Money total) {
+    }
+
+    @JsonDeserialize(builder = ProductCatalog.Builder.class)
+    public static final class ProductCatalog {
+        private final String name;
+        private final List<CatalogItem> items;
+
+        private ProductCatalog(Builder builder) {
+            this.name = builder.name;
+            this.items = List.copyOf(builder.items);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<CatalogItem> getItems() {
+            return items;
+        }
+
+        @JsonPOJOBuilder(withPrefix = "set")
+        public static final class Builder {
+            private String name;
+            private List<CatalogItem> items = List.of();
+
+            public Builder setName(String name) {
+                this.name = name;
+                return this;
+            }
+
+            public Builder setItems(List<CatalogItem> items) {
+                this.items = List.copyOf(items);
+                return this;
+            }
+
+            public ProductCatalog build() {
+                return new ProductCatalog(this);
+            }
+        }
+    }
+
+    @JsonDeserialize(builder = CatalogItem.Builder.class)
+    public static final class CatalogItem {
+        private final String code;
+        private final String displayName;
+        private final boolean available;
+
+        private CatalogItem(Builder builder) {
+            this.code = builder.code;
+            this.displayName = builder.displayName;
+            this.available = builder.available;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public boolean isAvailable() {
+            return available;
+        }
+
+        @JsonPOJOBuilder(buildMethodName = "create", withPrefix = "apply")
+        public static final class Builder {
+            private String code;
+            private String displayName;
+            private boolean available;
+
+            public Builder applyCode(String code) {
+                this.code = code;
+                return this;
+            }
+
+            public Builder applyDisplayName(String displayName) {
+                this.displayName = displayName;
+                return this;
+            }
+
+            public Builder applyAvailable(boolean available) {
+                this.available = available;
+                return this;
+            }
+
+            public CatalogItem create() {
+                return new CatalogItem(this);
+            }
+        }
     }
 
     public static final class Money {
