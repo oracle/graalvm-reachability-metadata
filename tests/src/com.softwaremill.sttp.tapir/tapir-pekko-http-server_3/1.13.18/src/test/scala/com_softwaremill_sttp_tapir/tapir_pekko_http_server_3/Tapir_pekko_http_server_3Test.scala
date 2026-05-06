@@ -17,6 +17,7 @@ import org.apache.pekko.stream.{Materializer, SystemMaterializer}
 import org.apache.pekko.util.ByteString
 import org.junit.jupiter.api.Assertions.{assertEquals, assertTrue}
 import org.junit.jupiter.api.Test
+import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.StatusCode
 import sttp.model.sse.ServerSentEvent
 import sttp.tapir.*
@@ -100,6 +101,35 @@ class Tapir_pekko_http_server_3Test {
       )
       assertEquals(StatusCodes.BadRequest, missingHeaderResponse.status)
       bodyAsString(missingHeaderResponse)
+    }
+  }
+
+  @Test
+  def pekkoStreamBodyProcessesRequestAndResponseChunks(): Unit = {
+    val streamingEndpoint = endpoint.post
+      .in("stream-uppercase")
+      .in(streamTextBody(PekkoStreams)(CodecFormat.TextPlain()))
+      .out(streamTextBody(PekkoStreams)(CodecFormat.TextPlain()))
+      .serverLogicSuccess { source =>
+        Future.successful(source.map(bytes => ByteString(bytes.utf8String.toUpperCase)))
+      }
+
+    withServer { system =>
+      given ExecutionContext = system.dispatcher
+      PekkoHttpServerInterpreter().toRoute(streamingEndpoint)
+    } { (baseUri, system) =>
+      given ActorSystem = system
+
+      val requestBody = Source(List(ByteString("tapir\n"), ByteString("pekko\n")))
+      val request = HttpRequest(
+        method = HttpMethods.POST,
+        uri = uri(baseUri, "/stream-uppercase"),
+        entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, requestBody)
+      )
+      val response = singleRequest(request)
+
+      assertEquals(StatusCodes.OK, response.status)
+      assertEquals("TAPIR\nPEKKO\n", bodyAsString(response))
     }
   }
 
