@@ -12,7 +12,9 @@ import cats.effect.kernel.Clock
 import cats.effect.kernel.MonadCancel
 import cats.effect.kernel.Outcome
 import cats.effect.kernel.Poll
+import cats.effect.kernel.Ref
 import cats.effect.kernel.Resource
+import cats.effect.kernel.Sync
 import cats.effect.kernel.Unique
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -208,6 +210,36 @@ class Cats_effect_kernel_3Test {
     assertNotEquals(firstToken, secondToken)
   }
 
+  @Test
+  def refSupportsAtomicUpdatesAndVersionedAccess(): Unit = {
+    given Sync[TestEffect] = Cats_effect_kernel_3Test.testEffectSync
+
+    val ref: Ref[TestEffect, Vector[String]] = Ref.of[TestEffect, Vector[String]](Vector("initial")).unsafeRun()
+
+    val previous: Vector[String] = ref.getAndSet(Vector("reset")).unsafeRun()
+    val updated: Vector[String] = ref.updateAndGet(_ :+ "next").unsafeRun()
+    val modificationResult: String = ref.modify { (current: Vector[String]) =>
+      (current :+ "committed", current.mkString(","))
+    }.unsafeRun()
+    val access: (Vector[String], Vector[String] => TestEffect[Boolean]) = ref.access.unsafeRun()
+    val snapshot: Vector[String] = access._1
+    val setIfUnchanged: Vector[String] => TestEffect[Boolean] = access._2
+    val firstAccessSet: Boolean = setIfUnchanged(snapshot :+ "access").unsafeRun()
+    val staleAccessSet: Boolean = setIfUnchanged(snapshot :+ "stale").unsafeRun()
+    val tryModificationResult: Option[String] = ref.tryModify { (current: Vector[String]) =>
+      (current :+ "try", current.lastOption.getOrElse("empty"))
+    }.unsafeRun()
+
+    assertEquals(Vector("initial"), previous)
+    assertEquals(Vector("reset", "next"), updated)
+    assertEquals("reset,next", modificationResult)
+    assertEquals(Vector("reset", "next", "committed"), snapshot)
+    assertTrue(firstAccessSet)
+    assertFalse(staleAccessSet)
+    assertEquals(Some("access"), tryModificationResult)
+    assertEquals(Vector("reset", "next", "committed", "access", "try"), ref.get.unsafeRun())
+  }
+
   private def exitCaseName(exitCase: Resource.ExitCase): String = exitCase match {
     case Resource.ExitCase.Succeeded => "succeeded"
     case Resource.ExitCase.Canceled => "canceled"
@@ -334,5 +366,46 @@ object Cats_effect_kernel_3Test {
     override def applicative: MonadCancel[TestEffect, Throwable] = testEffectMonadCancel
 
     override def unique: TestEffect[Unique.Token] = TestEffect.pure(new Unique.Token)
+  }
+
+  private val testEffectSync: Sync[TestEffect] = new Sync[TestEffect] {
+    override def rootCancelScope: CancelScope = testEffectMonadCancel.rootCancelScope
+
+    override def pure[A](value: A): TestEffect[A] = testEffectMonadCancel.pure(value)
+
+    override def map[A, B](fa: TestEffect[A])(f: A => B): TestEffect[B] = testEffectMonadCancel.map(fa)(f)
+
+    override def flatMap[A, B](fa: TestEffect[A])(f: A => TestEffect[B]): TestEffect[B] = testEffectMonadCancel.flatMap(fa)(f)
+
+    override def tailRecM[A, B](initial: A)(f: A => TestEffect[Either[A, B]]): TestEffect[B] =
+      testEffectMonadCancel.tailRecM(initial)(f)
+
+    override def raiseError[A](throwable: Throwable): TestEffect[A] = testEffectMonadCancel.raiseError(throwable)
+
+    override def handleErrorWith[A](fa: TestEffect[A])(f: Throwable => TestEffect[A]): TestEffect[A] =
+      testEffectMonadCancel.handleErrorWith(fa)(f)
+
+    override def forceR[A, B](fa: TestEffect[A])(fb: TestEffect[B]): TestEffect[B] = testEffectMonadCancel.forceR(fa)(fb)
+
+    override def uncancelable[A](body: Poll[TestEffect] => TestEffect[A]): TestEffect[A] =
+      testEffectMonadCancel.uncancelable(body)
+
+    override def canceled: TestEffect[Unit] = testEffectMonadCancel.canceled
+
+    override def onCancel[A](fa: TestEffect[A], finalizer: TestEffect[Unit]): TestEffect[A] =
+      testEffectMonadCancel.onCancel(fa, finalizer)
+
+    override def guaranteeCase[A](fa: TestEffect[A])(finalizer: Outcome[TestEffect, Throwable, A] => TestEffect[Unit]): TestEffect[A] =
+      testEffectMonadCancel.guaranteeCase(fa)(finalizer)
+
+    override def bracketCase[A, B](acquire: TestEffect[A])(use: A => TestEffect[B])(
+        release: (A, Outcome[TestEffect, Throwable, B]) => TestEffect[Unit]
+    ): TestEffect[B] = testEffectMonadCancel.bracketCase(acquire)(use)(release)
+
+    override def monotonic: TestEffect[FiniteDuration] = testEffectClock.monotonic
+
+    override def realTime: TestEffect[FiniteDuration] = testEffectClock.realTime
+
+    override def suspend[A](hint: Sync.Type)(body: => A): TestEffect[A] = TestEffect.delay(body)
   }
 }
