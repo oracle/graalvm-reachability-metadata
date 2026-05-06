@@ -193,6 +193,29 @@ class Twirl_api_2_13Test {
     assertEquals("quote\\\" slash\\/ line\\n tab\\t", StringEscapeUtils.escapeEcmaScript("quote\" slash/ line\n tab\t"))
   }
 
+  @Test
+  def stringInterpolationSupportsUserDefinedFormats(): Unit = {
+    final case class BracketedContent(override val body: String) extends Appendable[BracketedContent] with Content {
+      override val contentType: String = "text/bracketed"
+    }
+
+    object BracketedFormat extends Format[BracketedContent] {
+      override def raw(text: String): BracketedContent = BracketedContent(Formats.safe(text))
+
+      override def escape(text: String): BracketedContent = BracketedContent(s"[${Formats.safe(text)}]")
+
+      override val empty: BracketedContent = BracketedContent("")
+
+      override def fill(elements: Seq[BracketedContent]): BracketedContent = BracketedContent(elements.map(_.body).mkString)
+    }
+
+    val trusted: BracketedContent = BracketedContent("<trusted>")
+    val rendered: BracketedContent = StringContext("name=", ", trusted=", ", count=", "")
+      .interpolate(Seq("Ada & Bob", trusted, 3), BracketedFormat)
+
+    assertContent(rendered, "name=[Ada & Bob], trusted=<trusted>, count=[3]", "text/bracketed")
+  }
+
   private def assertContent(content: Content, expectedBody: String, expectedContentType: String): Unit = {
     assertEquals(expectedBody, content.body)
     assertEquals(expectedContentType, content.contentType)
