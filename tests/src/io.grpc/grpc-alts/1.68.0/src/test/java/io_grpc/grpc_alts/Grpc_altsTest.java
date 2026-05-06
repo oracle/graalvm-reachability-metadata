@@ -31,6 +31,7 @@ import io.grpc.alts.ComputeEngineChannelCredentials;
 import io.grpc.alts.GoogleDefaultChannelBuilder;
 import io.grpc.alts.GoogleDefaultChannelCredentials;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -185,6 +186,25 @@ public class Grpc_altsTest {
         Server server = builder.build();
         try {
             assertThat(server.isShutdown()).isFalse();
+        } finally {
+            server.shutdownNow();
+        }
+        assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    void altsServerBuilderStartsServerOnEphemeralPort() throws IOException, InterruptedException {
+        Server server = AltsServerBuilder.forPort(0)
+                .enableUntrustedAltsForTesting()
+                .setHandshakerAddressForTesting("localhost:1")
+                .directExecutor()
+                .handshakeTimeout(1, TimeUnit.SECONDS)
+                .build()
+                .start();
+
+        try {
+            assertThat(server.isShutdown()).isFalse();
+            assertThat(server.getPort()).isGreaterThan(0);
         } finally {
             server.shutdownNow();
         }
