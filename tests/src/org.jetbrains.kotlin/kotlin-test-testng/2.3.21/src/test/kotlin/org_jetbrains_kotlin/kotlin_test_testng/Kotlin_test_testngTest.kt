@@ -164,6 +164,39 @@ public class Kotlin_test_testngTest {
             outputDirectory.toFile().deleteRecursively()
         }
     }
+
+    @Test
+    public fun kotlinTestAnnotationSupportsTestNgExpectedExceptions(): Unit {
+        val listener = CountingTestNgListener()
+        val outputDirectory = Files.createTempDirectory("kotlin-test-testng-expected-exception-output")
+
+        try {
+            val testNg = TestNG(false)
+            testNg.setUseDefaultListeners(false)
+            testNg.setVerbose(0)
+            testNg.setOutputDirectory(outputDirectory.toString())
+            testNg.setTestClasses(arrayOf(KotlinTestTestNgExpectedExceptionSuite::class.java))
+            testNg.addListener(listener)
+
+            testNg.run()
+
+            assertThat(testNg.hasFailure()).isFalse()
+            assertThat(listener.failures).isEqualTo(0)
+            assertThat(listener.successes).isEqualTo(1)
+        } finally {
+            outputDirectory.toFile().deleteRecursively()
+        }
+    }
+}
+
+public class KotlinTestTestNgExpectedExceptionSuite {
+    @KotlinTest(
+        expectedExceptions = [IllegalArgumentException::class],
+        expectedExceptionsMessageRegExp = ".*expected marker.*",
+    )
+    public fun expectedExceptionIsTreatedAsTestSuccess(): Unit {
+        throw IllegalArgumentException("the expected marker is present")
+    }
 }
 
 public class KotlinTestTestNgAnnotatedSuite {
