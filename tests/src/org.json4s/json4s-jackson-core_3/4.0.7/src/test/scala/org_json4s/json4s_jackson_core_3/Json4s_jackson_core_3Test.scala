@@ -163,6 +163,22 @@ class Json4s_jackson_core_3Test {
   }
 
   @Test
+  def rendersJsonSetsAsJsonArrays(): Unit = {
+    val value: JObject = JObject(
+      JField("labels", JSet(Set(JString("jackson"), JString("native"), JString("scala"))))
+    )
+
+    val compacted: String = JsonMethods.compact(JsonMethods.render(value))
+    val parsed: JValue = JsonMethods.parse(compacted)
+
+    val labels: Set[JValue] = (parsed \ "labels") match {
+      case JArray(values) => values.toSet
+      case other => fail(s"Expected rendered JSet to become a JSON array, but found $other")
+    }
+    assertEquals(Set(JString("jackson"), JString("native"), JString("scala")), labels)
+  }
+
+  @Test
   def convertsBetweenJson4sAstAndJacksonJsonNodes(): Unit = {
     val ast: JObject = JObject(
       JField("id", JInt(BigInt("12345678901234567890"))),
