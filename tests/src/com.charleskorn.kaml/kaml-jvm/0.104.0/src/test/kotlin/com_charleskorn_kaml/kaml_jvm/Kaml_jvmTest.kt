@@ -14,6 +14,7 @@ import com.charleskorn.kaml.DuplicateKeyException
 import com.charleskorn.kaml.ForbiddenAnchorOrAliasException
 import com.charleskorn.kaml.IncorrectTypeException
 import com.charleskorn.kaml.MultiLineStringStyle
+import com.charleskorn.kaml.PolymorphismStyle
 import com.charleskorn.kaml.SequenceStyle
 import com.charleskorn.kaml.SingleLineStringStyle
 import com.charleskorn.kaml.UnknownPropertyException
@@ -32,6 +33,7 @@ import com.charleskorn.kaml.yamlMap
 import com.charleskorn.kaml.yamlScalar
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -45,6 +47,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import okio.Buffer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -175,6 +180,38 @@ public class Kaml_jvmTest {
         assertThat(lenientYaml.decodeFromString(ProjectSerializer, input)).isEqualTo(
             Project(displayName = "Strict project", retryCount = 2, enabled = true, notes = "checked")
         )
+    }
+
+    @Test
+    fun configuredPolymorphismSupportsYamlTagsAndTypeProperties(): Unit {
+        val module: SerializersModule = SerializersModule {
+            polymorphic(DeploymentAction::class) {
+                subclass(ScaleDeployment::class, ScaleDeploymentSerializer)
+                subclass(RestartDeployment::class, RestartDeploymentSerializer)
+            }
+        }
+        val actionsSerializer: KSerializer<List<DeploymentAction>> = ListSerializer(PolymorphicSerializer(DeploymentAction::class))
+        val actions: List<DeploymentAction> = listOf(
+            ScaleDeployment(replicas = 4),
+            RestartDeployment(service = "api")
+        )
+
+        val tagYaml: Yaml = Yaml(serializersModule = module)
+        val tagEncoded: String = tagYaml.encodeToString(actionsSerializer, actions)
+        val propertyYaml: Yaml = Yaml(
+            serializersModule = module,
+            configuration = YamlConfiguration(
+                polymorphismStyle = PolymorphismStyle.Property,
+                polymorphismPropertyName = "kind"
+            )
+        )
+        val propertyEncoded: String = propertyYaml.encodeToString(actionsSerializer, actions)
+
+        assertThat(tagEncoded).contains("!<tests.ScaleDeployment>")
+        assertThat(tagYaml.decodeFromString(actionsSerializer, tagEncoded)).isEqualTo(actions)
+        assertThat(propertyEncoded).contains("kind: \"tests.ScaleDeployment\"")
+        assertThat(propertyEncoded).contains("kind: \"tests.RestartDeployment\"")
+        assertThat(propertyYaml.decodeFromString(actionsSerializer, propertyEncoded)).isEqualTo(actions)
     }
 
     @Test
@@ -319,6 +356,56 @@ private object ProjectSerializer : KSerializer<Project> {
             enabled = requireNotNull(enabled) { "enabled is required" },
             notes = requireNotNull(notes) { "notes is required" }
         )
+    }
+}
+
+private sealed interface DeploymentAction
+
+private data class ScaleDeployment(val replicas: Int) : DeploymentAction
+
+private data class RestartDeployment(val service: String) : DeploymentAction
+
+private object ScaleDeploymentSerializer : KSerializer<ScaleDeployment> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.ScaleDeployment") {
+        element<Int>("replicas")
+    }
+
+    override fun serialize(encoder: Encoder, value: ScaleDeployment): Unit = encoder.encodeStructure(descriptor) {
+        encodeIntElement(descriptor, 0, value.replicas)
+    }
+
+    override fun deserialize(decoder: Decoder): ScaleDeployment = decoder.decodeStructure(descriptor) {
+        var replicas: Int? = null
+        while (true) {
+            when (val index: Int = decodeElementIndex(descriptor)) {
+                0 -> replicas = decodeIntElement(descriptor, 0)
+                CompositeDecoder.DECODE_DONE -> break
+                else -> error("Unexpected element index $index")
+            }
+        }
+        ScaleDeployment(replicas = requireNotNull(replicas) { "replicas is required" })
+    }
+}
+
+private object RestartDeploymentSerializer : KSerializer<RestartDeployment> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.RestartDeployment") {
+        element<String>("service")
+    }
+
+    override fun serialize(encoder: Encoder, value: RestartDeployment): Unit = encoder.encodeStructure(descriptor) {
+        encodeStringElement(descriptor, 0, value.service)
+    }
+
+    override fun deserialize(decoder: Decoder): RestartDeployment = decoder.decodeStructure(descriptor) {
+        var service: String? = null
+        while (true) {
+            when (val index: Int = decodeElementIndex(descriptor)) {
+                0 -> service = decodeStringElement(descriptor, 0)
+                CompositeDecoder.DECODE_DONE -> break
+                else -> error("Unexpected element index $index")
+            }
+        }
+        RestartDeployment(service = requireNotNull(service) { "service is required" })
     }
 }
 
