@@ -25,6 +25,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
 public class KtorServerStatusPagesJvmTest {
@@ -95,6 +96,41 @@ public class KtorServerStatusPagesJvmTest {
         assertThat(goneResponse.status).isEqualTo(HttpStatusCode.OK)
         assertThat(goneResponse.headers["X-Mapped-Status"]).isEqualTo("410")
         assertThat(goneResponse.bodyAsText()).isEqualTo("mapped:410:Gone")
+    }
+
+    @Test
+    fun statusHandlerResponseDoesNotTriggerAnotherStatusHandler(): Unit = testApplication {
+        val okHandlerCalls: AtomicInteger = AtomicInteger()
+
+        application {
+            install(StatusPages) {
+                status(HttpStatusCode.NotFound) { call, status ->
+                    call.response.headers.append("X-Original-Status", status.value.toString())
+                    call.respondText(
+                        text = "handled without recursion",
+                        status = HttpStatusCode.OK,
+                    )
+                }
+                status(HttpStatusCode.OK) { call, _ ->
+                    okHandlerCalls.incrementAndGet()
+                    call.respondText(
+                        text = "recursive handler should not run",
+                        status = HttpStatusCode.Accepted,
+                    )
+                }
+            }
+            routing {
+                get("/recursion-guarded-status") {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+        }
+
+        val response = client.get("/recursion-guarded-status")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.headers["X-Original-Status"]).isEqualTo("404")
+        assertThat(response.bodyAsText()).isEqualTo("handled without recursion")
+        assertThat(okHandlerCalls.get()).isZero()
     }
 
     @Test
