@@ -13,6 +13,10 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-common:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-script-runtime:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
@@ -25,6 +29,15 @@ compileTestKotlin {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.addAll([
+                '--exclude-config',
+                '.*kotlin-compiler-embeddable.*',
+                'META-INF/native-image/org.jline/.*'
+            ])
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
