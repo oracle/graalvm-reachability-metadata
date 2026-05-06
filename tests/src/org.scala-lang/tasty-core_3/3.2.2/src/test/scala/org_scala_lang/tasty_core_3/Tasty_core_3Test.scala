@@ -123,6 +123,24 @@ class Tasty_core_3Test {
   }
 
   @Test
+  def readerComputesLengthDelimitedEndAddressesWithLogicalBase(): Unit = {
+    val bytes: Array[Byte] = Array[Byte](0, 0, (3 | 0x80).toByte, 10, 11, 12, 99)
+    val reader: TastyReader = new TastyReader(bytes, 2, bytes.length, 2)
+
+    val payloadEnd: Addr = reader.readEnd()
+
+    assertThat(reader.startAddr).isEqualTo(Addr(0))
+    assertThat(reader.currentAddr).isEqualTo(Addr(1))
+    assertThat(payloadEnd).isEqualTo(Addr(4))
+
+    val payload: List[Int] = reader.until(payloadEnd)(reader.readByte())
+    assertThat(payload.asJava).containsExactly(10, 11, 12)
+    assertThat(reader.currentAddr).isEqualTo(payloadEnd)
+    assertThat(reader.readByte()).isEqualTo(99)
+    assertThat(reader.isAtEnd).isTrue()
+  }
+
+  @Test
   def validHeaderCanBeReadAsUuidOnlyOrFullProduct(): Unit = {
     val uuid: UUID = new UUID(0x0123456789ABCDEFL, 0x0FEDCBA987654321L)
     val toolingVersion: String = "scala-test-tool"
