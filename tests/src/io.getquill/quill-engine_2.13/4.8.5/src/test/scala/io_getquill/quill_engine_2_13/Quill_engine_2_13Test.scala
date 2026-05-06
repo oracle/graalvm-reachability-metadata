@@ -31,7 +31,9 @@ import io.getquill.ast.EqualityOperator
 import io.getquill.ast.Filter
 import io.getquill.ast.Ident
 import io.getquill.ast.Infix
+import io.getquill.ast.InnerJoin
 import io.getquill.ast.Insert
+import io.getquill.ast.Join
 import io.getquill.ast.Map
 import io.getquill.ast.NumericOperator
 import io.getquill.ast.Property
@@ -60,7 +62,16 @@ class Quill_engine_2_13Test {
     "active" -> Quat.BooleanValue
   )
 
+  private val addressQuat: Quat.Product = Quat.Product(
+    "Address",
+    "id" -> Quat.Value,
+    "personId" -> Quat.Value,
+    "city" -> Quat.Value
+  )
+
   private def person: Entity = Entity("Person", Nil, personQuat)
+
+  private def address: Entity = Entity("Address", Nil, addressQuat)
 
   private def translateSql(ast: io.getquill.ast.Ast, naming: NamingStrategy = Literal): String = {
     implicit val implicitNaming: NamingStrategy = naming
@@ -244,6 +255,32 @@ class Quill_engine_2_13Test {
     val countAdults: Aggregation = Aggregation(AggregationOperator.size, adultPeople)
     assertThat(translateSql(countAdults))
       .isEqualTo("SELECT COUNT(p.*) FROM Person p WHERE p.age > 21")
+  }
+
+  @Test
+  def mirrorDialectsRenderInnerJoinsWithBothSidesAvailable(): Unit = {
+    implicit val naming: NamingStrategy = Literal
+    val p: Ident = Ident("p", personQuat)
+    val a: Ident = Ident("a", addressQuat)
+    val join: Join = Join(
+      InnerJoin,
+      person,
+      address,
+      p,
+      a,
+      BinaryOperation(Property(p, "id"), EqualityOperator.`_==`, Property(a, "personId"))
+    )
+    val context: IdiomContext = IdiomContext(TranspileConfig.Empty, IdiomContext.QueryType.Select)
+
+    assertThat(MirrorIdiom.translate(join, join.quat, ExecutionType.Static, context)._2.toString)
+      .isEqualTo("""querySchema("Person").join(querySchema("Address")).on((p, a) => p.id == a.personId)""")
+
+    val sql: String = translateSql(join)
+    assertThat(sql)
+      .contains("FROM Person p INNER JOIN Address a ON p.id = a.personId")
+    assertThat(sql)
+      .contains("p.firstName")
+      .contains("a.city")
   }
 
   @Test
