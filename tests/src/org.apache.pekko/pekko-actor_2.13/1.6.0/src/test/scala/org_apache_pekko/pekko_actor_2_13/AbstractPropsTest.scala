@@ -23,12 +23,10 @@ class AbstractPropsTest {
   }
 
   @Test
-  def acceptsCreatorClassWithOnlyPrivateConstructors(): Unit = {
-    val props: Props = Props.create(
-      classOf[AbstractPropsTest.SilentActor],
-      AbstractPropsTest.hiddenCreator())
+  def acceptsCreatorClassWithNoPublicConstructors(): Unit = {
+    val props: Props = AbstractPropsPrivateCreatorProbe.createPropsWithPackagePrivateCreator()
 
-    assertThat(props.actorClass()).isEqualTo(classOf[AbstractPropsTest.SilentActor])
+    assertThat(props.actorClass()).isEqualTo(AbstractPropsPrivateCreatorProbe.actorClass())
   }
 }
 
@@ -41,13 +39,4 @@ object AbstractPropsTest {
     override def create(): SilentActor = new SilentActor
   }
 
-  def hiddenCreator(): Creator[SilentActor] = HiddenCreator.create()
-
-  private final class HiddenCreator private () extends Creator[SilentActor] {
-    override def create(): SilentActor = new SilentActor
-  }
-
-  private object HiddenCreator {
-    def create(): Creator[SilentActor] = new HiddenCreator
-  }
 }
