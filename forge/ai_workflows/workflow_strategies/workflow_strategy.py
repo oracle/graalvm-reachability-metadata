@@ -185,6 +185,7 @@ class WorkflowStrategy(ABC):
                 stage_name: str,
                 command_runner: Callable[[], str],
                 reproduction_command: str,
+                command_env: dict[str, str] | None,
         ) -> str:
             log_stage("post-generation-test", f"Running {stage_name} for {library}")
             test_output = command_runner()
@@ -193,10 +194,13 @@ class WorkflowStrategy(ABC):
                 return RUN_STATUS_SUCCESS
 
             log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
+            codex_env = gradle_command_environment(repo_path, command_env)
             codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
                 repo_path,
                 library,
                 reproduction_command=reproduction_command,
+                graalvm_home=codex_env.get("GRAALVM_HOME"),
+                base_env=command_env,
             )
             recovery_test_output = test_output
             if not codex_timed_out and codex_rc == 0:
@@ -240,6 +244,7 @@ class WorkflowStrategy(ABC):
             "current-defaults latest GRAALVM test",
             lambda: self._run_command_with_env(test_cmd),
             test_cmd,
+            None,
         )
         if regular_status == RUN_STATUS_FAILURE:
             return RUN_STATUS_FAILURE
@@ -252,6 +257,7 @@ class WorkflowStrategy(ABC):
             "future-defaults latest GRAALVM test",
             lambda: self._run_command_with_env(test_cmd, future_defaults_env),
             f"GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all {test_cmd}",
+            future_defaults_env,
         )
         if future_defaults_status == RUN_STATUS_FAILURE:
             return RUN_STATUS_FAILURE
