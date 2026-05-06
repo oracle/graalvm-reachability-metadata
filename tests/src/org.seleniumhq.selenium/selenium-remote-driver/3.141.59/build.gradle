@@ -15,6 +15,13 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.addAll([
+        '--module-path', "${System.getenv('GRAALVM_HOME')}/jmods",
+        '--add-modules', 'org.graalvm.nativeimage'
+    ])
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
