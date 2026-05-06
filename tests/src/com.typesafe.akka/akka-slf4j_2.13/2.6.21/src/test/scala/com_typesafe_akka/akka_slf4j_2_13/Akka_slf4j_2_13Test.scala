@@ -13,6 +13,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
 import akka.actor.Actor
+import akka.actor.ActorRef
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.event.DummyClassForStringSources
@@ -21,6 +22,7 @@ import akka.event.Logging
 import akka.event.slf4j.Logger
 import akka.event.slf4j.SLF4JLogging
 import akka.event.slf4j.Slf4jLogMarker
+import akka.event.slf4j.Slf4jLogger
 import akka.event.slf4j.Slf4jLoggingFilter
 import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -103,6 +105,21 @@ class Akka_slf4j_2_13Test {
   }
 
   @Test
+  def slf4jLoggerAcknowledgesInitializationRequests(): Unit = {
+    val latch = new CountDownLatch(1)
+    val system = ActorSystem(uniqueSystemName("Slf4jLoggerInitialization"))
+
+    try {
+      val logger = system.actorOf(Props(new Slf4jLogger), "slf4j-logger")
+      system.actorOf(Props(new LoggerInitializationRequester(logger, latch)), "logger-initialization-requester")
+
+      assertThat(latch.await(10, TimeUnit.SECONDS)).isTrue
+    } finally {
+      Await.result(system.terminate(), 10.seconds)
+    }
+  }
+
+  @Test
   def configuredSlf4jLoggerConsumesAkkaLogEventsWithMarkersMdcAndCauses(): Unit = {
     val config = ConfigFactory.parseString(
       """
@@ -157,6 +174,18 @@ class Akka_slf4j_2_13Test {
       logger.warn("warn through SLF4JLogging")
       logger.error("error through SLF4JLogging")
       true
+    }
+  }
+
+  private final class LoggerInitializationRequester(logger: ActorRef, latch: CountDownLatch) extends Actor {
+    override def preStart(): Unit = {
+      logger.tell(Logging.InitializeLogger(context.system.eventStream), self)
+    }
+
+    override def receive: Receive = {
+      case Logging.LoggerInitialized =>
+        latch.countDown()
+        context.stop(self)
     }
   }
 
