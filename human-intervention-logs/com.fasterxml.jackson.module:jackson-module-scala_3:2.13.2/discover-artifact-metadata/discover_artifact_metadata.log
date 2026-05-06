@@ -1,0 +1,1497 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfcee-b231-7b51-a1ba-f83f4a36cc49
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.13.2" when "$version$" is replaced with "2.13.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+- Set "coordinates" to "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.13.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the Jackson Scala module repository, then patch the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+{
+  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "jackson-module-scala" .' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ exited 1 in 0ms:
+web search: 
+web search: com.fasterxml.jackson.module jackson-module-scala_3 2.13.2 maven pom scm tag
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2.pom
+codex
+The local metadata file only has coordinates right now. Maven Central and Scala Index both identify this as the Scala 3 build of `jackson-module-scala`; I’m checking the published POM and artifacts next so the source/test URLs prefer Maven when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fasterxml.jackson.module</groupId>
+    <artifactId>jackson-module-scala_3</artifactId>
+    <packaging>bundle</packaging>
+    <description>jackson-module-scala</description>
+    <version>2.13.2</version>
+    <name>jackson-module-scala</name>
+    <organization>
+        <name>com.fasterxml.jackson.module</name>
+    </organization>
+    <scm>
+        <url>https://github.com/FasterXML/jackson-module-scala</url>
+        <connection>scm:git:https://github.com/FasterXML/jackson-module-scala.git</connection>
+        <developerConnection>scm:git:git@github.com:FasterXML/jackson-module-scala.git</developerConnection>
+    </scm>
+    <url>http://wiki.fasterxml.com/JacksonModuleScala</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>tatu</id>
+            <name>Tatu Saloranta</name>
+            <email>tatu@fasterxml.com</email>
+        </developer>
+        <developer>
+            <id>christopher</id>
+            <name>Christopher Currie</name>
+            <email>christopher@currie.com</email>
+        </developer>
+        <developer>
+            <id>mbknor</id>
+            <name>Morten Kjetland</name>
+            <email>mbk@kjetland.com</email>
+        </developer>
+        <developer>
+            <id>pjfanning</id>
+            <name>PJ Fanning</name>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Nathaniel Bauernfeind</name>
+        </contributor>
+        <contributor>
+            <name>Anton Panasenko</name>
+        </contributor>
+    </contributors>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <version>2.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>2.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-guava</artifactId>
+            <version>2.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>2.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jsonSchema</artifactId>
+            <version>2.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>1.6.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.10</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/FasterXML/jackson-module-scala/git/refs/tags/jackson-module-scala-2.13.2' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 304ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar" title="jackson-module-scala_3-2.13.2-javadoc.jar">jackson-module-scala_3-2.13.2-javadoc.jar</a>         2022-03-07 01:31    824704      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.asc" title="jackson-module-scala_3-2.13.2-javadoc.jar.asc">jackson-module-scala_3-2.13.2-javadoc.jar.asc</a>     2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.asc.md5" title="jackson-module-scala_3-2.13.2-javadoc.jar.asc.md5">jackson-module-scala_3-2.13.2-javadoc.jar.asc...</a>  2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.asc.sha1" title="jackson-module-scala_3-2.13.2-javadoc.jar.asc.sha1">jackson-module-scala_3-2.13.2-javadoc.jar.asc...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.md5" title="jackson-module-scala_3-2.13.2-javadoc.jar.md5">jackson-module-scala_3-2.13.2-javadoc.jar.md5</a>     2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.sha1" title="jackson-module-scala_3-2.13.2-javadoc.jar.sha1">jackson-module-scala_3-2.13.2-javadoc.jar.sha...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2-sources.jar" title="jackson-module-scala_3-2.13.2-sources.jar">jackson-module-scala_3-2.13.2-sources.jar</a>         2022-03-07 01:31     61754      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.asc" title="jackson-module-scala_3-2.13.2-sources.jar.asc">jackson-module-scala_3-2.13.2-sources.jar.asc</a>     2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.asc.md5" title="jackson-module-scala_3-2.13.2-sources.jar.asc.md5">jackson-module-scala_3-2.13.2-sources.jar.asc...</a>  2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.asc.sha1" title="jackson-module-scala_3-2.13.2-sources.jar.asc.sha1">jackson-module-scala_3-2.13.2-sources.jar.asc...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.md5" title="jackson-module-scala_3-2.13.2-sources.jar.md5">jackson-module-scala_3-2.13.2-sources.jar.md5</a>     2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.sha1" title="jackson-module-scala_3-2.13.2-sources.jar.sha1">jackson-module-scala_3-2.13.2-sources.jar.sha...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.jar" title="jackson-module-scala_3-2.13.2.jar">jackson-module-scala_3-2.13.2.jar</a>                 2022-03-07 01:31    584013      
+<a href="jackson-module-scala_3-2.13.2.jar.asc" title="jackson-module-scala_3-2.13.2.jar.asc">jackson-module-scala_3-2.13.2.jar.asc</a>             2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2.jar.asc.md5" title="jackson-module-scala_3-2.13.2.jar.asc.md5">jackson-module-scala_3-2.13.2.jar.asc.md5</a>         2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.jar.asc.sha1" title="jackson-module-scala_3-2.13.2.jar.asc.sha1">jackson-module-scala_3-2.13.2.jar.asc.sha1</a>        2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.jar.md5" title="jackson-module-scala_3-2.13.2.jar.md5">jackson-module-scala_3-2.13.2.jar.md5</a>             2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.jar.sha1" title="jackson-module-scala_3-2.13.2.jar.sha1">jackson-module-scala_3-2.13.2.jar.sha1</a>            2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.pom" title="jackson-module-scala_3-2.13.2.pom">jackson-module-scala_3-2.13.2.pom</a>                 2022-03-07 01:31      4855      
+<a href="jackson-module-scala_3-2.13.2.pom.asc" title="jackson-module-scala_3-2.13.2.pom.asc">jackson-module-scala_3-2.13.2.pom.asc</a>             2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2.pom.asc.md5" title="jackson-module-scala_3-2.13.2.pom.asc.md5">jackson-module-scala_3-2.13.2.pom.asc.md5</a>         2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.pom.asc.sha1" title="jackson-module-scala_3-2.13.2.pom.asc.sha1">jackson-module-scala_3-2.13.2.pom.asc.sha1</a>        2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.pom.md5" title="jackson-module-scala_3-2.13.2.pom.md5">jackson-module-scala_3-2.13.2.pom.md5</a>             2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.pom.sha1" title="jackson-module-scala_3-2.13.2.pom.sha1">jackson-module-scala_3-2.13.2.pom.sha1</a>            2022-03-07 01:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 220ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/FasterXML/jackson-module-scala/tags?per_page=100 | rg -n '2\\.13\\.2|name'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2-sources.jar -o /tmp/jackson-module-scala_3-2.13.2-sources.jar && jar tf /tmp/jackson-module-scala_3-2.13.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2-javadoc.jar -o /tmp/jackson-module-scala_3-2.13.2-javadoc.jar && jar tf /tmp/jackson-module-scala_3-2.13.2-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 271ms:
+3:    "name": "v3.1.3",
+13:    "name": "v3.1.2",
+23:    "name": "v3.1.1",
+33:    "name": "v3.1.0",
+43:    "name": "v3.1.0-rc1",
+53:    "name": "v3.0.4",
+63:    "name": "v3.0.3",
+73:    "name": "v3.0.2",
+83:    "name": "v3.0.1",
+93:    "name": "v3.0.0",
+103:    "name": "v3.0.0-rc10",
+113:    "name": "v3.0.0-rc9",
+123:    "name": "v3.0.0-rc8",
+133:    "name": "v3.0.0-rc7",
+143:    "name": "v3.0.0-rc6",
+153:    "name": "v3.0.0-rc5",
+163:    "name": "v3.0.0-rc4",
+173:    "name": "v3.0.0-rc3",
+183:    "name": "v3.0.0-rc2",
+193:    "name": "v3.0.0-rc1",
+203:    "name": "v2.21.3",
+213:    "name": "v2.21.2",
+223:    "name": "v2.21.1",
+233:    "name": "v2.21.0",
+243:    "name": "v2.20.2",
+253:    "name": "v2.20.1",
+263:    "name": "v2.20.0",
+273:    "name": "v2.20.0-rc1",
+283:    "name": "v2.19.4",
+293:    "name": "v2.19.3",
+303:    "name": "v2.19.2",
+313:    "name": "v2.19.1",
+323:    "name": "v2.19.0",
+333:    "name": "v2.19.0-rc2",
+343:    "name": "v2.18.7",
+353:    "name": "v2.18.6",
+363:    "name": "v2.18.5",
+373:    "name": "v2.18.4",
+383:    "name": "v2.18.3",
+393:    "name": "v2.18.2",
+403:    "name": "v2.18.1",
+413:    "name": "v2.18.0",
+423:    "name": "v2.18.0-rc1",
+433:    "name": "v2.17.3",
+443:    "name": "v2.17.2",
+453:    "name": "v2.17.1",
+463:    "name": "v2.17.0",
+473:    "name": "v2.17.0-rc1",
+483:    "name": "v2.16.2",
+493:    "name": "v2.16.1",
+503:    "name": "v2.16.0",
+513:    "name": "v2.16.0-rc1",
+523:    "name": "v2.15.4",
+533:    "name": "v2.15.3",
+543:    "name": "v2.15.2",
+553:    "name": "v2.15.1",
+563:    "name": "v2.15.0",
+573:    "name": "v2.15.0-rc3",
+583:    "name": "v2.15.0-rc2",
+593:    "name": "v2.15.0-rc1",
+603:    "name": "v2.14.3",
+613:    "name": "v2.14.2",
+623:    "name": "v2.14.1",
+633:    "name": "v2.14.0",
+643:    "name": "v2.14.0-rc3",
+653:    "name": "v2.14.0-rc2",
+663:    "name": "v2.14.0-rc1",
+673:    "name": "v2.13.5",
+683:    "name": "v2.13.4",
+693:    "name": "v2.13.3",
+703:    "name": "v2.13.2",
+704:    "zipball_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/zipball/refs/tags/v2.13.2",
+705:    "tarball_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/tarball/refs/tags/v2.13.2",
+713:    "name": "v2.13.1",
+723:    "name": "v2.13.0",
+733:    "name": "v2.13.0-rc3-preview2",
+743:    "name": "v2.13.0-rc3-preview",
+753:    "name": "v2.13.0-rc2-preview2",
+763:    "name": "v2.13.0-rc2-preview",
+773:    "name": "v2.12.7-scala_2.10",
+783:    "name": "v2.3.13",
+793:    "name": "jackson-module-scala-2.13.0-rc2",
+803:    "name": "jackson-module-scala-2.13.0-rc1",
+813:    "name": "jackson-module-scala-2.12.7",
+823:    "name": "jackson-module-scala-2.12.6",
+833:    "name": "jackson-module-scala-2.12.5",
+843:    "name": "jackson-module-scala-2.12.4",
+853:    "name": "jackson-module-scala-2.12.3",
+863:    "name": "jackson-module-scala-2.12.2",
+873:    "name": "jackson-module-scala-2.12.1",
+883:    "name": "jackson-module-scala-2.12.0",
+893:    "name": "jackson-module-scala-2.12.0-rc2",
+903:    "name": "jackson-module-scala-2.12.0-rc1",
+913:    "name": "jackson-module-scala-2.11.4",
+923:    "name": "jackson-module-scala-2.11.3",
+933:    "name": "jackson-module-scala-2.11.2",
+943:    "name": "jackson-module-scala-2.11.1",
+953:    "name": "jackson-module-scala-2.11.0",
+963:    "name": "jackson-module-scala-2.11.0.rc1",
+973:    "name": "jackson-module-scala-2.10.5",
+983:    "name": "jackson-module-scala-2.10.4",
+993:    "name": "jackson-module-scala-2.10.3",
+
+ succeeded in 574ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/services/
+com/
+com/fasterxml/
+com/fasterxml/jackson/
+com/fasterxml/jackson/module/
+com/fasterxml/jackson/module/scala/
+com/fasterxml/jackson/module/scala/deser/
+com/fasterxml/jackson/module/scala/experimental/
+com/fasterxml/jackson/module/scala/introspect/
+com/fasterxml/jackson/module/scala/modifiers/
+com/fasterxml/jackson/module/scala/ser/
+com/fasterxml/jackson/module/scala/util/
+META-INF/LICENSE
+META-INF/services/com.fasterxml.jackson.databind.Module
+com/fasterxml/jackson/module/scala/ClassTagExtensions.scala
+com/fasterxml/jackson/module/scala/DefaultScalaModule.scala
+com/fasterxml/jackson/module/scala/EitherModule.scala
+com/fasterxml/jackson/module/scala/EnumerationModule.scala
+com/fasterxml/jackson/module/scala/IterableModule.scala
+com/fasterxml/jackson/module/scala/IteratorModule.scala
+com/fasterxml/jackson/module/scala/JacksonModule.scala
+com/fasterxml/jackson/module/scala/JsonScalaEnumeration.java
+com/fasterxml/jackson/module/scala/MapModule.scala
+com/fasterxml/jackson/module/scala/OptionModule.scala
+com/fasterxml/jackson/module/scala/RequiredPropertiesSchemaModule.scala
+com/fasterxml/jackson/module/scala/SeqModule.scala
+com/fasterxml/jackson/module/scala/SetModule.scala
+com/fasterxml/jackson/module/scala/SymbolModule.scala
+com/fasterxml/jackson/module/scala/TupleModule.scala
+com/fasterxml/jackson/module/scala/deser/EitherDeserializer.scala
+com/fasterxml/jackson/module/scala/deser/EnumerationDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/GenericFactoryDeserializerResolver.scala
+com/fasterxml/jackson/module/scala/deser/GenericMapFactoryDeserializerResolver.scala
+com/fasterxml/jackson/module/scala/deser/OptionDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/ScalaNumberDeserializersModule.scala
+com/fasterxml/jackson/module/scala/deser/ScalaObjectDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/SeqDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/SortedMapDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/SortedSetDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/SymbolDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/TupleDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/UnsortedMapDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/UnsortedSetDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/UntypedObjectDeserializerModule.scala
+com/fasterxml/jackson/module/scala/deser/package.scala
+com/fasterxml/jackson/module/scala/experimental/RequiredPropertiesSchemaModule.scala
+com/fasterxml/jackson/module/scala/introspect/BeanDescriptor.scala
+com/fasterxml/jackson/module/scala/introspect/BeanIntrospector.scala
+com/fasterxml/jackson/module/scala/introspect/ClassHolder.scala
+com/fasterxml/jackson/module/scala/introspect/JavaAnnotationIntrospector.scala
+com/fasterxml/jackson/module/scala/introspect/JavaParameterIntrospector.scala
+com/fasterxml/jackson/module/scala/introspect/LazyListSupport.scala
+com/fasterxml/jackson/module/scala/introspect/OrderingLocator.scala
+com/fasterxml/jackson/module/scala/introspect/PropertyDescriptor.scala
+com/fasterxml/jackson/module/scala/introspect/ScalaAnnotationIntrospectorModule.scala
+com/fasterxml/jackson/module/scala/modifiers/EitherTypeModifierModule.scala
+com/fasterxml/jackson/module/scala/modifiers/IterableTypeModifierModule.scala
+com/fasterxml/jackson/module/scala/modifiers/IteratorTypeModifierModule.scala
+com/fasterxml/jackson/module/scala/modifiers/MapTypeModifierModule.scala
+com/fasterxml/jackson/module/scala/modifiers/OptionTypeModifierModule.scala
+com/fasterxml/jackson/module/scala/modifiers/ScalaTypeModifier.scala
+com/fasterxml/jackson/module/scala/package.scala
+com/fasterxml/jackson/module/scala/ser/EitherSerializer.scala
+com/fasterxml/jackson/module/scala/ser/EnumerationSerializerModule.scala
+com/fasterxml/jackson/module/scala/ser/IterableSerializerModule.scala
+com/fasterxml/jackson/module/scala/ser/IteratorSerializerModule.scala
+com/fasterxml/jackson/module/scala/ser/MapSerializerModule.scala
+com/fasterxml/jackson/module/scala/ser/OptionSerializerModule.scala
+com/fasterxml/jackson/module/scala/ser/ScalaIterableSerializer.scala
+com/fasterxml/jackson/module/scala/ser/ScalaIteratorSerializer.scala
+com/fasterxml/jackson/module/scala/ser/SymbolSerializerModule.scala
+com/fasterxml/jackson/module/scala/ser/TupleSerializerModule.scala
+com/fasterxml/jackson/module/scala/util/Classes.scala
+com/fasterxml/jackson/module/scala/util/EnumResolver.scala
+com/fasterxml/jackson/module/scala/util/Implicits.scala
+com/fasterxml/jackson/module/scala/util/Options.scala
+com/fasterxml/jackson/module/scala/util/PimpedType.scala
+com/fasterxml/jackson/module/scala/util/Strings.scala
+com/fasterxml/jackson/module/scala/util/TastyUtil.scala
+
+ succeeded in 705ms:
+META-INF/MANIFEST.MF
+api/
+api/com/
+api/com/fasterxml/
+api/com/fasterxml/jackson/
+api/com/fasterxml/jackson/module/
+api/com/fasterxml/jackson/module/scala/
+api/com/fasterxml/jackson/module/scala/deser/
+api/com/fasterxml/jackson/module/scala/experimental/
+api/com/fasterxml/jackson/module/scala/introspect/
+api/com/fasterxml/jackson/module/scala/modifiers/
+api/com/fasterxml/jackson/module/scala/ser/
+api/com/fasterxml/jackson/module/scala/util/
+docs/
+fonts/
+hljs/
+images/
+scripts/
+scripts/common/
+scripts/components/
+styles/
+api/com/fasterxml/jackson/module/scala.html
+api/com/fasterxml/jackson/module/scala/ClassTagExtensions$$Mixin.html
+api/com/fasterxml/jackson/module/scala/ClassTagExtensions$.html
+api/com/fasterxml/jackson/module/scala/ClassTagExtensions.html
+api/com/fasterxml/jackson/module/scala/DefaultRequiredAnnotationIntrospector$.html
+api/com/fasterxml/jackson/module/scala/DefaultScalaModule$.html
+api/com/fasterxml/jackson/module/scala/DefaultScalaModule.html
+api/com/fasterxml/jackson/module/scala/EitherModule.html
+api/com/fasterxml/jackson/module/scala/EnumerationModule.html
+api/com/fasterxml/jackson/module/scala/IterableModule.html
+api/com/fasterxml/jackson/module/scala/IteratorModule.html
+api/com/fasterxml/jackson/module/scala/JacksonModule$.html
+api/com/fasterxml/jackson/module/scala/JacksonModule.html
+api/com/fasterxml/jackson/module/scala/JavaTypeable$.html
+api/com/fasterxml/jackson/module/scala/JavaTypeable.html
+api/com/fasterxml/jackson/module/scala/MapModule.html
+api/com/fasterxml/jackson/module/scala/OptionModule.html
+api/com/fasterxml/jackson/module/scala/RequiredPropertiesSchemaModule.html
+api/com/fasterxml/jackson/module/scala/SeqModule.html
+api/com/fasterxml/jackson/module/scala/SetModule.html
+api/com/fasterxml/jackson/module/scala/SymbolModule.html
+api/com/fasterxml/jackson/module/scala/TupleModule.html
+api/com/fasterxml/jackson/module/scala/VersionExtractor$.html
+api/com/fasterxml/jackson/module/scala/deser.html
+api/com/fasterxml/jackson/module/scala/deser/EitherDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/EnumerationDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/GenericFactoryDeserializerResolver.html
+api/com/fasterxml/jackson/module/scala/deser/GenericMapFactoryDeserializerResolver.html
+api/com/fasterxml/jackson/module/scala/deser/OptionDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/ScalaNumberDeserializersModule.html
+api/com/fasterxml/jackson/module/scala/deser/ScalaObjectDeserializerModule$.html
+api/com/fasterxml/jackson/module/scala/deser/ScalaObjectDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/SeqDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/SortedMapDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/SortedSetDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/SymbolDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/TupleDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/UnsortedMapDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/UnsortedSetDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/UntypedObjectDeserializerModule.html
+api/com/fasterxml/jackson/module/scala/deser/overrides$.html
+api/com/fasterxml/jackson/module/scala/experimental.html
+api/com/fasterxml/jackson/module/scala/experimental/DefaultRequiredAnnotationIntrospector$.html
+api/com/fasterxml/jackson/module/scala/experimental/RequiredPropertiesSchemaModule.html
+api/com/fasterxml/jackson/module/scala/introspect.html
+api/com/fasterxml/jackson/module/scala/introspect/BeanDescriptor.html
+api/com/fasterxml/jackson/module/scala/introspect/BeanIntrospector$.html
+api/com/fasterxml/jackson/module/scala/introspect/ConstructorParameter.html
+api/com/fasterxml/jackson/module/scala/introspect/JavaAnnotationIntrospector$.html
+api/com/fasterxml/jackson/module/scala/introspect/OrderingLocator$.html
+api/com/fasterxml/jackson/module/scala/introspect/PropertyDescriptor.html
+api/com/fasterxml/jackson/module/scala/introspect/ScalaAnnotationIntrospector$.html
+api/com/fasterxml/jackson/module/scala/introspect/ScalaAnnotationIntrospectorModule$.html
+api/com/fasterxml/jackson/module/scala/introspect/ScalaAnnotationIntrospectorModule.html
+api/com/fasterxml/jackson/module/scala/modifiers.html
+api/com/fasterxml/jackson/module/scala/modifiers/EitherTypeModifierModule.html
+api/com/fasterxml/jackson/module/scala/modifiers/IterableTypeModifierModule.html
+api/com/fasterxml/jackson/module/scala/modifiers/IteratorTypeModifierModule.html
+api/com/fasterxml/jackson/module/scala/modifiers/MapTypeModifierModule.html
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/FasterXML/jackson-module-scala/contents?ref=v2.13.2' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src?ref=v2.13.2' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 190ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "3e25ada033b3fd7d6885ba540f772826e86b11ef",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src/main?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src/main",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/3e25ada033b3fd7d6885ba540f772826e86b11ef",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src/main?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/3e25ada033b3fd7d6885ba540f772826e86b11ef",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "c5a3a0ed42fdd39fa1451cfba3478dd944d21920",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src/test?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src/test",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/c5a3a0ed42fdd39fa1451cfba3478dd944d21920",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src/test?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/c5a3a0ed42fdd39fa1451cfba3478dd944d21920",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src/test"
+    }
+  }
+]
+
+ succeeded in 234ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "a537012d4cbc7dbef23220fe82863e5377a29730",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/.github?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/.github",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/a537012d4cbc7dbef23220fe82863e5377a29730",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/.github?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/a537012d4cbc7dbef23220fe82863e5377a29730",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "bf3acc19bf11f03c54c193fa94c6d3a0635b0aef",
+    "size": 270,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/.gitignore?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/.gitignore",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/bf3acc19bf11f03c54c193fa94c6d3a0635b0aef",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/.gitignore?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/bf3acc19bf11f03c54c193fa94c6d3a0635b0aef",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/.gitignore"
+    }
+  },
+  {
+    "name": "Berksfile",
+    "path": "Berksfile",
+    "sha": "894991a2b426992112e4b24e305ddcb4e66f2598",
+    "size": 123,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/Berksfile?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/Berksfile",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/894991a2b426992112e4b24e305ddcb4e66f2598",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/Berksfile",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/Berksfile?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/894991a2b426992112e4b24e305ddcb4e66f2598",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/Berksfile"
+    }
+  },
+  {
+    "name": "Berksfile.lock",
+    "path": "Berksfile.lock",
+    "sha": "5456279b5f43d1541832ebc9726791d7865d4053",
+    "size": 574,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/Berksfile.lock?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/Berksfile.lock",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/5456279b5f43d1541832ebc9726791d7865d4053",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/Berksfile.lock",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/Berksfile.lock?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/5456279b5f43d1541832ebc9726791d7865d4053",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/Berksfile.lock"
+    }
+  },
+  {
+    "name": "DEV",
+    "path": "DEV",
+    "sha": "6d901050f04da555921c0a7529fb3d78e5aa12f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/DEV?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/DEV",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/6d901050f04da555921c0a7529fb3d78e5aa12f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/DEV?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/6d901050f04da555921c0a7529fb3d78e5aa12f9",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/DEV"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "76f6c2f76cc610c2cbadbfc7c06154a7fe96ab56",
+    "size": 7056,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/README.md?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/README.md",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/76f6c2f76cc610c2cbadbfc7c06154a7fe96ab56",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/README.md?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/76f6c2f76cc610c2cbadbfc7c06154a7fe96ab56",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/README.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "a358795c056bc8cebf648c5f1ba3f83a3ea2d79f",
+    "size": 1236,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/SECURITY.md?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/SECURITY.md",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/a358795c056bc8cebf648c5f1ba3f83a3ea2d79f",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/SECURITY.md?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/a358795c056bc8cebf648c5f1ba3f83a3ea2d79f",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/SECURITY.md"
+    }
+  },
+  {
+    "name": "Vagrantfile",
+    "path": "Vagrantfile",
+    "sha": "e6558bcb5a721317653351476f92740fe2d0bf8e",
+    "size": 878,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/Vagrantfile?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/Vagrantfile",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/e6558bcb5a721317653351476f92740fe2d0bf8e",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/Vagrantfile",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/Vagrantfile?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/e6558bcb5a721317653351476f92740fe2d0bf8e",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/Vagrantfile"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "e07b1c88f7709fe346da18aa74e0d112a57883f9",
+    "size": 7181,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/build.sbt?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/build.sbt",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/e07b1c88f7709fe346da18aa74e0d112a57883f9",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/build.sbt?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/e07b1c88f7709fe346da18aa74e0d112a57883f9",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/build.sbt"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "749eb92633fe9c699ba651f59cc9e943872cc53e",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/project?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/project",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/749eb92633fe9c699ba651f59cc9e943872cc53e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/project?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/749eb92633fe9c699ba651f59cc9e943872cc53e",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/project"
+    }
+  },
+  {
+    "name": "release-howto.md",
+    "path": "release-howto.md",
+    "sha": "b055a70fa48c683d6aff9f211cf2c3a0e82beb85",
+    "size": 371,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/release-howto.md?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/release-howto.md",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/b055a70fa48c683d6aff9f211cf2c3a0e82beb85",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/release-howto.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/release-howto.md?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/b055a70fa48c683d6aff9f211cf2c3a0e82beb85",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/release-howto.md"
+    }
+  },
+  {
+    "name": "release-notes",
+    "path": "release-notes",
+    "sha": "9cc4cfa9c2603ee91badeb1f53290714efe1021a",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/release-notes?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/release-notes",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/9cc4cfa9c2603ee91badeb1f53290714efe1021a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/release-notes?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/9cc4cfa9c2603ee91badeb1f53290714efe1021a",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/release-notes"
+    }
+  },
+  {
+    "name": "release.sbt",
+    "path": "release.sbt",
+    "sha": "3b750559fe71a101c61f455feab90f245a9964c6",
+    "size": 1392,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/release.sbt?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/release.sbt",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/3b750559fe71a101c61f455feab90f245a9964c6",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/release.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/release.sbt?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/3b750559fe71a101c61f455feab90f245a9964c6",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/release.sbt"
+    }
+  },
+  {
+    "name": "sonatype.sbt",
+    "path": "sonatype.sbt",
+    "sha": "d25effa7edb576af17aebd9ad35d5c9873abbeb4",
+    "size": 39,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/sonatype.sbt?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/sonatype.sbt",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/d25effa7edb576af17aebd9ad35d5c9873abbeb4",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/sonatype.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/sonatype.sbt?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/blobs/d25effa7edb576af17aebd9ad35d5c9873abbeb4",
+      "html": "https://github.com/FasterXML/jackson-module-scala/blob/v2.13.2/sonatype.sbt"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "d46bc761c981ee0a9dd6a89b06c1010ba3483cb9",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/d46bc761c981ee0a9dd6a89b06c1010ba3483cb9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/src?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/d46bc761c981ee0a9dd6a89b06c1010ba3483cb9",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src"
+    }
+  },
+  {
+    "name": "travis",
+    "path": "travis",
+    "sha": "1a7abf83d357ee4256ea33c7f4f90d77e91a1336",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/travis?ref=v2.13.2",
+    "html_url": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/travis",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/1a7abf83d357ee4256ea33c7f4f90d77e91a1336",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-module-scala/contents/travis?ref=v2.13.2",
+      "git": "https://api.github.com/repos/FasterXML/jackson-module-scala/git/trees/1a7abf83d357ee4256ea33c7f4f90d77e91a1336",
+      "html": "https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/travis"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "jar tf ~/.m2/repository/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+java.nio.file.NoSuchFileException: /home/vjovanov/.m2/repository/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2.jar
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:57)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:161)
+	at java.base/sun.nio.fs.LinuxFileSystemProvider.readAttributes(LinuxFileSystemProvider.java:99)
+	at java.base/java.nio.file.Files.readAttributes(Files.java:1702)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1493)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/FasterXML/jackson-module-scala/v2.13.2/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 182ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar" title="jackson-module-scala_3-2.13.2-javadoc.jar">jackson-module-scala_3-2.13.2-javadoc.jar</a>         2022-03-07 01:31    824704      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.asc" title="jackson-module-scala_3-2.13.2-javadoc.jar.asc">jackson-module-scala_3-2.13.2-javadoc.jar.asc</a>     2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.asc.md5" title="jackson-module-scala_3-2.13.2-javadoc.jar.asc.md5">jackson-module-scala_3-2.13.2-javadoc.jar.asc...</a>  2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.asc.sha1" title="jackson-module-scala_3-2.13.2-javadoc.jar.asc.sha1">jackson-module-scala_3-2.13.2-javadoc.jar.asc...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.md5" title="jackson-module-scala_3-2.13.2-javadoc.jar.md5">jackson-module-scala_3-2.13.2-javadoc.jar.md5</a>     2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-javadoc.jar.sha1" title="jackson-module-scala_3-2.13.2-javadoc.jar.sha1">jackson-module-scala_3-2.13.2-javadoc.jar.sha...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2-sources.jar" title="jackson-module-scala_3-2.13.2-sources.jar">jackson-module-scala_3-2.13.2-sources.jar</a>         2022-03-07 01:31     61754      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.asc" title="jackson-module-scala_3-2.13.2-sources.jar.asc">jackson-module-scala_3-2.13.2-sources.jar.asc</a>     2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.asc.md5" title="jackson-module-scala_3-2.13.2-sources.jar.asc.md5">jackson-module-scala_3-2.13.2-sources.jar.asc...</a>  2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.asc.sha1" title="jackson-module-scala_3-2.13.2-sources.jar.asc.sha1">jackson-module-scala_3-2.13.2-sources.jar.asc...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.md5" title="jackson-module-scala_3-2.13.2-sources.jar.md5">jackson-module-scala_3-2.13.2-sources.jar.md5</a>     2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2-sources.jar.sha1" title="jackson-module-scala_3-2.13.2-sources.jar.sha1">jackson-module-scala_3-2.13.2-sources.jar.sha...</a>  2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.jar" title="jackson-module-scala_3-2.13.2.jar">jackson-module-scala_3-2.13.2.jar</a>                 2022-03-07 01:31    584013      
+<a href="jackson-module-scala_3-2.13.2.jar.asc" title="jackson-module-scala_3-2.13.2.jar.asc">jackson-module-scala_3-2.13.2.jar.asc</a>             2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2.jar.asc.md5" title="jackson-module-scala_3-2.13.2.jar.asc.md5">jackson-module-scala_3-2.13.2.jar.asc.md5</a>         2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.jar.asc.sha1" title="jackson-module-scala_3-2.13.2.jar.asc.sha1">jackson-module-scala_3-2.13.2.jar.asc.sha1</a>        2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.jar.md5" title="jackson-module-scala_3-2.13.2.jar.md5">jackson-module-scala_3-2.13.2.jar.md5</a>             2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.jar.sha1" title="jackson-module-scala_3-2.13.2.jar.sha1">jackson-module-scala_3-2.13.2.jar.sha1</a>            2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.pom" title="jackson-module-scala_3-2.13.2.pom">jackson-module-scala_3-2.13.2.pom</a>                 2022-03-07 01:31      4855      
+<a href="jackson-module-scala_3-2.13.2.pom.asc" title="jackson-module-scala_3-2.13.2.pom.asc">jackson-module-scala_3-2.13.2.pom.asc</a>             2022-03-07 01:31       659      
+<a href="jackson-module-scala_3-2.13.2.pom.asc.md5" title="jackson-module-scala_3-2.13.2.pom.asc.md5">jackson-module-scala_3-2.13.2.pom.asc.md5</a>         2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.pom.asc.sha1" title="jackson-module-scala_3-2.13.2.pom.asc.sha1">jackson-module-scala_3-2.13.2.pom.asc.sha1</a>        2022-03-07 01:31        40      
+<a href="jackson-module-scala_3-2.13.2.pom.md5" title="jackson-module-scala_3-2.13.2.pom.md5">jackson-module-scala_3-2.13.2.pom.md5</a>             2022-03-07 01:31        32      
+<a href="jackson-module-scala_3-2.13.2.pom.sha1" title="jackson-module-scala_3-2.13.2.pom.sha1">jackson-module-scala_3-2.13.2.pom.sha1</a>            2022-03-07 01:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 310ms:
+![Build Status](https://github.com/FasterXML/jackson-module-scala/actions/workflows/ci.yml/badge.svg?branch=2.13)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.module/jackson-module-scala_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.module/jackson-module-scala_2.13)
+
+# Overview
+
+[Jackson] is a fast JSON processor for Java that supports three models:
+streaming, node, and object mapping (akin to the three independent models
+[SAX]/[Stax], [DOM] and [JAXB] for XML processing).
+
+The object mapping model is a high-level processing model that allows the
+user to project JSON data onto a domain-specific data model appropriate
+for their application, without having to deal with the low-level mechanics
+of JSON parsing. It is the standard object mapping parser implementaton
+in [Jersey], the reference implementation for JSR-311
+(Java API for
+Restful Web Services).
+
+[Scala] is a functional programming language for the JVM that supports
+Java interoperability. Its standard library is quite distinct from Java,
+and does not fulfill the expectations of Jacksons default mappings.
+Notably, Scala collections do not derive from `java.util.Collection` or
+its subclasses, and Scala properties do not (by default) look like `Java Bean` properties.
+
+The Scala Module supports serialization and limited deserialization of
+Scala Case Classes, `Sequence`s, `Map`s, `Tuple`s, `Option`s, and Enumerations.
+
+# Version Support
+
+Jackson-module-scala follows the same release strategy of [jackson-databind](https://github.com/FasterXML/jackson-databind).
+Master branch is used for Jackson 3 development. The latest releases are v2.12.x.
+
+Scala 2.11, 2.12 and 2.13 are supported. Scala 2.10 support was dropped in v2.12.0. Java 8 is
+the minimum supported version now.
+
+## Scala 3
+
+[Scala 3 support](https://github.com/FasterXML/jackson-module-scala/issues?q=is%3Aissue+is%3Aopen+label%3Ascala3) was added in v2.13.0.
+This support is still deemed to be experimental. Code contributions are welcomed.
+* ScalaObjectMapper is not supported for Scala 3 but ClassTagExtensions is its replacement. (https://github.com/FasterXML/jackson-module-scala/issues/503)
+* There are still a few tests that work with Scala 2 that fail with Scala 3
+* It is expected that most use cases should work ok with Scala 3
+  * Known issues with using jackson-module-scala with Scala 3 are tracked at https://github.com/FasterXML/jackson-module-scala/labels/scala3
+  * There has been no testing of using Scala 3 classes with Scala 2 jackson-module-scala or Scala 2 classes with Scala 3 jackson-module-scala
+
+# Usage
+
+To use the Scala Module in Jackson, simply register it with the
+ObjectMapper instance:
+
+```scala
+// With 2.10 and later
+val mapper = JsonMapper.builder()
+  .addModule(DefaultScalaModule)
+  .build()
+
+// versions before 2.10 (also support for later 2.x but not 3.0)
+val mapper = new ObjectMapper()
+mapper.registerModule(DefaultScalaModule)
+```
+
+`DefaultScalaModule` is a Scala object that includes support for all
+currently supported Scala data types. If only partial support is desired,
+the component traits can be included individually:
+
+```scala
+val module = new OptionModule with TupleModule {}
+val mapper = JsonMapper.builder()
+  .addModule(module)
+  .build()
+```
+
+You can also mixin `ScalaObjectMapper` to get rich wrappers that automatically
+convert scala manifests directly into TypeReferences for Jackson to use (now depecated because manifests are not supported in Scala 3):
+```scala
+val mapper = new ObjectMapper() with ScalaObjectMapper
+mapper.registerModule(DefaultScalaModule)
+val myMap = mapper.readValue[Map[String,Tuple2[Int,Int]]](src)
+```
+
+This is the equivalent of
+```scala
+val mapper = JsonMapper.builder().addModule(DefaultScalaModule).build()
+val myMap = mapper.readValue(src, new TypeReference[Map[String,Tuple2[Int,Int]]]{})
+```
+
+Consult the [Scaladoc](http://fasterxml.github.io/jackson-module-scala/latest/api/) for further details.
+
+## Sbt
+
+To import in sbt:
+```scala
+libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.1"
+```
+
+## Java/Kotlin users
+
+DefaultScalaModule is a Scala Object and to access it when you are not compiling with Scala compiler, you will need to use `DefaultScalaModule$.MODULE$` instead.
+
+```java
+import com.fasterxml.jackson.module.scala.DefaultScalaModule$;
+
+ObjectMapper mapper = JsonMapper.builder().addModule(DefaultScalaModule$.MODULE$).build();
+```
+
+# Building
+
+The master branch often depends on SNAPSHOT versions of the core Jackson projects,
+which are published to the Sonatype OSS Repository. To make these dependencies available,
+create a file called `sonatype.sbt` in the same directory as `build.sbt` with the following
+content. The project `.gitignore` file intentionally prevents this file from being checked in.
+
+``` scala
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```
+
+# Download, docs
+
+Check out [Wiki]. API Scaladocs can be found [on the project site][API] but they are not really
+well suited to end users, as most classes are implementation details of the module.
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language": {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src/test && curl -I -fsSL https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2.jar -o /tmp/jackson-module-scala_3-2.13.2.jar && jar tf /tmp/jackson-module-scala_3-2.13.2.jar | rg '\\.(class|tasty)"'$'"' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 268ms:
+com/fasterxml/jackson/module/scala/ClassTagExtensions$.class
+com/fasterxml/jackson/module/scala/ClassTagExtensions$Mixin.class
+com/fasterxml/jackson/module/scala/ClassTagExtensions.class
+com/fasterxml/jackson/module/scala/ClassTagExtensions.tasty
+com/fasterxml/jackson/module/scala/DefaultRequiredAnnotationIntrospector$.class
+com/fasterxml/jackson/module/scala/DefaultRequiredAnnotationIntrospector.class
+com/fasterxml/jackson/module/scala/DefaultRequiredAnnotationIntrospector.tasty
+com/fasterxml/jackson/module/scala/DefaultScalaModule$.class
+com/fasterxml/jackson/module/scala/DefaultScalaModule.class
+com/fasterxml/jackson/module/scala/DefaultScalaModule.tasty
+com/fasterxml/jackson/module/scala/EitherModule.class
+com/fasterxml/jackson/module/scala/EitherModule.tasty
+com/fasterxml/jackson/module/scala/EnumerationModule.class
+com/fasterxml/jackson/module/scala/EnumerationModule.tasty
+com/fasterxml/jackson/module/scala/IterableModule.class
+com/fasterxml/jackson/module/scala/IterableModule.tasty
+com/fasterxml/jackson/module/scala/IteratorModule.class
+com/fasterxml/jackson/module/scala/IteratorModule.tasty
+com/fasterxml/jackson/module/scala/JacksonModule$.class
+com/fasterxml/jackson/module/scala/JacksonModule.class
+com/fasterxml/jackson/module/scala/JacksonModule.tasty
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$1.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$10.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$11.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$2.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$3.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$4.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$5.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$6.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$7.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$8.class
+com/fasterxml/jackson/module/scala/JavaTypeable$$anon$9.class
+com/fasterxml/jackson/module/scala/JavaTypeable$.class
+com/fasterxml/jackson/module/scala/JavaTypeable.class
+com/fasterxml/jackson/module/scala/JavaTypeable.tasty
+com/fasterxml/jackson/module/scala/JsonScalaEnumeration.class
+com/fasterxml/jackson/module/scala/MapModule.class
+com/fasterxml/jackson/module/scala/MapModule.tasty
+com/fasterxml/jackson/module/scala/OptionModule.class
+com/fasterxml/jackson/module/scala/OptionModule.tasty
+
+ succeeded in 1179ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 10:57:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"78b77cefdfa43141842f64e23ea32637"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=9fGy9f99%2FZ33kjOkr0yKdbfLK68LzF2GqXF0GCDncIxdrHjAJoD95VL8FjAPoZFNI0zQ7YxqoRbymcwdw5KUeal6cU2M9Ic6wovok5WgTdng%2FSfYxMaBlSjsdmgoGnGK4JHbMFUs2STwNT6L0N7KLXBG9v14XH%2BzEZuL%2Br%2Ff5wV3L4Fy%2F8EfvbaIznVltLPFJqYwM4sUY8AF2i%2BO0jdIluABJx%2FBuIrJOVQ%2F%2Fgt4SPrOgRQc5S%2FndR%2By2Qa2QR%2FryGcn5GkJNHyUrsXK9jfpuA%3D%3D--Mvxz04hV235rLjgo--zJ3un2W0kmoB6%2FEZhVaG7Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.216976857.1778065038; expires=Thu, 06 May 2027 10:57:18 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 10:57:18 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 517D:153B0B:3D76C40:3089F8C:69FB1E8E
+
+HTTP/2 200 
+date: Wed, 06 May 2026 10:57:18 GMT
+content-type: application/java-archive
+content-length: 61754
+cf-ray: 9f77769bbed0862a-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a2e8c401eae92d3f2cb7f0aab6a37f3b"
+last-modified: Mon, 07 Mar 2022 01:31:45 GMT
+x-checksum-md5: a2e8c401eae92d3f2cb7f0aab6a37f3b
+x-checksum-sha1: 1c2d8a8f2f9966d50a39148efb7af4291d91f18b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 06 May 2026 10:57:19 GMT
+content-type: application/java-archive
+content-length: 824704
+cf-ray: 9f77769dbefac4a5-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "0899b65e54f4ed08d70c89216d5a3588"
+last-modified: Mon, 07 Mar 2022 01:31:44 GMT
+x-checksum-md5: 0899b65e54f4ed08d70c89216d5a3588
+x-checksum-sha1: d2845284e198eee420516dfdba6c691e4f158053
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,25p' metadata/io.suzaku/boopickle_3/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/suzaku-io/boopickle",
+    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.4.0",
+      "1.5.0"
+    ],
+    "allowed-packages" : [
+      "boopickle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,22p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,22p' metadata/com.typesafe.play/play-configuration_2.13/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.10",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+    "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.9.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -10 | xargs -r -n1 sed -n '1,60p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+{
+  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"' build/discovered-artifact-metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+codex
+Maven Central publishes the main JVM jar, sources jar, and javadoc jar, but no test jar for this version. I’m using the Maven jars for source and docs, the `v$version$` GitHub tag for tests, and marking it as Scala 3-specific without `not-for-native-image` because the artifact contains JVM `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+diff --git a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+index e88a667d5bc5eba888c2dfe8992df3f6695ee465..6189c243cc52bac4c0b535a94e98452a389d8124
+--- a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
++++ b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2"
++  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/FasterXML/jackson-module-scala",
++  "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-javadoc.jar",
++  "description" : "Jackson Module Scala adds support for Jackson databind to serialize and deserialize Scala types that do not map cleanly to standard Java beans. It provides modules for case classes, collections, maps, tuples, options, enumerations, and related Scala-specific type handling.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+index e88a667d5bc5eba888c2dfe8992df3f6695ee465..6189c243cc52bac4c0b535a94e98452a389d8124
+--- a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
++++ b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2"
++  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/FasterXML/jackson-module-scala",
++  "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-javadoc.jar",
++  "description" : "Jackson Module Scala adds support for Jackson databind to serialize and deserialize Scala types that do not map cleanly to standard Java beans. It provides modules for case classes, collections, maps, tuples, options, enumerations, and related Scala-specific type handling.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+{
+  "coordinates": "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
+  "repository-url": "https://github.com/FasterXML/jackson-module-scala",
+  "test-code-url": "https://github.com/FasterXML/jackson-module-scala/tree/v$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-javadoc.jar",
+  "description": "Jackson Module Scala adds support for Jackson databind to serialize and deserialize Scala types that do not map cleanly to standard Java beans. It provides modules for case classes, collections, maps, tuples, options, enumerations, and related Scala-specific type handling.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+index e88a667d5bc5eba888c2dfe8992df3f6695ee465..6189c243cc52bac4c0b535a94e98452a389d8124
+--- a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
++++ b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2"
++  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/FasterXML/jackson-module-scala",
++  "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-javadoc.jar",
++  "description" : "Jackson Module Scala adds support for Jackson databind to serialize and deserialize Scala types that do not map cleanly to standard Java beans. It provides modules for case classes, collections, maps, tuples, options, enumerations, and related Scala-specific type handling.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: https://github.com/FasterXML/jackson-module-scala/tree/v2.13.2/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/2.13.2/jackson-module-scala_3-2.13.2-sources.jar
+codex
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json:1).
+
+Set Maven Central source/javadoc jar URLs, GitHub `v$version$` test URL, repository URL, a two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because the artifact contains JVM `.class` files. Verified the JSON with `jq`; the Scala 3 artifact and project behavior are consistent with Scala Index/GitHub metadata. ([index.scala-lang.org](https://index.scala-lang.org/fasterxml/jackson-module-scala/artifacts/jackson-module-scala/2.13.2?binary-version=_3&utm_source=openai))
+diff --git a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+index e88a667d5bc5eba888c2dfe8992df3f6695ee465..6189c243cc52bac4c0b535a94e98452a389d8124
+--- a/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
++++ b/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2"
++  "coordinates" : "com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/FasterXML/jackson-module-scala",
++  "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-javadoc.jar",
++  "description" : "Jackson Module Scala adds support for Jackson databind to serialize and deserialize Scala types that do not map cleanly to standard Java beans. It provides modules for case classes, collections, maps, tuples, options, enumerations, and related Scala-specific type handling.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+69,056
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/build/discovered-artifact-metadata/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.json:1).
+
+Set Maven Central source/javadoc jar URLs, GitHub `v$version$` test URL, repository URL, a two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because the artifact contains JVM `.class` files. Verified the JSON with `jq`; the Scala 3 artifact and project behavior are consistent with Scala Index/GitHub metadata. ([index.scala-lang.org](https://index.scala-lang.org/fasterxml/jackson-module-scala/artifacts/jackson-module-scala/2.13.2?binary-version=_3&utm_source=openai))
+Ran agent for com.fasterxml.jackson.module:jackson-module-scala_3:2.13.2 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/build/agent-artifact-discovery-logs/com.fasterxml.jackson.module-jackson-module-scala_3-2.13.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3867-9b531cee/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 33s
+9 actionable tasks: 9 executed
