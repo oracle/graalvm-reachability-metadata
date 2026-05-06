@@ -267,6 +267,32 @@ class Pureconfig_core_3Test {
   }
 
   @Test
+  def readsSystemPropertiesAsConfigSource(): Unit = {
+    val root: String = s"pureconfig.core.test.id${UUID.randomUUID().toString.replace("-", "")}"
+    val propertyValues: Map[String, String] = Map(
+      s"$root.service.name" -> "catalog",
+      s"$root.service.owner" -> "platform"
+    )
+    val previousValues: Map[String, Option[String]] = propertyValues.keys
+      .map(key => key -> Option(System.getProperty(key)))
+      .toMap
+
+    try {
+      propertyValues.foreach { case (key, value) => System.setProperty(key, value) }
+
+      assertRight(
+        Map("name" -> "catalog", "owner" -> "platform"),
+        ConfigSource.systemProperties.at(s"$root.service").load[Map[String, String]]
+      )
+    } finally {
+      previousValues.foreach {
+        case (key, Some(value)) => System.setProperty(key, value)
+        case (key, None) => System.clearProperty(key)
+      }
+    }
+  }
+
+  @Test
   def navigatesWithFluentCursorsAndReadsStandardLibraryTypes(): Unit = {
     val source: ConfigObjectSource = ConfigSource.string(
       """
