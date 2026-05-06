@@ -19,6 +19,7 @@ import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitLast
 import kotlinx.coroutines.reactive.awaitSingle
+import kotlinx.coroutines.reactive.publish
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
@@ -27,9 +28,9 @@ import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import java.util.NoSuchElementException
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
@@ -152,6 +153,39 @@ public class Kotlinx_coroutines_reactiveTest {
         val values: List<String> = publisher.asFlow().toList()
 
         assertThat(values).containsExactly("alpha", "beta", "gamma")
+    }
+
+    @Test
+    fun publishBuilderSuspendsEmissionUntilDemandAndStopsOnCancellation() = runBlockingWithTimeout {
+        val cancelled: CountDownLatch = CountDownLatch(1)
+        val publisher: Publisher<Int> = publish(Dispatchers.Unconfined) {
+            try {
+                send(1)
+                send(2)
+                send(3)
+            } finally {
+                cancelled.countDown()
+            }
+        }
+        val subscriber: RecordingSubscriber<Int> = RecordingSubscriber()
+
+        publisher.subscribe(subscriber)
+        subscriber.awaitSubscription()
+        subscriber.assertNoValueAvailable()
+        subscriber.assertNotCompleted()
+
+        subscriber.request(1)
+        assertThat(subscriber.awaitNext()).isEqualTo(1)
+        subscriber.assertNoValueAvailable()
+
+        subscriber.request(1)
+        assertThat(subscriber.awaitNext()).isEqualTo(2)
+        subscriber.cancel()
+
+        assertThat(cancelled.await(5, TimeUnit.SECONDS)).isTrue()
+        subscriber.assertNoValueAvailable()
+        subscriber.assertNotCompleted()
+        assertThat(subscriber.failure).isNull()
     }
 
     private fun <T> runBlockingWithTimeout(block: suspend () -> T): T = runBlocking {
@@ -277,6 +311,10 @@ private class RecordingSubscriber<T> : Subscriber<T> {
 
     fun request(n: Long) {
         awaitSubscription().request(n)
+    }
+
+    fun cancel() {
+        awaitSubscription().cancel()
     }
 
     fun awaitNext(): T = values.poll(5, TimeUnit.SECONDS)
