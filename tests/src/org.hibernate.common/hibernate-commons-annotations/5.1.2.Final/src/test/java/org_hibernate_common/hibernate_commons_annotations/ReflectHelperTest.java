@@ -21,8 +21,7 @@ public class ReflectHelperTest {
             Class<?> resolvedClass = ReflectHelper.classForName(String.class.getName(), ReflectHelperTest.class);
 
             assertThat(resolvedClass).isEqualTo(String.class);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }
@@ -35,8 +34,7 @@ public class ReflectHelperTest {
             Class<?> resolvedClass = ReflectHelper.classForName(String.class.getName(), ReflectHelperTest.class);
 
             assertThat(resolvedClass).isEqualTo(String.class);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }

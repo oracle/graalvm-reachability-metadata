@@ -22,8 +22,7 @@ public class StandardClassLoaderDelegateImplTest {
                     StandardClassLoaderDelegateImpl.class.getName());
 
             assertThat(resolvedClass).isEqualTo(StandardClassLoaderDelegateImpl.class);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }
@@ -37,8 +36,7 @@ public class StandardClassLoaderDelegateImplTest {
                     StandardClassLoaderDelegateImpl.class.getName());
 
             assertThat(resolvedClass).isEqualTo(StandardClassLoaderDelegateImpl.class);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }

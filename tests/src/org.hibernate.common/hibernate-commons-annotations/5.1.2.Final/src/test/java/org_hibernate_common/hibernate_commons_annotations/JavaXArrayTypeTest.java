@@ -35,6 +35,6 @@ public class JavaXArrayTypeTest {
     }
 
     public static class ArrayFixture {
-        public String[] names = new String[] { "hibernate", "annotations" };
+        public String[] names = new String[] {"hibernate", "annotations" };
     }
 }
