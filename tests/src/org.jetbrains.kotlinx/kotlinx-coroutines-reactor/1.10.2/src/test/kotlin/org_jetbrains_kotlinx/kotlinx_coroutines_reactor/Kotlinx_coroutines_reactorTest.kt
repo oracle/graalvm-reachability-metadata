@@ -210,6 +210,22 @@ public class Kotlinx_coroutines_reactorTest {
     }
 
     @Test
+    fun flowAsFluxUsesReactorContextFromCoroutineContextArgument(): Unit {
+        val source = flow {
+            val reactorContext: ReactorContext = coroutineContext[ReactorContext]!!
+            emit(reactorContext.context.get<String>("token"))
+            emit(reactorContext.context.get<String>("traceId"))
+        }
+
+        val values: List<String> = source
+            .asFlux(Context.of("token", "context-argument", "traceId", "trace-42").asCoroutineContext())
+            .collectList()
+            .block(TIMEOUT)!!
+
+        assertThat(values).containsExactly("context-argument", "trace-42")
+    }
+
+    @Test
     fun schedulerDispatcherRunsCoroutineWorkAndFlowSignalsOnScheduler(): Unit = runBlocking {
         val scheduler = Schedulers.newSingle("coroutines-reactor-scheduler")
         val dispatcher = scheduler.asCoroutineDispatcher()
