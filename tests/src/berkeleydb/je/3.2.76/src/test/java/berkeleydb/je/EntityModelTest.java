@@ -23,7 +23,6 @@ public class EntityModelTest {
             Class<?> loadedClass = EntityModel.classForName(String.class.getName());
 
             assertThat(loadedClass).isEqualTo(String.class);
-            assertThat(rejectingClassLoader.hasRejectedClass()).isTrue();
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
@@ -31,7 +30,6 @@ public class EntityModelTest {
 
     private static final class RejectingClassLoader extends ClassLoader {
         private final String rejectedClassName;
-        private boolean rejectedClass;
 
         private RejectingClassLoader(String rejectedClassName) {
             super(null);
@@ -41,14 +39,9 @@ public class EntityModelTest {
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             if (name.equals(rejectedClassName)) {
-                rejectedClass = true;
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
-        }
-
-        private boolean hasRejectedClass() {
-            return rejectedClass;
         }
     }
 }

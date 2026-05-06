@@ -57,7 +57,7 @@ public class JoinCursorTest {
                 assertThat(positionOnSecondaryKey(colorCursor, "red")).isEqualTo(OperationStatus.SUCCESS);
                 assertThat(positionOnSecondaryKey(bodyStyleCursor, "sedan")).isEqualTo(OperationStatus.SUCCESS);
 
-                JoinCursor joinCursor = primary.join(new Cursor[] { colorCursor, bodyStyleCursor }, null);
+                JoinCursor joinCursor = primary.join(new Cursor[] {colorCursor, bodyStyleCursor}, null);
                 try {
                     assertThat(joinCursor.getDatabase()).isSameAs(primary);
                     assertThat(readJoinedKeys(joinCursor)).containsExactlyInAnyOrder("car-1", "car-4");

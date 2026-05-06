@@ -71,7 +71,7 @@ public class SerialBindingTest {
                 return existingId;
             }
 
-            byte[] id = new byte[] { nextId++ };
+            byte[] id = new byte[] {nextId++};
             idsByClassName.put(classDesc.getName(), id);
             formatsById.put(new ByteArrayKey(id), classDesc);
             return id;
