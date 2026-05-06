@@ -177,6 +177,34 @@ public class KtorServerStatusPagesJvmTest {
     }
 
     @Test
+    fun statusHandlersUseStatusSetOnResponseWhenOutgoingContentHasNoStatus(): Unit = testApplication {
+        application {
+            install(StatusPages) {
+                status(HttpStatusCode.PaymentRequired) { call, status ->
+                    call.response.headers.append("X-Detected-Status", status.value.toString())
+                    call.respondText(
+                        text = "handled response status:${status.description}",
+                        status = HttpStatusCode.OK,
+                    )
+                }
+            }
+            routing {
+                get("/response-status-only") {
+                    call.response.status(HttpStatusCode.PaymentRequired)
+                    call.respondText("original response body")
+                }
+            }
+        }
+
+        val response = client.get("/response-status-only")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.headers["X-Detected-Status"]).isEqualTo(HttpStatusCode.PaymentRequired.value.toString())
+        assertThat(response.bodyAsText()).isEqualTo(
+            "handled response status:${HttpStatusCode.PaymentRequired.description}",
+        )
+    }
+
+    @Test
     fun unhandledHandlerRespondsBeforeApplicationFallback(): Unit = testApplication {
         application {
             install(StatusPages) {
