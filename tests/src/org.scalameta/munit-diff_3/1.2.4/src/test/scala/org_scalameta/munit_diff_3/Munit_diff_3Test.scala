@@ -307,6 +307,57 @@ class Munit_diff_3Test {
   }
 
   @Test
+  def unifiedDiffSeparatesDistantChangesIntoIndependentHunks(): Unit = {
+    val original: util.List[String] = javaList(
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+    )
+    val revised: util.List[String] = javaList(
+      "a",
+      "B",
+      "c",
+      "d",
+      "e",
+      "f",
+      "G",
+      "h",
+    )
+    val patch: Patch[String] = DiffUtils.diff(original, revised)
+
+    val unified: util.List[String] = DiffUtils.generateUnifiedDiff(
+      "original.txt",
+      "revised.txt",
+      original,
+      patch,
+      contextSize = 1,
+    )
+
+    assertEquals(
+      javaList(
+        "--- original.txt",
+        "+++ revised.txt",
+        "@@ -1,3 +1,3 @@",
+        " a",
+        "-b",
+        "+B",
+        " c",
+        "@@ -6,3 +6,3 @@",
+        " f",
+        "-g",
+        "+G",
+        " h",
+      ),
+      unified,
+    )
+  }
+
+  @Test
   def chunkDeltaAndPathNodesExposeUsefulState(): Unit = {
     val original: Chunk[String] = new Chunk[String](4, javaList("old"))
     val revised: Chunk[String] = new Chunk[String](4, javaList("new"))
