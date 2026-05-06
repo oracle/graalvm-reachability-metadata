@@ -1,0 +1,1067 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfb00-129d-7cb0-b163-93d7eac6d7c0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scala-graph:graph-core_2.13:2.0.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.3" when "$version$" is replaced with "2.0.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+- Set "coordinates" to "org.scala-graph:graph-core_2.13:2.0.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/repository sources first, then patch the JSON directly with the resolved URLs and language classification.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+{
+  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.scala-graph|graph-core_2\\.13|scala-graph\" metadata tests build/discovered-artifact-metadata 2>/dev/null" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json:2:  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
+
+web search: 
+web search: Maven Central org.scala-graph graph-core_2.13 2.0.3 pom scm url
+web search: 
+web search: https://www.scala-graph.org/download/
+codex
+The public project site confirms `graph-core_2.13` is the Scala 2.13 JVM artifact for Graph for Scala 2.0.3, so this should get a Scala 2 language field and should not be marked out of scope for Native Image. Next I’m checking Maven Central for source/test/javadoc artifacts and the POM SCM metadata.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3-test-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 191ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/scala-graph/graph-core_2.13/2.0.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/scala-graph/graph-core_2.13/2.0.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="graph-core_2.13-2.0.3-javadoc.jar" title="graph-core_2.13-2.0.3-javadoc.jar">graph-core_2.13-2.0.3-javadoc.jar</a>                 2025-03-28 11:32   6884742      
+<a href="graph-core_2.13-2.0.3-javadoc.jar.asc" title="graph-core_2.13-2.0.3-javadoc.jar.asc">graph-core_2.13-2.0.3-javadoc.jar.asc</a>             2025-03-28 11:32       488      
+<a href="graph-core_2.13-2.0.3-javadoc.jar.asc.md5" title="graph-core_2.13-2.0.3-javadoc.jar.asc.md5">graph-core_2.13-2.0.3-javadoc.jar.asc.md5</a>         2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3-javadoc.jar.asc.sha1" title="graph-core_2.13-2.0.3-javadoc.jar.asc.sha1">graph-core_2.13-2.0.3-javadoc.jar.asc.sha1</a>        2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3-javadoc.jar.md5" title="graph-core_2.13-2.0.3-javadoc.jar.md5">graph-core_2.13-2.0.3-javadoc.jar.md5</a>             2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3-javadoc.jar.sha1" title="graph-core_2.13-2.0.3-javadoc.jar.sha1">graph-core_2.13-2.0.3-javadoc.jar.sha1</a>            2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3-sources.jar" title="graph-core_2.13-2.0.3-sources.jar">graph-core_2.13-2.0.3-sources.jar</a>                 2025-03-28 11:32    134690      
+<a href="graph-core_2.13-2.0.3-sources.jar.asc" title="graph-core_2.13-2.0.3-sources.jar.asc">graph-core_2.13-2.0.3-sources.jar.asc</a>             2025-03-28 11:32       488      
+<a href="graph-core_2.13-2.0.3-sources.jar.asc.md5" title="graph-core_2.13-2.0.3-sources.jar.asc.md5">graph-core_2.13-2.0.3-sources.jar.asc.md5</a>         2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3-sources.jar.asc.sha1" title="graph-core_2.13-2.0.3-sources.jar.asc.sha1">graph-core_2.13-2.0.3-sources.jar.asc.sha1</a>        2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3-sources.jar.md5" title="graph-core_2.13-2.0.3-sources.jar.md5">graph-core_2.13-2.0.3-sources.jar.md5</a>             2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3-sources.jar.sha1" title="graph-core_2.13-2.0.3-sources.jar.sha1">graph-core_2.13-2.0.3-sources.jar.sha1</a>            2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3.jar" title="graph-core_2.13-2.0.3.jar">graph-core_2.13-2.0.3.jar</a>                         2025-03-28 11:32   1575095      
+<a href="graph-core_2.13-2.0.3.jar.asc" title="graph-core_2.13-2.0.3.jar.asc">graph-core_2.13-2.0.3.jar.asc</a>                     2025-03-28 11:32       488      
+<a href="graph-core_2.13-2.0.3.jar.asc.md5" title="graph-core_2.13-2.0.3.jar.asc.md5">graph-core_2.13-2.0.3.jar.asc.md5</a>                 2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3.jar.asc.sha1" title="graph-core_2.13-2.0.3.jar.asc.sha1">graph-core_2.13-2.0.3.jar.asc.sha1</a>                2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3.jar.md5" title="graph-core_2.13-2.0.3.jar.md5">graph-core_2.13-2.0.3.jar.md5</a>                     2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3.jar.sha1" title="graph-core_2.13-2.0.3.jar.sha1">graph-core_2.13-2.0.3.jar.sha1</a>                    2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3.pom" title="graph-core_2.13-2.0.3.pom">graph-core_2.13-2.0.3.pom</a>                         2025-03-28 11:32      2055      
+<a href="graph-core_2.13-2.0.3.pom.asc" title="graph-core_2.13-2.0.3.pom.asc">graph-core_2.13-2.0.3.pom.asc</a>                     2025-03-28 11:32       488      
+<a href="graph-core_2.13-2.0.3.pom.asc.md5" title="graph-core_2.13-2.0.3.pom.asc.md5">graph-core_2.13-2.0.3.pom.asc.md5</a>                 2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3.pom.asc.sha1" title="graph-core_2.13-2.0.3.pom.asc.sha1">graph-core_2.13-2.0.3.pom.asc.sha1</a>                2025-03-28 11:32        40      
+<a href="graph-core_2.13-2.0.3.pom.md5" title="graph-core_2.13-2.0.3.pom.md5">graph-core_2.13-2.0.3.pom.md5</a>                     2025-03-28 11:32        32      
+<a href="graph-core_2.13-2.0.3.pom.sha1" title="graph-core_2.13-2.0.3.pom.sha1">graph-core_2.13-2.0.3.pom.sha1</a>                    2025-03-28 11:32        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 196ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.scala-graph</groupId>
+    <artifactId>graph-core_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Graph Core</description>
+    <version>2.0.3</version>
+    <name>Graph Core</name>
+    <organization>
+        <name>org.scala-graph</name>
+    </organization>
+    <url>http://scala-graph.org </url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/scala-graph/scala-graph</url>
+        <connection>scm:git:git@github.com:scala-graph/scala-graph.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>peter</id>
+            <name>Peter Empen</name>
+            <url>http://scala-graph.org</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>3.2.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatestplus</groupId>
+            <artifactId>scalacheck-1-18_2.13</artifactId>
+            <version>3.2.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_2.13</artifactId>
+            <version>1.18.1</version>
+        </dependency>
+    </dependencies>
+</project>
+ exited 22 in 863ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 01:56:34 GMT
+content-type: application/java-archive
+content-length: 134690
+cf-ray: 9f745e7feb35be81-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "8fc267976c8926e39ae71d9be74e67a0"
+last-modified: Fri, 28 Mar 2025 11:31:56 GMT
+x-checksum-md5: 8fc267976c8926e39ae71d9be74e67a0
+x-checksum-sha1: 564eefcca8fd49d361c470767049036d60a2e46b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Wed, 06 May 2026 01:56:34 GMT
+content-type: text/html
+cf-ray: 9f745e831b67bbfa-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:23:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3-sources.jar -o /tmp/graph-core-sources.jar && jar tf /tmp/graph-core-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3.jar -o /tmp/graph-core.jar && jar tf /tmp/graph-core.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 102ms:
+ollection/mutable/ExtBitSet.scala
+scalax/collection/mutable/Graph.scala
+scalax/collection/mutable/GraphOps.scala
+scalax/collection/mutable/Growable.scala
+scalax/collection/mutable/Shrinkable.scala
+scalax/collection/mutable/SimpleArraySet.scala
+scalax/collection/mutable/TypedGraphFactory.scala
+scalax/collection/package.scala
+
+ succeeded in 728ms:
+META-INF/MANIFEST.MF
+scala/
+scala/collection/
+scala/collection/mutable/
+scala/util/
+scala/util/compat/
+scalax/
+scalax/collection/
+scalax/collection/config/
+scalax/collection/edges/
+scalax/collection/edges/labeled/
+scalax/collection/edges/multilabeled/
+scalax/collection/generator/
+scalax/collection/generator/parameters/
+scalax/collection/generic/
+scalax/collection/hyperedges/
+scalax/collection/hyperedges/labeled/
+scalax/collection/hyperedges/multilabeled/
+scalax/collection/hyperedges/ordered/
+scalax/collection/hyperedges/ordered/labeled/
+scalax/collection/hyperedges/ordered/multilabeled/
+scalax/collection/immutable/
+scalax/collection/mutable/
+scala/collection/EqSetFacade.class
+scala/collection/ExtSetMethods.class
+scala/collection/FilterableSet.class
+scala/collection/FilteredSet.class
+scala/collection/SeqFacade.class
+scala/collection/Util$.class
+scala/collection/Util.class
+scala/collection/mutable/ExtHashSet$$anon$1.class
+scala/collection/mutable/ExtHashSet$$anon$2.class
+scala/collection/mutable/ExtHashSet$$anon$3.class
+scala/collection/mutable/ExtHashSet$.class
+scala/collection/mutable/ExtHashSet$DeserializationFactory.class
+scala/collection/mutable/ExtHashSet$HashSetIterator.class
+scala/collection/mutable/ExtHashSet$Node.class
+scala/collection/mutable/ExtHashSet.class
+scala/util/compat/Boundary$.class
+scala/util/compat/Boundary$Break.class
+scala/util/compat/Boundary$Label.class
+scala/util/compat/Boundary.class
+scalax/collection/AnyGraph.class
+scalax/collection/ForeachBasedDetachingIterable.class
+scalax/collection/GraphBase$.class
+scalax/collection/GraphBase$BaseInnerEdge$.class
+scalax/collection/GraphBase$BaseInnerEdge$ArityOrdering$.class
+scalax/collection/GraphBase$BaseInnerEdge$WeightOrdering$.class
+scalax/collection/GraphBase$BaseInnerEdge.class
+scalax/collection/GraphBase$BaseInnerNode.class
+scalax/collection/GraphBase$BaseNodeBase.class
+scalax/collection/GraphBase$EdgeOrdering$$anon$2.class
+scalax/collection/GraphBase$EdgeOrdering$$anon$3.class
+scalax/collection/GraphBase$EdgeOrdering$.class
+scalax/collection/GraphBase$EdgeOrdering$None$.class
+scalax/collection/GraphBase$EdgeOrdering.class
+scalax/collection/GraphBase$EdgeSet.class
+scalax/collection/GraphBase$ElemOrdering.class
+scalax/collection/GraphBase$NoOrdering$.class
+scalax/collection/GraphBase$Node$.class
+scalax/collection/GraphBase$Node.class
+scalax/collection/GraphBase$NodeOrdering$$anon$1.class
+scalax/collection/GraphBase$NodeOrdering$.class
+scalax/collection/GraphBase$NodeOrdering$None$.class
+scalax/collection/GraphBase$NodeOrdering.class
+scalax/collection/GraphBase$NodeSet.class
+scalax/collection/GraphBase.class
+scalax/collection/GraphDegree$$anon$1.class
+scalax/collection/GraphDegree$Degree$.class
+scalax/collection/GraphDegree$DegreeFunction.class
+scalax/collection/GraphDegree$DegreeOrdering$.class
+scalax/collection/GraphDegree$DegreeOrdering.class
+scalax/collection/GraphDegree$Filter.class
+scalax/collection/GraphDegree$InDegree$.class
+scalax/collection/GraphDegree$IntReverseOrdering$.class
+scalax/collection/GraphDegree$OutDegree$.class
+scalax/collection/GraphDegree.class
+scalax/collection/GraphLike$$anon$1.class
+scalax/collection/GraphLike$$anon$2.class
+scalax/collection/GraphLike$GraphEdgeSet.class
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/scala-graph/scala-graph.git | rg '2\\.0\\.3|v2|2\\.0'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scala-graph/scala-graph/contents?ref=v2.0.3' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scala-graph/scala-graph/contents?ref=2.0.3' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ exited 22 in 158ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 147ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 383ms:
+617b2f3ecdb5038b8988c224c7b5e08349978b03	refs/tags/1.12.0
+d940df853b750c506cecf3505d9ed670be5aab3b	refs/tags/2.0.1
+6fa6a360475f6264948bfc4ba307099ab2691f18	refs/tags/2.0.2
+
+web search: 
+web search: site:github.com/scala-graph/scala-graph "2.0.3" "graph-core"
+codex
+Maven Central publishes sources and Scaladoc for this exact artifact, but I do not see a Maven test artifact. I’m checking the upstream repository layout now to see whether there is a version-addressable test suite path for 2.0.3; if no corresponding tag exists, that field should be `N/A` rather than guessing.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/scala-graph/scala-graph/default/README.md || curl -fsSL https://raw.githubusercontent.com/scala-graph/scala-graph/main/README.md || curl -fsSL https://raw.githubusercontent.com/scala-graph/scala-graph/master/README.md' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc "rm -rf /tmp/scala-graph && git clone --depth 1 https://github.com/scala-graph/scala-graph.git /tmp/scala-graph && find /tmp/scala-graph -maxdepth 4 -type d | sort | sed -n '1,180p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/2.0.3/graph-core_2.13-2.0.3-javadoc.jar -o /tmp/graph-core-javadoc.jar && jar tf /tmp/graph-core-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 1822ms:
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+# Graph for Scala
+
+This is the source code repository and issue tracker for [Graph for Scala](http://www.scala-graph.org).
+
+[Questions or any feedback](https://groups.google.com/forum/#!forum/scala-graph) are appreciated.
+Please use GitHub issues for proven issues or enhancement requests, not for questions. 
+
+You are also welcome as a co-contributor.
+
+Have fun with Graph for Scala.
+
+Peter
+
+## Branches
+
+**1.x** started in 2011, is now superseeded by 2.x. It evolved by paying high attention to version compatibility.
+
+**2.x**, the **default** branch, started in 2019 to make some significant improvements that also needed new, simplified signatures.
+The new features include
+
+* multiple sources for directed hyperedges
+* easy edge class definition using case classes, thus easy definition of ADTs for edges
+* improved functional graph handling.
+
+2.0 was released in May 2023.
+
+**persistent** opened in January 2024 with the aim of implementing a persistent data structure.
+
+ succeeded in 2607ms:
+/tmp/scala-graph
+/tmp/scala-graph/.git
+/tmp/scala-graph/.git/branches
+/tmp/scala-graph/.git/hooks
+/tmp/scala-graph/.git/info
+/tmp/scala-graph/.git/logs
+/tmp/scala-graph/.git/logs/refs
+/tmp/scala-graph/.git/logs/refs/heads
+/tmp/scala-graph/.git/logs/refs/remotes
+/tmp/scala-graph/.git/objects
+/tmp/scala-graph/.git/objects/info
+/tmp/scala-graph/.git/objects/pack
+/tmp/scala-graph/.git/refs
+/tmp/scala-graph/.git/refs/heads
+/tmp/scala-graph/.git/refs/remotes
+/tmp/scala-graph/.git/refs/remotes/origin
+/tmp/scala-graph/.git/refs/tags
+/tmp/scala-graph/.github
+/tmp/scala-graph/.github/workflows
+/tmp/scala-graph/constrained
+/tmp/scala-graph/constrained/src
+/tmp/scala-graph/constrained/src/main
+/tmp/scala-graph/constrained/src/main/scala
+/tmp/scala-graph/constrained/src/test
+/tmp/scala-graph/constrained/src/test/scala
+/tmp/scala-graph/core
+/tmp/scala-graph/core/log
+/tmp/scala-graph/core/src
+/tmp/scala-graph/core/src/main
+/tmp/scala-graph/core/src/main/scala
+/tmp/scala-graph/core/src/test
+/tmp/scala-graph/core/src/test/doc
+/tmp/scala-graph/core/src/test/scala
+/tmp/scala-graph/core/src/test/scala-2
+/tmp/scala-graph/core/src/test/scala-3
+/tmp/scala-graph/dot
+/tmp/scala-graph/dot/src
+/tmp/scala-graph/dot/src/main
+/tmp/scala-graph/dot/src/main/scala
+/tmp/scala-graph/dot/src/test
+/tmp/scala-graph/dot/src/test/scala
+/tmp/scala-graph/jsonLift
+/tmp/scala-graph/jsonLift/src
+/tmp/scala-graph/jsonLift/src/main
+/tmp/scala-graph/jsonLift/src/main/scala
+/tmp/scala-graph/jsonLift/src/test
+/tmp/scala-graph/jsonLift/src/test/scala
+/tmp/scala-graph/jsoniter
+/tmp/scala-graph/jsoniter/src
+/tmp/scala-graph/jsoniter/src/main
+/tmp/scala-graph/jsoniter/src/main/scala
+/tmp/scala-graph/jsoniter/src/test
+/tmp/scala-graph/jsoniter/src/test/scala
+/tmp/scala-graph/misc
+/tmp/scala-graph/misc/src
+/tmp/scala-graph/misc/src/main
+/tmp/scala-graph/misc/src/main/scala
+/tmp/scala-graph/misc/src/test
+/tmp/scala-graph/misc/src/test/scala
+/tmp/scala-graph/project
+
+ succeeded in 3284ms:
+META-INF/MANIFEST.MF
+lib/
+scala/
+scala/collection/
+scala/collection/mutable/
+scala/util/
+scala/util/compat/
+scalax/
+scalax/collection/
+scalax/collection/config/
+scalax/collection/edges/
+scalax/collection/edges/labeled/
+scalax/collection/edges/multilabeled/
+scalax/collection/generator/
+scalax/collection/generator/parameters/
+scalax/collection/generic/
+scalax/collection/hyperedges/
+scalax/collection/hyperedges/labeled/
+scalax/collection/hyperedges/multilabeled/
+scalax/collection/hyperedges/ordered/
+scalax/collection/hyperedges/ordered/labeled/
+scalax/collection/hyperedges/ordered/multilabeled/
+scalax/collection/immutable/
+scalax/collection/mutable/
+index.html
+index.js
+lib/MaterialIcons-Regular.eot
+lib/MaterialIcons-Regular.ttf
+lib/MaterialIcons-Regular.woff
+lib/abstract_type.svg
+lib/annotation.svg
+lib/annotation_comp.svg
+lib/class.svg
+lib/class_comp.svg
+lib/class_diagram.png
+lib/diagrams.css
+lib/index.css
+lib/index.js
+lib/jquery.min.js
+lib/lato-v11-latin-100.eot
+lib/lato-v11-latin-100.ttf
+lib/lato-v11-latin-100.woff
+lib/lato-v11-latin-regular.eot
+lib/lato-v11-latin-regular.ttf
+lib/lato-v11-latin-regular.woff
+lib/object.svg
+lib/object_comp.svg
+lib/object_comp_annotation.svg
+lib/object_comp_trait.svg
+lib/object_diagram.png
+lib/open-sans-v13-latin-400i.eot
+lib/open-sans-v13-latin-400i.ttf
+lib/open-sans-v13-latin-400i.woff
+lib/open-sans-v13-latin-700.eot
+lib/open-sans-v13-latin-700.ttf
+lib/open-sans-v13-latin-700.woff
+lib/open-sans-v13-latin-700i.eot
+lib/open-sans-v13-latin-700i.ttf
+lib/open-sans-v13-latin-700i.woff
+lib/open-sans-v13-latin-regular.eot
+lib/open-sans-v13-latin-regular.ttf
+lib/open-sans-v13-latin-regular.woff
+lib/ownderbg2.gif
+lib/ownerbg.gif
+lib/ownerbg2.gif
+lib/package.svg
+lib/print.css
+lib/ref-index.css
+lib/scheduler.js
+lib/source-code-pro-v6-latin-700.eot
+lib/source-code-pro-v6-latin-700.ttf
+lib/source-code-pro-v6-latin-700.woff
+lib/source-code-pro-v6-latin-regular.eot
+lib/source-code-pro-v6-latin-regular.ttf
+lib/source-code-pro-v6-latin-regular.woff
+lib/template.css
+lib/template.js
+lib/trait.svg
+lib/trait_comp.svg
+lib/trait_diagram.png
+
+exec
+/usr/bin/bash -lc "git -C /tmp/scala-graph branch -r && git -C /tmp/scala-graph log --oneline -20 && rg -n \"2\\.0\\.3|version :=|ThisBuild / version|graph-core\" /tmp/scala-graph/project /tmp/scala-graph/build.sbt /tmp/scala-graph/README.md /tmp/scala-graph -g '"'!target'"' | head -100" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+  origin/2.x
+  origin/HEAD -> origin/2.x
+d976ef0918 (grafted, HEAD -> 2.x, origin/HEAD, origin/2.x) fix lift-json/scala-xml dependency issue
+/tmp/scala-graph/build.sbt:40:      description := "Configurable DOT export of Graphs provided by graph-core.",
+/tmp/scala-graph/build.sbt:53:      description := "Configurable JSON serialization and deserialization of Graphs, provided by graph-core, in terms of lift-json.",
+/tmp/scala-graph/build.sbt:68:      description := "Configurable JSON codecs for Graphs, provided by graph-core, in terms of jsoniter-scala.",
+/tmp/scala-graph/build.sbt:40:      description := "Configurable DOT export of Graphs provided by graph-core.",
+/tmp/scala-graph/build.sbt:53:      description := "Configurable JSON serialization and deserialization of Graphs, provided by graph-core, in terms of lift-json.",
+/tmp/scala-graph/build.sbt:68:      description := "Configurable JSON codecs for Graphs, provided by graph-core, in terms of jsoniter-scala.",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scala-graph/scala-graph/releases?per_page=100 | rg -n '\"tag_name\"|\"name\"|2\\.0\\.3|2\\.0'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.scala-graph.org/download/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.scala-graph.org/guides/core-introduction.html | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 118ms:
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+    <title>Graph for Scala | Download</title>
+    <link rel="stylesheet" type="text/css" href="/css/cheeky.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen">
+  </head>
+  <body>
+  <div class="sticky">
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="span-16">
+            <span id="logo"><a href="/">Graph for Scala</a></span>
+            <nav>
+              <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/download">Download</a></li>
+                <li><a href="#" class="dropdown-toggle">User Guides</a>
+                  <div class="dropdown-container">
+                    <ul>
+                      <li><a href="/guides/core/index.html">Core</a></li>
+                      <li><a href="/guides/dot.html">Dot</a></li>
+                      <li><a href="/guides/json.html">JSON Scala 2.13</a></li>
+                      <li><a href="/guides/jsoniter.html">JSON Scala 3</a></li>
+                      <li><a href="/guides/test.html">Test</a></li>
+                      <li><p>deprecated</p></li>
+                      <li><a href="/guides-1.13/constrained.html">Constrained</a></li>
+                    </ul>
+                  </div>
+                </li>
+                <li><a href="#" class="dropdown-toggle">Scaladoc</a>
+                  <div class="dropdown-container">
+                    <ul>
+                      <li><a href="http://www.scala-graph.org/api/core/#package" target="_blank">Core</a></li>
+                      <li><a href="http://www.scala-graph.org/api/dot/#package" target="_blank">Dot</a></li>
+                      <li><a href="http://www.scala-graph.org/api/json/#package" target="_blank">JSON Scala 2.13</a></li>
+                      <li><a href="http://www.scala-graph.org/api/jsoniter/#package" target="_blank">JSON Scala 3</a></li>
+                      <li><p>deprecated</p></li>
+                      <li><a href="http://www.scala-graph.org/api/core/api-1.13/#package" target="_blank">Core 1.13</a></li>
+                      <li><a href="http://www.scala-graph.org/api/constrained/api-1.13/#package" target="_blank">Constrained 1.13</a></li>
+                      <li><a href="http://www.scala-graph.org/api/dot/api-1.13/#package" target="_blank">Dot 1.13</a></li>
+                      <li><a href="http://www.scala-graph.org/api/json/api-1.13/#package" target="_blank">JSON 1.13</a></li>
+                    </ul>
+                  </div>
+                </li>
+                <li><a href="https://github.com/scala-graph/scala-graph" target="_blank">GitHub</a></li>
+                <li><a href="https://groups.google.com/forum/?fromgroups#!forum/scala-graph" target="_blank">Mailing List</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row">
+        <div class="span-14 offset-1 content">
+          <h1>Download</h1>
+<p>The latest stable releases are</p>
+<table>
+	<tr>
+		<td>Module</td>
+		<td align="right">Scala 2.13</td>
+		<td align="right">Scala.js 2.13</td>
+		<td align="right">Scala 3</td>
+		<td align="right">Scala.js 3</td>
+		<td align="right">Scala Native 2.13</td>
+		<td align="right">Scala Native 3</td>
+	</tr>
+	<tr>
+		<td><code>graph-core</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+	</tr>
+	<tr>
+		<td><code>graph-dot</code></td>
+		<td align="right"><code>2.0.0</code></td>
+		<td align="right"><code>2.0.0</code></td>
+		<td align="right"><code>2.0.0</code></td>
+		<td align="right"><code>2.0.0</code></td>
+		<td align="right"><code>2.0.0</code></td>
+		<td align="right"><code>2.0.0</code></td>
+	</tr>
+	<tr>
+		<td><code>graph-json</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right">-</td>
+		<td align="right">-</td>
+		<td align="right">-</td>
+		<td align="right">-</td>
+	</tr>
+	<tr>
+		<td><code>graph-jsoniter</code></td>
+		<td align="right">-</td>
+		<td align="right">-</td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right"><code>2.0.3</code></td>
+		<td align="right">-</td>
+		<td align="right">-</td>
+	</tr>
+</table>
+<p>To download the latest Scala release of <code>core</code>, add the following to your SBT settings:
+</p>
+<pre>libraryDependencies += "org.scala-graph" %% "graph-core" % "2.0.3"
+</pre>
+<p> You may find or manually download any release including Scaladoc from
+	<a href="https://central.sonatype.com/search?q=g%3Aorg.scala-graph&amp;smo=true&amp;sort=published" target="_blank">org.scala-graph
+		on Maven</a>.
+</p>
+<p> Major release 1 is deprecated except for bug fixes.
+</p>
+
+<h2 id="2.0">2.0 Release notes</h2>
+<h3 id="2.0.3 graph-jsoniter">2.0.3 JSON</h3>
+<ul>
+	<li>Introduced <a href="../guides/jsoniter.html">JSON support for Scala 3</a>
+		based on <a href="https://github.com/plokhotnyuk/jsoniter-scala/" target="_blank">jsoniter-scala</a>.
+	</li>
+</ul>
+
+<h3 id="2.0.3">2.0.3</h3>
+<ul>
+	<li>Modified <code>diSuccessors</code>/<code>diPredecessors</code> to include self if some loop exists
+		as a follow-up on <a href="https://github.com/scala-graph/scala-graph/issues/177">this problem report</a>.
+		Migration: In case of graphs with loops, replace existing calls to <code>diSuccessors</code>/<code>diPredecessors</code>
+		with calls to <code>outNeighbors</code>/<code>inNeighbors</code> with the latter not containing the looping node.
+	</li>
+	<li>Fixed <a href="https://github.com/scala-graph/scala-graph/pull/357">missing hashCode() for Graph</a>.
+	</li>
+</ul>
+
+<h3 id="2.0.2">2.0.2</h3>
+<ul>
+	<li>
+<code>core</code> and <code>dot</code> are now cross-compiled against Scala 2.13 and Scala 3.
+		The <code>json</code> module is not ready for Scala 3 due to a dependency that is not available for Scala 3.
+		<em>Graph for Scala</em> is now published for the platforms Scala, Scala.js and Scala Native.
+	</li>
+</ul>
+
+<h3 id="2.0.1">2.0.1</h3>
+<ul>
+	<li>Fixes <a href="https://github.com/scala-graph/scala-graph/issues/300">case class for typed edges does not work
+		in Scala 3</a>.
+	</li>
+</ul>
+
+<h3 id="2.0.0">2.0.0</h3>
+<p> 2.0 introduces some significant enhancements over 1.x:
+</p>
+<ul>
+	<li>new: Easier <a href="../guides/core/editing.html">custom edge creation</a> facilitated by a string of traits.
+	</li>
+	<li>new: Easy definition of <a href="../guides/core/planning.html#NodesEdges">edge ADTs</a>.
+	</li>
+	<li>new: Support for <a href="../guides/core/transform.html">graph transformations</a>
+		via <code>map</code> and <code>flatMap</code>.
+	</li>
+	<li>new: Directed hyperedges come with <a href="../guides/core/concepts.html#HyperEdgeEquality">multiple sources</a>.
+	</li>
+	<li>new: Directed and undirected hyperedges have now type safe signatures.
+	</li>
+	<li>modified: The type parameter <code>E</code> for the edge type of graphs is now a simple type
+		as opposed to a higher kinded type as before.
+	</li>
+	<li>modified: Edge types are modularized by packages and traits for easier custom edge definitions.
+	</li>
+	<li>dropped: Generic labelled edges are <a href="../guides/core/concepts.html#EdgeClasses">superseded by custom
+		edges</a>.
+	</li>
+</ul>
+<h3>Migration notes</h3>
+<p> Unfortunately, the enhancements could only be achieved at the expense of backwards compatibility.
+	To make this clear, we bumped the major version to 2.
+</p>
+<p> Take your time to familiarise yourself with the new <a href="../guides/core/concepts.html">concepts</a> and then
+	start to migrate your code by <a href="../guides/core/planning.html">choosing</a> the most appropriate edge types.
+	For missing pieces, please refer to ScalaDoc and the numerous tests.
+</p>
+
+<h2 id="1.13">1.13 Release notes</h2>
+
+<h3 id="1.13.6">1.13.6</h3>
+<ul>
+	<li>Fixes <a href="https://github.com/scala-graph/scala-graph/issues/264">Topological sort may not return a node in
+		a cycle when it fails</a>.
+		Note that the failure part of the <a href="../api/core/scalax/collection/GraphTraversal$TopologicalSort.html" target="_blank">returned</a> <code>Either</code> has also changed.
+	</li>
+</ul>
+
+<h3 id="1.13.5">1.13.5</h3>
+<ul>
+	<li>Test scope for Netbeans dependencies.
+	</li>
+</ul>
+
+<h3 id="1.13.4">1.13.4</h3>
+<ul>
+	<li>Ready for use with Scala 3.1.
+	</li>
+	<li>Fixed Scala 3 compatiblity issue.
+	</li>
+</ul>
+
+<h3 id="1.13.2">1.13.2</h3>
+<ul>
+	<li>Completed migration to Scala 2.13 by releasing the last missing part <code>Graph Constrained</code>.
+		Again, many thanks to Marcus.
+	</li>
+	<li>Fixed minor performance regression in the Scala 2.13 release of Core.
+	</li>
+</ul>
+
+ succeeded in 275ms:
+6:    "html_url": "https://github.com/scala-graph/scala-graph/releases/tag/2.0.2",
+30:    "tag_name": "2.0.2",
+32:    "name": "v2.0.2",
+42:    "tarball_url": "https://api.github.com/repos/scala-graph/scala-graph/tarball/2.0.2",
+43:    "zipball_url": "https://api.github.com/repos/scala-graph/scala-graph/zipball/2.0.2",
+44:    "body": "## What's Changed\r\n* resolve -Xsource:3 errors by @mcallisto in https://github.com/scala-graph/scala-graph/pull/315\r\n* Experiment3 by @mcallisto and @peter-empen in https://github.com/scala-graph/scala-graph/pull/324\r\n* Enable Scala 3 migration mode by @zeal18 in https://github.com/scala-graph/scala-graph/pull/325\r\n* Add Scala Native by @mio-19 in https://github.com/scala-graph/scala-graph/pull/327\r\n\r\n## New Contributors\r\n* @zeal18 made their first contribution in https://github.com/scala-graph/scala-graph/pull/325\r\n* @mio-19 made their first contribution in https://github.com/scala-graph/scala-graph/pull/327\r\n\r\n**Full Changelog**: https://github.com/scala-graph/scala-graph/compare/2.0.1...2.0.2",
+75:    "tag_name": "1.13.5",
+77:    "name": "1.13.5",
+
+codex
+The artifact is a JVM JAR with `.class` files and depends on `scala-library` 2.13.x, so it stays a Native Image metadata target. I’m going to use Maven Central for sources and Scaladoc, the POM SCM URL for the repository root, and `N/A` for tests because no matching 2.0.3 tag or Maven test artifact is available.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+diff --git a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+index 2924ebf4da68125fff3cba97addd09510ca766bd..9cb1ce37dd825fc3230d3716a4993234cf6b4990
+--- a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
++++ b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
++  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
++  "repository-url" : "https://github.com/scala-graph/scala-graph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
++  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+index 2924ebf4da68125fff3cba97addd09510ca766bd..9cb1ce37dd825fc3230d3716a4993234cf6b4990
+--- a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
++++ b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
++  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
++  "repository-url" : "https://github.com/scala-graph/scala-graph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
++  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+{
+  "coordinates": "org.scala-graph:graph-core_2.13:2.0.3",
+  "repository-url": "https://github.com/scala-graph/scala-graph",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
+  "description": "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+index 2924ebf4da68125fff3cba97addd09510ca766bd..9cb1ce37dd825fc3230d3716a4993234cf6b4990
+--- a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
++++ b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
++  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
++  "repository-url" : "https://github.com/scala-graph/scala-graph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
++  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+diff --git a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+index 2924ebf4da68125fff3cba97addd09510ca766bd..9cb1ce37dd825fc3230d3716a4993234cf6b4990
+--- a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
++++ b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
++  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
++  "repository-url" : "https://github.com/scala-graph/scala-graph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
++  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 243ms:
+web search: 
+web search: https://www.scala-graph.org/download/
+web search: 
+web search: repo.maven.apache.org org scala-graph graph-core_2.13 2.0.3 sources javadoc pom
+web search: 
+web search: https://github.com/scala-graph/scala-graph/releases
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
+     3	  "repository-url" : "https://github.com/scala-graph/scala-graph",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
+     5	  "test-code-url" : "N/A",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
+     7	  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "2"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+index 2924ebf4da68125fff3cba97addd09510ca766bd..9cb1ce37dd825fc3230d3716a4993234cf6b4990
+--- a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
++++ b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
++  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
++  "repository-url" : "https://github.com/scala-graph/scala-graph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
++  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+Updated [org.scala-graph-graph-core_2.13-2.0.3.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json:1).
+
+Set Maven Central source and Scaladoc URLs, GitHub repository URL, Scala 2 language metadata, and a two-sentence description. I left `test-code-url` as `N/A` because Maven Central has no test artifact for this release and the upstream repository has no `2.0.3` tag to target confidently. JSON validates with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+index 2924ebf4da68125fff3cba97addd09510ca766bd..9cb1ce37dd825fc3230d3716a4993234cf6b4990
+--- a/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
++++ b/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3"
++  "coordinates" : "org.scala-graph:graph-core_2.13:2.0.3",
++  "repository-url" : "https://github.com/scala-graph/scala-graph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-graph/graph-core_2.13/$version$/graph-core_2.13-$version$-javadoc.jar",
++  "description" : "Graph Core is the main Graph for Scala module, providing immutable and mutable graph collections, edge and hyperedge types, traversal, and graph operations for Scala applications. It supplies the foundational data structures and APIs used by the project's optional DOT and JSON integration modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+66,640
+Updated [org.scala-graph-graph-core_2.13-2.0.3.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/build/discovered-artifact-metadata/org.scala-graph-graph-core_2.13-2.0.3.json:1).
+
+Set Maven Central source and Scaladoc URLs, GitHub repository URL, Scala 2 language metadata, and a two-sentence description. I left `test-code-url` as `N/A` because Maven Central has no test artifact for this release and the upstream repository has no `2.0.3` tag to target confidently. JSON validates with `jq`.
+Ran agent for org.scala-graph:graph-core_2.13:2.0.3 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/build/agent-artifact-discovery-logs/org.scala-graph-graph-core_2.13-2.0.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5430-a3e7ab7e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 15s
+9 actionable tasks: 9 executed
