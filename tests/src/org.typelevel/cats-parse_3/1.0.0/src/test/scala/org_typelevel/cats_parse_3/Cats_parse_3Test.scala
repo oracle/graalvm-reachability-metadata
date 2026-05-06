@@ -12,6 +12,7 @@ import cats.parse.LocationMap
 import cats.parse.Numbers
 import cats.parse.Parser
 import cats.parse.Parser0
+import cats.parse.SemVer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -184,5 +185,25 @@ class Cats_parse_3Test {
     assertEquals(Right(("way", "yes")), yesNo.parse("yesway"))
     assertEquals(Right('O'), vowels.parseAll("O"))
     assertTrue(Parser.ignoreCase("select").parseAll("insert").isLeft)
+  }
+
+  @Test
+  def semanticVersionParsersExtractCorePreReleaseAndBuildMetadata(): Unit = {
+    val release: SemVer.SemVer = SemVer.semver.parseAll("2.3.5-alpha.1+build.7") match {
+      case Right(value) => value
+      case Left(error) => throw new AssertionError(s"Expected semantic version, got $error")
+    }
+
+    assertEquals("2", release.core.major)
+    assertEquals("3", release.core.minor)
+    assertEquals("5", release.core.patch)
+    assertEquals(Some("alpha.1"), release.preRelease)
+    assertEquals(Some("build.7"), release.buildMetadata)
+
+    assertEquals(Right("2.3.5"), SemVer.coreString.parseAll("2.3.5"))
+    assertEquals(Right("alpha.1"), SemVer.preRelease.parseAll("alpha.1"))
+    assertEquals(Right("build.7"), SemVer.build.parseAll("build.7"))
+    assertTrue(SemVer.semver.parseAll("02.3.5").isLeft)
+    assertTrue(SemVer.preRelease.parseAll("alpha_1").isLeft)
   }
 }
