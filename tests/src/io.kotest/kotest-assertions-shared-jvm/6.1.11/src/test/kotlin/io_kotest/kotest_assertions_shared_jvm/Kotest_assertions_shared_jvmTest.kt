@@ -17,6 +17,7 @@ import io.kotest.assertions.MultiAssertionErrorBuilder
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.assertionCounterContextElement
+import io.kotest.assertions.clueContextAsString
 import io.kotest.assertions.collectErrors
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.createLazyAssertionError
@@ -418,6 +419,31 @@ public class Kotest_assertions_shared_jvmTest {
         assertTrue(error.message!!.contains("outer failure"))
         assertTrue(error.message!!.contains("inner first failure"))
         assertTrue(error.message!!.contains("inner second failure"))
+    }
+
+    @Test
+    fun assertSoftlyReturnsBlockResultWhenAllAssertionsPass(): Unit {
+        val result: String = assertSoftly {
+            "all assertions passed"
+        }
+
+        assertEquals("all assertions passed", result)
+        assertEquals(ErrorCollectionMode.Hard, errorCollector.getCollectionMode())
+        assertTrue(errorCollector.errors().isEmpty())
+    }
+
+    @Test
+    fun clueContextAsStringFormatsActiveCluesInOrder(): Unit {
+        assertEquals("", clueContextAsString())
+
+        errorCollector.pushClue { "first clue" }
+        errorCollector.pushClue { "second clue" }
+        try {
+            assertEquals("first clue\nsecond clue\n", clueContextAsString())
+        } finally {
+            errorCollector.popClue()
+            errorCollector.popClue()
+        }
     }
 
     @Test
