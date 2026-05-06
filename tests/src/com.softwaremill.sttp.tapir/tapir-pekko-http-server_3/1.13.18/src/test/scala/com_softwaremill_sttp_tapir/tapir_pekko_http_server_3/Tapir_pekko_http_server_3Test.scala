@@ -11,6 +11,7 @@ import org.apache.pekko.http.scaladsl.Http
 import org.apache.pekko.http.scaladsl.model.HttpEntity
 import org.apache.pekko.http.scaladsl.server.{RequestContext, Route}
 import org.apache.pekko.stream.scaladsl.{Flow, Source}
+import org.apache.pekko.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import sttp.capabilities.pekko.PekkoStreams
@@ -144,6 +145,37 @@ class Tapir_pekko_http_server_3Test {
       assertThat(response.statusCode()).isEqualTo(200)
       assertThat(response.headers().firstValue("X-Byte-Count")).hasValue("6")
       assertThat(response.body()).containsExactly(13.toByte, 8.toByte, 5.toByte, 3.toByte, 2.toByte, 1.toByte)
+    }
+  }
+
+  @Test
+  def streamsBinaryResponseBodyWithPekkoStreams(): Unit = {
+    withServer {
+      val streamedEndpoint = endpoint.get
+        .in("download" / "stream")
+        .out(streamBinaryBody(PekkoStreams)(CodecFormat.OctetStream()))
+        .serverLogicSuccess[Future] { _ =>
+          val chunks = List(
+            ByteString.fromArray("stream-".getBytes(StandardCharsets.UTF_8)),
+            ByteString.fromArray("chunk".getBytes(StandardCharsets.UTF_8))
+          )
+          Future.successful(Source(chunks))
+        }
+
+      PekkoHttpServerInterpreter().toRoute(streamedEndpoint)
+    } { baseUri =>
+      val response = client.send(
+        JHttpRequest
+          .newBuilder(baseUri.resolve("/download/stream"))
+          .timeout(RequestTimeout)
+          .GET()
+          .build(),
+        JHttpResponse.BodyHandlers.ofByteArray()
+      )
+
+      assertThat(response.statusCode()).isEqualTo(200)
+      assertThat(response.headers().firstValue("Content-Type").orElse("")).contains("application/octet-stream")
+      assertThat(new String(response.body(), StandardCharsets.UTF_8)).isEqualTo("stream-chunk")
     }
   }
 
