@@ -18,6 +18,7 @@ import alleycats.Zero
 import cats.Alternative
 import cats.Bimonad
 import cats.Eval
+import cats.Foldable
 import cats.Hash
 import cats.Monad
 import cats.Traverse
@@ -245,6 +246,28 @@ class Alleycats_core_3Test {
     })
     assertTrue(bimonad.tailRecM(0)(_ => failure.map(Right(_))).isFailure)
     assertThrows(classOf[IllegalArgumentException], () => bimonad.extract(failure))
+  }
+
+  @Test
+  def providesForeachSyntaxForFoldableValuesWithoutNativeForeach(): Unit = {
+    import alleycats.syntax.foldable.*
+
+    final case class AuditLog[A](entries: Vector[A])
+
+    given Foldable[AuditLog] with
+      override def foldLeft[A, B](fa: AuditLog[A], b: B)(f: (B, A) => B): B =
+        fa.entries.foldLeft(b)(f)
+
+      override def foldRight[A, B](fa: AuditLog[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+        fa.entries.foldRight(lb)((entry, rest) => f(entry, rest))
+
+    val visitedEntries = Vector.newBuilder[String]
+
+    AuditLog(Vector("created", "validated", "stored")).foreach { entry =>
+      visitedEntries += entry
+    }
+
+    assertEquals(Vector("created", "validated", "stored"), visitedEntries.result())
   }
 
   @Test
