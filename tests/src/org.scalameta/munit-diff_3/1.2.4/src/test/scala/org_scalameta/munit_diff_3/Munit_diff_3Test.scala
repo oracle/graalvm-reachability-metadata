@@ -105,6 +105,19 @@ class Munit_diff_3Test {
   }
 
   @Test
+  def unifiedDiffMarksTrailingSpacesInChangedLines(): Unit = {
+    val options: DiffOptions = DiffOptions
+      .withForceAnsi(Some(false))
+      .withContextSize(0)
+    val obtained: String = "first \nsecond"
+    val expected: String = "first\nsecond"
+
+    val report: String = Diff.unifiedDiff(obtained, expected)(options)
+
+    assertEquals("-first\n+first ∙", report)
+  }
+
+  @Test
   def optionsAreImmutableAndExposeConfiguredValues(): Unit = {
     val printer: Printer = Printer(height = 2) { case value: Int => s"int=$value" }
     val customized: DiffOptions = DiffOptions
