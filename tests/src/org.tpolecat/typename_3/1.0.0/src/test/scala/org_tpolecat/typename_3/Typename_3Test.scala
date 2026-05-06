@@ -30,6 +30,12 @@ class Typename_3Test {
   }
 
   @Test
+  def derivesNamesForScala3UnionAndIntersectionTypes(): Unit = {
+    assertTypeNameContains[NamedRecord | CountRecord]("NamedRecord", "CountRecord", "|")
+    assertTypeNameContains[HasName & HasCount]("HasName", "HasCount", "&")
+  }
+
+  @Test
   def packageFunctionAndSummonedTypeClassUseTheSameDerivedName(): Unit = {
     val fromPackageFunction: String = typeName[Map[String, List[NamedRecord]]]
     val fromSummonedTypeClass: TypeName[Map[String, List[NamedRecord]]] = summon[TypeName[Map[String, List[NamedRecord]]]]
@@ -95,6 +101,10 @@ class Typename_3Test {
 }
 
 final case class NamedRecord(name: String, count: Int)
+final case class CountRecord(count: Int)
+
+trait HasName
+trait HasCount
 
 sealed trait SealedValue
 case object FirstSealedValue extends SealedValue
