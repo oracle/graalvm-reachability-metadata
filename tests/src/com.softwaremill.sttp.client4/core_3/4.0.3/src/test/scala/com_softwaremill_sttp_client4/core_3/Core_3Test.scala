@@ -450,6 +450,32 @@ class Core_3Test {
   }
 
   @Test
+  def httpUrlConnectionBackendFollowsRedirectsAndKeepsResponseHistory(): Unit = {
+    val captured: Seq[CapturedRequest] = withRedirectingHttpServer(finalBody = "redirected") { baseUrl =>
+      val backend: SyncBackend = HttpURLConnectionBackend(BackendOptions.connectionTimeout(2.seconds))
+      try {
+        val response: Response[String] = basicRequest
+          .followRedirects(true)
+          .readTimeout(2.seconds)
+          .get(uri"$baseUrl/start?debug=true")
+          .response(asStringAlways)
+          .send(backend)
+
+        assertEquals(StatusCode.Ok, response.code)
+        assertEquals("redirected", response.body)
+        assertEquals(1, response.history.size)
+        assertEquals(302, response.history.head.code.code)
+        assertEquals(Some(s"$baseUrl/final?from=redirect"), response.history.head.header(HeaderNames.Location))
+      } finally {
+        backend.close()
+      }
+    }
+
+    assertEquals(Seq("GET", "GET"), captured.map(_.method))
+    assertEquals(Seq("/start?debug=true", "/final?from=redirect"), captured.map(_.target))
+  }
+
+  @Test
   def responseAndExceptionTypesExposePublicStateAndSafeRendering(): Unit = {
     val metadata: RequestMetadata = requestMetadata(Method.GET, uri"https://example.com/data?token=secret", Seq(Header.authorization("Bearer", "secret")))
     val history: List[ResponseMetadata] = List(dummyMetadata(StatusCode.MovedPermanently))
@@ -510,6 +536,40 @@ class Core_3Test {
     }
   }
 
+  private def withRedirectingHttpServer(finalBody: String)(f: String => Unit): Seq[CapturedRequest] = {
+    val serverSocket: ServerSocket = new ServerSocket(0)
+    serverSocket.setSoTimeout(5000)
+    val executor = Executors.newSingleThreadExecutor()
+    val future: JavaFuture[Seq[CapturedRequest]] = executor.submit(new Callable[Seq[CapturedRequest]] {
+      override def call(): Seq[CapturedRequest] = serveRedirect(serverSocket, finalBody)
+    })
+
+    try {
+      f(s"http://127.0.0.1:${serverSocket.getLocalPort}")
+      future.get(5, TimeUnit.SECONDS)
+    } finally {
+      serverSocket.close()
+      executor.shutdownNow()
+    }
+  }
+
+  private def serveRedirect(serverSocket: ServerSocket, finalBody: String): Seq[CapturedRequest] = {
+    val baseUrl: String = s"http://127.0.0.1:${serverSocket.getLocalPort}"
+    val first: CapturedRequest = serveExchange(
+      serverSocket,
+      "HTTP/1.1 302 Found",
+      "",
+      Seq(HeaderNames.Location -> s"$baseUrl/final?from=redirect")
+    )
+    val second: CapturedRequest = serveExchange(
+      serverSocket,
+      "HTTP/1.1 200 OK",
+      finalBody,
+      Seq(HeaderNames.ContentType -> "text/plain; charset=UTF-8")
+    )
+    Seq(first, second)
+  }
+
   private def serveOne(serverSocket: ServerSocket, responseBody: String, responseHeaders: Seq[(String, String)]): CapturedRequest = {
     val socket: Socket = serverSocket.accept()
     socket.setSoTimeout(5000)
@@ -540,6 +600,54 @@ class Core_3Test {
       val headerBlock: String =
         (Seq(
           "HTTP/1.1 200 OK",
+          s"Content-Length: ${responseBytes.length}",
+          "Connection: close"
+        ) ++ responseHeaders.map { case (name, value) => s"$name: $value" }).mkString("\r\n") + "\r\n\r\n"
+      socket.getOutputStream.write(headerBlock.getBytes(StandardCharsets.ISO_8859_1))
+      socket.getOutputStream.write(responseBytes)
+      socket.getOutputStream.flush()
+
+      CapturedRequest(requestParts(0), requestParts(1), headers.toMap, new String(bodyChars))
+    } finally {
+      socket.close()
+    }
+  }
+
+  private def serveExchange(
+      serverSocket: ServerSocket,
+      statusLine: String,
+      responseBody: String,
+      responseHeaders: Seq[(String, String)]
+  ): CapturedRequest = {
+    val socket: Socket = serverSocket.accept()
+    socket.setSoTimeout(5000)
+    try {
+      val reader: BufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream, StandardCharsets.ISO_8859_1))
+      val requestLine: String = reader.readLine()
+      val requestParts: Array[String] = requestLine.split(" ")
+      val headers = scala.collection.mutable.LinkedHashMap.empty[String, String]
+      var line: String = reader.readLine()
+      while (line != null && line.nonEmpty) {
+        val separator: Int = line.indexOf(':')
+        if (separator >= 0) {
+          headers += line.substring(0, separator).toLowerCase(java.util.Locale.ROOT) -> line.substring(separator + 1).trim
+        }
+        line = reader.readLine()
+      }
+
+      val contentLength: Int = headers.get("content-length").map(_.toInt).getOrElse(0)
+      val bodyChars: Array[Char] = new Array[Char](contentLength)
+      var offset: Int = 0
+      while (offset < contentLength) {
+        val read: Int = reader.read(bodyChars, offset, contentLength - offset)
+        if (read < 0) throw new IllegalStateException("Unexpected end of request body")
+        offset += read
+      }
+
+      val responseBytes: Array[Byte] = responseBody.getBytes(StandardCharsets.UTF_8)
+      val headerBlock: String =
+        (Seq(
+          statusLine,
           s"Content-Length: ${responseBytes.length}",
           "Connection: close"
         ) ++ responseHeaders.map { case (name, value) => s"$name: $value" }).mkString("\r\n") + "\r\n\r\n"
