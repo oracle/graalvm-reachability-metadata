@@ -176,6 +176,34 @@ class PgoNearCallReportTests(unittest.TestCase):
         self.assertIn("use this caller as the closest static point", guidance)
         self.assertIn("example.TargetHolder.call():void", guidance)
 
+    def test_guidance_does_not_label_fallback_sample_as_join_when_no_sample_matches_static_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(
+                tmpdir,
+                extra_methods=[
+                    ["6", "example.Unrelated", "run", "empty", "void", "true"],
+                ],
+                iprof_types=[
+                    {"id": 6, "name": "example.Unrelated"},
+                ],
+                iprof_methods=[
+                    {"id": 106, "name": "run", "signature": [6, 2]},
+                ],
+                sampling_profiles=[
+                    {
+                        "ctx": "106:1",
+                        "records": [5],
+                    },
+                ],
+            )
+            guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
+
+        self.assertIn("Representative sampled stack from the current native test run:", guidance)
+        self.assertIn("No sampled call-graph join frame was identified", guidance)
+        self.assertNotIn("<-- PGO/call-graph join point", guidance)
+        self.assertIn("Static path from the closest call-tree root to the uncovered call:", guidance)
+        self.assertIn("Current sampled path ended at the PGO/call-graph join point.", guidance)
+
     @staticmethod
     def _call_site(
             tracked_api: str = "java.lang.Class#forName(java.lang.String)",
@@ -196,6 +224,9 @@ class PgoNearCallReportTests(unittest.TestCase):
             target_invokes: list[list[str]] | None = None,
             target_targets: list[list[str]] | None = None,
             target_holder_is_entry_point: bool = False,
+            iprof_types: list[dict] | None = None,
+            iprof_methods: list[dict] | None = None,
+            sampling_profiles: list[dict] | None = None,
     ) -> None:
         reports_dir = os.path.join(report_dir, "reports")
         os.makedirs(reports_dir)
@@ -240,13 +271,13 @@ class PgoNearCallReportTests(unittest.TestCase):
                         {"id": 3, "name": "example.Router"},
                         {"id": 4, "name": "example.TargetHolder"},
                         {"id": 5, "name": "example.Other"},
-                    ],
+                    ] + (iprof_types or []),
                     "methods": [
                         {"id": 101, "name": "main", "signature": [1, 2]},
                         {"id": 102, "name": "route", "signature": [3, 2]},
                         {"id": 104, "name": "covered", "signature": [5, 2]},
-                    ],
-                    "samplingProfiles": [
+                    ] + (iprof_methods or []),
+                    "samplingProfiles": sampling_profiles or [
                         {
                             "ctx": "104:21<102:20<101:10",
                             "records": [7],

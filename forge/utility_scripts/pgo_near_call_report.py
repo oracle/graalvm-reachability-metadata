@@ -105,10 +105,10 @@ def format_pgo_near_call_guidance(
         ])
     lines.extend([
         "",
-        "Closest sampled stack from an existing test to the PGO/call-graph join point:",
+        _sampled_stack_heading(best),
         _format_existing_test_stack_to_join(best),
         "",
-        "Static path from the PGO-reached method to the uncovered call:",
+        _static_path_heading(best),
         _format_path(best.static_path, best.methods, best.static_path_edges),
     ])
     alternate_records = [record for record in analysis.records[1:] if record.call_site == best.call_site]
@@ -725,6 +725,8 @@ def _observed_branch_after_join(
 ) -> tuple[tuple[str, str, tuple[str, ...], str], int] | None:
     if not record.sampled_full_path:
         return None
+    if record.sampled_join_path_index is None and record.prefix_length == 0:
+        return None
     if record.sampled_join_path_index is not None:
         observed_path_index = record.sampled_join_path_index + 1
     else:
@@ -753,6 +755,7 @@ def _existing_test_stack_to_join(
 
     join_full_index = _sampled_join_full_index(record)
     note = None
+    has_join = join_full_index is not None
     if join_full_index is None:
         join_full_index = len(record.sampled_full_path) - 1
         note = "No sampled call-graph join frame was identified; showing the sampled stack."
@@ -767,7 +770,7 @@ def _existing_test_stack_to_join(
 
     stack = record.sampled_full_path[start:join_full_index + 1]
     relative_test_entry = test_start - start if test_start is not None and start <= test_start <= join_full_index else None
-    relative_join = len(stack) - 1 if stack else None
+    relative_join = len(stack) - 1 if has_join and stack else None
     return stack, note, relative_test_entry, relative_join
 
 
@@ -776,9 +779,19 @@ def _sampled_join_full_index(record: PgoNearCallRecord) -> int | None:
         return record.sampled_path_full_indexes[record.sampled_join_path_index]
     if record.prefix_length > 0 and record.sampled_path_full_indexes:
         return record.sampled_path_full_indexes[record.prefix_length - 1]
-    if record.sampled_path_full_indexes:
-        return record.sampled_path_full_indexes[0]
     return None
+
+
+def _sampled_stack_heading(record: PgoNearCallRecord) -> str:
+    if record.sampled_join_path_index is None and record.prefix_length == 0:
+        return "Representative sampled stack from the current native test run:"
+    return "Closest sampled stack from an existing test to the PGO/call-graph join point:"
+
+
+def _static_path_heading(record: PgoNearCallRecord) -> str:
+    if record.sampled_join_path_index is None and record.prefix_length == 0:
+        return "Static path from the closest call-tree root to the uncovered call:"
+    return "Static path from the PGO-reached method to the uncovered call:"
 
 
 def _existing_test_frame_index(
