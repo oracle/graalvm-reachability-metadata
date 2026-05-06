@@ -28,8 +28,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunListener;
+import org.junit.runners.model.Statement;
 
 public class Arquillian_junit_containerTest {
     @AfterEach
@@ -48,6 +50,20 @@ public class Arquillian_junit_containerTest {
         assertThat(result.getThrowable()).isNull();
         assertThat(result.getEnd()).isGreaterThanOrEqualTo(result.getStart());
         assertThat(runner.events()).containsExactly("started:passingTest", "finished:passingTest");
+    }
+
+    @Test
+    void junitTestRunnerAppliesJUnitRulesAroundSelectedMethod() {
+        RuleBackedJUnit4TestCase.resetEvents();
+
+        TestResult result = new JUnitTestRunner().execute(RuleBackedJUnit4TestCase.class, "ruleAwareTest");
+
+        assertThat(result.getStatus()).isEqualTo(TestResult.Status.PASSED);
+        assertThat(result.getThrowable()).isNull();
+        assertThat(RuleBackedJUnit4TestCase.events()).containsExactly(
+                "before:ruleAwareTest",
+                "test:ruleAwareTest",
+                "after:ruleAwareTest");
     }
 
     @Test
@@ -138,6 +154,36 @@ public class Arquillian_junit_containerTest {
         assertThat(node.getAsset()).isNotNull();
         try (InputStream stream = node.getAsset().openStream()) {
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    public static class RuleBackedJUnit4TestCase {
+        private static final List<String> EVENTS = new ArrayList<>();
+
+        @org.junit.Rule
+        public final TestRule recordingRule = (statement, description) -> new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                EVENTS.add("before:" + description.getMethodName());
+                try {
+                    statement.evaluate();
+                } finally {
+                    EVENTS.add("after:" + description.getMethodName());
+                }
+            }
+        };
+
+        static void resetEvents() {
+            EVENTS.clear();
+        }
+
+        static List<String> events() {
+            return EVENTS;
+        }
+
+        @org.junit.Test
+        public void ruleAwareTest() {
+            EVENTS.add("test:ruleAwareTest");
         }
     }
 
