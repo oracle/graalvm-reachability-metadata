@@ -24,6 +24,7 @@ import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
 import org.scalatest.events.Event
+import org.scalatest.events.InfoProvided
 import org.scalatest.events.TestCanceled
 import org.scalatest.events.TestFailed
 import org.scalatest.events.TestIgnored
@@ -77,6 +78,21 @@ class Scalatest_wordspec_2_13Test {
     assert(failures.size == 1)
     assert(failures.head.testName.contains("publish assertion failures"))
     assert(failures.head.message.contains("numbers did not match"))
+  }
+
+  @Test
+  def recordsInformationalMessagesWithSucceededWordSpecTests(): Unit = {
+    val suite: InformingWordSpec = new InformingWordSpec
+    val result: RunResult = runSuite(suite)
+    val success: TestSucceeded = succeededEvents(result.events).head
+    val messages: Vector[String] = success.recordedEvents.collect {
+      case event: InfoProvided => event.message
+    }.toVector
+
+    assert(result.succeeded)
+    assert(success.testName.contains("attach progress messages"))
+    assert(messages == Vector("prepared a sample value", "verified transformed value"))
+    assert(suite.observed == Vector("message-start", "message-end"))
   }
 
   @Test
@@ -189,6 +205,21 @@ class Scalatest_wordspec_2_13Test {
     "A failing word spec" should {
       "publish assertion failures" in {
         assert(1 == 2, "numbers did not match")
+      }
+    }
+  }
+
+  private final class InformingWordSpec extends AnyWordSpec {
+    var observed: Vector[String] = Vector.empty
+
+    "An informing word spec" should {
+      "attach progress messages to a successful test" in {
+        observed = observed :+ "message-start"
+        info("prepared a sample value")
+        val transformed: String = "scala".reverse.reverse
+        info("verified transformed value")
+        observed = observed :+ "message-end"
+        assert(transformed == "scala")
       }
     }
   }
