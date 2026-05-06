@@ -212,6 +212,31 @@ public class KtorServerContentNegotiationJvmTest {
         assertThat(response.bodyAsText()).isEqualTo(StandardCharsets.UTF_8.name())
     }
 
+    @Test
+    fun responseConversionFallsBackWhenMatchingConverterCannotSerialize(): Unit = testApplication {
+        val refusingConverter = RefusingMessageConverter()
+        application {
+            install(ContentNegotiation) {
+                register(MessageContentType, refusingConverter)
+                register(MessageContentType, MessageConverter(prefix = "fallback"))
+            }
+            routing {
+                get("/fallback") {
+                    call.respond(Message("next", 19))
+                }
+            }
+        }
+
+        val response = client.get("/fallback") {
+            accept(MessageContentType)
+        }
+
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.headers[HttpHeaders.ContentType]).startsWith(MessageContentType.toString())
+        assertThat(response.bodyAsText()).isEqualTo("fallback:name=next;count=19")
+        assertThat(refusingConverter.serializedTypes).contains(Message::class)
+    }
+
     private data class Message(val name: String, val count: Int)
 
     private class MessageConverter(
@@ -263,6 +288,22 @@ public class KtorServerContentNegotiationJvmTest {
             } else {
                 null
             }
+        }
+
+        override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? = null
+    }
+
+    private class RefusingMessageConverter : ContentConverter {
+        val serializedTypes: MutableList<KClass<*>> = mutableListOf()
+
+        override suspend fun serialize(
+            contentType: ContentType,
+            charset: Charset,
+            typeInfo: TypeInfo,
+            value: Any?,
+        ): TextContent? {
+            serializedTypes += typeInfo.type
+            return null
         }
 
         override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? = null
