@@ -99,6 +99,28 @@ public class Kotlinx_coroutines_guavaTest {
     }
 
     @Test
+    fun cancellingParentScopeCancelsFutureBuilderResult(): Unit = runBlocking {
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        val started: CompletableDeferred<Unit> = CompletableDeferred()
+        val listenable = scope.future {
+            started.complete(Unit)
+            awaitCancellation()
+        }
+
+        try {
+            withTimeout(5_000) { started.await() }
+            scope.cancel()
+
+            assertThatThrownBy { listenable.get(5, TimeUnit.SECONDS) }
+                .isInstanceOf(CancellationException::class.java)
+            assertThat(listenable.isCancelled).isTrue()
+            assertThat(listenable.isDone).isTrue()
+        } finally {
+            scope.cancel()
+        }
+    }
+
+    @Test
     fun awaitReturnsImmediateAndDelayedFutureResults(): Unit = runBlocking {
         val immediate = Futures.immediateFuture("already-complete")
         assertThat(immediate.await()).isEqualTo("already-complete")
