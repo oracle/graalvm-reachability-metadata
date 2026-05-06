@@ -1,0 +1,1883 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfd02-9372-7f63-ae88-85bf16824619
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mockito:mockito-scala_2.13:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.0" when "$version$" is replaced with "2.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+- Set "coordinates" to "org.mockito:mockito-scala_2.13:2.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven first, then cross-check the upstream repository/tag so the URLs point at the right `2.0.0` source set.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+-rw-rw-r-- 1 vjovanov vjovanov 61 May  6 13:18 build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+{
+  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-scala_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>mockito-scala</description>
+    <url>https://github.com/mockito/mockito-scala</url>
+    <version>2.0.0</version>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>mockito-scala</name>
+    <organization>
+        <name>org.mockito</name>
+        <url>https://github.com/mockito/mockito-scala</url>
+    </organization>
+    <scm>
+        <url>https://github.com/mockito/mockito-scala</url>
+        <connection>git@github.com:mockito/mockito-scala.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>bbonanno</id>
+            <name>Bruno Bonanno</name>
+            <url>https://github.com/bbonanno</url>
+            <email>bbonanno@gmail.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-parallel-collections_2.13</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalactic</groupId>
+            <artifactId>scalactic_2.13</artifactId>
+            <version>3.2.19</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.vyarus</groupId>
+            <artifactId>generics-resolver</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>3.2.19</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 336ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mockito/mockito-scala_2.13/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mockito/mockito-scala_2.13/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar" title="mockito-scala_2.13-2.0.0-javadoc.jar">mockito-scala_2.13-2.0.0-javadoc.jar</a>              2025-05-29 06:56   1467836      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.asc" title="mockito-scala_2.13-2.0.0-javadoc.jar.asc">mockito-scala_2.13-2.0.0-javadoc.jar.asc</a>          2025-05-29 06:56       660      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.asc.md5" title="mockito-scala_2.13-2.0.0-javadoc.jar.asc.md5">mockito-scala_2.13-2.0.0-javadoc.jar.asc.md5</a>      2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha1" title="mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha1">mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha1</a>     2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha256" title="mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha256">mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha2...</a>  2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha512" title="mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha512">mockito-scala_2.13-2.0.0-javadoc.jar.asc.sha5...</a>  2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.md5" title="mockito-scala_2.13-2.0.0-javadoc.jar.md5">mockito-scala_2.13-2.0.0-javadoc.jar.md5</a>          2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.sha1" title="mockito-scala_2.13-2.0.0-javadoc.jar.sha1">mockito-scala_2.13-2.0.0-javadoc.jar.sha1</a>         2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.sha256" title="mockito-scala_2.13-2.0.0-javadoc.jar.sha256">mockito-scala_2.13-2.0.0-javadoc.jar.sha256</a>       2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0-javadoc.jar.sha512" title="mockito-scala_2.13-2.0.0-javadoc.jar.sha512">mockito-scala_2.13-2.0.0-javadoc.jar.sha512</a>       2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0-sources.jar" title="mockito-scala_2.13-2.0.0-sources.jar">mockito-scala_2.13-2.0.0-sources.jar</a>              2025-05-29 06:56     57339      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.asc" title="mockito-scala_2.13-2.0.0-sources.jar.asc">mockito-scala_2.13-2.0.0-sources.jar.asc</a>          2025-05-29 06:56       660      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.asc.md5" title="mockito-scala_2.13-2.0.0-sources.jar.asc.md5">mockito-scala_2.13-2.0.0-sources.jar.asc.md5</a>      2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.asc.sha1" title="mockito-scala_2.13-2.0.0-sources.jar.asc.sha1">mockito-scala_2.13-2.0.0-sources.jar.asc.sha1</a>     2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.asc.sha256" title="mockito-scala_2.13-2.0.0-sources.jar.asc.sha256">mockito-scala_2.13-2.0.0-sources.jar.asc.sha2...</a>  2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.asc.sha512" title="mockito-scala_2.13-2.0.0-sources.jar.asc.sha512">mockito-scala_2.13-2.0.0-sources.jar.asc.sha5...</a>  2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.md5" title="mockito-scala_2.13-2.0.0-sources.jar.md5">mockito-scala_2.13-2.0.0-sources.jar.md5</a>          2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.sha1" title="mockito-scala_2.13-2.0.0-sources.jar.sha1">mockito-scala_2.13-2.0.0-sources.jar.sha1</a>         2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.sha256" title="mockito-scala_2.13-2.0.0-sources.jar.sha256">mockito-scala_2.13-2.0.0-sources.jar.sha256</a>       2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0-sources.jar.sha512" title="mockito-scala_2.13-2.0.0-sources.jar.sha512">mockito-scala_2.13-2.0.0-sources.jar.sha512</a>       2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0.jar" title="mockito-scala_2.13-2.0.0.jar">mockito-scala_2.13-2.0.0.jar</a>                      2025-05-29 06:56    771846      
+<a href="mockito-scala_2.13-2.0.0.jar.asc" title="mockito-scala_2.13-2.0.0.jar.asc">mockito-scala_2.13-2.0.0.jar.asc</a>                  2025-05-29 06:56       660      
+<a href="mockito-scala_2.13-2.0.0.jar.asc.md5" title="mockito-scala_2.13-2.0.0.jar.asc.md5">mockito-scala_2.13-2.0.0.jar.asc.md5</a>              2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0.jar.asc.sha1" title="mockito-scala_2.13-2.0.0.jar.asc.sha1">mockito-scala_2.13-2.0.0.jar.asc.sha1</a>             2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0.jar.asc.sha256" title="mockito-scala_2.13-2.0.0.jar.asc.sha256">mockito-scala_2.13-2.0.0.jar.asc.sha256</a>           2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0.jar.asc.sha512" title="mockito-scala_2.13-2.0.0.jar.asc.sha512">mockito-scala_2.13-2.0.0.jar.asc.sha512</a>           2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0.jar.md5" title="mockito-scala_2.13-2.0.0.jar.md5">mockito-scala_2.13-2.0.0.jar.md5</a>                  2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0.jar.sha1" title="mockito-scala_2.13-2.0.0.jar.sha1">mockito-scala_2.13-2.0.0.jar.sha1</a>                 2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0.jar.sha256" title="mockito-scala_2.13-2.0.0.jar.sha256">mockito-scala_2.13-2.0.0.jar.sha256</a>               2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0.jar.sha512" title="mockito-scala_2.13-2.0.0.jar.sha512">mockito-scala_2.13-2.0.0.jar.sha512</a>               2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0.pom" title="mockito-scala_2.13-2.0.0.pom">mockito-scala_2.13-2.0.0.pom</a>                      2025-05-29 06:56      2641      
+<a href="mockito-scala_2.13-2.0.0.pom.asc" title="mockito-scala_2.13-2.0.0.pom.asc">mockito-scala_2.13-2.0.0.pom.asc</a>                  2025-05-29 06:56       660      
+<a href="mockito-scala_2.13-2.0.0.pom.asc.md5" title="mockito-scala_2.13-2.0.0.pom.asc.md5">mockito-scala_2.13-2.0.0.pom.asc.md5</a>              2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0.pom.asc.sha1" title="mockito-scala_2.13-2.0.0.pom.asc.sha1">mockito-scala_2.13-2.0.0.pom.asc.sha1</a>             2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0.pom.asc.sha256" title="mockito-scala_2.13-2.0.0.pom.asc.sha256">mockito-scala_2.13-2.0.0.pom.asc.sha256</a>           2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0.pom.asc.sha512" title="mockito-scala_2.13-2.0.0.pom.asc.sha512">mockito-scala_2.13-2.0.0.pom.asc.sha512</a>           2025-05-29 06:56       128      
+<a href="mockito-scala_2.13-2.0.0.pom.md5" title="mockito-scala_2.13-2.0.0.pom.md5">mockito-scala_2.13-2.0.0.pom.md5</a>                  2025-05-29 06:56        32      
+<a href="mockito-scala_2.13-2.0.0.pom.sha1" title="mockito-scala_2.13-2.0.0.pom.sha1">mockito-scala_2.13-2.0.0.pom.sha1</a>                 2025-05-29 06:56        40      
+<a href="mockito-scala_2.13-2.0.0.pom.sha256" title="mockito-scala_2.13-2.0.0.pom.sha256">mockito-scala_2.13-2.0.0.pom.sha256</a>               2025-05-29 06:56        64      
+<a href="mockito-scala_2.13-2.0.0.pom.sha512" title="mockito-scala_2.13-2.0.0.pom.sha512">mockito-scala_2.13-2.0.0.pom.sha512</a>               2025-05-29 06:56       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: org.mockito mockito-scala_2.13 2.0.0 Maven Central POM scm mockito-scala GitHub
+codex
+Maven Central has the POM, binary jar, sources jar, and javadoc jar for this exact version, but no test-sources artifact in the directory listing. I’m checking the upstream tags now for the test URL and for the language/native-image classification.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mockito/mockito-scala.git 'refs/tags/*2.0.0*'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mockito/mockito-scala/contents?ref=v2.0.0' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-sources.jar -o /tmp/mockito-scala-sources.jar && jar tf /tmp/mockito-scala-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0.jar -o /tmp/mockito-scala.jar && jar tf /tmp/mockito-scala.jar | rg '\\.class"'$'"' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 288ms:
+META-INF/MANIFEST.MF
+org/
+org/mockito/
+org/mockito/captor/
+org/mockito/exceptions/
+org/mockito/exceptions/misusing/
+org/mockito/internal/
+org/mockito/internal/handler/
+org/mockito/internal/invocation/
+org/mockito/internal/stubbing/
+org/mockito/internal/stubbing/answers/
+org/mockito/matchers/
+org/mockito/stubbing/
+org/mockito/ArgumentMatchersSugar.scala
+org/mockito/DefaultAnswers.scala
+org/mockito/DoSomethingMacro.scala
+org/mockito/ExpectMacro.scala
+org/mockito/IdiomaticMockito.scala
+org/mockito/IdiomaticMockitoBase.scala
+org/mockito/IdiomaticStubbing.scala
+org/mockito/MockitoAPI.scala
+org/mockito/MockitoScalaSession.scala
+org/mockito/MockitoSugar.scala
+org/mockito/PostfixVerifications.scala
+org/mockito/PrefixExpectations.scala
+org/mockito/ReflectionUtils.scala
+org/mockito/Specs2VerifyMacro.scala
+org/mockito/Utils.scala
+org/mockito/VerifyMacro.scala
+org/mockito/WhenMacro.scala
+org/mockito/captor/ArgCaptor.scala
+org/mockito/captor/Captor.scala
+org/mockito/exceptions/misusing/UnexpectedInvocationException.scala
+org/mockito/internal/MacroDebug.scala
+org/mockito/internal/ScalaVersion.scala
+org/mockito/internal/ValueClassExtractor.scala
+org/mockito/internal/ValueClassWrapper.scala
+org/mockito/internal/handler/ScalaMockHandler.scala
+org/mockito/internal/handler/ScalaNullResultGuardian.scala
+org/mockito/internal/handler/ThreadAwareMockHandler.scala
+org/mockito/internal/handler/package.scala
+org/mockito/internal/invocation/ScalaInvocation.scala
+org/mockito/internal/stubbing/answers/ScalaThrowsException.scala
+org/mockito/matchers/AllOf.scala
+org/mockito/matchers/AnyMatchers.scala
+org/mockito/matchers/DefaultMatcher.scala
+org/mockito/matchers/DefaultValueProvider.scala
+org/mockito/matchers/EqMatchers.scala
+org/mockito/matchers/EqMatchers_VersionSpecific.scala
+org/mockito/matchers/EqTo.scala
+org/mockito/matchers/FunctionMatchers.scala
+org/mockito/matchers/MacroBasedMatchers.scala
+org/mockito/matchers/NullMatchers.scala
+org/mockito/matchers/NumericMatchers.scala
+org/mockito/matchers/ProductOf.scala
+org/mockito/matchers/StringThatMatchers.scala
+org/mockito/matchers/ThatMatchers.scala
+org/mockito/matchers/Transformed.scala
+org/mockito/matchers/package.scala
+org/mockito/mockito.scala
+org/mockito/stubbing/DefaultAnswer.scala
+org/mockito/stubbing/ReturnsEmptyValues.scala
+org/mockito/stubbing/ReturnsSmartNulls.scala
+org/mockito/stubbing/ScalaAnswer.scala
+org/mockito/stubbing/ScalaBaseStubbing.scala
+org/mockito/stubbing/ScalaFirstStubbing.scala
+org/mockito/stubbing/ScalaOngoingStubbing.scala
+org/mockito/stubbing/ScalaReturns.scala
+
+ succeeded in 283ms:
+org/mockito/ArgumentMatchersSugar$.class
+org/mockito/ArgumentMatchersSugar.class
+org/mockito/Called$.class
+org/mockito/Called.class
+org/mockito/DefaultAnswers$.class
+org/mockito/DefaultAnswers.class
+org/mockito/DoSomething.class
+org/mockito/DoSomethingMacro$$anon$1.class
+org/mockito/DoSomethingMacro$$anon$10.class
+org/mockito/DoSomethingMacro$$anon$11.class
+org/mockito/DoSomethingMacro$$anon$12.class
+org/mockito/DoSomethingMacro$$anon$13.class
+org/mockito/DoSomethingMacro$$anon$2.class
+org/mockito/DoSomethingMacro$$anon$20.class
+org/mockito/DoSomethingMacro$$anon$3.class
+org/mockito/DoSomethingMacro$$anon$4.class
+org/mockito/DoSomethingMacro$$anon$5.class
+org/mockito/DoSomethingMacro$$anon$6.class
+org/mockito/DoSomethingMacro$$anon$7.class
+org/mockito/DoSomethingMacro$$anon$8.class
+org/mockito/DoSomethingMacro$$anon$9.class
+org/mockito/DoSomethingMacro$$anonfun$1$$anon$14.class
+org/mockito/DoSomethingMacro$$anonfun$1$$anon$15.class
+org/mockito/DoSomethingMacro$$anonfun$1$$anon$16.class
+org/mockito/DoSomethingMacro$$anonfun$1$$anon$17.class
+org/mockito/DoSomethingMacro$$anonfun$1.class
+org/mockito/DoSomethingMacro$$anonfun$2$$anon$18.class
+org/mockito/DoSomethingMacro$$anonfun$2$$anon$19.class
+org/mockito/DoSomethingMacro$$anonfun$2.class
+org/mockito/DoSomethingMacro$$anonfun$3.class
+org/mockito/DoSomethingMacro$$typecreator1$1.class
+org/mockito/DoSomethingMacro$$typecreator1$2.class
+org/mockito/DoSomethingMacro$$typecreator1$3.class
+org/mockito/DoSomethingMacro$$typecreator1$4.class
+org/mockito/DoSomethingMacro$$typecreator1$5.class
+org/mockito/DoSomethingMacro$$typecreator1$6.class
+org/mockito/DoSomethingMacro$.class
+org/mockito/DoSomethingMacro.class
+org/mockito/ExpectMacro$$anon$1.class
+org/mockito/ExpectMacro$$anon$2.class
+
+ succeeded in 335ms:
+[
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "3eb0fb649608dcf38a9c7bdd7269cea80f181ea9",
+    "size": 264,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/.git-blame-ignore-revs?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/3eb0fb649608dcf38a9c7bdd7269cea80f181ea9",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/.git-blame-ignore-revs?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/3eb0fb649608dcf38a9c7bdd7269cea80f181ea9",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "0a2a0d8fd5047972ff47f1d3c40a17bd16c64097",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/.github?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/.github",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/0a2a0d8fd5047972ff47f1d3c40a17bd16c64097",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/.github?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/0a2a0d8fd5047972ff47f1d3c40a17bd16c64097",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "c1f1aa77f7ed9c7ef702cab4d62ee8cecaaa0245",
+    "size": 57,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/.gitignore?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/c1f1aa77f7ed9c7ef702cab4d62ee8cecaaa0245",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/.gitignore?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/c1f1aa77f7ed9c7ef702cab4d62ee8cecaaa0245",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.gitignore"
+    }
+  },
+  {
+    "name": ".sbtopts",
+    "path": ".sbtopts",
+    "sha": "aa3779d5d1f89fea9175f5f79d0b3adea214c5af",
+    "size": 35,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/.sbtopts?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.sbtopts",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/aa3779d5d1f89fea9175f5f79d0b3adea214c5af",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/.sbtopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/.sbtopts?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/aa3779d5d1f89fea9175f5f79d0b3adea214c5af",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.sbtopts"
+    }
+  },
+  {
+    "name": ".scala-steward.conf",
+    "path": ".scala-steward.conf",
+    "sha": "096b576ce2fb2d3bf67590b7bede6069d062d23c",
+    "size": 1263,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/.scala-steward.conf?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.scala-steward.conf",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/096b576ce2fb2d3bf67590b7bede6069d062d23c",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/.scala-steward.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/.scala-steward.conf?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/096b576ce2fb2d3bf67590b7bede6069d062d23c",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.scala-steward.conf"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "22bab12bc9df2aa13e2cb4da605be86e587cd3e4",
+    "size": 240,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/.scalafmt.conf?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/22bab12bc9df2aa13e2cb4da605be86e587cd3e4",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/.scalafmt.conf?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/22bab12bc9df2aa13e2cb4da605be86e587cd3e4",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "e0840a446caf5f719786acde1f0cb531e75a9d6b",
+    "size": 1080,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/LICENSE?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/LICENSE",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/e0840a446caf5f719786acde1f0cb531e75a9d6b",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/LICENSE?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/e0840a446caf5f719786acde1f0cb531e75a9d6b",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "e1b4d16dcf6df077db96d423376a806fdca36c2b",
+    "size": 40771,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/README.md?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/README.md",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/e1b4d16dcf6df077db96d423376a806fdca36c2b",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/README.md?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/e1b4d16dcf6df077db96d423376a806fdca36c2b",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/README.md"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "51a3dbd8a14902c8ff7edca05ea14c31a0f11456",
+    "size": 4078,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/build.gradle?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/build.gradle",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/51a3dbd8a14902c8ff7edca05ea14c31a0f11456",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/build.gradle?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/51a3dbd8a14902c8ff7edca05ea14c31a0f11456",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/build.gradle"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "95a026c0d5d0667b0461558814ea349dfc36d68e",
+    "size": 6847,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/build.sbt?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/build.sbt",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/95a026c0d5d0667b0461558814ea349dfc36d68e",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/build.sbt?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/95a026c0d5d0667b0461558814ea349dfc36d68e",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/build.sbt"
+    }
+  },
+  {
+    "name": "build.sh",
+    "path": "build.sh",
+    "sha": "ee239ec529ccbce31c0aba88e1a6cf0e2984ca34",
+    "size": 253,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/build.sh?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/build.sh",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/ee239ec529ccbce31c0aba88e1a6cf0e2984ca34",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/build.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/build.sh?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/ee239ec529ccbce31c0aba88e1a6cf0e2984ca34",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/build.sh"
+    }
+  },
+  {
+    "name": "cats",
+    "path": "cats",
+    "sha": "f2c38b0f3f6227296af6788e39366337db29c7bd",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/cats?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/cats",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/f2c38b0f3f6227296af6788e39366337db29c7bd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/cats?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/f2c38b0f3f6227296af6788e39366337db29c7bd",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/cats"
+    }
+  },
+  {
+    "name": "clean.sh",
+    "path": "clean.sh",
+    "sha": "54618bce0d709b6985e7d3de5f6fe45ca5fe4dbb",
+    "size": 185,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/clean.sh?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/clean.sh",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/54618bce0d709b6985e7d3de5f6fe45ca5fe4dbb",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/clean.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/clean.sh?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/54618bce0d709b6985e7d3de5f6fe45ca5fe4dbb",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/clean.sh"
+    }
+  },
+  {
+    "name": "common",
+    "path": "common",
+    "sha": "0812d40e2c73cbd8c7e981eca4370a70bbea1de7",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/common?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/common",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/0812d40e2c73cbd8c7e981eca4370a70bbea1de7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/common?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/0812d40e2c73cbd8c7e981eca4370a70bbea1de7",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/common"
+    }
+  },
+  {
+    "name": "core",
+    "path": "core",
+    "sha": "b974c7c24e8159d0adf774a0df081c59e5e77ef7",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/core?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/b974c7c24e8159d0adf774a0df081c59e5e77ef7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/core?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/b974c7c24e8159d0adf774a0df081c59e5e77ef7",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "d0c1e1c6de5f332ac47dcc32c9a0eb079a04323b",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/docs?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/docs",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/d0c1e1c6de5f332ac47dcc32c9a0eb079a04323b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/docs?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/d0c1e1c6de5f332ac47dcc32c9a0eb079a04323b",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/docs"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "3d080b624d4bea30748eabacc9c01693cdefe461",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/gradle?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/gradle",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/3d080b624d4bea30748eabacc9c01693cdefe461",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/gradle?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/3d080b624d4bea30748eabacc9c01693cdefe461",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "f5feea6d6b116baaca5a2642d4d9fa1f47d574a7",
+    "size": 8762,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/gradlew?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/gradlew",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/f5feea6d6b116baaca5a2642d4d9fa1f47d574a7",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/gradlew?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/f5feea6d6b116baaca5a2642d4d9fa1f47d574a7",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "9b42019c7915b971238526075306ffba3b666dd5",
+    "size": 2966,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/gradlew.bat?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/gradlew.bat",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/9b42019c7915b971238526075306ffba3b666dd5",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/gradlew.bat?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/9b42019c7915b971238526075306ffba3b666dd5",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/gradlew.bat"
+    }
+  },
+  {
+    "name": "macro-common",
+    "path": "macro-common",
+    "sha": "8c83d316948e8d8785cc9d8d6478ed2f72a19ced",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/macro-common?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/macro-common",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/8c83d316948e8d8785cc9d8d6478ed2f72a19ced",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/macro-common?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/8c83d316948e8d8785cc9d8d6478ed2f72a19ced",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/macro-common"
+    }
+  },
+  {
+    "name": "macro",
+    "path": "macro",
+    "sha": "6c4c0b43fd08df8c0a2b09689ff9d5f44f30cc03",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/macro?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/macro",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/6c4c0b43fd08df8c0a2b09689ff9d5f44f30cc03",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/macro?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/6c4c0b43fd08df8c0a2b09689ff9d5f44f30cc03",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/macro"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "5499459c33ac3aac04127f9f4ac48ccaecb08303",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/project?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/project",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/5499459c33ac3aac04127f9f4ac48ccaecb08303",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/project?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/5499459c33ac3aac04127f9f4ac48ccaecb08303",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/project"
+    }
+  },
+  {
+    "name": "sbt",
+    "path": "sbt",
+    "sha": "57b96987e285090a54f81959415db18a5a87fe3c",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/sbt?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/sbt",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/57b96987e285090a54f81959415db18a5a87fe3c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/sbt?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/57b96987e285090a54f81959415db18a5a87fe3c",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/sbt"
+    }
+  },
+  {
+    "name": "scalatest",
+    "path": "scalatest",
+    "sha": "9db215e2ecbd52ecc1327e279c9be5dfdfbf5bc9",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/scalatest?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/9db215e2ecbd52ecc1327e279c9be5dfdfbf5bc9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/scalatest?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/9db215e2ecbd52ecc1327e279c9be5dfdfbf5bc9",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest"
+    }
+  },
+  {
+    "name": "scalaz",
+    "path": "scalaz",
+    "sha": "aa58aa632b89f601b101579c2cb4793460deb4fb",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/scalaz?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/scalaz",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/aa58aa632b89f601b101579c2cb4793460deb4fb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/scalaz?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/aa58aa632b89f601b101579c2cb4793460deb4fb",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/scalaz"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "fe8ac5c57e832345039b153072c150856874a73a",
+    "size": 34,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/settings.gradle?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/settings.gradle",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/fe8ac5c57e832345039b153072c150856874a73a",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/settings.gradle?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/fe8ac5c57e832345039b153072c150856874a73a",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/settings.gradle"
+    }
+  },
+  {
+    "name": "specs2",
+    "path": "specs2",
+    "sha": "087880cc65ef1a8fbf519e61807462aae1bf5a37",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/specs2?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/specs2",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/087880cc65ef1a8fbf519e61807462aae1bf5a37",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/specs2?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/087880cc65ef1a8fbf519e61807462aae1bf5a37",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/specs2"
+    }
+  },
+  {
+    "name": "version.properties",
+    "path": "version.properties",
+    "sha": "bd7ddf4339c1877a867fd39e1d696b0145fda09e",
+    "size": 133,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/version.properties?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/blob/v2.0.0/version.properties",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/bd7ddf4339c1877a867fd39e1d696b0145fda09e",
+    "download_url": "https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/version.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/version.properties?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/blobs/bd7ddf4339c1877a867fd39e1d696b0145fda09e",
+      "html": "https://github.com/mockito/mockito-scala/blob/v2.0.0/version.properties"
+    }
+  }
+]
+
+ succeeded in 505ms:
+425b3ed169be15b843e50ef212dddda0e5bc2ded	refs/tags/v2.0.0
+
+web search: 
+web search: org.mockito mockito-scala_2.13 2.0.0 Maven Central POM scm mockito-scala GitHub
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/mockito/
+exec
+/usr/bin/bash -lc "find metadata -path '*mockito*' -maxdepth 8 -type f | sort | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+metadata/org.mockito/mockito-core/4.8.1/reachability-metadata.json
+metadata/org.mockito/mockito-core/5.0.0/reachability-metadata.json
+metadata/org.mockito/mockito-core/index.json
+
+exec
+/usr/bin/bash -lc "rg -n 'mockito-scala|source-code-url|test-code-url|documentation-url|language' metadata build/discovered-artifact-metadata -g '*.json' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json:2:  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+metadata/org.jetbrains.exposed/exposed-json/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/documentation-website/Writerside/topics/JSON-And-JSONB-types.topic",
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-kotlin-datetime/src/test/kotlin",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:36:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:37:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main?ref=v2.0.0' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mockito/mockito-scala/contents/core/src/test?ref=v2.0.0' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ exited 22 in 226ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 232ms:
+[
+  {
+    "name": "scala-2.12",
+    "path": "core/src/main/scala-2.12",
+    "sha": "f47281826586275da9d28772b115646a10bb63ae",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main/scala-2.12?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core/src/main/scala-2.12",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/f47281826586275da9d28772b115646a10bb63ae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main/scala-2.12?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/f47281826586275da9d28772b115646a10bb63ae",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core/src/main/scala-2.12"
+    }
+  },
+  {
+    "name": "scala-2.13",
+    "path": "core/src/main/scala-2.13",
+    "sha": "f47281826586275da9d28772b115646a10bb63ae",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main/scala-2.13?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core/src/main/scala-2.13",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/f47281826586275da9d28772b115646a10bb63ae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main/scala-2.13?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/f47281826586275da9d28772b115646a10bb63ae",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core/src/main/scala-2.13"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "core/src/main/scala",
+    "sha": "e8d5ab17e00ed7d20da7f0684bb721c1d9d5aea1",
+    "size": 0,
+    "url": "https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main/scala?ref=v2.0.0",
+    "html_url": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core/src/main/scala",
+    "git_url": "https://api.github.com/repos/mockito/mockito-scala/git/trees/e8d5ab17e00ed7d20da7f0684bb721c1d9d5aea1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mockito/mockito-scala/contents/core/src/main/scala?ref=v2.0.0",
+      "git": "https://api.github.com/repos/mockito/mockito-scala/git/trees/e8d5ab17e00ed7d20da7f0684bb721c1d9d5aea1",
+      "html": "https://github.com/mockito/mockito-scala/tree/v2.0.0/core/src/main/scala"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/mockito/mockito-scala/git/trees/v2.0.0?recursive=1' | jq -r '.tree[].path' | rg '("'^|/)src/test|Test|Spec'"' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/mockito/mockito-scala/v2.0.0/build.sbt | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-test-sources.jar; do \\
+  printf '%s ' \""'$url"; curl -fsI "$url" | sed -n '"'1p' || true; \\
+done" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 260ms:
+# Mockito Scala
+
+<a href="http://site.mockito.org">
+<img src="https://github.com/mockito/mockito/raw/release/2.x/src/javadoc/org/mockito/logo.png"
+     srcset="https://github.com/mockito/mockito/raw/release/2.x/src/javadoc/org/mockito/logo@2x.png 2x"
+     alt="Mockito" />
+</a>
+
+The most popular mocking framework for Java, now in Scala!!!
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.mockito/mockito-scala_2.12.svg)](https://search.maven.org/search?q=mockito-scala)
+
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/mockito-scala/)
+
+[![Cats Friendly](https://typelevel.org/cats/img/cats-badge-tiny.png)](https://typelevel.org/cats/)
+## Why separate project?
+
+The library has independent developers, release cycle and versioning from core mockito library (<https://github.com/mockito/mockito>). This is intentional because core Mockito developers don't use Scala and cannot confidently review PRs, and set the vision for the Scala library.
+
+## Dependency
+
+*   Artifact identifier: "org.mockito:mockito-scala_[scala-version]:[version]"
+*   Artifact identifier: "org.mockito:mockito-scala-scalatest_[scala-version]:[version]"
+*   Artifact identifier: "org.mockito:mockito-scala-specs2_[scala-version]:[version]"
+*   Artifact identifier: "org.mockito:mockito-scala-cats_[scala-version]:[version]"
+*   Artifact identifier: "org.mockito:mockito-scala-scalaz_[scala-version]:[version]"
+*   Latest version - see [release notes](/docs/release-notes.md)
+*   Repositories: [Maven Central](https://search.maven.org/search?q=mockito-scala)
+
+
+### Please ensure you don't declare `mockito-core` as a dependency. `mockito-scala` will pull the appropriate version automatically
+
+
+### Note: For more examples and use cases than the ones shown below, please refer to the library's specific tests
+- [Cats](/cats/src/test)
+- [ScalaTest](/scalatest/src/test)
+- [Specs2](/specs2/src/test)
+- [Scalaz](/scalaz/src/test)
+
+## Partial unification
+If you're in Scala 2.12 you'll probably want to add the compiler flag `-Ypartial-unification`, if you don't you risk some compile errors when trying to stub complex types using the idiomatic syntax
+
+## Notes for 2.0.0
+We dropped support for Scala 2.11 and Java 8, as Mockito 5 dropped support for Java 8.
+
+## Notes for 1.13.6
+
+We slightly changed the way one would expect no/no more interactions with a mock object in Expectations DSL.
+From now on, `expect (...) to` should only be used on stubbed methods, and can't express expectations about interactions with the mock objects itself.
+
+In order to express expectations on a mock, one would use `expect (...) on` (note the use of `on` vs `to`) where such expectations are supported.
+
+* Instead of `expect no calls to aMock`, use `expect no calls on aMock`.
+* Instead of `expect noMore calls to aMock`, use `expect noMore calls on aMock`.
+
+Expectations about no _method_ calls stay the same: `expect no calls to aMock.bar(*)`.  
+
+## Notes for 1.13.0
+
+We added a new experimental Expectations DSL for idiomatic syntax. It behaves differently from the original idiomatic verifications: 
+the user declares intent to verify by using `expect` at the beginning of the line rather than at the end of it - similar to "verify" in Mockito Java.
+
+Now, you can do `expect a call to aMock.bar(*)` where previously you did `aMock.bar(*) was called`. More examples in [Expect DSL](#expect-dsl)
+
+Note that since this DSL is currently experimental, it's not stable - the DSL itself may evolve, components and base traits may move or be renamed, and incompatible changes may be introduced between minor/patch versions.
+
+In order to use it...
+* with Scalatest base traits, mix in `org.mockito.scalatest.IdiomaticMockitoBase with org.mockito.PrefixExpectations` instead of `org.mockito.scalatest.IdiomaticMockito` (or `org.mockito.scalatest.AsyncIdiomaticMockitoBase`)
+* with another test framework, mix in trait `org.mockito.IdiomaticMockito.WithExpect` or use its companion object
+
+
+## Notes for v1.4.0
+As Specs2 support was added, now the library has been split in 3 different artifacts
+- **mockito-scala** being the core
+- **mockito-scala-scalatest** having specific classes that provide extra support for Scalatest
+- **mockito-scala-specs2** having specific classes that provide extra support for Specs2
+
+From now on, when using the idiomatic syntax, you'll get any non-matcher parameter automatically wrapped in an `eqTo`, 
+this means you shouldn't need to use it manually anymore. This is to provide a consistent behaviour when a custom `scalactic.Equality` has been defined for
+a type.
+
+The traits that provide the specifics for each test framework are 
+- Scalatest: 
+    - `org.mockito.scalatest.MockitoSugar` and `org.mockito.scalatest.IdiomaticMockito` for standard specs
+    - `org.mockito.scalatest.AsyncMockitoSugar`, `org.mockito.scalatest.AsyncIdiomaticMockito` for async specs
+- Specs2: `org.mockito.specs2.Mockito`
+
+This version also includes a lot of under-the-hood fixes and improvements that provide an even better experience.
+
+## Note for v1.2.0
+As now the varargs support works consistently across the whole lib, no no special syntax is needed, so if you were using `eqTo` with varargs, i.e. 
+```scala
+verify(myObj).myMethod(eqTo("arg1", "arg2"))
+```
+You must change it now to
+```scala
+verify(myObj).myMethod(eqTo("arg1"), eqTo("arg2"))
+```
+
+## Migration Notes for version 1.0.0
+* `DefaultAnswer` was moved from `org.mockito.DefaultAnswer` to `org.mockito.stubbing.DefaultAnswer`
+* The recommended way to use the pre-defined `DefaultAnswer`s is via the object `org.mockito.DefaultAnswers`
+* `*` matcher is now defined in `org.mockito.ArgumentMatchersSugar`, mixin (or use the companion object) this trait whenever you wanna use it
+* `argumentCaptor[String]` was removed, replace by `ArgCaptor[T]` (`Captor[T]` was renamed to `ArgCaptor[T]` to add clarity), `ValCaptor[T]` was deprecated, (see [Improved ArgumentCaptor](#improved-argumentcaptor))
+* The usage of `org.mockito.Answer[T]` was removed from the API in favour of [Function Answers](#function-answers)
+* If you were using something like `doAnswer(_ => <something>).when ...` to lazily compute a return value when the method is actually called you should now write it like `doAnswer(<something>).when ...`, no need of passing a function as that argument is by-name
+* If you have chained return values like `when(myMock.foo) thenReturn "a" thenReturn "b" etc...` the syntax has changed a bit to `when(myMock.foo) thenReturn "a" andThen "b" etc...`
+* Idiomatic syntax has some changes to remove postFix operations and also allow support for mixing values and argument matchers [Mix-and-Match](#mix-and-match)
+```scala
+aMock.bar shouldCallRealMethod                              => aMock.bar shouldCall realMethod
+
+aMock wasCalled on bar                                      => aMock.bar was called
+aMock wasCalled onlyOn bar                                  => aMock.bar wasCalled onlyHere
+aMock was never called on bar                               => aMock.bar wasNever called
+aMock wasCalled twiceOn bar                                 => aMock.bar wasCalled twice
+aMock wasCalled sixTimesOn bar                              => aMock.bar wasCalled sixTimes
+aMock was never called                                      => aMock.bar wasNever called
+aMock was never called again                                => aMock.bar wasNever calledAgain
+
+"mocked!" willBe returned by aMock bar                      => "mocked!" willBe returned by aMock.bar
+
+ succeeded in 294ms:
+import scala.io.Source
+import scala.language.postfixOps
+import sbt.io.Using
+
+val currentScalaVersion = "2.13.16"
+
+inThisBuild(
+  Seq(
+    scalaVersion := currentScalaVersion,
+    // Load version from the file so that Gradle/Shipkit and SBT use the same version
+    version := sys.env
+      .get("PROJECT_VERSION")
+      .filter(_.trim.nonEmpty)
+      .orElse {
+        lazy val VersionRE = """^version=(.+)$""".r
+        Using.file(Source.fromFile)(baseDirectory.value / "version.properties") {
+          _.getLines.collectFirst { case VersionRE(v) => v }
+        }
+      }
+      .map(_.replace(".*", "-SNAPSHOT"))
+      .get
+  )
+)
+
+lazy val commonSettings =
+  Seq(
+    organization := "org.mockito",
+    // Load version from the file so that Gradle/Shipkit and SBT use the same version
+    crossScalaVersions := Seq(currentScalaVersion, "2.12.20"),
+    scalafmtOnCompile  := true,
+    scalacOptions ++= Seq(
+      "-unchecked",
+      "-feature",
+      "-deprecation:false",
+      "-encoding",
+      "UTF-8",
+      "-Xfatal-warnings",
+//      "-Xmacro-settings:mockito-print-when,mockito-print-do-something,mockito-print-verify,mockito-print-expect,mockito-print-captor,mockito-print-matcher,mockito-print-extractor,mockito-print-wrapper,mockito-print-lenient",
+      "-language:reflectiveCalls,implicitConversions,experimental.macros,higherKinds"
+    ),
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 11)) =>
+          Seq("-Xsource:2.12", "-Ypartial-unification")
+        case Some((2, 12)) =>
+          Seq("-Ypartial-unification", "-Ywarn-unused:locals")
+        case Some((2, 13)) =>
+          Seq("-Ywarn-unused:locals")
+        case _ =>
+          Seq()
+      }
+    },
+    Test / scalacOptions += "-Ywarn-value-discard",
+    libraryDependencies ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, major)) if major <= 12 =>
+          Seq()
+        case _ =>
+          Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "1.2.0")
+      }
+    }
+  )
+
+lazy val publishSettings = Seq(
+  licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
+  homepage := Some(url("https://github.com/mockito/mockito-scala")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/mockito/mockito-scala"),
+      "git@github.com:mockito/mockito-scala.git"
+    )
+  ),
+  developers := List(
+    Developer(
+      "bbonanno",
+      "Bruno Bonanno",
+      "bbonanno@gmail.com",
+      url("https://github.com/bbonanno")
+    )
+  )
+)
+
+lazy val noPublishingSettings = Seq(
+  publish         := {},
+  publishLocal    := {},
+  publishArtifact := false
+)
+
+lazy val noCrossBuildSettings = Seq(
+  crossScalaVersions := Nil,
+  publish / skip     := true
+)
+
+lazy val scalatest = (project in file("scalatest"))
+  .dependsOn(core)
+  .dependsOn(common % "compile-internal, test-internal")
+  .dependsOn(macroSub % "compile-internal, test-internal")
+  .settings(
+    name := "mockito-scala-scalatest",
+    commonSettings,
+    publishSettings,
+    libraryDependencies += Dependencies.scalatest % "provided"
+  )
+
+lazy val specs2 = (project in file("specs2"))
+  .dependsOn(core)
+  .dependsOn(common % "compile-internal, test-internal")
+  .dependsOn(macroSub % "compile-internal, test-internal")
+  .settings(
+    name := "mockito-scala-specs2",
+    commonSettings,
+    publishSettings,
+    libraryDependencies ++= Dependencies.specs2
+  )
+
+lazy val cats = (project in file("cats"))
+  .dependsOn(core)
+  .dependsOn(common % "compile-internal, test-internal, test->test")
+  .dependsOn(macroSub % "compile-internal, test-internal")
+  .settings(
+    name := "mockito-scala-cats",
+    commonSettings,
+    publishSettings,
+    libraryDependencies ++= Seq(
+      Dependencies.cats,
+      Dependencies.catsLaws      % "test",
+      Dependencies.disciplineScalatest % "test",
+      Dependencies.scalatest           % "test"
+    )
+  )
+
+lazy val scalaz = (project in file("scalaz"))
+  .dependsOn(core)
+  .dependsOn(common % "compile-internal, test-internal")
+  .dependsOn(macroSub % "compile-internal, test-internal")
+  .settings(
+    name := "mockito-scala-scalaz",
+    commonSettings,
+    publishSettings,
+    libraryDependencies ++= Seq(
+      Dependencies.scalaz,
+      Dependencies.scalatest % "test"
+    )
+  )
+
+lazy val common = (project in file("common"))
+  .dependsOn(macroCommon)
+  .settings(
+    commonSettings,
+    noPublishingSettings,
+    libraryDependencies ++= Dependencies.commonLibraries ++
+      Dependencies.scalaReflection.value ++ Seq(
+        Dependencies.catsLaws   % "test",
+        Dependencies.scalacheck % "test"
+      )
+  )
+
+lazy val core = (project in file("core"))
+  .dependsOn(macroSub % "compile-internal, test-internal")
+  .dependsOn(common % "compile-internal, test-internal")
+  .settings(
+    commonSettings,
+    publishSettings,
+    name := "mockito-scala",
+    libraryDependencies ++= Dependencies.commonLibraries,
+    libraryDependencies ++= Dependencies.scalaReflection.value,
+    // TODO remove when we remove the deprecated classes in org.mockito.integrations.Dependencies.scalatest
+    libraryDependencies += Dependencies.scalatest % "provided",
+    // include the macro classes and resources in the main jar
+    Compile / packageBin / mappings ++= (macroSub / Compile / packageBin / mappings).value,
+    // include the macro sources in the main source jar
+    Compile / packageSrc / mappings ++= (macroSub / Compile / packageSrc / mappings).value,
+    // include the common classes and resources in the main jar
+    Compile / packageBin / mappings ++= (common / Compile / packageBin / mappings).value,
+    // include the common sources in the main source jar
+    Compile / packageSrc / mappings ++= (common / Compile / packageSrc / mappings).value,
+    // include the common classes and resources in the main jar
+    Compile / packageBin / mappings ++= (macroCommon / Compile / packageBin / mappings).value,
+    // include the common sources in the main source jar
+    Compile / packageSrc / mappings ++= (macroCommon / Compile / packageSrc / mappings).value
+  )
+
+lazy val macroSub = (project in file("macro"))
+  .dependsOn(common)
+  .settings(
+    commonSettings,
+    noPublishingSettings,
+    libraryDependencies ++= Dependencies.commonLibraries,
+    libraryDependencies ++= Dependencies.scalaReflection.value,
+    publish         := {},
+    publishLocal    := {},
+    publishArtifact := false
+  )
+
+lazy val macroCommon = (project in file("macro-common"))
+  .settings(
+    commonSettings,
+    noPublishingSettings,
+    libraryDependencies ++= Dependencies.scalaReflection.value,
+    publish         := {},
+    publishLocal    := {},
+    publishArtifact := false
+  )
+
+lazy val root = (project in file("."))
+  .settings(noPublishingSettings, noCrossBuildSettings)
+  .aggregate(common, core, scalatest, specs2, cats, scalaz)
+
+ succeeded in 323ms:
+cats/src/test
+cats/src/test/scala
+cats/src/test/scala/org
+cats/src/test/scala/org/mockito
+cats/src/test/scala/org/mockito/cats
+cats/src/test/scala/org/mockito/cats/DoSomethingCatsTest.scala
+cats/src/test/scala/org/mockito/cats/IdiomaticMockitoCatsTest.scala
+cats/src/test/scala/org/mockito/cats/MockitoCatsTest.scala
+cats/src/test/scala/org/mockito/cats/instances
+cats/src/test/scala/org/mockito/cats/instances/ArgumentMatcherInstancesTest.scala
+cats/src/test/scala/org/mockito/cats/package.scala
+common/src/test
+common/src/test/scala
+common/src/test/scala/org
+common/src/test/scala/org/mockito
+common/src/test/scala/org/mockito/matchers
+common/src/test/scala/org/mockito/matchers/Generators.scala
+common/src/test/scala/org/mockito/matchers/MatcherProps.scala
+core/src/main/scala-2.12/org/mockito/matchers/EqMatchers_VersionSpecific.scala
+core/src/main/scala-2.13/org/mockito/matchers/EqMatchers_VersionSpecific.scala
+macro/src/main/scala/org/mockito/Specs2VerifyMacro.scala
+scalatest/src/main/scala/org/mockito/scalatest/ResetMocksAfterEachAsyncTest.scala
+scalatest/src/main/scala/org/mockito/scalatest/ResetMocksAfterEachTest.scala
+scalatest/src/main/scala/org/mockito/scalatest/ResetMocksAfterEachTestBase.scala
+scalatest/src/test
+scalatest/src/test/java
+scalatest/src/test/java/user
+scalatest/src/test/java/user/org
+scalatest/src/test/java/user/org/mockito
+scalatest/src/test/java/user/org/mockito/model
+scalatest/src/test/java/user/org/mockito/model/JavaFoo.java
+scalatest/src/test/resources
+scalatest/src/test/resources/mockito-extensions
+scalatest/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker
+scalatest/src/test/scala-2.12
+scalatest/src/test/scala-2.12/user
+scalatest/src/test/scala-2.12/user/org
+scalatest/src/test/scala-2.12/user/org/mockito
+scalatest/src/test/scala-2.12/user/org/mockito/IdiomaticMockitoTest_212.scala
+scalatest/src/test/scala-2.12/user/org/mockito/MockitoSugarTest_212.scala
+scalatest/src/test/scala-2.12/user/org/mockito/scalatest
+scalatest/src/test/scala-2.12/user/org/mockito/scalatest/AsyncIdiomaticMockitoTest_212.scala
+scalatest/src/test/scala-2.12/user/org/mockito/stubbing
+scalatest/src/test/scala-2.12/user/org/mockito/stubbing/ReturnsEmptyValuesTest.scala
+scalatest/src/test/scala-2.13
+scalatest/src/test/scala-2.13/user
+scalatest/src/test/scala-2.13/user/org
+scalatest/src/test/scala-2.13/user/org/mockito
+scalatest/src/test/scala-2.13/user/org/mockito/IdiomaticMockitoTest_213.scala
+scalatest/src/test/scala-2.13/user/org/mockito/Issue352_213.scala
+scalatest/src/test/scala-2.13/user/org/mockito/MockitoSugarTest_213.scala
+scalatest/src/test/scala-2.13/user/org/mockito/scalatest
+scalatest/src/test/scala-2.13/user/org/mockito/scalatest/AsyncIdiomaticMockitoTest_213.scala
+scalatest/src/test/scala-2.13/user/org/mockito/stubbing
+scalatest/src/test/scala-2.13/user/org/mockito/stubbing/ReturnsEmptyValuesTest.scala
+scalatest/src/test/scala
+scalatest/src/test/scala/user
+scalatest/src/test/scala/user/org
+scalatest/src/test/scala/user/org/mockito
+scalatest/src/test/scala/user/org/mockito/DoSomethingTest.scala
+scalatest/src/test/scala/user/org/mockito/IdiomaticStubbingTest.scala
+scalatest/src/test/scala/user/org/mockito/Issue251.scala
+scalatest/src/test/scala/user/org/mockito/Issue254.scala
+scalatest/src/test/scala/user/org/mockito/Issue256.scala
+scalatest/src/test/scala/user/org/mockito/Issue352.scala
+scalatest/src/test/scala/user/org/mockito/Issue371.scala
+scalatest/src/test/scala/user/org/mockito/MalformedClassError.scala
+scalatest/src/test/scala/user/org/mockito/MockitoScalaSessionTest.scala
+scalatest/src/test/scala/user/org/mockito/MockitoSugar$Test.scala
+scalatest/src/test/scala/user/org/mockito/MockitoSugarTest.scala
+scalatest/src/test/scala/user/org/mockito/NestedReproSpec.scala
+scalatest/src/test/scala/user/org/mockito/PostfixVerificationsTest.scala
+scalatest/src/test/scala/user/org/mockito/PrefixExpectationsTest.scala
+scalatest/src/test/scala/user/org/mockito/SameThreadExecutionContext.scala
+scalatest/src/test/scala/user/org/mockito/TestModel.scala
+scalatest/src/test/scala/user/org/mockito/captor
+scalatest/src/test/scala/user/org/mockito/captor/ArgCaptorTest.scala
+scalatest/src/test/scala/user/org/mockito/matchers
+scalatest/src/test/scala/user/org/mockito/matchers/AnyMatchersTest.scala
+scalatest/src/test/scala/user/org/mockito/matchers/EqMatchersTest.scala
+scalatest/src/test/scala/user/org/mockito/matchers/FunctionMatchersTest.scala
+scalatest/src/test/scala/user/org/mockito/matchers/NumericMatchersTest.scala
+scalatest/src/test/scala/user/org/mockito/matchers/ThatMatchersTest.scala
+scalatest/src/test/scala/user/org/mockito/matchers/package.scala
+scalatest/src/test/scala/user/org/mockito/scalatest
+scalatest/src/test/scala/user/org/mockito/scalatest/AsyncIdiomaticMockitoTest.scala
+scalatest/src/test/scala/user/org/mockito/scalatest/IdiomaticMockitoFixtureClassTest.scala
+scalatest/src/test/scala/user/org/mockito/scalatest/IdiomaticMockitoTest.scala
+scalatest/src/test/scala/user/org/mockito/scalatest/IdiomaticMockitoWithExpectFixtureClassTest.scala
+scalatest/src/test/scala/user/org/mockito/scalatest/ResetMocksAfterEachAsyncTestTest.scala
+scalatest/src/test/scala/user/org/mockito/scalatest/ResetMocksAfterEachTestTest.scala
+scalatest/src/test/scala/user/org/mockito/stubbing
+scalatest/src/test/scala/user/org/mockito/stubbing/DefaultAnswerTest.scala
+scalaz/src/test
+scalaz/src/test/scala
+scalaz/src/test/scala/org
+scalaz/src/test/scala/org/mockito
+scalaz/src/test/scala/org/mockito/scalaz
+scalaz/src/test/scala/org/mockito/scalaz/DoSomethingScalazTest.scala
+scalaz/src/test/scala/org/mockito/scalaz/IdiomaticMockitoScalazTest.scala
+scalaz/src/test/scala/org/mockito/scalaz/MockitoScalazTest.scala
+scalaz/src/test/scala/org/mockito/scalaz/package.scala
+specs2/src/main/scala/org/mockito/specs2/MockitoSpecs2Support.scala
+specs2/src/test
+specs2/src/test/resources
+specs2/src/test/resources/mockito-extensions
+specs2/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker
+specs2/src/test/scala
+specs2/src/test/scala/org
+specs2/src/test/scala/org/mockito
+specs2/src/test/scala/org/mockito/specs2
+specs2/src/test/scala/org/mockito/specs2/MockitoScalaNewSyntaxSpec.scala
+specs2/src/test/scala/org/mockito/specs2/MockitoScalaSpec.scala
+
+ succeeded in 646ms:
+HTTP/2 404 
+https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-test-sources.jar HTTP/2 404 
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.github.oshai/kotlin-logging-jvm/index.json && sed -n '1,80p' metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/mordant",
+    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+    "description" : "Mordant Core is a Kotlin multiplatform library for rendering styled terminal output, including ANSI colors, text styling, widgets, tables, input handling, and terminal capability detection. The mordant-core-jvm artifact provides the JVM variant of the core APIs for command-line applications that need rich terminal rendering and interaction.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "3.0.2"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.mordant"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata -name index.json -print0 | xargs -0 rg -n '\"name\" : \"scala\"|\"name\": \"scala\"' | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+metadata/com.typesafe.play/play-functional_3/index.json:11:      "name" : "scala",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:11:      "name" : "scala",
+metadata/org.tpolecat/sourcepos_3/index.json:11:      "name" : "scala",
+metadata/org.json4s/json4s-native-core_3/index.json:11:      "name" : "scala",
+metadata/org.scala-sbt/compiler-interface/index.json:11:      "name" : "scala",
+metadata/org.scala-sbt/compiler-interface/index.json:29:      "name" : "scala",
+metadata/org.scala-sbt/compiler-interface/index.json:70:      "name" : "scala",
+metadata/org.scala-sbt/compiler-interface/index.json:88:      "name" : "scala",
+metadata/com.github.ghik/silencer-lib_2.13/index.json:11:      "name" : "scala",
+metadata/org.scalatra/scalatra-common_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/zio-http_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/ujson_3/index.json:11:      "name" : "scala",
+metadata/com.lihaoyi/ujson_3/index.json:32:      "name" : "scala",
+metadata/com.github.scopt/scopt_3/index.json:11:      "name" : "scala",
+metadata/dev.zio/zio-internal-macros_3/index.json:10:      "name" : "scala",
+metadata/dev.zio/zio-internal-macros_3/index.json:29:      "name" : "scala",
+metadata/org.json4s/json4s-ast_3/index.json:11:      "name" : "scala",
+metadata/org.typelevel/cats-core_3/index.json:11:      "name" : "scala",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:11:      "name" : "scala",
+metadata/co.fs2/fs2-reactive-streams_3/index.json:11:      "name" : "scala",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/com.github.ghik/silencer-lib_2.13/index.json && sed -n '1,60p' metadata/org.scala-sbt/compiler-interface/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/$version$/silencer-lib_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/ghik/silencer",
+    "test-code-url" : "https://github.com/ghik/silencer/tree/v$version$/silencer-lib/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/$version$/silencer-lib_2.13-$version$-javadoc.jar",
+    "description" : "This artifact provides the Scala annotation API used by the Silencer compiler plugin to suppress selected compiler warnings in Scala source code. It lets Scala projects mark definitions, statements, or expressions with @silent while the companion compiler plugin performs the warning filtering at compile time.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.4.1",
+      "1.4.2"
+    ],
+    "allowed-packages" : [
+      "com.github.ghik.silencer"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.10.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+    "repository-url" : "https://github.com/sbt/zinc",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-javadoc.jar",
+    "description" : "compiler-interface defines the xsbti APIs that Zinc and sbt use to communicate with Scala and Java compilers during incremental compilation. It exposes compile configuration, analysis, reporting, classfile management, and compiler bridge interfaces while keeping the published API usable from JVM bytecode.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.10.0"
+    ],
+    "allowed-packages" : [
+      "xsbti"
+    ]
+  },
+  {
+    "metadata-version" : "1.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+    "repository-url" : "https://github.com/sbt/zinc",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-javadoc.jar",
+    "description" : "compiler-interface defines the xsbti APIs that Zinc and sbt use to communicate with Scala and Java compilers during incremental compilation. It exposes compile configuration, analysis, reporting, classfile management, and compiler bridge interfaces while keeping the published API usable from JVM bytecode.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.5.0",
+      "1.5.1",
+      "1.5.2",
+      "1.5.3",
+      "1.5.4",
+      "1.5.5",
+      "1.5.6",
+      "1.5.7",
+      "1.5.8",
+      "1.5.9",
+      "1.6.0",
+      "1.6.1",
+      "1.7.0",
+      "1.7.1",
+      "1.7.2",
+      "1.8.0",
+      "1.8.1",
+      "1.9.0",
+      "1.9.1",
+      "1.9.2",
+      "1.9.3",
+      "1.9.4",
+      "1.9.5",
+      "1.9.6"
+    ],
+    "allowed-packages" : [
+      "xsbti"
+    ]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mockito/mockito-scala/contents/scalatest/src/test?ref=v2.0.0 | jq -r '.[].html_url' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mockito/mockito-scala/contents/scalatest/src/test/scala?ref=v2.0.0 | jq -r '.[].html_url' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 252ms:
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test/java
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test/resources
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test/scala-2.12
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test/scala-2.13
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test/scala
+
+ succeeded in 247ms:
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test/scala/user
+
+codex
+I found a confirmed `v2.0.0` Git tag and verified the artifact is a JVM jar with `.class` files, so it stays eligible for Native Image metadata. I’m writing the metadata now with Maven Central URLs for sources and API docs, plus the tagged upstream ScalaTest test tree because Maven does not publish a test jar for this artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+index e2aa18322b61b6d64a4bc70e849cf0ad8382752e..357b7faf4476c8efc1aa1c8a76a74461a07418e6
+--- a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
++++ b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
++  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/mockito/mockito-scala",
++  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
++  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+index e2aa18322b61b6d64a4bc70e849cf0ad8382752e..357b7faf4476c8efc1aa1c8a76a74461a07418e6
+--- a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
++++ b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
++  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/mockito/mockito-scala",
++  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
++  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+{
+  "coordinates": "org.mockito:mockito-scala_2.13:2.0.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
+  "repository-url": "https://github.com/mockito/mockito-scala",
+  "test-code-url": "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
+  "description": "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-sources.jar \\
+  https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test \\
+  https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-javadoc.jar; do \\
+  printf '%s ' \""'$url"; curl -fsI -L "$url" | sed -n '"'1p' || true; \\
+done" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+diff --git a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+index e2aa18322b61b6d64a4bc70e849cf0ad8382752e..357b7faf4476c8efc1aa1c8a76a74461a07418e6
+--- a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
++++ b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
++  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/mockito/mockito-scala",
++  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
++  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 1500ms:
+HTTP/2 200 
+https://github.com/mockito/mockito-scala/tree/v2.0.0/scalatest/src/test HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/mockito-scala_2.13-2.0.0-javadoc.jar HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+index e2aa18322b61b6d64a4bc70e849cf0ad8382752e..357b7faf4476c8efc1aa1c8a76a74461a07418e6
+--- a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
++++ b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
++  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/mockito/mockito-scala",
++  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
++  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
+  "repository-url" : "https://github.com/mockito/mockito-scala",
+  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
+  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+index e2aa18322b61b6d64a4bc70e849cf0ad8382752e..357b7faf4476c8efc1aa1c8a76a74461a07418e6
+--- a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
++++ b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
++  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/mockito/mockito-scala",
++  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
++  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: repo.maven.apache.org org.mockito mockito-scala_2.13 2.0.0 sources javadoc POM
+web search: 
+web search: https://github.com/mockito/mockito-scala
+codex
+Updated [org.mockito-mockito-scala_2.13-2.0.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json).
+
+I used Maven Central for the sources and javadoc URLs, and the tagged GitHub ScalaTest test tree because Maven did not publish a tests jar for this artifact. The artifact is Scala 2 specific and remains a JVM Native Image metadata target, so I added `language` and left `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the rendered source, test, and documentation URLs all return HTTP 200 for `2.0.0`.
+diff --git a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+index e2aa18322b61b6d64a4bc70e849cf0ad8382752e..357b7faf4476c8efc1aa1c8a76a74461a07418e6
+--- a/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
++++ b/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0"
++  "coordinates" : "org.mockito:mockito-scala_2.13:2.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/mockito/mockito-scala",
++  "test-code-url" : "https://github.com/mockito/mockito-scala/tree/v$version$/scalatest/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mockito/mockito-scala_2.13/$version$/mockito-scala_2.13-$version$-javadoc.jar",
++  "description" : "Mockito Scala provides a Scala-friendly wrapper around Mockito with idiomatic syntax for creating mocks, stubbing behavior, verifying interactions, and capturing arguments. The org.mockito:mockito-scala_2.13 artifact publishes the core Scala 2.13 JVM API and integrates with Mockito Core while leaving ScalaTest, Specs2, Cats, and Scalaz helpers in separate companion artifacts.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+82,011
+Updated [org.mockito-mockito-scala_2.13-2.0.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/build/discovered-artifact-metadata/org.mockito-mockito-scala_2.13-2.0.0.json).
+
+I used Maven Central for the sources and javadoc URLs, and the tagged GitHub ScalaTest test tree because Maven did not publish a tests jar for this artifact. The artifact is Scala 2 specific and remains a JVM Native Image metadata target, so I added `language` and left `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mockito/mockito-scala_2.13/2.0.0/?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the rendered source, test, and documentation URLs all return HTTP 200 for `2.0.0`.
+Ran agent for org.mockito:mockito-scala_2.13:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/build/agent-artifact-discovery-logs/org.mockito-mockito-scala_2.13-2.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4976-8077dc50/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 37s
+9 actionable tasks: 9 executed
