@@ -198,6 +198,34 @@ public class KtorClientApache5JvmTest {
     }
 
     @Test
+    fun appliesApacheHttpClientBuilderCustomization(): Unit = runBlocking {
+        LocalTestServer().use { server: LocalTestServer ->
+            server.handle("/customized-client") { exchange: HttpExchange ->
+                exchange.respond(
+                    statusCode = HttpStatusCode.OK.value,
+                    body = "intercepted=${exchange.requestHeaders.getFirst("X-Apache-Intercepted")}",
+                )
+            }
+            server.start()
+
+            withApacheClient(
+                engineConfig = {
+                    customizeClient {
+                        addRequestInterceptorFirst { request, _, _ ->
+                            request.addHeader("X-Apache-Intercepted", "true")
+                        }
+                    }
+                },
+            ) { client: HttpClient ->
+                val response: HttpResponse = client.get(server.url("/customized-client"))
+
+                assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+                assertThat(response.bodyAsText()).isEqualTo("intercepted=true")
+            }
+        }
+    }
+
+    @Test
     fun apacheEngineConfigurationControlsRedirectHandling(): Unit = runBlocking {
         LocalTestServer().use { server: LocalTestServer ->
             server.handle("/redirect") { exchange: HttpExchange ->
