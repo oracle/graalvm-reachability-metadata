@@ -12,10 +12,17 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "jdom:jdom:$libraryVersion"
+    testImplementation 'jaxen:jaxen:1.0-FCS'
+    testImplementation 'saxpath:saxpath:1.0-FCS'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('-H:+AddAllCharsets')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
