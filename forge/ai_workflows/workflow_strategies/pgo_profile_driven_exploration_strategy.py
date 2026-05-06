@@ -26,8 +26,8 @@ from utility_scripts.pgo_near_call_report import format_pgo_near_call_guidance
 from utility_scripts.runtime_context import collect_runtime_environment_summary
 
 
-DEFAULT_PGO_SAMPLING_PERIOD_MICROS = 100
-MINIMUM_PGO_SAMPLING_PERIOD_MICROS = 100
+DEFAULT_PGO_SAMPLING_PERIOD_MICROS = 10
+MINIMUM_PGO_SAMPLING_PERIOD_MICROS = 10
 PGO_GUIDANCE_UNAVAILABLE_PREFIX = "- PGO near-call guidance unavailable:"
 
 
@@ -141,8 +141,8 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
 
     def _prepare_dynamic_access_attempt(self, agent, active_class, current_report, class_attempts: int) -> bool:
         guidance = self._refresh_pgo_near_call_guidance(active_class)
+        self._pgo_guidance_by_call[self._active_call_guidance_key(active_class)] = guidance
         if not guidance.startswith(PGO_GUIDANCE_UNAVAILABLE_PREFIX):
-            self._pgo_guidance_by_call[self._active_call_guidance_key(active_class)] = guidance
             return True
 
         issue = guidance.removeprefix(PGO_GUIDANCE_UNAVAILABLE_PREFIX).strip()
@@ -151,13 +151,7 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
             issue=issue,
             indent_level=2,
         )
-        unreachable_entries = self._record_unreachable_call_sites(agent, active_class, issue)
-
-        if self._all_uncovered_call_sites_recorded_unreachable(active_class, unreachable_entries):
-            self._pgo_guidance_by_call.pop(self._active_call_guidance_key(active_class), None)
-            return False
-
-        return False
+        raise PgoNearCallGuidanceUnavailableError(issue)
 
     def _run_dynamic_access_phase(self, agent, current_report=None) -> tuple[bool, int]:
         if current_report is None:
@@ -225,9 +219,21 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                 self._print_dynamic_access_detail(
                     self._format_class_attempt_status(call_attempts, call_attempts_without_progress)
                 )
-                if not self._prepare_dynamic_access_attempt(agent, active_class, current_report, call_attempts):
-                    call_skipped = True
-                    break
+                try:
+                    if not self._prepare_dynamic_access_attempt(agent, active_class, current_report, call_attempts):
+                        call_skipped = True
+                        break
+                except PgoNearCallGuidanceUnavailableError as error:
+                    self._print_failure_analysis(
+                        "pgo_profile_driven_exploration",
+                        issue="required_pgo_guidance_unavailable",
+                        indent_level=1,
+                        class_name=active_class.class_name,
+                        tracked_api=target_call_site.tracked_api,
+                        frame=target_call_site.frame,
+                        pgo_issue=str(error),
+                    )
+                    return False, prompt_iterations
 
                 delta = self._compute_single_call_delta(previous_report, current_report, active_class, target_key)
                 dynamic_prompt = self._render_dynamic_access_prompt(active_class, delta, call_attempts)
@@ -390,6 +396,7 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                     )
                 call_attempts_without_progress += 1
 
+            last_pgo_guidance = self._pgo_guidance_by_call.get(self._active_call_guidance_key(active_class))
             if hasattr(agent, "clear_context"):
                 agent.clear_context()
             self._pgo_guidance_by_call.pop(self._active_call_guidance_key(active_class), None)
@@ -447,10 +454,16 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                     indent_level=1,
                 )
                 subprocess.run(["git", "reset", "--hard", call_checkpoint], check=False)
+                pgo_failure_reason = "PGO-guided exploration did not cover this call within the no-progress budget."
+                if last_pgo_guidance:
+                    pgo_failure_reason = "{reason}\n\nLatest PGO near-call guidance:\n{guidance}".format(
+                        reason=pgo_failure_reason,
+                        guidance=last_pgo_guidance,
+                    )
                 self._record_unreachable_call_sites(
                     agent,
                     active_class,
-                    "PGO-guided exploration did not cover this call within the no-progress budget.",
+                    pgo_failure_reason,
                 )
                 exhausted_call_sites.add(target_key)
                 terminal_skipped_calls += 1

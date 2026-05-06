@@ -153,7 +153,7 @@ boolean generatePgoNearCallReportTaskRequested = gradle.startParameter.taskNames
     taskName == "generatePgoDynamicAccessNearCallReport" || taskName.endsWith(":generatePgoDynamicAccessNearCallReport")
 }
 boolean generatePgoNearCallReport = generatePgoNearCallReportVal.toBoolean() || generatePgoNearCallReportTaskRequested
-String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("100")
+String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("10")
 
 Closure<Boolean> isTaskRequested = { String taskName ->
     gradle.startParameter.taskNames.any { String requestedTaskName ->

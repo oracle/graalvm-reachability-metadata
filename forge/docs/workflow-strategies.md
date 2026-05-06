@@ -202,7 +202,7 @@ All concrete strategies expect `library` (coordinates),
   budget), `max-class-test-iterations`.
 - **Loop**: inherits the per-class dynamic-access loop. Before each prompt it
   runs `generatePgoDynamicAccessNearCallReport` with
-  `-PpgoSamplingPeriodMicros` (default strategy value: `100`), parses the
+  `-PpgoSamplingPeriodMicros` (default strategy value: `10`), parses the
   generated `call_tree_*.csv` and `native-test.iprof`, and adds guidance that
   compares the closest sampled runtime path with the static path to the
   uncovered dynamic-access call. The prompt asks the agent to keep the shared
