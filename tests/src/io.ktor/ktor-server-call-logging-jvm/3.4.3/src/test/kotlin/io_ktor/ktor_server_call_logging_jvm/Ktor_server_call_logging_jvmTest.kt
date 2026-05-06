@@ -184,6 +184,38 @@ public class Ktor_server_call_logging_jvmTest {
     }
 
     @Test
+    fun mdcProviderExceptionsDoNotFailRequestsOrSuppressLogging(): Unit = testApplication {
+        val logger = RecordingLogger()
+        val failingProviderCalls = AtomicInteger()
+
+        application {
+            install(CallLogging) {
+                this.logger = logger
+                mdc("failing-entry") {
+                    failingProviderCalls.incrementAndGet()
+                    error("MDC value is unavailable")
+                }
+                mdc("request-path") { call -> call.request.path() }
+                format { call -> "completed:${call.request.path()}:${call.response.status()?.value}" }
+            }
+            routing {
+                get("/mdc-provider-error") {
+                    call.respondText("request completed")
+                }
+            }
+        }
+
+        val response = client.get("/mdc-provider-error")
+
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.bodyAsText()).isEqualTo("request completed")
+        assertThat(failingProviderCalls.get()).isPositive()
+        assertThat(logger.messages()).containsExactly("completed:/mdc-provider-error:200")
+        assertThat(MDC.get("failing-entry")).isNull()
+        assertThat(MDC.get("request-path")).isNull()
+    }
+
+    @Test
     fun staticContentCanBeExcludedWhileDynamicCallsAreLogged() {
         val staticDirectory = Files.createTempDirectory("ktor-call-logging-static").toFile()
         try {
