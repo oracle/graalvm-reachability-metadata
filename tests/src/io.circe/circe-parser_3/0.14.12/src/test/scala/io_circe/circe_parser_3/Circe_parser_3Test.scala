@@ -70,6 +70,19 @@ class Circe_parser_3Test {
   }
 
   @Test
+  def parsesTopLevelScalarJsonValuesSurroundedByWhitespace(): Unit = {
+    val nullJson: Json = parsed(" null ")
+    val booleanJson: Json = parsed("\ntrue\t")
+    val stringJson: Json = parsed("\"standalone\"")
+    val numberJson: Json = parsed("42.125")
+
+    assertTrue(nullJson.isNull)
+    assertEquals(Some(true), booleanJson.asBoolean)
+    assertEquals(Some("standalone"), stringJson.asString)
+    assertTrue(numberJson.asNumber.exists(_.toBigDecimal.contains(BigDecimal("42.125"))))
+  }
+
+  @Test
   def decodesStandardScalaCollectionsAndOptionalValues(): Unit = {
     val decodedMap = decode[Map[String, List[Int]]]("""{"even":[2,4,6],"odd":[1,3,5]}""")
     val decodedOptions = decode[List[Option[Boolean]]]("""[true,null,false]""")
