@@ -21,6 +21,8 @@ import doobie.free.callablestatement.CallableStatementOp
 import doobie.free.clob
 import doobie.free.connection
 import doobie.free.connection.ConnectionOp
+import doobie.free.databasemetadata
+import doobie.free.databasemetadata.DatabaseMetaDataOp
 import doobie.free.driver
 import doobie.free.preparedstatement
 import doobie.free.preparedstatement.PreparedStatementOp
@@ -50,6 +52,7 @@ import java.sql.Connection
 import java.sql.Driver
 import java.sql.DriverPropertyInfo
 import java.sql.NClob
+import java.sql.ResultSet
 import java.sql.SQLData
 import java.sql.SQLInput
 import java.sql.SQLOutput
@@ -293,6 +296,77 @@ class Doobie_free_3Test {
     assertEquals(50, maxRows)
     assertEquals(
       Seq("connection.setAutoCommit:false", "statement.addBatch:insert into audit values (1)"),
+      events.toSeq
+    )
+  }
+
+  @Test
+  def databaseMetaDataAlgebraDescribesDatabaseCapabilitiesAndCatalogRows(): Unit = {
+    val tableRows: ResultSet = null.asInstanceOf[ResultSet]
+    val events: ArrayBuffer[String] = ArrayBuffer.empty[String]
+
+    val resultSetInterpreter: ResultSetOp ~> Id = new (ResultSetOp ~> Id) {
+      override def apply[A](operation: ResultSetOp[A]): Id[A] = operation match {
+        case ResultSetOp.Next => true.asInstanceOf[A]
+        case ResultSetOp.GetString(index) =>
+          events += s"resultSet.getStringByIndex:$index"
+          "accounts".asInstanceOf[A]
+        case ResultSetOp.GetString1(column) =>
+          events += s"resultSet.getStringByName:$column"
+          "TABLE".asInstanceOf[A]
+        case other => fail(s"Unexpected result set operation: $other")
+      }
+    }
+
+    val metadataInterpreter: DatabaseMetaDataOp ~> Id = new (DatabaseMetaDataOp ~> Id) {
+      override def apply[A](operation: DatabaseMetaDataOp[A]): Id[A] = operation match {
+        case DatabaseMetaDataOp.GetDatabaseProductName => "ExampleDB".asInstanceOf[A]
+        case DatabaseMetaDataOp.GetDatabaseMajorVersion => 12.asInstanceOf[A]
+        case DatabaseMetaDataOp.GetDriverName => "Example JDBC Driver".asInstanceOf[A]
+        case DatabaseMetaDataOp.SupportsTransactions => true.asInstanceOf[A]
+        case DatabaseMetaDataOp.GetTables(catalog, schemaPattern, tableNamePattern, tableTypes) =>
+          events += s"metadata.getTables:$catalog:$schemaPattern:$tableNamePattern:${tableTypes.mkString(",")}"
+          tableRows.asInstanceOf[A]
+        case DatabaseMetaDataOp.Embed(Embedded.ResultSet(target, program)) =>
+          assertSame(tableRows, target)
+          program.foldMap(resultSetInterpreter).asInstanceOf[A]
+        case other => fail(s"Unexpected database metadata operation: $other")
+      }
+    }
+
+    val program: databasemetadata.DatabaseMetaDataIO[(String, Int, String, Boolean, Boolean, String, String)] =
+      for {
+        productName <- databasemetadata.getDatabaseProductName
+        majorVersion <- databasemetadata.getDatabaseMajorVersion
+        driverName <- databasemetadata.getDriverName
+        supportsTransactions <- databasemetadata.supportsTransactions
+        catalogResultSet <- databasemetadata.getTables(null, "public", "account%", Array("TABLE"))
+        tableInfo <- databasemetadata.embed(
+          catalogResultSet,
+          for {
+            hasRow <- resultset.next
+            tableName <- resultset.getString(3)
+            tableType <- resultset.getString("TABLE_TYPE")
+          } yield (hasRow, tableName, tableType)
+        )
+      } yield (productName, majorVersion, driverName, supportsTransactions, tableInfo._1, tableInfo._2, tableInfo._3)
+
+    val (productName, majorVersion, driverName, supportsTransactions, hasTable, tableName, tableType) =
+      program.foldMap(metadataInterpreter)
+
+    assertEquals("ExampleDB", productName)
+    assertEquals(12, majorVersion)
+    assertEquals("Example JDBC Driver", driverName)
+    assertTrue(supportsTransactions)
+    assertTrue(hasTable)
+    assertEquals("accounts", tableName)
+    assertEquals("TABLE", tableType)
+    assertEquals(
+      Seq(
+        "metadata.getTables:null:public:account%:TABLE",
+        "resultSet.getStringByIndex:3",
+        "resultSet.getStringByName:TABLE_TYPE"
+      ),
       events.toSeq
     )
   }
