@@ -240,6 +240,48 @@ class Cats_effect_kernel_3Test {
     assertEquals(Vector("reset", "next", "committed", "access", "try"), ref.get.unsafeRun())
   }
 
+  @Test
+  def syncSuspendsSideEffectsAndCapturesNonFatalErrors(): Unit = {
+    given Sync[TestEffect] = Cats_effect_kernel_3Test.testEffectSync
+
+    val sync: Sync[TestEffect] = Sync[TestEffect]
+    val failure: IllegalArgumentException = IllegalArgumentException("sync failure")
+    var counter: Int = 0
+
+    val delayed: TestEffect[String] = sync.delay {
+      counter += 1
+      s"delay:$counter"
+    }
+    val deferred: TestEffect[String] = sync.defer {
+      counter += 1
+      TestEffect.pure(s"defer:$counter")
+    }
+    val blocking: TestEffect[String] = sync.blocking {
+      counter += 1
+      s"blocking:$counter"
+    }
+    val interruptible: TestEffect[String] = sync.interruptible {
+      counter += 1
+      s"interruptible:$counter"
+    }
+    val interruptibleMany: TestEffect[String] = sync.interruptibleMany {
+      counter += 1
+      s"interruptibleMany:$counter"
+    }
+    val capturedFailure: TestEffect[Unit] = sync.delay(throw failure)
+
+    assertEquals(0, counter)
+    assertEquals("delay:1", delayed.unsafeRun())
+    assertEquals("defer:2", deferred.unsafeRun())
+    assertEquals("blocking:3", blocking.unsafeRun())
+    assertEquals("interruptible:4", interruptible.unsafeRun())
+    assertEquals("interruptibleMany:5", interruptibleMany.unsafeRun())
+    assertTrue(capturedFailure.unsafeEither match {
+      case Left(throwable) => throwable eq failure
+      case Right(_) => false
+    })
+  }
+
   private def exitCaseName(exitCase: Resource.ExitCase): String = exitCase match {
     case Resource.ExitCase.Succeeded => "succeeded"
     case Resource.ExitCase.Canceled => "canceled"
