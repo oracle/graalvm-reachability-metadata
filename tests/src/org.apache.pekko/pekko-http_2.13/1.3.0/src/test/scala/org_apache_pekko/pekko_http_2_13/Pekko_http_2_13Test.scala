@@ -23,9 +23,12 @@ import org.apache.pekko.http.scaladsl.model.HttpRequest
 import org.apache.pekko.http.scaladsl.model.HttpResponse
 import org.apache.pekko.http.scaladsl.model.StatusCodes
 import org.apache.pekko.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.headers.Authorization
+import org.apache.pekko.http.scaladsl.model.headers.BasicHttpCredentials
 import org.apache.pekko.http.scaladsl.model.headers.Cookie
 import org.apache.pekko.http.scaladsl.model.headers.HttpCookie
 import org.apache.pekko.http.scaladsl.model.headers.HttpCookiePair
+import org.apache.pekko.http.scaladsl.model.headers.OAuth2BearerToken
 import org.apache.pekko.http.scaladsl.model.headers.RawHeader
 import org.apache.pekko.http.scaladsl.model.headers.`Set-Cookie`
 import org.apache.pekko.http.scaladsl.server.Directives._
@@ -113,6 +116,35 @@ class Pekko_http_2_13Test {
         assertThat(header.name).isEqualTo("Content-Length")
         assertThat(errors.asJava).isNotEmpty
         assertThat(errors.map(_.formatPretty).mkString("\n")).isNotEmpty
+    }
+  }
+
+  @Test
+  def rendersAndParsesAuthorizationCredentials(): Unit = {
+    val basicCredentials: BasicHttpCredentials = BasicHttpCredentials("pekko-user", "secret-pass")
+    val bearerToken: OAuth2BearerToken = OAuth2BearerToken("opaque-token-123")
+    val basicHeader: Authorization = Authorization(basicCredentials)
+    val bearerHeader: Authorization = Authorization(bearerToken)
+    val parsedBasic: Authorization = parseHeader("Authorization", basicHeader.value).asInstanceOf[Authorization]
+    val parsedBearer: Authorization = parseHeader("Authorization", bearerHeader.value).asInstanceOf[Authorization]
+
+    assertThat(basicHeader.name).isEqualTo("Authorization")
+    assertThat(basicHeader.value).startsWith("Basic ")
+    assertThat(basicHeader.value).doesNotContain("secret-pass")
+    parsedBasic.credentials match {
+      case credentials: BasicHttpCredentials =>
+        assertThat(credentials.username).isEqualTo("pekko-user")
+        assertThat(credentials.password).isEqualTo("secret-pass")
+      case other =>
+        throw new AssertionError(s"Expected Basic credentials, but got ${other.getClass.getName}")
+    }
+
+    assertThat(bearerHeader.value).isEqualTo("Bearer opaque-token-123")
+    parsedBearer.credentials match {
+      case credentials: OAuth2BearerToken =>
+        assertThat(credentials.token).isEqualTo("opaque-token-123")
+      case other =>
+        throw new AssertionError(s"Expected OAuth2 bearer token, but got ${other.getClass.getName}")
     }
   }
 
