@@ -31,6 +31,7 @@ import org.testng.ITestContext
 import org.testng.ITestListener
 import org.testng.ITestResult
 import org.testng.TestNG
+import org.testng.annotations.DataProvider
 
 public class Kotlin_test_testngTest {
     @Test
@@ -187,6 +188,34 @@ public class Kotlin_test_testngTest {
             outputDirectory.toFile().deleteRecursively()
         }
     }
+
+    @Test
+    public fun kotlinTestAnnotationSupportsTestNgDataProviders(): Unit {
+        KotlinTestTestNgDataProviderSuite.resetCounters()
+        val listener = CountingTestNgListener()
+        val outputDirectory = Files.createTempDirectory("kotlin-test-testng-data-provider-output")
+
+        try {
+            val testNg = TestNG(false)
+            testNg.setUseDefaultListeners(false)
+            testNg.setVerbose(0)
+            testNg.setOutputDirectory(outputDirectory.toString())
+            testNg.setTestClasses(arrayOf(KotlinTestTestNgDataProviderSuite::class.java))
+            testNg.addListener(listener)
+
+            testNg.run()
+
+            assertThat(testNg.hasFailure()).isFalse()
+            assertThat(listener.failures).isEqualTo(0)
+            assertThat(listener.successes).isEqualTo(KotlinTestTestNgDataProviderSuite.providedRows)
+            assertThat(KotlinTestTestNgDataProviderSuite.invocations).hasValue(
+                KotlinTestTestNgDataProviderSuite.providedRows,
+            )
+            assertThat(KotlinTestTestNgDataProviderSuite.totalObservedLength).hasValue(11)
+        } finally {
+            outputDirectory.toFile().deleteRecursively()
+        }
+    }
 }
 
 public class KotlinTestTestNgExpectedExceptionSuite {
@@ -196,6 +225,32 @@ public class KotlinTestTestNgExpectedExceptionSuite {
     )
     public fun expectedExceptionIsTreatedAsTestSuccess(): Unit {
         throw IllegalArgumentException("the expected marker is present")
+    }
+}
+
+public class KotlinTestTestNgDataProviderSuite {
+    @DataProvider(name = "words")
+    public fun words(): Array<Array<Any>> = arrayOf(
+        arrayOf("alpha", 5),
+        arrayOf("kotlin", 6),
+    )
+
+    @KotlinTest(dataProvider = "words")
+    public fun dataProviderArgumentsAreDeliveredToKotlinTest(word: String, expectedLength: Int): Unit {
+        kotlinAssertEquals(expectedLength, word.length)
+        invocations.incrementAndGet()
+        totalObservedLength.addAndGet(word.length)
+    }
+
+    public companion object {
+        public val providedRows: Int = 2
+        public val invocations: AtomicInteger = AtomicInteger(0)
+        public val totalObservedLength: AtomicInteger = AtomicInteger(0)
+
+        public fun resetCounters(): Unit {
+            invocations.set(0)
+            totalObservedLength.set(0)
+        }
     }
 }
 
