@@ -206,7 +206,7 @@ public class Kotlinx_coroutines_debugTest {
         try {
             block()
         } catch (exception: IllegalStateException) {
-            if (!isByteBuddyRedefinitionFailure(exception)) {
+            if (!isByteBuddyRedefinitionFailure(exception) && !isByteBuddyAgentUnavailable(exception)) {
                 throw exception
             }
         } catch (error: Error) {
@@ -220,7 +220,7 @@ public class Kotlinx_coroutines_debugTest {
         try {
             DebugProbes.uninstall()
         } catch (exception: IllegalStateException) {
-            if (!isByteBuddyRedefinitionFailure(exception)) {
+            if (!isByteBuddyRedefinitionFailure(exception) && !isByteBuddyAgentUnavailable(exception)) {
                 throw exception
             }
         }
@@ -231,6 +231,15 @@ public class Kotlinx_coroutines_debugTest {
         return exception.message == "Error invoking java.lang.instrument.Instrumentation#retransformClasses" &&
             cause is UnsupportedOperationException &&
             cause.message.orEmpty().contains("class redefinition failed")
+    }
+
+    private fun isByteBuddyAgentUnavailable(exception: IllegalStateException): Boolean {
+        return exception.message == "Error during attachment using: INSTANCE" ||
+            exception.message == "The Byte Buddy agent is not installed or not accessible" ||
+            exception.cause?.message == "The Byte Buddy agent is not loaded or this method is not called via the system class loader" ||
+            exception.cause?.cause?.message == "The Byte Buddy agent is not loaded or this method is not called via the system class loader" ||
+            exception.cause?.message == "net.bytebuddy.agent.VirtualMachine\$ForHotSpot.attach(java.lang.String)" ||
+            exception.cause?.cause?.message == "net.bytebuddy.agent.VirtualMachine\$ForHotSpot.attach(java.lang.String)"
     }
 
     private suspend fun awaitSuspendedCoroutineInfo(coroutineName: String): CoroutineInfo {
