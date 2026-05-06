@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.Duration;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -36,6 +37,7 @@ import io.grpc.xds.CdsLoadBalancerProvider;
 import io.grpc.xds.ClusterImplLoadBalancerProvider;
 import io.grpc.xds.ClusterResolverLoadBalancerProvider;
 import io.grpc.xds.CsdsService;
+import io.grpc.xds.EnvoyServerProtoData;
 import io.grpc.xds.LeastRequestLoadBalancerProvider;
 import io.grpc.xds.PriorityLoadBalancerProvider;
 import io.grpc.xds.RingHashLoadBalancerProvider;
@@ -56,6 +58,9 @@ import io.grpc.xds.shaded.com.github.xds.data.orca.v3.OrcaLoadReport;
 import io.grpc.xds.shaded.com.github.xds.service.orca.v3.OpenRcaServiceGrpc;
 import io.grpc.xds.shaded.com.github.xds.service.orca.v3.OrcaLoadReportRequest;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.config.core.v3.Node;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.extensions.transport_sockets.tls.v3.CommonTlsContext;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.service.status.v3.ClientStatusDiscoveryServiceGrpc;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.service.status.v3.ClientStatusRequest;
 import java.io.IOException;
@@ -247,6 +252,38 @@ public class Grpc_xdsTest {
         assertThat(delegateCalls).hasValue(1);
         assertThat(perRequestUtil.newOrcaClientStreamTracerFactory(report -> assertThat(report).isNotNull()))
                 .isNotNull();
+    }
+
+    @Test
+    void envoyTlsContextsConvertFromXdsProtosAndPreserveCommonSettings() {
+        CommonTlsContext commonTlsContext = CommonTlsContext.newBuilder()
+                .addAlpnProtocols("h2")
+                .addAlpnProtocols("grpc-exp")
+                .build();
+        DownstreamTlsContext downstreamTlsContext = DownstreamTlsContext.newBuilder()
+                .setCommonTlsContext(commonTlsContext)
+                .setRequireClientCertificate(BoolValue.of(true))
+                .build();
+
+        EnvoyServerProtoData.DownstreamTlsContext convertedDownstreamTlsContext =
+                EnvoyServerProtoData.DownstreamTlsContext.fromEnvoyProtoDownstreamTlsContext(downstreamTlsContext);
+
+        assertThat(convertedDownstreamTlsContext.getCommonTlsContext().getAlpnProtocolsList())
+                .containsExactly("h2", "grpc-exp");
+        assertThat(convertedDownstreamTlsContext.isRequireClientCertificate()).isTrue();
+        assertThat(convertedDownstreamTlsContext)
+                .isEqualTo(new EnvoyServerProtoData.DownstreamTlsContext(commonTlsContext, true));
+
+        UpstreamTlsContext upstreamTlsContext = UpstreamTlsContext.newBuilder()
+                .setCommonTlsContext(commonTlsContext)
+                .setSni("backend.example.com")
+                .build();
+
+        EnvoyServerProtoData.UpstreamTlsContext convertedUpstreamTlsContext =
+                EnvoyServerProtoData.UpstreamTlsContext.fromEnvoyProtoUpstreamTlsContext(upstreamTlsContext);
+
+        assertThat(convertedUpstreamTlsContext.getCommonTlsContext()).isEqualTo(commonTlsContext);
+        assertThat(convertedUpstreamTlsContext.toString()).contains("commonTlsContext");
     }
 
     @Test
