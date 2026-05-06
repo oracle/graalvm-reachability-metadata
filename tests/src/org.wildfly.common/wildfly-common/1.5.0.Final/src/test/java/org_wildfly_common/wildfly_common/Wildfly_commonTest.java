@@ -10,14 +10,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.wildfly.common.iteration.ByteIterator;
+import org.wildfly.common.iteration.CodePointIterator;
 import org.wildfly.common.net.CidrAddress;
 import org.wildfly.common.net.CidrAddressTable;
 
 public class Wildfly_commonTest {
+    @Test
+    void byteIteratorsEncodeAndDecodeBase64Content() {
+        String message = "WildFly Common \u2713";
+        byte[] payload = message.getBytes(StandardCharsets.UTF_8);
+
+        String encoded = ByteIterator.ofBytes(payload).base64Encode().drainToString();
+        byte[] decoded = CodePointIterator.ofString(encoded).base64Decode().drain();
+
+        assertThat(encoded).isEqualTo(Base64.getEncoder().encodeToString(payload));
+        assertThat(decoded).isEqualTo(payload);
+        assertThat(ByteIterator.ofBytes(decoded).asUtf8String().drainToString()).isEqualTo(message);
+    }
+
     @Test
     void cidrAddressTableReturnsMostSpecificMatchingNetwork() throws Exception {
         CidrAddressTable<String> table = new CidrAddressTable<>();
