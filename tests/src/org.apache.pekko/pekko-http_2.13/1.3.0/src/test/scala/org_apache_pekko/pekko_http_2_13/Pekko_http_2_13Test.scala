@@ -7,6 +7,7 @@
 package org_apache_pekko.pekko_http_2_13
 
 import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.Http
 import org.apache.pekko.http.scaladsl.client.RequestBuilding._
 import org.apache.pekko.http.scaladsl.common.EntityStreamingSupport
 import org.apache.pekko.http.scaladsl.marshalling.Marshal
@@ -208,6 +209,47 @@ class Pekko_http_2_13Test {
 
       val rejectedResponse = Await.result(handler(HttpRequest(uri = "/items/not-a-number")), 5.seconds)
       assertEquals(StatusCodes.NotFound, rejectedResponse.status)
+    }
+  }
+
+  @Test
+  def httpServerBindingAndClientRequestsExchangeStrictResponses(): Unit = {
+    withActorSystem("pekko-http-server-client") { implicit system =>
+      implicit val materializer: Materializer = SystemMaterializer(system).materializer
+      implicit val executionContext = system.dispatcher
+
+      val route: Route =
+        path("ping") {
+          get {
+            parameters("name".?("anonymous")) { name =>
+              respondWithHeader(RawHeader("X-Service", "pekko-http")) {
+                complete(StatusCodes.OK, s"pong $name")
+              }
+            }
+          }
+        }
+
+      val binding = Await.result(Http().newServerAt("127.0.0.1", 0).bind(route), 10.seconds)
+      try {
+        val address = binding.localAddress
+        val response = Await.result(
+          Http().singleRequest(
+            HttpRequest(uri = s"http://${address.getHostString}:${address.getPort}/ping?name=Apache")
+          ),
+          10.seconds
+        )
+        val responseEntity = Await.result(response.entity.toStrict(3.seconds), 5.seconds)
+
+        assertEquals(StatusCodes.OK, response.status)
+        assertEquals(Some("pekko-http"), response.headers.find(_.lowercaseName == "x-service").map(_.value))
+        assertEquals("pong Apache", responseEntity.data.utf8String)
+      } finally {
+        try {
+          Await.result(binding.unbind(), 10.seconds)
+        } finally {
+          Await.result(Http().shutdownAllConnectionPools(), 10.seconds)
+        }
+      }
     }
   }
 
