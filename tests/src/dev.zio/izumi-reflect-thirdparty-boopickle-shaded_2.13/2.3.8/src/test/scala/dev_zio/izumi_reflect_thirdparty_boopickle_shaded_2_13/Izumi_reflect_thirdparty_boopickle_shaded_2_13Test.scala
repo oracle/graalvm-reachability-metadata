@@ -110,6 +110,30 @@ final class Izumi_reflect_thirdparty_boopickle_shaded_2_13Test {
   }
 
   @Test
+  def repeatedStringsAreDeduplicatedWithinASharedUnpickleState(): Unit = {
+    val repeated = new String("shared immutable λ".toCharArray)
+    implicit val state: PickleState = PickleState.pickleStateSpeed
+    state.pickle(repeated)
+      .pickle(repeated)
+      .pickle("different")
+      .pickle(repeated)
+
+    implicit val unpickleState: UnpickleState = UnpickleState(state.toByteBuffer)
+    val first = unpickleState.unpickle[String]
+    val second = unpickleState.unpickle[String]
+    val different = unpickleState.unpickle[String]
+    val third = unpickleState.unpickle[String]
+
+    assertThat(first).isEqualTo(repeated)
+    assertThat(second).isEqualTo(repeated)
+    assertThat(different).isEqualTo("different")
+    assertThat(third).isEqualTo(repeated)
+    assertThat(first.asInstanceOf[AnyRef]).isSameAs(second.asInstanceOf[AnyRef])
+    assertThat(first.asInstanceOf[AnyRef]).isSameAs(third.asInstanceOf[AnyRef])
+    assertThat(first.asInstanceOf[AnyRef]).isNotSameAs(different.asInstanceOf[AnyRef])
+  }
+
+  @Test
   def xmapBuildsDomainPicklersWithoutMacrosOrReflection(): Unit = {
     implicit val addressPickler: Pickler[Address] = implicitly[Pickler[(String, Int)]].xmap {
       case (street, number) => Address(street, number)
