@@ -6,11 +6,132 @@
  */
 package org_jetbrains_kotlinx.kotlinx_coroutines_swing
 
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.swing.SwingUtilities
+import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class Kotlinx_coroutines_swingTest {
+public class Kotlinx_coroutines_swingTest {
     @Test
-    fun test() {
-        println("This is just a placeholder, implement your test")
+    fun swingDispatcherRunsCoroutineBodyOnEventDispatchThread(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val callerThread: Thread = Thread.currentThread()
+
+            val result: SwingThreadResult = withContext(Dispatchers.Swing) {
+                SwingThreadResult(
+                    isEventDispatchThread = SwingUtilities.isEventDispatchThread(),
+                    thread = Thread.currentThread(),
+                    dispatcher = coroutineContext[ContinuationInterceptor],
+                )
+            }
+
+            assertThat(result.isEventDispatchThread).isTrue()
+            assertThat(result.thread).isNotSameAs(callerThread)
+            assertThat(result.dispatcher).isSameAs(Dispatchers.Swing)
+        }
+    }
+
+    @Test
+    fun mainDispatcherIsProvidedBySwingFactoryAndDispatchesToEventDispatchThread(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val result: SwingThreadResult = withContext(Dispatchers.Main) {
+                SwingThreadResult(
+                    isEventDispatchThread = SwingUtilities.isEventDispatchThread(),
+                    thread = Thread.currentThread(),
+                    dispatcher = coroutineContext[ContinuationInterceptor],
+                )
+            }
+
+            assertThat(result.isEventDispatchThread).isTrue()
+            assertThat(result.dispatcher).isSameAs(Dispatchers.Main)
+            assertThat(Dispatchers.Main.immediate).isSameAs(Dispatchers.Swing.immediate)
+        }
+    }
+
+    @Test
+    fun immediateDispatcherRunsInlineOnlyWhenAlreadyOnEventDispatchThread(): Unit = runBlocking {
+        withTimeout(5_000) {
+            assertThat(Dispatchers.Swing.immediate.isDispatchNeeded(coroutineContext)).isTrue()
+
+            val events: MutableList<String> = mutableListOf()
+            withContext(Dispatchers.Swing) {
+                val eventDispatchThread: Thread = Thread.currentThread()
+
+                assertThat(Dispatchers.Swing.isDispatchNeeded(coroutineContext)).isTrue()
+                assertThat(Dispatchers.Swing.immediate.isDispatchNeeded(coroutineContext)).isFalse()
+                assertThat(Dispatchers.Swing.immediate.immediate).isSameAs(Dispatchers.Swing.immediate)
+
+                withContext(Dispatchers.Swing.immediate) {
+                    events += "immediate"
+                    assertThat(Thread.currentThread()).isSameAs(eventDispatchThread)
+                    assertThat(SwingUtilities.isEventDispatchThread()).isTrue()
+                }
+                events += "after-immediate"
+            }
+
+            assertThat(events).containsExactly("immediate", "after-immediate")
+        }
+    }
+
+    @Test
+    fun asyncWorkComposesOnSwingDispatcher(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val combined: String = withContext(Dispatchers.Swing) {
+                val greeting = async(Dispatchers.Swing.immediate) {
+                    assertThat(SwingUtilities.isEventDispatchThread()).isTrue()
+                    "hello"
+                }
+                val target = async(Dispatchers.Swing.immediate) {
+                    assertThat(SwingUtilities.isEventDispatchThread()).isTrue()
+                    "swing"
+                }
+
+                "${greeting.await()} ${target.await()}"
+            }
+
+            assertThat(combined).isEqualTo("hello swing")
+        }
+    }
+
+    @Test
+    fun delayResumesOnEventDispatchThreadAndCancellationStopsPendingContinuation(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val events: MutableList<String> = mutableListOf()
+
+            withContext(Dispatchers.Swing) {
+                events += "before-delay"
+                delay(10)
+                assertThat(SwingUtilities.isEventDispatchThread()).isTrue()
+                events += "after-delay"
+            }
+
+            val completedAfterCancellation = AtomicBoolean(false)
+            val job = launch(Dispatchers.Swing) {
+                delay(10_000)
+                completedAfterCancellation.set(true)
+            }
+
+            job.cancelAndJoin()
+
+            assertThat(events).containsExactly("before-delay", "after-delay")
+            assertThat(completedAfterCancellation).isFalse()
+        }
     }
 }
+
+private data class SwingThreadResult(
+    val isEventDispatchThread: Boolean,
+    val thread: Thread,
+    val dispatcher: ContinuationInterceptor?,
+)
