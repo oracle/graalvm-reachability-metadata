@@ -14,8 +14,13 @@ import io.ktor.serialization.Configuration
 import io.ktor.serialization.ContentConverter
 import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.json.jsonIo
 import io.ktor.util.reflect.typeInfo
+import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.toByteArray
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.Contextual
@@ -169,6 +174,23 @@ public class KtorSerializationKotlinxJsonJvmTest {
     }
 
     @Test
+    public fun jsonIoConverterUsesChannelBasedJsonSerialization(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val configuration = RecordingConfiguration()
+            configuration.jsonIo()
+            val registration = configuration.singleRegistration()
+            val original = StableJsonMessage(id = 23, label = "io-channel")
+
+            val text = registration.converter.serializeChannelContentToText(original)
+            val decoded = registration.converter.deserializeFromText<StableJsonMessage>(text)
+
+            assertThat(registration.contentType).isEqualTo(ContentType.Application.Json)
+            assertThat(text).isEqualTo("{\"id\":23,\"label\":\"io-channel\"}")
+            assertThat(decoded).isEqualTo(original)
+        }
+    }
+
+    @Test
     public fun malformedPayloadFailsWithKtorConversionException(): Unit {
         val converter = registeredConverter()
 
@@ -204,6 +226,37 @@ public class KtorSerializationKotlinxJsonJvmTest {
         val byteArrayContent = outgoingContent as OutgoingContent.ByteArrayContent
         assertThat(byteArrayContent.contentType?.withoutParameters()).isEqualTo(contentType.withoutParameters())
         return byteArrayContent.bytes().toString(charset)
+    }
+
+    private suspend inline fun <reified T> ContentConverter.serializeChannelContentToText(
+        value: T,
+        contentType: ContentType = ContentType.Application.Json,
+        charset: java.nio.charset.Charset = Charsets.UTF_8
+    ): String {
+        val outgoingContent = serialize(
+            contentType = contentType,
+            charset = charset,
+            typeInfo = typeInfo<T>(),
+            value = value
+        )
+
+        assertThat(outgoingContent).isInstanceOf(OutgoingContent.WriteChannelContent::class.java)
+        val writeChannelContent = outgoingContent as OutgoingContent.WriteChannelContent
+        assertThat(writeChannelContent.contentType?.withoutParameters()).isEqualTo(contentType.withoutParameters())
+
+        return coroutineScope {
+            val channel = ByteChannel(autoFlush = true)
+            val writer = launch {
+                try {
+                    writeChannelContent.writeTo(channel)
+                } finally {
+                    channel.flushAndClose()
+                }
+            }
+            val bytes = channel.toByteArray()
+            writer.join()
+            bytes.toString(charset)
+        }
     }
 
     private suspend inline fun <reified T> ContentConverter.deserializeFromText(
