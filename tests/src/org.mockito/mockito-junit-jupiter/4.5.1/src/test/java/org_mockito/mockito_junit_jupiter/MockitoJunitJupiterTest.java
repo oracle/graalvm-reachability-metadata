@@ -9,6 +9,7 @@ package org_mockito.mockito_junit_jupiter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -40,6 +41,13 @@ public class MockitoJunitJupiterTest {
     @InjectMocks
     private GreetingService service;
 
+    private GreetingRepository lifecycleRepository;
+
+    @BeforeEach
+    void initializeLifecycleMock(@Mock GreetingRepository lifecycleRepository) {
+        this.lifecycleRepository = lifecycleRepository;
+    }
+
     @Test
     void extensionInitializesAnnotatedFieldsAndInjectsMocks() {
         when(repository.findGreeting("Ada")).thenReturn("Hello Ada");
@@ -62,6 +70,15 @@ public class MockitoJunitJupiterTest {
         assertThat(parameterRepository.findGreeting("Grace")).isEqualTo("Hi Grace");
         assertThat(mockingDetails(parameterRepository).isMock()).isTrue();
         assertThat(parameterRepository).isNotSameAs(repository);
+    }
+
+    @Test
+    void extensionResolvesMockParametersForLifecycleMethods() {
+        when(lifecycleRepository.findGreeting("Katherine")).thenReturn("Welcome Katherine");
+
+        assertThat(lifecycleRepository.findGreeting("Katherine")).isEqualTo("Welcome Katherine");
+        assertThat(mockingDetails(lifecycleRepository).isMock()).isTrue();
+        assertThat(lifecycleRepository).isNotSameAs(repository);
     }
 
     @Test
