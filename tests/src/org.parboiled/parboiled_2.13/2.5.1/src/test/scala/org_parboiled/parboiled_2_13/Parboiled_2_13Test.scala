@@ -132,6 +132,15 @@ class Parboiled_2_13Test {
   }
 
   @Test
+  def parsesFixedWidthHexColorsWithCountedRepetition(): Unit = {
+    val color: RgbColor = new HexColorParser(ParserInput("#1a2B3c")).HexColor.run().get
+    val tooShort: Failure[RgbColor] = new HexColorParser(ParserInput("#12345")).HexColor.run().asInstanceOf[Failure[RgbColor]]
+
+    assertThat(color).isEqualTo(RgbColor(0x1a, 0x2b, 0x3c))
+    assertThat(tooShort.exception).isInstanceOf(classOf[ParseError])
+  }
+
+  @Test
   def usesLookaheadPredicatesWithoutConsumingInput(): Unit = {
     val directive: String = new LookaheadDirectiveParser(ParserInput("token:release-2026")).Directive.run().get
     val nonReservedIdentifier: String = new LookaheadDirectiveParser(ParserInput("token:debugger")).Directive.run().get
@@ -150,6 +159,8 @@ class Parboiled_2_13Test {
 final case class Assignment(name: String, value: Int)
 
 final case class IdQuery(resource: String, ids: Seq[Int])
+
+final case class RgbColor(red: Int, green: Int, blue: Int)
 
 final class AssignmentParser(val input: ParserInput) extends Parser {
   def InputLine: Rule1[Assignment] = rule { Spacing ~ AssignmentRule ~ Spacing ~ EOI }
@@ -211,6 +222,16 @@ final class IdQueryParser(val input: ParserInput) extends Parser {
   def Ids: Rule1[Seq[Int]] = rule { oneOrMore(Id).separatedBy(',') }
 
   def Id: Rule1[Int] = rule { capture(oneOrMore(CharPredicate.Digit)) ~> ((digits: String) => digits.toInt) }
+}
+
+final class HexColorParser(val input: ParserInput) extends Parser {
+  def HexColor: Rule1[RgbColor] = rule {
+    '#' ~ HexByte ~ HexByte ~ HexByte ~ EOI ~> ((red: Int, green: Int, blue: Int) => RgbColor(red, green, blue))
+  }
+
+  def HexByte: Rule1[Int] = rule { capture(2.times(HexDigit)) ~> ((digits: String) => Integer.parseInt(digits, 16)) }
+
+  def HexDigit: Rule0 = rule { CharPredicate.HexDigit }
 }
 
 final class LookaheadDirectiveParser(val input: ParserInput) extends Parser {
