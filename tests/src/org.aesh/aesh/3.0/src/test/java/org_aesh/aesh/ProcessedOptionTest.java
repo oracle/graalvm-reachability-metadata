@@ -55,6 +55,15 @@ public class ProcessedOptionTest {
     }
 
     @Test
+    void injectsNegatedBooleanOptionIntoField() throws Exception {
+        NegatableBooleanCommand command = new NegatableBooleanCommand();
+
+        AeshCommandContainerBuilder.parseAndPopulate(command, "negatable --no-verbose");
+
+        assertThat(command.verbose).isFalse();
+    }
+
+    @Test
     void injectsDefaultValuesIntoConcreteCollectionField() throws Exception {
         ConcreteCollectionCommand command = new ConcreteCollectionCommand();
 
@@ -104,6 +113,17 @@ public class ProcessedOptionTest {
     private static class ScalarCommand implements Command<CommandInvocation> {
         @Option(name = "name")
         private String name;
+
+        @Override
+        public CommandResult execute(CommandInvocation commandInvocation) {
+            return CommandResult.SUCCESS;
+        }
+    }
+
+    @CommandDefinition(name = "negatable", description = "Receives a negatable boolean option")
+    public static class NegatableBooleanCommand implements Command<CommandInvocation> {
+        @Option(name = "verbose", hasValue = false, negatable = true)
+        private boolean verbose = true;
 
         @Override
         public CommandResult execute(CommandInvocation commandInvocation) {
