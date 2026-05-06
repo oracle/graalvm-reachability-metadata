@@ -12,6 +12,7 @@ import kotlinx.datetime.LocalTime
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.Function
+import org.jetbrains.exposed.v1.core.LiteralOp
 import org.jetbrains.exposed.v1.core.QueryBuilder
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.CurrentDate
@@ -34,21 +35,27 @@ import org.jetbrains.exposed.v1.datetime.KotlinOffsetDateTimeColumnType
 import org.jetbrains.exposed.v1.datetime.Month
 import org.jetbrains.exposed.v1.datetime.Time
 import org.jetbrains.exposed.v1.datetime.date
+import org.jetbrains.exposed.v1.datetime.dateLiteral
 import org.jetbrains.exposed.v1.datetime.dateParam
+import org.jetbrains.exposed.v1.datetime.dateTimeLiteral
 import org.jetbrains.exposed.v1.datetime.dateTimeParam
 import org.jetbrains.exposed.v1.datetime.datetime
 import org.jetbrains.exposed.v1.datetime.day
 import org.jetbrains.exposed.v1.datetime.duration
+import org.jetbrains.exposed.v1.datetime.durationLiteral
 import org.jetbrains.exposed.v1.datetime.durationParam
 import org.jetbrains.exposed.v1.datetime.hour
 import org.jetbrains.exposed.v1.datetime.minute
 import org.jetbrains.exposed.v1.datetime.month
 import org.jetbrains.exposed.v1.datetime.second
 import org.jetbrains.exposed.v1.datetime.time
+import org.jetbrains.exposed.v1.datetime.timeLiteral
 import org.jetbrains.exposed.v1.datetime.timeParam
 import org.jetbrains.exposed.v1.datetime.timestamp
+import org.jetbrains.exposed.v1.datetime.timestampLiteral
 import org.jetbrains.exposed.v1.datetime.timestampParam
 import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone
+import org.jetbrains.exposed.v1.datetime.timestampWithTimeZoneLiteral
 import org.jetbrains.exposed.v1.datetime.timestampWithTimeZoneParam
 import org.jetbrains.exposed.v1.datetime.year
 import org.junit.jupiter.api.Test
@@ -156,6 +163,36 @@ public class Exposed_kotlin_datetimeTest {
     }
 
     @Test
+    fun literalFactoriesUseKotlinDatetimeColumnTypesAndKeepOriginalValues() {
+        val date = LocalDate(2024, 3, 1)
+        val time = LocalTime(8, 9, 10, 11)
+        val dateTime = LocalDateTime(date, time)
+        val instant = Instant.parse("2024-03-01T08:09:10.000000011Z")
+        val offsetDateTime = OffsetDateTime.of(2024, 3, 1, 8, 9, 10, 11, ZoneOffset.UTC)
+        val duration = 3.seconds + 11.nanoseconds
+
+        val dateLiteralExpression = dateLiteral(date)
+        val timeLiteralExpression = timeLiteral(time)
+        val dateTimeLiteralExpression = dateTimeLiteral(dateTime)
+        val timestampLiteralExpression = timestampLiteral(instant)
+        val offsetDateTimeLiteralExpression = timestampWithTimeZoneLiteral(offsetDateTime)
+        val durationLiteralExpression = durationLiteral(duration)
+
+        assertKotlinLocalDateType(dateLiteralExpression.columnType)
+        assertKotlinLocalTimeType(timeLiteralExpression.columnType)
+        assertKotlinLocalDateTimeType(dateTimeLiteralExpression.columnType)
+        assertKotlinInstantType(timestampLiteralExpression.columnType)
+        assertKotlinOffsetDateTimeType(offsetDateTimeLiteralExpression.columnType)
+        assertKotlinDurationType(durationLiteralExpression.columnType)
+        assertLiteralValue(dateLiteralExpression, date)
+        assertLiteralValue(timeLiteralExpression, time)
+        assertLiteralValue(dateTimeLiteralExpression, dateTime)
+        assertLiteralValue(timestampLiteralExpression, instant)
+        assertLiteralValue(offsetDateTimeLiteralExpression, offsetDateTime)
+        assertLiteralValue(durationLiteralExpression, duration)
+    }
+
+    @Test
     fun customFunctionFactoriesUseKotlinDatetimeColumnTypes() {
         val date = LocalDate(2024, 4, 5)
         val time = LocalTime(6, 7, 8, 9)
@@ -252,6 +289,10 @@ public class Exposed_kotlin_datetimeTest {
 
     private fun assertPreparedParameter(expression: Expression<*>, expectedValue: Any) {
         assertThat(renderPrepared(expression)).isEqualTo(PreparedSql("?", listOf(expectedValue)))
+    }
+
+    private fun assertLiteralValue(expression: LiteralOp<*>, expectedValue: Any) {
+        assertThat(expression.value).isEqualTo(expectedValue)
     }
 
     private fun assertKotlinLocalDateType(columnType: Any): KotlinLocalDateColumnType {
