@@ -14,6 +14,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.actor.Props
+import org.apache.pekko.event.DummyClassForStringSources
 import org.apache.pekko.event.LogMarker
 import org.apache.pekko.event.Logging
 import org.apache.pekko.event.slf4j.Logger
@@ -41,6 +42,19 @@ class Pekko_slf4j_2_13Test {
     rootLogger.isErrorEnabled
     namedLogger.isInfoEnabled
     classLogger.isDebugEnabled
+  }
+
+  @Test
+  def loggerFactoryUsesSourceNameForPekkoStringSources(): Unit = {
+    val sourceLoggerName: String = "org.apache.pekko.slf4j.test.string-source"
+    val stringSourceLogger: org.slf4j.Logger = Logger(classOf[DummyClassForStringSources], sourceLoggerName)
+    val namedLogger: org.slf4j.Logger = Logger(sourceLoggerName)
+
+    assertThat(stringSourceLogger).isNotNull()
+    assertThat(namedLogger).isNotNull()
+    assertThat(stringSourceLogger.getName).isEqualTo(namedLogger.getName)
+    assertThat(stringSourceLogger.isTraceEnabled).isEqualTo(namedLogger.isTraceEnabled)
+    assertThat(stringSourceLogger.isWarnEnabled).isEqualTo(namedLogger.isWarnEnabled)
   }
 
   @Test
