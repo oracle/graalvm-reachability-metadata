@@ -1,3 +1,6 @@
+import java.nio.charset.StandardCharsets
+import java.util.jar.JarFile
+
 /*
  * Copyright and related rights waived via CC0
  *
@@ -33,4 +36,91 @@ graalvmNative {
             }
         }
     }
+}
+
+List<String> akkaConfigModules = [
+        "com.typesafe.akka:akka-actor_2.13",
+        "com.typesafe.akka:akka-stream_2.13",
+        "com.typesafe:ssl-config-core_2.13"
+]
+
+Provider<Directory> generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources")
+Provider<RegularFile> generatedApplicationConf = generatedTestResourcesDir.map {
+    it.file("com_typesafe_akka/akka_stream_2_13/application.conf")
+}
+Provider<RegularFile> generatedNativeImageResourceConfig = generatedTestResourcesDir.map {
+    it.file("META-INF/native-image/com.typesafe.akka/akka-stream_2.13/resource-config.json")
+}
+
+tasks.register("generateAkkaApplicationConfig") { task ->
+    task.description = "Generates an application.conf that merges Akka defaults for native tests."
+    task.inputs.files(configurations.testRuntimeClasspath)
+    task.outputs.files(generatedApplicationConf, generatedNativeImageResourceConfig)
+    task.doLast {
+        Map<String, String> resourceContents = [:]
+        configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            String moduleId = "${artifact.moduleVersion.id.group}:${artifact.name}"
+            if (!akkaConfigModules.contains(moduleId)) {
+                return
+            }
+            JarFile jarFile = new JarFile(artifact.file)
+            try {
+                ["reference.conf", "version.conf"].each { String entryName ->
+                    def entry = jarFile.getJarEntry(entryName)
+                    if (entry != null) {
+                        resourceContents["${moduleId}:${entryName}"] = jarFile.getInputStream(entry).getText(StandardCharsets.UTF_8.name())
+                    }
+                }
+            } finally {
+                jarFile.close()
+            }
+        }
+
+        List<String> missingResources = [
+                "com.typesafe.akka:akka-actor_2.13:reference.conf",
+                "com.typesafe.akka:akka-actor_2.13:version.conf",
+                "com.typesafe.akka:akka-stream_2.13:reference.conf",
+                "com.typesafe:ssl-config-core_2.13:reference.conf"
+        ].findAll { key -> !resourceContents.containsKey(key) }
+        if (!missingResources.isEmpty()) {
+            throw new GradleException("Cannot generate Akka application.conf. Missing resources: ${missingResources.join(', ')}")
+        }
+
+        String actorReference = resourceContents["com.typesafe.akka:akka-actor_2.13:reference.conf"]
+                .replaceFirst(/(?m)^\s*include\s+"version"\s*$(\r?\n)?/, "")
+                .trim()
+        List<String> sections = [
+                "# Generated from Akka runtime dependencies for native tests.",
+                actorReference,
+                resourceContents["com.typesafe.akka:akka-actor_2.13:version.conf"].trim(),
+                resourceContents["com.typesafe.akka:akka-stream_2.13:reference.conf"].trim(),
+                resourceContents["com.typesafe:ssl-config-core_2.13:reference.conf"].trim()
+        ]
+
+        File outputFile = generatedApplicationConf.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.setText(sections.join("\n\n") + "\n", StandardCharsets.UTF_8.name())
+
+        File resourceConfigFile = generatedNativeImageResourceConfig.get().asFile
+        resourceConfigFile.parentFile.mkdirs()
+        resourceConfigFile.setText("""
+                {
+                  "resources": {
+                    "includes": [
+                      { "pattern": "com_typesafe_akka/akka_stream_2_13/application[.]conf" }
+                    ]
+                  }
+                }
+                """.stripIndent(), StandardCharsets.UTF_8.name())
+    }
+}
+
+sourceSets {
+    test {
+        resources.srcDir(generatedTestResourcesDir)
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn(tasks.named("generateAkkaApplicationConfig"))
 }

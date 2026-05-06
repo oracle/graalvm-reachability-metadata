@@ -31,6 +31,9 @@ import akka.stream.scaladsl.Source
 import akka.stream.scaladsl.StreamConverters
 import akka.stream.scaladsl.Zip
 import akka.util.ByteString
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigParseOptions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -46,6 +49,7 @@ import scala.concurrent.duration.FiniteDuration
 
 class Akka_stream_2_13Test {
   private val awaitTimeout: FiniteDuration = 10.seconds
+  private val nativeConfigResource: String = "com_typesafe_akka/akka_stream_2_13/application.conf"
 
   @Test
   def transformsAndCollectsBoundedStreams(): Unit = withStreamSystem("AkkaStreamTransforms") {
@@ -272,7 +276,14 @@ class Akka_stream_2_13Test {
   }
 
   private def withStreamSystem(name: String)(testBody: (ActorSystem, Materializer) => Unit): Unit = {
-    val system: ActorSystem = ActorSystem(name)
+    val config: Config = ConfigFactory
+      .parseResources(
+        getClass.getClassLoader,
+        nativeConfigResource,
+        ConfigParseOptions.defaults().setAllowMissing(false)
+      )
+      .resolve()
+    val system: ActorSystem = ActorSystem(name, config)
     val materializer: Materializer = SystemMaterializer(system).materializer
     try testBody(system, materializer)
     finally Await.result(system.terminate(), awaitTimeout)
