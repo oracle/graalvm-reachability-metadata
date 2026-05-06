@@ -24,6 +24,7 @@ import arrow.fx.coroutines.metered
 import arrow.fx.coroutines.parMap
 import arrow.fx.coroutines.parMapNotNull
 import arrow.fx.coroutines.parMapNotNullUnordered
+import arrow.fx.coroutines.parMapOrAccumulate
 import arrow.fx.coroutines.parZip
 import arrow.fx.coroutines.raceN
 import arrow.fx.coroutines.repeat
@@ -82,6 +83,26 @@ public class ArrowFxCoroutinesJvmTest {
             assertThat(doubled).containsExactly(2, 4, 6, 8, 10, 12, 14, 16)
             assertThat(evenLabels).containsExactly("even-2", "even-4", "even-6", "even-8")
             assertThat(maxActiveTasks.get()).isLessThanOrEqualTo(2)
+        }
+    }
+
+    @Test
+    fun parMapOrAccumulateCombinesRaisedErrorsAcrossParallelTasks(): Unit = runBlocking {
+        withTimeout(2_000) {
+            val result = listOf(1, 2, 3, 4).parMapOrAccumulate(
+                context = Dispatchers.Default,
+                concurrency = 2,
+                combine = { left: String, right: String -> "$left,$right" },
+            ) { value ->
+                delay(10)
+                if (value % 2 == 0) {
+                    "even-$value"
+                } else {
+                    raise("odd-$value")
+                }
+            }
+
+            assertThat(result).isEqualTo(Either.Left("odd-1,odd-3"))
         }
     }
 
