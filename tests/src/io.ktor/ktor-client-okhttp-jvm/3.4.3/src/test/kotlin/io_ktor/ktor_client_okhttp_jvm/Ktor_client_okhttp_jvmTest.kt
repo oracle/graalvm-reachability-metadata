@@ -13,6 +13,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.engine.okhttp.OkHttpConfig
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
@@ -144,6 +145,33 @@ public class KtorClientOkhttpJvmTest {
                 "name=Ktor+OkHttp",
                 "feature=url+encoded+forms",
             )
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
+    fun storesAndSendsCookiesAcrossRequests(): Unit = withServer { server: TestServer ->
+        server.createContext("/login") { exchange: HttpExchange ->
+            exchange.responseHeaders.add(HttpHeaders.SetCookie, "sessionId=native-cookie; Path=/; HttpOnly")
+            exchange.respond(HttpStatusCode.OK.value, "cookie stored", "text/plain; charset=utf-8")
+        }
+        server.createContext("/profile") { exchange: HttpExchange ->
+            val cookieHeader: String = exchange.requestHeaders.getFirst(HttpHeaders.Cookie) ?: "missing"
+            exchange.respond(HttpStatusCode.OK.value, cookieHeader, "text/plain; charset=utf-8")
+        }
+
+        val client: HttpClient = HttpClient(OkHttp) {
+            installShortTimeouts()
+            install(HttpCookies)
+        }
+        try {
+            val cookieHeader: String = runBlocking {
+                client.get(server.url("/login")).bodyAsText()
+                client.get(server.url("/profile")).bodyAsText()
+            }
+
+            assertThat(cookieHeader).contains("sessionId=native-cookie")
         } finally {
             client.close()
         }
