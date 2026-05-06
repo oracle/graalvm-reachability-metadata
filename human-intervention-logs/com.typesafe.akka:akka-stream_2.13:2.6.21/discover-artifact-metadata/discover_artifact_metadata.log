@@ -1,0 +1,940 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfda3-9d34-7090-be5c-69c9ffb45c11
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.akka:akka-stream_2.13:2.6.21
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.6.21" when "$version$" is replaced with "2.6.21".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+- Set "coordinates" to "com.typesafe.akka:akka-stream_2.13:2.6.21".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.6.21".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates and available source/test/doc locations, then update the metadata JSON in place. Since Maven Central contents and project URLs are external evidence, I’m checking the authoritative package/repository pages before editing.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json && sed -n '1,220p' build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+-rw-rw-r-- 1 vjovanov vjovanov 66 May  6 16:14 build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+{
+  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|not-for-native-image' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+web search: 
+web search: Maven Central com.typesafe.akka akka-stream_2.13 2.6.21 sources jar test sources
+web search: 
+web search: https://central.sonatype.com/artifact/com.typesafe.akka/akka-stream_2.13/2.6.21
+codex
+The existing file only has coordinates. I found the POM published as a JVM `jar` on Maven Central, with SCM pointing at `https://github.com/akka/akka`, and the artifact suffix/dependency set makes this the Scala 2 line.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' . --glob '*.json' | head -120" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+./metadata/com.typesafe.slick/slick_2.13/index.json:6:    "repository-url" : "https://github.com/slick/slick",
+./metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+./metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:6:    "repository-url" : "https://github.com/slick/slick",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:6:    "repository-url": "https://github.com/googleapis/sdk-platform-java",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 218ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/akka/akka-stream_2.13/2.6.21</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/akka/akka-stream_2.13/2.6.21</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="akka-stream_2.13-2.6.21-javadoc.jar" title="akka-stream_2.13-2.6.21-javadoc.jar">akka-stream_2.13-2.6.21-javadoc.jar</a>               2023-06-21 09:18   9912019      
+<a href="akka-stream_2.13-2.6.21-javadoc.jar.asc" title="akka-stream_2.13-2.6.21-javadoc.jar.asc">akka-stream_2.13-2.6.21-javadoc.jar.asc</a>           2023-06-21 09:18       488      
+<a href="akka-stream_2.13-2.6.21-javadoc.jar.asc.md5" title="akka-stream_2.13-2.6.21-javadoc.jar.asc.md5">akka-stream_2.13-2.6.21-javadoc.jar.asc.md5</a>       2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21-javadoc.jar.asc.sha1" title="akka-stream_2.13-2.6.21-javadoc.jar.asc.sha1">akka-stream_2.13-2.6.21-javadoc.jar.asc.sha1</a>      2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21-javadoc.jar.md5" title="akka-stream_2.13-2.6.21-javadoc.jar.md5">akka-stream_2.13-2.6.21-javadoc.jar.md5</a>           2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21-javadoc.jar.sha1" title="akka-stream_2.13-2.6.21-javadoc.jar.sha1">akka-stream_2.13-2.6.21-javadoc.jar.sha1</a>          2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21-sources.jar" title="akka-stream_2.13-2.6.21-sources.jar">akka-stream_2.13-2.6.21-sources.jar</a>               2023-06-21 09:18    592182      
+<a href="akka-stream_2.13-2.6.21-sources.jar.asc" title="akka-stream_2.13-2.6.21-sources.jar.asc">akka-stream_2.13-2.6.21-sources.jar.asc</a>           2023-06-21 09:18       488      
+<a href="akka-stream_2.13-2.6.21-sources.jar.asc.md5" title="akka-stream_2.13-2.6.21-sources.jar.asc.md5">akka-stream_2.13-2.6.21-sources.jar.asc.md5</a>       2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21-sources.jar.asc.sha1" title="akka-stream_2.13-2.6.21-sources.jar.asc.sha1">akka-stream_2.13-2.6.21-sources.jar.asc.sha1</a>      2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21-sources.jar.md5" title="akka-stream_2.13-2.6.21-sources.jar.md5">akka-stream_2.13-2.6.21-sources.jar.md5</a>           2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21-sources.jar.sha1" title="akka-stream_2.13-2.6.21-sources.jar.sha1">akka-stream_2.13-2.6.21-sources.jar.sha1</a>          2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21.buildinfo" title="akka-stream_2.13-2.6.21.buildinfo">akka-stream_2.13-2.6.21.buildinfo</a>                 2023-06-21 09:18       756      
+<a href="akka-stream_2.13-2.6.21.buildinfo.asc" title="akka-stream_2.13-2.6.21.buildinfo.asc">akka-stream_2.13-2.6.21.buildinfo.asc</a>             2023-06-21 09:18       488      
+<a href="akka-stream_2.13-2.6.21.buildinfo.asc.md5" title="akka-stream_2.13-2.6.21.buildinfo.asc.md5">akka-stream_2.13-2.6.21.buildinfo.asc.md5</a>         2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21.buildinfo.asc.sha1" title="akka-stream_2.13-2.6.21.buildinfo.asc.sha1">akka-stream_2.13-2.6.21.buildinfo.asc.sha1</a>        2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21.buildinfo.md5" title="akka-stream_2.13-2.6.21.buildinfo.md5">akka-stream_2.13-2.6.21.buildinfo.md5</a>             2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21.buildinfo.sha1" title="akka-stream_2.13-2.6.21.buildinfo.sha1">akka-stream_2.13-2.6.21.buildinfo.sha1</a>            2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21.jar" title="akka-stream_2.13-2.6.21.jar">akka-stream_2.13-2.6.21.jar</a>                       2023-06-21 09:18   4892294      
+<a href="akka-stream_2.13-2.6.21.jar.asc" title="akka-stream_2.13-2.6.21.jar.asc">akka-stream_2.13-2.6.21.jar.asc</a>                   2023-06-21 09:18       488      
+<a href="akka-stream_2.13-2.6.21.jar.asc.md5" title="akka-stream_2.13-2.6.21.jar.asc.md5">akka-stream_2.13-2.6.21.jar.asc.md5</a>               2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21.jar.asc.sha1" title="akka-stream_2.13-2.6.21.jar.asc.sha1">akka-stream_2.13-2.6.21.jar.asc.sha1</a>              2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21.jar.md5" title="akka-stream_2.13-2.6.21.jar.md5">akka-stream_2.13-2.6.21.jar.md5</a>                   2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21.jar.sha1" title="akka-stream_2.13-2.6.21.jar.sha1">akka-stream_2.13-2.6.21.jar.sha1</a>                  2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21.pom" title="akka-stream_2.13-2.6.21.pom">akka-stream_2.13-2.6.21.pom</a>                       2023-06-21 09:18      2823      
+<a href="akka-stream_2.13-2.6.21.pom.asc" title="akka-stream_2.13-2.6.21.pom.asc">akka-stream_2.13-2.6.21.pom.asc</a>                   2023-06-21 09:18       488      
+<a href="akka-stream_2.13-2.6.21.pom.asc.md5" title="akka-stream_2.13-2.6.21.pom.asc.md5">akka-stream_2.13-2.6.21.pom.asc.md5</a>               2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21.pom.asc.sha1" title="akka-stream_2.13-2.6.21.pom.asc.sha1">akka-stream_2.13-2.6.21.pom.asc.sha1</a>              2023-06-21 09:18        40      
+<a href="akka-stream_2.13-2.6.21.pom.md5" title="akka-stream_2.13-2.6.21.pom.md5">akka-stream_2.13-2.6.21.pom.md5</a>                   2023-06-21 09:18        32      
+<a href="akka-stream_2.13-2.6.21.pom.sha1" title="akka-stream_2.13-2.6.21.pom.sha1">akka-stream_2.13-2.6.21.pom.sha1</a>                  2023-06-21 09:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 295ms:
+web search: 
+web search: site:github.com/akka/akka v2.6.21 akka-stream src/test scala
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/akka-stream_2.13-2.6.21.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.akka</groupId>
+    <artifactId>akka-stream_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://akka.io/</url>
+    <version>2.6.21</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>akka-stream</name>
+    <inceptionYear>2009</inceptionYear>
+    <organization>
+        <name>Lightbend Inc.</name>
+        <url>https://www.lightbend.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/akka/akka</url>
+        <connection>scm:git:https://github.com/akka/akka.git</connection>
+        <developerConnection>scm:git:git@github.com:akka/akka.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>akka-contributors</id>
+            <name>Akka Contributors</name>
+            <url>https://github.com/akka/akka/graphs/contributors</url>
+            <email>akka.official@gmail.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://doc.akka.io/api/akka/2.6.21</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.13</artifactId>
+            <version>2.6.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-protobuf-v3_2.13</artifactId>
+            <version>2.6.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>ssl-config-core_2.13</artifactId>
+            <version>0.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>3.1.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -sI https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/akka-stream_2.13-2.6.21-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 14:14:46 GMT
+content-type: application/java-archive
+content-length: 9912019
+cf-ray: 9f7897de8a44bbff-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 505995
+etag: "4a79b5e1ad07ef789b0734eb44739597"
+last-modified: Wed, 21 Jun 2023 09:18:07 GMT
+x-checksum-md5: 4a79b5e1ad07ef789b0734eb44739597
+x-checksum-sha1: bf46972e3822947f359c1cc0bbe2512c73ac8d3b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -sI https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/akka-stream_2.13-2.6.21-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 14:14:46 GMT
+content-type: application/java-archive
+content-length: 592182
+cf-ray: 9f7897de7ab3bb0d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 326094
+etag: "11381ee20e249ee58e98e86fc673a76a"
+last-modified: Wed, 21 Jun 2023 09:18:07 GMT
+x-checksum-md5: 11381ee20e249ee58e98e86fc673a76a
+x-checksum-sha1: 752031b8f11ea6a509dff162871bd188feb6165c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -sI https://github.com/akka/akka/tree/v2.6.21/akka-stream-tests/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 154ms:
+HTTP/2 301 
+date: Wed, 06 May 2026 14:14:46 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=zBV0FoBelzTIABe3c%2BjQXlYVKVwUxjQPXiMhW3ks9ojZ9BT3R4ZVKv4XTJesymWdkbjYGWnoXF2fOMGiSL%2BMyqvQGNMcQ%2FfKifG55gbln5cioMGQzZfWumvY0ovrHCnXVXK3j4Fb47QDMm%2FvHdMeyy1iaPAYJYYUyDEVkzGRftfPeMP0d%2ForQUbwWqjpQyh2lwX2N1Fl7kT%2BFbBNfdXdS6%2BlXvGeJvxA5QX%2FyCDlR1sEmDBkvT0VtGNi5fBMctAniTV3c3WV3WuDco%2Bf9E872w%3D%3D--O8M8nedMWmBiRo37--wvi4s2iWMtlZ9ZW7YJGmmw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1119776737.1778076886; expires=Thu, 06 May 2027 14:14:46 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 14:14:46 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510F:25484E:246995:1CF3C1:69FB4CD6
+
+
+exec
+/usr/bin/bash -lc "find metadata/com.typesafe.akka -maxdepth 3 -type f -name index.json -print 2>/dev/null | sort | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "10.5.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-http",
+    "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-core/src/test/scala/akka/http/impl/engine/parsing",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-javadoc.jar",
+    "description" : "Akka Parsing provides Akka HTTP's internal parsing toolkit, including the parboiled2-based parser DSL and supporting parser input, rule, and error-formatting utilities. It underpins Akka HTTP's HTTP message parsing so higher-level modules can parse requests, responses, headers, and related protocol data efficiently.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "10.5.3"
+    ],
+    "allowed-packages" : [
+      "akka.http.ccompat",
+      "akka.macros",
+      "akka.parboiled2"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.8.8",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.8.8"
+    ],
+    "allowed-packages" : [
+
+exec
+/usr/bin/bash -lc "curl -sIL https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+exec
+/usr/bin/bash -lc "curl -sIL https://github.com/akka/akka | sed -n '1,35p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+exec
+/usr/bin/bash -lc "curl -sIL https://github.com/akka/akka-core | sed -n '1,30p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 603ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 14:14:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a11e9fb812f96b372760c2e31f489c02"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=5GQNlTDuqcazqdBwjrkE4qwDZq%2FV3Knfv1mCLti28EobL4aSF94iicoG78IsdngKaYaDDG8ha6kFEenjnNXqbLnr7AuekjenPfZjSXuYqK0IakgX5dQK%2BoaSiDNzCRRwEoVTpn4OdMqryYgaU%2Bib5YL45hBQyWWblg4Nr1eJvw89eca6a2WO%2F5Q24BbTD9k%2B4m9INLc3Frf5Ibhfvv3KMQLswdArNqmK3zajOVBZnjbP1Apvd6vstTnRKGLmhsn8dYekpcAB%2BqXoPxV4vewrxA%3D%3D--J6hE56QV8vFjVAvZ--TN99b6DIzRSMIc0zZ65%2FLQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1205911274.1778076893; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510F:25484E:24D374:1D474C:69FB4CDD
+
+
+ succeeded in 2405ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 14:14:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"940024404dd053b4ba33f5fea1494e48"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Se267dOdGn77n8ssz29pekTXO%2BKYGb05uJehZXXj04xCStAw%2BBz0kCGGVaj6N%2Fgjk3BxG%2FFYXLB1tSpDMxPqf1c%2Fx4uSMUjmld52EwFwSW%2B67yqIDWHAEp0pOGE6tUBXJ%2Bs6e93RB3WgJZ6mHVuHu1rc7xLB1LQCBo4gHch3cQ%2BRnaN5KuSUFcQFzxx6nA4725mymyFlneGrjosqXRYMw8HBMBjGYkeB%2BqMiVhPLS1TlXu3Poqs08qXFRYkA6RvGrepdGAddWW9pDXasqpWwMw%3D%3D--opVYOK4Cv3WhKFHz--SOlo%2FQtJKJOPFpeTbTRUxA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.557844454.1778076893; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5118:292778:24A948:1D3564:69FB4CDD
+
+
+ succeeded in 2410ms:
+HTTP/2 301 
+date: Wed, 06 May 2026 14:14:53 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/akka/akka-core
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=cDoZ7lv6aQvo96Q78LYQeA5rZ9IDjiElVBhOe1wUjy1ANrKe%2BJPyqTTvY4Tw9oDriKKHktUJ27WRFqudfSiH%2Fy4b6m%2BB8Ot3MSgBa3ezbPKGQZ1dJ%2BlJi4eq4jkv%2FPnAMfsbZ%2FTYlzqJ730%2BG12kO%2FDQ%2FOgw6NQ3fqXitY0YJtznLpdIpxR4QqTDbsaAMZSJrW%2BAeC933tHMQ%2BjQzKelrmtR6MAXve7%2FiIU1GurTc9pG6Mdks%2FwOa%2FMi%2BF4upNR2UyPZj8ZcnNQRtngofm26pw%3D%3D--YrXZuAFDEwyaiT0Q--0vPEGwjMPbgID6SdK8pwpg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2129493169.1778076893; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:180B70:251AEC:1D7456:69FB4CDD
+
+HTTP/2 200 
+date: Wed, 06 May 2026 14:14:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"940024404dd053b4ba33f5fea1494e48"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Fg%2FIq18Hk9JQMplr%2BJCLDHSTlWPdNx2llWEyKoVJww3GDOY1Pv6zf04ZsDMsoxLHGLL1e%2F21DIVO53bTaHFVmzMCKSLtmZNuAc1A%2BH%2Fw4c13IgXEUf4TDcoA6ra4WRzyuKg00N7oYzZ5zFYpAzb1K3H%2BxaRo4L%2BAP0m4sirmXRTl219r25R1oSSu0vg7vD60UimCqsUsOWODo%2B9bjJI%2BNvCxIlARIq7wjPEuaBMHWXgeiB%2B%2Fqm%2FRmvX864y8OSF8uQSRqgQ3eTfsB%2FZKQIoaLg%3D%3D--%2B%2BpzoViq3deMPu3V--ZlmgUm6gu0t4QX55VLWO6g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.217918456.1778076893; expires=Thu, 06 May 2027 14:14:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test?ref=v2.6.21' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/akka/akka-core/contents/docs/src/main/paradox/stream?ref=v2.6.21' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main?ref=v2.6.21' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 223ms:
+[
+  {
+    "name": "java-jdk9-only",
+    "path": "akka-stream-tests/src/test/java-jdk9-only",
+    "sha": "4a3665b88372bca7d5e59bb4442750a016cffb6b",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/java-jdk9-only?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/java-jdk9-only",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/4a3665b88372bca7d5e59bb4442750a016cffb6b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/java-jdk9-only?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/4a3665b88372bca7d5e59bb4442750a016cffb6b",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/java-jdk9-only"
+    }
+  },
+  {
+    "name": "java",
+    "path": "akka-stream-tests/src/test/java",
+    "sha": "ee2628b1f74c6bb2213ee51edbc524c7bb7704b1",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/java?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/java",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/ee2628b1f74c6bb2213ee51edbc524c7bb7704b1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/java?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/ee2628b1f74c6bb2213ee51edbc524c7bb7704b1",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "akka-stream-tests/src/test/resources",
+    "sha": "5d232b1906968b6bbff6a6c504eb769d67949e42",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/resources?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/resources",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/5d232b1906968b6bbff6a6c504eb769d67949e42",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/resources?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/5d232b1906968b6bbff6a6c504eb769d67949e42",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/resources"
+    }
+  },
+  {
+    "name": "scala-jdk9-only",
+    "path": "akka-stream-tests/src/test/scala-jdk9-only",
+    "sha": "ee92462a3a5b37a209ea0c8317e7cc5bcfdbbf15",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/scala-jdk9-only?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/scala-jdk9-only",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/ee92462a3a5b37a209ea0c8317e7cc5bcfdbbf15",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/scala-jdk9-only?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/ee92462a3a5b37a209ea0c8317e7cc5bcfdbbf15",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/scala-jdk9-only"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "akka-stream-tests/src/test/scala",
+    "sha": "df51d09e846ebe58d06664a98d4ffe528eb59cbf",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/scala?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/scala",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/df51d09e846ebe58d06664a98d4ffe528eb59cbf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream-tests/src/test/scala?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/df51d09e846ebe58d06664a98d4ffe528eb59cbf",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 229ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 230ms:
+[
+  {
+    "name": "boilerplate",
+    "path": "akka-stream/src/main/boilerplate",
+    "sha": "d72b15009742fb23e25adf327c0a9f2527e9c23a",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/boilerplate?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/boilerplate",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/d72b15009742fb23e25adf327c0a9f2527e9c23a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/boilerplate?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/d72b15009742fb23e25adf327c0a9f2527e9c23a",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/boilerplate"
+    }
+  },
+  {
+    "name": "java-jdk-9",
+    "path": "akka-stream/src/main/java-jdk-9",
+    "sha": "014965d37b0ae2ce9e16245cd3ecc92d301b9643",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/java-jdk-9?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/java-jdk-9",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/014965d37b0ae2ce9e16245cd3ecc92d301b9643",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/java-jdk-9?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/014965d37b0ae2ce9e16245cd3ecc92d301b9643",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/java-jdk-9"
+    }
+  },
+  {
+    "name": "java",
+    "path": "akka-stream/src/main/java",
+    "sha": "29d5b19d0032659290bb819e5fab3eb9276184a1",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/java?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/java",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/29d5b19d0032659290bb819e5fab3eb9276184a1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/java?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/29d5b19d0032659290bb819e5fab3eb9276184a1",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/java"
+    }
+  },
+  {
+    "name": "mima-filters",
+    "path": "akka-stream/src/main/mima-filters",
+    "sha": "eda856cfe350c18f3a16d4a0558aa0fe2d026364",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/mima-filters?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/mima-filters",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/eda856cfe350c18f3a16d4a0558aa0fe2d026364",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/mima-filters?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/eda856cfe350c18f3a16d4a0558aa0fe2d026364",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/mima-filters"
+    }
+  },
+  {
+    "name": "protobuf",
+    "path": "akka-stream/src/main/protobuf",
+    "sha": "853aa7b1596bab8671b45b848f66de60c26e81b7",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/protobuf?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/protobuf",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/853aa7b1596bab8671b45b848f66de60c26e81b7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/protobuf?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/853aa7b1596bab8671b45b848f66de60c26e81b7",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/protobuf"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "akka-stream/src/main/resources",
+    "sha": "ad69fc1275f74727de0ecef4495982581e29737a",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/resources?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/resources",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/ad69fc1275f74727de0ecef4495982581e29737a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/resources?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/ad69fc1275f74727de0ecef4495982581e29737a",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/resources"
+    }
+  },
+  {
+    "name": "scala-jdk-9",
+    "path": "akka-stream/src/main/scala-jdk-9",
+    "sha": "41cbbdc26297f00c883bae2395f2096f18487165",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/scala-jdk-9?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/scala-jdk-9",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/41cbbdc26297f00c883bae2395f2096f18487165",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/scala-jdk-9?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/41cbbdc26297f00c883bae2395f2096f18487165",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/scala-jdk-9"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "akka-stream/src/main/scala",
+    "sha": "23c0c03dc7f171b8f5b2b6160dda8492d7331d91",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/scala?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/scala",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/23c0c03dc7f171b8f5b2b6160dda8492d7331d91",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-stream/src/main/scala?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/23c0c03dc7f171b8f5b2b6160dda8492d7331d91",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-stream/src/main/scala"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com typesafe akka akka-stream_2.13 2.6.21 sources javadoc pom
+web search: 
+web search: https://central.sonatype.com/artifact/com.typesafe.akka/akka-stream_2.13/2.6.21
+codex
+I’ve got enough to edit: Maven has the source and Javadoc jars for this exact version, but no published test jar in that artifact directory, so the test URL should use the tag-specific Akka Core test tree. I’m also leaving `not-for-native-image` absent because the published packaging is a JVM `jar`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+index dc5a43cb5eb479c02ac2b92a5597a20ea6a00560..7f9fb177607618688aa5113823b008820228828e
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-stream-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-javadoc.jar",
++  "description" : "Akka Streams provides a Reactive Streams implementation for asynchronous, non-blocking stream processing with back-pressure on the JVM. It supplies Scala and Java APIs for building, composing, and running streaming data pipelines on top of Akka actors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+index dc5a43cb5eb479c02ac2b92a5597a20ea6a00560..7f9fb177607618688aa5113823b008820228828e
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-stream-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-javadoc.jar",
++  "description" : "Akka Streams provides a Reactive Streams implementation for asynchronous, non-blocking stream processing with back-pressure on the JVM. It supplies Scala and Java APIs for building, composing, and running streaming data pipelines on top of Akka actors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.akka:akka-stream_2.13:2.6.21",
+  "repository-url": "https://github.com/akka/akka-core",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-sources.jar",
+  "test-code-url": "https://github.com/akka/akka-core/tree/v$version$/akka-stream-tests/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-javadoc.jar",
+  "description": "Akka Streams provides a Reactive Streams implementation for asynchronous, non-blocking stream processing with back-pressure on the JVM. It supplies Scala and Java APIs for building, composing, and running streaming data pipelines on top of Akka actors.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in 'https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/akka-stream_2.13-2.6.21-sources.jar' 'https://github.com/akka/akka-core/tree/v2.6.21/akka-stream-tests/src/test' 'https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/akka-stream_2.13-2.6.21-javadoc.jar'; do printf '%s -> ' \""'$url"; curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+index dc5a43cb5eb479c02ac2b92a5597a20ea6a00560..7f9fb177607618688aa5113823b008820228828e
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-stream-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-javadoc.jar",
++  "description" : "Akka Streams provides a Reactive Streams implementation for asynchronous, non-blocking stream processing with back-pressure on the JVM. It supplies Scala and Java APIs for building, composing, and running streaming data pipelines on top of Akka actors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 731ms:
+200
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/2.6.21/akka-stream_2.13-2.6.21-javadoc.jar -> 200
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json && git ls-files --error-unmatch build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json >/dev/null 2>&1; printf 'tracked=%s\\n' \""'$?"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f
+ succeeded in 0ms:
+tracked=1
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+index dc5a43cb5eb479c02ac2b92a5597a20ea6a00560..7f9fb177607618688aa5113823b008820228828e
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-stream-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-javadoc.jar",
++  "description" : "Akka Streams provides a Reactive Streams implementation for asynchronous, non-blocking stream processing with back-pressure on the JVM. It supplies Scala and Java APIs for building, composing, and running streaming data pipelines on top of Akka actors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: Maven Central akka-stream_2.13 2.6.21 com.typesafe.akka
+web search: 
+web search: https://central.sonatype.com/artifact/com.typesafe.akka/akka-stream_2.13/2.6.21
+codex
+Updated [com.typesafe.akka-akka-stream_2.13-2.6.21.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json:1).
+
+Set the repository, Maven source/Javadoc URLs, tag-specific test URL, two-sentence description, and Scala 2 language metadata. I left `not-for-native-image` absent because Maven Central lists this artifact as a JVM `jar` and the POM depends on `scala-library` 2.13.8. ([central.sonatype.com](https://central.sonatype.com/artifact/com.typesafe.akka/akka-stream_2.13/2.6.21))
+
+Validation: `jq` parsed the JSON successfully, and all three `$version$ -> 2.6.21` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+index dc5a43cb5eb479c02ac2b92a5597a20ea6a00560..7f9fb177607618688aa5113823b008820228828e
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-stream_2.13:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-stream-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-stream_2.13/$version$/akka-stream_2.13-$version$-javadoc.jar",
++  "description" : "Akka Streams provides a Reactive Streams implementation for asynchronous, non-blocking stream processing with back-pressure on the JVM. It supplies Scala and Java APIs for building, composing, and running streaming data pipelines on top of Akka actors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+78,693
+Updated [com.typesafe.akka-akka-stream_2.13-2.6.21.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/build/discovered-artifact-metadata/com.typesafe.akka-akka-stream_2.13-2.6.21.json:1).
+
+Set the repository, Maven source/Javadoc URLs, tag-specific test URL, two-sentence description, and Scala 2 language metadata. I left `not-for-native-image` absent because Maven Central lists this artifact as a JVM `jar` and the POM depends on `scala-library` 2.13.8. ([central.sonatype.com](https://central.sonatype.com/artifact/com.typesafe.akka/akka-stream_2.13/2.6.21))
+
+Validation: `jq` parsed the JSON successfully, and all three `$version$ -> 2.6.21` URLs returned HTTP 200.
+Ran agent for com.typesafe.akka:akka-stream_2.13:2.6.21 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/build/agent-artifact-discovery-logs/com.typesafe.akka-akka-stream_2.13-2.6.21.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5415-485dc29f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 13s
+9 actionable tasks: 9 executed
