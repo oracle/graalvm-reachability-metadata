@@ -94,6 +94,7 @@ class Zio_managed_3Test {
   }
 
   @Test
+  @Timeout(30)
   def collectionAndParallelCombinatorsTraverseManagedValues(): Unit = {
     val values = unsafeRun {
       for {
