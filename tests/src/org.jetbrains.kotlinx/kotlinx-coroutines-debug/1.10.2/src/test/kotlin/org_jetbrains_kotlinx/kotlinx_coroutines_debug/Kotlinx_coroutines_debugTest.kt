@@ -77,6 +77,35 @@ public class Kotlinx_coroutines_debugTest {
     }
 
     @Test
+    public fun nestedInstallationsKeepDebugProbesInstalledUntilEveryInstallationIsUninstalled(): Unit = runDynamicAttachTest {
+        var installationAttempts: Int = 0
+
+        try {
+            assertThat(DebugProbes.isInstalled).isFalse()
+
+            installationAttempts++
+            DebugProbes.install()
+            installationAttempts++
+            DebugProbes.install()
+            assertThat(DebugProbes.isInstalled).isTrue()
+
+            DebugProbes.uninstall()
+            installationAttempts--
+            assertThat(DebugProbes.isInstalled).isTrue()
+
+            DebugProbes.uninstall()
+            installationAttempts--
+            assertThat(DebugProbes.isInstalled).isFalse()
+        } finally {
+            repeat(installationAttempts) {
+                if (DebugProbes.isInstalled) {
+                    uninstallDebugProbesAfterTest()
+                }
+            }
+        }
+    }
+
+    @Test
     public fun introspectionMethodsRequireInstalledDebugProbes(): Unit {
         assertThat(DebugProbes.isInstalled).isFalse()
 
