@@ -19,6 +19,7 @@ import org.apache.pekko.http.scaladsl.model.HttpEntity
 import org.apache.pekko.http.scaladsl.model.HttpMethods
 import org.apache.pekko.http.scaladsl.model.HttpRequest
 import org.apache.pekko.http.scaladsl.model.HttpResponse
+import org.apache.pekko.http.scaladsl.model.Multipart
 import org.apache.pekko.http.scaladsl.model.RequestEntity
 import org.apache.pekko.http.scaladsl.model.ResponseEntity
 import org.apache.pekko.http.scaladsl.model.StatusCodes
@@ -117,6 +118,42 @@ class Pekko_http_3Test extends Directives {
       val marshalledEntity: RequestEntity = await(Marshal("plain response").to[RequestEntity])
       assertThat(marshalledEntity.contentType).isEqualTo(ContentTypes.`text/plain(UTF-8)`)
       assertThat(await(Unmarshal(marshalledEntity).to[String])).isEqualTo("plain response")
+    }
+
+  @Test
+  def multipartFormDataPreservesPartNamesFilenamesAndContent(): Unit =
+    withSystem("pekko-http-multipart-test") { system =>
+      implicit val actorSystem: ActorSystem = system
+      implicit val materializer: Materializer = SystemMaterializer(system).materializer
+      implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+
+      val descriptionText: String = "Pekko HTTP multipart support"
+      val fileText: String = "first line\nsecond line"
+      val formData: Multipart.FormData = Multipart.FormData(
+        Multipart.FormData.BodyPart.Strict(
+          "description",
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, descriptionText)),
+        Multipart.FormData.BodyPart.Strict(
+          "document",
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, fileText),
+          Map("filename" -> "notes.txt")))
+
+      val entity: RequestEntity = formData.toEntity("test-boundary")
+      assertThat(entity.contentType.mediaType.value).startsWith("multipart/form-data")
+
+      val strictEntity: HttpEntity.Strict = await(entity.toStrict(Timeout))
+      val rendered: String = strictEntity.data.utf8String
+      assertThat(rendered).contains("name=\"description\"")
+      assertThat(rendered).contains("filename=\"notes.txt\"")
+
+      val parsedFormData: Multipart.FormData = await(Unmarshal(strictEntity).to[Multipart.FormData])
+      val parsedParts: Map[String, Multipart.FormData.BodyPart.Strict] =
+        await(parsedFormData.toStrict(Timeout)).strictParts.map(part => part.name -> part).toMap
+
+      assertThat(parsedParts.keySet.asJava).containsExactlyInAnyOrder("description", "document")
+      assertThat(strictText(parsedParts("description").entity)).isEqualTo(descriptionText)
+      assertThat(strictText(parsedParts("document").entity)).isEqualTo(fileText)
+      assertThat(parsedParts("document").additionalDispositionParams.get("filename")).isEqualTo(Some("notes.txt"))
     }
 
   @Test
