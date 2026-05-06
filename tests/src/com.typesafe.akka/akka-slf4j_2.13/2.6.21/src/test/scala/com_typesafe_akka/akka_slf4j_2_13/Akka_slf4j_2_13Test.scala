@@ -7,7 +7,7 @@
 package com_typesafe_akka.akka_slf4j_2_13
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import akka.event.{DummyClassForStringSources, LogMarker, Logging}
+import akka.event.{DiagnosticMarkerBusLoggingAdapter, DummyClassForStringSources, LogMarker, Logging}
 import akka.event.slf4j.{Logger, SLF4JLogging, Slf4jLogMarker, Slf4jLogger, Slf4jLoggingFilter}
 import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -16,6 +16,7 @@ import org.slf4j.{Marker, MarkerFactory}
 
 import java.util.concurrent.{CompletableFuture, TimeUnit}
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.{HashMap, Map => JMap}
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
@@ -109,6 +110,29 @@ class Akka_slf4j_2_13Test {
   }
 
   @Test
+  def diagnosticMarkerLoggingAdapterPublishesMdcAndMarkerProperties(): Unit = {
+    withActorSystem("Diagnostic", "INFO") { system: ActorSystem =>
+      val expectedMessage: String = "diagnostic event reached slf4j"
+      val result: CompletableFuture[Logging.Info] = new CompletableFuture[Logging.Info]()
+      val probe: ActorRef = system.actorOf(Props(new InfoEventProbe(result, expectedMessage)), "diagnostic-info-probe")
+      val subscribed: Boolean = system.eventStream.subscribe(probe, classOf[Logging.Info])
+      val publisher: ActorRef = system.actorOf(Props(new DiagnosticMarkerPublisher), "diagnostic-marker-publisher")
+
+      publisher.tell(expectedMessage, ActorRef.noSender)
+
+      val event: Logging.Info = result.get(10, TimeUnit.SECONDS)
+      val eventWithMarker: Logging.LogEventWithMarker = event.asInstanceOf[Logging.LogEventWithMarker]
+
+      assertThat(subscribed).isTrue()
+      assertThat(event.logSource).contains("diagnostic-marker-publisher")
+      assertThat(event.mdc.apply("correlationId")).isEqualTo("correlation-123")
+      assertThat(event.mdc.apply("attempt")).isEqualTo(Integer.valueOf(3))
+      assertThat(eventWithMarker.marker.name).isEqualTo("diagnostic-marker")
+      assertThat(eventWithMarker.marker.properties.apply("operation")).isEqualTo("checkout")
+    }
+  }
+
+  @Test
   def slf4jLoggerAcknowledgesInitialization(): Unit = {
     withActorSystem("Initialize", "INFO") { system: ActorSystem =>
       val result: CompletableFuture[AnyRef] = new CompletableFuture[AnyRef]()
@@ -130,6 +154,31 @@ object Akka_slf4j_2_13Test {
   private final class ReplyProbe(result: CompletableFuture[AnyRef]) extends Actor {
     override def receive: Receive = { case message: AnyRef =>
       result.complete(message)
+      context.stop(self)
+    }
+  }
+
+  private final class InfoEventProbe(result: CompletableFuture[Logging.Info], expectedMessage: String) extends Actor {
+    override def receive: Receive = { case info: Logging.Info if info.message.toString == expectedMessage =>
+      result.complete(info)
+      context.stop(self)
+    }
+  }
+
+  private final class DiagnosticMarkerPublisher extends Actor {
+    override def receive: Receive = { case message: String =>
+      val adapter: DiagnosticMarkerBusLoggingAdapter = Logging.withMarker(this)
+      val mdc: JMap[String, Any] = new HashMap[String, Any]()
+      val markerProperties: JMap[String, Any] = new HashMap[String, Any]()
+
+      mdc.put("correlationId", "correlation-123")
+      mdc.put("attempt", Integer.valueOf(3))
+      markerProperties.put("operation", "checkout")
+      adapter.setMDC(mdc)
+
+      val marker: LogMarker = LogMarker.create("diagnostic-marker", markerProperties)
+      adapter.info(marker, message)
+      adapter.clearMDC()
       context.stop(self)
     }
   }
