@@ -103,6 +103,13 @@ final class Scalac_compat_annotation_2_13Test {
     assertThat(widened.current).isEqualTo("stored")
   }
 
+  @Test
+  def unusedAliasCanAnnotateLocalDefinitions(): Unit = {
+    val surface: UnusedLocalDefinitionSurface = new UnusedLocalDefinitionSurface
+
+    assertThat(surface.render("visible")).isEqualTo("visible:complete")
+  }
+
   private def assertSameType[A, B]()(implicit evidence: A =:= B): Unit = {
     assertThat(evidence).isNotNull()
   }
@@ -138,6 +145,18 @@ final class Scalac_compat_annotation_2_13Test {
   private object DeprecatedApi {
     @deprecated("exercise nowarn compatibility aliases", "0.0")
     def value: Int = 42
+  }
+
+  private final class UnusedLocalDefinitionSurface {
+    def render(label: String): String = {
+      @unused
+      val localValue: String = "intentionally not read"
+
+      @unused
+      class LocalMarker
+
+      s"$label:complete"
+    }
   }
 
   private final class NowarnSurface {
