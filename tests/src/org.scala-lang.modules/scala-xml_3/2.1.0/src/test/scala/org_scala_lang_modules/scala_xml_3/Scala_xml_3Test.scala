@@ -14,6 +14,7 @@ import java.io.StringWriter
 import scala.io.Source
 import scala.jdk.CollectionConverters._
 import scala.xml.Comment
+import scala.xml.Document
 import scala.xml.Elem
 import scala.xml.MinimizeMode
 import scala.xml.NamespaceBinding
@@ -30,8 +31,11 @@ import scala.xml.UnprefixedAttribute
 import scala.xml.Utility
 import scala.xml.XML
 import scala.xml.dtd.DocType
+import scala.xml.dtd.IntDef
+import scala.xml.dtd.ParsedEntityDecl
 import scala.xml.dtd.PublicID
 import scala.xml.dtd.SystemID
+import scala.xml.parsing.ConstructingParser
 import scala.xml.parsing.XhtmlParser
 import scala.xml.transform.RewriteRule
 import scala.xml.transform.RuleTransformer
@@ -215,6 +219,36 @@ class Scala_xml_3Test {
       assertThat(scriptContent).isInstanceOf(classOf[PCData])
       assertThat(scriptContent.text).isEqualTo("if (a < b && c > d) render();")
       assertThat(div.toString()).contains("<![CDATA[if (a < b && c > d) render();]]>")
+    } finally {
+      source.close()
+    }
+  }
+
+  @Test
+  def constructsDocumentsWithXmlDeclarationsAndInternalDtds(): Unit = {
+    val source: Source = Source.fromString(
+      """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        |<!DOCTYPE note [
+        |  <!ENTITY greeting "Hello">
+        |]>
+        |<note priority="high"><to>Alice</to><from>Bob</from><body>&greeting;, Alice</body></note>""".stripMargin
+    )
+
+    try {
+      val document: Document = ConstructingParser.fromSource(source, preserveWS = false).document()
+      val parsedEntity = document.dtd.decls.collectFirst {
+        case declaration: ParsedEntityDecl if declaration.name == "greeting" => declaration
+      }.get
+
+      assertThat(document.version).isEqualTo(Some("1.0"))
+      assertThat(document.encoding).isEqualTo(Some("UTF-8"))
+      assertThat(document.standAlone).isEqualTo(Some(true))
+      assertThat(document.docElem.label).isEqualTo("note")
+      assertThat((document.docElem \ "to").text).isEqualTo("Alice")
+      assertThat((document.docElem \ "from").text).isEqualTo("Bob")
+      assertThat((document.docElem \ "body").text).isEqualTo("Hello, Alice")
+      assertThat(document.docElem.attribute("priority").map(_.text)).isEqualTo(Some("high"))
+      assertThat(parsedEntity.entdef).isEqualTo(IntDef("Hello"))
     } finally {
       source.close()
     }
