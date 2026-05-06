@@ -215,6 +215,28 @@ final class Scodec_bits_3Test {
   }
 
   @Test
+  def vectorsConsumePrefixesWithRemainingDataAndFailures(): Unit = {
+    val bytes = ByteVector.fromValidHex("010203aabb")
+    val byteResult: Either[String, (ByteVector, String)] = bytes.consume(3) { prefix =>
+      Right(prefix.reverse.toHex)
+    }
+    val byteRejection: Either[String, (ByteVector, String)] = bytes.consume(2) { _ =>
+      Left("prefix rejected")
+    }
+    val bits = BitVector.fromValidBin("101_0110011")
+
+    assertThat(byteResult).isEqualTo(Right((ByteVector.fromValidHex("aabb"), "030201")))
+    assertThat(byteRejection).isEqualTo(Left("prefix rejected"))
+    assertThat(bytes.consume(99)(_ => Right("unreachable")).isLeft).isTrue()
+    val bitResult: Either[String, (BitVector, String)] = bits.consume(3) { prefix =>
+      Right(prefix.toBin)
+    }
+
+    assertThat(bitResult).isEqualTo(Right((BitVector.fromValidBin("0110011"), "101")))
+    assertThat(bits.consume(99)(_ => Right("unreachable")).isLeft).isTrue()
+  }
+
+  @Test
   def crcFunctionsSupportKnownVectorsAndIncrementalBuilders(): Unit = {
     val message = ByteVector.encodeAscii("123456789").getOrElse(ByteVector.empty).bits
     val split = message.splitAt(32)
