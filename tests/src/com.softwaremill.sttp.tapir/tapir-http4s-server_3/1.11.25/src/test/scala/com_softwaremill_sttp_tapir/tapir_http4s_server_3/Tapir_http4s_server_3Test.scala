@@ -178,6 +178,24 @@ class Tapir_http4s_server_3Test {
   }
 
   @Test
+  def routesDecodeCookieInputsFromHttp4sCookieHeader(): Unit = {
+    val cookieEndpoint: PublicEndpoint[String, Unit, String, Any] = endpoint.get
+      .in("cookie-session")
+      .in(cookie[String]("session"))
+      .out(stringBody)
+    val routes: HttpRoutes[IO] = Http4sServerInterpreter[IO]().toRoutes(
+      cookieEndpoint.serverLogicSuccess((session: String) => IO.pure(s"session:$session"))
+    )
+
+    val request: Request[IO] = Request[IO](Method.GET, uri"/cookie-session")
+      .putHeaders(Header.Raw(CIString("Cookie"), "theme=dark; session=abc-123; locale=en"))
+    val response: Response[IO] = responseFor(routes, request)
+
+    assertEquals(200, response.status.code)
+    assertEquals("session:abc-123", bodyAsString(response))
+  }
+
+  @Test
   def serverSentEventHelpersRoundTripMultipleEvents(): Unit = {
     val events: List[ServerSentEvent] = List(
       ServerSentEvent(Some("first payload"), Some("message"), Some("id-1"), Some(250)),
