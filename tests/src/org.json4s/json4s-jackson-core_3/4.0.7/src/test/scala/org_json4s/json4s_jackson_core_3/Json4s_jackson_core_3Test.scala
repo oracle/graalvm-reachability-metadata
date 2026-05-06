@@ -7,8 +7,10 @@
 package org_json4s.json4s_jackson_core_3
 
 import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.core.json.JsonReadFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.NullNode
 import org.json4s.*
@@ -207,6 +209,22 @@ class Json4s_jackson_core_3Test {
     assertEquals(JInt(42), converted \ "count")
     assertEquals(JNull, converted \ "nothing")
     assertEquals(JArray(List(JBool.True, JBool.False)), converted \ "flags")
+  }
+
+  @Test
+  def supportsCustomJacksonObjectMappersForJsonMethods(): Unit = {
+    val customJsonMethods: org.json4s.jackson.JsonMethods = new org.json4s.jackson.JsonMethods {
+      override val mapper: ObjectMapper = JsonMapper
+        .builder()
+        .addModule(new Json4sScalaModule())
+        .enable(JsonReadFeature.ALLOW_SINGLE_QUOTES)
+        .build()
+    }
+
+    val parsed: JValue = customJsonMethods.parse("""{'name':'custom','values':[1,true,null]}""")
+
+    assertEquals(JString("custom"), parsed \ "name")
+    assertEquals(JArray(List(JInt(1), JBool.True, JNull)), parsed \ "values")
   }
 
   @Test
