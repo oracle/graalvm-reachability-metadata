@@ -176,6 +176,26 @@ class PgoNearCallReportTests(unittest.TestCase):
         self.assertIn("use this caller as the closest static point", guidance)
         self.assertIn("example.TargetHolder.call():void", guidance)
 
+    def test_guidance_includes_jacoco_bridge_for_covered_target_caller_line(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            self._write_jacoco_fixture(tmpdir, covered_instructions=3, missed_instructions=0)
+            guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
+
+        self.assertIn("JVM JaCoCo bridge:", guidance)
+        self.assertIn("JVM tests cover the target caller line TargetHolder.java:42", guidance)
+        self.assertIn("covered instructions: 3", guidance)
+
+    def test_guidance_includes_jacoco_bridge_for_uncovered_target_caller_line(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            self._write_jacoco_fixture(tmpdir, covered_instructions=0, missed_instructions=8)
+            guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
+
+        self.assertIn("JVM JaCoCo bridge:", guidance)
+        self.assertIn("JVM tests do not cover the target caller line TargetHolder.java:42", guidance)
+        self.assertIn("missed instructions: 8", guidance)
+
     def test_guidance_does_not_label_fallback_sample_as_join_when_no_sample_matches_static_path(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             self._write_report_fixture(
@@ -293,6 +313,24 @@ class PgoNearCallReportTests(unittest.TestCase):
             writer = csv.writer(csv_file)
             writer.writerow(fieldnames)
             writer.writerows(rows)
+
+    @staticmethod
+    def _write_jacoco_fixture(report_dir: str, covered_instructions: int, missed_instructions: int) -> None:
+        with open(os.path.join(report_dir, "jacocoTestReport.xml"), "w", encoding="utf-8") as report_file:
+            report_file.write(
+                """<?xml version="1.0" encoding="UTF-8"?>
+<report name="test">
+  <package name="example">
+    <class name="example/TargetHolder" sourcefilename="TargetHolder.java">
+      <method name="call" desc="()V" line="42"/>
+    </class>
+    <sourcefile name="TargetHolder.java">
+      <line nr="42" mi="{missed}" ci="{covered}" mb="0" cb="0"/>
+    </sourcefile>
+  </package>
+</report>
+""".format(missed=missed_instructions, covered=covered_instructions)
+            )
 
 
 if __name__ == "__main__":

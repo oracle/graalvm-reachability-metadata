@@ -6,6 +6,7 @@
 import csv
 import json
 import os
+import xml.etree.ElementTree as ET
 from collections import deque
 from dataclasses import dataclass
 
@@ -102,6 +103,13 @@ def format_pgo_near_call_guidance(
             "",
             "Static target-edge match:",
             "- Approximate: {note}".format(note=approximate_note),
+        ])
+    jacoco_bridge = _format_jacoco_bridge(report_dir, best)
+    if jacoco_bridge:
+        lines.extend([
+            "",
+            "JVM JaCoCo bridge:",
+            jacoco_bridge,
         ])
     lines.extend([
         "",
@@ -792,6 +800,127 @@ def _static_path_heading(record: PgoNearCallRecord) -> str:
     if record.sampled_join_path_index is None and record.prefix_length == 0:
         return "Static path from the closest call-tree root to the uncovered call:"
     return "Static path from the PGO-reached method to the uncovered call:"
+
+
+def _format_jacoco_bridge(report_dir: str, record: PgoNearCallRecord) -> str | None:
+    frame = _parse_frame(record.call_site.frame)
+    if frame is None:
+        return None
+
+    class_name, source_file, line_number = frame
+    if source_file is None and line_number is None:
+        return None
+
+    report_path = _find_jacoco_report(report_dir)
+    if report_path is None:
+        return "- JaCoCo XML report not available; JVM caller-line coverage is unknown."
+
+    coverage = _read_jacoco_line_coverage(report_path, class_name, source_file, line_number)
+    if coverage is None:
+        location = _format_source_location(source_file, line_number)
+        return "- JaCoCo XML report did not include {location}; JVM caller-line coverage is unknown.".format(
+            location=location,
+        )
+
+    location = _format_source_location(source_file, line_number)
+    if coverage["covered"]:
+        return (
+            "- JVM tests cover the target caller line {location} "
+            "(covered instructions: {covered_instructions}, missed instructions: {missed_instructions}). "
+            "PGO did not sample this static path, so use JVM coverage as a clue for which existing behavior "
+            "is close to the Native Image target."
+        ).format(
+            location=location,
+            covered_instructions=coverage["covered_instructions"],
+            missed_instructions=coverage["missed_instructions"],
+        )
+    return (
+        "- JVM tests do not cover the target caller line {location} "
+        "(covered instructions: 0, missed instructions: {missed_instructions}). "
+        "Add a JVM-visible test that reaches this caller before expecting Native Image PGO to connect to it."
+    ).format(
+        location=location,
+        missed_instructions=coverage["missed_instructions"],
+    )
+
+
+def _find_jacoco_report(report_dir: str) -> str | None:
+    candidates = [
+        os.path.join(report_dir, "jacocoTestReport.xml"),
+    ]
+    parent = os.path.dirname(report_dir)
+    candidates.append(os.path.join(parent, "jacoco", "test", "jacocoTestReport.xml"))
+    if os.path.basename(report_dir) == "pgo-near-call":
+        reports_dir = os.path.dirname(report_dir)
+        candidates.append(os.path.join(reports_dir, "jacoco", "test", "jacocoTestReport.xml"))
+
+    for candidate in candidates:
+        if os.path.isfile(candidate):
+            return candidate
+    return None
+
+
+def _read_jacoco_line_coverage(
+        report_path: str,
+        class_name: str,
+        source_file: str | None,
+        line_number: int | None,
+) -> dict | None:
+    if source_file is None or line_number is None:
+        return None
+    try:
+        root = ET.parse(report_path).getroot()
+    except (ET.ParseError, OSError):
+        return None
+
+    expected_package = class_name.rsplit(".", 1)[0].replace(".", "/") if "." in class_name else ""
+    for package in root.findall("package"):
+        package_name = package.get("name", "")
+        if package_name != expected_package:
+            continue
+        for source in package.findall("sourcefile"):
+            if source.get("name") != source_file:
+                continue
+            for line in source.findall("line"):
+                if line.get("nr") != str(line_number):
+                    continue
+                missed_instructions = int(line.get("mi", "0"))
+                covered_instructions = int(line.get("ci", "0"))
+                return {
+                    "covered": covered_instructions > 0,
+                    "covered_instructions": covered_instructions,
+                    "missed_instructions": missed_instructions,
+                }
+    return None
+
+
+def _parse_frame(frame: str) -> tuple[str, str | None, int | None] | None:
+    holder, method_name = _frame_holder_and_method(frame)
+    if holder is None or method_name is None:
+        return None
+    source_file = None
+    line_number = None
+    if "(" in frame and ")" in frame:
+        location = frame.split("(", 1)[1].split(")", 1)[0]
+        if ":" in location:
+            source_file, line_text = location.rsplit(":", 1)
+            try:
+                line_number = int(line_text)
+            except ValueError:
+                line_number = None
+        elif location:
+            source_file = location
+    return holder, source_file, line_number
+
+
+def _format_source_location(source_file: str | None, line_number: int | None) -> str:
+    if source_file is not None and line_number is not None:
+        return "{source_file}:{line_number}".format(source_file=source_file, line_number=line_number)
+    if source_file is not None:
+        return source_file
+    if line_number is not None:
+        return "line {line_number}".format(line_number=line_number)
+    return "unknown source location"
 
 
 def _existing_test_frame_index(
