@@ -117,6 +117,17 @@ class Silencer_lib_2_13_5Test {
     assertEquals(21, pipeline.value)
     assertEquals("21", pipeline.map(_.toString).value)
   }
+
+  @Test
+  def annotationsOnImplicitDefinitionsPreserveImplicitResolution(): Unit = {
+    import SilencerImplicitFixture._
+
+    assertEquals("int:7", render(7))
+    assertEquals("string:metadata", render("metadata"))
+    assertEquals("some(int:3)", render(Option(3)))
+    assertEquals("none", render(Option.empty[Int]))
+    assertEquals("string:native-image", "native-image".rendered)
+  }
 }
 
 @silent("class-level silencer annotation")
@@ -184,6 +195,51 @@ object SilencerPipeline {
   private final case class ValuePipeline[A](@silent("case class parameter annotation") value: A) extends SilencerPipeline[A] {
     override def map[B](operation: A => B): SilencerPipeline[B] = {
       ValuePipeline(operation(value))
+    }
+  }
+}
+
+trait SilencerRenderer[A] {
+  def render(value: A): String
+}
+
+object SilencerImplicitFixture {
+  @silent("implicit integer renderer annotation")
+  implicit val intRenderer: SilencerRenderer[Int] = new SilencerRenderer[Int] {
+    override def render(value: Int): String = {
+      s"int:$value"
+    }
+  }
+
+  @silent("implicit string renderer annotation")
+  implicit val stringRenderer: SilencerRenderer[String] = new SilencerRenderer[String] {
+    override def render(value: String): String = {
+      s"string:$value"
+    }
+  }
+
+  @silent("implicit option renderer annotation")
+  implicit def optionRenderer[A](implicit renderer: SilencerRenderer[A]): SilencerRenderer[Option[A]] = {
+    new SilencerRenderer[Option[A]] {
+      override def render(value: Option[A]): String = {
+        value match {
+          case Some(innerValue) => s"some(${renderer.render(innerValue)})"
+          case None => "none"
+        }
+      }
+    }
+  }
+
+  @silent("implicit-parameter method annotation")
+  def render[A](value: A)(implicit @silent("implicit renderer parameter annotation") renderer: SilencerRenderer[A]): String = {
+    renderer.render(value)
+  }
+
+  @silent("implicit extension class annotation")
+  implicit final class RenderOps[A](@silent("extension receiver annotation") private val value: A) extends AnyVal {
+    @silent("extension method annotation")
+    def rendered(implicit renderer: SilencerRenderer[A]): String = {
+      render(value)
     }
   }
 }
