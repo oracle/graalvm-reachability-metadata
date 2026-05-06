@@ -135,6 +135,24 @@ public class KotlinScriptingJsr223Test {
         }
     }
 
+    @Test
+    public fun scriptTemplateCreatesBindingsForNestedEvaluation(): Unit = runDynamicScriptTest {
+        val engine: ScriptEngine = newEngine()
+
+        val result: Any? = engine.eval(
+            """
+            val nestedBindings = createBindings()
+            nestedBindings["amount"] = 21
+            nestedBindings["label"] = "answer"
+            val nestedSource = "(bindings[\"label\"] as String) + \":\" + " +
+                "((bindings[\"amount\"] as Int) * 2)"
+            eval(nestedSource, nestedBindings)
+            """.trimIndent(),
+        )
+
+        assertThat(result).isEqualTo("answer:42")
+    }
+
     private fun newEngine(): ScriptEngine = KotlinJsr223DefaultScriptEngineFactory().scriptEngine
 
     private fun runDynamicScriptTest(test: () -> Unit): Unit {
