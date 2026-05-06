@@ -133,8 +133,8 @@ public class PostgreSQLCopyParsedStatementTest {
                         );
 
                         COPY copy_statement_test (id, title) FROM STDIN;
-                        1	alpha
-                        2	beta
+                        1\talpha
+                        2\tbeta
                         \\.
                         """);
 
