@@ -16,6 +16,8 @@ import io.circe.JsonObject
 import io.circe.KeyDecoder
 import io.circe.KeyEncoder
 import io.circe.Printer
+import io.circe.derivation.ConfiguredCodec
+import io.circe.derivation.Configuration
 import io.circe.syntax._
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.fail
@@ -55,6 +57,10 @@ object AccountId {
 }
 
 final case class Command(action: String, target: Option[String])
+
+given Configuration = Configuration.default.withSnakeCaseMemberNames.withDefaults.withStrictDecoding
+
+final case class DerivedJob(jobId: String, ownerName: String, maxRetries: Int = 3) derives ConfiguredCodec
 
 object Command {
   given Decoder[Command] = Decoder.instance { (cursor: HCursor) =>
@@ -226,6 +232,25 @@ class Circe_core_3Test {
     }
     assertThat(error.message).isEqualTo("Unsupported action: restart")
     assertThat(error.history.asJava).isNotEmpty
+  }
+
+  @Test
+  def derivesConfiguredCodecsForProductsWithDefaultsAndStrictDecoding(): Unit = {
+    val encoded: Json = DerivedJob("job-1", "Ada", 5).asJson
+    assertThat(encoded.noSpacesSortKeys).isEqualTo("""{"job_id":"job-1","max_retries":5,"owner_name":"Ada"}""")
+
+    val decodedWithDefault: Either[DecodingFailure, DerivedJob] = Json.obj(
+      "job_id" -> Json.fromString("job-2"),
+      "owner_name" -> Json.fromString("Linus")
+    ).as[DerivedJob]
+    assertThat(decodedWithDefault).isEqualTo(Right(DerivedJob("job-2", "Linus")))
+
+    val decodedWithUnknownField: Either[DecodingFailure, DerivedJob] = Json.obj(
+      "job_id" -> Json.fromString("job-3"),
+      "owner_name" -> Json.fromString("Grace"),
+      "unexpected" -> Json.True
+    ).as[DerivedJob]
+    assertThat(decodedWithUnknownField.isLeft).isTrue
   }
 
   @Test
