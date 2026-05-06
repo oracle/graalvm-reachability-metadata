@@ -1,0 +1,140 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.getquill:quill-jdbc_2.13:4.8.5
+Command: `/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5426-74f51320/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :compileScala NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava NO-SOURCE
+> Task :compileTestScala
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+> Task :test
+
+Quill_jdbc_2_13Test > translateAndProbeExposeGeneratedSqlAndDatabaseValidation() FAILED
+    org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "people" not found (this database is empty); SQL statement:
+    SELECT person.name FROM people person WHERE person.age > 30 [42104-210]
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:521)
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+        at app//org.h2.message.DbException.get(DbException.java:227)
+        at app//org.h2.message.DbException.get(DbException.java:203)
+        at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8397)
+        at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8381)
+        at app//org.h2.command.Parser.readTableOrView(Parser.java:8370)
+        at app//org.h2.command.Parser.readTablePrimary(Parser.java:1866)
+        at app//org.h2.command.Parser.readTableReference(Parser.java:2342)
+        at app//org.h2.command.Parser.parseSelectFromPart(Parser.java:2793)
+        at app//org.h2.command.Parser.parseSelect(Parser.java:2900)
+        at app//org.h2.command.Parser.parseQueryPrimary(Parser.java:2783)
+        at app//org.h2.command.Parser.parseQueryTerm(Parser.java:2650)
+        at app//org.h2.command.Parser.parseQueryExpressionBody(Parser.java:2629)
+        at app//org.h2.command.Parser.parseQueryExpressionBodyAndEndOfQuery(Parser.java:2622)
+        at app//org.h2.command.Parser.parseQueryExpression(Parser.java:2615)
+        at app//org.h2.command.Parser.parseQuery(Parser.java:2576)
+        at app//org.h2.command.Parser.parsePrepared(Parser.java:707)
+        at app//org.h2.command.Parser.parse(Parser.java:674)
+        at app//org.h2.command.Parser.parse(Parser.java:644)
+        at app//org.h2.command.Parser.prepareCommand(Parser.java:551)
+        at app//org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:615)
+        at app//org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:553)
+        at app//org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
+        at app//org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92)
+        at app//org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
+        at app//io.getquill.context.jdbc.JdbcContext.$anonfun$prepareParams$1(JdbcContext.scala:135)
+        at app//io.getquill.context.jdbc.JdbcContextVerbExecute.$anonfun$withConnectionWrapped$2(JdbcContextVerbExecute.scala:32)
+        at app//io.getquill.context.jdbc.JdbcContext.wrap(JdbcContext.scala:30)
+        at app//io.getquill.context.jdbc.JdbcContextVerbExecute.$anonfun$withConnectionWrapped$1(JdbcContextVerbExecute.scala:32)
+        at app//io.getquill.context.jdbc.JdbcContext.$anonfun$withConnection$1(JdbcContext.scala:94)
+        at app//scala.Option.getOrElse(Option.scala:201)
+        at app//io.getquill.context.jdbc.JdbcContext.withConnection(JdbcContext.scala:92)
+        at app//io.getquill.context.jdbc.JdbcContextVerbExecute.withConnectionWrapped(JdbcContextVerbExecute.scala:32)
+        at app//io.getquill.context.jdbc.JdbcContextVerbExecute.withConnectionWrapped$(JdbcContextVerbExecute.scala:31)
+        at app//io.getquill.context.jdbc.JdbcContext.withConnectionWrapped(JdbcContext.scala:14)
+        at app//io.getquill.context.jdbc.JdbcContext.prepareParams(JdbcContext.scala:134)
+        at app//io.getquill.context.jdbc.JdbcContext.prepareParams(JdbcContext.scala:14)
+        at app//io.getquill.context.ContextTranslateProto.translateQuery(ContextVerbTranslate.scala:65)
+        at app//io.getquill.context.ContextTranslateProto.translateQuery$(ContextVerbTranslate.scala:59)
+        at app//io.getquill.context.jdbc.JdbcContext.translateQuery(JdbcContext.scala:14)
+        at app//io_getquill.quill_jdbc_2_13.Quill_jdbc_2_13Test.translateAndProbeExposeGeneratedSqlAndDatabaseValidation(Quill_jdbc_2_13Test.scala:149)
+
+5 tests completed, 1 failed
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5426-74f51320/tests/src/io.getquill/quill-jdbc_2.13/4.8.5/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 3m 6s
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5426-74f51320/tests/src/io.getquill/quill-jdbc_2.13/4.8.5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5426-74f51320/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.getquill:quill-jdbc_2.13:4.8.5 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3m 10s
+9 actionable tasks: 1 executed, 8 up-to-date
