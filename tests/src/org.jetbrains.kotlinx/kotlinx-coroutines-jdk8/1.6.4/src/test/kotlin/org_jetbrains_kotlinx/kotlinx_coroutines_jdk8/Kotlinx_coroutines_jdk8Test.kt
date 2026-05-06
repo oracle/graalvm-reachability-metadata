@@ -18,11 +18,13 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.future.future
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.stream.consumeAsFlow
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -32,7 +34,9 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
+import java.util.stream.Stream
 
 @OptIn(ExperimentalCoroutinesApi::class)
 public class KotlinxCoroutinesJdk8Test {
@@ -210,5 +214,27 @@ public class KotlinxCoroutinesJdk8Test {
 
         assertThat(future.get(5, TimeUnit.SECONDS)).isSameAs(Unit)
         assertThat(future.isDone).isTrue()
+    }
+
+    @Test
+    fun javaStreamConsumeAsFlowEmitsElementsAndClosesStream(): Unit = runBlocking {
+        val closed: AtomicBoolean = AtomicBoolean(false)
+        val stream: Stream<String> = Stream.of("first", "second", "third")
+            .onClose { closed.set(true) }
+
+        val collected: List<String> = stream.consumeAsFlow().toList()
+
+        assertThat(collected).containsExactly("first", "second", "third")
+        assertThat(closed).isTrue()
+    }
+
+    @Test
+    fun javaStreamFlowCanBeCollectedOnlyOnce(): Unit {
+        val flow = Stream.of(1, 2, 3).consumeAsFlow()
+
+        assertThat(runBlocking { flow.toList() }).containsExactly(1, 2, 3)
+        assertThatThrownBy { runBlocking { flow.toList() } }
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessageContaining("collected only once")
     }
 }
