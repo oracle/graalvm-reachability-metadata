@@ -10,10 +10,11 @@ import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorSystem
 import akka.actor.Props
-import akka.event.slf4j.{Logger => Slf4jEventLogger}
-import org.slf4j.MDC
+import akka.event.slf4j.{Logger => Slf4jEventLogger, Slf4jLogMarker}
 import akka.pattern.ask
 import akka.util.Timeout
+import org.slf4j.MDC
+import org.slf4j.MarkerFactory
 import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -79,6 +80,22 @@ class Akka_slf4j_2_13Test {
 
       assertThat(afterFailure).isEqualTo(EventStreamLoggingActor.Ack("failure", "charlie"))
       assertThat(afterRecovery).isEqualTo(EventStreamLoggingActor.Ack("event-stream", "delta"))
+    }
+  }
+
+  @Test
+  def loggingAdapterAcceptsSlf4jMarkersForMarkedEvents(): Unit = {
+    withActorSystem("Slf4jMarkerLoggingTest") { system =>
+      val logger = akka.event.Logging.withMarker(system, getClass)
+      val slf4jMarker = MarkerFactory.getMarker("akka-slf4j-marked-event")
+      val marker = Slf4jLogMarker(slf4jMarker)
+
+      logger.debug(marker, "debug message with slf4j marker")
+      logger.info(marker, "info message with slf4j marker")
+      logger.warning(marker, "warning message with slf4j marker")
+
+      assertThat(marker.name).isEqualTo(slf4jMarker.getName)
+      assertThat(marker.marker).isSameAs(slf4jMarker)
     }
   }
 
