@@ -134,6 +134,32 @@ class Scalatest_mustmatchers_2_13Test extends Matchers {
   }
 
   @Test
+  def mustDslSupportsPatternAndTypeMatchers(): Unit = {
+    val metadataStatus: ServiceStatus = ServiceStatus(
+      name = "metadata",
+      active = true,
+      endpoint = "https://metadata.example.test",
+      replicas = 3
+    )
+
+    metadataStatus mustBe a [ServiceStatus]
+    metadataStatus.endpoint mustBe a [String]
+    metadataStatus must not be a [String]
+    metadataStatus must matchPattern {
+      case ServiceStatus("metadata", true, endpoint, replicas)
+        if endpoint.startsWith("https://") && replicas >= 3 =>
+    }
+
+    val failure: TestFailedException = expectTestFailure {
+      metadataStatus must matchPattern {
+        case ServiceStatus("metrics", true, _, _) =>
+      }
+    }
+    assertTrue(failure.getMessage.contains("ServiceStatus"))
+    assertTrue(failure.getMessage.contains("did not match"))
+  }
+
+  @Test
   def mustDslSupportsPartialFunctionDefinedAtMatchers(): Unit = {
     val routeStatuses: PartialFunction[String, ServiceStatus] = {
       case route if route.startsWith("/services/") =>
