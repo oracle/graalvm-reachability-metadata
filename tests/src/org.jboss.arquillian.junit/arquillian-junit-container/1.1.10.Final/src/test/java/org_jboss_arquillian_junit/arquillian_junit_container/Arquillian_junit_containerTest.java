@@ -67,6 +67,22 @@ public class Arquillian_junit_containerTest {
     }
 
     @Test
+    void junitTestRunnerRunsJUnitFixtureMethodsAroundSelectedMethod() {
+        FixtureBackedJUnit4TestCase.resetEvents();
+
+        TestResult result = new JUnitTestRunner().execute(FixtureBackedJUnit4TestCase.class, "selectedTest");
+
+        assertThat(result.getStatus()).isEqualTo(TestResult.Status.PASSED);
+        assertThat(result.getThrowable()).isNull();
+        assertThat(FixtureBackedJUnit4TestCase.events()).containsExactly(
+                "beforeClass",
+                "before:selectedTest",
+                "test:selectedTest",
+                "after:selectedTest",
+                "afterClass");
+    }
+
+    @Test
     void junitTestRunnerReportsAssertionFailuresWithThrownCause() {
         SampleJUnit4TestCase.failWhenRequestedByContainerRunner();
         try {
@@ -154,6 +170,48 @@ public class Arquillian_junit_containerTest {
         assertThat(node.getAsset()).isNotNull();
         try (InputStream stream = node.getAsset().openStream()) {
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    public static class FixtureBackedJUnit4TestCase {
+        private static final List<String> EVENTS = new ArrayList<>();
+
+        static void resetEvents() {
+            EVENTS.clear();
+        }
+
+        static List<String> events() {
+            return EVENTS;
+        }
+
+        @org.junit.BeforeClass
+        public static void beforeClass() {
+            EVENTS.add("beforeClass");
+        }
+
+        @org.junit.AfterClass
+        public static void afterClass() {
+            EVENTS.add("afterClass");
+        }
+
+        @org.junit.Before
+        public void before() {
+            EVENTS.add("before:selectedTest");
+        }
+
+        @org.junit.After
+        public void after() {
+            EVENTS.add("after:selectedTest");
+        }
+
+        @org.junit.Test
+        public void selectedTest() {
+            EVENTS.add("test:selectedTest");
+        }
+
+        @org.junit.Test
+        public void unselectedTest() {
+            EVENTS.add("test:unselectedTest");
         }
     }
 
