@@ -318,6 +318,29 @@ public class Kotest_assertions_shared_jvmTest {
     }
 
     @Test
+    fun collectorBulkCollectOrThrowAccumulatesInSoftModeAndThrowsInHardMode(): Unit {
+        val first: AssertionError = AssertionError("first bulk failure")
+        val second: AssertionError = AssertionError("second bulk failure")
+        val errors: List<AssertionError> = listOf(first, second)
+
+        val softCollector: BasicErrorCollector = BasicErrorCollector()
+        softCollector.setCollectionMode(ErrorCollectionMode.Soft)
+        softCollector.collectOrThrow(errors)
+        assertEquals(errors, softCollector.errors())
+
+        val hardCollector: BasicErrorCollector = BasicErrorCollector()
+        hardCollector.setCollectionMode(ErrorCollectionMode.Hard)
+        val thrown: MultiAssertionError = assertThrows(MultiAssertionError::class.java) {
+            hardCollector.collectOrThrow(errors)
+        }
+
+        assertEquals(errors, thrown.errors)
+        assertTrue(thrown.message!!.contains("first bulk failure"))
+        assertTrue(thrown.message!!.contains("second bulk failure"))
+        assertTrue(hardCollector.errors().isEmpty())
+    }
+
+    @Test
     fun collectorPrefixesSubjectInformationForSingleAssertionError(): Unit {
         val collector: BasicErrorCollector = BasicErrorCollector()
         collector.subject = Printed("customer record")
