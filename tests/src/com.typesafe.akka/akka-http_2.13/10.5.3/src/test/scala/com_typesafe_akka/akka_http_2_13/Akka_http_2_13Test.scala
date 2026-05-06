@@ -47,6 +47,7 @@ import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
+import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -290,7 +291,8 @@ class Akka_http_2_13Test extends Directives {
   }
 
   private def withActorSystem[T](name: String)(body: (ActorSystem, Materializer) => T): T = {
-    val system: ActorSystem = ActorSystem(name)
+    val classLoader: ClassLoader = getClass.getClassLoader
+    val system: ActorSystem = ActorSystem(name, ConfigFactory.load(classLoader), classLoader)
     val materializer: Materializer = SystemMaterializer(system).materializer
     try {
       body(system, materializer)
