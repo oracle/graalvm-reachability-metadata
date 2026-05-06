@@ -63,6 +63,28 @@ class Tasty_core_3Test {
   }
 
   @Test
+  def longNaturalNumbersRoundTripThroughBufferAndReader(): Unit = {
+    val values: Seq[Long] = Seq(0L, 1L, 127L, 128L, Int.MaxValue.toLong + 1L, 1099511627776L, Long.MaxValue)
+    val buffer: TastyBuffer = new TastyBuffer(1)
+
+    val addresses: Seq[Addr] = values.map { value =>
+      val address: Addr = buffer.currentAddr
+      buffer.writeLongNat(value)
+      address
+    }
+
+    values.zip(addresses).foreach { case (value: Long, address: Addr) =>
+      assertThat(buffer.getLongNat(address)).isEqualTo(value)
+    }
+
+    val reader: TastyReader = new TastyReader(trimmedBytes(buffer))
+    values.foreach { value =>
+      assertThat(reader.readLongNat()).isEqualTo(value)
+    }
+    assertThat(reader.isAtEnd).isTrue()
+  }
+
+  @Test
   def signedAndUncompressedLongsRoundTripThroughReader(): Unit = {
     val signedValues: Seq[Long] = Seq(-1234567890123L, -8192L, -65L, -64L, -1L, 0L, 1L, 63L, 64L, 8192L, 1234567890123L)
     val fixedWidthValues: Seq[Long] = Seq(0L, 1L, 0x0102030405060708L, -1L)
