@@ -36,6 +36,13 @@ class Typename_3Test {
   }
 
   @Test
+  def derivesNamesForSingletonLiteralTypes(): Unit = {
+    assertTypeNameContains["ready"]("ready")
+    assertTypeNameContains[42]("42")
+    assertTypeNameContains[true]("true")
+  }
+
+  @Test
   def packageFunctionAndSummonedTypeClassUseTheSameDerivedName(): Unit = {
     val fromPackageFunction: String = typeName[Map[String, List[NamedRecord]]]
     val fromSummonedTypeClass: TypeName[Map[String, List[NamedRecord]]] = summon[TypeName[Map[String, List[NamedRecord]]]]
