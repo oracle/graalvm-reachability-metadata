@@ -8,6 +8,7 @@ package io_circe.circe_parser_3
 
 import cats.data.Validated
 import io.circe.Decoder
+import io.circe.DecodingFailure
 import io.circe.Json
 import io.circe.parser.decode
 import io.circe.parser.decodeAccumulating
@@ -98,6 +99,21 @@ class Circe_parser_3Test {
     val decoded = decode[Person](input)
 
     assertEquals(Person("Ada", 36, List("math", "compiler")), expectRight(decoded))
+  }
+
+  @Test
+  def reportsWellFormedJsonThatDoesNotMatchDecoderAsDecodingFailure(): Unit = {
+    val result = decode[Person]("""{"name":"Grace","age":"not-a-number","tags":["compiler"]}""")
+
+    result match {
+      case Left(failure: DecodingFailure) =>
+        assertFalse(failure.message.isBlank)
+        assertTrue(failure.history.nonEmpty)
+      case Left(error) =>
+        fail[Unit](s"Expected a decoding failure for the age field, but got: $error")
+      case Right(person) =>
+        fail[Unit](s"Expected invalid person JSON to fail, but decoded: $person")
+    }
   }
 
   @Test
