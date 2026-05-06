@@ -19,7 +19,7 @@ public class ClickHouseArrayValueTest {
         ClickHouseArrayValue<String> emptyValue = ClickHouseArrayValue.ofEmpty(String.class);
         assertThat(emptyValue.getValue()).isInstanceOf(String[].class).isEmpty();
 
-        ClickHouseArrayValue<Integer> integerValue = ClickHouseArrayValue.of(new Integer[] { 1, 2, 3 });
+        ClickHouseArrayValue<Integer> integerValue = ClickHouseArrayValue.of(new Integer[] {1, 2, 3 });
         Integer[] typedCopy = integerValue.asArray(Integer.class);
 
         assertThat(typedCopy).containsExactly(1, 2, 3);
@@ -40,7 +40,7 @@ public class ClickHouseArrayValueTest {
 
     @Test
     void setValuePromotesScalarToCompatibleNestedArrayDepth() {
-        Number[][][] initialValue = new Number[][][] { new Number[][] { new Number[] { 1 } } };
+        Number[][][] initialValue = new Number[][][] {new Number[][] {new Number[] {1 } } };
         ClickHouseArrayValue<Number[][]> value = ClickHouseArrayValue.of(initialValue);
 
         value.setValue(0, ClickHouseIntegerValue.of(42));

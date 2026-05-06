@@ -15,11 +15,11 @@ public class ClickHouseGeoMultiPolygonValueTest {
     @Test
     void createsTypedArrayOfPolygons() {
         double[][][] firstPolygon = new double[][][] {
-                new double[][] { new double[] { 1.0D, 2.0D }, new double[] { 3.0D, 4.0D } } };
+                new double[][] {new double[] {1.0D, 2.0D }, new double[] {3.0D, 4.0D } } };
         double[][][] secondPolygon = new double[][][] {
-                new double[][] { new double[] { 5.0D, 6.0D }, new double[] { 7.0D, 8.0D } } };
+                new double[][] {new double[] {5.0D, 6.0D }, new double[] {7.0D, 8.0D } } };
         ClickHouseGeoMultiPolygonValue value = ClickHouseGeoMultiPolygonValue.of(
-                new double[][][][] { firstPolygon, secondPolygon });
+                new double[][][][] {firstPolygon, secondPolygon });
 
         double[][][][] polygons = value.asArray(double[][][].class);
 

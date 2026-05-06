@@ -20,8 +20,8 @@ public class ClickHouseNestedValueTest {
     void createsTypedArrayOfNestedRows() {
         List<ClickHouseColumn> columns = ClickHouseColumn.parse("id Int32, label String");
         ClickHouseNestedValue value = ClickHouseNestedValue.of(columns, new Object[][] {
-                { 1, "alpha" },
-                { 2, "beta" }
+                {1, "alpha" },
+                {2, "beta" }
         });
 
         Object[][] rows = value.asArray(Object[].class);
@@ -36,9 +36,9 @@ public class ClickHouseNestedValueTest {
     void createsTypedMapOfColumnArrays() {
         List<ClickHouseColumn> columns = ClickHouseColumn.parse("id Int32, score Int32");
         ClickHouseNestedValue value = ClickHouseNestedValue.of(columns, new Object[][] {
-                { 1, 100 },
-                { 2, 200 },
-                { 3, 300 }
+                {1, 100 },
+                {2, 200 },
+                {3, 300 }
         });
 
         Map<String, Integer[]> columnValues = value.asMap(String.class, Integer[].class);

@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 public class ClickHouseGeoPolygonValueTest {
     @Test
     void createsTypedArrayOfRings() {
-        double[][] firstRing = new double[][] { new double[] { 1.0D, 2.0D }, new double[] { 3.0D, 4.0D } };
-        double[][] secondRing = new double[][] { new double[] { 5.0D, 6.0D }, new double[] { 7.0D, 8.0D } };
-        ClickHouseGeoPolygonValue value = ClickHouseGeoPolygonValue.of(new double[][][] { firstRing, secondRing });
+        double[][] firstRing = new double[][] {new double[] {1.0D, 2.0D }, new double[] {3.0D, 4.0D } };
+        double[][] secondRing = new double[][] {new double[] {5.0D, 6.0D }, new double[] {7.0D, 8.0D } };
+        ClickHouseGeoPolygonValue value = ClickHouseGeoPolygonValue.of(new double[][][] {firstRing, secondRing });
 
         double[][][] rings = value.asArray(double[][].class);
 
