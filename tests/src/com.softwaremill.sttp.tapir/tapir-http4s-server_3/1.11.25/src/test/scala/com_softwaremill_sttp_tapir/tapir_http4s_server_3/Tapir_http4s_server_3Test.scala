@@ -145,6 +145,39 @@ class Tapir_http4s_server_3Test {
   }
 
   @Test
+  def bearerAuthenticationHeaderRunsSecurityLogicBeforeServerLogic(): Unit = {
+    val bearerEndpoint: Endpoint[String, Unit, (TapirStatusCode, String), String, Any] = endpoint.get
+      .in("bearer")
+      .securityIn(auth.bearer[String]())
+      .errorOut(statusCode.and(stringBody))
+      .out(stringBody)
+    val routes: HttpRoutes[IO] = Http4sServerInterpreter[IO]().toRoutes(
+      bearerEndpoint
+        .serverSecurityLogic { (token: String) =>
+          if (token == "secret-token") IO.pure(Right("api-user"))
+          else IO.pure(Left((TapirStatusCode.Unauthorized, "invalid bearer token")))
+        }
+        .serverLogicSuccess { (user: String) => (_: Unit) =>
+          IO.pure(s"authenticated:$user")
+        }
+    )
+
+    val accepted: Response[IO] = responseFor(
+      routes,
+      Request[IO](Method.GET, uri"/bearer").putHeaders(Header.Raw(CIString("Authorization"), "Bearer secret-token"))
+    )
+    val rejected: Response[IO] = responseFor(
+      routes,
+      Request[IO](Method.GET, uri"/bearer").putHeaders(Header.Raw(CIString("Authorization"), "Bearer wrong-token"))
+    )
+
+    assertEquals(200, accepted.status.code)
+    assertEquals("authenticated:api-user", bodyAsString(accepted))
+    assertEquals(401, rejected.status.code)
+    assertEquals("invalid bearer token", bodyAsString(rejected))
+  }
+
+  @Test
   def serverSentEventHelpersRoundTripMultipleEvents(): Unit = {
     val events: List[ServerSentEvent] = List(
       ServerSentEvent(Some("first payload"), Some("message"), Some("id-1"), Some(250)),
