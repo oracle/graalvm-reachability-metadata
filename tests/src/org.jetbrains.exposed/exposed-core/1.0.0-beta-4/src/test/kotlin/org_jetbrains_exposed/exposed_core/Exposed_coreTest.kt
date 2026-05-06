@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jetbrains.exposed.v1.core.Alias
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Index
+import org.jetbrains.exposed.v1.core.Join
 import org.jetbrains.exposed.v1.core.QueryBuilder
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder
 import org.jetbrains.exposed.v1.core.Table
@@ -53,6 +54,25 @@ public class ExposedCoreTest {
         assertThat(aliasedEmail.name).isEqualTo(Users.email.name)
         assertThat(aliasedEmail.table).isEqualTo(userAlias)
         assertThat(userAlias.originalColumn(aliasedEmail)).isEqualTo(Users.email)
+    }
+
+    @Test
+    fun joinsInferForeignKeysAndExposeCombinedFieldSets(): Unit {
+        val userMembershipJoin: Join = Users.innerJoin(Memberships)
+
+        assertThat(userMembershipJoin.columns).containsExactlyElementsOf(Users.columns + Memberships.columns)
+        assertThat(userMembershipJoin.fields).containsExactlyElementsOf(Users.fields + Memberships.fields)
+        assertThat(userMembershipJoin.alreadyInJoin(Memberships)).isTrue()
+        assertThat(userMembershipJoin.alreadyInJoin(Groups)).isFalse()
+
+        val userMembershipGroupJoin: Join = userMembershipJoin.innerJoin(Groups)
+
+        assertThat(userMembershipGroupJoin.columns)
+            .containsExactlyElementsOf(Users.columns + Memberships.columns + Groups.columns)
+        assertThat(userMembershipGroupJoin.fields)
+            .containsExactlyElementsOf(Users.fields + Memberships.fields + Groups.fields)
+        assertThat(userMembershipGroupJoin.alreadyInJoin(Memberships)).isTrue()
+        assertThat(userMembershipGroupJoin.alreadyInJoin(Groups)).isTrue()
     }
 
     @Test
