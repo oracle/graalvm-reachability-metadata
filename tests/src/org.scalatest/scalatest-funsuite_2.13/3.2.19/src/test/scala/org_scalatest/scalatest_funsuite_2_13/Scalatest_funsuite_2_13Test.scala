@@ -149,6 +149,27 @@ class Scalatest_funsuite_2_13Test {
   }
 
   @Test
+  def anyFunSuiteAppliesNoArgFixtureAroundEachTest(): Unit = {
+    val suite: NoArgFixtureFunSuite = new NoArgFixtureFunSuite
+    val reporter: RecordingReporter = new RecordingReporter
+    val args: Args = Args(reporter, configMap = ConfigMap("mode" -> "fixture value"))
+
+    val status = suite.run(None, args)
+
+    assertThat(status.isCompleted).isTrue()
+    assertThat(status.succeeds()).isTrue()
+    assertThat(suite.events.asJava).containsExactly(
+      "before:first wrapped:fixture value",
+      "body:first",
+      "after:first wrapped",
+      "before:second wrapped:fixture value",
+      "body:second",
+      "after:second wrapped"
+    )
+    assertThat(reporter.eventsOf[TestSucceeded].map(_.testName).asJava).containsExactly("first wrapped", "second wrapped")
+  }
+
+  @Test
   def anyFunSuiteRejectsDuplicateTestNames(): Unit = {
     assertThrows(
       classOf[DuplicateTestNameException],
@@ -287,6 +308,27 @@ class FixtureBackedFunSuite extends FixtureAnyFunSuite {
 
   test("uses no-arg fixture wrapper") { () =>
     events += "test:no-arg"
+  }
+}
+
+class NoArgFixtureFunSuite extends AnyFunSuite {
+  val events: ListBuffer[String] = ListBuffer.empty
+
+  override protected def withFixture(test: NoArgTest): Outcome = {
+    events += s"before:${test.name}:${test.configMap("mode")}"
+    try {
+      test()
+    } finally {
+      events += s"after:${test.name}"
+    }
+  }
+
+  test("first wrapped") {
+    events += "body:first"
+  }
+
+  test("second wrapped") {
+    events += "body:second"
   }
 }
 
