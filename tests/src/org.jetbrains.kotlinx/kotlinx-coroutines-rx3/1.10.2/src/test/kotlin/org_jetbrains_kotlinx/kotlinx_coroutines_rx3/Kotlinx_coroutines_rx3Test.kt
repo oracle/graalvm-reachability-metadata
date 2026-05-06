@@ -23,6 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -243,6 +244,20 @@ public class Kotlinx_coroutines_rx3Test {
 
             job.cancelAndJoin()
 
+            assertThat(disposed.get()).isTrue()
+        }
+    }
+
+    @Test
+    public fun cancellingFlowConvertedFromObservableDisposesSubscription(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val disposed = AtomicBoolean(false)
+            val value: Int = Observable.create<Int> { emitter ->
+                emitter.setCancellable { disposed.set(true) }
+                emitter.onNext(7)
+            }.asCoroutineFlow().first()
+
+            assertThat(value).isEqualTo(7)
             assertThat(disposed.get()).isTrue()
         }
     }
