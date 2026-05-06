@@ -24,6 +24,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -198,6 +199,23 @@ public class Kotlinx_coroutines_rx2Test {
                 .assertValues(4, 5, 6)
                 .assertComplete()
                 .assertNoErrors()
+        }
+    }
+
+    @Test
+    fun observableAsFlowDisposesUpstreamAfterTerminalFlowOperator(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val subscribed: CountDownLatch = CountDownLatch(1)
+            val disposed: CountDownLatch = CountDownLatch(1)
+            val source: Observable<Int> = Observable.create { emitter ->
+                subscribed.countDown()
+                emitter.setCancellable { disposed.countDown() }
+                emitter.onNext(42)
+            }
+
+            assertThat(source.asFlow().first()).isEqualTo(42)
+            assertThat(subscribed.await(TEST_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue()
+            assertThat(disposed.await(TEST_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue()
         }
     }
 
