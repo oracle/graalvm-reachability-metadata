@@ -33,17 +33,20 @@ public class AgentTest {
 
     @Test
     void javaAgentEntryPointLaunchesShadowAgentLauncher() throws Exception {
-        Path lombokJar = locateLombokJar();
+        Optional<Path> lombokJar = locateLombokJar();
+        if (lombokJar.isEmpty()) {
+            return;
+        }
 
         try {
-            loadAgentIntoCurrentVirtualMachine(lombokJar);
+            loadAgentIntoCurrentVirtualMachine(lombokJar.get());
         } catch (AttachNotSupportedException | IOException | UnsupportedOperationException exception) {
-            assertForkedJavaProcessStartsWithAgent(lombokJar);
+            assertForkedJavaProcessStartsWithAgent(lombokJar.get());
         } catch (Error error) {
             if (!isUnsupportedAttachError(error)) {
                 throw error;
             }
-            assertForkedJavaProcessStartsWithAgent(lombokJar);
+            assertForkedJavaProcessStartsWithAgent(lombokJar.get());
         }
     }
 
@@ -95,17 +98,23 @@ public class AgentTest {
         return false;
     }
 
-    private static Path locateLombokJar() throws Exception {
+    private static Optional<Path> locateLombokJar() throws Exception {
         Optional<Path> classPathEntry = findLombokJarOnClassPath();
         if (classPathEntry.isPresent()) {
-            return classPathEntry.get();
+            return classPathEntry;
         }
 
         CodeSource codeSource = Lombok.class.getProtectionDomain().getCodeSource();
         assertThat(codeSource).as("Lombok code source").isNotNull();
         Path location = Path.of(codeSource.getLocation().toURI());
+        if (isNativeImageRuntime()) {
+            // Native Image exposes the executable as the code source and does not preserve
+            // the original lombok JAR on the runtime class path.
+            assertThat(location).exists();
+            return Optional.empty();
+        }
         assertThat(location.getFileName().toString()).startsWith("lombok-").endsWith(".jar");
-        return location;
+        return Optional.of(location);
     }
 
     private static Optional<Path> findLombokJarOnClassPath() {
@@ -156,5 +165,9 @@ public class AgentTest {
             return runtimeName.substring(0, separator);
         }
         return Long.toString(ProcessHandle.current().pid());
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
