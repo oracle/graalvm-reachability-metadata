@@ -189,6 +189,19 @@ class Portable_scala_reflect_2_13Test {
   }
 
   @Test
+  def loadsAnnotatedModulesNestedInsideStaticObjects(): Unit = {
+    val moduleName = s"$testPackageName.StaticModuleContainer$$NestedEnabledModule$$"
+    val reflected = requireFound(
+      Reflect.lookupLoadableModuleClass(moduleName, loader),
+      "annotated module nested inside a static object should be discoverable")
+
+    assertThat(reflected.runtimeClass.getName).isEqualTo(moduleName)
+    val module = reflected.loadModule().asInstanceOf[ModuleApi]
+    assertThat(module.describe("portable")).isEqualTo("nested:portable")
+    assertThat(module).isSameAs(StaticModuleContainer.NestedEnabledModule)
+  }
+
+  @Test
   def currentClassLoaderMacroOverloadsDelegateToExplicitLookup(): Unit = {
     val className = classOf[AnnotatedMultiConstructorService].getName
     val classFromMacroOverload = requireFound(
@@ -293,6 +306,13 @@ object InheritedEnabledModule extends ReflectivelyEnabledModuleApi {
 
 object UnannotatedModule extends ModuleApi {
   override def describe(value: String): String = s"unannotated:$value"
+}
+
+object StaticModuleContainer {
+  @EnableReflectiveInstantiation
+  object NestedEnabledModule extends ModuleApi {
+    override def describe(value: String): String = s"nested:$value"
+  }
 }
 
 @EnableReflectiveInstantiation
