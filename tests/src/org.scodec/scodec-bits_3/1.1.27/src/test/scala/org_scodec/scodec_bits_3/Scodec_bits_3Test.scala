@@ -140,6 +140,50 @@ class Scodec_bits_3Test {
   }
 
   @Test
+  def vectorsSupportBoundedAcquisitionAndConsumption(): Unit = {
+    val packet: ByteVector = ByteVector(3, 0x66, 0x6f, 0x6f, 0xff)
+
+    assertEquals(Right(ByteVector(3, 0x66)), packet.acquire(2L))
+    assertTrue(packet.acquire(6L).isLeft)
+
+    val lengthResult: (ByteVector, Int) = expectRight(packet.consume(1L) { lengthBytes =>
+      Right(lengthBytes.toInt(signed = false))
+    })
+    assertEquals("666f6fff", lengthResult._1.toHex)
+    assertEquals(3, lengthResult._2)
+
+    val payloadResult: (ByteVector, String) = expectRight(lengthResult._1.consume(lengthResult._2.toLong) { payloadBytes =>
+      Right(expectRight(payloadBytes.decodeAscii))
+    })
+    assertEquals(ByteVector(0xff), payloadResult._1)
+    assertEquals("foo", payloadResult._2)
+
+    var decoderCalled: Boolean = false
+    val failedByteConsume: Either[String, (ByteVector, Unit)] = packet.consume(6L) { _ =>
+      decoderCalled = true
+      Right(())
+    }
+    assertTrue(failedByteConsume.isLeft)
+    assertFalse(decoderCalled)
+
+    val bits: BitVector = BitVector.fromValidBin("101110101111")
+    assertEquals(Right(BitVector.fromValidBin("101")), bits.acquire(3L))
+
+    val tagResult: (BitVector, Long) = expectRight(bits.consume(3L) { tag =>
+      Right(tag.populationCount)
+    })
+    assertEquals("110101111", tagResult._1.toBin)
+    assertEquals(2L, tagResult._2)
+
+    val fieldResult: (BitVector, Int) = expectRight(tagResult._1.consume(5L) { field =>
+      Right(field.toInt(signed = false))
+    })
+    assertEquals("1111", fieldResult._1.toBin)
+    assertEquals(26, fieldResult._2)
+    assertTrue(tagResult._1.consume(20L)(_ => Right(())).isLeft)
+  }
+
+  @Test
   def bitVectorSupportsBitLevelConstructionTransformsAndParsing(): Unit = {
     val bits: BitVector = BitVector.fromValidBin("0b101_0011")
 
