@@ -19,7 +19,7 @@ public class AnnotationBeanUtilsTest {
 
     @Test
     public void copyPropertiesToBeanCopiesAnnotationAttributesThroughBeanAccessors() {
-        SampleAnnotation annotation = AnnotatedComponent.class.getAnnotation(SampleAnnotation.class);
+        SampleAnnotation annotation = org.springframework.core.annotation.AnnotationUtils.findAnnotation(AnnotatedComponent.class, SampleAnnotation.class);
         AnnotationBackedBean bean = new AnnotationBackedBean();
 
         AnnotationBeanUtils.copyPropertiesToBean(annotation, bean, value -> "resolved-" + value, "ignored");

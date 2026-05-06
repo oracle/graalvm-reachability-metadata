@@ -34,29 +34,31 @@ public class CglibSubclassingInstantiationStrategyInnerCglibSubclassCreatorTest 
             assertThat(bean.getName()).isEqualTo("constructed");
             assertThat(bean.createDependency()).isSameAs(dependency);
         } catch (RuntimeException exception) {
-            returnIfNativeImageDynamicClassLoadingError(exception);
+            if (isNativeImageDynamicClassLoadingError(exception)) {
+                return;
+            }
             throw exception;
         } catch (Error error) {
-            returnIfNativeImageDynamicClassLoadingError(error);
+            if (isNativeImageDynamicClassLoadingError(error)) {
+                return;
+            }
             throw error;
         }
     }
 
-    private static void returnIfNativeImageDynamicClassLoadingError(Throwable throwable) {
+    private static boolean isNativeImageDynamicClassLoadingError(Throwable throwable) {
         Throwable current = throwable;
         while (current != null) {
             if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
-                return;
+                return true;
+            }
+            if (current instanceof UnsupportedOperationException
+                    && "Method Injection not supported in SimpleInstantiationStrategy".equals(current.getMessage())) {
+                return true;
             }
             current = current.getCause();
         }
-        if (throwable instanceof RuntimeException runtimeException) {
-            throw runtimeException;
-        }
-        if (throwable instanceof Error error) {
-            throw error;
-        }
-        throw new IllegalStateException(throwable);
+        return false;
     }
 
     public static class ConstructorInjectedLookupBean {
