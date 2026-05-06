@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subscribers.TestSubscriber
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -111,6 +112,33 @@ public class Kotlinx_coroutines_rx3Test {
 
         assertThat(observableValues).containsExactly(1, 2, 3)
         assertThat(flowableValues).containsExactly("a", "b", "c")
+    }
+
+    @Test
+    public fun rxFlowableRespectsSubscriberBackpressure(): Unit {
+        val firstSendCompleted = CountDownLatch(1)
+        val secondSendCompleted = CountDownLatch(1)
+        val subscriber = TestSubscriber<Int>(0L)
+
+        rxFlowable<Int> {
+            send(1)
+            firstSendCompleted.countDown()
+            send(2)
+            secondSendCompleted.countDown()
+        }.subscribe(subscriber)
+
+        subscriber.assertNoValues()
+        subscriber.request(1)
+
+        assertThat(firstSendCompleted.await(5, TimeUnit.SECONDS)).isTrue()
+        subscriber.assertValue(1)
+        subscriber.assertNotComplete()
+        assertThat(secondSendCompleted.await(200, TimeUnit.MILLISECONDS)).isFalse()
+
+        subscriber.request(1)
+
+        assertThat(secondSendCompleted.await(5, TimeUnit.SECONDS)).isTrue()
+        subscriber.awaitDone(5, TimeUnit.SECONDS).assertResult(1, 2)
     }
 
     @Test
