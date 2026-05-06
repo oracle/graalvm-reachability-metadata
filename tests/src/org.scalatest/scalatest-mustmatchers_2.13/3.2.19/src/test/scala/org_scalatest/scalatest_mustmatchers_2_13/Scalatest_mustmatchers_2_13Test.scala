@@ -134,6 +134,33 @@ class Scalatest_mustmatchers_2_13Test extends Matchers {
   }
 
   @Test
+  def mustDslSupportsPartialFunctionDefinedAtMatchers(): Unit = {
+    val routeStatuses: PartialFunction[String, ServiceStatus] = {
+      case route if route.startsWith("/services/") =>
+        val serviceName: String = route.stripPrefix("/services/")
+        ServiceStatus(
+          name = serviceName,
+          active = true,
+          endpoint = s"https://$serviceName.example.test",
+          replicas = 2
+        )
+    }
+
+    routeStatuses must be definedAt ("/services/metadata")
+    routeStatuses must not be definedAt ("/health")
+
+    val metadataStatus: ServiceStatus = routeStatuses("/services/metadata")
+    assertEquals("metadata", metadataStatus.name)
+    assertTrue(metadataStatus.active)
+
+    val failure: TestFailedException = expectTestFailure {
+      routeStatuses must be definedAt ("/metrics")
+    }
+    assertTrue(failure.getMessage.contains("was not defined at"))
+    assertTrue(failure.getMessage.contains("/metrics"))
+  }
+
+  @Test
   def customMatchersIntegrateWithMustSyntaxAndExposeMatchResults(): Unit = {
     val evenNumber: Matcher[Int] = Matcher { (value: Int) =>
       MatchResult(
