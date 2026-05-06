@@ -182,6 +182,40 @@ public class MoshiKotlinTest {
         )
         assertThat(adapter.toJson(ticket)).isEqualTo("""{"channel":"email","summary":"Needs HELP"}""")
     }
+
+    @Test
+    fun readsAndWritesMutableKotlinPropertiesDeclaredOutsidePrimaryConstructor(): Unit {
+        val adapter = moshi.adapter(NotificationEnvelope::class.java)
+
+        val envelope = adapter.fromJson(
+            """
+            {
+              "messageId": "msg-1",
+              "title": "Maintenance window",
+              "delivered": true,
+              "labels": ["ops", "scheduled"]
+            }
+            """.trimIndent(),
+        )
+
+        assertThat(envelope?.messageId).isEqualTo("msg-1")
+        assertThat(envelope?.title).isEqualTo("Maintenance window")
+        assertThat(envelope?.delivered).isTrue()
+        assertThat(envelope?.labels).containsExactly("ops", "scheduled")
+
+        val updatedEnvelope = NotificationEnvelope(messageId = "msg-2").apply {
+            title = "Incident resolved"
+            delivered = false
+            labels = listOf("support", "resolved")
+        }
+
+        val json = adapter.toJson(updatedEnvelope)
+
+        assertThat(json).contains("\"messageId\":\"msg-2\"")
+        assertThat(json).contains("\"title\":\"Incident resolved\"")
+        assertThat(json).contains("\"delivered\":false")
+        assertThat(json).contains("\"labels\":[\"support\",\"resolved\"]")
+    }
 }
 
 public data class UserProfile(
@@ -232,6 +266,14 @@ public data class SupportTicket(
     val channel: String,
     val summary: String,
 )
+
+public class NotificationEnvelope(
+    val messageId: String,
+) {
+    public lateinit var title: String
+    public var delivered: Boolean = false
+    public var labels: List<String> = emptyList()
+}
 
 public object NormalizedChannelStringAdapterFactory : JsonAdapter.Factory {
     override fun create(type: Type, annotations: Set<Annotation>, moshi: Moshi): JsonAdapter<*>? {
