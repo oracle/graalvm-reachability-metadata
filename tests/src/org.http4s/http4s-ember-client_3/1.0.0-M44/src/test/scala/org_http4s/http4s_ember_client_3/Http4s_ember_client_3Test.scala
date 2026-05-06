@@ -222,6 +222,59 @@ class Http4s_ember_client_3Test {
     }
   }
 
+  @Test
+  def retryPolicyCanRetryServiceUnavailableResponse(): Unit = {
+    val counter: AtomicInteger = new AtomicInteger()
+    val policyRetries: AtomicInteger = new AtomicInteger()
+    val server: LocalHttpServer = LocalHttpServer(expectedRequests = 2) { request =>
+      assertEquals("GET", request.method)
+      assertEquals("/eventual", request.target)
+
+      if (counter.incrementAndGet() == 1) {
+        TestResponse(
+          status = 503,
+          reason = "Service Unavailable",
+          headers = List("Content-Type" -> "text/plain"),
+          body = utf8("try again")
+        )
+      } else {
+        TestResponse(
+          status = 200,
+          reason = "OK",
+          headers = List("Content-Type" -> "text/plain"),
+          body = utf8("retried successfully")
+        )
+      }
+    }
+
+    try {
+      val response: ReceivedResponse = run {
+        EmberClientBuilder
+          .default[IO]
+          .withRetryPolicy { (_: Request[IO], result: Either[Throwable, Response[IO]], _: Any) =>
+            result match {
+              case Right(response)
+                  if response.status == Status.ServiceUnavailable && policyRetries.getAndIncrement() == 0 =>
+                Some(25.millis)
+              case _ => None
+            }
+          }
+          .build
+          .use { client =>
+            client.run(Request[IO](Method.GET, uri(server, "/eventual"))).use(readTextResponse)
+          }
+      }
+
+      assertEquals(Status.Ok, response.status)
+      assertEquals("retried successfully", response.body)
+      assertEquals(2, counter.get())
+      assertEquals(1, policyRetries.get())
+      server.awaitHandledRequests()
+    } finally {
+      server.close()
+    }
+  }
+
   private final case class CapturedRequest(
       method: String,
       target: String,
