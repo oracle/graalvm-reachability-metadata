@@ -25,6 +25,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.contentnegotiation.ContentTypeWithQuality
 import io.ktor.server.plugins.contentnegotiation.suitableCharset
 import io.ktor.server.request.receive
+import io.ktor.server.request.receiveNullable
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
@@ -213,6 +214,31 @@ public class KtorServerContentNegotiationJvmTest {
     }
 
     @Test
+    fun nullableReceiveReturnsNullWhenConverterConsumesBodyWithoutValue(): Unit = testApplication {
+        val converter = NullMessageConverter()
+        application {
+            install(ContentNegotiation) {
+                register(MessageContentType, converter)
+            }
+            routing {
+                post("/nullable") {
+                    val message = call.receiveNullable<Message?>()
+                    call.respondText(if (message == null) "received:null" else "received:${message.name}")
+                }
+            }
+        }
+
+        val response = client.post("/nullable") {
+            contentType(MessageContentType)
+            setBody("not-a-message")
+        }
+
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.bodyAsText()).isEqualTo("received:null")
+        assertThat(converter.deserializedTypes).contains(Message::class)
+    }
+
+    @Test
     fun responseConversionFallsBackWhenMatchingConverterCannotSerialize(): Unit = testApplication {
         val refusingConverter = RefusingMessageConverter()
         application {
@@ -307,6 +333,27 @@ public class KtorServerContentNegotiationJvmTest {
         }
 
         override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? = null
+    }
+
+    private class NullMessageConverter : ContentConverter {
+        val deserializedTypes: MutableList<KClass<*>> = mutableListOf()
+
+        override suspend fun serialize(
+            contentType: ContentType,
+            charset: Charset,
+            typeInfo: TypeInfo,
+            value: Any?,
+        ): TextContent? = null
+
+        override suspend fun deserialize(
+            charset: Charset,
+            typeInfo: TypeInfo,
+            content: ByteReadChannel,
+        ): Any? {
+            deserializedTypes += typeInfo.type
+            content.toByteArray()
+            return null
+        }
     }
 
     private object ByteArrayConverter : ContentConverter {
