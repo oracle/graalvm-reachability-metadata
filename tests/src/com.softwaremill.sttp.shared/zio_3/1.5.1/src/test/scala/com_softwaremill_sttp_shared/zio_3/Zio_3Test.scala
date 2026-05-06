@@ -133,6 +133,22 @@ class Zio_3Test {
     assertArrayEquals(Array[Byte](2, 4, 6), collected.toArray)
   }
 
+  @Test
+  def limitBytesPreservesOriginalChunkBoundaries(): Unit = {
+    val chunked: Stream[Throwable, Byte] = ZStream.fromChunks(
+      Chunk[Byte](1, 2),
+      Chunk[Byte](3),
+      Chunk[Byte](4, 5, 6)
+    )
+
+    val collectedChunks: Chunk[Chunk[Byte]] = unsafeRun(ZioStreams.limitBytes(chunked, 6L).chunks.runCollect)
+
+    assertEquals(3, collectedChunks.size)
+    assertArrayEquals(Array[Byte](1, 2), collectedChunks(0).toArray)
+    assertArrayEquals(Array[Byte](3), collectedChunks(1).toArray)
+    assertArrayEquals(Array[Byte](4, 5, 6), collectedChunks(2).toArray)
+  }
+
   private def failure[A](result: Either[Throwable, A]): Throwable = result match {
     case Left(error) => error
     case Right(_)    => throw new AssertionError("Expected stream to fail")
