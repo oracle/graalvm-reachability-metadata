@@ -14,6 +14,8 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.function.Supplier
 
+import javax.xml.parsers.DocumentBuilderFactory
+
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
@@ -28,6 +30,8 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.libs.ws.BodyWritable
@@ -89,6 +93,29 @@ class Play_ws_2_13Test {
     val multipartBody: WSBody = multipartWritable.transform(multipartSource)
     assertTrue(multipartBody.isInstanceOf[SourceBody])
     assertTrue(multipartWritable.contentType.startsWith("multipart/form-data; boundary="))
+  }
+
+  @Test
+  def domDocumentBodyWritableSerializesXmlDocuments(): Unit = {
+    val documentBuilderFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+    val document: Document = documentBuilderFactory.newDocumentBuilder().newDocument()
+    val requestElement: Element = document.createElement("request")
+    requestElement.setAttribute("id", "123")
+    val nameElement: Element = document.createElement("name")
+    nameElement.setTextContent("native-image")
+    requestElement.appendChild(nameElement)
+    document.appendChild(requestElement)
+
+    val writable: BodyWritable[Document] = WSBodyWritables.writeableOf_Document
+    val body: InMemoryBody = writable.transform(document).asInstanceOf[InMemoryBody]
+    val parsedDocument: Document = documentBuilderFactory
+      .newDocumentBuilder()
+      .parse(new ByteArrayInputStream(body.bytes.toArray))
+
+    assertEquals("text/xml", writable.contentType)
+    assertEquals("request", parsedDocument.getDocumentElement.getTagName)
+    assertEquals("123", parsedDocument.getDocumentElement.getAttribute("id"))
+    assertEquals("native-image", parsedDocument.getElementsByTagName("name").item(0).getTextContent)
   }
 
   @Test
