@@ -126,6 +126,20 @@ class Twirl_api_2_13Test {
   }
 
   @Test
+  def htmlOptionalValuesRenderMissingContentAsEmptyAndPresentContentAsTrusted(): Unit = {
+    val emptyFromOption: Html = Html(Option.empty[String])
+    val trustedFromOption: Html = Html(Some("<strong>trusted</strong>"))
+    val nested: Html = new Html(Seq(Html("<p>Hello "), trustedFromOption, Html("</p>")))
+
+    assertEquals("", emptyFromOption.body)
+    assertEquals(HtmlFormat.empty, emptyFromOption)
+    assertEquals("<strong>trusted</strong>", trustedFromOption.body)
+    assertEquals(MimeTypes.HTML, trustedFromOption.contentType)
+    assertEquals("<p>Hello <strong>trusted</strong></p>", nested.body)
+    assertEquals(nested.body, nested.toString)
+  }
+
+  @Test
   def templateInterfacesCanBeImplementedLikeGeneratedTemplates(): Unit = {
     val index: Template0[Html] = new Template0[Html] {
       override def render(): Html = html"<h1>${"Welcome & hello"}</h1>"
