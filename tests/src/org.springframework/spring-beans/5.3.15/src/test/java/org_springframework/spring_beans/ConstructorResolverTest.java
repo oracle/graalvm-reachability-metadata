@@ -69,6 +69,9 @@ public class ConstructorResolverTest {
         boolean securityManagerInstalled = installSecurityManager(securityManager);
 
         try {
+            if (securityManagerInstalled) {
+                assertThat(System.getSecurityManager()).isSameAs(securityManager);
+            }
             FactoryCreatedBean bean = createFactoryMethodBean(false);
 
             assertThat(bean.getMessage()).isEqualTo("created");

@@ -15,7 +15,17 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+List<String> securityManagerArgs = ["-Djava.security.manager=allow"]
+
 graalvmNative {
+    binaries {
+        test {
+            if ((JavaVersion.current().majorVersion as int) < 24) {
+                buildArgs.addAll(securityManagerArgs)
+            }
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
@@ -26,8 +36,14 @@ graalvmNative {
     }
 }
 
-tasks.named("test") {
+tasks.withType(Test).configureEach {
     if ((JavaVersion.current().majorVersion as int) < 24) {
-        jvmArgs += ["-Djava.security.manager=allow"]
+        jvmArgs += securityManagerArgs
+    }
+}
+
+tasks.named("nativeTest") {
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        runtimeArgs.addAll(securityManagerArgs)
     }
 }
