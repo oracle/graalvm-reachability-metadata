@@ -45,7 +45,7 @@ public class FieldComponentComposerTest {
         RecordingPlexusContainer container = new RecordingPlexusContainer();
         ComponentDescriptor componentDescriptor = descriptor(ComponentWithAllFieldKinds.class.getName());
 
-        Object[] arrayDependency = new Object[] { "nested dependency" };
+        Object[] arrayDependency = new Object[] {"nested dependency" };
         List<String> listDependencies = new ArrayList<>();
         listDependencies.add("list dependency");
         Map<String, String> mapDependencies = new HashMap<>();

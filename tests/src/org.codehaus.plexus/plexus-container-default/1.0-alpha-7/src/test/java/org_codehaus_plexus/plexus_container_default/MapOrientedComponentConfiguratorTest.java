@@ -67,7 +67,7 @@ public class MapOrientedComponentConfiguratorTest {
     }
 
     private static Object nonMapOrientedComponentSelectedAtRuntime() {
-        Object[] candidates = new Object[] { new Object(), "not map oriented" };
+        Object[] candidates = new Object[] {new Object(), "not map oriented" };
         return candidates[(int) (System.nanoTime() & 1L)];
     }
 
