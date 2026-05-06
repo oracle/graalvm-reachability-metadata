@@ -21,9 +21,11 @@ import skunk.Statement
 import skunk.Void
 import skunk.codec.all.*
 import skunk.data.Arr
+import skunk.data.Completion
 import skunk.data.Encoded
 import skunk.data.Identifier
 import skunk.data.LTree
+import skunk.data.Notification
 import skunk.data.Type
 import skunk.implicits.*
 
@@ -226,6 +228,40 @@ class Skunk_core_3Test {
     assertEquals("record { int4, varchar(10) }", treeType.toString)
     assertEquals("record(int4(),varchar(10)())", treeType.fold((name, children) => s"$name${children.mkString("(", ",", ")")}"))
     assertEquals(Type("node", List(Type("leaf"), Type("leaf"))), Type.unfold(0)(n => if n == 0 then List(1, 1) else Nil, n => if n == 0 then "node" else "leaf"))
+  }
+
+  @Test
+  def completionsAndNotificationsModelServerResults(): Unit = {
+    val updated: Completion = Completion.Update(3)
+    val inserted: Completion = Completion.Insert(1)
+    val unknown: Completion = Completion.Unknown("VACUUM")
+
+    val updatedCount: Option[Int] = updated match {
+      case Completion.Update(count) => Some(count)
+      case _                        => None
+    }
+    val insertedCount: Option[Int] = inserted match {
+      case Completion.Insert(count) => Some(count)
+      case _                        => None
+    }
+    val unknownText: Option[String] = unknown match {
+      case Completion.Unknown(text) => Some(text)
+      case _                        => None
+    }
+
+    assertEquals(Some(3), updatedCount)
+    assertEquals(Some(1), insertedCount)
+    assertEquals(Some("VACUUM"), unknownText)
+    assertEquals(Completion.Update(4), Completion.Update(3).copy(count = 4))
+
+    val channel: Identifier = Identifier.fromString("events").toOption.get
+    val notification: Notification[String] = Notification(1234, channel, "created")
+    val mapped: Notification[Int] = notification.map(_.length)
+
+    assertEquals(1234, mapped.pid)
+    assertEquals(channel, mapped.channel)
+    assertEquals(7, mapped.value)
+    assertEquals(notification, notification.copy(value = "created"))
   }
 
   @Test
