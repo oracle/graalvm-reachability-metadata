@@ -90,7 +90,7 @@ public class Google_cloud_bigqueryTest {
                 .build();
 
         options.setThrowNotFound(false);
-        options.setQueryPreviewEnabled("true");
+        options.setDefaultJobCreationMode(QueryJobConfiguration.JobCreationMode.JOB_CREATION_OPTIONAL);
 
         assertThat(datasetId.getProject()).isEqualTo(PROJECT);
         assertThat(datasetId.getDataset()).isEqualTo(DATASET);
@@ -107,7 +107,8 @@ public class Google_cloud_bigqueryTest {
         assertThat(options.getLocation()).isEqualTo(LOCATION);
         assertThat(options.getUseInt64Timestamps()).isTrue();
         assertThat(options.getThrowNotFound()).isFalse();
-        assertThat(options.isQueryPreviewEnabled()).isTrue();
+        assertThat(options.getDefaultJobCreationMode())
+                .isEqualTo(QueryJobConfiguration.JobCreationMode.JOB_CREATION_OPTIONAL);
     }
 
     @Test
