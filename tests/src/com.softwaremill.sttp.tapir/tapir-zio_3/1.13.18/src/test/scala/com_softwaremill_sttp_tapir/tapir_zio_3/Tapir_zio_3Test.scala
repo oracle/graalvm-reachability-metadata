@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class Tapir_zio_3Test {
   private final case class GreetingSettings(prefix: String)
+  private final case class ApiError(message: String)
 
   private val monad: RIOMonadError[Any] = new RIOMonadError[Any]
 
@@ -120,6 +121,31 @@ class Tapir_zio_3Test {
     assertEquals(Left("forbidden"), unsafeRun(completed.securityLogic(monad)("Bearer wrong")))
     assertEquals(Right("alice:42"), unsafeRun(completed.logic(monad)("alice")(21)))
     assertEquals(Left("negative"), unsafeRun(completed.logic(monad)("alice")(-1)))
+  }
+
+  @Test
+  def securedZPartialServerEndpointMapsErrorOutputForSecurityLogic(): Unit = {
+    val baseEndpoint = endpoint
+      .securityIn(header[String]("Authorization"))
+      .errorOut(stringBody)
+
+    val partial = baseEndpoint.zServerSecurityLogic[Any, String] {
+      case "Bearer secret" => ZIO.succeed("alice")
+      case _               => ZIO.fail("forbidden")
+    }
+    val mapped = partial.mapErrorOut((message: String) => ApiError(message))((apiError: ApiError) => apiError.message)
+    val completed = mapped
+      .in("mapped-errors")
+      .out(stringBody)
+      .serverLogic[Any] { principal => _ =>
+        if principal == "alice" then ZIO.succeed("accepted")
+        else ZIO.fail(ApiError(s"unexpected-principal:$principal"))
+      }
+
+    assertEquals(Left(ApiError("forbidden")), unsafeRun(mapped.securityLogic("Bearer wrong").either))
+    assertEquals(Left(ApiError("forbidden")), unsafeRun(completed.securityLogic(monad)("Bearer wrong")))
+    assertEquals(Right("alice"), unsafeRun(completed.securityLogic(monad)("Bearer secret")))
+    assertEquals(Right("accepted"), unsafeRun(completed.logic(monad)("alice")(())))
   }
 
   @Test
