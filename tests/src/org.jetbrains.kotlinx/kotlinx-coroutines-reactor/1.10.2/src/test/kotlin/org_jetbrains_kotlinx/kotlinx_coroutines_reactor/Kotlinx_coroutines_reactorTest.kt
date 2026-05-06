@@ -15,7 +15,10 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.ReactorContext
 import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.reactor.asCoroutineDispatcher
@@ -223,6 +226,37 @@ public class Kotlinx_coroutines_reactorTest {
             .block(TIMEOUT)!!
 
         assertThat(values).containsExactly("context-argument", "trace-42")
+    }
+
+    @Test
+    fun fluxAsFlowCollectsReactorPublisherWithContextFailuresAndPropagatesCancellation(): Unit = runBlocking {
+        val contextual: Flux<String> = Flux.deferContextual { contextView ->
+            Flux.just(contextView.get<String>("token"), "completed")
+        }
+        val values: List<String> = withContext(Context.of("token", "from-flow-collector").asCoroutineContext()) {
+            contextual.asFlow().toList()
+        }
+        assertThat(values).containsExactly("from-flow-collector", "completed")
+
+        val failure: IllegalStateException = IllegalStateException("flux as flow failed")
+        val flowFailure: Throwable? = catchSuspend {
+            Flux.concat(Flux.just("seen"), Flux.error<String>(failure)).asFlow().toList()
+        }
+        assertThat(flowFailure)
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessage("flux as flow failed")
+
+        val cancelled: CompletableDeferred<Unit> = CompletableDeferred()
+        val cancellable: Flux<Int> = Flux.create { sink ->
+            sink.onCancel { cancelled.complete(Unit) }
+            sink.next(1)
+            sink.next(2)
+        }
+
+        val firstValue: List<Int> = cancellable.asFlow().take(1).toList()
+
+        assertThat(firstValue).containsExactly(1)
+        withTimeout(5_000) { cancelled.await() }
     }
 
     @Test
