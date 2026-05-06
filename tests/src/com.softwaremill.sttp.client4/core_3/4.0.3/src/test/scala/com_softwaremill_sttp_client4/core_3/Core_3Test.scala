@@ -28,6 +28,7 @@ import sttp.client4.logging.ResponseTimings
 import sttp.client4.testing.RecordingBackend
 import sttp.client4.testing.ResponseStub
 import sttp.client4.testing.SyncBackendStub
+import sttp.client4.wrappers.DigestAuthenticationBackend
 import sttp.client4.wrappers.EitherBackend
 import sttp.client4.wrappers.ResolveRelativeUrisBackend
 import sttp.client4.wrappers.TryBackend
@@ -354,6 +355,44 @@ class Core_3Test {
       classOf[IllegalStateException],
       () => basicRequest.get(uri"https://api.example.com/fail").response(asStringAlways).send(eitherBackend)
     )
+  }
+
+  @Test
+  def digestAuthenticationBackendRetriesWithAuthorizationHeaderFromChallenge(): Unit = {
+    val authorizationHeaders: java.util.List[String] = new java.util.concurrent.CopyOnWriteArrayList[String]()
+    val challenge: String = "Digest realm=\"sttp-test\", nonce=\"server-nonce\", qop=\"auth\", opaque=\"server-opaque\""
+    val stub: SyncBackendStub = SyncBackendStub.whenRequestMatchesPartial {
+      case request if request.header(HeaderNames.Authorization).isEmpty =>
+        ResponseStub.adjust("authentication required", StatusCode.Unauthorized, Seq(Header(HeaderNames.WwwAuthenticate, challenge)))
+      case request if request.header(HeaderNames.Authorization).exists(_.startsWith("Digest ")) =>
+        authorizationHeaders.add(request.header(HeaderNames.Authorization).get)
+        ResponseStub.adjust("authenticated")
+    }
+    val backend: SyncBackend = DigestAuthenticationBackend(stub, () => "client-nonce")
+
+    val response: Response[String] = basicRequest
+      .auth
+      .digest("Aladdin", "open sesame")
+      .get(uri"http://example.com/protected/resource?debug=true")
+      .response(asStringAlways)
+      .send(backend)
+
+    assertEquals(StatusCode.Ok, response.code)
+    assertEquals("authenticated", response.body)
+    assertEquals(1, authorizationHeaders.size())
+
+    val authorization: String = authorizationHeaders.get(0)
+    assertTrue(authorization.startsWith("Digest "))
+    assertTrue(authorization.contains("username=\"Aladdin\""))
+    assertTrue(authorization.contains("realm=\"sttp-test\""))
+    assertTrue(authorization.contains("nonce=\"server-nonce\""))
+    assertTrue(authorization.contains("uri=\"/protected/resource?debug=true\""))
+    assertTrue(authorization.contains("qop=auth"))
+    assertTrue(authorization.contains("cnonce=\"client-nonce\""))
+    assertTrue(authorization.contains("nc=00000001"))
+    assertTrue(authorization.contains("algorithm=MD5"))
+    assertTrue(authorization.contains("opaque=\"server-opaque\""))
+    assertFalse(authorization.contains("open sesame"))
   }
 
   @Test
