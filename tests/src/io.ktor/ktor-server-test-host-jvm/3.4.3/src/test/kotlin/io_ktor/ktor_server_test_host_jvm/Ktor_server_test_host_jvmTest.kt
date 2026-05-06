@@ -6,6 +6,7 @@
  */
 package io_ktor.ktor_server_test_host_jvm
 
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -14,6 +15,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.server.application.call
 import io.ktor.server.application.createApplicationPlugin
@@ -31,10 +33,13 @@ import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.it
 import io.ktor.server.testing.on
 import io.ktor.server.testing.testApplication
+import io.ktor.utils.io.ByteWriteChannel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.net.SocketTimeoutException
 
 public class KtorServerTestHostJvmTest {
     @Test
@@ -164,6 +169,32 @@ public class KtorServerTestHostJvmTest {
     }
 
     @Test
+    fun configuredClientSocketTimeoutFailsStalledStreamingRequestBodies() = testApplication {
+        routing {
+            post("/stream") {
+                call.receiveText()
+                call.respondText("stream consumed")
+            }
+        }
+
+        val timedOutClient = createClient {
+            install(HttpTimeout) {
+                socketTimeoutMillis = 250L
+            }
+        }
+        try {
+            val failure: SocketTimeoutException = assertFailsWithType {
+                timedOutClient.post("/stream") {
+                    setBody(StalledWriteChannelContent)
+                }
+            }
+            assertThat(failure).isInstanceOf(SocketTimeoutException::class.java)
+        } finally {
+            timedOutClient.close()
+        }
+    }
+
+    @Test
     fun environmentOverridesAndDefaultConnectorsAreUsedByTheDelegatingClient() = testApplication {
         configure(overrides = {
             put("feature.message", "configured")
@@ -282,6 +313,13 @@ public class KtorServerTestHostJvmTest {
         assertThat(engineConfiguration.dispatcher).isNotNull
         assertThat(engineConfiguration.shutdownGracePeriod).isEqualTo(123L)
         assertThat(engineConfiguration.shutdownTimeout).isEqualTo(456L)
+    }
+
+    private object StalledWriteChannelContent : OutgoingContent.WriteChannelContent() {
+        override suspend fun writeTo(channel: ByteWriteChannel) {
+            channel.flush()
+            delay(2_000L)
+        }
     }
 
     private class ConfiguredResponseHeaderPluginConfig {
