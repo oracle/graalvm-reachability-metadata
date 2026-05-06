@@ -120,6 +120,24 @@ class Zio_json_3Test {
   }
 
   @Test
+  def supportsCustomJsonFieldCodecsForObjectKeys(): Unit = {
+    val thresholds: ListMap[SettingKey, Int] = ListMap(
+      SettingKey("api-limit") -> 100,
+      SettingKey("retry-count") -> 3
+    )
+
+    assertRight(
+      thresholds.toJson.fromJson[Json],
+      Json.Obj(
+        "api-limit" -> Json.Num(100),
+        "retry-count" -> Json.Num(3)
+      )
+    )
+    assertRight(thresholds.toJson.fromJson[ListMap[SettingKey, Int]], thresholds)
+    assertLeftContains("""{"api limit":100}""".fromJson[ListMap[SettingKey, Int]], "setting key must be non-empty")
+  }
+
+  @Test
   def supportsJsonAstCursorsTransformationsMergingAndTypedConversion(): Unit = {
     val document: Json = assertRightValue(
       """{"items":[{"id":1,"active":true},{"id":2,"active":false}],"meta":{"count":2}}""".fromJson[Json]
@@ -273,4 +291,18 @@ object Zio_json_3Test {
   }
 
   final case class Labelled(id: Int, label: String)
+
+  final case class SettingKey(value: String)
+  object SettingKey {
+    implicit val fieldEncoder: JsonFieldEncoder[SettingKey] =
+      JsonFieldEncoder.string.contramap(_.value)
+    implicit val fieldDecoder: JsonFieldDecoder[SettingKey] =
+      JsonFieldDecoder.string.mapOrFail { value =>
+        Either.cond(
+          value.nonEmpty && value.forall(character => character.isLetterOrDigit || character == '-'),
+          SettingKey(value),
+          "setting key must be non-empty and slug-like"
+        )
+      }
+  }
 }
