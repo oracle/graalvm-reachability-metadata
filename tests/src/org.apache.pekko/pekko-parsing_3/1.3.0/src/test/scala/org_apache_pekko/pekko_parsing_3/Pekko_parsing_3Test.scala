@@ -63,6 +63,16 @@ class Pekko_parsing_3Test {
     assertThat(rendered).isEqualTo("Content-Type: application/json")
   }
 
+  @Test
+  def compatibilityAnnotationsCanDecoratePolymorphicTraitsAndOverrides(): Unit = {
+    val codec: AnnotatedParameterCodec = new SemicolonParameterCodec
+
+    assertThat(codec.parseParameters("text/html; charset=utf-8; q=0.9"))
+      .containsExactly("text/html", "charset=utf-8", "q=0.9")
+    assertThat(codec.renderParameters("Content-Type", List("text/html", "charset=utf-8").asJava))
+      .isEqualTo("Content-Type: text/html; charset=utf-8")
+  }
+
   @pre213
   private final class Pre213Tokenizer(private val prefix: String) {
     @pre213
@@ -98,6 +108,32 @@ class Pekko_parsing_3Test {
   }
 
   private final case class AnnotatedHeaderField(@pre213 name: String, @since213 value: String)
+
+  @pre213
+  private trait AnnotatedParameterCodec {
+    @since213
+    def parseParameters(value: String): java.util.List[String]
+
+    @pre213
+    def renderParameters(name: String, values: java.util.List[String]): String
+  }
+
+  @since213
+  private final class SemicolonParameterCodec extends AnnotatedParameterCodec {
+    @since213
+    override def parseParameters(value: String): java.util.List[String] =
+      value
+        .split(";")
+        .iterator
+        .map(_.trim)
+        .filter(_.nonEmpty)
+        .toList
+        .asJava
+
+    @pre213
+    override def renderParameters(name: String, values: java.util.List[String]): String =
+      s"$name: ${values.asScala.mkString("; ")}"
+  }
 
   @pre213
   @since213
