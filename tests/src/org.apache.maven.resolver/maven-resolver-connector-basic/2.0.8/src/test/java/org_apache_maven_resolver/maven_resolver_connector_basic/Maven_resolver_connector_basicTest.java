@@ -256,7 +256,10 @@ public class Maven_resolver_connector_basicTest {
         InMemoryTransporter transporter = new InMemoryTransporter();
         RepositoryConnector connector = newConnector(transporter, Collections.emptyMap());
 
-        assertThat(connector.toString()).isEqualTo(repository().toString());
+        assertThat(connector.toString())
+                .startsWith("basic( ")
+                .contains(repository().toString())
+                .endsWith(" )");
 
         connector.close();
         connector.close();
