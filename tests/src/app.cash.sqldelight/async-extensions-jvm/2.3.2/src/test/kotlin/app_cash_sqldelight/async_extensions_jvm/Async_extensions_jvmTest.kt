@@ -108,6 +108,49 @@ public class Async_extensions_jvmTest {
     }
 
     @Test
+    fun driverAwaitHelpersExecuteStatementsAndQueriesWithoutBinders(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val driver: AsyncRecordingDriver = AsyncRecordingDriver(
+                rows = listOf(User(7L, "Mary", active = true)),
+                affectedRows = 0L,
+                expectedCoroutineName = "binderless-await-context",
+            )
+
+            val affectedRows: Long = withContext(CoroutineName("binderless-await-context")) {
+                driver.await(
+                    identifier = null,
+                    sql = "DELETE FROM users WHERE active = 0",
+                    parameters = 0,
+                )
+            }
+            val names: List<String> = withContext(CoroutineName("binderless-await-context")) {
+                driver.awaitQuery(
+                    identifier = null,
+                    sql = "SELECT id, name, active FROM users",
+                    mapper = { cursor: SqlCursor ->
+                        val mappedNames: MutableList<String> = mutableListOf()
+                        while (cursor.next().await()) {
+                            mappedNames += cursor.getString(1) ?: error("name was null")
+                        }
+                        mappedNames
+                    },
+                    parameters = 0,
+                )
+            }
+
+            assertThat(affectedRows).isEqualTo(0L)
+            assertThat(names).containsExactly("Mary")
+            assertThat(driver.executedStatements).containsExactly(
+                ExecutedStatement(null, "DELETE FROM users WHERE active = 0", 0),
+            )
+            assertThat(driver.executedQueries).containsExactly(
+                ExecutedStatement(null, "SELECT id, name, active FROM users", 0),
+            )
+            assertThat(driver.boundValues).isEmpty()
+        }
+    }
+
+    @Test
     fun executableQueryAwaitHelpersMapListsAndSingleRowsFromAsyncCursors(): Unit = runBlocking {
         withTimeout(5_000) {
             val listQuery: AsyncUserQuery = AsyncUserQuery(
