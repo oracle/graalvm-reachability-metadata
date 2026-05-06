@@ -24,9 +24,20 @@ java {
     }
 }
 
+def sunReflectPatchDir = layout.buildDirectory.dir('sun-reflect-patch')
+
+// The Reflect test provides the legacy sun.reflect.Reflection API via the owning JDK module.
+tasks.register('prepareSunReflectPatch', Copy) {
+    dependsOn tasks.named('compileTestScala')
+    from(layout.buildDirectory.dir('classes/scala/test/sun/reflect'))
+    into(sunReflectPatchDir.map { it.dir('sun/reflect') })
+}
+
 tasks.withType(Test).configureEach {
+    dependsOn tasks.named('prepareSunReflectPatch')
     jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED',
-            '--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED'
+            '--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED',
+            "--patch-module=jdk.unsupported=${sunReflectPatchDir.get().asFile.absolutePath}"
 }
 
 graalvmNative {
