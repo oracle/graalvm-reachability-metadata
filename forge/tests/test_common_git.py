@@ -23,6 +23,56 @@ class ForgeRevisionSectionTests(unittest.TestCase):
         self.assertIn("- Forge commit hash: `abc123`", section)
 
 
+class IssueLookupTests(unittest.TestCase):
+    def test_find_issue_for_coordinates_uses_exact_coordinate_match(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout=(
+                "["
+                "{\"number\": 5405, \"title\": "
+                "\"Support for com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2\", \"body\": \"\"},"
+                "{\"number\": 5329, \"title\": "
+                "\"Support for com.github.ajalt.mordant:mordant-jvm:3.0.2\", \"body\": \"\"}"
+                "]"
+            ),
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process) as run:
+            issue_number = common_git.find_issue_for_coordinates(
+                "com.github.ajalt.mordant:mordant-jvm:3.0.2",
+                "oracle/graalvm-reachability-metadata",
+            )
+
+        self.assertEqual(issue_number, 5329)
+        command = run.call_args.args[0]
+        self.assertIn("--limit", command)
+        self.assertIn("50", command)
+        self.assertIn("number,title,body", command)
+
+    def test_find_issue_for_coordinates_picks_oldest_duplicate_exact_match(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout=(
+                "["
+                "{\"number\": 2, \"title\": \"Retry org.example:demo:1.0.0\", \"body\": \"\"},"
+                "{\"number\": 1, \"title\": \"Support for org.example:demo:1.0.0\", \"body\": \"\"}"
+                "]"
+            ),
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process):
+            issue_number = common_git.find_issue_for_coordinates(
+                "org.example:demo:1.0.0",
+                "oracle/graalvm-reachability-metadata",
+            )
+
+        self.assertEqual(issue_number, 1)
+
+
 class DynamicAccessCategoryRegressionTests(unittest.TestCase):
     def test_reports_fully_covered_category_that_becomes_uncovered(self) -> None:
         old_stats = {

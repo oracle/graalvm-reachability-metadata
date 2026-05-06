@@ -71,7 +71,7 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
                     return_value={"reason": "native-image does not apply"},
                 ), \
                 patch.object(make_pr_not_for_native_image, "get_origin_owner", return_value="me"), \
-                patch.object(make_pr_not_for_native_image, "find_issue_for_coordinates", return_value=1234), \
+                patch.object(make_pr_not_for_native_image, "find_issue_for_coordinates") as find_issue, \
                 patch.object(make_pr_not_for_native_image, "format_forge_revision_section", return_value="Forge revision"), \
                 patch.object(make_pr_not_for_native_image, "gh", side_effect=fake_gh):
             make_pr_not_for_native_image.create_pull_request(
@@ -79,10 +79,13 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
                 "org.example:demo:1.0.0",
                 "/repo",
                 local_ci_verification,
+                issue_number=1234,
             )
 
         create_call = gh_calls[1]
         body = create_call[create_call.index("--body") + 1]
+        find_issue.assert_not_called()
+        self.assertIn("Fixes: #1234", body)
         self.assertIn("Local CI Verification", body)
         self.assertIn("Repository-level fix paths", body)
         self.assertIn("--label", create_call)

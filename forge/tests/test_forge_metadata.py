@@ -125,6 +125,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
         make_pr.assert_called_once_with([
             "--coordinates", "org.example:lib:1.0.0",
+            "--issue-number", "1412",
             "--reachability-metadata-path", "/tmp/reachability-worktree",
             "--metrics-repo-path", "/tmp/metrics-worktree",
         ])

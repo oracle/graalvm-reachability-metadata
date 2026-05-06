@@ -105,6 +105,7 @@ def create_pull_request(
         artifact: str,
         repo_path: str,
         local_ci_verification: LocalCIVerificationResult | None = None,
+        issue_number: int | None = None,
 ):
     """Create a GitHub pull request for the current branch."""
     origin_owner = get_origin_owner(cwd=repo_path)
@@ -115,7 +116,7 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    issue_no = find_issue_common(new_coordinates, REPO)
+    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
 
     _, _, old_version = parse_coordinate_parts(old_coordinates)
     _, _, new_version = parse_coordinate_parts(new_coordinates)
@@ -228,6 +229,7 @@ def build_parser():
         dest="metrics_repo_path",
         help="Path to the metrics repository root.",
     )
+    parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
     return parser
 
 
@@ -239,7 +241,7 @@ def parse_flags(argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number
 
 
 def push_current_branch_to_origin(
@@ -294,7 +296,9 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path = parse_flags(argv if argv is not None else sys.argv[1:])
+    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number = parse_flags(
+        argv if argv is not None else sys.argv[1:]
+    )
 
     branch, group, artifact, new_coordinates, local_ci_verification = push_current_branch_to_origin(
         old_coordinates=old_coordinates,
@@ -310,6 +314,7 @@ def main(argv=None):
         artifact=artifact,
         repo_path=repo_path,
         local_ci_verification=local_ci_verification,
+        issue_number=issue_number,
     )
 
 

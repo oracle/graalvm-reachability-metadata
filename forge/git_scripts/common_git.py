@@ -645,6 +645,13 @@ def stage_and_commit(paths: List[str], commit_message: str, cwd=None) -> None:
         print("No staged changes to commit.")
 
 
+def _issue_contains_exact_coordinate(issue: dict[str, Any], coordinates: str) -> bool:
+    """Return true when a GitHub issue title or body contains the exact coordinates."""
+    title = str(issue.get("title") or "")
+    body = str(issue.get("body") or "")
+    return coordinates in title or coordinates in body
+
+
 def find_issue_for_coordinates(search_string: str, repo: str):
     """
     Finds the open issue number in a GitHub repository matching the given search string in the title.
@@ -652,7 +659,7 @@ def find_issue_for_coordinates(search_string: str, repo: str):
     Returns:
         The issue number if found.
     """
-    gh_search_query = f"{search_string} in:title"
+    gh_search_query = f'"{search_string}" in:title,body'
 
     # Build the gh issue list command
     command = [
@@ -662,8 +669,8 @@ def find_issue_for_coordinates(search_string: str, repo: str):
         "--repo", repo,
         "--state", "open",
         "--search", gh_search_query,
-        "--limit", "1",
-        "--json", "number"
+        "--limit", "50",
+        "--json", "number,title,body"
     ]
 
     print(f"Executing command: {' '.join(command)}")
@@ -678,10 +685,23 @@ def find_issue_for_coordinates(search_string: str, repo: str):
 
     issue_data = json.loads(result.stdout)
 
-    if isinstance(issue_data, list) and len(issue_data) > 0 and 'number' in issue_data[0]:
-        return issue_data[0]['number']
+    exact_matches = [
+        issue
+        for issue in issue_data
+        if isinstance(issue, dict) and _issue_contains_exact_coordinate(issue, search_string)
+    ]
 
-    raise RuntimeError(f"No open issue found for search: {gh_search_query} in repo {repo}")
+    if len(exact_matches) == 1 and 'number' in exact_matches[0]:
+        return exact_matches[0]['number']
+
+    if len(exact_matches) > 1:
+        sorted_matches = sorted(
+            exact_matches,
+            key=lambda issue: int(issue.get("number") or 0),
+        )
+        return sorted_matches[0]['number']
+
+    raise RuntimeError(f"No open issue found for exact coordinates {search_string} in repo {repo}")
 
 
 def get_model_display_name(strategy_name: str) -> str:
