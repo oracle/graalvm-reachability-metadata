@@ -114,6 +114,27 @@ class Pekko_stream_2_13Test {
   }
 
   @Test
+  def partitionsElementsIntoSubstreamsAndMergesResults(): Unit = {
+    val result: Future[Seq[(String, Vector[String])]] = Source(
+      List("apple", "avocado", "banana", "blueberry", "apricot", "blackberry")
+    )
+      .groupBy(2, _.head)
+      .fold(("", Vector.empty[String])) { case ((_, words), word) =>
+        (word.head.toString, words :+ word.toUpperCase)
+      }
+      .mergeSubstreams
+      .runWith(Sink.seq)
+
+    assertEquals(
+      List(
+        ("a", Vector("APPLE", "AVOCADO", "APRICOT")),
+        ("b", Vector("BANANA", "BLUEBERRY", "BLACKBERRY"))
+      ),
+      Await.result(result, awaitTimeout).toList.sortBy(_._1)
+    )
+  }
+
+  @Test
   def shutsDownRunningStreamWithKillSwitch(): Unit = {
     val (killSwitch: UniqueKillSwitch, completion: Future[Done]) = Source
       .maybe[Int]
