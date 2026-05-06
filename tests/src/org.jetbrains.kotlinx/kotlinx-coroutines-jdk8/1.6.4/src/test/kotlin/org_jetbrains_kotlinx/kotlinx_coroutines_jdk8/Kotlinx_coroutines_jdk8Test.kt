@@ -25,10 +25,14 @@ import kotlinx.coroutines.future.await
 import kotlinx.coroutines.future.future
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.stream.consumeAsFlow
+import kotlinx.coroutines.time.delay as delayForDuration
+import kotlinx.coroutines.time.withTimeout
+import kotlinx.coroutines.time.withTimeoutOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.Duration
 import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
@@ -214,6 +218,26 @@ public class KotlinxCoroutinesJdk8Test {
 
         assertThat(future.get(5, TimeUnit.SECONDS)).isSameAs(Unit)
         assertThat(future.isDone).isTrue()
+    }
+
+    @Test
+    fun javaTimeDurationWithTimeoutReturnsBlockResult(): Unit = runBlocking {
+        val result: String = withTimeout(Duration.ofSeconds(5)) {
+            delayForDuration(Duration.ZERO)
+            "completed before timeout"
+        }
+
+        assertThat(result).isEqualTo("completed before timeout")
+    }
+
+    @Test
+    fun javaTimeDurationWithTimeoutOrNullReturnsNullAfterTimeout(): Unit = runBlocking {
+        val result: String? = withTimeoutOrNull(Duration.ofMillis(100)) {
+            delayForDuration(Duration.ofSeconds(5))
+            "unreachable"
+        }
+
+        assertThat(result).isNull()
     }
 
     @Test
