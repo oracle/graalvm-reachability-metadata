@@ -33,6 +33,14 @@ case class JacksonMoney(amount: BigDecimal, currency: String)
 
 case class JacksonAccount(name: String, score: Int)
 
+sealed trait JacksonNotification
+
+case class JacksonEmailNotification(subject: String, recipient: String) extends JacksonNotification
+
+case class JacksonSmsNotification(number: String, urgent: Boolean) extends JacksonNotification
+
+case class JacksonNotificationBatch(owner: String, notifications: List[JacksonNotification])
+
 class JacksonMoneySerializer extends CustomSerializer[JacksonMoney](_ => (
   {
     case JObject(fields) =>
@@ -227,6 +235,35 @@ class Json4s_jackson_3Test {
     JacksonSerialization.write(source, outputStream)
     val streamedJson: String = outputStream.toString(StandardCharsets.UTF_8)
     assertEquals(parsed, parse(streamedJson, useBigDecimalForDouble = true))
+  }
+
+  @Test
+  def writesAndReadsPolymorphicValuesWithShortTypeHints(): Unit = {
+    implicit val formats: Formats = JacksonSerialization.formats(
+      ShortTypeHints(
+        List(classOf[JacksonEmailNotification], classOf[JacksonSmsNotification]),
+        "kind"
+      )
+    )
+
+    val batch: JacksonNotificationBatch = JacksonNotificationBatch(
+      owner = "operations",
+      notifications = List(
+        JacksonEmailNotification("deployment", "ops@example.com"),
+        JacksonSmsNotification("+15550101", urgent = true)
+      )
+    )
+
+    val jsonText: String = JacksonSerialization.write(batch)
+    val parsed: JValue = parse(jsonText)
+    assertEquals(JString("operations"), parsed \ "owner")
+    assertEquals(JString("JacksonEmailNotification"), (parsed \ "notifications")(0) \ "kind")
+    assertEquals(JString("deployment"), (parsed \ "notifications")(0) \ "subject")
+    assertEquals(JString("JacksonSmsNotification"), (parsed \ "notifications")(1) \ "kind")
+    assertEquals(JBool.True, (parsed \ "notifications")(1) \ "urgent")
+
+    val restored: JacksonNotificationBatch = JacksonSerialization.read[JacksonNotificationBatch](jsonText)
+    assertEquals(batch, restored)
   }
 
   @Test
