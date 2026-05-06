@@ -134,6 +134,21 @@ class Skunk_core_3Test {
   }
 
   @Test
+  def enumCodecsMapPostgresLabelsToDomainValues(): Unit = {
+    val moodType: Type = Type("mood")
+    val moodCodec: Codec[Mood] = `enum`[Mood](moodLabel, label => Mood.values.find(mood => moodLabel(mood) == label), moodType)
+
+    assertEquals(List(moodType), moodCodec.types)
+    assertEquals((2, "$1"), moodCodec.sql.run(1).value)
+    assertEquals(List(Some(Encoded("curious"))), moodCodec.encode(Mood.Curious))
+    assertEquals(Right(Mood.Happy), moodCodec.decode(0, List(Some("happy"))))
+    assertEquals(
+      Decoder.Error(4, 1, "mood: no such element 'angry'"),
+      moodCodec.decode(4, List(Some("angry"))).swap.toOption.get
+    )
+  }
+
+  @Test
   def encodersAndDecodersComposeAndRenderPlaceholders(): Unit = {
     val encoder: Encoder[(String, Int)] = varchar.product(int4)
     val valuesEncoder: Encoder[(String, Int)] = encoder.values
@@ -282,4 +297,14 @@ class Skunk_core_3Test {
   }
 
   private final case class Age(value: Int)
+
+  private enum Mood {
+    case Happy, Curious, Sleepy
+  }
+
+  private def moodLabel(mood: Mood): String = mood match {
+    case Mood.Happy   => "happy"
+    case Mood.Curious => "curious"
+    case Mood.Sleepy  => "sleepy"
+  }
 }
