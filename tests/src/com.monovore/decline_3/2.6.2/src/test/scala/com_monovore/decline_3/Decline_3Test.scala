@@ -189,6 +189,24 @@ class Decline_3Test {
   }
 
   @Test
+  def honorsDoubleDashDelimiterForDashPrefixedArguments(): Unit = {
+    val collectCommand: Command[CollectedArgs] = Command("collect", "Collect command-line arguments.") {
+      val verbose: Opts[Boolean] = Opts.flag("verbose", "Enable verbose output.", short = "v").orFalse
+      val values: Opts[List[String]] = Opts.arguments[String]("value").orEmpty
+      (verbose, values).mapN(CollectedArgs.apply)
+    }
+
+    assertEquals(
+      CollectedArgs(verbose = true, List("--literal", "-x", "plain")),
+      parseSuccess(collectCommand, List("--verbose", "--", "--literal", "-x", "plain"))
+    )
+    assertEquals(
+      CollectedArgs(verbose = false, List("--verbose")),
+      parseSuccess(collectCommand, List("--", "--verbose"))
+    )
+  }
+
+  @Test
   def exposesHelpForExplicitHelpFlagWithoutTreatingItAsSuccess(): Unit = {
     val command: Command[String] = Command("hello", "Say hello.") {
       Opts.option[String]("name", "Name to greet.", short = "n")
@@ -256,6 +274,8 @@ object Decline_3Test {
   final case class ConsoleConfig(verbosity: Int, color: String)
 
   final case class TypedValues(id: UUID, callback: URI, timeout: FiniteDuration)
+
+  final case class CollectedArgs(verbose: Boolean, values: List[String])
 
   sealed trait Action
 
