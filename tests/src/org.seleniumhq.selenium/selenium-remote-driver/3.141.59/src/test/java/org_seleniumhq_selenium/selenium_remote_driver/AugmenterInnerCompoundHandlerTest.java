@@ -30,9 +30,10 @@ public class AugmenterInnerCompoundHandlerTest {
             TestableAugmenter augmenter = new TestableAugmenter();
             augmenter.addObjectAugmentation(CAPABILITY, new CompoundProvider());
             CompoundOriginal augmented = augmenter.augmentObject(new CapableDriver(), new CompoundObject());
+            CompoundAugmentation augmentation = (CompoundAugmentation) augmented;
 
-            assertEquals("compound", ((CompoundAugmentation) augmented).compoundValue());
-            assertEquals("driver", augmented.driverValue());
+            assertEquals("compound", augmentation.compoundValue());
+            assertEquals("driver", augmentation.driverValue());
         } catch (IllegalStateException e) {
             assertTrue(e.getMessage().contains("size = 2"));
         } catch (Error e) {
@@ -42,7 +43,7 @@ public class AugmenterInnerCompoundHandlerTest {
         }
     }
 
-    public interface CompoundAugmentation {
+    public interface CompoundAugmentation extends CompoundOriginal {
         String compoundValue();
     }
 
