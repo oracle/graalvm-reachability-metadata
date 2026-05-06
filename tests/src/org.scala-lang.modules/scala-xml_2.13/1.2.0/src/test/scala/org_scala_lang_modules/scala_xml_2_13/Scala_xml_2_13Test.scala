@@ -8,6 +8,8 @@ package org_scala_lang_modules.scala_xml_2_13
 
 import java.io.StringWriter
 
+import scala.io.Source
+
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -26,6 +28,10 @@ import scala.xml.Utility
 import scala.xml.XML
 import scala.xml.dtd.DocType
 import scala.xml.dtd.SystemID
+import scala.xml.pull.EvElemEnd
+import scala.xml.pull.EvElemStart
+import scala.xml.pull.EvText
+import scala.xml.pull.XMLEventReader
 import scala.xml.transform.RewriteRule
 import scala.xml.transform.RuleTransformer
 
@@ -179,6 +185,35 @@ class Scala_xml_2_13Test {
     assertThat(written).contains("UTF-8")
     assertThat(written).contains("<!DOCTYPE report SYSTEM \"report.dtd\">")
     assertThat(written).contains("<entry status=\"ok\">completed</entry>")
+  }
+
+  @Test
+  def streamsXmlAsPullEvents(): Unit = {
+    val source: Source = Source.fromString(
+      """<orders><order id="o1"><item quantity="2">pencils</item></order><order id="o2"/></orders>"""
+    )
+
+    try {
+      val reader: XMLEventReader = new XMLEventReader(source)
+      val events: List[scala.xml.pull.XMLEvent] = reader.toList
+
+      val startLabels: Seq[String] = events.collect { case EvElemStart(_, label, _, _) => label }
+      assertThat(startLabels.asJava).containsExactly("orders", "order", "item", "order")
+
+      val orderIds: Seq[String] = events.collect { case EvElemStart(_, "order", attributes, _) => attributes.asAttrMap("id") }
+      assertThat(orderIds.asJava).containsExactly("o1", "o2")
+
+      val itemQuantities: Seq[String] = events.collect {
+        case EvElemStart(_, "item", attributes, _) => attributes.asAttrMap("quantity")
+      }
+      assertThat(itemQuantities.asJava).containsExactly("2")
+      assertThat(events.collect { case EvText(text) => text }.asJava).containsExactly("pencils")
+
+      val endLabels: Seq[String] = events.collect { case EvElemEnd(_, label) => label }
+      assertThat(endLabels.asJava).containsExactly("item", "order", "order", "orders")
+    } finally {
+      source.close()
+    }
   }
 
   @Test
