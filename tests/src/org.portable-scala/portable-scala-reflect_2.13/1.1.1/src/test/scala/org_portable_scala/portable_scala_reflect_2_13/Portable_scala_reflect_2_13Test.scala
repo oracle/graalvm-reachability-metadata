@@ -202,6 +202,14 @@ class Portable_scala_reflect_2_13Test {
   }
 
   @Test
+  def rejectsAnnotatedModulesNestedInsideClassInstances(): Unit = {
+    val container = new InstanceModuleContainer
+    val moduleName = container.InstanceNestedEnabledModule.getClass.getName
+
+    assertThat(Reflect.lookupLoadableModuleClass(moduleName, loader).isEmpty).isTrue()
+  }
+
+  @Test
   def currentClassLoaderMacroOverloadsDelegateToExplicitLookup(): Unit = {
     val className = classOf[AnnotatedMultiConstructorService].getName
     val classFromMacroOverload = requireFound(
@@ -312,6 +320,13 @@ object StaticModuleContainer {
   @EnableReflectiveInstantiation
   object NestedEnabledModule extends ModuleApi {
     override def describe(value: String): String = s"nested:$value"
+  }
+}
+
+class InstanceModuleContainer {
+  @EnableReflectiveInstantiation
+  object InstanceNestedEnabledModule extends ModuleApi {
+    override def describe(value: String): String = s"instance-nested:$value"
   }
 }
 
