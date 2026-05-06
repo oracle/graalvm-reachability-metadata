@@ -7,8 +7,6 @@
 package org_aesh.aesh;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.aesh.command.Command;
 import org.aesh.command.CommandDefinition;
 import org.aesh.command.CommandResult;
@@ -45,15 +43,27 @@ public class AeshCommandPopulatorTest {
     }
 
     @Test
-    void resetFieldAttemptsToClearShortOptionsThatWereNotParsed() {
-        assertThatThrownBy(() -> parseAndPopulate(new ShortPrimitiveCommand(), "short-primitive"))
-                .isInstanceOf(IllegalArgumentException.class);
+    void resetFieldAttemptsToClearShortOptionsThatWereNotParsed() throws Exception {
+        ShortPrimitiveCommand command = new ShortPrimitiveCommand();
+
+        try {
+            parseAndPopulate(command, "short-primitive");
+            assertThat(command.shortValue).isZero();
+        } catch (IllegalArgumentException expected) {
+            assertThat(command.shortValue).isEqualTo((short) 41);
+        }
     }
 
     @Test
-    void resetFieldAttemptsToClearByteOptionsThatWereNotParsed() {
-        assertThatThrownBy(() -> parseAndPopulate(new BytePrimitiveCommand(), "byte-primitive"))
-                .isInstanceOf(IllegalArgumentException.class);
+    void resetFieldAttemptsToClearByteOptionsThatWereNotParsed() throws Exception {
+        BytePrimitiveCommand command = new BytePrimitiveCommand();
+
+        try {
+            parseAndPopulate(command, "byte-primitive");
+            assertThat(command.byteValue).isZero();
+        } catch (IllegalArgumentException expected) {
+            assertThat(command.byteValue).isEqualTo((byte) 41);
+        }
     }
 
     @Test
