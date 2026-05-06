@@ -95,13 +95,22 @@ def format_pgo_near_call_guidance(
         "",
         "Target uncovered dynamic-access call:",
         _format_call_site(best.call_site),
+    ]
+    approximate_note = _approximate_edge_note(best)
+    if approximate_note:
+        lines.extend([
+            "",
+            "Static target-edge match:",
+            "- Approximate: {note}".format(note=approximate_note),
+        ])
+    lines.extend([
         "",
         "Closest sampled stack from an existing test to the PGO/call-graph join point:",
         _format_existing_test_stack_to_join(best),
         "",
         "Static path from the PGO-reached method to the uncovered call:",
         _format_path(best.static_path, best.methods, best.static_path_edges),
-    ]
+    ])
     alternate_records = [record for record in analysis.records[1:] if record.call_site == best.call_site]
     if alternate_records:
         lines.extend([
@@ -293,6 +302,9 @@ def _path_from_join_to_target_edge(
         static_path_edges.append(edge)
         current = edge["callee"]
         static_path.append(current)
+    if target_edge.get("target_is_caller_only"):
+        static_path_edges.append(target_edge)
+        return static_path, static_path_edges
     static_path_edges.append(target_edge)
     static_path.append(target_edge["callee"])
     return static_path, static_path_edges
@@ -514,7 +526,35 @@ def _find_static_edges_to_call_site(edges: list[dict], methods: dict, call_site:
                 and _is_native_image_lowered_dynamic_access_target(callee, tracked_holder, tracked_method, tracked_parameters)
         ):
             lowered_matches.append(edge)
-    return lowered_matches
+    if lowered_matches:
+        return lowered_matches
+
+    return _caller_only_static_edges(methods, holder, method_name, call_site.tracked_api)
+
+
+def _caller_only_static_edges(
+        methods: dict,
+        holder: str,
+        method_name: str,
+        tracked_api: str,
+) -> list[dict]:
+    matches = []
+    for method_id, method in methods.items():
+        method_key = method["key"]
+        if method_key[0] != holder or method_key[1] != method_name:
+            continue
+        matches.append({
+            "caller": method_id,
+            "callee": method_id,
+            "bci": "caller-only",
+            "is_direct": "false",
+            "target_is_caller_only": True,
+            "approximate_note": (
+                "the reported caller method matched the Native Image call tree, but no exact "
+                "callee edge matched {tracked_api}; use this caller as the closest static point"
+            ).format(tracked_api=tracked_api),
+        })
+    return matches
 
 
 def _is_native_image_lowered_dynamic_access_target(
@@ -588,6 +628,8 @@ def _shortest_path_to_edge(adjacency: dict[int, list[dict]], roots: list[int], t
     while queue:
         method_id, path, path_edges = queue.popleft()
         if method_id == target_caller:
+            if target_edge.get("target_is_caller_only"):
+                return path, path_edges + [target_edge]
             return path + [target_edge["callee"]], path_edges + [target_edge]
         for edge in adjacency.get(method_id, []):
             callee = edge["callee"]
@@ -631,6 +673,15 @@ def _target_edge_bci(record: PgoNearCallRecord) -> str:
     if not record.static_path_edges:
         return "unknown"
     return record.static_path_edges[-1]["bci"]
+
+
+def _approximate_edge_note(record: PgoNearCallRecord) -> str | None:
+    if not record.static_path_edges:
+        return None
+    edge = record.static_path_edges[-1]
+    if not edge.get("target_is_caller_only"):
+        return None
+    return edge.get("approximate_note", "using the reported caller method as the closest static point")
 
 
 def _format_path(path: list, methods: dict, path_edges: list[dict] | None = None, include_bci: bool = False) -> str:

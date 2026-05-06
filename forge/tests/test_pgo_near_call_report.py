@@ -94,7 +94,12 @@ class PgoNearCallReportTests(unittest.TestCase):
             self._write_report_fixture(tmpdir)
             guidance = format_pgo_near_call_guidance(
                 tmpdir,
-                [self._call_site(tracked_api="java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])")],
+                [
+                    self._call_site(
+                        tracked_api="java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])",
+                        frame="example.Missing.call(Missing.java:42)",
+                    ),
+                ],
             )
 
         self.assertTrue(guidance.startswith("- PGO near-call guidance unavailable:"))
@@ -153,12 +158,33 @@ class PgoNearCallReportTests(unittest.TestCase):
         self.assertEqual(len(records), 1)
         self.assertIn("java.io.ObjectInputStream.readObject(java.lang.Class):java.lang.Object", guidance)
 
+    def test_matching_falls_back_to_reported_caller_when_target_edge_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            records = build_pgo_near_call_records(
+                tmpdir,
+                [self._call_site(tracked_api="java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])")],
+            )
+            guidance = format_pgo_near_call_guidance(
+                tmpdir,
+                [self._call_site(tracked_api="java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])")],
+            )
+
+        self.assertEqual(len(records), 1)
+        self.assertIn("Static target-edge match:", guidance)
+        self.assertIn("Approximate:", guidance)
+        self.assertIn("use this caller as the closest static point", guidance)
+        self.assertIn("example.TargetHolder.call():void", guidance)
+
     @staticmethod
-    def _call_site(tracked_api: str = "java.lang.Class#forName(java.lang.String)") -> DynamicAccessCallSite:
+    def _call_site(
+            tracked_api: str = "java.lang.Class#forName(java.lang.String)",
+            frame: str = "example.TargetHolder.call(TargetHolder.java:42)",
+    ) -> DynamicAccessCallSite:
         return DynamicAccessCallSite(
             metadata_type="reflection",
             tracked_api=tracked_api,
-            frame="example.TargetHolder.call(TargetHolder.java:42)",
+            frame=frame,
             line=42,
             covered=False,
         )
