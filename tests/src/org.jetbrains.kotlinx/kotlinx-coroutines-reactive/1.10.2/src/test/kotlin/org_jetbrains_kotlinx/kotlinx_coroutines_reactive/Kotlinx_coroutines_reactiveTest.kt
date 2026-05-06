@@ -74,6 +74,18 @@ public class Kotlinx_coroutines_reactiveTest {
     }
 
     @Test
+    fun publisherAsFlowPropagatesPublisherFailureAfterCollectedValues() = runBlockingWithTimeout {
+        val expectedFailure: IllegalArgumentException = IllegalArgumentException("publisher failed")
+        val publisher: ValuesThenErrorPublisher<Int> = ValuesThenErrorPublisher(listOf(1, 2), expectedFailure)
+        val collectedValues: MutableList<Int> = mutableListOf()
+
+        val failure: Throwable = assertFails { publisher.asFlow().toList(collectedValues) }
+
+        assertThat(collectedValues).containsExactly(1, 2)
+        assertThat(failure).isSameAs(expectedFailure)
+    }
+
+    @Test
     fun flowAsPublisherEmitsOnlyAfterSubscriberRequestsDemand() = runBlockingWithTimeout {
         val publisher: Publisher<Int> = flow {
             emit(10)
@@ -263,6 +275,44 @@ private class ErrorPublisher<T>(private val failure: Throwable) : Publisher<T> {
                 if (!terminated) {
                     terminated = true
                     subscriber.onError(failure)
+                }
+            }
+
+            override fun cancel() {
+                terminated = true
+            }
+        })
+    }
+}
+
+private class ValuesThenErrorPublisher<T>(
+    private val values: Iterable<T>,
+    private val failure: Throwable,
+) : Publisher<T> {
+    override fun subscribe(subscriber: Subscriber<in T>) {
+        subscriber.onSubscribe(object : Subscription {
+            private val iterator: Iterator<T> = values.iterator()
+            private var terminated: Boolean = false
+
+            override fun request(n: Long) {
+                if (terminated) {
+                    return
+                }
+                if (n <= 0) {
+                    terminated = true
+                    subscriber.onError(IllegalArgumentException("Reactive Streams demand must be positive"))
+                    return
+                }
+
+                var emitted: Long = 0
+                while (emitted < n && !terminated) {
+                    if (iterator.hasNext()) {
+                        subscriber.onNext(iterator.next())
+                        emitted++
+                    } else {
+                        terminated = true
+                        subscriber.onError(failure)
+                    }
                 }
             }
 
