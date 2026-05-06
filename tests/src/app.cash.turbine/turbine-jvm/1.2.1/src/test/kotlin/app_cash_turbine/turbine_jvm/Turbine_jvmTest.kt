@@ -92,6 +92,29 @@ public class TurbineJvmTest {
     }
 
     @Test
+    fun flowTestCanCancelUpstreamAndIgnoreBufferedEvents(): Unit = runBlocking {
+        withTimeout(5_000.milliseconds) {
+            var upstreamCancelled: Boolean = false
+            val source: Flow<String> = flow {
+                try {
+                    emit("observed")
+                    emit("ignored")
+                    awaitCancellation()
+                } finally {
+                    upstreamCancelled = true
+                }
+            }
+
+            source.test(timeout = 200.milliseconds, name = "cancellable") {
+                assertThat(awaitItem()).isEqualTo("observed")
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            assertThat(upstreamCancelled).isTrue()
+        }
+    }
+
+    @Test
     fun testInCoordinatesMultipleFlowsInsideTurbineScope(): Unit = runBlocking {
         withTimeout(5_000.milliseconds) {
             turbineScope(timeout = 200.milliseconds) {
