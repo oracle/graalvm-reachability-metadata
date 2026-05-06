@@ -6,6 +6,8 @@
  */
 package org_scala_lang_modules.scala_xml_2_13
 
+import java.io.StringWriter
+
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -22,6 +24,8 @@ import scala.xml.Text
 import scala.xml.Unparsed
 import scala.xml.Utility
 import scala.xml.XML
+import scala.xml.dtd.DocType
+import scala.xml.dtd.SystemID
 import scala.xml.transform.RewriteRule
 import scala.xml.transform.RuleTransformer
 
@@ -157,6 +161,24 @@ class Scala_xml_2_13Test {
     val reparsed: Elem = XML.loadString(pretty)
     assertThat((reparsed \ "item").text).isEqualTo("value")
     assertThat((reparsed \ "empty").nonEmpty).isTrue
+  }
+
+  @Test
+  def writesCompleteXmlDocumentWithDeclarationAndDoctype(): Unit = {
+    val document: Elem =
+      <report>
+        <entry status="ok">completed</entry>
+      </report>
+    val doctype: DocType = DocType("report", SystemID("report.dtd"), Nil)
+    val writer: StringWriter = new StringWriter()
+
+    XML.write(writer, document, "UTF-8", true, doctype)
+
+    val written: String = writer.toString
+    assertThat(written).startsWith("<?xml version=")
+    assertThat(written).contains("UTF-8")
+    assertThat(written).contains("<!DOCTYPE report SYSTEM \"report.dtd\">")
+    assertThat(written).contains("<entry status=\"ok\">completed</entry>")
   }
 
   @Test
