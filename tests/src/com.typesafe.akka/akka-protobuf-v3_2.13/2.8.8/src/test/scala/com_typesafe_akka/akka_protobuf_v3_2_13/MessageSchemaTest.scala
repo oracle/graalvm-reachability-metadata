@@ -21,11 +21,13 @@ class MessageSchemaTest {
 
   @Test
   def rawMessageInfoSchemaCreationReportsMissingReflectedField(): Unit = {
-    val error: RuntimeException = assertThrows(
-      classOf[RuntimeException],
+    val initializerError: ExceptionInInitializerError = assertThrows(
+      classOf[ExceptionInInitializerError],
       () => BrokenRawInfoLiteMessage.defaultInstance().getSerializedSize
     )
+    val error: Throwable = initializerError.getCause
 
+    assertTrue(error.isInstanceOf[RuntimeException])
     assertTrue(error.getMessage.contains("Field missing_"))
     assertTrue(error.getMessage.contains(classOf[BrokenRawInfoLiteMessage].getName))
   }
