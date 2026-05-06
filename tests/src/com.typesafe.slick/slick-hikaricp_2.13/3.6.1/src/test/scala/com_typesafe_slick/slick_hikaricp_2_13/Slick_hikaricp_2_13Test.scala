@@ -171,6 +171,43 @@ class Slick_hikaricp_2_13Test {
       }
     }
   }
+
+  @Test
+  def configuresLazyInitializationAndConnectionLifecycleSettings(): Unit = {
+    val driver: TestJdbcDriver = new TestJdbcDriver
+    withRegisteredDriver(driver) {
+      val dataSource: HikariCPJdbcDataSource = HikariCPJdbcDataSource.forConfig(
+        ConfigFactory.parseString(s"""
+          jdbcUrl = "$JdbcUrl"
+          maximumPoolSize = 1
+          minimumIdle = 0
+          initializationFailTimeout = -1 ms
+          connectionTimeout = 250 ms
+          validationTimeout = 250 ms
+          connectionTestQuery = "SELECT 1"
+          connectionInitSql = "SET search_path TO slick_test"
+          isolateInternalQueries = true
+          allowPoolSuspension = true
+          leakDetectionThreshold = 2500 ms
+        """),
+        driver,
+        "lazy-lifecycle-pool",
+        getClass.getClassLoader
+      )
+
+      try {
+        assertThat(dataSource.hconf.getInitializationFailTimeout).isEqualTo(-1L)
+        assertThat(dataSource.hconf.getConnectionTestQuery).isEqualTo("SELECT 1")
+        assertThat(dataSource.hconf.getConnectionInitSql).isEqualTo("SET search_path TO slick_test")
+        assertThat(dataSource.hconf.isIsolateInternalQueries).isTrue
+        assertThat(dataSource.hconf.isAllowPoolSuspension).isTrue
+        assertThat(dataSource.hconf.getLeakDetectionThreshold).isEqualTo(2500L)
+        assertThat(driver.connectCount).isZero
+      } finally {
+        dataSource.close()
+      }
+    }
+  }
 }
 
 object Slick_hikaricp_2_13Test {
