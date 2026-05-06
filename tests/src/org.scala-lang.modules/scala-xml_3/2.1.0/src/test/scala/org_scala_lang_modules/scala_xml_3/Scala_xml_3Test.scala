@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 
 import java.io.StringReader
 import java.io.StringWriter
+import scala.io.Source
 import scala.jdk.CollectionConverters._
 import scala.xml.Comment
 import scala.xml.Elem
@@ -31,6 +32,7 @@ import scala.xml.XML
 import scala.xml.dtd.DocType
 import scala.xml.dtd.PublicID
 import scala.xml.dtd.SystemID
+import scala.xml.parsing.XhtmlParser
 import scala.xml.transform.RewriteRule
 import scala.xml.transform.RuleTransformer
 
@@ -193,6 +195,29 @@ class Scala_xml_3Test {
     assertThat(doctype.toString).contains("PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"")
     assertThat(writer.toString).contains("<!DOCTYPE html PUBLIC")
     assertThat(writer.toString).contains("<p>Hello</p>")
+  }
+
+  @Test
+  def parsesXhtmlEntitiesAndPreservesCDataBlocks(): Unit = {
+    val source: Source = Source.fromString(
+      """<div>
+        |  <p>Scala&nbsp;XML &copy;</p>
+        |  <script><![CDATA[if (a < b && c > d) render();]]></script>
+        |</div>""".stripMargin
+    )
+
+    try {
+      val parsed: scala.xml.NodeSeq = XhtmlParser(source)
+      val div: Elem = parsed.head.asInstanceOf[Elem]
+      val scriptContent: Node = (div \ "script").head.child.head
+
+      assertThat((div \ "p").text).isEqualTo("Scala\u00a0XML ©")
+      assertThat(scriptContent).isInstanceOf(classOf[PCData])
+      assertThat(scriptContent.text).isEqualTo("if (a < b && c > d) render();")
+      assertThat(div.toString()).contains("<![CDATA[if (a < b && c > d) render();]]>")
+    } finally {
+      source.close()
+    }
   }
 
   @Test
