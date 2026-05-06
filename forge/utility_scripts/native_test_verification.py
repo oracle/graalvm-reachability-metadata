@@ -103,6 +103,8 @@ def verify_native_test_passes(
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
+    command_env = gradle_command_environment(reachability_repo_path)
+    required_graalvm_home = command_env.get("GRAALVM_HOME")
 
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
     _reset_directory(output_dir)
@@ -148,6 +150,8 @@ def verify_native_test_passes(
             reachability_repo_path,
             coordinate,
             reproduction_command=reproduction_command,
+            graalvm_home=required_graalvm_home,
+            base_env=command_env,
         )
         intervention_records.append(
             InterventionRecord(
@@ -172,6 +176,7 @@ def verify_native_test_passes(
         coordinate=coordinate,
         output_dir=agent_metadata_dir,
         log_path=generate_metadata_log_path,
+        env=command_env,
     )
     last_log_path = generate_metadata_log_path
     agent_metadata_dirs = [agent_metadata_dir] if generate_metadata_rc == 0 else []
@@ -190,14 +195,16 @@ def verify_native_test_passes(
             metadata_config_dirs=[agent_metadata_dir],
             log_path=test_log_path,
             timeout_seconds=cycle_timeout_seconds,
+            env=command_env,
         )
         last_log_path = test_log_path
         if test_rc == 0:
             log_stage(_GATE_STAGE, "JVM-agent metadata made native tests pass")
             if not _finalize_staged_metadata(
-                    reachability_repo_path=reachability_repo_path,
-                    coordinate=coordinate,
-                    metadata_dirs=[agent_metadata_dir],
+                reachability_repo_path=reachability_repo_path,
+                coordinate=coordinate,
+                metadata_dirs=[agent_metadata_dir],
+                env=command_env,
             ):
                 return _make_result(STATUS_FAILED, 0)
             return _make_result(STATUS_PASSED, 0)
@@ -226,6 +233,7 @@ def verify_native_test_passes(
             metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             log_path=log_path,
             timeout_seconds=cycle_timeout_seconds,
+            env=command_env,
         )
         last_log_path = log_path
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
@@ -245,12 +253,14 @@ def verify_native_test_passes(
                 reachability_repo_path=reachability_repo_path,
                 run_dirs=run_dirs_to_merge,
                 output_dir=trace_metadata_dir,
+                env=command_env,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
             if not _finalize_staged_metadata(
                 reachability_repo_path=reachability_repo_path,
                 coordinate=coordinate,
                 metadata_dirs=agent_metadata_dirs + [trace_metadata_dir],
+                env=command_env,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
             return _make_result(STATUS_PASSED, cycle + 1)
@@ -352,6 +362,7 @@ def _run_generate_metadata(
         coordinate: str,
         output_dir: str,
         log_path: str,
+        env: dict[str, str],
 ) -> int:
     """Run JVM-agent metadata generation for the coordinate into a staging dir."""
     cmd = [
@@ -365,6 +376,7 @@ def _run_generate_metadata(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=log_path,
+        env=env,
     ).returncode
 
 
@@ -374,6 +386,7 @@ def _run_coordinate_test(
         metadata_config_dirs: list[str],
         log_path: str,
         timeout_seconds: int,
+        env: dict[str, str],
 ) -> tuple[int, str | None]:
     """Run normal coordinate tests and return the first failed Gradle task."""
     cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}"]
@@ -384,6 +397,7 @@ def _run_coordinate_test(
         cmd=cmd,
         log_path=log_path,
         timeout_seconds=timeout_seconds,
+        env=env,
     )
     return result.returncode, _parse_first_failed_task(log_path)
 
@@ -401,6 +415,7 @@ def _run_logged_gradle_command(
         cmd: list[str],
         log_path: str,
         timeout_seconds: int | None = None,
+        env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess:
     """Run a Gradle command and write stdout/stderr to ``log_path``."""
     log_stage(
@@ -413,7 +428,7 @@ def _run_logged_gradle_command(
             return subprocess.run(
                 cmd,
                 cwd=reachability_repo_path,
-                env=gradle_command_environment(reachability_repo_path),
+                env=env or gradle_command_environment(reachability_repo_path),
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 check=False,
@@ -517,6 +532,7 @@ def _run_native_trace_image(
         metadata_config_dirs: list[str],
         log_path: str,
         timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
+        env: dict[str, str] | None = None,
 ) -> tuple[int, int | None]:
     """Run ``runNativeTraceImage`` and surface the binary's exit code.
 
@@ -549,7 +565,7 @@ def _run_native_trace_image(
             result = subprocess.run(
                 cmd,
                 cwd=reachability_repo_path,
-                env=gradle_command_environment(reachability_repo_path),
+                env=env or gradle_command_environment(reachability_repo_path),
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 check=False,
@@ -805,6 +821,7 @@ def _merge_into_output(
         reachability_repo_path: str,
         run_dirs: list[str],
         output_dir: str,
+        env: dict[str, str] | None = None,
 ) -> bool:
     """Merge accepted per-cycle trace dirs into the caller's ``output_dir``."""
     return _merge_metadata_dirs(
@@ -812,6 +829,7 @@ def _merge_into_output(
         run_dirs,
         output_dir,
         print_output_path=True,
+        env=env,
     )
 
 
@@ -820,6 +838,7 @@ def _merge_metadata_dirs(
         input_dirs: list[str],
         output_dir: str,
         print_output_path: bool = False,
+        env: dict[str, str] | None = None,
 ) -> bool:
     """Merge metadata directories through native-image-utils."""
     if not input_dirs:
@@ -835,7 +854,7 @@ def _merge_metadata_dirs(
         result = subprocess.run(
             cmd,
             cwd=reachability_repo_path,
-            env=gradle_command_environment(reachability_repo_path),
+            env=env or gradle_command_environment(reachability_repo_path),
             check=False,
             timeout=_MERGE_TIMEOUT_SECONDS,
         )
@@ -871,6 +890,7 @@ def _finalize_staged_metadata(
         reachability_repo_path: str,
         coordinate: str,
         metadata_dirs: list[str],
+        env: dict[str, str] | None = None,
 ) -> bool:
     """Merge staged agent/trace metadata into the durable library metadata file."""
     staged_metadata_dirs = _existing_metadata_dirs(metadata_dirs)
@@ -909,7 +929,7 @@ def _finalize_staged_metadata(
     try:
         with tempfile.TemporaryDirectory(prefix="native-trace-durable-") as temp_dir:
             merged_output_dir = os.path.join(temp_dir, "merged")
-            if not _merge_metadata_dirs(reachability_repo_path, input_dirs, merged_output_dir):
+            if not _merge_metadata_dirs(reachability_repo_path, input_dirs, merged_output_dir, env=env):
                 return False
             merged_metadata_path = os.path.join(merged_output_dir, _AGGREGATED_METADATA_FILE_NAME)
             if not os.path.isfile(merged_metadata_path):

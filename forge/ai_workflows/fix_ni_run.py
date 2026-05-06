@@ -138,7 +138,12 @@ def main(argv=None) -> int:
             )
             return result.returncode
         print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
-        codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(reachability_metadata_path, library)
+        gradle_env = gradle_command_environment(reachability_metadata_path)
+        codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(
+            reachability_metadata_path,
+            library,
+            graalvm_home=gradle_env.get("GRAALVM_HOME"),
+        )
         if codex_rc != 0:
             print(f"ERROR: Codex failed with return code: {codex_rc}", file=sys.stderr)
             return codex_rc

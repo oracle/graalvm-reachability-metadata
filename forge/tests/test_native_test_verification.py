@@ -869,6 +869,31 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(len(result.intervention_records), 1)
         self.assertEqual(result.intervention_records[0].kind, "codex")
 
+    def test_routes_to_codex_with_same_graalvm_home_as_gate_commands(self) -> None:
+        graalvm_home = tempfile.mkdtemp(prefix="gate-graalvm-")
+        self.addCleanup(_rmtree, graalvm_home)
+        Path(graalvm_home, "bin").mkdir()
+        Path(graalvm_home, "bin", "native-image").write_text("", encoding="utf-8")
+        fake, _calls = self._fake_run_factory([1])
+        with patch.dict(os.environ, {"GRAALVM_HOME": graalvm_home, "JAVA_HOME": "/plain-jdk"}, clear=True), patch(
+                "utility_scripts.native_test_verification.subprocess.run",
+                side_effect=fake,
+        ), patch(
+            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            return_value=(0, "/tmp/codex.log", False),
+        ) as codex_mock:
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
+        self.assertEqual(codex_mock.call_args.kwargs["graalvm_home"], graalvm_home)
+        self.assertEqual(codex_mock.call_args.kwargs["base_env"]["GRAALVM_HOME"], graalvm_home)
+        self.assertEqual(codex_mock.call_args.kwargs["base_env"]["JAVA_HOME"], graalvm_home)
+
     def test_failed_when_codex_does_not_converge(self) -> None:
         fake, _calls = self._fake_run_factory([1])
         with patch(

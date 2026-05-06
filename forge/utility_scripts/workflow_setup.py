@@ -125,7 +125,12 @@ def run_metadata_fix_until_tests_pass(
             break
 
         log_stage("metadata-fix", f"Running Codex metadata fix for {library} after {graalvm_env_var_name} failure")
-        codex_rc, _codex_log_path, codex_timed_out = run_codex_metadata_fix(repo_path, library)
+        codex_rc, _codex_log_path, codex_timed_out = run_codex_metadata_fix(
+            repo_path,
+            library,
+            graalvm_home=graalvm_home,
+            base_env=build_graalvm_environment(graalvm_home),
+        )
         if codex_timed_out:
             print(
                 f"ERROR: Codex metadata fix timed out while validating {library} with {graalvm_env_var_name}.",
