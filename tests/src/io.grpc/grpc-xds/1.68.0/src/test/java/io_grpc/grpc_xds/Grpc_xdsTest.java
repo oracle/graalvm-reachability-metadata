@@ -46,6 +46,10 @@ import io.grpc.xds.XdsChannelCredentials;
 import io.grpc.xds.XdsNameResolverProvider;
 import io.grpc.xds.XdsServerBuilder;
 import io.grpc.xds.XdsServerCredentials;
+import io.grpc.xds.client.Bootstrapper;
+import io.grpc.xds.client.BootstrapperImpl;
+import io.grpc.xds.client.EnvoyProtoData;
+import io.grpc.xds.client.XdsInitializationException;
 import io.grpc.xds.orca.OrcaOobUtil;
 import io.grpc.xds.orca.OrcaPerRequestUtil;
 import io.grpc.xds.shaded.com.github.xds.data.orca.v3.OrcaLoadReport;
@@ -54,6 +58,7 @@ import io.grpc.xds.shaded.com.github.xds.service.orca.v3.OrcaLoadReportRequest;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.config.core.v3.Node;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.service.status.v3.ClientStatusDiscoveryServiceGrpc;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.service.status.v3.ClientStatusRequest;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -259,6 +264,74 @@ public class Grpc_xdsTest {
         }).doesNotThrowAnyException();
     }
 
+    @Test
+    void bootstrapperParsesXdsBootstrapNodeSecurityAndAuthorityConfiguration() throws Exception {
+        Bootstrapper.BootstrapInfo bootstrapInfo = new TestingBootstrapper().bootstrap(Map.of(
+                "xds_servers",
+                List.of(serverConfig("xds-primary.example.com:443", true)),
+                "node",
+                Map.of(
+                        "id",
+                        "bootstrap-node",
+                        "cluster",
+                        "bootstrap-cluster",
+                        "metadata",
+                        Map.of("environment", "test", "debug", true),
+                        "locality",
+                        Map.of("region", "us-central1", "zone", "us-central1-a", "sub_zone", "blue")),
+                "certificate_providers",
+                Map.of("file-provider", Map.of(
+                        "plugin_name",
+                        "file_watcher",
+                        "config",
+                        Map.of("certificate_file", "/tmp/cert.pem", "private_key_file", "/tmp/key.pem"))),
+                "server_listener_resource_name_template",
+                "grpc/server/%s",
+                "client_default_listener_resource_name_template",
+                "xdstp://traffic-director/global/envoy.config.listener.v3.Listener/%s",
+                "authorities",
+                Map.of("traffic-director", Map.of(
+                        "client_listener_resource_name_template",
+                        "xdstp://traffic-director/envoy.config.listener.v3.Listener/%s",
+                        "xds_servers",
+                        List.of(serverConfig("authority-xds.example.com:443", false))))));
+
+        Bootstrapper.ServerInfo primaryServer = bootstrapInfo.servers().get(0);
+        assertThat(primaryServer.target()).isEqualTo("xds-primary.example.com:443");
+        assertThat(primaryServer.ignoreResourceDeletion()).isTrue();
+        assertThat(primaryServer.implSpecificConfig())
+                .isEqualTo(Map.copyOf(serverConfig("xds-primary.example.com:443", true)));
+
+        EnvoyProtoData.Node xdsNode = bootstrapInfo.node();
+        Node envoyNode = xdsNode.toEnvoyProtoNode();
+        assertThat(xdsNode.getId()).isEqualTo("bootstrap-node");
+        assertThat(envoyNode.getCluster()).isEqualTo("bootstrap-cluster");
+        assertThat(envoyNode.getMetadata().getFieldsOrThrow("environment").getStringValue()).isEqualTo("test");
+        assertThat(envoyNode.getMetadata().getFieldsOrThrow("debug").getBoolValue()).isTrue();
+        assertThat(envoyNode.getLocality().getRegion()).isEqualTo("us-central1");
+        assertThat(envoyNode.getLocality().getZone()).isEqualTo("us-central1-a");
+        assertThat(envoyNode.getLocality().getSubZone()).isEqualTo("blue");
+        assertThat(envoyNode.getClientFeaturesList())
+                .contains(
+                        BootstrapperImpl.CLIENT_FEATURE_DISABLE_OVERPROVISIONING,
+                        BootstrapperImpl.CLIENT_FEATURE_RESOURCE_IN_SOTW);
+
+        Bootstrapper.CertificateProviderInfo certificateProvider = bootstrapInfo.certProviders().get("file-provider");
+        assertThat(certificateProvider.pluginName()).isEqualTo("file_watcher");
+        assertThat(certificateProvider.config().get("certificate_file")).isEqualTo("/tmp/cert.pem");
+
+        assertThat(bootstrapInfo.serverListenerResourceNameTemplate()).isEqualTo("grpc/server/%s");
+        assertThat(bootstrapInfo.clientDefaultListenerResourceNameTemplate())
+                .isEqualTo("xdstp://traffic-director/global/envoy.config.listener.v3.Listener/%s");
+
+        Bootstrapper.AuthorityInfo authority = bootstrapInfo.authorities().get("traffic-director");
+        assertThat(authority.clientListenerResourceNameTemplate())
+                .isEqualTo("xdstp://traffic-director/envoy.config.listener.v3.Listener/%s");
+        assertThat(authority.xdsServers()).hasSize(1);
+        assertThat(authority.xdsServers().get(0).target()).isEqualTo("authority-xds.example.com:443");
+        assertThat(authority.xdsServers().get(0).ignoreResourceDeletion()).isFalse();
+    }
+
     private static void assertRegisteredProvider(LoadBalancerRegistry registry, LoadBalancerProvider provider) {
         LoadBalancerProvider registeredProvider = registry.getProvider(provider.getPolicyName());
 
@@ -297,6 +370,30 @@ public class Grpc_xdsTest {
                         "channel_creds", List.of(Map.of("type", "insecure")))),
                 "node",
                 Map.of("id", "test-node", "cluster", "test-cluster"));
+    }
+
+    private static Map<String, ?> serverConfig(String serverUri, boolean ignoreResourceDeletion) {
+        return Map.of(
+                "server_uri",
+                serverUri,
+                "channel_creds",
+                List.of(Map.of("type", "insecure")),
+                "server_features",
+                ignoreResourceDeletion ? List.of("ignore_resource_deletion") : List.of());
+    }
+
+    private static final class TestingBootstrapper extends BootstrapperImpl {
+        @Override
+        protected String getJsonContent() throws IOException, XdsInitializationException {
+            throw new UnsupportedOperationException("bootstrap(Map) supplies configuration directly");
+        }
+
+        @Override
+        protected Object getImplSpecificConfig(Map<String, ?> rawServerConfig, String serverUri)
+                throws XdsInitializationException {
+            assertThat(rawServerConfig.get("server_uri")).isEqualTo(serverUri);
+            return Map.copyOf(rawServerConfig);
+        }
     }
 
     private static final class RecordingServingStatusListener implements XdsServerBuilder.XdsServingStatusListener {
