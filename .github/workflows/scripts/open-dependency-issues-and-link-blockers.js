@@ -17,7 +17,7 @@
 //     - `CREATE_PATH`, `SUPPORTED_PATH`, `ORDER_GA`
 //
 // Behavior notes:
-//   - Existing open issues are matched by requested Maven coordinates in the issue body or title
+//   - Existing open issues are matched by requested Maven coordinates in the issue title
 //   - When a reusable issue targets a newer version, automation rewrites it to the older version
 //     requested by the current plan so blocker creation stays conservative
 //   - Duplicate "blocked by" links are treated as a successful no-op
@@ -122,12 +122,8 @@ function buildIssueTitle(ga, version) {
 /**
  * Builds the standardized issue body used for newly created dependency issues.
  */
-function buildIssueBody(ga, version) {
+function buildIssueBody() {
   return [
-    '### Full Maven coordinates',
-    '',
-    `${ga}:${version}`,
-    '',
     '_This issue was created by automation._'
   ].join('\n');
 }
@@ -156,72 +152,18 @@ function buildCreatedIssueLabels(context) {
 }
 
 /**
- * Extracts the requested Maven coordinates from the standard issue body template.
+ * Extracts the requested Maven coordinates from an issue title.
  */
-function extractCoordinatesFromIssueBody(body) {
-  const lines = String(body || '')
-    .replace(/\r/g, '')
-    .split('\n');
-  let foundHeader = false;
-
-  for (const line of lines) {
-    if (foundHeader) {
-      if (line.trim() === '') {
-        continue;
-      }
-      return line.trim();
-    }
-
-    if (/^###[ \t]+Full Maven coordinates[ \t]*$/.test(line)) {
-      foundHeader = true;
-    }
-  }
-
-  return null;
+function extractCoordinatesFromIssueTitle(title) {
+  const match = String(title || '').match(/([^:\s]+:[^:\s]+:[^\s]+)/);
+  return match ? match[1] : null;
 }
 
 /**
- * Parses requested coordinates from an existing issue body first, then from its title.
+ * Parses requested coordinates from an existing issue title.
  */
 function parseRequestedCoordinatesFromIssue(issue) {
-  const bodyCoordinates = extractCoordinatesFromIssueBody(issue?.body);
-  const parsedBodyCoordinates = parseGAV(bodyCoordinates);
-  if (parsedBodyCoordinates) {
-    return parsedBodyCoordinates;
-  }
-
-  const titleMatch = String(issue?.title || '').match(/^Support for ([^:\s]+:[^:\s]+:[^\s]+)$/);
-  if (!titleMatch) {
-    return null;
-  }
-
-  return parseGAV(titleMatch[1]);
-}
-
-/**
- * Rewrites the coordinates section of an existing issue body to a requested version.
- */
-function updateIssueBodyCoordinates(body, ga, version) {
-  const lines = String(body || '')
-    .replace(/\r/g, '')
-    .split('\n');
-  let foundHeader = false;
-
-  for (let index = 0; index < lines.length; index++) {
-    if (foundHeader) {
-      if (lines[index].trim() === '') {
-        continue;
-      }
-      lines[index] = `${ga}:${version}`;
-      return lines.join('\n');
-    }
-
-    if (/^###[ \t]+Full Maven coordinates[ \t]*$/.test(lines[index])) {
-      foundHeader = true;
-    }
-  }
-
-  return buildIssueBody(ga, version);
+  return parseGAV(extractCoordinatesFromIssueTitle(issue?.title));
 }
 
 /**
@@ -898,7 +840,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
 
     const version = toCreate.get(ga);
     const title = buildIssueTitle(ga, version);
-    const body = buildIssueBody(ga, version);
+    const body = buildIssueBody();
     const reusableIssue = reusableIssueByGA.get(ga);
     let issueNumber = null;
 
@@ -907,16 +849,13 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
       const existingVersion = reusableIssue.requestedCoordinates.version;
 
       if (compareVersions(version, existingVersion) < 0) {
-        const updatedBody = updateIssueBodyCoordinates(reusableIssue.issue.body, ga, version);
         await github.rest.issues.update({
           owner,
           repo,
           issue_number: issueNumber,
-          title,
-          body: updatedBody
+          title
         });
         reusableIssue.issue.title = title;
-        reusableIssue.issue.body = updatedBody;
         reusableIssue.requestedCoordinates = parseGAV(`${ga}:${version}`);
         console.log(
           `Reused issue #${issueNumber} for ${ga} and updated it from version ${existingVersion} to older version ${version}.`
