@@ -1,0 +1,3090 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfde2-a9d7-77b1-90ef-92cd6380568c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.kotest:kotest-framework-engine-jvm:6.1.11
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "6.1.11" when "$version$" is replaced with "6.1.11".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+- Set "coordinates" to "io.kotest:kotest-framework-engine-jvm:6.1.11".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "6.1.11".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Kotest repo, then patch the JSON directly with version-templated URLs.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+-rw-rw-r-- 1 vjovanov vjovanov 69 May  6 17:23 build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+{
+  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11"
+}
+
+web search: 
+web search: Maven Central io.kotest kotest-framework-engine-jvm 6.1.11 pom
+codex
+The initial metadata file only has coordinates. I’m checking Maven Central first because the instructions prefer published source/test artifacts when they exist, then I’ll use the upstream tag for anything Maven does not publish.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/6.1.11/kotest-framework-engine-jvm-6.1.11.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.kotest</groupId>
+  <artifactId>kotest-framework-engine-jvm</artifactId>
+  <version>6.1.11</version>
+  <name>Kotest</name>
+  <description>Kotlin Test Framework</description>
+  <url>https://github.com/kotest/kotest</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>sksamuel</id>
+      <name>Stephen Samuel</name>
+      <email>sam@sksamuel.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/kotest/kotest/</connection>
+    <developerConnection>scm:git:https://github.com/sksamuel/</developerConnection>
+    <url>https://github.com/kotest/kotest/</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
+      <version>1.3.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-debug</artifactId>
+      <version>1.10.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.kotest</groupId>
+      <artifactId>kotest-common-jvm</artifactId>
+      <version>6.1.11</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+      <version>1.10.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.2.21</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.kotest</groupId>
+      <artifactId>kotest-assertions-shared-jvm</artifactId>
+      <version>6.1.11</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>2.2.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-test-jvm</artifactId>
+      <version>1.10.2</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.pdvrieze.xmlutil</groupId>
+      <artifactId>serialization-jvm</artifactId>
+      <version>0.91.3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-io-core-jvm</artifactId>
+      <version>0.7.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/6.1.11/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 349ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/kotest/kotest-framework-engine-jvm/6.1.11</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/kotest/kotest-framework-engine-jvm/6.1.11</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kotest-framework-engine-jvm-6.1.11-javadoc.jar" title="kotest-framework-engine-jvm-6.1.11-javadoc.jar">kotest-framework-engine-jvm-6.1.11-javadoc.ja...</a>  2026-04-04 12:31       261      
+<a href="kotest-framework-engine-jvm-6.1.11-javadoc.jar.asc" title="kotest-framework-engine-jvm-6.1.11-javadoc.jar.asc">kotest-framework-engine-jvm-6.1.11-javadoc.ja...</a>  2026-04-04 12:31       801      
+<a href="kotest-framework-engine-jvm-6.1.11-javadoc.jar.asc.md5" title="kotest-framework-engine-jvm-6.1.11-javadoc.jar.asc.md5">kotest-framework-engine-jvm-6.1.11-javadoc.ja...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11-javadoc.jar.asc.sha1" title="kotest-framework-engine-jvm-6.1.11-javadoc.jar.asc.sha1">kotest-framework-engine-jvm-6.1.11-javadoc.ja...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11-javadoc.jar.md5" title="kotest-framework-engine-jvm-6.1.11-javadoc.jar.md5">kotest-framework-engine-jvm-6.1.11-javadoc.ja...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11-javadoc.jar.sha1" title="kotest-framework-engine-jvm-6.1.11-javadoc.jar.sha1">kotest-framework-engine-jvm-6.1.11-javadoc.ja...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11-sources.jar" title="kotest-framework-engine-jvm-6.1.11-sources.jar">kotest-framework-engine-jvm-6.1.11-sources.ja...</a>  2026-04-04 12:31    295041      
+<a href="kotest-framework-engine-jvm-6.1.11-sources.jar.asc" title="kotest-framework-engine-jvm-6.1.11-sources.jar.asc">kotest-framework-engine-jvm-6.1.11-sources.ja...</a>  2026-04-04 12:31       801      
+<a href="kotest-framework-engine-jvm-6.1.11-sources.jar.asc.md5" title="kotest-framework-engine-jvm-6.1.11-sources.jar.asc.md5">kotest-framework-engine-jvm-6.1.11-sources.ja...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11-sources.jar.asc.sha1" title="kotest-framework-engine-jvm-6.1.11-sources.jar.asc.sha1">kotest-framework-engine-jvm-6.1.11-sources.ja...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11-sources.jar.md5" title="kotest-framework-engine-jvm-6.1.11-sources.jar.md5">kotest-framework-engine-jvm-6.1.11-sources.ja...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11-sources.jar.sha1" title="kotest-framework-engine-jvm-6.1.11-sources.jar.sha1">kotest-framework-engine-jvm-6.1.11-sources.ja...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11.jar" title="kotest-framework-engine-jvm-6.1.11.jar">kotest-framework-engine-jvm-6.1.11.jar</a>            2026-04-04 12:31   1924401      
+<a href="kotest-framework-engine-jvm-6.1.11.jar.asc" title="kotest-framework-engine-jvm-6.1.11.jar.asc">kotest-framework-engine-jvm-6.1.11.jar.asc</a>        2026-04-04 12:31       801      
+<a href="kotest-framework-engine-jvm-6.1.11.jar.asc.md5" title="kotest-framework-engine-jvm-6.1.11.jar.asc.md5">kotest-framework-engine-jvm-6.1.11.jar.asc.md...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11.jar.asc.sha1" title="kotest-framework-engine-jvm-6.1.11.jar.asc.sha1">kotest-framework-engine-jvm-6.1.11.jar.asc.sh...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11.jar.md5" title="kotest-framework-engine-jvm-6.1.11.jar.md5">kotest-framework-engine-jvm-6.1.11.jar.md5</a>        2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11.jar.sha1" title="kotest-framework-engine-jvm-6.1.11.jar.sha1">kotest-framework-engine-jvm-6.1.11.jar.sha1</a>       2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11.module" title="kotest-framework-engine-jvm-6.1.11.module">kotest-framework-engine-jvm-6.1.11.module</a>         2026-04-04 12:31      5732      
+<a href="kotest-framework-engine-jvm-6.1.11.module.asc" title="kotest-framework-engine-jvm-6.1.11.module.asc">kotest-framework-engine-jvm-6.1.11.module.asc</a>     2026-04-04 12:31       801      
+<a href="kotest-framework-engine-jvm-6.1.11.module.asc.md5" title="kotest-framework-engine-jvm-6.1.11.module.asc.md5">kotest-framework-engine-jvm-6.1.11.module.asc...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11.module.asc.sha1" title="kotest-framework-engine-jvm-6.1.11.module.asc.sha1">kotest-framework-engine-jvm-6.1.11.module.asc...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11.module.md5" title="kotest-framework-engine-jvm-6.1.11.module.md5">kotest-framework-engine-jvm-6.1.11.module.md5</a>     2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11.module.sha1" title="kotest-framework-engine-jvm-6.1.11.module.sha1">kotest-framework-engine-jvm-6.1.11.module.sha...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11.pom" title="kotest-framework-engine-jvm-6.1.11.pom">kotest-framework-engine-jvm-6.1.11.pom</a>            2026-04-04 12:31      3361      
+<a href="kotest-framework-engine-jvm-6.1.11.pom.asc" title="kotest-framework-engine-jvm-6.1.11.pom.asc">kotest-framework-engine-jvm-6.1.11.pom.asc</a>        2026-04-04 12:31       801      
+<a href="kotest-framework-engine-jvm-6.1.11.pom.asc.md5" title="kotest-framework-engine-jvm-6.1.11.pom.asc.md5">kotest-framework-engine-jvm-6.1.11.pom.asc.md...</a>  2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11.pom.asc.sha1" title="kotest-framework-engine-jvm-6.1.11.pom.asc.sha1">kotest-framework-engine-jvm-6.1.11.pom.asc.sh...</a>  2026-04-04 12:31        40      
+<a href="kotest-framework-engine-jvm-6.1.11.pom.md5" title="kotest-framework-engine-jvm-6.1.11.pom.md5">kotest-framework-engine-jvm-6.1.11.pom.md5</a>        2026-04-04 12:31        32      
+<a href="kotest-framework-engine-jvm-6.1.11.pom.sha1" title="kotest-framework-engine-jvm-6.1.11.pom.sha1">kotest-framework-engine-jvm-6.1.11.pom.sha1</a>       2026-04-04 12:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: Kotest GitHub releases 6.1.11 tag
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/git/ref/tags/v6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/git/ref/tags/6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 195ms:
+{
+  "ref": "refs/tags/6.1.11",
+  "node_id": "MDM6UmVmNDcwNzEwODI6cmVmcy90YWdzLzYuMS4xMQ==",
+  "url": "https://api.github.com/repos/kotest/kotest/git/refs/tags/6.1.11",
+  "object": {
+    "sha": "1ce2ace76bbf4760454bf88314e679bd6bf986cd",
+    "type": "tag",
+    "url": "https://api.github.com/repos/kotest/kotest/git/tags/1ce2ace76bbf4760454bf88314e679bd6bf986cd"
+  }
+}
+
+ exited 22 in 204ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 211ms:
+[
+  {
+    "name": ".ai-ready.yml",
+    "path": ".ai-ready.yml",
+    "sha": "217fab2322253853ac49d0628b37f70648dd3595",
+    "size": 9639,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.ai-ready.yml?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/.ai-ready.yml",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/217fab2322253853ac49d0628b37f70648dd3595",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/.ai-ready.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.ai-ready.yml?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/217fab2322253853ac49d0628b37f70648dd3595",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/.ai-ready.yml"
+    }
+  },
+  {
+    "name": ".cursorrules",
+    "path": ".cursorrules",
+    "sha": "eb10387043f16bda14ae6e2339349fb0b1fe95c2",
+    "size": 5137,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.cursorrules?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/.cursorrules",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/eb10387043f16bda14ae6e2339349fb0b1fe95c2",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/.cursorrules",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.cursorrules?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/eb10387043f16bda14ae6e2339349fb0b1fe95c2",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/.cursorrules"
+    }
+  },
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "86a613d4a21091993fd359c46b127a59485c49b6",
+    "size": 371,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.editorconfig?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/.editorconfig",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/86a613d4a21091993fd359c46b127a59485c49b6",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.editorconfig?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/86a613d4a21091993fd359c46b127a59485c49b6",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/.editorconfig"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "6c84be07dc0c449be375816e3707020e6c9018df",
+    "size": 44,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.gitattributes?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/.gitattributes",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/6c84be07dc0c449be375816e3707020e6c9018df",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.gitattributes?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/6c84be07dc0c449be375816e3707020e6c9018df",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "009da113bac38125dbae12ccc3ee4073daad5536",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.github?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/.github",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/009da113bac38125dbae12ccc3ee4073daad5536",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.github?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/009da113bac38125dbae12ccc3ee4073daad5536",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "fe6e0625bf0c54cd6583ac950cbb5e417e3776d0",
+    "size": 982,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.gitignore?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/.gitignore",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/fe6e0625bf0c54cd6583ac950cbb5e417e3776d0",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.gitignore?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/fe6e0625bf0c54cd6583ac950cbb5e417e3776d0",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/.gitignore"
+    }
+  },
+  {
+    "name": ".idea",
+    "path": ".idea",
+    "sha": "47b7c65fd5af577fe1984499a75b25f6e83d34bc",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/.idea?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/.idea",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/47b7c65fd5af577fe1984499a75b25f6e83d34bc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/.idea?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/47b7c65fd5af577fe1984499a75b25f6e83d34bc",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/.idea"
+    }
+  },
+  {
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "sha": "32abbf4a75eb0f7a586640211a5b6ec79b2e05fe",
+    "size": 95,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/CHANGELOG.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/32abbf4a75eb0f7a586640211a5b6ec79b2e05fe",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/CHANGELOG.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/32abbf4a75eb0f7a586640211a5b6ec79b2e05fe",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "CLAUDE.md",
+    "path": "CLAUDE.md",
+    "sha": "b85f47fbf5b44e9c2d2ac88718904d4cd2ec04aa",
+    "size": 8498,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/CLAUDE.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/CLAUDE.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/b85f47fbf5b44e9c2d2ac88718904d4cd2ec04aa",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/CLAUDE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/CLAUDE.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/b85f47fbf5b44e9c2d2ac88718904d4cd2ec04aa",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/CLAUDE.md"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "f01df92ba3582e7b417b38f3563f5f0f2cd6824f",
+    "size": 5218,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/CODE_OF_CONDUCT.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/f01df92ba3582e7b417b38f3563f5f0f2cd6824f",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/CODE_OF_CONDUCT.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/f01df92ba3582e7b417b38f3563f5f0f2cd6824f",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "c7ab58ad89dce0b778a34d5eb5c77d9e73d2ca87",
+    "size": 1589,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/CONTRIBUTING.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/c7ab58ad89dce0b778a34d5eb5c77d9e73d2ca87",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/CONTRIBUTING.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/c7ab58ad89dce0b778a34d5eb5c77d9e73d2ca87",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "889f0bf9347118ce58575b5aea43e42787112468",
+    "size": 11343,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/LICENSE?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/LICENSE",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/889f0bf9347118ce58575b5aea43e42787112468",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/LICENSE?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/889f0bf9347118ce58575b5aea43e42787112468",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "2aa100b455176adcf403bfb7d01dcdd340f20f86",
+    "size": 2682,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/README.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/README.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/2aa100b455176adcf403bfb7d01dcdd340f20f86",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/README.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/2aa100b455176adcf403bfb7d01dcdd340f20f86",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/README.md"
+    }
+  },
+  {
+    "name": "authors",
+    "path": "authors",
+    "sha": "11cea33636e3c0c90a12bd8cb77cb5635953abc6",
+    "size": 111,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/authors?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/authors",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/11cea33636e3c0c90a12bd8cb77cb5635953abc6",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/authors",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/authors?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/11cea33636e3c0c90a12bd8cb77cb5635953abc6",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/authors"
+    }
+  },
+  {
+    "name": "blog",
+    "path": "blog",
+    "sha": "a7489ef319843ece1f1ba85514146f59948be5b9",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/blog?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/blog",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/a7489ef319843ece1f1ba85514146f59948be5b9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/blog?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/a7489ef319843ece1f1ba85514146f59948be5b9",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/blog"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "build.gradle.kts",
+    "sha": "92b7f8998d2ba403af3dc6b948814b94545430aa",
+    "size": 4679,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/build.gradle.kts?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/92b7f8998d2ba403af3dc6b948814b94545430aa",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/build.gradle.kts?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/92b7f8998d2ba403af3dc6b948814b94545430aa",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/build.gradle.kts"
+    }
+  },
+  {
+    "name": "buildSrc",
+    "path": "buildSrc",
+    "sha": "a570783d0f3c437e147fa6a1745a0da293065ef4",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/buildSrc?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/buildSrc",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/a570783d0f3c437e147fa6a1745a0da293065ef4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/buildSrc?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/a570783d0f3c437e147fa6a1745a0da293065ef4",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/buildSrc"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "doc",
+    "sha": "69f80f51397a6517752ef5d1c844bbf6cdc5bf4a",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/doc?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/doc",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/69f80f51397a6517752ef5d1c844bbf6cdc5bf4a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/doc?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/69f80f51397a6517752ef5d1c844bbf6cdc5bf4a",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/doc"
+    }
+  },
+  {
+    "name": "documentation",
+    "path": "documentation",
+    "sha": "222f5ac0204022bf969a865c6fbe25c81ad64bb3",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/222f5ac0204022bf969a865c6fbe25c81ad64bb3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/222f5ac0204022bf969a865c6fbe25c81ad64bb3",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "df611af205481af297e9c35fbf849e80cc02d887",
+    "size": 983,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/gradle.properties?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/gradle.properties",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/df611af205481af297e9c35fbf849e80cc02d887",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/gradle.properties?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/df611af205481af297e9c35fbf849e80cc02d887",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "fbc9b255917480bd5a37feb34daa38ae28b5c9ea",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/gradle?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/gradle",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/fbc9b255917480bd5a37feb34daa38ae28b5c9ea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/gradle?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/fbc9b255917480bd5a37feb34daa38ae28b5c9ea",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "adff685a0348c64b2b64f0b302f1f82b28eeaaea",
+    "size": 8618,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/gradlew?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/gradlew",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/adff685a0348c64b2b64f0b302f1f82b28eeaaea",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/gradlew?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/adff685a0348c64b2b64f0b302f1f82b28eeaaea",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "e509b2dd8fe5579a5954a2c28633ad914cd1c225",
+    "size": 2896,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/gradlew.bat?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/gradlew.bat",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/e509b2dd8fe5579a5954a2c28633ad914cd1c225",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/gradlew.bat?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/e509b2dd8fe5579a5954a2c28633ad914cd1c225",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/gradlew.bat"
+    }
+  },
+  {
+    "name": "kotest-assertions",
+    "path": "kotest-assertions",
+    "sha": "1d1fc7cc588488862079ba3f025d8fbc65ce5d71",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-assertions?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-assertions",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/1d1fc7cc588488862079ba3f025d8fbc65ce5d71",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-assertions?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/1d1fc7cc588488862079ba3f025d8fbc65ce5d71",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-assertions"
+    }
+  },
+  {
+    "name": "kotest-bom",
+    "path": "kotest-bom",
+    "sha": "6de59331bfd1ac1a9fb29df6564b84da36bbc216",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-bom?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-bom",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/6de59331bfd1ac1a9fb29df6564b84da36bbc216",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-bom?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/6de59331bfd1ac1a9fb29df6564b84da36bbc216",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-bom"
+    }
+  },
+  {
+    "name": "kotest-common",
+    "path": "kotest-common",
+    "sha": "2223e29f926f9989e09a6fd36514db54f76efe4e",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-common?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-common",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/2223e29f926f9989e09a6fd36514db54f76efe4e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-common?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/2223e29f926f9989e09a6fd36514db54f76efe4e",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-common"
+    }
+  },
+  {
+    "name": "kotest-extensions",
+    "path": "kotest-extensions",
+    "sha": "429067a851f8efd07f1ad040439a5c8eb752532b",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-extensions?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-extensions",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/429067a851f8efd07f1ad040439a5c8eb752532b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-extensions?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/429067a851f8efd07f1ad040439a5c8eb752532b",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-extensions"
+    }
+  },
+  {
+    "name": "kotest-framework",
+    "path": "kotest-framework",
+    "sha": "fd8ed08883e8b21f92453f446fc786ddf3754569",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/fd8ed08883e8b21f92453f446fc786ddf3754569",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/fd8ed08883e8b21f92453f446fc786ddf3754569",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework"
+    }
+  },
+  {
+    "name": "kotest-intellij-plugin",
+    "path": "kotest-intellij-plugin",
+    "sha": "aa45cc859bb5f9d5c2a5a4d12fc145e6663b2422",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-intellij-plugin?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-intellij-plugin",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/aa45cc859bb5f9d5c2a5a4d12fc145e6663b2422",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-intellij-plugin?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/aa45cc859bb5f9d5c2a5a4d12fc145e6663b2422",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-intellij-plugin"
+    }
+  },
+  {
+    "name": "kotest-property",
+    "path": "kotest-property",
+    "sha": "62eb1cb57487264dd32a371cb135eb6275474a6f",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-property?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-property",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/62eb1cb57487264dd32a371cb135eb6275474a6f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-property?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/62eb1cb57487264dd32a371cb135eb6275474a6f",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-property"
+    }
+  },
+  {
+    "name": "kotest-runner",
+    "path": "kotest-runner",
+    "sha": "1143505740dd1648e0368f25d701a11851dade12",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-runner?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-runner",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/1143505740dd1648e0368f25d701a11851dade12",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-runner?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/1143505740dd1648e0368f25d701a11851dade12",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-runner"
+    }
+  },
+  {
+    "name": "kotest-tests",
+    "path": "kotest-tests",
+    "sha": "8cf4abd016bab73d7f72a36b8dc0f1a61b4a04b9",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-tests?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-tests",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/8cf4abd016bab73d7f72a36b8dc0f1a61b4a04b9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-tests?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/8cf4abd016bab73d7f72a36b8dc0f1a61b4a04b9",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-tests"
+    }
+  },
+  {
+    "name": "renovate.json",
+    "path": "renovate.json",
+    "sha": "2be9ebfc33b67eb2edb9571e4315c127020b653a",
+    "size": 237,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/renovate.json?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/renovate.json",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/2be9ebfc33b67eb2edb9571e4315c127020b653a",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/renovate.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/renovate.json?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/2be9ebfc33b67eb2edb9571e4315c127020b653a",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/renovate.json"
+    }
+  },
+  {
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+    "sha": "b4a89af4728b66255c7acb3ed0294c99c3d58f94",
+    "size": 10860,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/settings.gradle.kts?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/settings.gradle.kts",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/b4a89af4728b66255c7acb3ed0294c99c3d58f94",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/settings.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/settings.gradle.kts?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/b4a89af4728b66255c7acb3ed0294c99c3d58f94",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/settings.gradle.kts"
+    }
+  },
+  {
+    "name": "skills",
+    "path": "skills",
+    "sha": "514166a1e90fe1c4ca28f5427fdde41d8fc9dd1a",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/skills?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/skills",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/514166a1e90fe1c4ca28f5427fdde41d8fc9dd1a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/skills?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/514166a1e90fe1c4ca28f5427fdde41d8fc9dd1a",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/skills"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents/kotest-framework?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/6.1.11/kotest-framework-engine-jvm-6.1.11.module' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../kotest-framework-engine/6.1.11/kotest-framework-engine-6.1.11.module",
+    "group": "io.kotest",
+    "module": "kotest-framework-engine",
+    "version": "6.1.11",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.3.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvmApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.opentest4j",
+          "module": "opentest4j",
+          "version": {
+            "requires": "1.3.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-debug",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "io.kotest",
+          "module": "kotest-common",
+          "version": {
+            "requires": "6.1.11"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kotest-framework-engine-jvm-6.1.11.jar",
+          "url": "kotest-framework-engine-jvm-6.1.11.jar",
+          "size": 1924401,
+          "sha512": "caf4529cdcd85f329ba0bb240de7ec73538e8136b4aaaa7539f94f8a7e7eb9ae80f309606f99614606dab41b8d0dbda2ad85165ace403d8ac8b6fc857081db31",
+          "sha256": "e90b60e67a744f03789ab3ed11ada751f19909bb0f47f06019db072cdc9451b1",
+          "sha1": "e69c52cdff7feca8553a0b9e6f3f26dea523f1d3",
+          "md5": "857dde977924eb51b581cd7b2fa0c0a0"
+        }
+      ]
+    },
+    {
+      "name": "jvmRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.opentest4j",
+          "module": "opentest4j",
+          "version": {
+            "requires": "1.3.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-debug",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "io.kotest",
+          "module": "kotest-common",
+          "version": {
+            "requires": "6.1.11"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        },
+        {
+          "group": "io.kotest",
+          "module": "kotest-assertions-shared",
+          "version": {
+            "requires": "6.1.11"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "2.2.21"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-test",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "io.github.pdvrieze.xmlutil",
+          "module": "serialization",
+          "version": {
+            "requires": "0.91.3"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-io-core",
+          "version": {
+            "requires": "0.7.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kotest-framework-engine-jvm-6.1.11.jar",
+          "url": "kotest-framework-engine-jvm-6.1.11.jar",
+          "size": 1924401,
+          "sha512": "caf4529cdcd85f329ba0bb240de7ec73538e8136b4aaaa7539f94f8a7e7eb9ae80f309606f99614606dab41b8d0dbda2ad85165ace403d8ac8b6fc857081db31",
+          "sha256": "e90b60e67a744f03789ab3ed11ada751f19909bb0f47f06019db072cdc9451b1",
+          "sha1": "e69c52cdff7feca8553a0b9e6f3f26dea523f1d3",
+          "md5": "857dde977924eb51b581cd7b2fa0c0a0"
+        }
+      ]
+    },
+    {
+      "name": "jvmSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "kotest-framework-engine-jvm-6.1.11-sources.jar",
+          "url": "kotest-framework-engine-jvm-6.1.11-sources.jar",
+          "size": 295041,
+          "sha512": "e037e606d429b242ce703389b1f5bbc890af77c5ea8a432748c435cad78844abe8997866d8b0109e9b5d60b90af2fad6144433cd3131f44b91952722b5b84fb7",
+          "sha256": "83482c30582af27454bf8a081ccc9a2a2f7ee91ca5cadf1adfc2bcec2039b589",
+          "sha1": "eb45433ccef6e796c06548f833b3ba079745ea73",
+          "md5": "bda9742ea04f61e9269189c79f982162"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents/documentation?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 175ms:
+[
+  {
+    "name": "README.md",
+    "path": "documentation/README.md",
+    "sha": "52f4e0fc19cae8dd00f61e03598facc92e4537ef",
+    "size": 1170,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/README.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/README.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/52f4e0fc19cae8dd00f61e03598facc92e4537ef",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/README.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/52f4e0fc19cae8dd00f61e03598facc92e4537ef",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/README.md"
+    }
+  },
+  {
+    "name": "babel.config.js",
+    "path": "documentation/babel.config.js",
+    "sha": "e00595dae7d69190e2a9d07202616c2ea932e487",
+    "size": 89,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/babel.config.js?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/babel.config.js",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/e00595dae7d69190e2a9d07202616c2ea932e487",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/babel.config.js",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/babel.config.js?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/e00595dae7d69190e2a9d07202616c2ea932e487",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/babel.config.js"
+    }
+  },
+  {
+    "name": "cut-docs.sh",
+    "path": "documentation/cut-docs.sh",
+    "sha": "398f0bbdbfe709227b5055e0a0f557acc954bff8",
+    "size": 825,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/cut-docs.sh?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/cut-docs.sh",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/398f0bbdbfe709227b5055e0a0f557acc954bff8",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/cut-docs.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/cut-docs.sh?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/398f0bbdbfe709227b5055e0a0f557acc954bff8",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/cut-docs.sh"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "documentation/docs",
+    "sha": "24b04012ed1415616e1ef75413c79b2709b0d4cc",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/24b04012ed1415616e1ef75413c79b2709b0d4cc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/24b04012ed1415616e1ef75413c79b2709b0d4cc",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs"
+    }
+  },
+  {
+    "name": "docusaurus.config.js",
+    "path": "documentation/docusaurus.config.js",
+    "sha": "5010a52b156231c273879e49f16843f7ffb0c8f6",
+    "size": 5673,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docusaurus.config.js?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docusaurus.config.js",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/5010a52b156231c273879e49f16843f7ffb0c8f6",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docusaurus.config.js",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docusaurus.config.js?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/5010a52b156231c273879e49f16843f7ffb0c8f6",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docusaurus.config.js"
+    }
+  },
+  {
+    "name": "package-lock.json",
+    "path": "documentation/package-lock.json",
+    "sha": "a743d15bc9b23a075341277676bf7ebe2c525711",
+    "size": 687713,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/package-lock.json?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/package-lock.json",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/a743d15bc9b23a075341277676bf7ebe2c525711",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/package-lock.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/package-lock.json?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/a743d15bc9b23a075341277676bf7ebe2c525711",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/package-lock.json"
+    }
+  },
+  {
+    "name": "package.json",
+    "path": "documentation/package.json",
+    "sha": "ee05d49a6c0f802656a74817a0d462ff8f20c4fd",
+    "size": 809,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/package.json?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/package.json",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/ee05d49a6c0f802656a74817a0d462ff8f20c4fd",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/package.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/package.json?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/ee05d49a6c0f802656a74817a0d462ff8f20c4fd",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/package.json"
+    }
+  },
+  {
+    "name": "sidebars.js",
+    "path": "documentation/sidebars.js",
+    "sha": "7d5d76f4b9a6cdf94ecec0419ca094e70ed2807d",
+    "size": 5820,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/sidebars.js?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/sidebars.js",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/7d5d76f4b9a6cdf94ecec0419ca094e70ed2807d",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/sidebars.js",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/sidebars.js?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/7d5d76f4b9a6cdf94ecec0419ca094e70ed2807d",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/sidebars.js"
+    }
+  },
+  {
+    "name": "src",
+    "path": "documentation/src",
+    "sha": "4e9d9eeec0cff3f4eb813250fe1e6f38ece738fa",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/src?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/src",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/4e9d9eeec0cff3f4eb813250fe1e6f38ece738fa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/src?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/4e9d9eeec0cff3f4eb813250fe1e6f38ece738fa",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/src"
+    }
+  },
+  {
+    "name": "static",
+    "path": "documentation/static",
+    "sha": "1ec15067f6cfd531e0b782b6eb83e24ec486772b",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/static?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/static",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/1ec15067f6cfd531e0b782b6eb83e24ec486772b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/static?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/1ec15067f6cfd531e0b782b6eb83e24ec486772b",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/static"
+    }
+  },
+  {
+    "name": "versioned_docs",
+    "path": "documentation/versioned_docs",
+    "sha": "d21dbd19620644036a40e821cd7f0d818d1568af",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/versioned_docs?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/versioned_docs",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/d21dbd19620644036a40e821cd7f0d818d1568af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/versioned_docs?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/d21dbd19620644036a40e821cd7f0d818d1568af",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/versioned_docs"
+    }
+  },
+  {
+    "name": "versioned_sidebars",
+    "path": "documentation/versioned_sidebars",
+    "sha": "f21e43a15807d7e2b9fbfab17757fadd92b428a4",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/versioned_sidebars?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/versioned_sidebars",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/f21e43a15807d7e2b9fbfab17757fadd92b428a4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/versioned_sidebars?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/f21e43a15807d7e2b9fbfab17757fadd92b428a4",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/versioned_sidebars"
+    }
+  },
+  {
+    "name": "versions.json",
+    "path": "documentation/versions.json",
+    "sha": "05483c7a763ffd88c17cfdfe8602e767c8fbfcaa",
+    "size": 109,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/versions.json?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/versions.json",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/05483c7a763ffd88c17cfdfe8602e767c8fbfcaa",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/versions.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/versions.json?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/05483c7a763ffd88c17cfdfe8602e767c8fbfcaa",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/versions.json"
+    }
+  }
+]
+
+ succeeded in 322ms:
+[
+  {
+    "name": "kotest-framework-engine",
+    "path": "kotest-framework/kotest-framework-engine",
+    "sha": "51a6ab629a40603abe1071bbb2c6bb18bd2c82a3",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/51a6ab629a40603abe1071bbb2c6bb18bd2c82a3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/51a6ab629a40603abe1071bbb2c6bb18bd2c82a3",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine"
+    }
+  },
+  {
+    "name": "kotest-framework-plugin-gradle",
+    "path": "kotest-framework/kotest-framework-plugin-gradle",
+    "sha": "62c9b3561f5180708d84c618eda74250899df4d8",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-plugin-gradle?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-plugin-gradle",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/62c9b3561f5180708d84c618eda74250899df4d8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-plugin-gradle?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/62c9b3561f5180708d84c618eda74250899df4d8",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-plugin-gradle"
+    }
+  },
+  {
+    "name": "kotest-framework-standalone",
+    "path": "kotest-framework/kotest-framework-standalone",
+    "sha": "c6901df7c0f63534700827d230e1ca40d94fca6b",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-standalone?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-standalone",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/c6901df7c0f63534700827d230e1ca40d94fca6b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-standalone?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/c6901df7c0f63534700827d230e1ca40d94fca6b",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-standalone"
+    }
+  },
+  {
+    "name": "kotest-framework-symbol-processor",
+    "path": "kotest-framework/kotest-framework-symbol-processor",
+    "sha": "b8d59f4f51245fefdeb9362ae9e33b4936794e3a",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-symbol-processor?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-symbol-processor",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/b8d59f4f51245fefdeb9362ae9e33b4936794e3a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-symbol-processor?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/b8d59f4f51245fefdeb9362ae9e33b4936794e3a",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-symbol-processor"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/kotest/kotest/6.1.11/README.md' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+![Kotest](doc/logo7-with-text.png)
+==========
+
+[![master](https://github.com/kotest/kotest/actions/workflows/master.yml/badge.svg)](https://github.com/kotest/kotest/actions/workflows/master.yml)
+[![version](https://img.shields.io/maven-central/v/io.kotest/kotest-runner-junit5.svg?label=latest%20release)](https://central.sonatype.com/search?q=io.kotest)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml)
+![GitHub](https://img.shields.io/github/license/kotest/kotest)<br/>
+[![kotest @ kotlinlang.slack.com](https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack)](https://kotlinlang.slack.com/archives/CT0G9SD7Z)
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/kotest/kotest.svg)](https://isitmaintained.com/project/kotest/kotest "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/kotest/kotest.svg)](http://isitmaintained.com/project/kotest/kotest "Percentage of issues still open")<br/>
+![intellij-badge](https://img.shields.io/jetbrains/plugin/v/14080-kotest?label=intellij%20plugin)
+![Downloads](https://img.shields.io/jetbrains/plugin/d/14080)
+![Rating](https://img.shields.io/jetbrains/plugin/r/rating/14080)
+
+__Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
+
+To learn more about Kotest, visit [kotest.io](https://kotest.io) or see our [quick start](https://kotest.io/docs/quickstart/) guide.
+Looking to upgrade? - see the [changelog](https://github.com/kotest/kotest/releases)
+
+Community
+---------
+* [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](https://slack.kotlinlang.org/))
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
+* [Contribute](https://github.com/kotest/kotest/blob/master/CONTRIBUTING.md)
+* [Blogs and articles](https://kotest.io/docs/blogs/).
+
+![Yourkit Logo](https://www.yourkit.com/images/yklogo.png)
+
+YourKit supports open source projects with innovative and intelligent tools
+for monitoring and profiling Java and .NET applications.
+YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourKit Java Profiler</a>,
+<a href="https://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</a>,
+and <a href="https://www.yourkit.com/youmonitor/">YourKit YouMonitor</a>.
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 219ms:
+[
+  {
+    "name": "api",
+    "path": "kotest-framework/kotest-framework-engine/api",
+    "sha": "389e5120510f7294cd61d9db740659ccce84a02c",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/api?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/api",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/389e5120510f7294cd61d9db740659ccce84a02c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/api?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/389e5120510f7294cd61d9db740659ccce84a02c",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/api"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "kotest-framework/kotest-framework-engine/build.gradle.kts",
+    "sha": "f0dc2089fb59a534d67a3eddbf7257d0e0eea822",
+    "size": 3624,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/build.gradle.kts?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/kotest-framework/kotest-framework-engine/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/f0dc2089fb59a534d67a3eddbf7257d0e0eea822",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/kotest-framework/kotest-framework-engine/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/build.gradle.kts?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/f0dc2089fb59a534d67a3eddbf7257d0e0eea822",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/kotest-framework/kotest-framework-engine/build.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "kotest-framework/kotest-framework-engine/src",
+    "sha": "940134113cd41f78a879b742980b459555e4fbaa",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/940134113cd41f78a879b742980b459555e4fbaa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/940134113cd41f78a879b742980b459555e4fbaa",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/kotest/kotest/6.1.11/gradle.properties' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/git/tags/1ce2ace76bbf4760454bf88314e679bd6bf986cd' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 195ms:
+#signing.keyId=xx
+#signing.password=xx
+#signing.secretKeyRingFile=~/.gnupg/secring.gpg
+#signing.gnupg.keyName=xx
+
+ossrhUsername=xx
+ossrhPassword=xx
+
+gradle.publish.key=xx
+gradle.publish.secret=xx
+
+org.gradle.jvmargs=-Xmx8g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+systemProp.org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+
+org.gradle.caching=true
+org.gradle.parallel=true
+org.gradle.daemon=true
+
+#https://github.com/gradle/gradle/issues/11308
+org.gradle.internal.publish.checksums.insecure=true
+systemProp.org.gradle.internal.publish.checksums.insecure=true
+
+org.gradle.configuration-cache=false
+
+kotlin.native.ignoreDisabledTargets=true
+kotlin.mpp.stability.nowarn=true
+kotlin.incremental=true
+kotlin.incremental.js=true
+
+android.useAndroidX=true
+android.enableJetifier=true
+
+# Kotest build settings
+# enabled/disable Kotlin targets, for improving local dev & CI/CD performance
+kotest_enableKotlinJs=true
+kotest_enableKotlinNative=true
+
+ succeeded in 220ms:
+[
+  {
+    "name": "androidNativeMain",
+    "path": "kotest-framework/kotest-framework-engine/src/androidNativeMain",
+    "sha": "9d6bce8decb60e2579d00ad6ea95a1b5f1fa5fb3",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/androidNativeMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/androidNativeMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/9d6bce8decb60e2579d00ad6ea95a1b5f1fa5fb3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/androidNativeMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/9d6bce8decb60e2579d00ad6ea95a1b5f1fa5fb3",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/androidNativeMain"
+    }
+  },
+  {
+    "name": "commonMain",
+    "path": "kotest-framework/kotest-framework-engine/src/commonMain",
+    "sha": "c3b94bb038ae941c311c73a1e8264a1fedd4d6a7",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/commonMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/commonMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/c3b94bb038ae941c311c73a1e8264a1fedd4d6a7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/commonMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/c3b94bb038ae941c311c73a1e8264a1fedd4d6a7",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/commonMain"
+    }
+  },
+  {
+    "name": "commonTest",
+    "path": "kotest-framework/kotest-framework-engine/src/commonTest",
+    "sha": "62353455e6817a17e61a760e9221cc435bcca7a3",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/commonTest?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/commonTest",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/62353455e6817a17e61a760e9221cc435bcca7a3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/commonTest?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/62353455e6817a17e61a760e9221cc435bcca7a3",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/commonTest"
+    }
+  },
+  {
+    "name": "iosMain",
+    "path": "kotest-framework/kotest-framework-engine/src/iosMain",
+    "sha": "7d681e20f5ce9eee948b34a958e57ee92493e778",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/iosMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/iosMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/7d681e20f5ce9eee948b34a958e57ee92493e778",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/iosMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/7d681e20f5ce9eee948b34a958e57ee92493e778",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/iosMain"
+    }
+  },
+  {
+    "name": "jsHostedMain",
+    "path": "kotest-framework/kotest-framework-engine/src/jsHostedMain",
+    "sha": "1ca7ee4a396daef7f46da89296aeeea36572523d",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jsHostedMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jsHostedMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/1ca7ee4a396daef7f46da89296aeeea36572523d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jsHostedMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/1ca7ee4a396daef7f46da89296aeeea36572523d",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jsHostedMain"
+    }
+  },
+  {
+    "name": "jsMain",
+    "path": "kotest-framework/kotest-framework-engine/src/jsMain",
+    "sha": "691e201a9363cc19a882b4ac9a7a03ee1bfdbb7c",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jsMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jsMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/691e201a9363cc19a882b4ac9a7a03ee1bfdbb7c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jsMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/691e201a9363cc19a882b4ac9a7a03ee1bfdbb7c",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jsMain"
+    }
+  },
+  {
+    "name": "jsTest",
+    "path": "kotest-framework/kotest-framework-engine/src/jsTest",
+    "sha": "97196dc7df0cc45eaa86902908ae95c33e3df22d",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jsTest?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jsTest",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/97196dc7df0cc45eaa86902908ae95c33e3df22d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jsTest?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/97196dc7df0cc45eaa86902908ae95c33e3df22d",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jsTest"
+    }
+  },
+  {
+    "name": "jvmMain",
+    "path": "kotest-framework/kotest-framework-engine/src/jvmMain",
+    "sha": "ebef9d59193d1783a52d198a9f0506592b5ab61c",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jvmMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jvmMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/ebef9d59193d1783a52d198a9f0506592b5ab61c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jvmMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/ebef9d59193d1783a52d198a9f0506592b5ab61c",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jvmMain"
+    }
+  },
+  {
+    "name": "jvmTest",
+    "path": "kotest-framework/kotest-framework-engine/src/jvmTest",
+    "sha": "02d0720d54862a12e3e7d021e7c5f6d7af5681ba",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jvmTest?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jvmTest",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/02d0720d54862a12e3e7d021e7c5f6d7af5681ba",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/jvmTest?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/02d0720d54862a12e3e7d021e7c5f6d7af5681ba",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jvmTest"
+    }
+  },
+  {
+    "name": "linuxMain",
+    "path": "kotest-framework/kotest-framework-engine/src/linuxMain",
+    "sha": "c66dba5e9256d79e3b5f74a42d1f15f459844dc2",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/linuxMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/linuxMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/c66dba5e9256d79e3b5f74a42d1f15f459844dc2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/linuxMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/c66dba5e9256d79e3b5f74a42d1f15f459844dc2",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/linuxMain"
+    }
+  },
+  {
+    "name": "macosMain",
+    "path": "kotest-framework/kotest-framework-engine/src/macosMain",
+    "sha": "43d6cc909b6440d20c78b7b6b85091b5bb414591",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/macosMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/macosMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/43d6cc909b6440d20c78b7b6b85091b5bb414591",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/macosMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/43d6cc909b6440d20c78b7b6b85091b5bb414591",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/macosMain"
+    }
+  },
+  {
+    "name": "mingwMain",
+    "path": "kotest-framework/kotest-framework-engine/src/mingwMain",
+    "sha": "883ec8deff61a03287b2ebfd6634d25ffe18cb5c",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/mingwMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/mingwMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/883ec8deff61a03287b2ebfd6634d25ffe18cb5c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/mingwMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/883ec8deff61a03287b2ebfd6634d25ffe18cb5c",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/mingwMain"
+    }
+  },
+  {
+    "name": "nativeMain",
+    "path": "kotest-framework/kotest-framework-engine/src/nativeMain",
+    "sha": "3110a90cac1fdc9b12dd8430f98cd67230d1e743",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/nativeMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/nativeMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/3110a90cac1fdc9b12dd8430f98cd67230d1e743",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/nativeMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/3110a90cac1fdc9b12dd8430f98cd67230d1e743",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/nativeMain"
+    }
+  },
+  {
+    "name": "nonjvmMain",
+    "path": "kotest-framework/kotest-framework-engine/src/nonjvmMain",
+    "sha": "3c85009bc57b8e4de95d0c4d9e38a4dca8663787",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/nonjvmMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/nonjvmMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/3c85009bc57b8e4de95d0c4d9e38a4dca8663787",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/nonjvmMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/3c85009bc57b8e4de95d0c4d9e38a4dca8663787",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/nonjvmMain"
+    }
+  },
+  {
+    "name": "tvosMain",
+    "path": "kotest-framework/kotest-framework-engine/src/tvosMain",
+    "sha": "f0f834954c8ed87d1504499395c1717dc8f70b6b",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/tvosMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/tvosMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/f0f834954c8ed87d1504499395c1717dc8f70b6b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/tvosMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/f0f834954c8ed87d1504499395c1717dc8f70b6b",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/tvosMain"
+    }
+  },
+  {
+    "name": "wasmJsMain",
+    "path": "kotest-framework/kotest-framework-engine/src/wasmJsMain",
+    "sha": "2164ba38b321b7da50cb27e12f9fb5dd9d525817",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/wasmJsMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/wasmJsMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/2164ba38b321b7da50cb27e12f9fb5dd9d525817",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/wasmJsMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/2164ba38b321b7da50cb27e12f9fb5dd9d525817",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/wasmJsMain"
+    }
+  },
+  {
+    "name": "wasmWasiMain",
+    "path": "kotest-framework/kotest-framework-engine/src/wasmWasiMain",
+    "sha": "02211a7bf3af7aa7f6e4eac5d941ede644a1bba8",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/wasmWasiMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/wasmWasiMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/02211a7bf3af7aa7f6e4eac5d941ede644a1bba8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/wasmWasiMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/02211a7bf3af7aa7f6e4eac5d941ede644a1bba8",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/wasmWasiMain"
+    }
+  },
+  {
+    "name": "watchosMain",
+    "path": "kotest-framework/kotest-framework-engine/src/watchosMain",
+    "sha": "d08d052a83e3b19040862e9556a2883e2ac9f146",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/watchosMain?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/watchosMain",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/d08d052a83e3b19040862e9556a2883e2ac9f146",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/kotest-framework/kotest-framework-engine/src/watchosMain?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/d08d052a83e3b19040862e9556a2883e2ac9f146",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/watchosMain"
+    }
+  }
+]
+
+ succeeded in 220ms:
+{
+  "node_id": "TA_kwDOAs4_atoAKDFjZTJhY2U3NmJiZjQ3NjA0NTRiZjg4MzE0ZTY3OWJkNmJmOTg2Y2Q",
+  "sha": "1ce2ace76bbf4760454bf88314e679bd6bf986cd",
+  "url": "https://api.github.com/repos/kotest/kotest/git/tags/1ce2ace76bbf4760454bf88314e679bd6bf986cd",
+  "tagger": {
+    "name": "Kotest Release Bot",
+    "email": "sam@sksamuel.com",
+    "date": "2026-04-04T12:40:03Z"
+  },
+  "object": {
+    "sha": "c0b386a38ea6321e6a08a80dd1340a1a616cdd18",
+    "type": "commit",
+    "url": "https://api.github.com/repos/kotest/kotest/git/commits/c0b386a38ea6321e6a08a80dd1340a1a616cdd18"
+  },
+  "tag": "6.1.11",
+  "message": "Release 6.1.11\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}
+
+web search: 
+web search: repo.maven.apache.org io/kotest/kotest-framework-engine-jvm/6.1.11 kotest-framework-engine-jvm-6.1.11.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/
+codex
+Maven publishes the JVM jar, POM/module metadata, javadoc jar, and a sources jar, but no test-sources/test jar for this artifact. The upstream tag is `6.1.11`, and the JVM source/test directories exist under `kotest-framework/kotest-framework-engine`.
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -l '\"language\"' build/discovered-artifact-metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -30" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|language' . -g '*.json' -g '"'!build/distributions/**'"' -g '"'!build/tmp/**'"' | head -120" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+./metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+./metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+./metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+./metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+./metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+./metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+./metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+./metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+./metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+./metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+./metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/documentation-website/Writerside/topics/JSON-And-JSONB-types.topic",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-kotlin-datetime/src/test/kotlin",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+./metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+./metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -30' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jetbrains.exposed/exposed-jdbc/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0-beta-4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/Exposed",
+    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+    "description" : "Exposed is JetBrains' Kotlin SQL framework for building type-safe database queries and persistence code. The exposed-jdbc module provides the blocking JDBC integration, including database connections, transactions, schema utilities, and statement execution.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "1.0.0-beta-4"
+    ],
+    "allowed-packages" : [
+      "org.jetbrains.exposed.v1.jdbc"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"' metadata -g 'index.json' | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-test/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-ktor/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-core/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/6.1.11/kotest-framework-engine-jvm-6.1.11-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 15:24:17 GMT
+content-type: application/java-archive
+content-length: 295041
+cf-ray: 9f78fdb1ec41bc6b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1168012
+etag: "bda9742ea04f61e9269189c79f982162"
+last-modified: Sat, 04 Apr 2026 12:31:43 GMT
+x-checksum-md5: bda9742ea04f61e9269189c79f982162
+x-checksum-sha1: eb45433ccef6e796c06548f833b3ba079745ea73
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents/documentation/docs?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jvmTest' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 246ms:
+[
+  {
+    "name": "assertions",
+    "path": "documentation/docs/assertions",
+    "sha": "e104931d5ba2ca2bd9d0ae2f72add45bedf6d333",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/assertions?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/assertions",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/e104931d5ba2ca2bd9d0ae2f72add45bedf6d333",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/assertions?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/e104931d5ba2ca2bd9d0ae2f72add45bedf6d333",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/assertions"
+    }
+  },
+  {
+    "name": "blog",
+    "path": "documentation/docs/blog",
+    "sha": "00fc44fe519a7eeccbd80b634f9388f3a455c2c1",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/blog?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/blog",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/00fc44fe519a7eeccbd80b634f9388f3a455c2c1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/blog?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/00fc44fe519a7eeccbd80b634f9388f3a455c2c1",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/blog"
+    }
+  },
+  {
+    "name": "blogs.md",
+    "path": "documentation/docs/blogs.md",
+    "sha": "276b76e265bed1f7a15d8994292a542cbb3f8fa5",
+    "size": 6717,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/blogs.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/blogs.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/276b76e265bed1f7a15d8994292a542cbb3f8fa5",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/blogs.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/blogs.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/276b76e265bed1f7a15d8994292a542cbb3f8fa5",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/blogs.md"
+    }
+  },
+  {
+    "name": "changelog.md",
+    "path": "documentation/docs/changelog.md",
+    "sha": "c1d8b12bf37c42640e262031efb19d3e3bfe4cf4",
+    "size": 127514,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/changelog.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/changelog.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/c1d8b12bf37c42640e262031efb19d3e3bfe4cf4",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/changelog.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/changelog.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/c1d8b12bf37c42640e262031efb19d3e3bfe4cf4",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/changelog.md"
+    }
+  },
+  {
+    "name": "extensions",
+    "path": "documentation/docs/extensions",
+    "sha": "15f2f329a52a6ef2d26351e515f32b4e6204662e",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/extensions?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/extensions",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/15f2f329a52a6ef2d26351e515f32b4e6204662e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/extensions?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/15f2f329a52a6ef2d26351e515f32b4e6204662e",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/extensions"
+    }
+  },
+  {
+    "name": "framework",
+    "path": "documentation/docs/framework",
+    "sha": "93414096b4c7885a4f9a7659aa05ae287c084d20",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/93414096b4c7885a4f9a7659aa05ae287c084d20",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/93414096b4c7885a4f9a7659aa05ae287c084d20",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework"
+    }
+  },
+  {
+    "name": "images",
+    "path": "documentation/docs/images",
+    "sha": "298b2d160778fa8c1b2ed82ac6b047a7503c30e4",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/images?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/images",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/298b2d160778fa8c1b2ed82ac6b047a7503c30e4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/images?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/298b2d160778fa8c1b2ed82ac6b047a7503c30e4",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/images"
+    }
+  },
+  {
+    "name": "index.md",
+    "path": "documentation/docs/index.md",
+    "sha": "5df1e52ba492bd0b1f97cc46dd4c68cbaf5fdedb",
+    "size": 4114,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/index.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/index.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/5df1e52ba492bd0b1f97cc46dd4c68cbaf5fdedb",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/index.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/index.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/5df1e52ba492bd0b1f97cc46dd4c68cbaf5fdedb",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/index.md"
+    }
+  },
+  {
+    "name": "intellij",
+    "path": "documentation/docs/intellij",
+    "sha": "f640ecd588c53c781caa47cd3fcc8d586d738e32",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/intellij?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/intellij",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/f640ecd588c53c781caa47cd3fcc8d586d738e32",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/intellij?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/f640ecd588c53c781caa47cd3fcc8d586d738e32",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/intellij"
+    }
+  },
+  {
+    "name": "proptest",
+    "path": "documentation/docs/proptest",
+    "sha": "0d14b3e2797a4c91519e7975d4d150de5220543e",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/proptest?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/proptest",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/0d14b3e2797a4c91519e7975d4d150de5220543e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/proptest?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/0d14b3e2797a4c91519e7975d4d150de5220543e",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/proptest"
+    }
+  },
+  {
+    "name": "quick_start.mdx",
+    "path": "documentation/docs/quick_start.mdx",
+    "sha": "0526db8ddc6ad5cbb5b8e191451093d9bb7333cb",
+    "size": 4329,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/quick_start.mdx?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/quick_start.mdx",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/0526db8ddc6ad5cbb5b8e191451093d9bb7333cb",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/quick_start.mdx",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/quick_start.mdx?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/0526db8ddc6ad5cbb5b8e191451093d9bb7333cb",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/quick_start.mdx"
+    }
+  },
+  {
+    "name": "release_6.0.md",
+    "path": "documentation/docs/release_6.0.md",
+    "sha": "3e7f75f67e07ec1045989426d3827c4dadc4104d",
+    "size": 7562,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/release_6.0.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/release_6.0.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/3e7f75f67e07ec1045989426d3827c4dadc4104d",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/release_6.0.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/release_6.0.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/3e7f75f67e07ec1045989426d3827c4dadc4104d",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/release_6.0.md"
+    }
+  },
+  {
+    "name": "why.md",
+    "path": "documentation/docs/why.md",
+    "sha": "9860673de50289935d0d426a020a28e54a4d5af2",
+    "size": 1943,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/why.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/why.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/9860673de50289935d0d426a020a28e54a4d5af2",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/why.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/why.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/9860673de50289935d0d426a020a28e54a4d5af2",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/why.md"
+    }
+  }
+]
+
+ succeeded in 664ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 15:24:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"486bbc1d8f014344485575687edf5fe7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=CZEC6bKq%2BjZHGVZjvGOJVd5g09azy0o646uUyJd0qm%2B7M1S4QqzRpax7o46b3EEpP6eKA8xSmTS%2FbmJD9g7Sq5UBQgfLOKSs7Ma6In0aXBSU2G8LtKADmFPRZmn2fN6Y9wsACyZEW53NRkB0KUwcHjD2uFLDuvsGvHV1xoFUCU7WjBp2AsnN%2BehvedXHVxeryMN7fJL5gT0ebfGvE48DFQk1%2FGf6w%2FYh8hws4p6hsk%2FDMhre0mMsWaYxaUHTUHe0BIyP1X1MQGdj26MDeSBfSg%3D%3D--356OUbgSc643K5F1--xlI6eCWNRd4vpxwcAHQqgw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.896257703.1778081057; expires=Thu, 06 May 2027 15:24:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 15:24:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5187:185A04:360CC0:2A2DB6:69FB5D21
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/6.1.11/kotest-framework-engine-jvm-6.1.11-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 15:24:24 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f78fdda0c1803af-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 208121
+etag: "f43436d6bec321290f6af228ad602604"
+last-modified: Sat, 04 Apr 2026 12:31:43 GMT
+x-checksum-md5: f43436d6bec321290f6af228ad602604
+x-checksum-sha1: 2ad14aed781c4a73ed4dbb421966d408a0a06686
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework?ref=6.1.11' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 354ms:
+[
+  {
+    "name": "autoclose.md",
+    "path": "documentation/docs/framework/autoclose.md",
+    "sha": "e09ebfb3be1edfa3db170a8b7f46596329919553",
+    "size": 604,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/autoclose.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/autoclose.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/e09ebfb3be1edfa3db170a8b7f46596329919553",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/autoclose.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/autoclose.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/e09ebfb3be1edfa3db170a8b7f46596329919553",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/autoclose.md"
+    }
+  },
+  {
+    "name": "concurrency.md",
+    "path": "documentation/docs/framework/concurrency.md",
+    "sha": "66054cb191ee89b353a1d1b46b639f5cfba624c8",
+    "size": 3300,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/concurrency.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/concurrency.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/66054cb191ee89b353a1d1b46b639f5cfba624c8",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/concurrency.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/concurrency.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/66054cb191ee89b353a1d1b46b639f5cfba624c8",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/concurrency.md"
+    }
+  },
+  {
+    "name": "concurrency6.0.md",
+    "path": "documentation/docs/framework/concurrency6.0.md",
+    "sha": "58d655f755e392bac220bfa82f029e3d8d635366",
+    "size": 11709,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/concurrency6.0.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/concurrency6.0.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/58d655f755e392bac220bfa82f029e3d8d635366",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/concurrency6.0.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/concurrency6.0.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/58d655f755e392bac220bfa82f029e3d8d635366",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/concurrency6.0.md"
+    }
+  },
+  {
+    "name": "conditional",
+    "path": "documentation/docs/framework/conditional",
+    "sha": "58c85c82caae2146d8ce777094999381b1bff4ba",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/conditional?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/conditional",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/58c85c82caae2146d8ce777094999381b1bff4ba",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/conditional?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/58c85c82caae2146d8ce777094999381b1bff4ba",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/conditional"
+    }
+  },
+  {
+    "name": "conditional_evaluation.md",
+    "path": "documentation/docs/framework/conditional_evaluation.md",
+    "sha": "316654834aebc8ef1694dba6eb3598bf338e7c87",
+    "size": 431,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/conditional_evaluation.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/conditional_evaluation.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/316654834aebc8ef1694dba6eb3598bf338e7c87",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/conditional_evaluation.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/conditional_evaluation.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/316654834aebc8ef1694dba6eb3598bf338e7c87",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/conditional_evaluation.md"
+    }
+  },
+  {
+    "name": "config_dump.md",
+    "path": "documentation/docs/framework/config_dump.md",
+    "sha": "7299ea16cdde923f81edd719b835bd52a30e6ff8",
+    "size": 1270,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/config_dump.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/config_dump.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/7299ea16cdde923f81edd719b835bd52a30e6ff8",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/config_dump.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/config_dump.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/7299ea16cdde923f81edd719b835bd52a30e6ff8",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/config_dump.md"
+    }
+  },
+  {
+    "name": "config_props.md",
+    "path": "documentation/docs/framework/config_props.md",
+    "sha": "fb87ac1796af91c13fbab0ca3441c88e62ba504c",
+    "size": 4779,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/config_props.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/config_props.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/fb87ac1796af91c13fbab0ca3441c88e62ba504c",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/config_props.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/config_props.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/fb87ac1796af91c13fbab0ca3441c88e62ba504c",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/config_props.md"
+    }
+  },
+  {
+    "name": "coroutines",
+    "path": "documentation/docs/framework/coroutines",
+    "sha": "4c856b172258f2b3c85fb9063ce177529ff96b73",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/coroutines?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/coroutines",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/4c856b172258f2b3c85fb9063ce177529ff96b73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/coroutines?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/4c856b172258f2b3c85fb9063ce177529ff96b73",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/coroutines"
+    }
+  },
+  {
+    "name": "data_driven_testing.md",
+    "path": "documentation/docs/framework/data_driven_testing.md",
+    "sha": "074634375dfb4a784b414d1895c35aece979e590",
+    "size": 116,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/data_driven_testing.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/data_driven_testing.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/074634375dfb4a784b414d1895c35aece979e590",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/data_driven_testing.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/data_driven_testing.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/074634375dfb4a784b414d1895c35aece979e590",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/data_driven_testing.md"
+    }
+  },
+  {
+    "name": "datatesting",
+    "path": "documentation/docs/framework/datatesting",
+    "sha": "23f149b46c6b9c8ae58d72ed203e270daa5d946e",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/datatesting?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/datatesting",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/23f149b46c6b9c8ae58d72ed203e270daa5d946e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/datatesting?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/23f149b46c6b9c8ae58d72ed203e270daa5d946e",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/datatesting"
+    }
+  },
+  {
+    "name": "dsl.md",
+    "path": "documentation/docs/framework/dsl.md",
+    "sha": "34e8a3c442900034a6e4fced190d1e15903116e9",
+    "size": 1063,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/dsl.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/dsl.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/34e8a3c442900034a6e4fced190d1e15903116e9",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/dsl.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/dsl.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/34e8a3c442900034a6e4fced190d1e15903116e9",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/dsl.md"
+    }
+  },
+  {
+    "name": "exceptions.md",
+    "path": "documentation/docs/framework/exceptions.md",
+    "sha": "c6802f9f7620446b297743efa8abce07ad7a4591",
+    "size": 396,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/exceptions.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/exceptions.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/c6802f9f7620446b297743efa8abce07ad7a4591",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/exceptions.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/exceptions.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/c6802f9f7620446b297743efa8abce07ad7a4591",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/exceptions.md"
+    }
+  },
+  {
+    "name": "extensions",
+    "path": "documentation/docs/framework/extensions",
+    "sha": "d5a80c7a3fda86776e90c80cfc7640a36d2ba976",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/extensions?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/extensions",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/d5a80c7a3fda86776e90c80cfc7640a36d2ba976",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/extensions?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/d5a80c7a3fda86776e90c80cfc7640a36d2ba976",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/extensions"
+    }
+  },
+  {
+    "name": "fail_fast.md",
+    "path": "documentation/docs/framework/fail_fast.md",
+    "sha": "7dee486598e7923ec7a901691272eeedb825cf9e",
+    "size": 1184,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/fail_fast.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/fail_fast.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/7dee486598e7923ec7a901691272eeedb825cf9e",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/fail_fast.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/fail_fast.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/7dee486598e7923ec7a901691272eeedb825cf9e",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/fail_fast.md"
+    }
+  },
+  {
+    "name": "fail_on_empty.md",
+    "path": "documentation/docs/framework/fail_on_empty.md",
+    "sha": "5bf0b0d08ad2aa74e0518a6c3e58ed74f3bcbd51",
+    "size": 701,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/fail_on_empty.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/fail_on_empty.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/5bf0b0d08ad2aa74e0518a6c3e58ed74f3bcbd51",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/fail_on_empty.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/fail_on_empty.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/5bf0b0d08ad2aa74e0518a6c3e58ed74f3bcbd51",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/fail_on_empty.md"
+    }
+  },
+  {
+    "name": "fake_functions.md",
+    "path": "documentation/docs/framework/fake_functions.md",
+    "sha": "ebe497c0e4bb718265d3bad2e4ebddf3f3c5cbd0",
+    "size": 2291,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/fake_functions.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/fake_functions.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/ebe497c0e4bb718265d3bad2e4ebddf3f3c5cbd0",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/fake_functions.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/fake_functions.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/ebe497c0e4bb718265d3bad2e4ebddf3f3c5cbd0",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/fake_functions.md"
+    }
+  },
+  {
+    "name": "index.md",
+    "path": "documentation/docs/framework/index.md",
+    "sha": "a6f5088dc5a97dbf5f5028f99ca055a0ac2eb8b9",
+    "size": 1954,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/index.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/index.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/a6f5088dc5a97dbf5f5028f99ca055a0ac2eb8b9",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/index.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/index.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/a6f5088dc5a97dbf5f5028f99ca055a0ac2eb8b9",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/index.md"
+    }
+  },
+  {
+    "name": "integrations",
+    "path": "documentation/docs/framework/integrations",
+    "sha": "a9a95d3af9270ddff624398ce7d5ebc53044856a",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/integrations?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/integrations",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/a9a95d3af9270ddff624398ce7d5ebc53044856a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/integrations?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/a9a95d3af9270ddff624398ce7d5ebc53044856a",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/integrations"
+    }
+  },
+  {
+    "name": "isolation_mode.md",
+    "path": "documentation/docs/framework/isolation_mode.md",
+    "sha": "4fef3a105532cea7a067eb28ed581d31412f595d",
+    "size": 6708,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/isolation_mode.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/isolation_mode.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/4fef3a105532cea7a067eb28ed581d31412f595d",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/isolation_mode.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/isolation_mode.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/4fef3a105532cea7a067eb28ed581d31412f595d",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/isolation_mode.md"
+    }
+  },
+  {
+    "name": "lifecycle_hooks.md",
+    "path": "documentation/docs/framework/lifecycle_hooks.md",
+    "sha": "0957056a91754d7e9ce0340d6f3b8d78107e9c75",
+    "size": 11806,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/lifecycle_hooks.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/lifecycle_hooks.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/0957056a91754d7e9ce0340d6f3b8d78107e9c75",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/lifecycle_hooks.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/lifecycle_hooks.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/0957056a91754d7e9ce0340d6f3b8d78107e9c75",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/lifecycle_hooks.md"
+    }
+  },
+  {
+    "name": "listeners.md",
+    "path": "documentation/docs/framework/listeners.md",
+    "sha": "4571fb156c6613c362145c4b5dbf81b8d4526b3e",
+    "size": 111,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/listeners.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/listeners.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/4571fb156c6613c362145c4b5dbf81b8d4526b3e",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/listeners.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/listeners.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/4571fb156c6613c362145c4b5dbf81b8d4526b3e",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/listeners.md"
+    }
+  },
+  {
+    "name": "logging.md",
+    "path": "documentation/docs/framework/logging.md",
+    "sha": "95e6ce8ad46856453df2618b79a29fba32e13f29",
+    "size": 1821,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/logging.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/logging.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/95e6ce8ad46856453df2618b79a29fba32e13f29",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/logging.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/logging.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/95e6ce8ad46856453df2618b79a29fba32e13f29",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/logging.md"
+    }
+  },
+  {
+    "name": "output.md",
+    "path": "documentation/docs/framework/output.md",
+    "sha": "fe0855158ec2933d25f6d1535cd62a72445c868b",
+    "size": 1003,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/output.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/output.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/fe0855158ec2933d25f6d1535cd62a72445c868b",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/output.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/output.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/fe0855158ec2933d25f6d1535cd62a72445c868b",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/output.md"
+    }
+  },
+  {
+    "name": "package_level_config.md",
+    "path": "documentation/docs/framework/package_level_config.md",
+    "sha": "07ebec9d9f65fe3292b52b1b7d1d9f937aa75893",
+    "size": 5355,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/package_level_config.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/package_level_config.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/07ebec9d9f65fe3292b52b1b7d1d9f937aa75893",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/package_level_config.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/package_level_config.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/07ebec9d9f65fe3292b52b1b7d1d9f937aa75893",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/package_level_config.md"
+    }
+  },
+  {
+    "name": "project_config.md",
+    "path": "documentation/docs/framework/project_config.md",
+    "sha": "c9f9e7ef6c7cc96b9b1ef28dc319943c9052e4fc",
+    "size": 8259,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/project_config.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/project_config.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/c9f9e7ef6c7cc96b9b1ef28dc319943c9052e4fc",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/project_config.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/project_config.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/c9f9e7ef6c7cc96b9b1ef28dc319943c9052e4fc",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/project_config.md"
+    }
+  },
+  {
+    "name": "race_conditions.md",
+    "path": "documentation/docs/framework/race_conditions.md",
+    "sha": "06995240d38e3eea47313a4baca1be7fddf23677",
+    "size": 6121,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/race_conditions.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/race_conditions.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/06995240d38e3eea47313a4baca1be7fddf23677",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/race_conditions.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/race_conditions.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/06995240d38e3eea47313a4baca1be7fddf23677",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/race_conditions.md"
+    }
+  },
+  {
+    "name": "setup.mdx",
+    "path": "documentation/docs/framework/setup.mdx",
+    "sha": "a391175a04ef6494db35f00f8283f5876fd171d0",
+    "size": 10945,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/setup.mdx?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/setup.mdx",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/a391175a04ef6494db35f00f8283f5876fd171d0",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/setup.mdx",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/setup.mdx?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/a391175a04ef6494db35f00f8283f5876fd171d0",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/setup.mdx"
+    }
+  },
+  {
+    "name": "setup",
+    "path": "documentation/docs/framework/setup",
+    "sha": "de97e4e7a47f514b4fa4bd92f13a46a5359d48a1",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/setup?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/setup",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/de97e4e7a47f514b4fa4bd92f13a46a5359d48a1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/setup?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/de97e4e7a47f514b4fa4bd92f13a46a5359d48a1",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/setup"
+    }
+  },
+  {
+    "name": "shared_test_config.md",
+    "path": "documentation/docs/framework/shared_test_config.md",
+    "sha": "04728abff3fc5ea5a08320aacacc75649b63cdbe",
+    "size": 5124,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/shared_test_config.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/shared_test_config.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/04728abff3fc5ea5a08320aacacc75649b63cdbe",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/shared_test_config.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/shared_test_config.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/04728abff3fc5ea5a08320aacacc75649b63cdbe",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/shared_test_config.md"
+    }
+  },
+  {
+    "name": "spec_lifecycle.md",
+    "path": "documentation/docs/framework/spec_lifecycle.md",
+    "sha": "113483af64daf1d5500ead0233d361c443665179",
+    "size": 4357,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/spec_lifecycle.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/spec_lifecycle.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/113483af64daf1d5500ead0233d361c443665179",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/spec_lifecycle.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/spec_lifecycle.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/113483af64daf1d5500ead0233d361c443665179",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/spec_lifecycle.md"
+    }
+  },
+  {
+    "name": "spec_ordering.md",
+    "path": "documentation/docs/framework/spec_ordering.md",
+    "sha": "6441f55de577e2ad433c37b5e104a55d27462a4d",
+    "size": 2404,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/spec_ordering.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/spec_ordering.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/6441f55de577e2ad433c37b5e104a55d27462a4d",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/spec_ordering.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/spec_ordering.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/6441f55de577e2ad433c37b5e104a55d27462a4d",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/spec_ordering.md"
+    }
+  },
+  {
+    "name": "styles.md",
+    "path": "documentation/docs/framework/styles.md",
+    "sha": "06c9124a280c9162f1804fac8edbfbf95e70eb7f",
+    "size": 10864,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/styles.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/styles.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/06c9124a280c9162f1804fac8edbfbf95e70eb7f",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/styles.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/styles.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/06c9124a280c9162f1804fac8edbfbf95e70eb7f",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/styles.md"
+    }
+  },
+  {
+    "name": "tags.md",
+    "path": "documentation/docs/framework/tags.md",
+    "sha": "eb2b5593f4b6c52d1da64f7de98ebdba8b76e9bd",
+    "size": 9039,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/tags.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/tags.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/eb2b5593f4b6c52d1da64f7de98ebdba8b76e9bd",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/tags.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/tags.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/eb2b5593f4b6c52d1da64f7de98ebdba8b76e9bd",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/tags.md"
+    }
+  },
+  {
+    "name": "tempfile.md",
+    "path": "documentation/docs/framework/tempfile.md",
+    "sha": "deb7817439aee740fd4e25bf8ed8c6ff9d9aa159",
+    "size": 1230,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/tempfile.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/tempfile.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/deb7817439aee740fd4e25bf8ed8c6ff9d9aa159",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/tempfile.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/tempfile.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/deb7817439aee740fd4e25bf8ed8c6ff9d9aa159",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/tempfile.md"
+    }
+  },
+  {
+    "name": "test_case_config.md",
+    "path": "documentation/docs/framework/test_case_config.md",
+    "sha": "60bd105d348088df65a49944ee4b2644222a3031",
+    "size": 4046,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/test_case_config.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/test_case_config.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/60bd105d348088df65a49944ee4b2644222a3031",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/test_case_config.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/test_case_config.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/60bd105d348088df65a49944ee4b2644222a3031",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/test_case_config.md"
+    }
+  },
+  {
+    "name": "test_factories.md",
+    "path": "documentation/docs/framework/test_factories.md",
+    "sha": "611ea7aacf7a53f89c4e0c3206a6edfe6b8e5e99",
+    "size": 4250,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/test_factories.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/test_factories.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/611ea7aacf7a53f89c4e0c3206a6edfe6b8e5e99",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/test_factories.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/test_factories.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/611ea7aacf7a53f89c4e0c3206a6edfe6b8e5e99",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/test_factories.md"
+    }
+  },
+  {
+    "name": "test_ordering.md",
+    "path": "documentation/docs/framework/test_ordering.md",
+    "sha": "496bebc9c824574191dad3462791781cb4b7d8a2",
+    "size": 1824,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/test_ordering.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/test_ordering.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/496bebc9c824574191dad3462791781cb4b7d8a2",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/test_ordering.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/test_ordering.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/496bebc9c824574191dad3462791781cb4b7d8a2",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/test_ordering.md"
+    }
+  },
+  {
+    "name": "timeouts.md",
+    "path": "documentation/docs/framework/timeouts.md",
+    "sha": "b80d689b9ccc4fd5764f232ca6285d779284dd7c",
+    "size": 425,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/timeouts.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/timeouts.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/b80d689b9ccc4fd5764f232ca6285d779284dd7c",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/timeouts.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/timeouts.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/b80d689b9ccc4fd5764f232ca6285d779284dd7c",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/timeouts.md"
+    }
+  },
+  {
+    "name": "timeouts",
+    "path": "documentation/docs/framework/timeouts",
+    "sha": "6e6c26745e5785cf895e4c4fcdca24b23c3d1a15",
+    "size": 0,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/timeouts?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/timeouts",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/trees/6e6c26745e5785cf895e4c4fcdca24b23c3d1a15",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/timeouts?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/trees/6e6c26745e5785cf895e4c4fcdca24b23c3d1a15",
+      "html": "https://github.com/kotest/kotest/tree/6.1.11/documentation/docs/framework/timeouts"
+    }
+  },
+  {
+    "name": "writing_tests.md",
+    "path": "documentation/docs/framework/writing_tests.md",
+    "sha": "b302cad3604d99b694371093569385de1d82346e",
+    "size": 4749,
+    "url": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/writing_tests.md?ref=6.1.11",
+    "html_url": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/writing_tests.md",
+    "git_url": "https://api.github.com/repos/kotest/kotest/git/blobs/b302cad3604d99b694371093569385de1d82346e",
+    "download_url": "https://raw.githubusercontent.com/kotest/kotest/6.1.11/documentation/docs/framework/writing_tests.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kotest/kotest/contents/documentation/docs/framework/writing_tests.md?ref=6.1.11",
+      "git": "https://api.github.com/repos/kotest/kotest/git/blobs/b302cad3604d99b694371093569385de1d82346e",
+      "html": "https://github.com/kotest/kotest/blob/6.1.11/documentation/docs/framework/writing_tests.md"
+    }
+  }
+]
+
+ succeeded in 823ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 15:24:24 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"cae514cd16f252f74f783bfb6fa98496"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=j1z98DwKHlckmGLWQBhWNJDCuvhoaqlOQp8n6Qw%2FI8Bh9wuoHrvo9fzL9C9wU8VOReZnZvvZxswdKDwbMmXVRR2fj7XXvEhuQ%2BMtz2XkHiI2YqltGVDA9pSL%2B9AEoMKhzs3qeLfxnAv9tBN3YE%2FGRmTiAxqk7A%2FG2Qt8Df25qoEeElqsmuD4moH1IfJYM%2FfMuoIo61WXzGzV5DYxMQq78x74QkwZ%2BnEzJhObRZEOBZBZyEbfrIrh0mvbU4oHMfGY4X1wp10rEZUDmbln0pikbQ%3D%3D--zpGqiloQxYyaxVUQ--GOFqNKicTaaUCQLxe1h8WQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2130356215.1778081064; expires=Thu, 06 May 2027 15:24:24 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 15:24:24 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:D6E70:373F6D:2B4F18:69FB5D27
+
+
+codex
+I’m going to use the Maven sources jar for source code, the tagged GitHub `jvmTest` directory for tests, and the tagged framework documentation directory rather than the tiny javadoc jar. This artifact is a standard JVM variant, so I’m leaving the Native Image exclusion fields absent and adding Kotlin `2.2` from its published Kotlin stdlib dependency.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+diff --git a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+index 209e763beb640d81815a26087aefb4b27fa43298..19461f21f514480aff602cd39a33b1bdd3404143
+--- a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
++++ b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11"
++  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11",
++  "repository-url" : "https://github.com/kotest/kotest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/$version$/kotest-framework-engine-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/kotest/kotest/tree/$version$/kotest-framework/kotest-framework-engine/src/jvmTest",
++  "documentation-url" : "https://github.com/kotest/kotest/tree/$version$/documentation/docs/framework",
++  "description" : "Kotest Framework Engine JVM provides the JVM execution engine for Kotest, the Kotlin testing framework, including spec discovery, test execution, scheduling, and listener integration. It underpins Kotest runners by coordinating coroutine-based tests, lifecycle callbacks, and reporting on the standard JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+index 209e763beb640d81815a26087aefb4b27fa43298..19461f21f514480aff602cd39a33b1bdd3404143
+--- a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
++++ b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11"
++  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11",
++  "repository-url" : "https://github.com/kotest/kotest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/$version$/kotest-framework-engine-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/kotest/kotest/tree/$version$/kotest-framework/kotest-framework-engine/src/jvmTest",
++  "documentation-url" : "https://github.com/kotest/kotest/tree/$version$/documentation/docs/framework",
++  "description" : "Kotest Framework Engine JVM provides the JVM execution engine for Kotest, the Kotlin testing framework, including spec discovery, test execution, scheduling, and listener integration. It underpins Kotest runners by coordinating coroutine-based tests, lifecycle callbacks, and reporting on the standard JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+{
+  "coordinates": "io.kotest:kotest-framework-engine-jvm:6.1.11",
+  "repository-url": "https://github.com/kotest/kotest",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/$version$/kotest-framework-engine-jvm-$version$-sources.jar",
+  "test-code-url": "https://github.com/kotest/kotest/tree/$version$/kotest-framework/kotest-framework-engine/src/jvmTest",
+  "documentation-url": "https://github.com/kotest/kotest/tree/$version$/documentation/docs/framework",
+  "description": "Kotest Framework Engine JVM provides the JVM execution engine for Kotest, the Kotlin testing framework, including spec discovery, test execution, scheduling, and listener integration. It underpins Kotest runners by coordinating coroutine-based tests, lifecycle callbacks, and reporting on the standard JVM.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+index 209e763beb640d81815a26087aefb4b27fa43298..19461f21f514480aff602cd39a33b1bdd3404143
+--- a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
++++ b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11"
++  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11",
++  "repository-url" : "https://github.com/kotest/kotest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/$version$/kotest-framework-engine-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/kotest/kotest/tree/$version$/kotest-framework/kotest-framework-engine/src/jvmTest",
++  "documentation-url" : "https://github.com/kotest/kotest/tree/$version$/documentation/docs/framework",
++  "description" : "Kotest Framework Engine JVM provides the JVM execution engine for Kotest, the Kotlin testing framework, including spec discovery, test execution, scheduling, and listener integration. It underpins Kotest runners by coordinating coroutine-based tests, lifecycle callbacks, and reporting on the standard JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914
+diff --git a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+index 209e763beb640d81815a26087aefb4b27fa43298..19461f21f514480aff602cd39a33b1bdd3404143
+--- a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
++++ b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11"
++  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11",
++  "repository-url" : "https://github.com/kotest/kotest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/$version$/kotest-framework-engine-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/kotest/kotest/tree/$version$/kotest-framework/kotest-framework-engine/src/jvmTest",
++  "documentation-url" : "https://github.com/kotest/kotest/tree/$version$/documentation/docs/framework",
++  "description" : "Kotest Framework Engine JVM provides the JVM execution engine for Kotest, the Kotlin testing framework, including spec discovery, test execution, scheduling, and listener integration. It underpins Kotest runners by coordinating coroutine-based tests, lifecycle callbacks, and reporting on the standard JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+ succeeded in 689ms:
+web search: 
+web search: kotest-framework-engine-jvm 6.1.11 Maven Central sources jar
+web search: 
+web search: https://github.com/kotest/kotest/tree/6.1.11/kotest-framework/kotest-framework-engine/src/jvmTest
+codex
+Updated [io.kotest-kotest-framework-engine-jvm-6.1.11.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json) with repository, source, test, documentation, description, and Kotlin language metadata.
+
+I verified Maven Central has `6.1.11`, and the tagged GitHub tree has the `jvmTest` and framework documentation paths used in the metadata. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/?utm_source=openai)) JSON validation passed with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+index 209e763beb640d81815a26087aefb4b27fa43298..19461f21f514480aff602cd39a33b1bdd3404143
+--- a/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
++++ b/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11"
++  "coordinates" : "io.kotest:kotest-framework-engine-jvm:6.1.11",
++  "repository-url" : "https://github.com/kotest/kotest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/$version$/kotest-framework-engine-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/kotest/kotest/tree/$version$/kotest-framework/kotest-framework-engine/src/jvmTest",
++  "documentation-url" : "https://github.com/kotest/kotest/tree/$version$/documentation/docs/framework",
++  "description" : "Kotest Framework Engine JVM provides the JVM execution engine for Kotest, the Kotlin testing framework, including spec discovery, test execution, scheduling, and listener integration. It underpins Kotest runners by coordinating coroutine-based tests, lifecycle callbacks, and reporting on the standard JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+tokens used
+111,494
+Updated [io.kotest-kotest-framework-engine-jvm-6.1.11.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/build/discovered-artifact-metadata/io.kotest-kotest-framework-engine-jvm-6.1.11.json) with repository, source, test, documentation, description, and Kotlin language metadata.
+
+I verified Maven Central has `6.1.11`, and the tagged GitHub tree has the `jvmTest` and framework documentation paths used in the metadata. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/io/kotest/kotest-framework-engine-jvm/?utm_source=openai)) JSON validation passed with `jq`.
+Ran agent for io.kotest:kotest-framework-engine-jvm:6.1.11 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/build/agent-artifact-discovery-logs/io.kotest-kotest-framework-engine-jvm-6.1.11.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5385-aa3ed914/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 56s
+9 actionable tasks: 9 executed
