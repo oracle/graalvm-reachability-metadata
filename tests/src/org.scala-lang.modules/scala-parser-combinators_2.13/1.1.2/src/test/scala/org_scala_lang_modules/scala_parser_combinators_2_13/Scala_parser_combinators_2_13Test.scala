@@ -6,11 +6,222 @@
  */
 package org_scala_lang_modules.scala_parser_combinators_2_13
 
+import java.io.StringReader
+
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import scala.jdk.CollectionConverters._
+import scala.util.parsing.combinator.JavaTokenParsers
+import scala.util.parsing.combinator.PackratParsers
+import scala.util.parsing.combinator.RegexParsers
+import scala.util.parsing.combinator.syntactical.StandardTokenParsers
+import scala.util.parsing.input.CharArrayReader
+import scala.util.parsing.input.CharSequenceReader
+import scala.util.parsing.input.OffsetPosition
+import scala.util.parsing.input.PagedSeq
+import scala.util.parsing.input.PagedSeqReader
+import scala.util.parsing.input.Positional
+import scala.util.parsing.input.StreamReader
 
 class Scala_parser_combinators_2_13Test {
   @Test
-  def test(): Unit = {
-    println("This is just a placeholder, implement your test")
+  def regexParsersComposeRecursiveExpressionGrammarAndReportFailures(): Unit = {
+    val result: ArithmeticParser.ParseResult[Int] = ArithmeticParser.parseAll(
+      ArithmeticParser.expression,
+      "2 + 3 * (4 + 5) - 6 / 2"
+    )
+
+    assertThat(result.successful).isTrue()
+    assertThat(result.get).isEqualTo(26)
+
+    val failure: ArithmeticParser.ParseResult[Int] = ArithmeticParser.parseAll(ArithmeticParser.expression, "1 +")
+    val failureText: String = failure.toString
+    assertThat(failure.successful).isFalse()
+    assertThat(failureText.contains("failure")).isTrue()
+    assertThat(failureText.contains("1 +")).isTrue()
+  }
+
+  @Test
+  def javaTokenParsersReadStructuredKeyValueDocuments(): Unit = {
+    val source: String = """
+      host = "localhost";
+      port = 5432;
+      enabled = true;
+      ratio = 0.75
+      """
+
+    val result: KeyValueParser.ParseResult[Map[String, Any]] = KeyValueParser.parseAll(KeyValueParser.document, source)
+
+    assertThat(result.successful).isTrue()
+    assertThat(result.get("host")).isEqualTo("localhost")
+    assertThat(result.get("port")).isEqualTo(BigDecimal(5432))
+    assertThat(result.get("enabled")).isEqualTo(true)
+    assertThat(result.get("ratio")).isEqualTo(BigDecimal("0.75"))
+  }
+
+  @Test
+  def positionedParsersAttachSourceLocationsToParsedValues(): Unit = {
+    val source: String = "val answer = 42\nval next = 7"
+
+    val result: DeclarationParser.ParseResult[List[Declaration]] = DeclarationParser.parseAll(
+      DeclarationParser.document,
+      source
+    )
+
+    assertThat(result.successful).isTrue()
+    assertThat(result.get.map(_.name).asJava).containsExactly("answer", "next")
+    assertThat(result.get.head.value).isEqualTo(42)
+    assertThat(result.get.head.pos.line).isEqualTo(1)
+    assertThat(result.get.head.pos.column).isEqualTo(1)
+  }
+
+  @Test
+  def packratParsersHandleDirectLeftRecursionWithMemoizedInput(): Unit = {
+    val result: LeftRecursiveExpressionParser.ParseResult[Int] = LeftRecursiveExpressionParser.parseAll(
+      LeftRecursiveExpressionParser.expression,
+      "1 + 2 + (3 + 4) + 5"
+    )
+
+    assertThat(result.successful).isTrue()
+    assertThat(result.get).isEqualTo(15)
+  }
+
+  @Test
+  def standardTokenParsersUseConfigurableLexicalScanner(): Unit = {
+    val language: LetLanguage = new LetLanguage
+    val source: String = """
+      // StdLexical skips line comments before scanning tokens.
+      let answer = 41;
+      let extra = 1;
+      print 1 + 2 + 3;
+      """
+
+    val result: language.ParseResult[(List[(String, Int)], Int)] = language.parseProgram(source)
+
+    assertThat(result.successful).isTrue()
+    assertThat(result.get._1.asJava).containsExactly("answer" -> 41, "extra" -> 1)
+    assertThat(result.get._2).isEqualTo(6)
+  }
+
+  @Test
+  def characterReadersExposeContentOffsetsAndHumanReadablePositions(): Unit = {
+    val sequenceReader: CharSequenceReader = new CharSequenceReader("alpha\nβeta")
+    val secondLineReader: CharSequenceReader = sequenceReader.drop(6)
+
+    assertThat(sequenceReader.first).isEqualTo('a')
+    assertThat(secondLineReader.first).isEqualTo('β')
+    assertThat(secondLineReader.pos.line).isEqualTo(2)
+    assertThat(secondLineReader.pos.column).isEqualTo(1)
+
+    val arrayReader: CharArrayReader = new CharArrayReader("xyz".toCharArray)
+    assertThat(arrayReader.first).isEqualTo('x')
+    assertThat(arrayReader.drop(2).first).isEqualTo('z')
+    assertThat(arrayReader.drop(3).atEnd).isTrue()
+
+    val position: OffsetPosition = OffsetPosition("first\nsecond", 8)
+    assertThat(position.line).isEqualTo(2)
+    assertThat(position.column).isEqualTo(3)
+    assertThat(position.lineContents).isEqualTo("second")
+    assertThat(position.longString).contains("second").contains("^")
+  }
+
+  @Test
+  def pagedAndStreamReadersProvideReaderApiForIncrementalCharacterSources(): Unit = {
+    val pagedReader: PagedSeqReader = new PagedSeqReader(PagedSeq.fromStrings(List("ab", "\ncd")))
+    val pagedSecondLine: PagedSeqReader = pagedReader.drop(3)
+
+    assertThat(pagedReader.first).isEqualTo('a')
+    assertThat(pagedSecondLine.first).isEqualTo('c')
+    assertThat(pagedSecondLine.pos.line).isEqualTo(2)
+    assertThat(pagedSecondLine.pos.column).isEqualTo(1)
+
+    val streamReader = StreamReader(new StringReader("xy\nz"))
+    val streamSecondLine = streamReader.drop(3)
+
+    assertThat(streamReader.first).isEqualTo('x')
+    assertThat(streamSecondLine.first).isEqualTo('z')
+    assertThat(streamSecondLine.pos.line).isEqualTo(2)
+    assertThat(streamSecondLine.pos.column).isEqualTo(1)
+    assertThat(streamSecondLine.rest.atEnd).isTrue()
+  }
+
+  private object ArithmeticParser extends RegexParsers {
+    override val skipWhitespace: Boolean = true
+
+    def expression: Parser[Int] = term ~ rep(("+" | "-") ~ term) ^^ {
+      case first ~ operations =>
+        operations.foldLeft(first) {
+          case (left, "+" ~ right) => left + right
+          case (left, "-" ~ right) => left - right
+        }
+    }
+
+    private def term: Parser[Int] = factor ~ rep(("*" | "/") ~ factor) ^^ {
+      case first ~ operations =>
+        operations.foldLeft(first) {
+          case (left, "*" ~ right) => left * right
+          case (left, "/" ~ right) => left / right
+        }
+    }
+
+    private def factor: Parser[Int] = number | "(" ~> expression <~ ")"
+
+    private def number: Parser[Int] = """-?\d+""".r ^^ (_.toInt)
+  }
+
+  private object KeyValueParser extends JavaTokenParsers {
+    def document: Parser[Map[String, Any]] = phrase(repsep(entry, ";")) ^^ (_.toMap)
+
+    private def entry: Parser[(String, Any)] = ident ~ ("=" ~> value) ^^ {
+      case key ~ parsedValue => key -> parsedValue
+    }
+
+    private def value: Parser[Any] =
+      stringLiteral ^^ unquote |
+        floatingPointNumber ^^ (number => BigDecimal(number)) |
+        ("true" | "false") ^^ (_.toBoolean)
+
+    private def unquote(text: String): String = text.substring(1, text.length - 1)
+  }
+
+  private final case class Declaration(name: String, value: Int) extends Positional
+
+  private object DeclarationParser extends JavaTokenParsers {
+    def document: Parser[List[Declaration]] = phrase(rep1(declaration))
+
+    private def declaration: Parser[Declaration] = positioned(
+      "val" ~> ident ~ ("=" ~> wholeNumber) ^^ {
+        case name ~ value => Declaration(name, value.toInt)
+      }
+    )
+  }
+
+  private object LeftRecursiveExpressionParser extends JavaTokenParsers with PackratParsers {
+    lazy val expression: PackratParser[Int] =
+      expression ~ "+" ~ atom ^^ {
+        case left ~ _ ~ right => left + right
+      } |
+        atom
+
+    private lazy val atom: PackratParser[Int] = wholeNumber ^^ (_.toInt) | "(" ~> expression <~ ")"
+  }
+
+  private final class LetLanguage extends StandardTokenParsers {
+    lexical.reserved ++= List("let", "print")
+    lexical.delimiters ++= List("=", ";", "+")
+
+    def parseProgram(source: String): ParseResult[(List[(String, Int)], Int)] = phrase(program)(new lexical.Scanner(source))
+
+    private def program: Parser[(List[(String, Int)], Int)] = rep1(assignment) ~ ("print" ~> addition <~ ";") ^^ {
+      case assignments ~ printedValue => assignments -> printedValue
+    }
+
+    private def assignment: Parser[(String, Int)] = "let" ~> ident ~ ("=" ~> numericLit) <~ ";" ^^ {
+      case name ~ value => name -> value.toInt
+    }
+
+    private def addition: Parser[Int] = numericLit ~ rep("+" ~> numericLit) ^^ {
+      case first ~ rest => (first +: rest).map(_.toInt).sum
+    }
   }
 }
