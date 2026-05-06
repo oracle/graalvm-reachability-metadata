@@ -32,6 +32,7 @@ import scala.compat.java8.FutureConverters._
 import scala.compat.java8.OptionConverters
 import scala.compat.java8.OptionConverters._
 import scala.compat.java8.PrimitiveIteratorConverters._
+import scala.compat.java8.ScalaStreamSupport
 import scala.compat.java8.StreamConverters._
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
@@ -193,6 +194,28 @@ class Scala_java8_compat_3Test {
     assertThat(Vector(2, 4, 6, 8).stepper.fold(0)(_ + _)).isEqualTo(20)
     assertThat(Vector(2, 4, 6, 8).stepper.foldTo(0)(_ + _)(_ >= 6)).isEqualTo(6)
     assertThat(Vector(2, 4, 6, 8).stepper.reduce(_ + _)).isEqualTo(20)
+  }
+
+  @Test
+  def createsJavaStreamsWithScalaStreamSupportStaticApi(): Unit = {
+    val words = List("alpha", "beta", "gamma")
+    assertThat(ScalaStreamSupport.stream(words).mapToInt(_.length).sum()).isEqualTo(14)
+
+    val numberNames = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    assertThat(ScalaStreamSupport.streamKeys(numberNames).mapToInt(value => value).sum()).isEqualTo(6)
+    assertThat(ScalaStreamSupport.streamValues(numberNames).toScala[List].sorted).isEqualTo(List("one", "three", "two"))
+
+    val oneShotWords = Iterator("a", "bb", "ccc")
+    assertThat(ScalaStreamSupport.streamAccumulated(oneShotWords).mapToInt(_.length).sum()).isEqualTo(6)
+
+    val boxedInts = List(Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(5))
+    assertThat(ScalaStreamSupport.intStream(boxedInts).sum()).isEqualTo(10)
+
+    val boxedLongValues = Map("left" -> java.lang.Long.valueOf(4L), "right" -> java.lang.Long.valueOf(6L))
+    assertThat(ScalaStreamSupport.longStreamAccumulatedValues(boxedLongValues).sum()).isEqualTo(10L)
+
+    val boxedDoubleKeys = Map(java.lang.Double.valueOf(1.5d) -> "left", java.lang.Double.valueOf(2.5d) -> "right")
+    assertThat(ScalaStreamSupport.doubleStreamAccumulatedKeys(boxedDoubleKeys).sum()).isEqualTo(4.0d)
   }
 
   @Test
