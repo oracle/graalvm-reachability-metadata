@@ -128,6 +128,20 @@ class Scalatest_wordspec_2_13Test {
   }
 
   @Test
+  def registersAndRunsSharedWordSpecBehaviorsInDifferentContexts(): Unit = {
+    val suite: SharedBehaviorWordSpec = new SharedBehaviorWordSpec
+    val names: Vector[String] = suite.testNames.toVector
+    val result: RunResult = runSuite(suite)
+
+    assert(names.count(_.contains("keep the first element available")) == 2)
+    assert(names.exists(_.contains("List-based collection")))
+    assert(names.exists(_.contains("Vector-based collection")))
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 4)
+    assert(suite.observed == Vector("list:first", "list:size", "vector:first", "vector:size"))
+  }
+
+  @Test
   def runsAsyncWordSpecAndFixtureAsyncWordSpecTests(): Unit = {
     val asyncSuite: FutureWordSpec = new FutureWordSpec
     val asyncResult: RunResult = runSuite(asyncSuite)
@@ -269,6 +283,30 @@ class Scalatest_wordspec_2_13Test {
         builder.append("-beta")
         assert(builder.toString() == "seed-beta")
       }
+    }
+  }
+
+  private final class SharedBehaviorWordSpec extends AnyWordSpec {
+    var observed: Vector[String] = Vector.empty
+
+    private def behaveLikeNonEmptyCollection(label: String, values: Seq[String]): Unit = {
+      "keep the first element available" in {
+        observed = observed :+ s"$label:first"
+        assert(values.headOption.contains("alpha"))
+      }
+
+      "report the collection size" in {
+        observed = observed :+ s"$label:size"
+        assert(values.size == 2)
+      }
+    }
+
+    "A List-based collection" should {
+      behave like behaveLikeNonEmptyCollection("list", List("alpha", "beta"))
+    }
+
+    "A Vector-based collection" should {
+      behave like behaveLikeNonEmptyCollection("vector", Vector("alpha", "beta"))
     }
   }
 
