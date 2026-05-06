@@ -1,0 +1,817 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfea1-d3e4-7041-b863-62152adbdeb0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.beachape:enumeratum-macros_3:1.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.9.0" when "$version$" is replaced with "1.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+- Set "coordinates" to "com.beachape:enumeratum-macros_3:1.9.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.9.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll check the existing metadata conventions first, then verify the artifact’s Maven POM and upstream repository so the URLs are grounded in the published 1.9.0 release.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+{
+  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
+}
+
+exec
+/bin/bash -lc 'rg -n "source-code-url|test-code-url|documentation-url|language|not-for-native-image" build/discovered-artifact-metadata | head -80' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+exec
+/bin/bash -lc "pwd && rg --files | rg 'discovered-artifact-metadata|enumeratum' | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+stats/com.beachape/enumeratum-circe_3/1.9.7/stats.json
+stats/com.beachape/enumeratum-circe_3/1.9.7/execution-metrics.json
+stats/com.beachape/enumeratum_3/1.9.0/stats.json
+stats/com.beachape/enumeratum_3/1.9.0/execution-metrics.json
+metadata/com.beachape/enumeratum-circe_3/1.9.7/reachability-metadata.json
+metadata/com.beachape/enumeratum-circe_3/index.json
+metadata/com.beachape/enumeratum_3/1.9.0/reachability-metadata.json
+metadata/com.beachape/enumeratum_3/index.json
+tests/src/com.beachape/enumeratum-circe_3/1.9.7/build.gradle
+tests/src/com.beachape/enumeratum-circe_3/1.9.7/settings.gradle
+tests/src/com.beachape/enumeratum-circe_3/1.9.7/gradle.properties
+tests/src/com.beachape/enumeratum-circe_3/1.9.7/user-code-filter.json
+tests/src/com.beachape/enumeratum-circe_3/1.9.7/src/test/scala/com_beachape/enumeratum_circe_3/Enumeratum_circe_3Test.scala
+tests/src/com.beachape/enumeratum_3/1.9.0/build.gradle
+tests/src/com.beachape/enumeratum_3/1.9.0/settings.gradle
+tests/src/com.beachape/enumeratum_3/1.9.0/gradle.properties
+tests/src/com.beachape/enumeratum_3/1.9.0/user-code-filter.json
+tests/src/com.beachape/enumeratum_3/1.9.0/src/test/scala/com_beachape/enumeratum_3/Enumeratum_3Test.scala
+
+exec
+/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 && rg -n '\"repository-url\"' build/discovered-artifact-metadata | head -20" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+
+web search: 
+web search: com.beachape enumeratum-macros_3 1.9.0 Maven Central POM
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0.pom
+web search: 
+web search: https://central.sonatype.com/artifact/com.beachape/enumeratum-macros_3
+web search: 
+web search: https://github.com/lloydmeta/enumeratum
+web search: 
+web search: https://github.com/lloydmeta/enumeratum/tags
+web search: 
+web search: https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros
+codex
+The published POM identifies this as a Scala 3 JVM JAR and points SCM/project URLs at `lloydmeta/enumeratum`. I’m checking the 1.9.0 tag contents now so the source and test paths resolve to that exact release.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.beachape</groupId>
+    <artifactId>enumeratum-macros_3</artifactId>
+    <packaging>jar</packaging>
+    <description>enumeratum-macros</description>
+    <version>1.9.0</version>
+    <name>enumeratum-macros</name>
+    <organization>
+        <name>com.beachape</name>
+    </organization>
+    <scm>
+        <url>https://github.com/lloydmeta/enumeratum</url>
+        <connection>scm:git:https://github.com/lloydmeta/enumeratum.git</connection>
+        <developerConnection>scm:git:git@github.com:lloydmeta/enumeratum.git</developerConnection>
+    </scm>
+    <url>https://github.com/lloydmeta/enumeratum</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>lloydmeta</id>
+            <name>Lloyd Chan</name>
+            <url>https://beachape.com</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-compiler_3</artifactId>
+            <version>3.3.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.19</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_3</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/lloydmeta/enumeratum/git/trees/enumeratum-1.9.0?recursive=1 | rg '\"path\": \"(macros/src|README.md|build.sbt)'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 333ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/beachape/enumeratum-macros_3/1.9.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/beachape/enumeratum-macros_3/1.9.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar" title="enumeratum-macros_3-1.9.0-javadoc.jar">enumeratum-macros_3-1.9.0-javadoc.jar</a>             2025-05-23 12:01   2723052      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.asc" title="enumeratum-macros_3-1.9.0-javadoc.jar.asc">enumeratum-macros_3-1.9.0-javadoc.jar.asc</a>         2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.asc.md5" title="enumeratum-macros_3-1.9.0-javadoc.jar.asc.md5">enumeratum-macros_3-1.9.0-javadoc.jar.asc.md5</a>     2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.asc.sha1" title="enumeratum-macros_3-1.9.0-javadoc.jar.asc.sha1">enumeratum-macros_3-1.9.0-javadoc.jar.asc.sha...</a>  2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.md5" title="enumeratum-macros_3-1.9.0-javadoc.jar.md5">enumeratum-macros_3-1.9.0-javadoc.jar.md5</a>         2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.sha1" title="enumeratum-macros_3-1.9.0-javadoc.jar.sha1">enumeratum-macros_3-1.9.0-javadoc.jar.sha1</a>        2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0-sources.jar" title="enumeratum-macros_3-1.9.0-sources.jar">enumeratum-macros_3-1.9.0-sources.jar</a>             2025-05-23 12:01      5449      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.asc" title="enumeratum-macros_3-1.9.0-sources.jar.asc">enumeratum-macros_3-1.9.0-sources.jar.asc</a>         2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.asc.md5" title="enumeratum-macros_3-1.9.0-sources.jar.asc.md5">enumeratum-macros_3-1.9.0-sources.jar.asc.md5</a>     2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.asc.sha1" title="enumeratum-macros_3-1.9.0-sources.jar.asc.sha1">enumeratum-macros_3-1.9.0-sources.jar.asc.sha...</a>  2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.md5" title="enumeratum-macros_3-1.9.0-sources.jar.md5">enumeratum-macros_3-1.9.0-sources.jar.md5</a>         2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.sha1" title="enumeratum-macros_3-1.9.0-sources.jar.sha1">enumeratum-macros_3-1.9.0-sources.jar.sha1</a>        2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.jar" title="enumeratum-macros_3-1.9.0.jar">enumeratum-macros_3-1.9.0.jar</a>                     2025-05-23 12:01     56188      
+<a href="enumeratum-macros_3-1.9.0.jar.asc" title="enumeratum-macros_3-1.9.0.jar.asc">enumeratum-macros_3-1.9.0.jar.asc</a>                 2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0.jar.asc.md5" title="enumeratum-macros_3-1.9.0.jar.asc.md5">enumeratum-macros_3-1.9.0.jar.asc.md5</a>             2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.jar.asc.sha1" title="enumeratum-macros_3-1.9.0.jar.asc.sha1">enumeratum-macros_3-1.9.0.jar.asc.sha1</a>            2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.jar.md5" title="enumeratum-macros_3-1.9.0.jar.md5">enumeratum-macros_3-1.9.0.jar.md5</a>                 2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.jar.sha1" title="enumeratum-macros_3-1.9.0.jar.sha1">enumeratum-macros_3-1.9.0.jar.sha1</a>                2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.pom" title="enumeratum-macros_3-1.9.0.pom">enumeratum-macros_3-1.9.0.pom</a>                     2025-05-23 12:01      2377      
+<a href="enumeratum-macros_3-1.9.0.pom.asc" title="enumeratum-macros_3-1.9.0.pom.asc">enumeratum-macros_3-1.9.0.pom.asc</a>                 2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0.pom.asc.md5" title="enumeratum-macros_3-1.9.0.pom.asc.md5">enumeratum-macros_3-1.9.0.pom.asc.md5</a>             2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.pom.asc.sha1" title="enumeratum-macros_3-1.9.0.pom.asc.sha1">enumeratum-macros_3-1.9.0.pom.asc.sha1</a>            2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.pom.md5" title="enumeratum-macros_3-1.9.0.pom.md5">enumeratum-macros_3-1.9.0.pom.md5</a>                 2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.pom.sha1" title="enumeratum-macros_3-1.9.0.pom.sha1">enumeratum-macros_3-1.9.0.pom.sha1</a>                2025-05-23 12:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 391ms:
+      "path": "README.md",
+      "path": "build.sbt",
+      "path": "macros/src",
+      "path": "macros/src/main",
+      "path": "macros/src/main/scala-2",
+      "path": "macros/src/main/scala-2/enumeratum",
+      "path": "macros/src/main/scala-2/enumeratum/EnumMacros.scala",
+      "path": "macros/src/main/scala-2/enumeratum/ValueEnumMacros.scala",
+      "path": "macros/src/main/scala-3",
+      "path": "macros/src/main/scala-3/enumeratum",
+      "path": "macros/src/main/scala-3/enumeratum/EnumMacros.scala",
+      "path": "macros/src/main/scala-3/enumeratum/ValueEnumMacros.scala",
+      "path": "macros/src/main/scala",
+      "path": "macros/src/main/scala/enumeratum",
+      "path": "macros/src/main/scala/enumeratum/values",
+      "path": "macros/src/main/scala/enumeratum/values/AllowAlias.scala",
+      "path": "macros/src/test",
+      "path": "macros/src/test/scala-2",
+      "path": "macros/src/test/scala-2/enumeratum",
+      "path": "macros/src/test/scala-2/enumeratum/FindValEnums.scala",
+      "path": "macros/src/test/scala-3",
+      "path": "macros/src/test/scala-3/enumeratum",
+      "path": "macros/src/test/scala-3/enumeratum/FindValEnums.scala",
+      "path": "macros/src/test/scala",
+      "path": "macros/src/test/scala/enumeratum",
+      "path": "macros/src/test/scala/enumeratum/CompilationSpec.scala",
+
+exec
+/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' -g '*.json' . | head -100" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+./metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-sources.jar",
+./metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/magnolia",
+./metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/magnolia/tree/scala3-v$version$/test/src/test",
+./metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-javadoc.jar",
+./metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+./metadata/javax.enterprise/cdi-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+./metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.enterprise/cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+./metadata/com.google.auto.service/auto-service-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/$version$/auto-service-annotations-$version$-sources.jar",
+./metadata/com.google.auto.service/auto-service-annotations/index.json:6:    "repository-url" : "https://github.com/google/auto",
+./metadata/com.google.auto.service/auto-service-annotations/index.json:7:    "test-code-url" : "https://github.com/google/auto/tree/auto-service-$version$/service/processor/src/test",
+./metadata/com.google.auto.service/auto-service-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/$version$/auto-service-annotations-$version$-javadoc.jar",
+./metadata/com.fasterxml/aalto-xml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/aalto-xml/$version$/aalto-xml-$version$-sources.jar",
+./metadata/com.fasterxml/aalto-xml/index.json:6:    "repository-url" : "https://github.com/FasterXML/aalto-xml",
+./metadata/com.fasterxml/aalto-xml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/aalto-xml/tree/aalto-xml-$version$/src/test/java",
+./metadata/com.fasterxml/aalto-xml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/aalto-xml/$version$/aalto-xml-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:6:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:21:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:36:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:51:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:52:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:65:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:83:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+./metadata/com.graphql-java/java-dataloader/index.json:84:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+./metadata/com.fasterxml/classmate/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/$version$/classmate-$version$-sources.jar",
+./metadata/com.fasterxml/classmate/index.json:6:    "repository-url" : "https://github.com/FasterXML/java-classmate",
+./metadata/com.fasterxml/classmate/index.json:7:    "test-code-url" : "https://github.com/FasterXML/java-classmate/tree/classmate-$version$/src/test",
+./metadata/com.fasterxml/classmate/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/$version$/classmate-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java-extended-validation",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-javadoc.jar",
+./metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+./metadata/javax.portlet/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+./metadata/javax.portlet/portlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.portlet/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-javadoc.jar",
+./metadata/org.scala-lang/scala3-interfaces/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-sources.jar",
+./metadata/org.scala-lang/scala3-interfaces/index.json:6:    "repository-url" : "https://github.com/scala/scala3",
+./metadata/org.scala-lang/scala3-interfaces/index.json:7:    "test-code-url" : "https://github.com/scala/scala3/tree/$version$/tests",
+./metadata/org.scala-lang/scala3-interfaces/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java/index.json:5:    "repository-url" : "https://github.com/graphql-java/graphql-java",
+./metadata/com.graphql-java/graphql-java/index.json:6:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/1e12da93a692b8fff549e417906c899c9bf21345/src/test",
+./metadata/com.graphql-java/graphql-java/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java/index.json:20:    "repository-url" : "https://github.com/graphql-java/graphql-java",
+./metadata/com.graphql-java/graphql-java/index.json:21:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+./metadata/com.graphql-java/graphql-java/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java/index.json:66:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java/index.json:67:    "repository-url" : "https://github.com/graphql-java/graphql-java",
+./metadata/com.graphql-java/graphql-java/index.json:68:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+./metadata/com.graphql-java/graphql-java/index.json:69:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-javadoc.jar",
+./metadata/org.scala-lang/scalap/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scalap/$version$/scalap-$version$-sources.jar",
+./metadata/org.scala-lang/scalap/index.json:6:    "repository-url" : "https://github.com/scala/scala",
+./metadata/org.scala-lang/scalap/index.json:7:    "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test/files/scalap",
+./metadata/org.scala-lang/scalap/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scalap/$version$/scalap-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/logkit/logkit/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/logkit/logkit/$version$/logkit-$version$-sources.jar",
+./metadata/logkit/logkit/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+./metadata/logkit/logkit/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/test/",
+./metadata/logkit/logkit/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/xdocs/",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:6:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:22:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:23:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/3decba9/src/test",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:36:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:37:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/5312ccd/src/test",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:49:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:50:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:51:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:52:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+
+exec
+/bin/bash -lc "rg -n '\"language\"' metadata build -g '*.json' | head -40" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+metadata/io.ktor/ktor-client-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-status-pages-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-apache5-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-json-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jwt-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-test-host-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-websockets-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/io.ktor/ktor-test-dispatcher-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-okhttp-jvm/index.json:10:    "language" : {
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-logging-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-cio-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-network-tls-certificates-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-sessions-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-java-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-core_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.typelevel/munit-cats-effect_3/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect-kernel_3/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+
+exec
+/bin/bash -lc "sed -n '1,60p' metadata/org.parboiled/parboiled_3/index.json && sed -n '1,60p' metadata/com.typesafe.scala-logging/scala-logging_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.5.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/sirthias/parboiled2",
+    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-javadoc.jar",
+    "description" : "parboiled2 is a Scala macro-based parser generator for Parsing Expression Grammars that turns an internal Scala DSL for grammar rules into JVM bytecode at compile time. It provides a concise type-safe API for building fast parsers with parse-error reporting, suitable for replacing regular expressions or parser-combinator code for structured text.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.5.1"
+    ],
+    "allowed-packages" : [
+      "org.parboiled2"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.9.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/lightbend-labs/scala-logging",
+    "test-code-url" : "https://github.com/lightbend-labs/scala-logging/tree/v$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-javadoc.jar",
+    "description" : "Scala Logging is an idiomatic Scala facade around SLF4J that provides convenient logger wrappers, lazy and strict logging traits, and contextual logging helpers. It uses Scala macros to preserve efficient level checks while letting Scala code write concise interpolated log messages.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.9.5",
+      "3.9.6",
+      "4.0.0-RC1"
+    ],
+    "allowed-packages" : [
+      "com.typesafe.scalalogging"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/README.md | sed -n '1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+exec
+/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test && curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-sources.jar && curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-javadoc.jar" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0.jar -o "$tmp/artifact.jar"; jar tf "$tmp/artifact.jar" | head -60; rm -rf "$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 272ms:
+META-INF/MANIFEST.MF
+enumeratum/
+enumeratum/values/
+enumeratum/EnumMacros$$anon$1.class
+enumeratum/EnumMacros$.class
+enumeratum/EnumMacros.class
+enumeratum/EnumMacros.tasty
+enumeratum/ValueEnumMacros$$anon$1.class
+enumeratum/ValueEnumMacros$$anon$2.class
+enumeratum/ValueEnumMacros$$anon$3.class
+enumeratum/ValueEnumMacros$$anon$4.class
+enumeratum/ValueEnumMacros$.class
+enumeratum/ValueEnumMacros$ConstVal$2$.class
+enumeratum/ValueEnumMacros$ValueOfFromExpr.class
+enumeratum/ValueEnumMacros.class
+enumeratum/ValueEnumMacros.tasty
+enumeratum/values/AllowAlias.class
+enumeratum/values/AllowAlias.tasty
+
+ succeeded in 324ms:
+# Enumeratum [![Continuous integration](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml/badge.svg)](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/lloydmeta/enumeratum/branch/master/graph/badge.svg?token=HNg3LDxnuK)](https://codecov.io/gh/lloydmeta/enumeratum) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/app/lloydmeta/enumeratum?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lloydmeta/enumeratum&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.0.svg)](https://www.scala-js.org) [![Join the chat at https://gitter.im/lloydmeta/enumeratum](https://badges.gitter.im/lloydmeta/enumeratum.svg)](https://gitter.im/lloydmeta/enumeratum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
+Enumeratum is a type-safe and powerful enumeration implementation for Scala that offers exhaustive pattern match warnings,
+integrations with popular Scala libraries, and idiomatic usage that won't break your IDE. It aims to be similar enough
+to Scala's built in `Enumeration` to be easy-to-use and understand while offering more flexibility, type-safety (see [this blog
+post describing erasure on Scala's `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html)), and
+richer enum values without having to maintain your own collection of values.
+
+Enumeratum has the following niceties:
+
+- Zero dependencies
+- Performant: Faster than`Enumeration` in the standard library (see [benchmarks](#benchmarking))
+- Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
+- [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints.
+- Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
+- Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
+- No usage of reflection at runtime. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
+  environments where reflection is a best effort (such as Android)
+- No usage of `synchronized`, which may help with performance and deadlocks prevention
+- All magic happens at compile-time so you know right away when things go awry
+- Comprehensive automated testing to make sure everything is in tip-top shape
+
+Enumeratum is published for Scala 2.12.x, 2.13.x, 3.x as well as ScalaJS and ScalaNative.
+
+Note that there are a couple of limitations for 3.x:
+* All "immediate" parent types of enum entries need to be `sealed` (reasoning [here](https://github.com/lloydmeta/enumeratum/pull/349#discussion_r1034715979))
+* The `-Yretain-trees` Scalac option must be set when using ValueEnums
+
+Integrations are available for:
+
+- [Play](https://www.playframework.com/): JVM only
+- [Play JSON](https://www.playframework.com/documentation/2.8.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
+- [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
+- [ReactiveMongo BSON](reactivemongo.org/releases/1.0/documentation/bson/overview.html): JVM only
+- [Argonaut](http://argonaut.io): JVM and ScalaJS
+- [Json4s](http://json4s.org): JVM only
+- [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
+- [Slick](http://slick.lightbend.com/): JVM only
+- [Quill](http://getquill.io): JVM and ScalaJS
+- [sttp tapir](https://github.com/softwaremill/tapir): JVM and ScalaJS
+- [Scalafix](https://github.com/OlegYch/enumeratum-scalafix)
+
+### Table of Contents
+
+1. [Quick start](#quick-start)
+    - [SBT](#sbt)
+    - [Usage](#usage)
+2. [More examples](#more-examples)
+    - [Enum](#enum)
+      - [Manual override of name](#manual-override-of-name)
+      - [Mixins to override the name](#mixins-to-override-the-name)
+    - [ValueEnum](#valueenum)
+3. [ScalaJS](#scalajs)
+4. [Play integration](#play-integration)
+5. [Play JSON integration](#play-json)
+6. [Circe integration](#circe)
+8. [ReactiveMongo BSON integration](#reactivemongo-bson)
+9. [Argonaut integration](#argonaut)
+10. [Json4s integration](#json4s)
+11. [Slick integration](#slick-integration)
+12. [ScalaCheck](#scalacheck)
+13. [Quill integration](#quill)
+14. [Cats integration](#cats)
+15. [Doobie integration](#doobie)
+16. [Anorm integration](#anorm)
+17. [Benchmarking](#benchmarking)
+18. [Publishing](#publishing)
+
+
+## Quick start
+
+### SBT
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12)
+
+In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you see
+in the Maven badge above).
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion
+)
+```
+
+Enumeratum has different integrations that can be added to your build à la carte. For more info, see the respective sections in
+[the Table of Contents](#table-of-contents)
+
+### Usage
+
+Using Enumeratum is simple. Just declare your own sealed trait or class `A` that extends `EnumEntry` and implement it as case objects inside
+an object that extends from `Enum[A]` as shown below.
+
+```scala
+
+import enumeratum._
+
+sealed trait Greeting extends EnumEntry
+
+object Greeting extends Enum[Greeting] {
+
+  /*
+   `findValues` is a protected method that invokes a macro to find all `Greeting` object declarations inside an `Enum`
+
+   You use it to implement the `val values` member
+  */
+  val values = findValues
+
+  case object Hello   extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
+
+}
+
+// Object Greeting has a `withName(name: String)` method
+Greeting.withName("Hello")
+// => res0: Greeting = Hello
+
+Greeting.withName("Haro")
+
+ succeeded in 1635ms:
+200 https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test
+200 https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-sources.jar
+200 https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-javadoc.jar
+
+web search: 
+web search: https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com beachape enumeratum-macros_3 1.9.0 sources jar javadoc jar pom
+web search: 
+web search: 
+web search: 
+web search: "enumeratum-macros_3-1.9.0-sources.jar"
+web search: 
+web search: central.sonatype.com artifact com.beachape enumeratum-macros_3
+web search: 
+web search: javadoc.io enumeratum-macros_3 1.9.0
+web search: 
+web search: https://central.sonatype.com/artifact/com.beachape/enumeratum-macros_3
+codex
+The Maven directory has sources and javadoc jars for 1.9.0, while the GitHub tag has the macro tests under `macros/src/test`. I’m going to write those URLs with `$version$`, add the Scala 3 language marker, and leave `not-for-native-image` unset because the published artifact is a JVM JAR with `.class` files.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..fef1d15a6113afab6278d5d1d8455586678aff3d
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..fef1d15a6113afab6278d5d1d8455586678aff3d
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+{
+  "coordinates": "com.beachape:enumeratum-macros_3:1.9.0",
+  "source-code-url": "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
+  "repository-url": "https://github.com/lloydmeta/enumeratum",
+  "test-code-url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
+  "description": "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..fef1d15a6113afab6278d5d1d8455586678aff3d
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+ succeeded in 0ms:
+{
+  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
+  "repository-url" : "https://github.com/lloydmeta/enumeratum",
+  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
+  "description" : "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..fef1d15a6113afab6278d5d1d8455586678aff3d
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 275ms:
+web search: 
+web search: com.beachape enumeratum-macros_3 1.9.0 Maven Central sources javadoc POM
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/
+web search: 
+web search: https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test
+codex
+Updated [com.beachape-enumeratum-macros_3-1.9.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json).
+
+Set Maven source/javadoc jar URLs, the `lloydmeta/enumeratum` repository root, the `enumeratum-$version$/macros/src/test` test URL, and `language` as Scala 3. I left `not-for-native-image` absent because the published artifact is a JVM JAR with class files, not a JS/Native/Android-only artifact. The GitHub 1.9.0 tag exposes the macro source and test tree, and the project describes Enumeratum as a type-safe, reflection-free Scala enumeration library. ([github.com](https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test))
+
+Validation: `jq . build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json` passed.
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..fef1d15a6113afab6278d5d1d8455586678aff3d
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "enumeratum-macros_3 is the Scala 3 macro module for Enumeratum, a type-safe enumeration library for Scala with exhaustive pattern-match warnings and richer enum values than Scala's built-in Enumeration. It provides the compile-time macro implementations that discover enum entries and validate value enums, avoiding runtime reflection while keeping enum definitions concise.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+99,796
+Updated [com.beachape-enumeratum-macros_3-1.9.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json).
+
+Set Maven source/javadoc jar URLs, the `lloydmeta/enumeratum` repository root, the `enumeratum-$version$/macros/src/test` test URL, and `language` as Scala 3. I left `not-for-native-image` absent because the published artifact is a JVM JAR with class files, not a JS/Native/Android-only artifact. The GitHub 1.9.0 tag exposes the macro source and test tree, and the project describes Enumeratum as a type-safe, reflection-free Scala enumeration library. ([github.com](https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test))
+
+Validation: `jq . build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json` passed.
+Ran agent for com.beachape:enumeratum-macros_3:1.9.0 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/build/agent-artifact-discovery-logs/com.beachape-enumeratum-macros_3-1.9.0.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-4dac1146/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 15s
+9 actionable tasks: 9 executed
