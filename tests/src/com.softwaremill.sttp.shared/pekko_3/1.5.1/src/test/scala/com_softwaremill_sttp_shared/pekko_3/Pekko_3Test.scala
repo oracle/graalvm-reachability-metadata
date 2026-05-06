@@ -8,7 +8,7 @@ package com_softwaremill_sttp_shared.pekko_3
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
-import org.apache.pekko.stream.scaladsl.{Keep, Sink, Source}
+import org.apache.pekko.stream.scaladsl.{Flow, Keep, Sink, Source}
 import org.apache.pekko.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -108,6 +108,19 @@ class Pekko_3Test {
 
       assertThat(materializedValue).isEqualTo("source-materialized")
       assertThat(result.map(_.utf8String).asJava).containsExactly("payload")
+    }
+  }
+
+  @Test
+  def pekkoStreamsCapabilityExposesPekkoSourceAndFlowTypes(): Unit = {
+    withMaterializer { materializer =>
+      val source: PekkoStreams.BinaryStream = Source(List(ByteString("he"), ByteString("llo")))
+      val pipe: PekkoStreams.Pipe[ByteString, ByteString] =
+        Flow[ByteString].map(chunk => chunk ++ ByteString("-"))
+
+      val result: ByteString = await(source.via(pipe).runFold(ByteString.empty)(_ ++ _)(materializer))
+
+      assertThat(result.utf8String).isEqualTo("he-llo-")
     }
   }
 
