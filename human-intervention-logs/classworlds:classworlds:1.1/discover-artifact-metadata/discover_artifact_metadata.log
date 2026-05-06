@@ -1,0 +1,2972 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dfed0-c1a5-7512-8802-89eb3c543bd2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: classworlds:classworlds:1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1" when "$version$" is replaced with "1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+- Set "coordinates" to "classworlds:classworlds:1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources first, then patch the JSON file directly with the most specific URLs that resolve for version `1.1`.
+web search: 
+web search: classworlds classworlds 1.1 Maven repository source code URL
+codex
+Maven Central confirms `classworlds-1.1-sources.jar` exists, so I’m going to prefer that for source code unless the POM exposes a stronger tagged upstream location. I’m also checking whether a tests or javadoc artifact exists before falling back to upstream project pages.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>classworlds</groupId>
+  <artifactId>classworlds</artifactId>
+  <name>classworlds</name>
+  <version>1.1</version>
+  <description></description>
+  <url>http://classworlds.codehaus.org/</url>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>classworlds-scm@lists.codehaus.org</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2002</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>classworlds users</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-user</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-user</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-user/</archive>
+    </mailingList>
+    <mailingList>
+      <name>classworlds developers</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-dev</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-dev</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>classworlds commit messages</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-scm</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-scm</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-scm/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jvanzyl</id>
+      <name>Jason van Zyl</name>
+      <email>jason@zenplex.com</email>
+      <organization>Zenplex</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bwalding</id>
+      <name>Ben Walding</name>
+      <email>ben@walding.com</email>
+      <organization>Walding Consulting Services</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds</connection>
+    <developerConnection>scm:cvs:ext:brett@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds</developerConnection>
+    <url>http://cvs.classworlds.codehaus.org/</url>
+  </scm>
+  <organization>
+    <name>The Codehaus</name>
+    <url>http://codehaus.org/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/java/main</sourceDirectory>
+    <testSourceDirectory>src/java/test</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>surefire</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <site>
+      <id>default</id>
+      <name>Default Site</name>
+      <url>scp://classworlds.codehaus.org//www/classworlds.codehaus.org</url>
+    </site>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ exited 22 in 0ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:43:21 GMT
+content-type: text/html
+cf-ray: 9f7a792eeb0ab159-ZRH
+cf-cache-status: HIT
+age: 3572
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/classworlds-classworlds-1.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+{
+  "coordinates" : "classworlds:classworlds:1.1"
+}
+
+ exited 22 in 259ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:43:21 GMT
+content-type: text/html
+cf-ray: 9f7a792eac1ebb0e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: classworlds classworlds 1.1 Maven Central sources jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.jar -o /tmp/classworlds-1.1.jar && jar tf /tmp/classworlds-1.1.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/codehaus/
+org/codehaus/classworlds/
+org/codehaus/classworlds/uberjar/
+org/codehaus/classworlds/uberjar/boot/
+org/codehaus/classworlds/uberjar/protocol/
+org/codehaus/classworlds/uberjar/protocol/jar/
+org/codehaus/classworlds/BytesURLConnection.class
+org/codehaus/classworlds/BytesURLStreamHandler.class
+org/codehaus/classworlds/ClassRealm.class
+org/codehaus/classworlds/ClassWorld.class
+org/codehaus/classworlds/ClassWorldException.class
+org/codehaus/classworlds/ConfigurationException.class
+org/codehaus/classworlds/Configurator$1.class
+org/codehaus/classworlds/Configurator$2.class
+org/codehaus/classworlds/Configurator.class
+org/codehaus/classworlds/DefaultClassRealm.class
+org/codehaus/classworlds/DuplicateRealmException.class
+org/codehaus/classworlds/EmbeddedLauncher.class
+org/codehaus/classworlds/Entry.class
+org/codehaus/classworlds/Launcher.class
+org/codehaus/classworlds/NoSuchRealmException.class
+org/codehaus/classworlds/RealmClassLoader.class
+org/codehaus/classworlds/RealmDelegatingClassLoader.class
+org/codehaus/classworlds/UberJarRealmClassLoader.class
+org/codehaus/classworlds/UrlUtils.class
+org/codehaus/classworlds/uberjar/boot/Bootstrapper.class
+org/codehaus/classworlds/uberjar/boot/InitialClassLoader.class
+org/codehaus/classworlds/uberjar/protocol/jar/Handler.class
+org/codehaus/classworlds/uberjar/protocol/jar/JarUrlConnection.class
+META-INF/LICENSE.txt
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar -o /tmp/classworlds-1.1-sources.jar && jar tf /tmp/classworlds-1.1-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+org/codehaus/classworlds/BytesURLConnection.java
+org/codehaus/classworlds/BytesURLStreamHandler.java
+org/codehaus/classworlds/ClassRealm.java
+org/codehaus/classworlds/ClassWorld.java
+org/codehaus/classworlds/ClassWorldException.java
+org/codehaus/classworlds/ConfigurationException.java
+org/codehaus/classworlds/Configurator.java
+org/codehaus/classworlds/DefaultClassRealm.java
+org/codehaus/classworlds/DuplicateRealmException.java
+org/codehaus/classworlds/EmbeddedLauncher.java
+org/codehaus/classworlds/Entry.java
+org/codehaus/classworlds/Launcher.java
+org/codehaus/classworlds/NoSuchRealmException.java
+org/codehaus/classworlds/RealmClassLoader.java
+org/codehaus/classworlds/RealmDelegatingClassLoader.java
+org/codehaus/classworlds/UberJarRealmClassLoader.java
+org/codehaus/classworlds/UrlUtils.java
+org/codehaus/classworlds/uberjar/boot/Bootstrapper.java
+org/codehaus/classworlds/uberjar/boot/InitialClassLoader.java
+org/codehaus/classworlds/uberjar/protocol/jar/Handler.java
+org/codehaus/classworlds/uberjar/protocol/jar/JarUrlConnection.java
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.distribution-zip' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ exited 22 in 260ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:43:30 GMT
+content-type: text/html
+cf-ray: 9f7a79650bdebc65-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 252ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:43:30 GMT
+content-type: text/html
+cf-ray: 9f7a79654bf0504e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1.distribution-zip
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: repo1.maven.org classworlds classworlds 1.1 pom scm classworlds
+web search: 
+web search: "org/codehaus/classworlds/ClassWorld.java" "1.1"
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: classworlds/classworlds/1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>classworlds/classworlds/1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="classworlds-1.1-sources.jar" title="classworlds-1.1-sources.jar">classworlds-1.1-sources.jar</a>                       2006-01-12 04:26     44722      
+<a href="classworlds-1.1-sources.jar.asc" title="classworlds-1.1-sources.jar.asc">classworlds-1.1-sources.jar.asc</a>                   2006-01-12 04:26       189      
+<a href="classworlds-1.1-sources.jar.md5" title="classworlds-1.1-sources.jar.md5">classworlds-1.1-sources.jar.md5</a>                   2006-01-12 04:26        32      
+<a href="classworlds-1.1-sources.jar.sha1" title="classworlds-1.1-sources.jar.sha1">classworlds-1.1-sources.jar.sha1</a>                  2006-01-12 04:26        40      
+<a href="classworlds-1.1.jar" title="classworlds-1.1.jar">classworlds-1.1.jar</a>                               2006-01-12 04:26     37854      
+<a href="classworlds-1.1.jar.md5" title="classworlds-1.1.jar.md5">classworlds-1.1.jar.md5</a>                           2006-01-12 04:26        32      
+<a href="classworlds-1.1.jar.sha1" title="classworlds-1.1.jar.sha1">classworlds-1.1.jar.sha1</a>                          2006-01-12 04:26        40      
+<a href="classworlds-1.1.pom" title="classworlds-1.1.pom">classworlds-1.1.pom</a>                               2006-01-12 04:26      3324      
+<a href="classworlds-1.1.pom.md5" title="classworlds-1.1.pom.md5">classworlds-1.1.pom.md5</a>                           2006-01-12 04:26        32      
+<a href="classworlds-1.1.pom.sha1" title="classworlds-1.1.pom.sha1">classworlds-1.1.pom.sha1</a>                          2006-01-12 04:26        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-01-12 04:26       119      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-01-12 04:26        83      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-01-12 04:26       138      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://search.maven.org/solrsearch/select?q=g:%22classworlds%22%20AND%20a:%22classworlds%22%20AND%20v:%221.1%22&rows=20&wt=json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/repositories?q=classworlds' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc 'curl -fsI https://javadoc.io/doc/classworlds/classworlds/1.1/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 50ms:
+ succeeded in 140ms:
+HTTP/2 301 
+date: Wed, 06 May 2026 19:43:41 GMT
+content-length: 0
+location: /doc/classworlds/classworlds/1.1
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=zfmni6MZL9%2BalzlGQkH4VQ3vYbTZ0HMKWX3eSBP3uJV8uLwEPAeNgYef7NL%2BYljzmwxfX2GST62%2BX1EedknubrdT2FhPC7Y8rRrXHxzPijJ%2F3K8iprxO9LDti0rhwUGXNpRZCc%2FX25m%2F"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f7a79ae8b77bac6-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1292ms:
+{
+  "total_count": 20,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 29924229,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyOTkyNDIyOQ==",
+      "name": "plexus-classworlds",
+      "full_name": "codehaus-plexus/plexus-classworlds",
+      "private": false,
+      "owner": {
+        "login": "codehaus-plexus",
+        "id": 10550350,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjEwNTUwMzUw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/10550350?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/codehaus-plexus",
+        "html_url": "https://github.com/codehaus-plexus",
+        "followers_url": "https://api.github.com/users/codehaus-plexus/followers",
+        "following_url": "https://api.github.com/users/codehaus-plexus/following{/other_user}",
+        "gists_url": "https://api.github.com/users/codehaus-plexus/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/codehaus-plexus/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/codehaus-plexus/subscriptions",
+        "organizations_url": "https://api.github.com/users/codehaus-plexus/orgs",
+        "repos_url": "https://api.github.com/users/codehaus-plexus/repos",
+        "events_url": "https://api.github.com/users/codehaus-plexus/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/codehaus-plexus/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/codehaus-plexus/plexus-classworlds",
+      "description": "Plexus Classworlds is a framework for container developers who require complex manipulation of Java's ClassLoaders.",
+      "fork": false,
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds",
+      "forks_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/forks",
+      "keys_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/teams",
+      "hooks_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/hooks",
+      "issue_events_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/events",
+      "assignees_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tags",
+      "blobs_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/languages",
+      "stargazers_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/stargazers",
+      "contributors_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contributors",
+      "subscribers_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/subscribers",
+      "subscription_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/subscription",
+      "commits_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/merges",
+      "archive_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/downloads",
+      "issues_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/labels{/name}",
+      "releases_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/deployments",
+      "created_at": "2015-01-27T16:57:26Z",
+      "updated_at": "2026-04-06T21:15:41Z",
+      "pushed_at": "2026-04-15T18:56:51Z",
+      "git_url": "git://github.com/codehaus-plexus/plexus-classworlds.git",
+      "ssh_url": "git@github.com:codehaus-plexus/plexus-classworlds.git",
+      "clone_url": "https://github.com/codehaus-plexus/plexus-classworlds.git",
+      "svn_url": "https://github.com/codehaus-plexus/plexus-classworlds",
+      "homepage": "https://codehaus-plexus.github.io/plexus-classworlds/",
+      "size": 9043,
+      "stargazers_count": 64,
+      "watchers_count": 64,
+      "language": "Java",
+      "has_issues": true,
+      "has_projects": false,
+      "has_downloads": true,
+      "has_wiki": false,
+      "has_pages": true,
+      "has_discussions": true,
+      "forks_count": 32,
+      "mirror_url": null,
+      "archived": false,
+      "disabled": false,
+      "open_issues_count": 5,
+      "license": {
+        "key": "other",
+        "name": "Other",
+        "spdx_id": "NOASSERTION",
+        "url": null,
+        "node_id": "MDc6TGljZW5zZTA="
+      },
+      "allow_forking": true,
+      "is_template": false,
+      "web_commit_signoff_required": false,
+      "has_pull_requests": true,
+      "pull_request_creation_policy": "all",
+      "topics": [
+        "maven"
+      ],
+      "visibility": "public",
+      "forks": 32,
+      "open_issues": 5,
+      "watchers": 64,
+      "default_branch": "master",
+      "score": 1.0
+    },
+    {
+      "id": 1045277,
+      "node_id": "MDEwOlJlcG9zaXRvcnkxMDQ1Mjc3",
+      "name": "plexus-classworlds",
+      "full_name": "sonatype/plexus-classworlds",
+      "private": false,
+      "owner": {
+        "login": "sonatype",
+        "id": 44938,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjQ0OTM4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/44938?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/sonatype",
+        "html_url": "https://github.com/sonatype",
+        "followers_url": "https://api.github.com/users/sonatype/followers",
+        "following_url": "https://api.github.com/users/sonatype/following{/other_user}",
+        "gists_url": "https://api.github.com/users/sonatype/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/sonatype/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/sonatype/subscriptions",
+        "organizations_url": "https://api.github.com/users/sonatype/orgs",
+        "repos_url": "https://api.github.com/users/sonatype/repos",
+        "events_url": "https://api.github.com/users/sonatype/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/sonatype/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/sonatype/plexus-classworlds",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds",
+      "forks_url": "https://api.github.com/repos/sonatype/plexus-classworlds/forks",
+      "keys_url": "https://api.github.com/repos/sonatype/plexus-classworlds/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/sonatype/plexus-classworlds/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/sonatype/plexus-classworlds/teams",
+      "hooks_url": "https://api.github.com/repos/sonatype/plexus-classworlds/hooks",
+      "issue_events_url": "https://api.github.com/repos/sonatype/plexus-classworlds/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/sonatype/plexus-classworlds/events",
+      "assignees_url": "https://api.github.com/repos/sonatype/plexus-classworlds/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/sonatype/plexus-classworlds/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tags",
+      "blobs_url": "https://api.github.com/repos/sonatype/plexus-classworlds/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/sonatype/plexus-classworlds/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/sonatype/plexus-classworlds/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/sonatype/plexus-classworlds/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/sonatype/plexus-classworlds/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/sonatype/plexus-classworlds/languages",
+      "stargazers_url": "https://api.github.com/repos/sonatype/plexus-classworlds/stargazers",
+      "contributors_url": "https://api.github.com/repos/sonatype/plexus-classworlds/contributors",
+      "subscribers_url": "https://api.github.com/repos/sonatype/plexus-classworlds/subscribers",
+      "subscription_url": "https://api.github.com/repos/sonatype/plexus-classworlds/subscription",
+      "commits_url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/sonatype/plexus-classworlds/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/sonatype/plexus-classworlds/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/sonatype/plexus-classworlds/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/sonatype/plexus-classworlds/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/sonatype/plexus-classworlds/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/sonatype/plexus-classworlds/merges",
+      "archive_url": "https://api.github.com/repos/sonatype/plexus-classworlds/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/sonatype/plexus-classworlds/downloads",
+      "issues_url": "https://api.github.com/repos/sonatype/plexus-classworlds/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/sonatype/plexus-classworlds/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/sonatype/plexus-classworlds/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/sonatype/plexus-classworlds/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/sonatype/plexus-classworlds/labels{/name}",
+      "releases_url": "https://api.github.com/repos/sonatype/plexus-classworlds/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/sonatype/plexus-classworlds/deployments",
+      "created_at": "2010-11-02T17:10:29Z",
+      "updated_at": "2024-07-03T11:38:01Z",
+      "pushed_at": "2018-11-15T10:36:14Z",
+      "git_url": "git://github.com/sonatype/plexus-classworlds.git",
+      "ssh_url": "git@github.com:sonatype/plexus-classworlds.git",
+      "clone_url": "https://github.com/sonatype/plexus-classworlds.git",
+      "svn_url": "https://github.com/sonatype/plexus-classworlds",
+      "homepage": "",
+      "size": 2662,
+      "stargazers_count": 25,
+      "watchers_count": 25,
+      "language": "Java",
+      "has_issues": false,
+      "has_projects": true,
+      "has_downloads": true,
+      "has_wiki": true,
+      "has_pages": true,
+
+codex
+There are no Maven test-sources/tests/javadoc artifacts for `1.1`; the only versioned Maven collateral is the main JAR, POM, and sources JAR. I’m checking old SCM evidence and the maintained Plexus repository now, but I’ll avoid using a modern successor tag unless it clearly matches the `classworlds:classworlds:1.1` artifact.
+exec
+/usr/bin/bash -lc "unzip -p /tmp/classworlds-1.1-sources.jar org/codehaus/classworlds/ClassWorld.java | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+package org.codehaus.classworlds;
+
+/*
+ $Id: ClassWorld.java 78 2004-07-01 13:59:13Z jvanzyl $
+
+ Copyright 2002 (C) The Werken Company. All Rights Reserved.
+ 
+ Redistribution and use of this software and associated documentation
+ ("Software"), with or without modification, are permitted provided
+ that the following conditions are met:
+
+ 1. Redistributions of source code must retain copyright
+    statements and notices.  Redistributions must also contain a
+    copy of this document.
+ 
+ 2. Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.
+ 
+ 3. The name "classworlds" must not be used to endorse or promote
+    products derived from this Software without prior written
+    permission of The Werken Company.  For written permission,
+    please contact bob@werken.com.
+ 
+ 4. Products derived from this Software may not be called "classworlds"
+    nor may "classworlds" appear in their names without prior written
+    permission of The Werken Company. "classworlds" is a registered
+    trademark of The Werken Company.
+ 
+ 5. Due credit should be given to The Werken Company.
+    (http://classworlds.werken.com/).
+ 
+ THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS
+ ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT
+ NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+ THE WERKEN COMPANY OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ */
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collection;
+
+/**
+ * A collection of <code>ClassRealm</code>s, indexed by id.
+ *
+ * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
+ * @version $Id: ClassWorld.java 78 2004-07-01 13:59:13Z jvanzyl $
+ */
+public class ClassWorld
+{
+    private Map realms;
+
+    public ClassWorld( String realmId, ClassLoader classLoader )
+    {
+        this();
+
+        try
+        {
+            newRealm( realmId, classLoader );
+        }
+        catch ( DuplicateRealmException e )
+        {
+            // Will never happen as we are just creating the world.
+        }
+    }
+
+    public ClassWorld()
+    {
+        this.realms = new HashMap();
+    }
+
+    public ClassRealm newRealm( String id )
+        throws DuplicateRealmException
+    {
+        return newRealm( id, null );
+    }
+
+    public ClassRealm newRealm( String id, ClassLoader classLoader )
+        throws DuplicateRealmException
+    {
+        if ( realms.containsKey( id ) )
+        {
+            throw new DuplicateRealmException( this, id );
+        }
+
+        ClassRealm realm = null;
+
+        if ( classLoader != null )
+        {
+            realm = new DefaultClassRealm( this, id, classLoader );
+
+            realms.put( id, realm );
+        }
+        else
+        {
+            realm = new DefaultClassRealm( this, id );
+        }
+
+        realms.put( id, realm );
+
+        return realm;
+    }
+
+    public void disposeRealm( String id )
+        throws NoSuchRealmException
+    {
+        realms.remove( id );
+    }
+
+    public ClassRealm getRealm( String id )
+        throws NoSuchRealmException
+    {
+        if ( realms.containsKey( id ) )
+        {
+            return (ClassRealm) realms.get( id );
+        }
+
+        throw new NoSuchRealmException( this, id );
+    }
+
+    public Collection getRealms()
+    {
+        return realms.values();
+    }
+
+    Class loadClass( String name )
+        throws ClassNotFoundException
+    {
+        // Use the classloader that was used to load classworlds itself to
+        // load anything classes within org.codehaus.classworlds.*
+
+        return getClass().getClassLoader().loadClass( name );
+    }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tags?per_page=100 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/sonatype/plexus-classworlds/tags?per_page=100 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/classworlds/classworlds/1.1 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 221ms:
+[
+  {
+    "name": "pre-cleanup",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/pre-cleanup",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/pre-cleanup",
+    "commit": {
+      "sha": "f700a243468e46fa9eecc5eb87be5f81ae3e7be3",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/f700a243468e46fa9eecc5eb87be5f81ae3e7be3"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3ByZS1jbGVhbnVw"
+  },
+  {
+    "name": "plexus-classworlds-2.10.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.10.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.10.0",
+    "commit": {
+      "sha": "f8aa16815c36bd2fe0ca24407a96ac3a68c65257",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/f8aa16815c36bd2fe0ca24407a96ac3a68c65257"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjEwLjA="
+  },
+  {
+    "name": "plexus-classworlds-2.9.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.9.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.9.0",
+    "commit": {
+      "sha": "63014995bbe071710d470edbf75e32c5d028fc70",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/63014995bbe071710d470edbf75e32c5d028fc70"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjkuMA=="
+  },
+  {
+    "name": "plexus-classworlds-2.8.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.8.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.8.0",
+    "commit": {
+      "sha": "fc454e40c98c7122338a35733d8d00eee4e0eefb",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/fc454e40c98c7122338a35733d8d00eee4e0eefb"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjguMA=="
+  },
+  {
+    "name": "plexus-classworlds-2.7.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.7.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.7.0",
+    "commit": {
+      "sha": "6419d5d0155e369c38fcc5ee695268c399c40ef7",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/6419d5d0155e369c38fcc5ee695268c399c40ef7"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjcuMA=="
+  },
+  {
+    "name": "plexus-classworlds-2.6.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.6.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.6.0",
+    "commit": {
+      "sha": "71132de9527b7fa154160a5bf679ea79a7d161a3",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/71132de9527b7fa154160a5bf679ea79a7d161a3"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjYuMA=="
+  },
+  {
+    "name": "plexus-classworlds-2.5.2",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.5.2",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.5.2",
+    "commit": {
+      "sha": "3429df3b20aa5b956da0b2efa8d5a82b491647c8",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/3429df3b20aa5b956da0b2efa8d5a82b491647c8"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjUuMg=="
+  },
+  {
+    "name": "plexus-classworlds-2.5.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.5.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.5.1",
+    "commit": {
+      "sha": "96885e26448b8c550603d9a8d72c07e023e246ef",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/96885e26448b8c550603d9a8d72c07e023e246ef"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjUuMQ=="
+  },
+  {
+    "name": "plexus-classworlds-2.5",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.5",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.5",
+    "commit": {
+      "sha": "9595e9b60b7e7d96a157b9f687cd137dbfb9b107",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/9595e9b60b7e7d96a157b9f687cd137dbfb9b107"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjU="
+  },
+  {
+    "name": "plexus-classworlds-2.4.2",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.4.2",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.4.2",
+    "commit": {
+      "sha": "81f3642eb43a4fe85af18f569e758c26b21a1517",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/81f3642eb43a4fe85af18f569e758c26b21a1517"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjQuMg=="
+  },
+  {
+    "name": "plexus-classworlds-2.4.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.4.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.4.1",
+    "commit": {
+      "sha": "f8eaf29f9b902afb36dce6d28979ebc30862c04a",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/f8eaf29f9b902afb36dce6d28979ebc30862c04a"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjQuMQ=="
+  },
+  {
+    "name": "plexus-classworlds-2.4",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.4",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.4",
+    "commit": {
+      "sha": "51883ff174901f7bf00a187dcb494f636ca84d13",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/51883ff174901f7bf00a187dcb494f636ca84d13"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjQ="
+  },
+  {
+    "name": "plexus-classworlds-2.3",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.3",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.3",
+    "commit": {
+      "sha": "9c0048362b1198a3ee884eae9ea9b8f3e8718af0",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/9c0048362b1198a3ee884eae9ea9b8f3e8718af0"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjM="
+  },
+  {
+    "name": "plexus-classworlds-2.2.3",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.3",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.3",
+    "commit": {
+      "sha": "c1cec59879e8476d2d5805166f7d8b14e9ea6b58",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/c1cec59879e8476d2d5805166f7d8b14e9ea6b58"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjIuMw=="
+  },
+  {
+    "name": "plexus-classworlds-2.2.2",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.2",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.2",
+    "commit": {
+      "sha": "2703f6cd9e446c97becc2c6be710aaec16b34f71",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/2703f6cd9e446c97becc2c6be710aaec16b34f71"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjIuMg=="
+  },
+  {
+    "name": "plexus-classworlds-2.2.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.1",
+    "commit": {
+      "sha": "3f61eabff6dfc0344898e8bcf36113f67c78ea6f",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/3f61eabff6dfc0344898e8bcf36113f67c78ea6f"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjIuMQ=="
+  },
+  {
+    "name": "plexus-classworlds-2.2.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.0",
+    "commit": {
+      "sha": "5256d34229967fdc238d079b0a6305952cdd4c4b",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/5256d34229967fdc238d079b0a6305952cdd4c4b"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjIuMA=="
+  },
+  {
+    "name": "plexus-classworlds-2.1.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.1.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.1.0",
+    "commit": {
+      "sha": "a90a6c0114cb462cdbca472a368aa990b1060246",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/a90a6c0114cb462cdbca472a368aa990b1060246"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjEuMA=="
+  },
+  {
+    "name": "plexus-classworlds-2.0.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.0.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.0.0",
+    "commit": {
+      "sha": "a380e8ddc4837ed2a572b36d98de23ea4d52cbf4",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/a380e8ddc4837ed2a572b36d98de23ea4d52cbf4"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0yLjAuMA=="
+  },
+  {
+    "name": "plexus-classworlds-1.5.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.5.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.5.0",
+    "commit": {
+      "sha": "1856e320909a85356fe3dcc3ea966c3b7df04274",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/1856e320909a85356fe3dcc3ea966c3b7df04274"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0xLjUuMA=="
+  },
+  {
+    "name": "plexus-classworlds-1.4",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.4",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.4",
+    "commit": {
+      "sha": "1527fb6118dd654a87ed9f7c7befad08f8ca01ce",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/1527fb6118dd654a87ed9f7c7befad08f8ca01ce"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0xLjQ="
+  },
+  {
+    "name": "plexus-classworlds-1.3",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.3",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.3",
+    "commit": {
+      "sha": "1f247232628cf96593e1b032664c8cfc1c7dd71a",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/1f247232628cf96593e1b032664c8cfc1c7dd71a"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0xLjM="
+  },
+  {
+    "name": "plexus-classworlds-1.2",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2",
+    "commit": {
+      "sha": "d1664c5502f1c530523c88beb245b01303ca1780",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/d1664c5502f1c530523c88beb245b01303ca1780"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0xLjI="
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-13",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-13",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-13",
+    "commit": {
+      "sha": "32540f3cec36cfb7a276e1bc52a419024b10528d",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/commits/32540f3cec36cfb7a276e1bc52a419024b10528d"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyMjk6cmVmcy90YWdzL3BsZXh1cy1jbGFzc3dvcmxkcy0xLjItYWxwaGEtMTM="
+
+ succeeded in 230ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>classworlds 1.1 javadoc (classworlds)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/classworlds">classworlds</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						classworlds
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/classworlds/classworlds" class="dropdown-item">
+							classworlds
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/classworlds/classworlds/latest/index.html" class="dropdown-item">
+							1.1
+						</a>
+
+						
+						<a href="/doc/classworlds/classworlds/1.1-alpha-2/index.html" class="dropdown-item">
+							1.1-alpha-2
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20040709.190353/index.html" class="dropdown-item">
+							20040709.190353
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20030905.201339/index.html" class="dropdown-item">
+							20030905.201339
+
+ succeeded in 274ms:
+[
+  {
+    "name": "pre-cleanup",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/pre-cleanup",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/pre-cleanup",
+    "commit": {
+      "sha": "f700a243468e46fa9eecc5eb87be5f81ae3e7be3",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/f700a243468e46fa9eecc5eb87be5f81ae3e7be3"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcHJlLWNsZWFudXA="
+  },
+  {
+    "name": "plexus-classworlds-2.5.2",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.5.2",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.5.2",
+    "commit": {
+      "sha": "3429df3b20aa5b956da0b2efa8d5a82b491647c8",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/3429df3b20aa5b956da0b2efa8d5a82b491647c8"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuNS4y"
+  },
+  {
+    "name": "plexus-classworlds-2.5.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.5.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.5.1",
+    "commit": {
+      "sha": "96885e26448b8c550603d9a8d72c07e023e246ef",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/96885e26448b8c550603d9a8d72c07e023e246ef"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuNS4x"
+  },
+  {
+    "name": "plexus-classworlds-2.5",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.5",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.5",
+    "commit": {
+      "sha": "9595e9b60b7e7d96a157b9f687cd137dbfb9b107",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/9595e9b60b7e7d96a157b9f687cd137dbfb9b107"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuNQ=="
+  },
+  {
+    "name": "plexus-classworlds-2.4.2",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.4.2",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.4.2",
+    "commit": {
+      "sha": "81f3642eb43a4fe85af18f569e758c26b21a1517",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/81f3642eb43a4fe85af18f569e758c26b21a1517"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuNC4y"
+  },
+  {
+    "name": "plexus-classworlds-2.4.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.4.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.4.1",
+    "commit": {
+      "sha": "f8eaf29f9b902afb36dce6d28979ebc30862c04a",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/f8eaf29f9b902afb36dce6d28979ebc30862c04a"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuNC4x"
+  },
+  {
+    "name": "plexus-classworlds-2.4",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.4",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.4",
+    "commit": {
+      "sha": "51883ff174901f7bf00a187dcb494f636ca84d13",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/51883ff174901f7bf00a187dcb494f636ca84d13"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuNA=="
+  },
+  {
+    "name": "plexus-classworlds-2.3",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.3",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.3",
+    "commit": {
+      "sha": "9c0048362b1198a3ee884eae9ea9b8f3e8718af0",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/9c0048362b1198a3ee884eae9ea9b8f3e8718af0"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMw=="
+  },
+  {
+    "name": "plexus-classworlds-2.2.3",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.3",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.3",
+    "commit": {
+      "sha": "c1cec59879e8476d2d5805166f7d8b14e9ea6b58",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/c1cec59879e8476d2d5805166f7d8b14e9ea6b58"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMi4z"
+  },
+  {
+    "name": "plexus-classworlds-2.2.2",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.2",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.2",
+    "commit": {
+      "sha": "2703f6cd9e446c97becc2c6be710aaec16b34f71",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/2703f6cd9e446c97becc2c6be710aaec16b34f71"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMi4y"
+  },
+  {
+    "name": "plexus-classworlds-2.2.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.1",
+    "commit": {
+      "sha": "3f61eabff6dfc0344898e8bcf36113f67c78ea6f",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/3f61eabff6dfc0344898e8bcf36113f67c78ea6f"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMi4x"
+  },
+  {
+    "name": "plexus-classworlds-2.2.0",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.2.0",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.2.0",
+    "commit": {
+      "sha": "5256d34229967fdc238d079b0a6305952cdd4c4b",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/5256d34229967fdc238d079b0a6305952cdd4c4b"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMi4w"
+  },
+  {
+    "name": "plexus-classworlds-2.1.0",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.1.0",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.1.0",
+    "commit": {
+      "sha": "a90a6c0114cb462cdbca472a368aa990b1060246",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/a90a6c0114cb462cdbca472a368aa990b1060246"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMS4w"
+  },
+  {
+    "name": "plexus-classworlds-2.0.0",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-2.0.0",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-2.0.0",
+    "commit": {
+      "sha": "a380e8ddc4837ed2a572b36d98de23ea4d52cbf4",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/a380e8ddc4837ed2a572b36d98de23ea4d52cbf4"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTIuMC4w"
+  },
+  {
+    "name": "plexus-classworlds-1.5.0",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.5.0",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.5.0",
+    "commit": {
+      "sha": "1856e320909a85356fe3dcc3ea966c3b7df04274",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/1856e320909a85356fe3dcc3ea966c3b7df04274"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuNS4w"
+  },
+  {
+    "name": "plexus-classworlds-1.4",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.4",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.4",
+    "commit": {
+      "sha": "1527fb6118dd654a87ed9f7c7befad08f8ca01ce",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/1527fb6118dd654a87ed9f7c7befad08f8ca01ce"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuNA=="
+  },
+  {
+    "name": "plexus-classworlds-1.3",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.3",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.3",
+    "commit": {
+      "sha": "1f247232628cf96593e1b032664c8cfc1c7dd71a",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/1f247232628cf96593e1b032664c8cfc1c7dd71a"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMw=="
+  },
+  {
+    "name": "plexus-classworlds-1.2",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2",
+    "commit": {
+      "sha": "d1664c5502f1c530523c88beb245b01303ca1780",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/d1664c5502f1c530523c88beb245b01303ca1780"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMg=="
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-13",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-13",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-13",
+    "commit": {
+      "sha": "32540f3cec36cfb7a276e1bc52a419024b10528d",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/32540f3cec36cfb7a276e1bc52a419024b10528d"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMi1hbHBoYS0xMw=="
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-12",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-12",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-12",
+    "commit": {
+      "sha": "81514eeb09b8b3a3ac8dc923b10248058ebfd01e",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/81514eeb09b8b3a3ac8dc923b10248058ebfd01e"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMi1hbHBoYS0xMg=="
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-11",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-11",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-11",
+    "commit": {
+      "sha": "eadee446c4e02d114b24aa41fa1fbb6bb1c74467",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/eadee446c4e02d114b24aa41fa1fbb6bb1c74467"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMi1hbHBoYS0xMQ=="
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-10",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-10",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-10",
+    "commit": {
+      "sha": "d0a31c51065b9ae29616712a5bae70b470aed740",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/d0a31c51065b9ae29616712a5bae70b470aed740"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMi1hbHBoYS0xMA=="
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-9",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-9",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-9",
+    "commit": {
+      "sha": "6fec222911c558076175cdc81ba26037bb53d1bd",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/6fec222911c558076175cdc81ba26037bb53d1bd"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMi1hbHBoYS05"
+  },
+  {
+    "name": "plexus-classworlds-1.2-alpha-8",
+    "zipball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/zipball/refs/tags/plexus-classworlds-1.2-alpha-8",
+    "tarball_url": "https://api.github.com/repos/sonatype/plexus-classworlds/tarball/refs/tags/plexus-classworlds-1.2-alpha-8",
+    "commit": {
+      "sha": "e3125d05783e84904a9665812334e5ed5965fa8e",
+      "url": "https://api.github.com/repos/sonatype/plexus-classworlds/commits/e3125d05783e84904a9665812334e5ed5965fa8e"
+    },
+    "node_id": "MDM6UmVmMTA0NTI3NzpyZWZzL3RhZ3MvcGxleHVzLWNsYXNzd29ybGRzLTEuMi1hbHBoYS04"
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' build/discovered-artifact-metadata | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\" : \"N/A\"' build/discovered-artifact-metadata | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'javadoc.io/doc' build/discovered-artifact-metadata | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org/maven2/.+sources.jar' build/discovered-artifact-metadata | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find . -name '*.json' -path '*metadata*' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+./stats/org.jetbrains.kotlinx/kotlinx-metadata-jvm/0.9.0/execution-metrics.json
+./stats/org.jetbrains.kotlinx/kotlinx-metadata-jvm/0.9.0/stats.json
+./metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+./metadata/org.eclipse.jetty/jetty-ee/index.json
+./metadata/org.eclipse.jetty/jetty-ee/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/index.json
+./metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/index.json
+./metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util/index.json
+./metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/index.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/index.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-session/index.json
+./metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+./metadata/org.scalatest/scalatest-compatible/index.json
+./metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest_2.13/index.json
+./metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+./metadata/org.awaitility/awaitility/index.json
+./metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/3.6.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json
+./metadata/com.typesafe.slick/slick_2.13/3.6.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick_2.13/index.json
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json
+./metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+./metadata/org.junit.jupiter/junit-jupiter/index.json
+./metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json
+./metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/index.json
+./metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json
+./metadata/jakarta.authentication/jakarta.authentication-api/3.0.0/reachability-metadata.json
+./metadata/org.springframework/spring-jcl/index.json
+./metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+./metadata/org.springframework/spring-aspects/5.3.31/reachability-metadata.json
+./metadata/org.springframework/spring-aspects/index.json
+./metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+./metadata/org.springframework/spring-instrument/index.json
+./metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+./metadata/com.rabbitmq/amqp-client/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.14.3/reachability-metadata.json
+./metadata/net.postgis/postgis-jdbc/index.json
+./metadata/net.postgis/postgis-jdbc/2.5.0/reachability-metadata.json
+./metadata/net.postgis/postgis-geometry/index.json
+./metadata/net.postgis/postgis-geometry/2.5.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json
+./metadata/io.prometheus/simpleclient_tracer_otel/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_common/index.json
+./metadata/io.prometheus/simpleclient_tracer_common/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient/index.json
+./metadata/io.prometheus/simpleclient/0.16.0/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url' -n . | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:64:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:65:   - For pre-release promotions, verify the `source-code-url`, `test-code-url`, and `documentation-url` values were rendered from the old version to the promoted `metadata-version` or otherwise corrected to an exact-version URL. Do not accept stale URLs that still point at the old pre-release.
+./skills/review-library-bulk-update/SKILL.md:77:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:342:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:344:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:345:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:55:            "source-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:56:            "test-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:57:            "documentation-url"
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+./metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+./metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+./metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+./metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:308:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:363:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:372:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:375:                - Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:378:                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:379:                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+
+exec
+/usr/bin/bash -lc "sed -n '340,390p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for every entry tested-version alias ([%s]), including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                - If an existing URL can be rendered as a version template, verify the rendered candidate for every entry tested-version alias before writing the "$version$" template.
+                """.formatted(testedVersions).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+                    - Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+                    - If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+                    - A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+                - Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+                - If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+                - A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.strip();
+    }
+
+    private static String testedVersionsDisplay(List<String> testedVersions, String metadataVersion) {
+        if (testedVersions == null || testedVersions.isEmpty()) {
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+    "description" : "ShrinkWrap API provides the client-facing interfaces and archive model for creating Java archives such as JAR, WAR, EAR, and resource adapter packages in code. It defines archive, asset, importer, exporter, formatter, container, and class loader abstractions used by ShrinkWrap implementations and tests.",
+    "tested-versions" : [
+      "1.2.2",
+      "1.2.3",
+      "1.2.4",
+      "1.2.5",
+      "1.2.6"
+    ],
+    "allowed-packages" : [
+      "org.jboss.shrinkwrap.api"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,20p' metadata/org.springframework/spring-instrument/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.3.31",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+    "description" : "Spring Instrument provides a Java instrumentation agent that captures and exposes the JVM Instrumentation instance for later use by Spring-based applications. It supports Spring features that need load-time class transformation or other access to the JVM instrumentation API.",
+    "tested-versions" : [
+      "5.3.31",
+      "5.3.32",
+      "5.3.33",
+      "5.3.34",
+      "5.3.35",
+      "5.3.36",
+      "5.3.37",
+      "5.3.38",
+      "5.3.39",
+      "6.0.0",
+
+exec
+/usr/bin/bash -lc "rg 'not-for-native-image|\"language\"' build/discovered-artifact-metadata metadata -n | sed -n '1,40p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language": {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language": {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/codehaus-plexus/plexus-classworlds/pre-cleanup/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/codehaus-plexus/plexus-classworlds/tree/pre-cleanup/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents?ref=pre-cleanup | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/codehaus-plexus/plexus-classworlds/tree/pre-cleanup/src/java/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 180ms:
+[
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "a8e9a986f62048b141a1b8d58f669861be05779b",
+    "size": 1938,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/LICENSE.txt?ref=pre-cleanup",
+    "html_url": "https://github.com/codehaus-plexus/plexus-classworlds/blob/pre-cleanup/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/blobs/a8e9a986f62048b141a1b8d58f669861be05779b",
+    "download_url": "https://raw.githubusercontent.com/codehaus-plexus/plexus-classworlds/pre-cleanup/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/LICENSE.txt?ref=pre-cleanup",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/blobs/a8e9a986f62048b141a1b8d58f669861be05779b",
+      "html": "https://github.com/codehaus-plexus/plexus-classworlds/blob/pre-cleanup/LICENSE.txt"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "8fe375835c354c737a40aae6f7708f5087467cd9",
+    "size": 7490,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/pom.xml?ref=pre-cleanup",
+    "html_url": "https://github.com/codehaus-plexus/plexus-classworlds/blob/pre-cleanup/pom.xml",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/blobs/8fe375835c354c737a40aae6f7708f5087467cd9",
+    "download_url": "https://raw.githubusercontent.com/codehaus-plexus/plexus-classworlds/pre-cleanup/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/pom.xml?ref=pre-cleanup",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/blobs/8fe375835c354c737a40aae6f7708f5087467cd9",
+      "html": "https://github.com/codehaus-plexus/plexus-classworlds/blob/pre-cleanup/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "921b4486e1cba79cae098c767f6ae77205c101bc",
+    "size": 0,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/src?ref=pre-cleanup",
+    "html_url": "https://github.com/codehaus-plexus/plexus-classworlds/tree/pre-cleanup/src",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/trees/921b4486e1cba79cae098c767f6ae77205c101bc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/contents/src?ref=pre-cleanup",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/trees/921b4486e1cba79cae098c767f6ae77205c101bc",
+      "html": "https://github.com/codehaus-plexus/plexus-classworlds/tree/pre-cleanup/src"
+    }
+  }
+]
+
+ succeeded in 197ms:
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~  Copyright 2001-2006 The Codehaus Foundation.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>plexus</artifactId>
+    <groupId>org.codehaus.plexus</groupId>
+    <version>2.0.2</version>
+  </parent>
+
+  <groupId>org.codehaus.plexus</groupId>
+  <artifactId>plexus-classworlds</artifactId>
+  <version>1.5.1-SNAPSHOT</version>
+
+  <name>Plexus Classworlds</name>
+  <description>A class loader framework</description>
+  <inceptionYear>2002</inceptionYear>
+
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-classworlds/trunk</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-classworlds/trunk</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-classworlds/trunk</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.2</version>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <argLine>-ea:org.codehaus.classworlds:org.codehaus.plexus.classworlds</argLine>
+          <forkMode>once</forkMode>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/codehaus/plexus/classworlds/event/*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                    <version>1.6.5</version>
+                  </artifactItem>
+                  <artifactItem>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.0.3</version>
+                  </artifactItem>
+                  <artifactItem>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                    <version>1.3.02</version>
+                  </artifactItem>
+                </artifactItems>
+                <outputDirectory>${project.build.directory}/test-lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>debug</id>
+      <dependencies>
+        <dependency>
+          <groupId>aspectj</groupId>
+          <artifactId>aspectjrt</artifactId>
+          <version>1.5.0</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <complianceLevel>1.4</complianceLevel>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile><!-- TODO: remove when upgrading parent to 2.0.3 -->
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.1</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>2.4.3</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.2</version>
+            <configuration>
+              <configLocation>http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-checkstyle-plugin/src/main/resources/config/maven_checks.xml</configLocation>
+              <headerLocation>http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-checkstyle-plugin/src/main/resources/config/maven-header.txt</headerLocation>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+              <rulesets>
+                <ruleset>http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-pmd-plugin/src/main/resources/rulesets/maven.xml</ruleset>
+              </rulesets>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>taglist-maven-plugin</artifactId>
+            <version>2.2</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>2.1</version>
+            <configuration>
+              <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+              <encoding>${project.build.sourceEncoding}</encoding>
+              <links>
+                <link>http://java.sun.com/j2ee/1.4/docs/api</link>
+                <link>http://junit.sourceforge.net/javadoc/</link>
+              </links>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>javadoc</report>
+                  <report>test-javadoc</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
+</project>
+
+ exited 22 in 501ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:44:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=Ta8F0Y6goOXtdk3HREbUTrnETv0UbT4Yb4VdDYd%2Fw37QsTX3hs8ASCoj280B%2FGN7IOg8VEZ%2BkBWuMEfyhin3mYr2ylNEyZxZT0usIRPT9OR1ev7dOO06YG%2BqPRvYdEdONB6Y6IDngp2Ndtn%2Fc22CZCeOtSPhEtVAXFAT8LB83ERS5k41ccFREq4ZN2GdrbEw3qO9YSIClrYFDHKpi1oUKeqpknyDMPzBYX1Rp%2FfD8w2YyYOeuknvoee%2FuVWf4WfmF3cmRDuz7slv8eSGqWFOMw%3D%3D--GydQRd94xPy43yrk--f7x26suSP7EcoQGpPzOAlQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.562106591.1778096657; expires=Thu, 06 May 2027 19:44:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 19:44:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:2D3101:290E9DD:1EA6F1E:69FB9A11
+
+
+ succeeded in 601ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 19:44:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dab8db8a85cd4f1735beed080b64106e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=EU8qe0NLGgRuKAmy07U7DvWcvMwcCRGgD3fzcKwELdor9yBxseqV%2FP3WNyOy2Qhzwd2zEZnYxDhieANmwpMSh373nv9pf91yLBMOflvXkRjK2194VKbLHOeazzLwYQKTMwDAiETgQedlydjA6nxze%2FfoyMT3oL%2BEs0%2BSvpFh5dXSR5YcdCaCdTPCSLqRHfSG9VZ23%2BdPhXSc8HRuH81gPDNzQbLpfKAoBHq1gphuZnYG%2FbftFzoBHMvliWPqCYqV4P4JGK4h6eqxFOjQRuSGCg%3D%3D--IzK9RmypfvJuzbUG--t21R8GYdg2VmYqj0LwdpBA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1662281654.1778096657; expires=Thu, 06 May 2027 19:44:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 06 May 2027 19:44:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5112:18FD:25E99C1:1C0B31A:69FB9A11
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 19:44:27 GMT
+content-type: application/java-archive
+content-length: 44722
+cf-ray: 9f7a7acc4f0703af-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1856173
+etag: "c8d134c6e1421421ca6748d6aa798a79"
+last-modified: Thu, 20 May 2010 08:55:18 GMT
+x-checksum-md5: c8d134c6e1421421ca6748d6aa798a79
+x-checksum-sha1: 44673eb402d35a91bee8ea1ce7d318c016e3e63e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI http://cvs.classworlds.codehaus.org/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ exited 6 in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsI https://javadoc.io/doc/classworlds/classworlds/1.1' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc 'curl -fsI http://classworlds.codehaus.org/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ exited 6 in 0ms:
+ succeeded in 128ms:
+HTTP/2 303 
+date: Wed, 06 May 2026 19:44:27 GMT
+content-length: 0
+location: /doc/classworlds/classworlds/1.1/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=HzuSLYDmNwu4THEHpsb3C6GAM0Rs6fApjTaQcQrEbmoblP7a4VZwq0SbUbHUIlCCAzTXRZwwt8uxK8E%2BOhU%2B5bJh%2FYU26cxECEgp4%2FqB7Qfjzrx0%2BiHp995hk2PYC7EuWzhiw2wbW66z"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f7a7acd6caca43d-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: "classworlds" "1.1" "src/java/main"
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.pom
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+exec
+/usr/bin/bash -lc "sed -n '1,150p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.harness.tasks;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import com.networknt.schema.ValidationMessage;
+import org.gradle.api.GradleException;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.options.Option;
+import org.jetbrains.annotations.NotNull;
+import org.gradle.util.internal.VersionNumber;
+
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Single task that:
+ * 1) Resolves a set of index.json files based on selected coordinates (supports fractional batching k/n)
+ * 2) Maps each file to its corresponding JSON Schema
+ * 3) Validates the JSON well-formedness and schema compliance
+ * 4) Collects and reports all validation failures at the end of execution
+ * <p>
+ * Coordinates can be provided via:
+ * - -Pcoordinates=<filter> (preferred, supports space-separated lists for CI)
+ * - --coordinates=<filter>
+ * The filter can be <code>group:artifact[:version]</code>, a fractional batch <code>k/n</code> (e.g., 1/16), or 'all'.
+ */
+public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
+
+    private static final Pattern METADATA_PATTERN = Pattern.compile("metadata/[^/]+/[^/]+/index\\.json");
+    private static final Pattern METADATA_COORDINATE_PATTERN = Pattern.compile("metadata/([^/]+)/([^/]+)/index\\.json");
+    private static final String VERSION_TOKEN = "$version$";
+    private static final List<String> URL_TEMPLATE_FIELDS = List.of(
+            "source-code-url",
+            "test-code-url",
+            "documentation-url"
+    );
+    private static final Set<String> MAVEN_CENTRAL_HOSTS = Set.of(
+            "repo1.maven.org",
+            "repo.maven.apache.org"
+    );
+
+    @Input
+    @Optional
+    public abstract Property<@NotNull String> getCoordinates();
+
+    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+    public void setCoordinatesOption(String value) {
+        getCoordinates().set(value);
+    }
+
+    /**
+     * Determines the effective filter string by checking the CLI option first,
+     * then fallback to the project property.
+     */
+    protected String effectiveCoordinateFilter() {
+        String opt = getCoordinates().getOrNull();
+        if (opt != null) {
+            return opt;
+        }
+        Object prop = getProject().findProperty("coordinates");
+        return prop == null ? "" : prop.toString();
+    }
+
+    @TaskAction
+    public void validate() {
+        Set<String> targetFiles = new LinkedHashSet<>();
+
+        // 1. Resolve coordinates
+        List<String> allResolved = new ArrayList<>();
+        List<String> override = getCoordinatesOverride().getOrElse(Collections.emptyList());
+
+        if (!override.isEmpty()) {
+            allResolved.addAll(override);
+        } else {
+            String filter = effectiveCoordinateFilter();
+            // Split by whitespace to support lists passed from GitHub Actions/CLI
+            for (String singleFilter : filter.split("\\s+")) {
+                if (!singleFilter.isEmpty()) {
+                    String directIndexPath = directMetadataIndexPath(singleFilter);
+                    if (directIndexPath != null) {
+                        targetFiles.add(directIndexPath);
+                    }
+                    allResolved.addAll(computeMatchingCoordinates(singleFilter));
+                }
+            }
+        }
+
+        // 2. Map resolved coordinates back to physical file paths
+        allResolved.stream()
+                .filter(coord -> !coord.startsWith("samples:"))
+                .distinct()
+                .forEach(coord -> {
+                    String[] parts = coord.split(":");
+                    if (parts.length >= 2) {
+                        targetFiles.add(String.format("metadata/%s/%s/index.json", parts[0], parts[1]));
+                    }
+                });
+
+        executeValidation(targetFiles);
+    }
+
+    private String directMetadataIndexPath(String coordinateFilter) {
+        String[] parts = coordinateFilter.split(":");
+        if (parts.length < 2 || parts.length > 3) {
+            return null;
+        }
+        String filePath = String.format("metadata/%s/%s/index.json", parts[0], parts[1]);
+        return getProject().file(filePath).exists() ? filePath : null;
+    }
+
+    private void executeValidation(Set<String> targetFiles) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+        Map<String, JsonSchema> schemaCache = new HashMap<>();
+        List<String> failures = new ArrayList<>();
+
+        for (String filePath : targetFiles) {
+            File jsonFile = getProject().file(filePath.replace('\\', '/'));
+
+            if (!jsonFile.exists()) {
+                getLogger().warn("⚠️ File not found: " + filePath);
+                continue;
+            }
+
+            String schemaPath = mapToSchemaPath(filePath);
+            if (schemaPath.isEmpty()) continue;
+
+            try {
+
+exec
+/usr/bin/bash -lc "rg 'repository-url' tests/tck-build-logic/src/main -n" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:343:                null, // repository-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:294:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:173:                - Set "repository-url" to the discovered repository root URL.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - repository-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:359:                    - Set "repository-url" to the selected repository URL.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:360:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:372:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:376:                - Set missing "repository-url" to the selected repository URL.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:377:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+
+exec
+/usr/bin/bash -lc "rg 'URL|UrlVerification|source-code-url|documentation-url' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java -n | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+57:    private static final Duration URL_VERIFICATION_TIMEOUT = Duration.ofSeconds(20);
+61:            .connectTimeout(URL_VERIFICATION_TIMEOUT)
+64:    private static final Pattern URL_VERSION_TOKEN_PATTERN = Pattern.compile(
+171:     *   <li>Versioned artifact URL fields are rendered for the full release and verified before filesystem renames.</li>
+227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+233:    private String promoteUrl(String fieldName, String currentUrl, String oldVersion, String newVersion, UrlVerification verification) {
+243:    private void verifyPromotedUrl(String fieldName, String promotedUrl, String oldVersion, String newVersion, UrlVerification verification) {
+245:            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL does not contain the promoted metadata version");
+248:            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL still contains the old pre-release version");
+252:            if (verification == UrlVerification.ARCHIVE_WITH_SOURCES) {
+254:            } else if (verification == UrlVerification.TEST_CODE && isArchiveUrl(promotedUrl)) {
+291:        Matcher urlVersionMatcher = URL_VERSION_TOKEN_PATTERN.matcher(currentUrl);
+326:                        "Candidate URL failed verification: " + promotedUrl + ". Reason: " + reason
+364:                .timeout(URL_VERIFICATION_TIMEOUT)
+372:            throw new IOException("URL did not resolve successfully: HTTP " + statusCode + " for " + url);
+629:    private enum UrlVerification {
+
+exec
+/usr/bin/bash -lc "sed -n '150,250p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java && sed -n '233,330p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "repository-url" to the discovered repository root URL.
+                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString(),
+                parsedCoordinates.version()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+                invocation.add(token.replace(PROMPT_PLACEHOLDER, prompt));
+                replaced = true;
+            } else {
+                invocation.add(token);
+            }
+        }
+        if (!replaced) {
+            invocation.add(prompt);
+        }
+        return invocation;
+    }
+
+    private int runAndLogInvocation(List<String> invocation, File logFile) throws IOException, InterruptedException {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT).format(new Date());
+        String header = "==== [" + timestamp + "] " + coordinates + System.lineSeparator() +
+                "COMMAND: " + String.join(" ", invocation) + System.lineSeparator();
+        Files.writeString(logFile.toPath(), header, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(invocation);
+        processBuilder.directory(getProject().getProjectDir());
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        process.getOutputStream().close();
+        try (OutputStream logOutput = Files.newOutputStream(logFile.toPath(), StandardOpenOption.APPEND)) {
+            TeeOutputStream teeOutputStream = new TeeOutputStream(logOutput, System.out);
+            process.getInputStream().transferTo(teeOutputStream);
+            teeOutputStream.flush();
+        }
+        int exit = process.waitFor();
+
+        String footer = System.lineSeparator() + "EXIT_CODE: " + exit + System.lineSeparator();
+        Files.writeString(logFile.toPath(), footer, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        getLogger().lifecycle("Ran agent for {} (exit {}). Log: {}", coordinates, exit, logFile);
+        return exit;
+    }
+
+    private static List<String> tokenizeCommand(String command) {
+        List<String> tokens = new ArrayList<>();
+        Matcher matcher = COMMAND_TOKEN_PATTERN.matcher(command);
+        while (matcher.find()) {
+            String token = matcher.group(1);
+            if (token == null) {
+                token = matcher.group(2);
+            }
+            if (token == null) {
+                token = matcher.group(3);
+            }
+            if (token != null && !token.isBlank()) {
+                tokens.add(token);
+            }
+        }
+        return tokens;
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
+    private String promoteUrl(String fieldName, String currentUrl, String oldVersion, String newVersion, UrlVerification verification) {
+        if (!hasText(currentUrl) || "N/A".equals(currentUrl)) {
+            return currentUrl;
+        }
+
+        String promotedUrl = renderVersionTemplate(currentUrl, oldVersion, newVersion);
+        verifyPromotedUrl(fieldName, promotedUrl, oldVersion, newVersion, verification);
+        return toStoredVersionTemplate(promotedUrl, newVersion);
+    }
+
+    private void verifyPromotedUrl(String fieldName, String promotedUrl, String oldVersion, String newVersion, UrlVerification verification) {
+        if (!promotedUrl.contains(newVersion)) {
+            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL does not contain the promoted metadata version");
+        }
+        if (containsIgnoreCase(promotedUrl, oldVersion)) {
+            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL still contains the old pre-release version");
+        }
+
+        try {
+            if (verification == UrlVerification.ARCHIVE_WITH_SOURCES) {
+                verifySourceUrl(promotedUrl);
+            } else if (verification == UrlVerification.TEST_CODE && isArchiveUrl(promotedUrl)) {
+                verifyArchiveContainsSourceFiles(promotedUrl);
+            } else {
+                verifyUrlResolves(promotedUrl);
+            }
+        } catch (IOException | InterruptedException | IllegalArgumentException e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, e.getMessage());
+        }
+    }
+
+    private static String renderVersionTemplate(String currentUrl, String oldVersion, String newVersion) {
+        if (currentUrl.contains(VERSION_PLACEHOLDER)) {
+            return currentUrl.replace(VERSION_PLACEHOLDER, newVersion);
+        }
+        if (containsIgnoreCase(currentUrl, oldVersion)) {
+            Pattern oldVersionPattern = Pattern.compile(Pattern.quote(oldVersion), Pattern.CASE_INSENSITIVE);
+            return oldVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+        }
+
+        String urlVersion = findTemplateVersionToken(currentUrl, newVersion);
+        if (urlVersion == null) {
+            return currentUrl;
+        }
+        Pattern urlVersionPattern = Pattern.compile(Pattern.quote(urlVersion), Pattern.CASE_INSENSITIVE);
+        return urlVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+    }
+
+    private static String findTemplateVersionToken(String currentUrl, String newVersion) {
+        Matcher newVersionMatcher = VERSION_PATTERN.matcher(newVersion);
+        if (!newVersionMatcher.matches() || newVersionMatcher.group(2) != null) {
+            return null;
+        }
+
+        String baseVersion = newVersionMatcher.group(1);
+        Matcher urlVersionMatcher = URL_VERSION_TOKEN_PATTERN.matcher(currentUrl);
+        while (urlVersionMatcher.find()) {
+            String urlVersion = urlVersionMatcher.group();
+            if (urlVersion.equalsIgnoreCase(newVersion)) {
+                continue;
+            }
+
+            Matcher candidateMatcher = VERSION_PATTERN.matcher(urlVersion);
+            if (candidateMatcher.matches() && candidateMatcher.group(2) != null && baseVersion.equals(candidateMatcher.group(1))) {
+                return urlVersion;
+            }
+        }
+        return null;
+    }
+
+    private static String toStoredVersionTemplate(String url, String version) {
+        Pattern versionPattern = Pattern.compile(Pattern.quote(version), Pattern.CASE_INSENSITIVE);
+        return versionPattern.matcher(url).replaceAll(Matcher.quoteReplacement(VERSION_PLACEHOLDER));
+    }
+
+    private static boolean containsIgnoreCase(String value, String token) {
+        return value.toLowerCase(Locale.ROOT).contains(token.toLowerCase(Locale.ROOT));
+    }
+
+    private void verifySourceUrl(String url) throws IOException, InterruptedException {
+        if (isArchiveUrl(url)) {
+            verifyArchiveContainsSourceFiles(url);
+        } else {
+            verifyUrlResolves(url);
+        }
+    }
+
+    private GradleException staleUrlException(String fieldName, String promotedUrl, String oldVersion, String newVersion, String reason) {
+        return new GradleException(
+                "Cannot promote " + fieldName + " from " + oldVersion + " to " + newVersion + ". " +
+                        "Candidate URL failed verification: " + promotedUrl + ". Reason: " + reason
+        );
+    }
+
+    private void verifyUrlResolves(String url) throws IOException, InterruptedException {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/trees/pre-cleanup?recursive=1 | rg 'src/(main|test).*classworlds.*\\.java' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-classworlds/git/trees/plexus-classworlds-1.2?recursive=1 | rg 'src/(main|test).*classworlds.*\\.java' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 238ms:
+      "path": "src/main/java/org/codehaus/classworlds/BytesURLConnection.java",
+      "path": "src/main/java/org/codehaus/classworlds/BytesURLStreamHandler.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassRealm.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassRealmAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassRealmReverseAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorld.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorldAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorldException.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorldReverseAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ConfigurationException.java",
+      "path": "src/main/java/org/codehaus/classworlds/Configurator.java",
+      "path": "src/main/java/org/codehaus/classworlds/ConfiguratorAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/DefaultClassRealm.java",
+      "path": "src/main/java/org/codehaus/classworlds/DuplicateRealmException.java",
+      "path": "src/main/java/org/codehaus/classworlds/Launcher.java",
+      "path": "src/main/java/org/codehaus/classworlds/NoSuchRealmException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/ClassWorld.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/ClassWorldException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/UrlUtils.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ClassEventDebug.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ClassEventListener.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ResourceEventDebug.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ResourceEventListener.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/ConfigurationException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/ConfigurationHandler.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/ConfigurationParser.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/Configurator.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/Launcher.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/ClassRealm.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/DuplicateRealmException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/Entry.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/NoSuchRealmException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/AbstractStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/DefaultStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/ForeignStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/OsgiBundleStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/ParentFirstStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/SelfFirstStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/Strategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/StrategyFactory.java",
+      "path": "src/test/java/org/codehaus/classworlds/ClassWorldTest.java",
+      "path": "src/test/java/org/codehaus/classworlds/DefaultClassRealmTest.java",
+      "path": "src/test/java/org/codehaus/classworlds/LauncherTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/AbstractClassWorldsTestCase.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/ClassView.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/ClassWorldTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/TestUtil.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/launcher/ConfigurationParserTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/launcher/ConfiguratorTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/launcher/LauncherTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/realm/ClassRealmImplTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/realm/DefaultClassRealmTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/realm/EntryTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/strategy/StrategyTest.java",
+
+ succeeded in 239ms:
+      "path": "src/main/java/org/codehaus/classworlds/BytesURLConnection.java",
+      "path": "src/main/java/org/codehaus/classworlds/BytesURLStreamHandler.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassRealm.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassRealmAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassRealmReverseAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorld.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorldAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorldException.java",
+      "path": "src/main/java/org/codehaus/classworlds/ClassWorldReverseAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/ConfigurationException.java",
+      "path": "src/main/java/org/codehaus/classworlds/Configurator.java",
+      "path": "src/main/java/org/codehaus/classworlds/ConfiguratorAdapter.java",
+      "path": "src/main/java/org/codehaus/classworlds/DefaultClassRealm.java",
+      "path": "src/main/java/org/codehaus/classworlds/DuplicateRealmException.java",
+      "path": "src/main/java/org/codehaus/classworlds/Launcher.java",
+      "path": "src/main/java/org/codehaus/classworlds/NoSuchRealmException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/ClassWorld.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/ClassWorldException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/UrlUtils.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ClassEventDebug.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ClassEventListener.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ResourceEventDebug.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/event/ResourceEventListener.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/ConfigurationException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/Configurator.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/launcher/Launcher.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/ClassRealm.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/DuplicateRealmException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/Entry.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/realm/NoSuchRealmException.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/AbstractStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/DefaultStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/ForeignStrategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/Strategy.java",
+      "path": "src/main/java/org/codehaus/plexus/classworlds/strategy/StrategyFactory.java",
+      "path": "src/test/java/org/codehaus/classworlds/ClassWorldTest.java",
+      "path": "src/test/java/org/codehaus/classworlds/DefaultClassRealmTest.java",
+      "path": "src/test/java/org/codehaus/classworlds/LauncherTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/AbstractClassWorldsTestCase.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/ClassView.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/ClassWorldTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/TestUtil.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/launcher/ConfiguratorTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/launcher/LauncherTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/realm/ClassRealmImplTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/realm/DefaultClassRealmTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/realm/EntryTest.java",
+      "path": "src/test/java/org/codehaus/plexus/classworlds/strategy/StrategyTest.java",
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+exec
+/usr/bin/bash -lc "find . -maxdepth 3 -iname '*schema*' -o -path '*schemas*' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+./stats/schemas
+./stats/schemas/run-metrics-output-schema-v1.0.1.json
+./stats/schemas/library-stats-schema-v1.0.2.json
+./stats/dev.zio/zio-schema-macros_3
+./stats/dev.zio/zio-schema-derivation_3
+./stats/dev.zio/zio-schema_3
+./metadata/schemas
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json
+./metadata/schemas/reachability-metadata-schema-v1.2.0.json
+./metadata/schemas/library-and-framework-list-schema-v1.0.0.json
+./metadata/dev.zio/zio-schema-macros_3
+./metadata/dev.zio/zio-schema-derivation_3
+./metadata/dev.zio/zio-schema_3
+./forge/schemas
+./forge/schemas/strategy_schema.json
+./forge/schemas/benchmark_suite_schema.json
+./forge/schemas/benchmark_run_metrics_schema.json
+./forge/tests/test_schema_validator.py
+./forge/utility_scripts/schema_validator.py
+
+exec
+/usr/bin/bash -lc "rg 'discovered-artifact|DiscoveredArtifactMetadata|not-for-native-image' -n schemas tests metadata | sed -n '1,100p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+rg: schemas: No such file or directory (os error 2)
+metadata/io.insert-koin/koin-test/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-ktor/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-core/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.foundation/foundation/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.runtime/runtime/index.json:3:    "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:352:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:12:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:41:        writeDiscoveryFile(discoveryFile, new DiscoveredArtifactMetadata(
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:55:    public static void writeDiscoveryFile(Path discoveryFile, DiscoveredArtifactMetadata metadata) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:64:    public static DiscoveredArtifactMetadata readDiscoveryFile(Path discoveryFile) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:65:        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:14:public record DiscoveredArtifactMetadata(
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:15:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:103:        DiscoveredArtifactMetadata discoveredMetadata = loadDiscoveredArtifactMetadata(coordinates);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:206:    private void writeCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:212:    private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:306:    private DiscoveredArtifactMetadata loadDiscoveredArtifactMetadata(Coordinates coordinates) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:311:        DiscoveredArtifactMetadata metadata = ArtifactMetadataDiscoveryUtils.readDiscoveryFile(discoveryFile);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:318:    private LibraryLanguage resolveEntryLanguage(DiscoveredArtifactMetadata discoveredMetadata, List<MetadataVersionsIndexEntry> existingEntries) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:330:    private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:16:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:128:            DiscoveredArtifactMetadata metadata = ArtifactMetadataDiscoveryUtils.readDiscoveryFile(discoveryFile);
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:11:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:172:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:220:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:269:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:305:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:618:    private void writeDiscoveredArtifactMetadata(Project project, DiscoveredArtifactMetadata metadata) throws IOException {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:58:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:71:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/org.webjars/jquery/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+
+codex
+I’ve got enough evidence to write the metadata: exact Maven sources exist, Maven test/javadoc artifacts do not, and the artifact JAR contains JVM `.class` files. I’ll keep it as a Native Image candidate, omit `language`, use the POM’s SCM root for the repository, and mark the unavailable exact test suite as `N/A`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..a9444e25569ccbcadb48388bf4e7f9ae7bdfe518
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/classworlds/classworlds/$version$",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..a9444e25569ccbcadb48388bf4e7f9ae7bdfe518
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/classworlds/classworlds/$version$",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/classworlds-classworlds-1.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+{
+  "coordinates": "classworlds:classworlds:1.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
+  "repository-url": "http://cvs.classworlds.codehaus.org/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://javadoc.io/doc/classworlds/classworlds/$version$",
+  "description": "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 19:45:23 GMT
+content-type: application/java-archive
+content-length: 44722
+cf-ray: 9f7a7c27ed99bab0-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1856229
+etag: "c8d134c6e1421421ca6748d6aa798a79"
+last-modified: Thu, 20 May 2010 08:55:18 GMT
+x-checksum-md5: c8d134c6e1421421ca6748d6aa798a79
+x-checksum-sha1: 44673eb402d35a91bee8ea1ce7d318c016e3e63e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/classworlds-1.1.jar | rg '\\.class"'$'"' | sed -n '1,10p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+org/codehaus/classworlds/BytesURLConnection.class
+org/codehaus/classworlds/BytesURLStreamHandler.class
+org/codehaus/classworlds/ClassRealm.class
+org/codehaus/classworlds/ClassWorld.class
+org/codehaus/classworlds/ClassWorldException.class
+org/codehaus/classworlds/ConfigurationException.class
+org/codehaus/classworlds/Configurator$1.class
+org/codehaus/classworlds/Configurator$2.class
+org/codehaus/classworlds/Configurator.class
+org/codehaus/classworlds/DefaultClassRealm.class
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://javadoc.io/doc/classworlds/classworlds/1.1' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..a9444e25569ccbcadb48388bf4e7f9ae7bdfe518
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/classworlds/classworlds/$version$",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+ succeeded in 133ms:
+HTTP/2 303 
+date: Wed, 06 May 2026 19:45:23 GMT
+content-length: 0
+location: /doc/classworlds/classworlds/1.1/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ybejd2DGwDAkgQONJ0bDYFuhKQ1yXx15nPv5HrSfwYH%2Fqcam%2B6IM5dlS%2FaXwAmCSz6QvsAW0tLjg7WyvTKnICLHbfFfmFVGJmu78K77zxkxDqy1cjIb5BqJtrs0LReVbgBquuwK%2FRHsG"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f7a7c2808232397-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/classworlds-classworlds-1.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..a9444e25569ccbcadb48388bf4e7f9ae7bdfe518
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/classworlds/classworlds/$version$",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/classworlds-classworlds-1.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..a9444e25569ccbcadb48388bf4e7f9ae7bdfe518
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/classworlds/classworlds/$version$",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+ succeeded in 422ms:
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: javadoc.io classworlds classworlds 1.1
+codex
+One correction from the rendered documentation page: javadoc.io resolves for version `1.1`, but it reports that no JavaDoc artifact was released for this version. I’m changing `documentation-url` to `N/A` so the field does not point at a placeholder page.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e5f4cbce0fad0d3e3e08cf0b0bfc4a0d44b98960
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e5f4cbce0fad0d3e3e08cf0b0bfc4a0d44b98960
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/classworlds-classworlds-1.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+{
+  "coordinates": "classworlds:classworlds:1.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
+  "repository-url": "http://cvs.classworlds.codehaus.org/",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 06 May 2026 19:45:53 GMT
+content-type: application/java-archive
+content-length: 44722
+cf-ray: 9f7a7ce6da2801fc-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1856260
+etag: "c8d134c6e1421421ca6748d6aa798a79"
+last-modified: Thu, 20 May 2010 08:55:18 GMT
+x-checksum-md5: c8d134c6e1421421ca6748d6aa798a79
+x-checksum-sha1: 44673eb402d35a91bee8ea1ce7d318c016e3e63e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e5f4cbce0fad0d3e3e08cf0b0bfc4a0d44b98960
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+ succeeded in 252ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:45:54 GMT
+content-type: text/html
+cf-ray: 9f7a7ce72a94cb74-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 252ms:
+HTTP/2 404 
+date: Wed, 06 May 2026 19:45:54 GMT
+content-type: text/html
+cf-ray: 9f7a7ce7afa7bc62-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: classworlds classworlds 1.1 Maven Central
+web search: 
+web search: 
+web search: 
+web search: "classworlds-1.1.pom" "cvs.classworlds.codehaus.org"
+web search: 
+web search: "No JavaDoc is released for artifact classworlds classworlds 1.1"
+codex
+Updated [classworlds-classworlds-1.1.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json).
+
+I set the Maven sources JAR URL, used the Codehaus CVS SCM root from the POM, and set test/documentation URLs to `N/A` because Maven Central only lists the main JAR/POM/sources for `1.1`, while javadoc.io reports no JavaDoc for this artifact/version. ([repo1.maven.org](https://repo1.maven.org/maven2/classworlds/classworlds/1.1/?utm_source=openai))
+
+Validated JSON with `jq`, confirmed the source URL resolves, and left `language` plus `not-for-native-image` absent because this is a Java/JVM JAR with class files.
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e5f4cbce0fad0d3e3e08cf0b0bfc4a0d44b98960
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader framework for creating isolated class realms and controlling how classes and resources are loaded between them. It is used by launcher and container-style applications that need custom class path composition, realm imports, and optional embedded or uber-JAR bootstrapping."
+ }
+
+tokens used
+143,838
+Updated [classworlds-classworlds-1.1.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json).
+
+I set the Maven sources JAR URL, used the Codehaus CVS SCM root from the POM, and set test/documentation URLs to `N/A` because Maven Central only lists the main JAR/POM/sources for `1.1`, while javadoc.io reports no JavaDoc for this artifact/version. ([repo1.maven.org](https://repo1.maven.org/maven2/classworlds/classworlds/1.1/?utm_source=openai))
+
+Validated JSON with `jq`, confirmed the source URL resolves, and left `language` plus `not-for-native-image` absent because this is a Java/JVM JAR with class files.
+Ran agent for classworlds:classworlds:1.1 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/agent-artifact-discovery-logs/classworlds-classworlds-1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-5f38acba/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 31s
+9 actionable tasks: 9 executed
