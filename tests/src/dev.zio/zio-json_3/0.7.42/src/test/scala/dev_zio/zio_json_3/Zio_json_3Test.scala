@@ -8,9 +8,10 @@ package dev_zio.zio_json_3
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import zio.Chunk
+import zio.{Chunk, Duration, Runtime, Unsafe, ZIO}
 import zio.json.*
 import zio.json.ast.{Json, JsonCursor}
+import zio.stream.ZStream
 
 import java.time.{Instant, LocalDate, OffsetDateTime, ZoneId}
 import java.util.{Currency, UUID}
@@ -120,6 +121,27 @@ class Zio_json_3Test {
   }
 
   @Test
+  def decodesJsonStreamsWithArrayAndNewlineDelimiters(): Unit = {
+    val arrayDelimited: Chunk[Int] = runZio(
+      ZStream
+        .fromChunk(Chunk.fromIterable("[1, 2, 3]"))
+        .via(JsonDecoder[Int].decodeJsonPipeline())
+        .runCollect
+    )
+
+    assertThat(arrayDelimited.toList).isEqualTo(List(1, 2, 3))
+
+    val newlineDelimited: Chunk[Int] = runZio(
+      ZStream
+        .fromChunk(Chunk.fromIterable("1\n2\r\n3\n"))
+        .via(JsonDecoder[Int].decodeJsonPipeline(JsonStreamDelimiter.Newline))
+        .runCollect
+    )
+
+    assertThat(newlineDelimited.toList).isEqualTo(List(1, 2, 3))
+  }
+
+  @Test
   def supportsCustomJsonFieldCodecsForObjectKeys(): Unit = {
     val thresholds: ListMap[SettingKey, Int] = ListMap(
       SettingKey("api-limit") -> 100,
@@ -217,6 +239,13 @@ class Zio_json_3Test {
 
   private def assertRoundTrips[A: JsonCodec](value: A): Unit =
     assertRight(value.toJson.fromJson[A], value)
+
+  private def runZio[A](effect: ZIO[Any, Throwable, A]): A =
+    Unsafe.unsafe { implicit unsafe =>
+      Runtime.default.unsafe
+        .run(effect.timeoutFail(new RuntimeException("Timed out while decoding JSON stream"))(Duration.fromSeconds(10)))
+        .getOrThrowFiberFailure()
+    }
 
   private def assertRight[A](actual: Either[String, A], expected: A): Unit =
     assertThat(actual).isEqualTo(Right(expected))
