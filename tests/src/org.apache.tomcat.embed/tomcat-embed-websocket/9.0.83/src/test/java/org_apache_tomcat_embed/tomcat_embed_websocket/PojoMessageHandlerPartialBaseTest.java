@@ -37,7 +37,7 @@ public class PojoMessageHandlerPartialBaseTest {
 
         session.addMessageHandler(byte[].class, handler);
         MessageHandler wrappedHandler = session.getMessageHandlers().iterator().next();
-        asPartialBinaryHandler(wrappedHandler).onMessage(ByteBuffer.wrap(new byte[] { 1, 2, 3 }), true);
+        asPartialBinaryHandler(wrappedHandler).onMessage(ByteBuffer.wrap(new byte[] {1, 2, 3}), true);
 
         assertThat(wrappedHandler).isNotSameAs(handler);
         assertThat(handler.receivedMessage).containsExactly((byte) 1, (byte) 2, (byte) 3);
