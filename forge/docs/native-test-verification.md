@@ -177,8 +177,12 @@ Gate semantics:
 - **Codex after trace failure.** `metadata-gap-exhausted`, stalled
   metadata progress, trace timeouts, and non-172 trace failures all route
   to codex with a reproduction command that includes the accepted trace
-  dirs as `metadataConfigDirs`. `FAILED` is returned only when codex does
-  not converge.
+  dirs as `metadataConfigDirs`. The codex process and codex instructions
+  must pin `GRAALVM_HOME`, `JAVA_HOME`, and the full `native-image --version`
+  output to the exact GraalVM distribution used by the failed gate command.
+  Codex must fail instead of reproducing or verifying with a different
+  GraalVM installation. `FAILED` is returned only when codex does not
+  converge.
 - **Codex keeps prior config_dirs.** Codex's fixes are additive; the gate
   does not discard `config_dirs` before codex runs. (Codex returns
   terminally so the question of carrying state across codex is moot for

@@ -112,6 +112,12 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - Either `GRAALVM_HOME` or `JAVA_HOME` must point to a GraalVM distribution.
   Both variables are then aligned to that distribution. If neither does, the
   workflow exits with an error.
+- Agent repair steps must use the exact same GraalVM distribution as the
+  Gradle or Native Image failure that triggered them. This is a hard
+  requirement: Forge must pass the selected `GRAALVM_HOME`, `JAVA_HOME`, and
+  full `native-image --version` output into Codex instructions, run Codex with
+  `GRAALVM_HOME` and `JAVA_HOME` pinned to that same distribution, and fail
+  instead of reproducing or verifying with a different GraalVM installation.
 - `gh` CLI authenticated against the reachability repo is required for any
   script in `git_scripts/` or `complete_pipelines/`.
 - `FORGE_PARALLELISM` controls how many issue workflows the top-level worker
