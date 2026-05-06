@@ -24,18 +24,21 @@ import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlContentPolymorphicSerializer
 import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.YamlMap
+import com.charleskorn.kaml.YamlNull
 import com.charleskorn.kaml.YamlMultiLineStringStyle
 import com.charleskorn.kaml.YamlNamingStrategy
 import com.charleskorn.kaml.YamlNode
 import com.charleskorn.kaml.YamlScalarFormatException
 import com.charleskorn.kaml.YamlSingleLineStringStyle
 import com.charleskorn.kaml.yamlMap
+import com.charleskorn.kaml.yamlNull
 import com.charleskorn.kaml.yamlScalar
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -230,6 +233,31 @@ public class Kaml_jvmTest {
             TextSetting(text = "hello"),
             TextSetting(text = "123")
         )
+    }
+
+    @Test
+    fun nullValuesRoundTripThroughYamlNullNodesAndNullableSerializers(): Unit {
+        val input: String = """
+            explicit: null
+            empty:
+            text: value
+            """.trimIndent()
+        val root: YamlMap = Yaml.default.parseToYamlNode(input).yamlMap
+        val explicitNode: YamlNode = root["explicit"] ?: error("explicit should be present")
+        val emptyNode: YamlNode = root["empty"] ?: error("empty should be present")
+        val explicitNull: YamlNull = explicitNode.yamlNull
+        val emptyNull: YamlNull = emptyNode.yamlNull
+        val serializer: KSerializer<Map<String, String?>> = MapSerializer(String.serializer(), String.serializer().nullable)
+
+        val decoded: Map<String, String?> = Yaml.default.decodeFromString(serializer, input)
+        val encoded: String = Yaml.default.encodeToString(serializer, decoded)
+
+        assertThat(explicitNull.path.toHumanReadableString()).isEqualTo("explicit")
+        assertThat(emptyNull.path.toHumanReadableString()).isEqualTo("empty")
+        assertThat(explicitNull.contentToString()).isEqualTo("null")
+        assertThat(root.getScalar("text")?.content).isEqualTo("value")
+        assertThat(decoded).isEqualTo(linkedMapOf("explicit" to null, "empty" to null, "text" to "value"))
+        assertThat(Yaml.default.decodeFromString(serializer, encoded)).isEqualTo(decoded)
     }
 
     @Test
