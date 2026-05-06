@@ -160,6 +160,17 @@ public class Kotlin_test_junitTest {
     }
 
     @JupiterTest
+    fun kotlinTestAnnotationSupportsJUnitExpectedExceptionAttribute(): Unit {
+        ExpectedExceptionJUnitFixture.events.clear()
+
+        val result = JUnitCore.runClasses(ExpectedExceptionJUnitFixture::class.java)
+
+        assertTrue(result.wasSuccessful(), result.failures.joinToString { it.toString() })
+        assertEquals(1, result.runCount)
+        assertEquals(listOf("expected exception test"), ExpectedExceptionJUnitFixture.events)
+    }
+
+    @JupiterTest
     fun ignoreAnnotationIsRecognizedByJUnit4Runner(): Unit {
         IgnoredJUnitFixture.events.clear()
 
@@ -185,6 +196,18 @@ public class Kotlin_test_junitTest {
         @AfterTest
         fun tearDown(): Unit {
             events += "after"
+        }
+
+        public companion object {
+            val events: MutableList<String> = mutableListOf()
+        }
+    }
+
+    public class ExpectedExceptionJUnitFixture {
+        @KotlinTest(expected = IllegalStateException::class)
+        fun acceptsExpectedException(): Unit {
+            events += "expected exception test"
+            throw IllegalStateException("handled by JUnit")
         }
 
         public companion object {
