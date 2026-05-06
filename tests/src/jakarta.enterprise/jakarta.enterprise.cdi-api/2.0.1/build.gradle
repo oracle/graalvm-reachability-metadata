@@ -1,0 +1,37 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "jakarta.enterprise:jakarta.enterprise.cdi-api:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
+
+tasks.named("test") {
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        File allPermissionsPolicy = layout.projectDirectory.file("src/test/resources/all-permissions.policy").asFile
+        jvmArgs += [
+                "-Djava.security.manager=default",
+                "-Djava.security.policy==${allPermissionsPolicy.toURI()}"
+        ]
+    }
+}
