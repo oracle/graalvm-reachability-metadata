@@ -225,7 +225,7 @@ DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
 ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
 GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
-DEFAULT_TAKE_BLOCKED_ISSUES = True
+DEFAULT_TAKE_BLOCKED_ISSUES = False
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
 ISSUE_CLAIM_CACHE_VERSION = 1
@@ -8293,8 +8293,8 @@ def process_issues_with_label(
                         continue
 
                     claim_kwargs: dict[str, bool] = {}
-                    if not take_blocked_issues:
-                        claim_kwargs["take_blocked_issues"] = False
+                    if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+                        claim_kwargs["take_blocked_issues"] = take_blocked_issues
                     claimed_issue = claim_issue_for_processing(
                         issue,
                         label,
@@ -8372,6 +8372,7 @@ def process_work_queues(
         random_offset_override: bool | None = None,
         user_requested_only_override: bool | None = None,
         priority_override: str | None = None,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -8387,6 +8388,9 @@ def process_work_queues(
     priority_kwargs: dict[str, str] = {}
     if priority_override is not None:
         priority_kwargs["priority"] = priority_override
+    claim_kwargs: dict[str, bool] = {}
+    if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+        claim_kwargs["take_blocked_issues"] = take_blocked_issues
     enabled_issue_queues = [queue_config for queue_config in queue_configs if queue_config.limit > 0]
 
     if is_shutdown_requested():
@@ -8456,6 +8460,7 @@ def process_work_queues(
             user_requested_only=user_requested_only,
             environment_already_validated=True,
             **priority_kwargs,
+            **claim_kwargs,
         )
 
     for review_queue_config in review_queue_configs:
@@ -8622,7 +8627,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         dest="take_blocked_issues",
         action="store_true",
         default=DEFAULT_TAKE_BLOCKED_ISSUES,
-        help="Claim issues even when GitHub shows open blocking issues. Defaults to enabled.",
+        help="Claim issues even when GitHub shows open blocking issues. Defaults to disabled.",
     )
 
     args = parser.parse_args(argv)
@@ -8697,8 +8702,8 @@ def process_single_issue(
             )
 
     claim_kwargs: dict[str, bool] = {}
-    if not take_blocked_issues:
-        claim_kwargs["take_blocked_issues"] = False
+    if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
+        claim_kwargs["take_blocked_issues"] = take_blocked_issues
     claimed_issue = claim_issue_for_processing(
         issue,
         label,
@@ -8803,6 +8808,7 @@ def main() -> None:
                 random_offset_override=args.random_offset,
                 user_requested_only_override=args.user_requested_only,
                 priority_override=args.priority,
+                take_blocked_issues=args.take_blocked_issues,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
