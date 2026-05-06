@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import sttp.capabilities.StreamMaxLengthExceededException
+
+import java.util.concurrent.atomic.AtomicInteger
 import sttp.capabilities.Streams
 import sttp.capabilities.zio.ZioStreams
 import zio.Chunk
@@ -147,6 +149,24 @@ class Zio_3Test {
     assertArrayEquals(Array[Byte](1, 2), collectedChunks(0).toArray)
     assertArrayEquals(Array[Byte](3), collectedChunks(1).toArray)
     assertArrayEquals(Array[Byte](4, 5, 6), collectedChunks(2).toArray)
+  }
+
+  @Test
+  def limitBytesRemainsLazyAndResetsItsByteCountForEachRun(): Unit = {
+    val evaluations: AtomicInteger = new AtomicInteger(0)
+    val stream: Stream[Throwable, Byte] =
+      ZStream.fromZIO(ZIO.succeed(evaluations.incrementAndGet()).as(1.toByte)) ++
+        ZStream.fromIterable(List[Byte](2))
+    val limited: Stream[Throwable, Byte] = ZioStreams.limitBytes(stream, 2L)
+
+    assertEquals(0, evaluations.get())
+
+    val firstRun: Chunk[Byte] = unsafeRun(limited.runCollect)
+    val secondRun: Chunk[Byte] = unsafeRun(limited.runCollect)
+
+    assertArrayEquals(Array[Byte](1, 2), firstRun.toArray)
+    assertArrayEquals(Array[Byte](1, 2), secondRun.toArray)
+    assertEquals(2, evaluations.get())
   }
 
   private def failure[A](result: Either[Throwable, A]): Throwable = result match {
