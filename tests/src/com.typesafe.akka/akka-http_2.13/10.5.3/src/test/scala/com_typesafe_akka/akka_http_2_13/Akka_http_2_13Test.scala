@@ -6,9 +6,11 @@
  */
 package com_typesafe_akka.akka_http_2_13
 
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.Marshal
+import akka.http.scaladsl.marshalling.sse.EventStreamMarshalling.toEventStream
 import akka.http.scaladsl.model.ContentTypes
 import akka.http.scaladsl.model.FormData
 import akka.http.scaladsl.model.HttpEntity
@@ -24,11 +26,14 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.headers.HttpCookie
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.headers.`Set-Cookie`
+import akka.http.scaladsl.model.sse.ServerSentEvent
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.http.scaladsl.unmarshalling.sse.EventStreamUnmarshalling.fromEventsStream
 import akka.stream.Materializer
 import akka.stream.SystemMaterializer
+import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
@@ -154,6 +159,41 @@ class Akka_http_2_13Test {
 
     assertEquals(ContentTypes.`text/plain(UTF-8)`, strictEntity.contentType)
     assertEquals("first second", strictEntity.data.utf8String)
+  }
+
+  @Test
+  def serverSentEventsMarshalAndUnmarshalEventStreams(): Unit = {
+    val events: Source[ServerSentEvent, Any] = Source(
+      List(
+        ServerSentEvent(data = "first line\nsecond line", eventType = Some("message"), id = Some("1")),
+        ServerSentEvent(data = "plain event", id = Some("2"))
+      )
+    )
+
+    val entity: RequestEntity = Await.result(Marshal(events).to[RequestEntity], Timeout)
+    val strictEntity = Await.result(entity.toStrict(Timeout), Timeout)
+    val encodedEvents: String = strictEntity.data.utf8String
+
+    assertEquals(MediaTypes.`text/event-stream`, strictEntity.contentType.mediaType)
+    assertThat(encodedEvents).contains("id:1")
+    assertThat(encodedEvents).contains("event:message")
+    assertThat(encodedEvents).contains("data:first line")
+    assertThat(encodedEvents).contains("data:second line")
+    assertThat(encodedEvents).contains("id:2")
+    assertThat(encodedEvents).contains("data:plain event")
+
+    val decodedSource: Source[ServerSentEvent, NotUsed] = Await.result(
+      Unmarshal(strictEntity).to[Source[ServerSentEvent, NotUsed]],
+      Timeout
+    )
+    val decodedEvents: Seq[ServerSentEvent] = Await.result(decodedSource.runWith(Sink.seq), Timeout)
+
+    assertEquals(2, decodedEvents.size)
+    assertEquals("first line\nsecond line", decodedEvents.head.data)
+    assertEquals(Some("message"), decodedEvents.head.eventType)
+    assertEquals(Some("1"), decodedEvents.head.id)
+    assertEquals("plain event", decodedEvents(1).data)
+    assertEquals(Some("2"), decodedEvents(1).id)
   }
 
   @Test
