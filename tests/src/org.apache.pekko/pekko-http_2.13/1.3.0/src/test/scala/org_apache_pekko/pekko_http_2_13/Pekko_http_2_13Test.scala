@@ -14,6 +14,7 @@ import scala.jdk.CollectionConverters.SeqHasAsJava
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.Http
+import org.apache.pekko.http.scaladsl.marshalling.Marshal
 import org.apache.pekko.http.scaladsl.model.ContentTypes
 import org.apache.pekko.http.scaladsl.model.FormData
 import org.apache.pekko.http.scaladsl.model.HttpEntity
@@ -21,6 +22,7 @@ import org.apache.pekko.http.scaladsl.model.HttpHeader
 import org.apache.pekko.http.scaladsl.model.HttpMethods
 import org.apache.pekko.http.scaladsl.model.HttpRequest
 import org.apache.pekko.http.scaladsl.model.HttpResponse
+import org.apache.pekko.http.scaladsl.model.RequestEntity
 import org.apache.pekko.http.scaladsl.model.StatusCodes
 import org.apache.pekko.http.scaladsl.model.Uri
 import org.apache.pekko.http.scaladsl.model.headers.Authorization
@@ -34,6 +36,7 @@ import org.apache.pekko.http.scaladsl.model.headers.`Set-Cookie`
 import org.apache.pekko.http.scaladsl.server.Directives._
 import org.apache.pekko.http.scaladsl.server.PathMatchers.Segment
 import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshal
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.SystemMaterializer
 import org.apache.pekko.stream.scaladsl.Source
@@ -162,6 +165,22 @@ class Pekko_http_2_13Test {
       assertThat(strict.contentType).isEqualTo(ContentTypes.`text/plain(UTF-8)`)
       assertThat(strict.data.utf8String).isEqualTo("hello from chunks")
       assertThat(limited.contentLengthOption).isEqualTo(Some(17L))
+    }
+  }
+
+  @Test
+  def marshalsAndUnmarshalsTextWithThePublicTypeclassApi(): Unit = {
+    withActorSystem("marshalling") { implicit system: ActorSystem =>
+      implicit val materializer: Materializer = SystemMaterializer(system).materializer
+      implicit val executionContext: ExecutionContext = system.dispatcher
+      val originalText: String = "Pekko HTTP marshalling keeps λ text intact"
+      val entity: RequestEntity = Await.result(Marshal(originalText).to[RequestEntity], 3.seconds)
+      val strictEntity: HttpEntity.Strict = Await.result(entity.toStrict(3.seconds), 3.seconds)
+      val unmarshalledText: String = Await.result(Unmarshal(strictEntity).to[String], 3.seconds)
+
+      assertThat(strictEntity.contentType).isEqualTo(ContentTypes.`text/plain(UTF-8)`)
+      assertThat(strictEntity.data.utf8String).isEqualTo(originalText)
+      assertThat(unmarshalledText).isEqualTo(originalText)
     }
   }
 
