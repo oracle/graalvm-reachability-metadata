@@ -176,6 +176,30 @@ class Decline_effect_3Test {
   }
 
   @Test
+  def shortVersionFlagPrintsVersionAndDoesNotEvaluateMainOptions(): Unit = {
+    val console: RecordingConsole = new RecordingConsole()
+    given Console[IO] = console
+    val executed: AtomicReference[String] = new AtomicReference[String]()
+    val opts: Opts[IO[ExitCode]] = Opts.argument[String]("input").map { input =>
+      IO {
+        executed.set(input)
+        ExitCode.Success
+      }
+    }
+
+    val exitCode: ExitCode = CommandIOApp.run[IO](
+      name = "demo",
+      header = "Command with short version flag",
+      version = Some("short-version")
+    )(opts, List("-v")).unsafeRunSync()
+
+    assertEquals(ExitCode.Success, exitCode)
+    assertNull(executed.get())
+    assertThat(console.standardOutputText).isEqualTo(s"short-version${System.lineSeparator()}")
+    assertThat(console.standardErrorText).isEmpty()
+  }
+
+  @Test
   def commandIOAppSubclassRunsItsPublicMainParser(): Unit = {
     val greeted: AtomicReference[String] = new AtomicReference[String]()
     val app: GreetingApp = new GreetingApp(greeted)
