@@ -18,6 +18,8 @@ import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.apache.hadoop.fs.permission.AclEntry;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.BZip2Codec;
 import org.apache.hadoop.io.compress.CompressionCodec;
@@ -145,6 +147,54 @@ public class Hadoop_apacheTest {
 
         assertRoundTrips(gzip, "gzip payload with unicode π and multiple words");
         assertRoundTrips(bzip2, "bzip2 payload\nwith more than one line\n");
+    }
+
+    @Test
+    void sequenceFileStoresAndReadsWritableKeyValueRecords() throws Exception {
+        Configuration configuration = new Configuration();
+        Path records = new Path(new File(temporaryDirectory, "records.seq").toURI());
+
+        try (FileSystem fileSystem = new RawLocalFileSystem()) {
+            fileSystem.initialize(URI.create("file:///"), configuration);
+            try (FSDataOutputStream outputStream = fileSystem.create(records, true);
+                    SequenceFile.Writer writer = SequenceFile.createWriter(
+                            configuration,
+                            SequenceFile.Writer.stream(outputStream),
+                            SequenceFile.Writer.keyClass(Text.class),
+                            SequenceFile.Writer.valueClass(IntWritable.class),
+                            SequenceFile.Writer.compression(SequenceFile.CompressionType.NONE))) {
+                writer.append(new Text("alpha"), new IntWritable(1));
+                writer.append(new Text("beta"), new IntWritable(2));
+                writer.append(new Text("gamma"), new IntWritable(3));
+                assertThat(writer.getLength()).isPositive();
+            }
+
+            try (FSDataInputStream inputStream = fileSystem.open(records);
+                    SequenceFile.Reader reader = new SequenceFile.Reader(
+                            configuration,
+                            SequenceFile.Reader.stream(inputStream),
+                            SequenceFile.Reader.length(fileSystem.getFileStatus(records).getLen()))) {
+                assertThat(reader.getKeyClass()).isEqualTo(Text.class);
+                assertThat(reader.getValueClass()).isEqualTo(IntWritable.class);
+                assertThat(reader.isCompressed()).isFalse();
+                assertThat(reader.isBlockCompressed()).isFalse();
+
+                Text key = new Text();
+                IntWritable value = new IntWritable();
+                assertThat(reader.next(key, value)).isTrue();
+                assertThat(key.toString()).isEqualTo("alpha");
+                assertThat(value.get()).isEqualTo(1);
+
+                assertThat(reader.next(key, value)).isTrue();
+                assertThat(key.toString()).isEqualTo("beta");
+                assertThat(value.get()).isEqualTo(2);
+
+                assertThat(reader.next(key, value)).isTrue();
+                assertThat(key.toString()).isEqualTo("gamma");
+                assertThat(value.get()).isEqualTo(3);
+                assertThat(reader.next(key, value)).isFalse();
+            }
+        }
     }
 
     @Test
