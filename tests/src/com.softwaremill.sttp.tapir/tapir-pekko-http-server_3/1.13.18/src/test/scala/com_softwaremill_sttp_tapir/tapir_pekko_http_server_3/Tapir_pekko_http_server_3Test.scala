@@ -10,9 +10,10 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.Http
 import org.apache.pekko.http.scaladsl.model.headers.RawHeader
 import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCodes, Uri}
+import org.apache.pekko.http.scaladsl.model.ws.{Message, TextMessage, WebSocketRequest}
 import org.apache.pekko.http.scaladsl.server.Route
 import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshal
-import org.apache.pekko.stream.scaladsl.{Sink, Source}
+import org.apache.pekko.stream.scaladsl.{Flow, Keep, Sink, Source}
 import org.apache.pekko.stream.{Materializer, SystemMaterializer}
 import org.apache.pekko.util.ByteString
 import org.junit.jupiter.api.Assertions.{assertEquals, assertTrue}
@@ -207,6 +208,38 @@ class Tapir_pekko_http_server_3Test {
   }
 
   @Test
+  def websocketEndpointUpgradesAndTransformsTextFrames(): Unit = {
+    val websocketEndpoint = endpoint.get
+      .in("ws-uppercase")
+      .out(webSocketBody[String, CodecFormat.TextPlain, String, CodecFormat.TextPlain](PekkoStreams))
+      .serverLogicSuccess(_ =>
+        Future.successful(Flow[String].map(message => s"echo:${message.toUpperCase}"))
+      )
+
+    withServer { system =>
+      given ExecutionContext = system.dispatcher
+      PekkoHttpServerInterpreter().toRoute(websocketEndpoint)
+    } { (baseUri, system) =>
+      given ActorSystem = system
+      given ExecutionContext = system.dispatcher
+      given Materializer = SystemMaterializer(system).materializer
+
+      val outgoingMessages: Source[Message, ?] = Source(
+        List(TextMessage.Strict("tapir"), TextMessage.Strict("pekko"))
+      )
+      val webSocketUri = uri(baseUri, "/ws-uppercase").withScheme("ws")
+      val (upgradeResponse, receivedTexts) = outgoingMessages
+        .viaMat(Http().webSocketClientFlow(WebSocketRequest(webSocketUri)))(Keep.right)
+        .mapAsync(1)(textFromWebSocketMessage)
+        .toMat(Sink.seq)(Keep.both)
+        .run()
+
+      assertEquals(StatusCodes.SwitchingProtocols, Await.result(upgradeResponse, RequestTimeout).response.status)
+      assertEquals(Seq("echo:TAPIR", "echo:PEKKO"), Await.result(receivedTexts, RequestTimeout))
+    }
+  }
+
+  @Test
   def pekkoServerSentEventsRoundTripBetweenEventsAndBytes(): Unit = {
     val events: List[ServerSentEvent] = List(
       ServerSentEvent(
@@ -281,6 +314,13 @@ class Tapir_pekko_http_server_3Test {
 
   private def headerValue(response: HttpResponse, name: String): Option[String] = {
     response.headers.find(_.name().equalsIgnoreCase(name)).map(_.value())
+  }
+
+  private def textFromWebSocketMessage(message: Message)(using Materializer, ExecutionContext): Future[String] = {
+    message match {
+      case text: TextMessage => text.toStrict(3.seconds).map(_.text)
+      case _ => Future.failed(new AssertionError("Unexpected non-text websocket message"))
+    }
   }
 
   private def uri(baseUri: Uri, pathAndQuery: String): Uri = Uri(s"$baseUri$pathAndQuery")
