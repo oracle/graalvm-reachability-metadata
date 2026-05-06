@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,7 +24,9 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.apache.tools.ant.launch.Locator;
 import org.junit.jupiter.api.Test;
@@ -114,10 +117,17 @@ public class LocatorTest {
 
     private static Path javaExecutable() {
         String executableName = System.getProperty("os.name").toLowerCase().contains("win") ? "java.exe" : "java";
-        return Paths.get(System.getProperty("java.home"), "bin", executableName);
+        String javaHome = System.getProperty("java.home");
+        if (javaHome == null || javaHome.isBlank()) {
+            javaHome = System.getenv("JAVA_HOME");
+        }
+        if (javaHome == null || javaHome.isBlank()) {
+            throw new IllegalStateException("Could not locate " + executableName + " because java.home is not set");
+        }
+        return Paths.get(javaHome, "bin", executableName);
     }
 
-    private static Path locateAntLauncherJar() throws URISyntaxException {
+    private static Path locateAntLauncherJar() throws URISyntaxException, IOException {
         CodeSource codeSource = Locator.class.getProtectionDomain().getCodeSource();
         if (codeSource != null && "file".equals(codeSource.getLocation().getProtocol())) {
             Path location = Paths.get(codeSource.getLocation().toURI());
@@ -135,7 +145,44 @@ public class LocatorTest {
                 }
             }
         }
+
+        Path gradleCache = Paths.get(System.getProperty("user.home"),
+                ".gradle", "caches", "modules-2", "files-2.1", "org.apache.ant", "ant-launcher");
+        Optional<String> testedVersion = testedLibraryVersion();
+        if (testedVersion.isPresent()) {
+            Optional<Path> jar = findAntLauncherJar(gradleCache.resolve(testedVersion.get()));
+            if (jar.isPresent()) {
+                return jar.get();
+            }
+        }
+        Optional<Path> jar = findAntLauncherJar(gradleCache);
+        if (jar.isPresent()) {
+            return jar.get();
+        }
         throw new IllegalStateException("Could not locate the ant-launcher jar on the test class path");
+    }
+
+    private static Optional<Path> findAntLauncherJar(Path directory) throws IOException {
+        if (!Files.isDirectory(directory)) {
+            return Optional.empty();
+        }
+        try (Stream<Path> paths = Files.walk(directory)) {
+            return paths
+                    .filter(LocatorTest::isAntLauncherJar)
+                    .findFirst();
+        }
+    }
+
+    private static Optional<String> testedLibraryVersion() throws IOException {
+        Path propertiesFile = Paths.get("gradle.properties");
+        if (!Files.isRegularFile(propertiesFile)) {
+            return Optional.empty();
+        }
+        Properties properties = new Properties();
+        try (InputStream inputStream = Files.newInputStream(propertiesFile)) {
+            properties.load(inputStream);
+        }
+        return Optional.ofNullable(properties.getProperty("library.version"));
     }
 
     private static boolean isAntLauncherJar(Path path) {
