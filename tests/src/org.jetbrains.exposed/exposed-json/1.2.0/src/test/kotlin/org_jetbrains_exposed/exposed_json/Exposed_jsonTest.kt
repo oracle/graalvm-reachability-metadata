@@ -131,6 +131,22 @@ public class Exposed_jsonTest {
         assertThat(castRawPayload.columnType).isInstanceOf(JsonColumnType::class.java)
     }
 
+    @Test
+    fun castToJsonOnJsonColumnKeepsExistingCustomCodecs() {
+        val table = object : Table("cast_existing_json_documents") {
+            val payload = json("payload", ::encodeProfile, ::decodeProfile)
+        }
+        val castPayload = table.payload.castToJson<Profile>()
+        val profile = Profile("Katherine", active = true, tags = listOf("orbit", "json"))
+        val serialized = """{"name":"Katherine","active":true,"tags":["orbit","json"]}"""
+
+        assertThat(castPayload).isInstanceOf(CastToJson::class.java)
+        assertThat(castPayload.expression).isSameAs(table.payload)
+        assertThat(castPayload.columnType).isSameAs(table.payload.columnType)
+        assertThat(castPayload.columnType.notNullValueToDB(profile)).isEqualTo(serialized)
+        assertThat(castPayload.columnType.valueFromDB(serialized)).isEqualTo(profile)
+    }
+
     private data class Profile(val name: String, val active: Boolean, val tags: List<String>)
 
     private companion object {
