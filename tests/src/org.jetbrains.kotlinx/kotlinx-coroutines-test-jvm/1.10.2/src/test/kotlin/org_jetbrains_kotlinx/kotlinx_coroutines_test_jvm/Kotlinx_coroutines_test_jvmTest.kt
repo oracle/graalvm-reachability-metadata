@@ -157,6 +157,48 @@ public class Kotlinx_coroutines_test_jvmTest {
     }
 
     @Test
+    fun setMainPropagatesSchedulerToNewTestDispatchersAndScopes(): Unit {
+        val mainScheduler: TestCoroutineScheduler = TestCoroutineScheduler()
+        val mainDispatcher: TestDispatcher = StandardTestDispatcher(mainScheduler, name = "main-propagation")
+        Dispatchers.setMain(mainDispatcher)
+
+        try {
+            val inheritedDispatcher: TestDispatcher = StandardTestDispatcher(name = "inherited")
+            val inheritedScope: TestScope = TestScope()
+            val events: MutableList<String> = mutableListOf()
+
+            try {
+                assertThat(inheritedDispatcher.scheduler).isSameAs(mainScheduler)
+                assertThat(inheritedScope.testScheduler).isSameAs(mainScheduler)
+
+                inheritedScope.launch(inheritedDispatcher) {
+                    delay(30)
+                    events += "dispatcher at ${mainScheduler.currentTime}"
+                }
+                inheritedScope.launch {
+                    delay(50)
+                    events += "scope at ${mainScheduler.currentTime}"
+                }
+
+                mainScheduler.runCurrent()
+                assertThat(events).isEmpty()
+
+                mainScheduler.advanceTimeBy(30)
+                mainScheduler.runCurrent()
+                assertThat(events).containsExactly("dispatcher at 30")
+
+                mainScheduler.advanceUntilIdle()
+                assertThat(events).containsExactly("dispatcher at 30", "scope at 50")
+                assertThat(mainScheduler.currentTime).isEqualTo(50)
+            } finally {
+                inheritedScope.cancel()
+            }
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
     fun withContextOnMainDispatcherIsDrivenByVirtualTime(): Unit {
         val mainDispatcher: TestDispatcher = StandardTestDispatcher(name = "main-context")
         Dispatchers.setMain(mainDispatcher)
