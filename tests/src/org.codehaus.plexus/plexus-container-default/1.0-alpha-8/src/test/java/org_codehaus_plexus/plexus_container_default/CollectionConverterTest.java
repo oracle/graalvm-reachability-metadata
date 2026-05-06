@@ -7,6 +7,7 @@
 package org_codehaus_plexus.plexus_container_default;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.CollectionConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
@@ -107,6 +108,14 @@ public class CollectionConverterTest {
             } catch (ExpressionEvaluationException e) {
                 throw new ComponentConfigurationException("Could not create named element", e);
             }
+        }
+
+        @Override
+        public Object fromConfiguration(ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                        Class baseType, ClassLoader classLoader,
+                                        ExpressionEvaluator expressionEvaluator, ConfigurationListener listener)
+            throws ComponentConfigurationException {
+            return fromConfiguration(converterLookup, configuration, type, baseType, classLoader, expressionEvaluator);
         }
     }
 

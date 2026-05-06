@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +112,11 @@ public class SetterComponentComposerTest {
         }
 
         @Override
+        public Date getCreationDate() {
+            return new Date(0L);
+        }
+
+        @Override
         public Object lookup(String componentKey) throws ComponentLookupException {
             Object component = components.get(componentKey);
             if (component == null) {
@@ -162,6 +168,10 @@ public class SetterComponentComposerTest {
         @Override
         public boolean hasChildContainer(String name) {
             return false;
+        }
+
+        @Override
+        public void removeChildContainer(String name) {
         }
 
         @Override

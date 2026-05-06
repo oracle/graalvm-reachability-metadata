@@ -7,6 +7,7 @@
 package org_codehaus_plexus.plexus_container_default;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
@@ -56,6 +57,13 @@ public class AbstractConfigurationConverterTest {
         public Object fromConfiguration(ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
                                         Class baseType, ClassLoader classLoader,
                                         ExpressionEvaluator expressionEvaluator) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object fromConfiguration(ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                        Class baseType, ClassLoader classLoader,
+                                        ExpressionEvaluator expressionEvaluator, ConfigurationListener listener) {
             throw new UnsupportedOperationException();
         }
     }

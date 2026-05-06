@@ -25,11 +25,17 @@ import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 import java.io.Reader;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,9 +46,12 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MapOrientedComponentComposerTest {
     @Test
-    public void rejectsComponentsThatAreNotMapOriented() {
+    @Order(1)
+    public void rejectsComponentsThatAreNotMapOriented() throws Exception {
+        clearCompilerGeneratedClassCache();
         MapOrientedComponentComposer composer = new MapOrientedComponentComposer();
         Object component = nonMapOrientedComponentSelectedAtRuntime();
 
@@ -52,10 +61,11 @@ public class MapOrientedComponentComposerTest {
         );
 
         assertTrue(exception.getMessage().contains(component.getClass().getName()));
-        assertTrue(exception.getMessage().contains(MapOrientedComponent.class.getName()));
+        assertTrue(exception.getMessage().contains("org.codehaus.plexus.component.MapOrientedComponent"));
     }
 
     @Test
+    @Order(2)
     public void addsMappedRequirementsToMapOrientedComponents() throws Exception {
         MapOrientedComponentComposer composer = new MapOrientedComponentComposer();
         RecordingMapOrientedComponent component = new RecordingMapOrientedComponent();
@@ -98,6 +108,19 @@ public class MapOrientedComponentComposerTest {
         assertSame(mappedDependencies, component.valueFor(mapped));
         assertSame(fallbackDependency, component.valueFor(fallback));
         assertEquals(new HashSet<>(listedDependencies), component.valueFor(set));
+    }
+
+    private static void clearCompilerGeneratedClassCache() throws Exception {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+            MapOrientedComponentComposer.class,
+            MethodHandles.lookup()
+        );
+        VarHandle classCache = lookup.findStaticVarHandle(
+            MapOrientedComponentComposer.class,
+            "class$org$codehaus$plexus$component$MapOrientedComponent",
+            Class.class
+        );
+        classCache.set(null);
     }
 
     private static Object nonMapOrientedComponentSelectedAtRuntime() {
@@ -168,6 +191,11 @@ public class MapOrientedComponentComposerTest {
         }
 
         @Override
+        public Date getCreationDate() {
+            return new Date(0L);
+        }
+
+        @Override
         public Object lookup(String componentKey) throws ComponentLookupException {
             Object component = components.get(componentKey);
             if (component == null) {
@@ -219,6 +247,10 @@ public class MapOrientedComponentComposerTest {
         @Override
         public boolean hasChildContainer(String name) {
             return false;
+        }
+
+        @Override
+        public void removeChildContainer(String name) {
         }
 
         @Override

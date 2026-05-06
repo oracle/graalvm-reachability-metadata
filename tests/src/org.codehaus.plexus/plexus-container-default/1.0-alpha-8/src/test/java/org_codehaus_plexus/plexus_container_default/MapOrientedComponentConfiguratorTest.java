@@ -13,20 +13,45 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
+import java.lang.invoke.MethodType;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MapOrientedComponentConfiguratorTest {
     @Test
+    @Order(1)
+    public void resolvesMapOrientedComponentTypeThroughCompilerGeneratedClassLiteralHelper() throws Exception {
+        MethodHandle classLiteralHelper = MethodHandles.privateLookupIn(
+            MapOrientedComponentConfigurator.class,
+            MethodHandles.lookup()
+        ).findStatic(
+            MapOrientedComponentConfigurator.class,
+            "class$",
+            MethodType.methodType(Class.class, String.class)
+        );
+
+        Class<?> resolvedType = invokeClassLiteralHelper(
+            classLiteralHelper,
+            mapOrientedComponentTypeNameSelectedAtRuntime()
+        );
+
+        assertEquals(MapOrientedComponent.class, resolvedType);
+    }
+
+    @Test
+    @Order(2)
     public void rejectsComponentsThatDoNotAcceptMapConfiguration() throws Exception {
-        clearCompilerGeneratedClassCache();
         MapOrientedComponentConfigurator configurator = new MapOrientedComponentConfigurator();
         Object component = nonMapOrientedComponentSelectedAtRuntime();
 
@@ -40,6 +65,7 @@ public class MapOrientedComponentConfiguratorTest {
     }
 
     @Test
+    @Order(3)
     public void passesConvertedConfigurationMapToMapOrientedComponent() throws Exception {
         MapOrientedComponentConfigurator configurator = new MapOrientedComponentConfigurator();
         RecordingMapOrientedComponent component = new RecordingMapOrientedComponent();
@@ -53,17 +79,19 @@ public class MapOrientedComponentConfiguratorTest {
         assertEquals("8080", component.configuration.get("port"));
     }
 
-    private static void clearCompilerGeneratedClassCache() throws Exception {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-            MapOrientedComponentConfigurator.class,
-            MethodHandles.lookup()
-        );
-        VarHandle classCache = lookup.findStaticVarHandle(
-            MapOrientedComponentConfigurator.class,
-            "class$org$codehaus$plexus$component$MapOrientedComponent",
-            Class.class
-        );
-        classCache.set(null);
+    private static Class<?> invokeClassLiteralHelper(MethodHandle classLiteralHelper, String typeName) throws Exception {
+        try {
+            return (Class<?>) classLiteralHelper.invoke(typeName);
+        } catch (RuntimeException | Error e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private static String mapOrientedComponentTypeNameSelectedAtRuntime() {
+        String[] nameParts = new String[] {"org.codehaus.plexus.component.", "MapOrientedComponent" };
+        return nameParts[0] + nameParts[1];
     }
 
     private static Object nonMapOrientedComponentSelectedAtRuntime() {
