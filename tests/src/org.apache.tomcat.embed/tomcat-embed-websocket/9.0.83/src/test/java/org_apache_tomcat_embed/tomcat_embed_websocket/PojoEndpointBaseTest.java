@@ -37,7 +37,8 @@ import org.junit.jupiter.api.Test;
 public class PojoEndpointBaseTest {
 
     @Test
-    void lifecycleCallbacksInvokeAnnotatedPojoMethods() throws DeploymentException {
+    void lifecycleCallbacksInvokeAnnotatedPojoMethods() throws DeploymentException, InstantiationException {
+        ServerEndpointConfigInnerConfiguratorTest.assertFallbackDefaultConfiguratorAvailable();
         InstrumentedEndpoint pojo = new InstrumentedEndpoint();
         PojoEndpointClient endpoint = new PojoEndpointClient(pojo, List.of(), null);
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
