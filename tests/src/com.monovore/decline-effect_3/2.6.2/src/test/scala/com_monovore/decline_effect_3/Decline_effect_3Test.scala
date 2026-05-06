@@ -118,6 +118,30 @@ class Decline_effect_3Test {
   }
 
   @Test
+  def disabledAutomaticHelpFlagAllowsApplicationDefinedHelpOption(): Unit = {
+    val console: RecordingConsole = new RecordingConsole()
+    given Console[IO] = console
+    val selected: AtomicReference[String] = new AtomicReference[String]()
+    val opts: Opts[IO[ExitCode]] = Opts.flag("help", "Application-defined help flag").map { _ =>
+      IO {
+        selected.set("custom-help")
+        ExitCode.Success
+      }
+    }
+
+    val exitCode: ExitCode = CommandIOApp.run[IO](
+      name = "demo",
+      header = "Command with custom help",
+      helpFlag = false
+    )(opts, List("--help")).unsafeRunSync()
+
+    assertEquals(ExitCode.Success, exitCode)
+    assertEquals("custom-help", selected.get())
+    assertThat(console.standardOutputText).isEmpty()
+    assertThat(console.standardErrorText).isEmpty()
+  }
+
+  @Test
   def commandOverloadDispatchesSubcommandsToTheirSelectedEffect(): Unit = {
     val console: RecordingConsole = new RecordingConsole()
     given Console[IO] = console
