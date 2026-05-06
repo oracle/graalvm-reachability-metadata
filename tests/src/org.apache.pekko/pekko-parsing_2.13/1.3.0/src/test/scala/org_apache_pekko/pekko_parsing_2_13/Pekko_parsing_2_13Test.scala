@@ -68,6 +68,26 @@ class PekkoParsingCompatibilityAnnotationsTest {
     }).isTrue
   }
 
+  @Test
+  def compatibilityAnnotationsRejectMultipleAnnottees(): Unit = withUnsupportedFeatureHandling {
+    val reporter: StoreReporter = compileScalaSource(
+      "CompatibilityCompanionSample.scala",
+      """
+        |import org.apache.pekko.http.ccompat.since213
+        |
+        |@since213
+        |final class CompatibilityCompanionSample
+        |
+        |object CompatibilityCompanionSample
+        |""".stripMargin
+    )
+
+    assertThat(reporter.hasErrors).isTrue
+    assertThat(reporter.infos.exists { info: StoreReporter#Info =>
+      info.msg.contains("Please annotate single expressions")
+    }).isTrue
+  }
+
   private def compileScalaSource(fileName: String, source: String): StoreReporter = {
     val directory: Path = Files.createTempDirectory("pekko-parsing-macro-test")
     val sourceFile: Path = directory.resolve(fileName)
