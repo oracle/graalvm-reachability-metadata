@@ -18,6 +18,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.net.InetAddress
 import java.nio.file.Path
+import java.security.KeyPair
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.cert.Certificate
@@ -153,6 +154,58 @@ public class KtorNetworkTlsCertificatesJvmTest {
         assertThat(reloadedServiceKeyStore.x509Certificate("service").encoded).isEqualTo(serviceCertificate.encoded)
         val reloadedTrustStore: KeyStore = loadKeyStore(trustStoreFile, String(TRUST_STORE_PASSWORD), "JKS")
         assertThat(reloadedTrustStore.x509Certificate(CA_ALIAS).encoded).isEqualTo(caCertificate.encoded)
+    }
+
+    @Test
+    fun buildKeyStoreDslSignsCertificateWithIssuerCertificateSubject(): Unit {
+        val caAlias: String = "builder-ca"
+        val serviceAlias: String = "builder-signed-service"
+        val caSubject: X500Principal = X500Principal("CN=builder-ca.example.test, OU=Ktor Tests, O=GraalVM, C=US")
+        val caKeyStore: KeyStore = buildKeyStore {
+            certificate(caAlias) {
+                password = CA_PASSWORD
+                subject = caSubject
+                keySizeInBits = TEST_KEY_SIZE
+                keyType = KeyType.CA
+                daysValid = 5
+            }
+        }
+        val caCertificate: X509Certificate = caKeyStore.x509Certificate(caAlias)
+        val caKeyPair: KeyPair = KeyPair(
+            caCertificate.publicKey,
+            caKeyStore.getKey(caAlias, CA_PASSWORD.toCharArray()) as PrivateKey,
+        )
+
+        val serviceKeyStore: KeyStore = buildKeyStore {
+            certificate(serviceAlias) {
+                password = SERVER_PASSWORD
+                subject = X500Principal("CN=builder-signed.example.test, OU=Ktor Tests, O=GraalVM, C=US")
+                keySizeInBits = TEST_KEY_SIZE
+                keyType = KeyType.Server
+                domains = listOf("builder-signed.example.test")
+                ipAddresses = listOf(InetAddress.getByName("127.0.0.3"))
+                signWith(caKeyPair, caCertificate)
+            }
+        }
+
+        assertThat(caCertificate.subjectX500Principal).isEqualTo(caSubject)
+        assertThat(caCertificate.issuerX500Principal).isEqualTo(caSubject)
+        assertThat(caCertificate.basicConstraints).isGreaterThanOrEqualTo(0)
+        caCertificate.verify(caCertificate.publicKey)
+
+        val certificateChain: Array<out Certificate> = serviceKeyStore.getCertificateChain(serviceAlias)
+        assertThat(certificateChain).hasSize(2)
+        val serviceCertificate: X509Certificate = certificateChain[0] as X509Certificate
+        val issuerCertificate: X509Certificate = certificateChain[1] as X509Certificate
+        assertThat(issuerCertificate.encoded).isEqualTo(caCertificate.encoded)
+        assertThat(serviceCertificate.subjectX500Principal.name).contains("CN=builder-signed.example.test")
+        assertThat(serviceCertificate.issuerX500Principal).isEqualTo(caSubject)
+        assertThat(serviceCertificate.basicConstraints).isEqualTo(-1)
+        assertThat(serviceCertificate.extendedKeyUsage).contains(SERVER_AUTH_OID)
+        assertThat(serviceCertificate.subjectAlternativeNamesOfType(DNS_ALT_NAME))
+            .contains("builder-signed.example.test")
+        assertThat(serviceCertificate.subjectAlternativeNamesOfType(IP_ALT_NAME)).contains("127.0.0.3")
+        serviceCertificate.verify(caCertificate.publicKey)
     }
 
     @Test
