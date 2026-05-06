@@ -18,6 +18,7 @@ import akka.stream.Supervision
 import akka.stream.SystemMaterializer
 import akka.stream.scaladsl.Broadcast
 import akka.stream.scaladsl.Compression
+import akka.stream.scaladsl.FileIO
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Framing
 import akka.stream.scaladsl.GraphDSL
@@ -33,6 +34,8 @@ import org.junit.jupiter.api.Test
 
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -221,6 +224,26 @@ class Akka_stream_2_13Test {
       )
 
       assertEquals(ByteString(bytes), result)
+  }
+
+  @Test
+  def fileIoWritesAndReadsByteStringPayload(): Unit = withStreamSystem("AkkaStreamFileIo") {
+    (_: ActorSystem, materializer: Materializer) =>
+      implicit val implicitMaterializer: Materializer = materializer
+      val file: Path = Files.createTempFile("akka-stream-file-io", ".txt")
+      val payload: ByteString = ByteString("file-io-payload-through-akka-streams")
+
+      try {
+        val bytesWritten: Long = await(Source.single(payload).runWith(FileIO.toPath(file))).count
+        val result: ByteString = await(
+          FileIO
+            .fromPath(file, chunkSize = 7)
+            .runFold(ByteString.empty)(_ ++ _)
+        )
+
+        assertEquals(payload.length.toLong, bytesWritten)
+        assertEquals(payload, result)
+      } finally Files.deleteIfExists(file)
   }
 
   private def withStreamSystem(name: String)(testBody: (ActorSystem, Materializer) => Unit): Unit = {
