@@ -6,6 +6,7 @@
  */
 package org_jetbrains_kotlinx.kotlinx_coroutines_test_jvm
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
@@ -30,6 +31,7 @@ import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 public class Kotlinx_coroutines_test_jvmTest {
@@ -235,6 +237,17 @@ public class Kotlinx_coroutines_test_jvmTest {
                 }
             }
         }.isInstanceOf(TimeoutCancellationException::class.java)
+    }
+
+    @Test
+    fun runTestTimeoutCancelsNonCompletingTestBody(): Unit {
+        val neverCompletes: CompletableDeferred<Unit> = CompletableDeferred()
+
+        assertThatThrownBy {
+            runTest(timeout = 200.milliseconds) {
+                neverCompletes.await()
+            }
+        }.isInstanceOf(AssertionError::class.java)
     }
 
     @Test
