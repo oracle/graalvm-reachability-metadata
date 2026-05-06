@@ -8,6 +8,7 @@ package com_typesafe_akka.akka_slf4j_2_13
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
@@ -120,6 +121,30 @@ class Akka_slf4j_2_13Test {
   }
 
   @Test
+  def slf4jLoggerExposesMdcAttributeNamesAndUtcTimestampFormatting(): Unit = {
+    val latch = new CountDownLatch(1)
+    val snapshot = new AtomicReference[MdcConfigurationSnapshot]
+    val system = ActorSystem(uniqueSystemName("Slf4jLoggerMdcConfiguration"))
+
+    try {
+      system.actorOf(Props(new MdcConfigurationSnapshotter(snapshot, latch)), "mdc-configuration-snapshotter")
+
+      assertThat(latch.await(10, TimeUnit.SECONDS)).isTrue
+      assertThat(snapshot.get()).isEqualTo(
+        MdcConfigurationSnapshot(
+          threadAttributeName = "sourceThread",
+          actorSystemAttributeName = "sourceActorSystem",
+          akkaSourceAttributeName = "akkaSource",
+          akkaTimestampAttributeName = "akkaTimestamp",
+          akkaAddressAttributeName = "akkaAddress",
+          akkaUidAttributeName = "akkaUid",
+          formattedTimestamp = "01:02:03.123UTC"))
+    } finally {
+      Await.result(system.terminate(), 10.seconds)
+    }
+  }
+
+  @Test
   def configuredSlf4jLoggerConsumesAkkaLogEventsWithMarkersMdcAndCauses(): Unit = {
     val config = ConfigFactory.parseString(
       """
@@ -189,6 +214,23 @@ class Akka_slf4j_2_13Test {
     }
   }
 
+  private final class MdcConfigurationSnapshotter(snapshot: AtomicReference[MdcConfigurationSnapshot], latch: CountDownLatch)
+      extends Slf4jLogger {
+    override def preStart(): Unit = {
+      snapshot.set(
+        MdcConfigurationSnapshot(
+          threadAttributeName = mdcThreadAttributeName,
+          actorSystemAttributeName = mdcActorSystemAttributeName,
+          akkaSourceAttributeName = mdcAkkaSourceAttributeName,
+          akkaTimestampAttributeName = mdcAkkaTimestamp,
+          akkaAddressAttributeName = mdcAkkaAddressAttributeName,
+          akkaUidAttributeName = mdcAkkaUidAttributeName,
+          formattedTimestamp = formatTimestamp(3723123L)))
+      latch.countDown()
+      context.stop(self)
+    }
+  }
+
   private final class LogEventCollector(latch: CountDownLatch) extends Actor {
     override def receive: Receive = {
       case _: Logging.LogEvent => latch.countDown()
@@ -198,4 +240,13 @@ class Akka_slf4j_2_13Test {
   private final case class MessageWithToString(value: String) {
     override def toString: String = s"payload:$value"
   }
+
+  private final case class MdcConfigurationSnapshot(
+      threadAttributeName: String,
+      actorSystemAttributeName: String,
+      akkaSourceAttributeName: String,
+      akkaTimestampAttributeName: String,
+      akkaAddressAttributeName: String,
+      akkaUidAttributeName: String,
+      formattedTimestamp: String)
 }
