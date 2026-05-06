@@ -152,6 +152,24 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
+    void failedProtocolConnectionCreationClosesEndPoint() throws Exception {
+        ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
+        ClientConnectionFactory failingConnectionFactory = (ignoredEndPoint, ignoredContext) -> {
+            throw new IOException("Unable to create protocol connection");
+        };
+        ALPNClientConnection connection = newAlpnConnection(endPoint, failingConnectionFactory, new HashMap<>());
+        endPoint.setConnection(connection);
+
+        connection.selected("h2");
+        connection.onOpen();
+
+        assertThat(connection.getProtocol()).isEqualTo("h2");
+        assertThat(endPoint.getConnection()).isSameAs(connection);
+        assertThat(endPoint.isOutputShutdown()).isTrue();
+        assertThat(endPoint.isOpen()).isFalse();
+    }
+
+    @Test
     void clientConnectionFactoryRejectsEmptyProtocolListBeforeLookingUpProcessors() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new ALPNClientConnectionFactory(
