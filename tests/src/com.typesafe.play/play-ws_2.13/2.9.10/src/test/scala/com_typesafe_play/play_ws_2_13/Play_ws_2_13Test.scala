@@ -6,10 +6,13 @@
  */
 package com_typesafe_play.play_ws_2_13
 
+import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.InputStream
 import java.net.URI
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
+import java.util.function.Supplier
 
 import scala.concurrent.Await
 import scala.concurrent.Future
@@ -86,6 +89,27 @@ class Play_ws_2_13Test {
     val multipartBody: WSBody = multipartWritable.transform(multipartSource)
     assertTrue(multipartBody.isInstanceOf[SourceBody])
     assertTrue(multipartWritable.contentType.startsWith("multipart/form-data; boundary="))
+  }
+
+  @Test
+  def streamingAndPrebuiltBodyWritablesCreateSourceBodies(): Unit = {
+    val writables: WSBodyWritables = WSBodyWritables
+    val streamBytes: Array[Byte] = Array[Byte](10, 11, 12)
+    val inputStreamSupplier: Supplier[InputStream] = () => new ByteArrayInputStream(streamBytes)
+
+    val inputStreamBody: WSBody = writables.writableOf_InputStream.transform(inputStreamSupplier)
+    assertEquals("application/octet-stream", writables.writableOf_InputStream.contentType)
+    assertTrue(inputStreamBody.isInstanceOf[SourceBody])
+
+    val byteSource: Source[ByteString, _] = Source.single(ByteString.fromString("streamed body"))
+    val sourceBody: WSBody = writables.writableOf_Source.transform(byteSource)
+    assertEquals("application/octet-stream", writables.writableOf_Source.contentType)
+    assertTrue(sourceBody.isInstanceOf[SourceBody])
+
+    val prebuiltBody: InMemoryBody = InMemoryBody(ByteString.fromString("already encoded"))
+    val passThroughBody: WSBody = writables.writeableOf_WsBody.transform(prebuiltBody)
+    assertEquals("application/octet-stream", writables.writeableOf_WsBody.contentType)
+    assertSame(prebuiltBody, passThroughBody)
   }
 
   @Test
