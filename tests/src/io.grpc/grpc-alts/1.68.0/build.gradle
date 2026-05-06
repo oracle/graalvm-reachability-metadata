@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--initialize-at-run-time=io.grpc.netty.shaded.io.netty.handler.ssl')
+            buildArgs.add('--initialize-at-run-time=io.grpc.netty.shaded.io.netty.internal.tcnative')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
