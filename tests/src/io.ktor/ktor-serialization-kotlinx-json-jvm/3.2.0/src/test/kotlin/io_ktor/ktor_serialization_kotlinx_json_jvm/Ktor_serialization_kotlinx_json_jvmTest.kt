@@ -111,6 +111,26 @@ public class KtorSerializationKotlinxJsonJvmTest {
     }
 
     @Test
+    public fun defaultJsonConfigurationRoundTripsStructuredMapKeys(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val converter = registeredConverter()
+            val original = StructuredKeyMapMessage(
+                labelsByLocation = mapOf(
+                    JsonLocation(city = "Berlin", country = "DE") to "warehouse",
+                    JsonLocation(city = "Madrid", country = "ES") to "office"
+                )
+            )
+
+            val text = converter.serializeToText(original)
+            val decoded = converter.deserializeFromText<StructuredKeyMapMessage>(text)
+
+            assertThat(text).contains("\"labelsByLocation\":[")
+            assertThat(text).contains("\"city\":\"Berlin\"")
+            assertThat(decoded).isEqualTo(original)
+        }
+    }
+
+    @Test
     public fun customJsonConfigurationAndContentTypeAreUsed(): Unit = runBlocking {
         withTimeout(TEST_TIMEOUT_MILLIS) {
             val customContentType = ContentType.parse("application/vnd.ktor.test-profile+json")
@@ -321,6 +341,11 @@ private data class JsonLocation(
 private data class JsonBatch(
     val profiles: List<JsonProfile>,
     val aliases: Map<String, JsonLocation>
+)
+
+@Serializable
+private data class StructuredKeyMapMessage(
+    val labelsByLocation: Map<JsonLocation, String>
 )
 
 @Serializable
