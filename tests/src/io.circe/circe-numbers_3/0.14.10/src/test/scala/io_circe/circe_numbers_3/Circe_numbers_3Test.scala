@@ -38,6 +38,27 @@ class Circe_numbers_3Test {
   }
 
   @Test
+  def normalizesLeadingZerosInParsedNumbers(): Unit = {
+    val cases: List[(String, String, Option[Long], Boolean)] = List(
+      ("000123", "123", Some(123L), false),
+      ("-000123", "-123", Some(-123L), false),
+      ("000123.4500", "12345e-2", None, false),
+      ("0000", "0", Some(0L), false),
+      ("-0000", "-0", Some(0L), true)
+    )
+
+    cases.foreach {
+      case (input: String, expectedText: String, expectedLong: Option[Long], expectedNegativeZero: Boolean) =>
+        val number: BiggerDecimal = parse(input)
+
+        assertThat(number.toString).isEqualTo(expectedText)
+        assertThat(number.toLong).isEqualTo(expectedLong)
+        assertThat(number.isNegativeZero).isEqualTo(expectedNegativeZero)
+        assertThat(number).isEqualTo(parse(expectedText))
+    }
+  }
+
+  @Test
   def rejectsMalformedNumberStrings(): Unit = {
     val invalidInputs: List[String] = List(
       "",
