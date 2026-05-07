@@ -72,6 +72,20 @@ class Simulacrum_scalafix_annotations_3Test {
     assertEquals(Some(4), Option(2).fmap(number => number * 2))
     assertEquals(None, (None: Option[Int]).fmap(number => number + 1))
   }
+
+  @Test
+  def typeclassCanDeclareMultipleAnnotatedOperationsWithIndependentSyntax(): Unit = {
+    import SimulacrumAnnotationFixtures.Codec
+    import SimulacrumAnnotationFixtures.Codec.given
+    import SimulacrumAnnotationFixtures.Codec.syntax.*
+
+    assertEquals("123", Codec[Int].encode(123))
+    assertEquals(Right(123), Codec[Int].decode("123"))
+    assertEquals(Left("not an integer: abc"), Codec[Int].decode("abc"))
+    assertEquals("scala", "scala".encodeAs)
+    assertEquals(Right("native"), "native".decodeAs[String])
+    assertEquals(Right(42), "42".decodeAs[Int])
+  }
 }
 
 private object SimulacrumAnnotationFixtures {
@@ -143,6 +157,42 @@ private object SimulacrumAnnotationFixtures {
     object syntax {
       extension [F[_], A](fa: F[A])(using instance: Functor[F]) {
         def fmap[B](function: A => B): F[B] = instance.map(fa)(function)
+      }
+    }
+  }
+
+  @typeclass
+  trait Codec[A] {
+    @op("encodeAs")
+    def encode(value: A): String
+
+    @op("decodeAs")
+    def decode(value: String): Either[String, A]
+  }
+
+  object Codec {
+    def apply[A](using instance: Codec[A]): Codec[A] = instance
+
+    given Codec[Int] with {
+      override def encode(value: Int): String = value.toString
+
+      override def decode(value: String): Either[String, Int] =
+        value.toIntOption.toRight(s"not an integer: $value")
+    }
+
+    given Codec[String] with {
+      override def encode(value: String): String = value
+
+      override def decode(value: String): Either[String, String] = Right(value)
+    }
+
+    object syntax {
+      extension [A](value: A)(using instance: Codec[A]) {
+        def encodeAs: String = instance.encode(value)
+      }
+
+      extension (value: String) {
+        def decodeAs[A](using instance: Codec[A]): Either[String, A] = instance.decode(value)
       }
     }
   }
