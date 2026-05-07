@@ -42,6 +42,13 @@ import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.secretmanager.v1.ServiceProto;
 import com.google.cloud.secretmanager.v1.Topic;
 import com.google.cloud.secretmanager.v1.UpdateSecretRequest;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.GetPolicyOptions;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Duration;
@@ -154,6 +161,52 @@ public class Proto_google_cloud_secretmanager_v1Test {
                         "SetIamPolicy",
                         "GetIamPolicy",
                         "TestIamPermissions");
+    }
+
+    @Test
+    void buildsIamPolicyRequestsForSecretResources() {
+        Binding accessorBinding = Binding.newBuilder()
+                .setRole("roles/secretmanager.secretAccessor")
+                .addMembers("serviceAccount:secret-reader@" + PROJECT + ".iam.gserviceaccount.com")
+                .build();
+        Policy policy = Policy.newBuilder()
+                .setVersion(1)
+                .addBindings(accessorBinding)
+                .setEtag(ByteString.copyFromUtf8("policy-etag"))
+                .build();
+        FieldMask updateMask = FieldMask.newBuilder()
+                .addPaths("bindings")
+                .addPaths("etag")
+                .build();
+        SetIamPolicyRequest setIamPolicy = SetIamPolicyRequest.newBuilder()
+                .setResource(SECRET_NAME)
+                .setPolicy(policy)
+                .setUpdateMask(updateMask)
+                .build();
+        GetIamPolicyRequest getIamPolicy = GetIamPolicyRequest.newBuilder()
+                .setResource(SECRET_NAME)
+                .setOptions(GetPolicyOptions.newBuilder().setRequestedPolicyVersion(1))
+                .build();
+        TestIamPermissionsRequest testIamPermissions = TestIamPermissionsRequest.newBuilder()
+                .setResource(SECRET_NAME)
+                .addPermissions("secretmanager.versions.access")
+                .addPermissions("secretmanager.secrets.get")
+                .build();
+        TestIamPermissionsResponse testIamPermissionsResponse = TestIamPermissionsResponse.newBuilder()
+                .addPermissions("secretmanager.versions.access")
+                .build();
+
+        assertThat(policy.getBindingsList()).containsExactly(accessorBinding);
+        assertThat(policy.getEtag().toStringUtf8()).isEqualTo("policy-etag");
+        assertThat(setIamPolicy.getResource()).isEqualTo(SECRET_NAME);
+        assertThat(setIamPolicy.getPolicy().getBindings(0).getRole())
+                .isEqualTo("roles/secretmanager.secretAccessor");
+        assertThat(setIamPolicy.getUpdateMask().getPathsList()).containsExactly("bindings", "etag");
+        assertThat(getIamPolicy.getOptions().getRequestedPolicyVersion()).isEqualTo(1);
+        assertThat(testIamPermissions.getPermissionsList())
+                .containsExactly("secretmanager.versions.access", "secretmanager.secrets.get");
+        assertThat(testIamPermissionsResponse.getPermissionsList())
+                .containsExactly("secretmanager.versions.access");
     }
 
     @Test
