@@ -125,6 +125,34 @@ class Scalafmt_sysops_2_13Test {
   }
 
   @Test
+  def fileOpsDistinguishesSymbolicLinksFromTargets(): Unit = {
+    withTempDirectory { tempDirectory: Path =>
+      implicit val codec: Codec = Codec.UTF8
+      val root: Path = tempDirectory.toAbsolutePath
+      val targetDirectory: Path = root.resolve("target-directory")
+      val targetFile: Path = targetDirectory.resolve("target.txt")
+      val fileLink: Path = root.resolve("file-link.txt")
+      val directoryLink: Path = root.resolve("directory-link")
+      Files.createDirectories(targetDirectory)
+      FileOps.writeFile(targetFile, "linked content\n")
+      Files.createSymbolicLink(fileLink, targetFile)
+      Files.createSymbolicLink(directoryLink, targetDirectory)
+
+      assertTrue(FileOps.isRegularFile(fileLink))
+      assertFalse(FileOps.isRegularFileNoLinks(fileLink))
+      assertTrue(FileOps.isDirectory(directoryLink))
+      assertFalse(FileOps.isDirectoryNoLinks(directoryLink))
+      assertEquals("linked content\n", FileOps.readFile(fileLink))
+      assertTrue(FileOps.getAttributes(fileLink).isRegularFile)
+      assertTrue(FileOps.getAttributesNoLinks(fileLink).isSymbolicLink)
+
+      val linkedAbsoluteFile: AbsoluteFile = AbsoluteFile(fileLink)
+      assertTrue(linkedAbsoluteFile.isRegularFile)
+      assertFalse(linkedAbsoluteFile.isRegularFileNoLinks)
+    }
+  }
+
+  @Test
   def fileOpsFindsAndValidatesConfigurationFiles(): Unit = {
     withTempDirectory { tempDirectory: Path =>
       implicit val codec: Codec = Codec.UTF8
