@@ -58,6 +58,26 @@ class Quill_util_3Test {
   }
 
   @Test
+  def scalafmtFormatPreservesCommentsWhileFormattingCode(): Unit = {
+    val unformattedCode: String =
+      """object Commented{/* Builds a public greeting. */
+        |def greet(name:String):String={
+        |// Keep the user-provided name visible.
+        |val message="hello, "+name // trailing greeting comment
+        |message
+        |}}
+        |""".stripMargin
+
+    val formatted: String = ScalafmtFormat(unformattedCode)
+
+    assertThat(formatted).contains("/* Builds a public greeting. */")
+    assertThat(formatted).contains("// Keep the user-provided name visible.")
+    assertThat(formatted).contains("// trailing greeting comment")
+    assertThat(formatted).contains("def greet(name: String): String = {")
+    assertThat(formatted).contains("val message = \"hello, \" + name")
+  }
+
+  @Test
   def scalafmtFormatReturnsOriginalCodeForParseFailuresWithoutTraceByDefault(): Unit = {
     val invalidCode: String = "object Broken { def value: Int = "
     val consoleOutput: ByteArrayOutputStream = new ByteArrayOutputStream()
