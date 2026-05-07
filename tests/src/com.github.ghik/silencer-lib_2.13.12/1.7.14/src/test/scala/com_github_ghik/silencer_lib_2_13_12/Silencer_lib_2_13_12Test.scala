@@ -45,6 +45,11 @@ class Silencer_lib_2_13_12Test {
   }
 
   @Test
+  def expressionLevelAnnotationSuppressesWarningsInsideBlockExpressions(): Unit = {
+    assertEquals(24, SilencedWarningFixture.valueAfterSuppressedExpressionWarning())
+  }
+
+  @Test
   def classObjectFieldMethodAndParameterAnnotationsPreserveRuntimeSemantics(): Unit = {
     val fixture: SilencerAnnotatedFixture = new SilencerAnnotatedFixture(" Native Image ")
 
@@ -142,6 +147,16 @@ object SilencedWarningFixture {
     val unusedDefaultSuppressedValue: Int = 17
 
     "default suppression"
+  }
+
+  def valueAfterSuppressedExpressionWarning(): Int = {
+    val result: Int = ({
+      val unusedValueInsideAnnotatedExpression: String = "silenced expression"
+
+      24
+    }: @silent(".*unusedValueInsideAnnotatedExpression.*never used.*"))
+
+    result
   }
 }
 
