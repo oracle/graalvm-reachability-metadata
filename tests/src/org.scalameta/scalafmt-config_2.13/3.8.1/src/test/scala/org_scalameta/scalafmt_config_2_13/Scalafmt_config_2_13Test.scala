@@ -54,6 +54,27 @@ class Scalafmt_config_2_13Test {
   }
 
   @Test
+  def resolvesHoconSubstitutionsBeforeReadingConfigValues(): Unit = {
+    val parsed: ConfParsed = ConfParsed.fromString(
+      """
+        |defaults {
+        |  formatterVersion = "substituted-version"
+        |  useGit = true
+        |  maxColumn = 88
+        |}
+        |version = ${defaults.formatterVersion}
+        |project.git = ${defaults.useGit}
+        |formatting.maxColumn = ${defaults.maxColumn}
+        |""".stripMargin
+    )
+
+    assertThat(parsed.conf.isOk).isTrue()
+    assertThat(expectRight(parsed.version)).isEqualTo("substituted-version")
+    assertThat(expectRight(parsed.isGit)).isTrue()
+    assertThat(expectRight(parsed.getHoconValueOpt[Int]("formatting", "maxColumn"))).isEqualTo(88)
+  }
+
+  @Test
   def returnsNoneForAbsentOptionalSettings(): Unit = {
     val parsed: ConfParsed = ConfParsed.fromString("maxColumn = 80")
 
