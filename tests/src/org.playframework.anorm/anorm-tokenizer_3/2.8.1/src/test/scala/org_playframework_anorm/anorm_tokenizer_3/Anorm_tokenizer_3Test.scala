@@ -88,4 +88,15 @@ class Anorm_tokenizer_3Test {
 
     assertEquals(List("1", "4", "9", "16"), rendered)
   }
+
+  @Test
+  def showMakerCanComposeInputTransformation(): Unit = {
+    val quotedMaker: Show.Maker[String] = new Show.Maker[String] {
+      override def apply(subject: String): Show = new StringShow(s"'$subject'")
+    }
+    val renderQuotedIdentifier: Identifier => String = quotedMaker.compose[Identifier](_.value).andThen(_.show)
+    val rendered: Seq[String] = Seq(Identifier("users"), Identifier("orders")).map(renderQuotedIdentifier)
+
+    assertEquals(Seq("'users'", "'orders'"), rendered)
+  }
 }
