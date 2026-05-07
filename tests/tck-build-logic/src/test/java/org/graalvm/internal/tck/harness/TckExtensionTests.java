@@ -81,6 +81,54 @@ class TckExtensionTests {
     }
 
     @Test
+    void getMatchingCoordinatesIncludesExplicitVersionWhenOnlyTestDirectoryExists() throws IOException {
+        writeRepoFile("metadata/com.example/demo/index.json", """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": [
+                      "1.0.0"
+                    ]
+                  }
+                ]
+                """);
+        Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/1.0.0"));
+        Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
+        Files.writeString(tempDir.resolve("LICENSE"), "test");
+
+        TckExtension extension = createExtensionForTempDir();
+
+        assertThat(extension.getMatchingCoordinates("com.example:demo:1.0.0"))
+                .containsExactly("com.example:demo:1.0.0");
+        assertThat(extension.getMatchingCoordinates("com.example:demo"))
+                .isEmpty();
+    }
+
+    @Test
+    void getMetadataDirReturnsDeclaredDirectoryWhenOnlyTestDirectoryExists() throws IOException {
+        writeRepoFile("metadata/com.example/demo/index.json", """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": [
+                      "1.0.0"
+                    ]
+                  }
+                ]
+                """);
+        Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/1.0.0"));
+        Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
+        Files.writeString(tempDir.resolve("LICENSE"), "test");
+
+        TckExtension extension = createExtensionForTempDir();
+
+        assertThat(extension.getMetadataDir("com.example:demo:1.0.0"))
+                .isEqualTo(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+    }
+
+    @Test
     void getMatchingCoordinatesSkipsNotForNativeImageMarker() throws IOException {
         TckExtension extension = createExtension(
                 """
