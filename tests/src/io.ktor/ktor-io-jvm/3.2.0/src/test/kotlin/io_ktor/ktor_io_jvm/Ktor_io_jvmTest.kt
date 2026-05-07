@@ -10,6 +10,7 @@ import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.ClosedByteChannelException
+import io.ktor.utils.io.asByteWriteChannel
 import io.ktor.utils.io.asSink
 import io.ktor.utils.io.asSource as asRawSource
 import io.ktor.utils.io.copyAndClose
@@ -246,6 +247,32 @@ public class Ktor_io_jvmTest {
             assertThat(bytesRead).isEqualTo(payload.size.toLong())
             assertThat(actual.decodeToString()).isEqualTo("raw-sink-adapter")
             assertThat(outbound.exhausted()).isTrue()
+        }
+    }
+
+    @Test
+    fun sourceAndSinkBackedChannelsBridgeKotlinxIoBuffers(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val sourcePayload: ByteArray = "source-backed channel".toByteArray(StandardCharsets.UTF_8)
+            val sourceBuffer: Buffer = Buffer()
+            sourceBuffer.write(sourcePayload, 0, sourcePayload.size)
+            val sourceChannel: ByteReadChannel = ByteReadChannel(sourceBuffer)
+
+            val sourceBytes: ByteArray = sourceChannel.readByteArray(sourcePayload.size)
+
+            val sinkPayload: ByteArray = "sink-backed channel".toByteArray(StandardCharsets.UTF_8)
+            val sinkBuffer: Buffer = Buffer()
+            val sinkChannel: ByteWriteChannel = sinkBuffer.asByteWriteChannel()
+            sinkChannel.writeByteArray(sinkPayload)
+            sinkChannel.flushAndClose()
+            val sinkBytes: ByteArray = ByteArray(sinkPayload.size)
+            val sinkBytesRead: Int = sinkBuffer.readAtMostTo(sinkBytes, 0, sinkBytes.size)
+
+            assertThat(sourceBytes.decodeToString()).isEqualTo("source-backed channel")
+            assertThat(sourceChannel.isClosedForRead).isTrue()
+            assertThat(sinkBytesRead).isEqualTo(sinkPayload.size)
+            assertThat(sinkBytes.decodeToString()).isEqualTo("sink-backed channel")
+            assertThat(sinkChannel.isClosedForWrite).isTrue()
         }
     }
 
