@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -140,6 +141,23 @@ public class Http_auth_aws_eventstreamTest {
         decoder.feed(Arrays.copyOfRange(encoded, 8, encoded.length));
 
         assertThat(decoder.getDecodedMessages()).containsExactly(message);
+    }
+
+    @Test
+    void messageStringRepresentationHonorsContentType() {
+        byte[] jsonPayload = "{\"status\":\"ok\"}".getBytes(StandardCharsets.UTF_8);
+        Message jsonMessage = new Message(
+                Map.of(":content-type", HeaderValue.fromString("application/json")),
+                jsonPayload);
+        byte[] binaryPayload = new byte[] {1, 2, 3, 4};
+        Message binaryMessage = new Message(Map.of("event", HeaderValue.fromString("binary")), binaryPayload);
+
+        assertThat(jsonMessage.toString())
+                .contains(":content-type: \"application/json\"")
+                .endsWith(new String(jsonPayload, StandardCharsets.UTF_8) + "\n");
+        assertThat(binaryMessage.toString())
+                .contains("event: \"binary\"")
+                .endsWith(Base64.getEncoder().encodeToString(binaryPayload) + "\n");
     }
 
     private static Map<String, HeaderValue> wireCompatibleHeaders() {
