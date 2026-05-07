@@ -163,6 +163,27 @@ public class Bookkeeper_common_allocatorTest {
     }
 
     @Test
+    void directBufferDoesNotFallBackToHeapWhenFallbackPolicyIsConfigured() {
+        OutOfMemoryError directFailure = new OutOfMemoryError("direct allocation failed");
+        FailingAllocator failingPooledAllocator = new FailingAllocator(true, directFailure);
+        CountingAllocator unpooledAllocator = new CountingAllocator(false);
+        AtomicReference<OutOfMemoryError> observedError = new AtomicReference<>();
+        ByteBufAllocatorWithOomHandler allocator = ByteBufAllocatorBuilder.create()
+                .poolingPolicy(PoolingPolicy.PooledDirect)
+                .pooledAllocator(failingPooledAllocator)
+                .unpooledAllocator(unpooledAllocator)
+                .outOfMemoryPolicy(OutOfMemoryPolicy.FallbackToHeap)
+                .outOfMemoryListener(observedError::set)
+                .build();
+
+        assertThatThrownBy(() -> allocator.directBuffer(8, 32)).isSameAs(directFailure);
+        assertThat(observedError.get()).isSameAs(directFailure);
+        assertThat(failingPooledAllocator.directAllocationAttempts()).isEqualTo(1);
+        assertThat(unpooledAllocator.heapAllocations()).isZero();
+        assertThat(unpooledAllocator.directAllocations()).isZero();
+    }
+
+    @Test
     void throwExceptionPolicyNotifiesListenerAndRethrowsDirectAllocationFailure() {
         OutOfMemoryError directFailure = new OutOfMemoryError("direct allocation failed");
         FailingAllocator failingPooledAllocator = new FailingAllocator(true, directFailure);
