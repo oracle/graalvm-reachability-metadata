@@ -42,6 +42,13 @@ class Metaconfig_pprint_2_13Test {
   }
 
   @Test
+  def defaultTypePrinterRendersWildcardTypeBounds(): Unit = {
+    assertEquals("Option[_]", renderPlain[Option[_]])
+    assertEquals("List[_] forSome { type _ <: AnyVal }", renderPlain[List[_ <: AnyVal]])
+    assertEquals("List[_] forSome { type _ >: Int }", renderPlain[List[_ >: Int]])
+  }
+
+  @Test
   def explicitTypePrintInstancesOverrideGeneratedPrinter(): Unit = {
     implicit val intPrint: TPrint[Int] = new TPrint[Int] {
       override def render(implicit tpc: TPrintColors): fansi.Str = fansi.Str("number")
