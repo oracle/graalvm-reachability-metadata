@@ -106,6 +106,21 @@ class Literally_3Test {
     assertThat(NormalizedToken.Expr).isNotNull
   }
 
+  @Test
+  def escapeSequenceTextIsPassedToValidation(): Unit = {
+    compileSnippetWithNativeFallback(
+      """import org_typelevel.literally_3.Literally_3TestSyntax.*
+        |
+        |object EscapedStringLiteral {
+        |  val value: String = multilineText"first\nsecond"
+        |}
+        |""".stripMargin
+    ).foreach { result =>
+      assertThat(result.hasErrors).isFalse
+      assertThat(result.messages).isEmpty
+    }
+  }
+
   private def compileSnippetWithNativeFallback(source: String): Option[CompilationResult] =
     try Some(compileSnippet(source))
     catch {
@@ -162,9 +177,17 @@ object Literally_3TestSyntax {
       else Left(s"Expected an ASCII token literal, got: $s")
   }
 
+  object MultilineText extends Literally[String] {
+    override def validate(s: String)(using Quotes): Either[String, Expr[String]] =
+      if s.contains("\\n") then Right(Expr(s))
+      else Left("Expected a literal containing an escaped line break")
+  }
+
   extension (inline context: StringContext) {
     inline def positiveInt(inline args: Any*): Int = ${ PositiveInt('context, 'args) }
 
     inline def normalizedToken(inline args: Any*): String = ${ NormalizedToken('context, 'args) }
+
+    inline def multilineText(inline args: Any*): String = ${ MultilineText('context, 'args) }
   }
 }
