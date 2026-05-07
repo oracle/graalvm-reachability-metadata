@@ -107,6 +107,22 @@ class Paiges_core_2_13Test {
   }
 
   @Test
+  def repeatsDocumentsAndDistinguishesSoftBreaksFromHardLines(): Unit = {
+    val repeated: Doc = (Doc.text("ha") * 3) + Doc.spaces(3) + Doc.text("done")
+
+    assertEquals("hahaha   done", repeated.render(80))
+    assertTrue((Doc.text("unused") * 0).isEmpty)
+    assertTrue((Doc.text("unused") * -1).isEmpty)
+
+    val softBreak: Doc = (Doc.text("a") + Doc.lineBreak + Doc.text("b")).grouped
+    assertEquals("ab", softBreak.render(80))
+    assertEquals("a\nb", softBreak.render(1))
+
+    val hardLine: Doc = (Doc.text("a") + Doc.hardLine + Doc.text("b")).grouped
+    assertEquals("a\nb", hardLine.render(80))
+  }
+
+  @Test
   def trimsIndentedBlankLinesAndWritesRenderedOutput(): Unit = {
     val document: Doc = Doc.text("head") / Doc.empty.indent(4) / Doc.text("tail")
 
