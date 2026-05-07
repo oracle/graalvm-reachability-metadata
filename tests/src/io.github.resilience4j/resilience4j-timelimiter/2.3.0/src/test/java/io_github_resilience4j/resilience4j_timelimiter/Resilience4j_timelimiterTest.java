@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -176,6 +177,34 @@ public class Resilience4j_timelimiterTest {
                 .hasCause(failure);
             assertThat(error.get()).isNotNull();
             assertThat(error.get().getTimeLimiterName()).isEqualTo("stage-error");
+            assertThat(error.get().getThrowable()).isSameAs(failure);
+        } finally {
+            scheduler.shutdownNow();
+        }
+    }
+
+    @Test
+    void completionStageSupplierUnwrapsCompletionExceptionCauseForErrorEvent() {
+        TimeLimiter timeLimiter = TimeLimiter.of(
+            "stage-completion-exception",
+            TimeLimiterConfig.custom()
+                .timeoutDuration(Duration.ofMillis(200))
+                .build());
+        IllegalArgumentException failure = new IllegalArgumentException("wrapped failure");
+        CompletableFuture<String> failedStage = new CompletableFuture<>();
+        ScheduledExecutorService scheduler = newScheduler();
+        AtomicReference<TimeLimiterOnErrorEvent> error = new AtomicReference<>();
+        timeLimiter.getEventPublisher().onError(error::set);
+        failedStage.completeExceptionally(new CompletionException(failure));
+        try {
+            CompletionStage<String> stage = timeLimiter.executeCompletionStage(
+                scheduler, () -> failedStage);
+
+            assertThatThrownBy(() -> stage.toCompletableFuture().get(2, TimeUnit.SECONDS))
+                .isInstanceOf(ExecutionException.class)
+                .hasCause(failure);
+            assertThat(error.get()).isNotNull();
+            assertThat(error.get().getTimeLimiterName()).isEqualTo("stage-completion-exception");
             assertThat(error.get().getThrowable()).isSameAs(failure);
         } finally {
             scheduler.shutdownNow();
