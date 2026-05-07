@@ -111,6 +111,11 @@ public class Base64Anonymous1Test {
         }
 
         @Override
+        public Class<?> loadClass(String name) {
+            return null;
+        }
+
+        @Override
         protected Class<?> loadClass(String name, boolean resolve) {
             return null;
         }
