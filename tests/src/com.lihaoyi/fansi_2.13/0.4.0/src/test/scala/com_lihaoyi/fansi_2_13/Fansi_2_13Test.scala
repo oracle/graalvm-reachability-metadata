@@ -59,6 +59,24 @@ class Fansi_2_13Test {
   }
 
   @Test
+  def implicitCharSequenceConversionWorksWithStrAndAttributeApis(): Unit = {
+    val plain: Str = "plain"
+    val colored: Str = Color.Red("red")
+    val joined: Str = Str("left", Underlined.On("middle"), Color.Blue("right"))
+
+    assertEquals("plain", plain.plainText)
+    assertEquals("plain", plain.render)
+    assertEquals("red", colored.plainText)
+    assertEquals(s"${Red}red$ForegroundReset", colored.render)
+    assertEquals(Color.Red.transform(0L), colored.getColor(0))
+
+    assertEquals("leftmiddleright", joined.plainText)
+    assertEquals(0L, joined.getColor(0))
+    assertEquals(Underlined.On.transform(0L), joined.getColor(4))
+    assertEquals(Color.Blue.transform(0L), joined.getColor(10))
+  }
+
+  @Test
   def fromArraysCopiesInputArraysAndParticipatesInEquality(): Unit = {
     val chars: Array[Char] = Array('o', 'k')
     val colors: Array[Long] = Array(Color.Green.transform(0L), Bold.On.transform(0L))
