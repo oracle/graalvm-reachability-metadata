@@ -192,8 +192,8 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
      * {@code $version$+1} on entries that also contain aliases like {@code 13} or
      * {@code 13-ea+1}, where rendering creates untracked Maven artifact versions.
      */
-    static void checkLibraryIndexUrlTemplates(JsonNode json, String filePath, List<String> failures) {
-        if (json == null || !json.isArray()) {
+    static void checkLibraryIndexUrlTemplates(Object jsonNode, String filePath, List<String> failures) {
+        if (!(jsonNode instanceof JsonNode json) || !json.isArray()) {
             return;
         }
 
@@ -244,7 +244,10 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
         }
     }
 
-    private static List<String> testedVersions(JsonNode entry) {
+    private static List<String> testedVersions(Object entryNode) {
+        if (!(entryNode instanceof JsonNode entry)) {
+            return Collections.emptyList();
+        }
         JsonNode testedVersionsNode = entry.get("tested-versions");
         if (testedVersionsNode == null || !testedVersionsNode.isArray()) {
             return Collections.emptyList();
@@ -306,8 +309,8 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
      * @param filePath Path for error reporting.
      * @param failures Accumulator for validation errors.
      */
-    private static void checkLibraryIndexTestedVersions(JsonNode json, String filePath, List<String> failures) {
-        if (json == null || !json.isArray()) {
+    private static void checkLibraryIndexTestedVersions(Object jsonNode, String filePath, List<String> failures) {
+        if (!(jsonNode instanceof JsonNode json) || !json.isArray()) {
             return;
         }
 

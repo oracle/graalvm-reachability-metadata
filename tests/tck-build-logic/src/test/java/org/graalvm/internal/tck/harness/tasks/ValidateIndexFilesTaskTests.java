@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,5 +78,17 @@ class ValidateIndexFilesTaskTests {
         );
 
         assertThat(failures).isEmpty();
+    }
+
+    @Test
+    void avoidsExposingJacksonTypesInNonPrivateTaskHelperSignatures() throws NoSuchMethodException {
+        Method method = ValidateIndexFilesTask.class.getDeclaredMethod(
+                "checkLibraryIndexUrlTemplates",
+                Object.class,
+                String.class,
+                List.class
+        );
+
+        assertThat(method.getParameterTypes()).containsExactly(Object.class, String.class, List.class);
     }
 }
