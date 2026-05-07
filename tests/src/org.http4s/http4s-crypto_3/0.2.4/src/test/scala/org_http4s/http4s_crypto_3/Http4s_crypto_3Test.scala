@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import scodec.bits.ByteVector
 
+import java.security.InvalidKeyException
+import javax.crypto.spec.{SecretKeySpec => JavaSecretKeySpec}
+
 import scala.concurrent.duration._
 
 final class Http4s_crypto_3Test {
@@ -79,6 +82,19 @@ final class Http4s_crypto_3Test {
     assertEquals(algorithm, importedKey.algorithm)
     assertEquals(directDigest, importedDigest)
     assertEquals(hmacKey, ByteVector.view(exportedKey.getEncoded))
+  }
+
+  @Test
+  def hmacJavaSecretKeyInteropRejectsUnsupportedAlgorithms(): Unit = {
+    val unsupportedKey: javax.crypto.SecretKey = new JavaSecretKeySpec(hmacKey.toArray, "AES")
+    val result: Result[SecretKey[HmacAlgorithm]] = Hmac[Result].importJavaKey(unsupportedKey)
+
+    result match {
+      case Left(error: Throwable) =>
+        assertTrue(error.isInstanceOf[InvalidKeyException], s"expected InvalidKeyException, got ${error.getClass.getName}")
+      case Right(key: SecretKey[HmacAlgorithm]) =>
+        throw new AssertionError(s"expected unsupported Java key to be rejected, but imported ${key.algorithm}")
+    }
   }
 
   @Test
