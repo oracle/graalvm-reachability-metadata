@@ -29,6 +29,7 @@ import io.getquill.ast.Delete
 import io.getquill.ast.Entity
 import io.getquill.ast.EqualityOperator
 import io.getquill.ast.Filter
+import io.getquill.ast.GroupByMap
 import io.getquill.ast.Ident
 import io.getquill.ast.If
 import io.getquill.ast.Infix
@@ -257,6 +258,27 @@ class Quill_engine_3Test {
     val countAdults: Aggregation = Aggregation(AggregationOperator.size, adultPeople)
     assertThat(translateSql(countAdults))
       .isEqualTo("SELECT COUNT(p.*) FROM Person p WHERE p.age > 21")
+  }
+
+  @Test
+  def mirrorSqlDialectTranslatesGroupByMapAggregations(): Unit = {
+    val groupAlias: Ident = Ident("p", personQuat)
+    val mapAlias: Ident = Ident("grouped", personQuat)
+    val groupedAges: GroupByMap = GroupByMap(
+      person,
+      groupAlias,
+      Property(groupAlias, "active"),
+      mapAlias,
+      Tuple(
+        List(
+          Property(mapAlias, "active"),
+          Aggregation(AggregationOperator.avg, Property(mapAlias, "age"))
+        )
+      )
+    )
+
+    assertThat(translateSql(groupedAges))
+      .isEqualTo("SELECT p.active AS _1, AVG(p.age) AS _2 FROM Person p GROUP BY p.active")
   }
 
   @Test
