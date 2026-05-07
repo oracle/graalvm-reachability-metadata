@@ -147,6 +147,26 @@ class Scodec_cats_3Test {
   }
 
   @Test
+  def decoderErrorHandlingPreservesSuccessfulDecodesAndRetriesFallbackFromOriginalInput(): Unit = {
+    val decoderMonad: MonadError[Decoder, Err] = MonadError[Decoder, Err]
+    val source: BitVector = BitVector.fromValidHex("2a63")
+    val expected: Attempt[DecodeResult[Int]] = Attempt.successful(DecodeResult(42, BitVector.fromValidHex("63")))
+
+    val successfulPassThrough: Attempt[DecodeResult[Int]] = decoderMonad
+      .handleErrorWith(uint8)(_ => decoderMonad.pure(255))
+      .decode(source)
+    val failingAfterFirstByte: Decoder[Int] = decoderMonad.flatMap(uint8) { firstByte =>
+      decoderMonad.raiseError[Int](Err(s"rejecting byte $firstByte"))
+    }
+    val recoveredFromOriginalInput: Attempt[DecodeResult[Int]] = decoderMonad
+      .handleErrorWith(failingAfterFirstByte)(_ => uint8)
+      .decode(source)
+
+    assertThat(successfulPassThrough).isEqualTo(expected)
+    assertThat(recoveredFromOriginalInput).isEqualTo(expected)
+  }
+
+  @Test
   def combinesDecodersForSemigroupOnlyResults(): Unit = {
     val nonEmptyByteDecoder: Decoder[NonEmptyList[Int]] = uint8.map(NonEmptyList.one)
     val combinedDecoder: Decoder[NonEmptyList[Int]] = Semigroup[Decoder[NonEmptyList[Int]]].combine(
