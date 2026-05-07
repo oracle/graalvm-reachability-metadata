@@ -206,6 +206,28 @@ class Circe_jawn_3Test {
   }
 
   @Test
+  def byteBufferParsingUsesOnlyCurrentPositionToLimitWindow(): Unit = {
+    val parser = new JawnParser()
+    val prefix: String = "not-json:"
+    val json: String = "{\"id\":77,\"body\":\"windowed\",\"flags\":[true,false]}"
+    val suffix: String = ":not-json"
+    val bytes: Array[Byte] = s"$prefix$json$suffix".getBytes(StandardCharsets.UTF_8)
+
+    def windowedBuffer(): ByteBuffer = {
+      val buffer: ByteBuffer = ByteBuffer.wrap(bytes)
+      buffer.position(prefix.getBytes(StandardCharsets.UTF_8).length)
+      buffer.limit(buffer.position() + json.getBytes(StandardCharsets.UTF_8).length)
+      buffer
+    }
+
+    val parsed: Json = expectRight(parser.parseByteBuffer(windowedBuffer()))
+    val decoded: Message = expectRight(parser.decodeByteBuffer[Message](windowedBuffer()))
+
+    assertEquals("windowed", expectRight(parsed.hcursor.get[String]("body")))
+    assertEquals(Message(77L, "windowed", List(true, false)), decoded)
+  }
+
+  @Test
   def duplicateKeyPolicyDefaultsToAllowingLastValueAndCanRejectDuplicates(): Unit = {
     val duplicateKeys: String = "{\"same\":1,\"same\":2}"
 
