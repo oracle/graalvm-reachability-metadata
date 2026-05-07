@@ -11,6 +11,7 @@ package org_jetbrains_kotlinx.kotlinx_serialization_json_io_jvm
 import java.io.IOException
 import kotlinx.io.Buffer
 import kotlinx.io.RawSink
+import kotlinx.io.RawSource
 import kotlinx.io.buffered
 import kotlinx.io.readString
 import kotlinx.io.writeString
@@ -199,6 +200,35 @@ public class Kotlinx_serialization_json_io_jvmTest {
     }
 
     @Test
+    fun decodesStructuredValueFromChunkedRawSource(): Unit {
+        val rawSource = ChunkedRawSource(
+            listOf(
+                "{\"name\":\"chunked\",\"stars\"".encodeToByteArray(),
+                ":34,\"tags\":[\"stream\",\"source\"]".encodeToByteArray(),
+                ",\"active\":true}".encodeToByteArray(),
+            ),
+        )
+        val source = rawSource.buffered()
+
+        try {
+            val decoded: Project = Json.decodeFromSource(ProjectSerializer, source)
+
+            assertThat(decoded).isEqualTo(
+                Project(
+                    name = "chunked",
+                    stars = 34,
+                    tags = listOf("stream", "source"),
+                    active = true,
+                ),
+            )
+            assertThat(source.exhausted()).isTrue()
+        } finally {
+            source.close()
+        }
+        assertThat(rawSource.closed).isTrue()
+    }
+
+    @Test
     fun decodesJsonTreeFromSource(): Unit {
         val source: Buffer = Buffer().apply {
             writeString(
@@ -264,6 +294,40 @@ private data class Project(
     val tags: List<String>,
     val active: Boolean,
 )
+
+private class ChunkedRawSource(private val chunks: List<ByteArray>) : RawSource {
+    var closed: Boolean = false
+        private set
+
+    private var chunkIndex: Int = 0
+    private var chunkOffset: Int = 0
+
+    override fun readAtMostTo(sink: Buffer, byteCount: Long): Long {
+        require(byteCount >= 0L) { "byteCount must be non-negative" }
+        check(!closed) { "source is closed" }
+        if (chunkIndex == chunks.size) {
+            return -1L
+        }
+
+        if (byteCount == 0L) {
+            return 0L
+        }
+
+        val chunk: ByteArray = chunks[chunkIndex]
+        val bytesToWrite: Int = minOf(byteCount, (chunk.size - chunkOffset).toLong()).toInt()
+        sink.write(chunk, startIndex = chunkOffset, endIndex = chunkOffset + bytesToWrite)
+        chunkOffset += bytesToWrite
+        if (chunkOffset == chunk.size) {
+            chunkIndex++
+            chunkOffset = 0
+        }
+        return bytesToWrite.toLong()
+    }
+
+    override fun close(): Unit {
+        closed = true
+    }
+}
 
 private object ProjectSerializer : KSerializer<Project> {
     private val tagsSerializer: KSerializer<List<String>> = ListSerializer(String.serializer())
