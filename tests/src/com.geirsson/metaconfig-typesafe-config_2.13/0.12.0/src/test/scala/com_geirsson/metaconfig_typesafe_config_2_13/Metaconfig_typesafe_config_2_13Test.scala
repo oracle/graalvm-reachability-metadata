@@ -14,6 +14,7 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import metaconfig.Conf
 import metaconfig.ConfDecoder
+import metaconfig.ConfError
 import metaconfig.Configured
 import metaconfig.Hocon
 import metaconfig.Input
@@ -160,6 +161,23 @@ class Metaconfig_typesafe_config_2_13Test {
   }
 
   @Test
+  def malformedHoconFilesReturnParseErrorsWithSourceContext(): Unit = {
+    val file: Path = Files.createTempFile("metaconfig-hocon-parse-error", ".conf")
+    Files.write(
+      file,
+      """|valid = 1
+         |broken = [1, } ]
+         |""".stripMargin.getBytes(StandardCharsets.UTF_8)
+    )
+
+    val error: ConfError = configuredError(Hocon.fromFile(file))
+    val message: String = error.msg.replace("\r", "").replace("\n", "")
+
+    assertTrue(error.isParseError, error.toString)
+    assertTrue(message.contains("broken = [1, } ]"), message)
+  }
+
+  @Test
   def packageParserIntegratesWithCoreMetaconfigApi(): Unit = {
     implicit val parser: MetaconfigParser = metaconfig.typesafeconfig.typesafeConfigMetaconfigParser
     assertSame(Hocon, parser)
@@ -185,6 +203,12 @@ class Metaconfig_typesafe_config_2_13Test {
     assertTrue(configured.isOk, configured.toString)
     configured.get
   }
+
+  private def configuredError[A](configured: Configured[A]): ConfError =
+    configured.toEither match {
+      case Left(error) => error
+      case Right(value) => throw new AssertionError(s"Expected Configured.NotOk, obtained $value")
+    }
 
   private def asObj(conf: Conf): Conf.Obj =
     conf match {
