@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class UtilTest {
     @Test
     void intersectReturnsTypedArrayOfCommonElements() {
-        String[] result = Util.intersect(String.class,
+        String[] result = Util.intersect(Util.NATURAL_ORDER,
                 new String[] {"h2", "http/1.1", "spdy/3.1"},
                 new String[] {"http/1.1", "h2"});
 
