@@ -1,0 +1,1417 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0261-6f94-7131-915e-2cf4717f5e26
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scodec:scodec-cats_3:1.2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.2.0" when "$version$" is replaced with "1.2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+- Set "coordinates" to "org.scodec:scodec-cats_3:1.2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub first, then update the JSON in place. I’m checking whether this is a Scala 3 JVM artifact and whether Maven provides source/test/doc artifacts we should prefer.
+web search: 
+web search: org.scodec scodec-cats_3 1.2.0 Maven Central
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json && sed -n '1,220p' build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+-rw-rw-r-- 1 vjovanov vjovanov 55 May  7 14:20 build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+{
+  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/scodec/scodec-cats_3/1.2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/scodec/scodec-cats_3/1.2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="scodec-cats_3-1.2.0-javadoc.jar" title="scodec-cats_3-1.2.0-javadoc.jar">scodec-cats_3-1.2.0-javadoc.jar</a>                   2022-09-11 13:17   1828474      
+<a href="scodec-cats_3-1.2.0-javadoc.jar.asc" title="scodec-cats_3-1.2.0-javadoc.jar.asc">scodec-cats_3-1.2.0-javadoc.jar.asc</a>               2022-09-11 13:17       228      
+<a href="scodec-cats_3-1.2.0-javadoc.jar.asc.md5" title="scodec-cats_3-1.2.0-javadoc.jar.asc.md5">scodec-cats_3-1.2.0-javadoc.jar.asc.md5</a>           2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0-javadoc.jar.asc.sha1" title="scodec-cats_3-1.2.0-javadoc.jar.asc.sha1">scodec-cats_3-1.2.0-javadoc.jar.asc.sha1</a>          2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0-javadoc.jar.md5" title="scodec-cats_3-1.2.0-javadoc.jar.md5">scodec-cats_3-1.2.0-javadoc.jar.md5</a>               2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0-javadoc.jar.sha1" title="scodec-cats_3-1.2.0-javadoc.jar.sha1">scodec-cats_3-1.2.0-javadoc.jar.sha1</a>              2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0-sources.jar" title="scodec-cats_3-1.2.0-sources.jar">scodec-cats_3-1.2.0-sources.jar</a>                   2022-09-11 13:17      4406      
+<a href="scodec-cats_3-1.2.0-sources.jar.asc" title="scodec-cats_3-1.2.0-sources.jar.asc">scodec-cats_3-1.2.0-sources.jar.asc</a>               2022-09-11 13:17       228      
+<a href="scodec-cats_3-1.2.0-sources.jar.asc.md5" title="scodec-cats_3-1.2.0-sources.jar.asc.md5">scodec-cats_3-1.2.0-sources.jar.asc.md5</a>           2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0-sources.jar.asc.sha1" title="scodec-cats_3-1.2.0-sources.jar.asc.sha1">scodec-cats_3-1.2.0-sources.jar.asc.sha1</a>          2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0-sources.jar.md5" title="scodec-cats_3-1.2.0-sources.jar.md5">scodec-cats_3-1.2.0-sources.jar.md5</a>               2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0-sources.jar.sha1" title="scodec-cats_3-1.2.0-sources.jar.sha1">scodec-cats_3-1.2.0-sources.jar.sha1</a>              2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0.jar" title="scodec-cats_3-1.2.0.jar">scodec-cats_3-1.2.0.jar</a>                           2022-09-11 13:17     72208      
+<a href="scodec-cats_3-1.2.0.jar.asc" title="scodec-cats_3-1.2.0.jar.asc">scodec-cats_3-1.2.0.jar.asc</a>                       2022-09-11 13:17       228      
+<a href="scodec-cats_3-1.2.0.jar.asc.md5" title="scodec-cats_3-1.2.0.jar.asc.md5">scodec-cats_3-1.2.0.jar.asc.md5</a>                   2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0.jar.asc.sha1" title="scodec-cats_3-1.2.0.jar.asc.sha1">scodec-cats_3-1.2.0.jar.asc.sha1</a>                  2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0.jar.md5" title="scodec-cats_3-1.2.0.jar.md5">scodec-cats_3-1.2.0.jar.md5</a>                       2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0.jar.sha1" title="scodec-cats_3-1.2.0.jar.sha1">scodec-cats_3-1.2.0.jar.sha1</a>                      2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0.pom" title="scodec-cats_3-1.2.0.pom">scodec-cats_3-1.2.0.pom</a>                           2022-09-11 13:17      2934      
+<a href="scodec-cats_3-1.2.0.pom.asc" title="scodec-cats_3-1.2.0.pom.asc">scodec-cats_3-1.2.0.pom.asc</a>                       2022-09-11 13:17       228      
+<a href="scodec-cats_3-1.2.0.pom.asc.md5" title="scodec-cats_3-1.2.0.pom.asc.md5">scodec-cats_3-1.2.0.pom.asc.md5</a>                   2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0.pom.asc.sha1" title="scodec-cats_3-1.2.0.pom.asc.sha1">scodec-cats_3-1.2.0.pom.asc.sha1</a>                  2022-09-11 13:17        40      
+<a href="scodec-cats_3-1.2.0.pom.md5" title="scodec-cats_3-1.2.0.pom.md5">scodec-cats_3-1.2.0.pom.md5</a>                       2022-09-11 13:17        32      
+<a href="scodec-cats_3-1.2.0.pom.sha1" title="scodec-cats_3-1.2.0.pom.sha1">scodec-cats_3-1.2.0.pom.sha1</a>                      2022-09-11 13:17        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 210ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.scodec</groupId>
+    <artifactId>scodec-cats_3</artifactId>
+    <packaging>jar</packaging>
+    <description>scodec-cats</description>
+    <url>https://github.com/scodec/scodec-cats</url>
+    <version>1.2.0</version>
+    <licenses>
+        <license>
+            <name>BSD-3-Clause</name>
+            <url>https://github.com/scodec/scodec-cats/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>scodec-cats</name>
+    <inceptionYear>2013</inceptionYear>
+    <organization>
+        <name>Scodec</name>
+    </organization>
+    <scm>
+        <url>https://github.com/scodec/scodec-cats</url>
+        <connection>scm:git:https://github.com/scodec/scodec-cats.git</connection>
+        <developerConnection>scm:git:git@github.com:scodec/scodec-cats.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>mpilquist</id>
+            <name>Michael Pilquist</name>
+            <url>https://github.com/mpilquist</url>
+            <email>@mpilquist</email>
+        </developer>
+        <developer>
+            <id>durban</id>
+            <name>Daniel Urban</name>
+            <url>https://github.com/durban</url>
+            <email>@durban</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.javadoc.io/doc/org.scodec/scodec-cats_3/1.2.0/</info.apiURL>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scodec</groupId>
+            <artifactId>scodec-bits_3</artifactId>
+            <version>1.1.34</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scodec</groupId>
+            <artifactId>scodec-core_3</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-core_3</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-laws_3</artifactId>
+            <version>2.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>discipline-munit_3</artifactId>
+            <version>2.0.0-M3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+web search: 
+web search: 
+web search: 
+web search: Maven org.scodec scodec-cats_3 1.2.0
+codex
+Maven Central confirms this is packaged as a normal `jar` and includes `sources` and `javadoc` jars, so those are better metadata URLs than GitHub for source/docs. I don’t see a Maven test jar in the artifact directory, so I’m verifying the corresponding GitHub tag and test path for the test-suite URL.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/scodec/scodec-cats.git '*1.2.0*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-tests.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents?ref=1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ exited 22 in 192ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 226ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "1d3d6aabbf4df9f84dcbfe68eb512110c1804d0b",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/.github?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/.github",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/1d3d6aabbf4df9f84dcbfe68eb512110c1804d0b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/.github?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/1d3d6aabbf4df9f84dcbfe68eb512110c1804d0b",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "a0621fa6448d4d717317c82b9d69468bb55d7dfd",
+    "size": 158,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/.gitignore?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/.gitignore",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/a0621fa6448d4d717317c82b9d69468bb55d7dfd",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/.gitignore?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/a0621fa6448d4d717317c82b9d69468bb55d7dfd",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/.gitignore"
+    }
+  },
+  {
+    "name": ".sbtopts",
+    "path": ".sbtopts",
+    "sha": "ee4ceed5f682b6e80901caea04ff325ea37a6a3d",
+    "size": 57,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/.sbtopts?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/.sbtopts",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/ee4ceed5f682b6e80901caea04ff325ea37a6a3d",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/.sbtopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/.sbtopts?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/ee4ceed5f682b6e80901caea04ff325ea37a6a3d",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/.sbtopts"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "cf0bfe452008ac34b8a41420191450964f876065",
+    "size": 350,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/.scalafmt.conf?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/cf0bfe452008ac34b8a41420191450964f876065",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/.scalafmt.conf?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/cf0bfe452008ac34b8a41420191450964f876065",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "649e7504b0a06b6efb0e8f9f19e34b47b06b47f6",
+    "size": 1480,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/LICENSE?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/LICENSE",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/649e7504b0a06b6efb0e8f9f19e34b47b06b47f6",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/LICENSE?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/649e7504b0a06b6efb0e8f9f19e34b47b06b47f6",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/LICENSE"
+    }
+  },
+  {
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "sha": "0aab6f5e984ba30d579db4fdfe62911908324dbd",
+    "size": 420,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/NOTICE?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/NOTICE",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/0aab6f5e984ba30d579db4fdfe62911908324dbd",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/NOTICE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/NOTICE?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/0aab6f5e984ba30d579db4fdfe62911908324dbd",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/NOTICE"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "bc63232dfd5c91da45c8ef8e356ca97e6f26843c",
+    "size": 1417,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/build.sbt?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/build.sbt",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/bc63232dfd5c91da45c8ef8e356ca97e6f26843c",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/build.sbt?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/bc63232dfd5c91da45c8ef8e356ca97e6f26843c",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/build.sbt"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "fd2d485e52b6fb26d974c33cd8a6be48a9205b5c",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/project?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/project",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/fd2d485e52b6fb26d974c33cd8a6be48a9205b5c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/project?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/fd2d485e52b6fb26d974c33cd8a6be48a9205b5c",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/project"
+    }
+  },
+  {
+    "name": "shared",
+    "path": "shared",
+    "sha": "173fad3d05446bd3eacd055293a504f25e66951d",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/173fad3d05446bd3eacd055293a504f25e66951d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/173fad3d05446bd3eacd055293a504f25e66951d",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared"
+    }
+  }
+]
+
+ succeeded in 322ms:
+00b1142013ca853a7fb189b19288ba5f41bb3828	refs/tags/v1.2.0
+
+ succeeded in 238ms:
+HTTP/2 404 
+date: Thu, 07 May 2026 12:20:23 GMT
+content-type: text/html
+cf-ray: 9f802dad1f82039d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-sources.jar -o /tmp/scodec-cats-sources.jar && jar tf /tmp/scodec-cats-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0.jar -o /tmp/scodec-cats.jar && jar tf /tmp/scodec-cats.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-javadoc.jar -o /tmp/scodec-cats-javadoc.jar && jar tf /tmp/scodec-cats-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 141ms:
+META-INF/MANIFEST.MF
+scodec/
+scodec/interop/
+scodec/interop/cats/
+scodec/interop/cats/CatsInstances.scala
+scodec/interop/cats/package.scala
+
+ succeeded in 210ms:
+[
+  {
+    "name": "src",
+    "path": "shared/src",
+    "sha": "15d42f248560d13e5e35b4b0f8e344f294149976",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/15d42f248560d13e5e35b4b0f8e344f294149976",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/15d42f248560d13e5e35b4b0f8e344f294149976",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src"
+    }
+  }
+]
+
+ succeeded in 312ms:
+META-INF/MANIFEST.MF
+scodec/
+scodec/interop/
+scodec/interop/cats/
+scodec/interop/cats/CatsInstances$$anon$1.class
+scodec/interop/cats/CatsInstances$$anon$10.class
+scodec/interop/cats/CatsInstances$$anon$11.class
+scodec/interop/cats/CatsInstances$$anon$12.class
+scodec/interop/cats/CatsInstances$$anon$2.class
+scodec/interop/cats/CatsInstances$$anon$3.class
+scodec/interop/cats/CatsInstances$$anon$4.class
+scodec/interop/cats/CatsInstances$$anon$5.class
+scodec/interop/cats/CatsInstances$$anon$6.class
+scodec/interop/cats/CatsInstances$$anon$7.class
+scodec/interop/cats/CatsInstances$$anon$8.class
+scodec/interop/cats/CatsInstances$$anon$9.class
+scodec/interop/cats/CatsInstances.class
+scodec/interop/cats/CatsInstances.tasty
+scodec/interop/cats/CatsInstancesLowPriority.class
+scodec/interop/cats/CatsInstancesLowPriority.tasty
+scodec/interop/cats/DecoderSemigroup$$anon$13.class
+scodec/interop/cats/DecoderSemigroup.class
+scodec/interop/cats/DecoderSemigroup.tasty
+scodec/interop/cats/package$.class
+scodec/interop/cats/package$EitherErrSyntax$.class
+scodec/interop/cats/package$EitherErrSyntax.class
+scodec/interop/cats/package.class
+scodec/interop/cats/package.tasty
+
+ succeeded in 664ms:
+META-INF/MANIFEST.MF
+fonts/
+hljs/
+images/
+scodec/
+scodec/interop/
+scodec/interop/cats/
+scripts/
+scripts/common/
+scripts/components/
+styles/
+webfonts/
+favicon.ico
+fonts/dotty-icons.ttf
+fonts/dotty-icons.woff
+hljs/LICENSE
+hljs/highlight.min.js
+images/class.svg
+images/class_comp.svg
+images/discord-icon-black.png
+images/discord-icon-white.png
+images/enum.svg
+images/enum_comp.svg
+images/github-icon-black.png
+images/github-icon-white.png
+images/gitter-icon-black.png
+images/gitter-icon-white.png
+images/given.svg
+images/inkuire.svg
+images/method.svg
+images/object.svg
+images/object_comp.svg
+images/package.svg
+images/scaladoc_logo.svg
+images/scaladoc_logo_dark.svg
+images/static.svg
+images/trait.svg
+images/trait_comp.svg
+images/twitter-icon-black.png
+images/twitter-icon-white.png
+images/type.svg
+images/val.svg
+index.html
+scaladoc.version
+scodec/interop/cats.html
+scodec/interop/cats/EitherErrSyntax.html
+scripts/common/component.js
+scripts/common/utils.js
+scripts/components/DocumentableList.js
+scripts/components/Filter.js
+scripts/components/FilterBar.js
+scripts/components/FilterGroup.js
+scripts/components/Input.js
+scripts/data.js
+scripts/hljs-scala3.js
+scripts/inkuire-worker.js
+scripts/inkuire.js
+scripts/scaladoc-scalajs.js
+scripts/scastieConfiguration.js
+scripts/searchData.js
+scripts/theme.js
+scripts/ux.js
+styles/code-snippets.css
+styles/colors.css
+styles/diagram.css
+styles/dotty-icons.css
+styles/filter-bar.css
+styles/fontawesome.css
+styles/nord-light.css
+styles/scalastyle.css
+styles/searchbar.css
+styles/social-links.css
+styles/ux.css
+styles/versions-dropdown.css
+webfonts/fa-brands-400.eot
+webfonts/fa-brands-400.svg
+webfonts/fa-brands-400.ttf
+webfonts/fa-brands-400.woff
+webfonts/fa-brands-400.woff2
+webfonts/fa-regular-400.eot
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|source-code-url|documentation-url|test-code-url|not-for-native-image' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:7:    "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-core/src/test/scala/akka/http/impl/engine/parsing",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:7:    "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:8:    "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:10:    "language" : {
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:66:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:25:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:26:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:43:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/README.md || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 172ms:
+[
+  {
+    "name": "main",
+    "path": "shared/src/main",
+    "sha": "3bd46b6dd364e02bd46950dd1a574916e088116d",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/main",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/3bd46b6dd364e02bd46950dd1a574916e088116d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/3bd46b6dd364e02bd46950dd1a574916e088116d",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "shared/src/test",
+    "sha": "2d8bea059434189a53ac74e719be2bddee9c1f88",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/2d8bea059434189a53ac74e719be2bddee9c1f88",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/2d8bea059434189a53ac74e719be2bddee9c1f88",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test"
+    }
+  }
+]
+
+ succeeded in 166ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/shared/src/main/scala/scodec/interop/cats/CatsInstances.scala' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/shared/src/main/scala/scodec/interop/cats/package.scala' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 186ms:
+/*
+ * Copyright (c) 2013, Scodec
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package scodec.interop.cats
+
+import scala.annotation.tailrec
+
+import scodec.bits._
+import scodec._
+
+import _root_.cats.kernel.{Eq, Monoid, Semigroup}
+
+import _root_.cats._
+import _root_.cats.implicits._
+
+private[cats] abstract class CatsInstancesLowPriority {
+  implicit final def DecoderSemigroupInstance[A](implicit A: Semigroup[A]): Semigroup[Decoder[A]] =
+    new DecoderSemigroup[A]()
+}
+
+private[cats] abstract class CatsInstances extends CatsInstancesLowPriority {
+
+  implicit val BitVectorOrderInstance: Order[BitVector] = Order.fromComparable[BitVector]
+  implicit val BitVectorShowInstance: Show[BitVector] = Show.fromToString
+  implicit val BitVectorMonoidInstance: Monoid[BitVector] = new Monoid[BitVector] {
+    def empty = BitVector.empty
+    def combine(x: BitVector, y: BitVector) = x ++ y
+  }
+
+  implicit val ByteVectorOrderInstance: Order[ByteVector] = Order.fromComparable[ByteVector]
+  implicit val ByteVectorShowInstance: Show[ByteVector] = Show.fromToString
+  implicit val ByteVectorMonoidInstance: Monoid[ByteVector] = new Monoid[ByteVector] {
+    def empty = ByteVector.empty
+    def combine(x: ByteVector, y: ByteVector) = x ++ y
+  }
+
+  implicit val ErrEqInstance: Eq[Err] = Eq.fromUniversalEquals
+  implicit val ErrShowInstance: Show[Err] = Show.fromToString
+
+  implicit val AttemptMonadErrorTraverseInstance: MonadError[Attempt, Err] with Traverse[Attempt] =
+    new MonadError[Attempt, Err] with Traverse[Attempt] {
+      def pure[A](a: A) = Attempt.successful(a)
+      def flatMap[A, B](fa: Attempt[A])(f: A => Attempt[B]) = fa.flatMap(f)
+      def raiseError[A](e: Err) = Attempt.failure(e)
+      def handleErrorWith[A](fa: Attempt[A])(f: Err => Attempt[A]) =
+        fa.fold(f, Attempt.successful)
+
+      @tailrec
+      override def tailRecM[A, B](a: A)(f: A => Attempt[Either[A, B]]): Attempt[B] =
+        f(a) match {
+          case fail @ Attempt.Failure(_)    => fail
+          case Attempt.Successful(Left(a))  => tailRecM(a)(f)
+          case Attempt.Successful(Right(b)) => Attempt.Successful(b)
+        }
+
+      def traverse[G[_], A, B](
+          fa: Attempt[A]
+      )(f: A => G[B])(implicit G: Applicative[G]): G[Attempt[B]] =
+        fa match {
+          case fail @ Attempt.Failure(_) => G.pure(fail)
+          case Attempt.Successful(value) => G.map(f(value))(Attempt.Successful(_))
+        }
+
+      def foldLeft[A, B](fa: Attempt[A], b: B)(f: (B, A) => B): B = fa match {
+        case Attempt.Failure(_)        => b
+        case Attempt.Successful(value) => f(b, value)
+      }
+
+      def foldRight[A, B](fa: Attempt[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+        fa match {
+          case Attempt.Failure(_)        => lb
+          case Attempt.Successful(value) => f(value, lb)
+        }
+    }
+
+  private[cats] val AttemptMonadErrorInstance: MonadError[Attempt, Err] =
+    AttemptMonadErrorTraverseInstance
+
+  implicit def AttemptEqInstance[A: Eq]: Eq[Attempt[A]] = Eq.instance { (l, r) =>
+    l match {
+      case Attempt.Successful(la) =>
+        r match {
+          case Attempt.Successful(ra) => Eq[A].eqv(la, ra)
+          case Attempt.Failure(re)    => false
+        }
+      case Attempt.Failure(le) =>
+        r match {
+          case Attempt.Successful(ra) => false
+          case Attempt.Failure(re)    => Eq[Err].eqv(le, re)
+        }
+    }
+  }
+  implicit def AttemptShowInstance[A: Show]: Show[Attempt[A]] = Show.show {
+    case Attempt.Successful(a) => show"Successful($a)"
+    case Attempt.Failure(e)    => show"Successful($e)"
+  }
+
+  implicit val DecodeResultTraverseComonadInstance
+      : Traverse[DecodeResult] with Comonad[DecodeResult] = new Traverse[DecodeResult]
+    with Comonad[DecodeResult] {
+    def extract[A](fa: DecodeResult[A]) = fa.value
+    def coflatMap[A, B](fa: DecodeResult[A])(f: DecodeResult[A] => B) =
+      DecodeResult(f(fa), fa.remainder)
+    override def map[A, B](fa: DecodeResult[A])(f: A => B) = fa.map(f)
+    def traverse[G[_], A, B](fa: DecodeResult[A])(f: A => G[B])(implicit G: Applicative[G]) =
+      G.map(f(fa.value))(b => DecodeResult(b, fa.remainder))
+    def foldLeft[A, B](fa: DecodeResult[A], b: B)(f: (B, A) => B): B =
+      f(b, fa.value)
+    def foldRight[A, B](fa: DecodeResult[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      f(fa.value, lb)
+  }
+  implicit def DecodeResultEqInstance[A: Eq]: Eq[DecodeResult[A]] = Eq.instance { (l, r) =>
+    l.value === r.value && l.remainder === r.remainder
+  }
+  implicit def DecodeResultShowInstance[A: Show]: Show[DecodeResult[A]] = Show.show { res =>
+    s"DecodeResult(${res.value.show},${res.remainder.show})"
+  }
+
+  implicit val DecoderMonadErrorInstance: MonadError[Decoder, Err] = new MonadError[Decoder, Err] {
+
+    def pure[A](a: A) = new Decoder[A] {
+      def decode(b: BitVector) = Attempt.successful(DecodeResult(a, b))
+    }
+
+    def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]) = fa.flatMap(f)
+
+    override def tailRecM[A, B](a: A)(f: A => Decoder[Either[A, B]]): Decoder[B] = new Decoder[B] {
+      override def decode(bits: BitVector): Attempt[DecodeResult[B]] =
+        f(a).decode(bits).flatMap { (dr: DecodeResult[Either[A, B]]) =>
+          AttemptMonadErrorInstance.tailRecM(dr) { (dr: DecodeResult[Either[A, B]]) =>
+            dr.value match {
+              case Left(a)  => f(a).decode(dr.remainder).map(Left(_))
+              case Right(b) => Attempt.successful(Right(DecodeResult(b, dr.remainder)))
+            }
+          }
+        }
+    }
+
+    def raiseError[A](e: Err): Decoder[A] = new Decoder[A] {
+      def decode(bits: BitVector): Attempt[DecodeResult[A]] = Attempt.failure(e)
+    }
+
+    def handleErrorWith[A](fa: Decoder[A])(f: Err => Decoder[A]): Decoder[A] = new Decoder[A] {
+      def decode(bits: BitVector): Attempt[DecodeResult[A]] =
+        fa.decode(bits).fold(f(_).decode(bits), Attempt.Successful(_))
+    }
+  }
+
+  private[cats] val DecoderMonadInstance: Monad[Decoder] = DecoderMonadErrorInstance
+
+  implicit def DecoderMonoidInstance[A](implicit A: Monoid[A]): Monoid[Decoder[A]] =
+    new DecoderSemigroup[A]() with Monoid[Decoder[A]] {
+      def empty = DecoderMonadErrorInstance.pure(A.empty)
+    }
+  implicit def DecoderShowInstance[A]: Show[Decoder[A]] = Show.fromToString
+
+  implicit val EncoderContravariantInstance: Contravariant[Encoder] = new Contravariant[Encoder] {
+    def contramap[A, B](fa: Encoder[A])(f: B => A): Encoder[B] = fa.contramap(f)
+  }
+  implicit def EncoderShowInstance[A]: Show[Encoder[A]] = Show.fromToString
+
+  implicit val CodecInvariantInstance: Invariant[Codec] = new Invariant[Codec] {
+    def imap[A, B](fa: Codec[A])(f: A => B)(g: B => A): Codec[B] =
+      fa.xmap(f, g)
+  }
+  implicit def CodecShowInstance[A]: Show[Codec[A]] = Show.fromToString
+}
+
+private class DecoderSemigroup[A](implicit A: Semigroup[A]) extends Semigroup[Decoder[A]] {
+  def combine(x: Decoder[A], y: Decoder[A]) = new Decoder[A] {
+    private lazy val yy = y
+    def decode(bits: BitVector) = (for {
+      first <- x
+      second <- yy
+    } yield A.combine(first, second)).decode(bits)
+  }
+}
+
+ succeeded in 186ms:
+[
+  {
+    "name": "scala",
+    "path": "shared/src/test/scala",
+    "sha": "e48c913ea5ae8858036f69f5770bededa0dc0cd1",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/e48c913ea5ae8858036f69f5770bededa0dc0cd1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/e48c913ea5ae8858036f69f5770bededa0dc0cd1",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 162ms:
+[
+  {
+    "name": "scodec",
+    "path": "shared/src/test/scala/scodec",
+    "sha": "d190d5561cb41a9a7b0a577cd097a48dc4a3fb12",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/d190d5561cb41a9a7b0a577cd097a48dc4a3fb12",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/d190d5561cb41a9a7b0a577cd097a48dc4a3fb12",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec"
+    }
+  }
+]
+
+ succeeded in 245ms:
+/*
+ * Copyright (c) 2013, Scodec
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package scodec.interop
+
+import scodec._
+
+package object cats extends CatsInstances {
+
+  /** Extension methods for an `Either[Err, A]`. */
+  implicit class EitherErrSyntax[A](val self: Either[Err, A]) extends AnyVal {
+
+    /** Converts this either to an attempt. */
+    def toAttempt: Attempt[A] = self.fold(Attempt.failure, Attempt.successful)
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 196ms:
+[
+  {
+    "name": "interop",
+    "path": "shared/src/test/scala/scodec/interop",
+    "sha": "307e08aa573f4b7c24dc98c0b3120a321f367367",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec/interop?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec/interop",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/307e08aa573f4b7c24dc98c0b3120a321f367367",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec/interop?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/307e08aa573f4b7c24dc98c0b3120a321f367367",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec/interop"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/build.sbt' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0.pom | rg '<artifactId>|<version>|<scope>|<url>|<info.apiURL>|<packaging>'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+    <artifactId>scodec-cats_3</artifactId>
+    <packaging>jar</packaging>
+    <url>https://github.com/scodec/scodec-cats</url>
+    <version>1.2.0</version>
+            <url>https://github.com/scodec/scodec-cats/blob/main/LICENSE</url>
+        <url>https://github.com/scodec/scodec-cats</url>
+            <url>https://github.com/mpilquist</url>
+            <url>https://github.com/durban</url>
+        <info.apiURL>https://www.javadoc.io/doc/org.scodec/scodec-cats_3/1.2.0/</info.apiURL>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.1.3</version>
+            <artifactId>scodec-bits_3</artifactId>
+            <version>1.1.34</version>
+            <artifactId>scodec-core_3</artifactId>
+            <version>2.2.0</version>
+            <artifactId>cats-core_3</artifactId>
+            <version>2.8.0</version>
+            <artifactId>cats-laws_3</artifactId>
+            <version>2.8.0</version>
+            <scope>test</scope>
+            <artifactId>discipline-munit_3</artifactId>
+            <version>2.0.0-M3</version>
+            <scope>test</scope>
+
+ succeeded in 193ms:
+import com.typesafe.tools.mima.core._
+import sbtcrossproject.crossProject
+
+ThisBuild / tlBaseVersion := "1.2"
+
+ThisBuild / organization := "org.scodec"
+ThisBuild / organizationName := "Scodec"
+ThisBuild / tlSonatypeUseLegacyHost := true
+
+ThisBuild / homepage := Some(url("https://github.com/scodec/scodec-cats"))
+ThisBuild / startYear := Some(2013)
+
+ThisBuild / crossScalaVersions := Seq("2.12.16", "2.13.8", "3.1.3")
+ThisBuild / tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.1.0").toMap
+
+ThisBuild / licenses := List(
+  ("BSD-3-Clause", url("https://github.com/scodec/scodec-cats/blob/main/LICENSE"))
+)
+
+ThisBuild / developers := List(
+  tlGitHubDev("mpilquist", "Michael Pilquist"),
+  tlGitHubDev("durban", "Daniel Urban")
+)
+
+ThisBuild / tlFatalWarnings := false
+
+lazy val root = tlCrossRootProject.aggregate(core)
+
+lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .in(file("."))
+  .settings(name := "scodec-cats")
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scodec" %%% "scodec-bits" % "1.1.34",
+      "org.scodec" %%% "scodec-core" % (if (tlIsScala3.value) "2.2.0" else "1.11.10"),
+      "org.typelevel" %%% "cats-core" % "2.8.0",
+      "org.typelevel" %%% "cats-laws" % "2.8.0" % Test,
+      "org.typelevel" %%% "discipline-munit" % "2.0.0-M3" % Test
+    )
+  )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.2.0").toMap
+  )
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec/interop?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala/scodec/interop/cats?ref=v1.2.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 168ms:
+[
+  {
+    "name": "CatsInstancesTest.scala",
+    "path": "shared/src/test/scala/scodec/interop/CatsInstancesTest.scala",
+    "sha": "d492ab85012cbc1d6088ff683d0d31dd84c6de5b",
+    "size": 4332,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec/interop/CatsInstancesTest.scala?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/shared/src/test/scala/scodec/interop/CatsInstancesTest.scala",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/d492ab85012cbc1d6088ff683d0d31dd84c6de5b",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/shared/src/test/scala/scodec/interop/CatsInstancesTest.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/test/scala/scodec/interop/CatsInstancesTest.scala?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/d492ab85012cbc1d6088ff683d0d31dd84c6de5b",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/shared/src/test/scala/scodec/interop/CatsInstancesTest.scala"
+    }
+  }
+]
+
+ succeeded in 152ms:
+[
+  {
+    "name": "scala",
+    "path": "shared/src/main/scala",
+    "sha": "3d15c0d76ae6c5e49693ae3f3b54f816cc98c620",
+    "size": 0,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/main/scala",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/trees/3d15c0d76ae6c5e49693ae3f3b54f816cc98c620",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/trees/3d15c0d76ae6c5e49693ae3f3b54f816cc98c620",
+      "html": "https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/main/scala"
+    }
+  }
+]
+
+ succeeded in 194ms:
+[
+  {
+    "name": "CatsInstances.scala",
+    "path": "shared/src/main/scala/scodec/interop/cats/CatsInstances.scala",
+    "sha": "dd74b23b71f92f8387ed7e71e101e572c21bae49",
+    "size": 8608,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala/scodec/interop/cats/CatsInstances.scala?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/shared/src/main/scala/scodec/interop/cats/CatsInstances.scala",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/dd74b23b71f92f8387ed7e71e101e572c21bae49",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/shared/src/main/scala/scodec/interop/cats/CatsInstances.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala/scodec/interop/cats/CatsInstances.scala?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/dd74b23b71f92f8387ed7e71e101e572c21bae49",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/shared/src/main/scala/scodec/interop/cats/CatsInstances.scala"
+    }
+  },
+  {
+    "name": "package.scala",
+    "path": "shared/src/main/scala/scodec/interop/cats/package.scala",
+    "sha": "7cd7297c2cbe0cd18634398aa65be116e823cb12",
+    "size": 1926,
+    "url": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala/scodec/interop/cats/package.scala?ref=v1.2.0",
+    "html_url": "https://github.com/scodec/scodec-cats/blob/v1.2.0/shared/src/main/scala/scodec/interop/cats/package.scala",
+    "git_url": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/7cd7297c2cbe0cd18634398aa65be116e823cb12",
+    "download_url": "https://raw.githubusercontent.com/scodec/scodec-cats/v1.2.0/shared/src/main/scala/scodec/interop/cats/package.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scodec/scodec-cats/contents/shared/src/main/scala/scodec/interop/cats/package.scala?ref=v1.2.0",
+      "git": "https://api.github.com/repos/scodec/scodec-cats/git/blobs/7cd7297c2cbe0cd18634398aa65be116e823cb12",
+      "html": "https://github.com/scodec/scodec-cats/blob/v1.2.0/shared/src/main/scala/scodec/interop/cats/package.scala"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec/interop
+web search: 
+web search: repo1.maven.org maven2 org scodec scodec-cats_3 1.2.0 pom sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.scodec/scodec-cats_3
+web search: 
+web search: https://mvnrepository.com/artifact/org.scodec/scodec-cats_3
+web search: 
+web search: https://mvnrepository.com/artifact/org.scodec/scodec-cats_3/1.2.0
+web search: 
+web search: 
+codex
+I’ve got enough evidence to write the entry: this artifact is Scala 3-specific, but it is still a JVM `jar` with class files, so I’m leaving the Native Image exclusion fields absent. I’m using Maven Central for sources/docs and the `v$version$` GitHub tag for tests because no Maven test jar exists.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+diff --git a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+index 6e09d94e1edff8293607c29764bfeaae6473384c..4ad67df939283210f2be0cea2bcea230910d7e4e
+--- a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
++  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
++  "repository-url" : "https://github.com/scodec/scodec-cats",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
++  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+index 6e09d94e1edff8293607c29764bfeaae6473384c..4ad67df939283210f2be0cea2bcea230910d7e4e
+--- a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
++  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
++  "repository-url" : "https://github.com/scodec/scodec-cats",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
++  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+{
+  "coordinates": "org.scodec:scodec-cats_3:1.2.0",
+  "repository-url": "https://github.com/scodec/scodec-cats",
+  "source-code-url": "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
+  "documentation-url": "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
+  "description": "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 12:21:21 GMT
+content-type: application/java-archive
+content-length: 4406
+cf-ray: 9f802f1a0e78739d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 85299
+etag: "034f9f75da3efdb40cbdc834b56ba18c"
+last-modified: Sun, 11 Sep 2022 13:17:43 GMT
+x-checksum-md5: 034f9f75da3efdb40cbdc834b56ba18c
+x-checksum-sha1: cc0c39f97bb91e14e2ae7a71560d8ad19dc400be
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 12:21:21 GMT
+content-type: application/java-archive
+content-length: 1828474
+cf-ray: 9f802f1a19dc2680-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 179413
+etag: "a259c867e6b2215bbe69e66daa27976c"
+last-modified: Sun, 11 Sep 2022 13:17:43 GMT
+x-checksum-md5: a259c867e6b2215bbe69e66daa27976c
+x-checksum-sha1: 512e81572e635b8f3ddefdc683768ed925fc685a
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec/interop | sed -n '1,14p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+diff --git a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+index 6e09d94e1edff8293607c29764bfeaae6473384c..4ad67df939283210f2be0cea2bcea230910d7e4e
+--- a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
++  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
++  "repository-url" : "https://github.com/scodec/scodec-cats",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
++  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 817ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 12:21:22 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ef8892474bbde1d387479672f3797cd8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
+  "repository-url" : "https://github.com/scodec/scodec-cats",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
+  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+diff --git a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+index 6e09d94e1edff8293607c29764bfeaae6473384c..4ad67df939283210f2be0cea2bcea230910d7e4e
+--- a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
++  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
++  "repository-url" : "https://github.com/scodec/scodec-cats",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
++  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.scodec/scodec-cats_3/1.2.0 scodec-cats_3 1.2.0
+web search: 
+web search: https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec/interop
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/scodec-cats_3-1.2.0-sources.jar
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+index 6e09d94e1edff8293607c29764bfeaae6473384c..4ad67df939283210f2be0cea2bcea230910d7e4e
+--- a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
++  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
++  "repository-url" : "https://github.com/scodec/scodec-cats",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
++  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: mvnrepository org.scodec scodec-cats_3 1.2.0
+web search: 
+web search: https://github.com/scodec/scodec-cats/tree/v1.2.0/shared/src/test/scala/scodec/interop
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/org/scodec/scodec-cats_3/1.2.0/ scodec-cats_3-1.2.0-sources.jar javadoc.jar
+codex
+Updated [org.scodec-scodec-cats_3-1.2.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json) with repository, Maven source/doc URLs, GitHub test URL, two-sentence description, and Scala 3 language metadata.
+
+I left `not-for-native-image` absent because the artifact is a JVM `jar` with class files, even though the project also cross-builds for other Scala platforms. The version/artifact identity and Scala 3 target are corroborated by Maven/Scaladex, and the selected test URL points at the `v1.2.0` GitHub test directory containing `CatsInstancesTest.scala`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.scodec/scodec-cats_3?utm_source=openai))
+
+Validated JSON with `jq`, and checked the rendered source, javadoc, and test URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+index 6e09d94e1edff8293607c29764bfeaae6473384c..4ad67df939283210f2be0cea2bcea230910d7e4e
+--- a/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
++++ b/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scodec:scodec-cats_3:1.2.0"
++  "coordinates" : "org.scodec:scodec-cats_3:1.2.0",
++  "repository-url" : "https://github.com/scodec/scodec-cats",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scodec/scodec-cats/tree/v$version$/shared/src/test/scala/scodec/interop",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/scodec/scodec-cats_3/$version$/scodec-cats_3-$version$-javadoc.jar",
++  "description" : "scodec-cats provides Cats type class instances and syntax for scodec data types such as Attempt, Decoder, Encoder, Codec, BitVector, and ByteVector. It lets Scala applications use scodec codecs and decoding results with Cats abstractions like MonadError, Traverse, Contravariant, Invariant, Eq, Show, Monoid, and Semigroup.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+108,683
+Updated [org.scodec-scodec-cats_3-1.2.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/build/discovered-artifact-metadata/org.scodec-scodec-cats_3-1.2.0.json) with repository, Maven source/doc URLs, GitHub test URL, two-sentence description, and Scala 3 language metadata.
+
+I left `not-for-native-image` absent because the artifact is a JVM `jar` with class files, even though the project also cross-builds for other Scala platforms. The version/artifact identity and Scala 3 target are corroborated by Maven/Scaladex, and the selected test URL points at the `v1.2.0` GitHub test directory containing `CatsInstancesTest.scala`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.scodec/scodec-cats_3?utm_source=openai))
+
+Validated JSON with `jq`, and checked the rendered source, javadoc, and test URLs return HTTP 200.
+Ran agent for org.scodec:scodec-cats_3:1.2.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/build/agent-artifact-discovery-logs/org.scodec-scodec-cats_3-1.2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4950-e69952a2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 51s
+9 actionable tasks: 9 executed
