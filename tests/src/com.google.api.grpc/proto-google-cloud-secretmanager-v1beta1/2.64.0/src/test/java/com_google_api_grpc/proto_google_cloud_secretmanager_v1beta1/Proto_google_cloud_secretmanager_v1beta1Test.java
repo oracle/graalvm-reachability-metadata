@@ -198,6 +198,24 @@ public class Proto_google_cloud_secretmanager_v1beta1Test {
     }
 
     @Test
+    void secretVersionStatePreservesUnknownNumericValuesForForwardCompatibility() {
+        SecretVersion unknownStateVersion = SecretVersion.newBuilder()
+                .setName(VERSION_RESOURCE)
+                .setStateValue(99)
+                .build();
+        SecretVersion disabledVersion = unknownStateVersion.toBuilder()
+                .setState(SecretVersion.State.DISABLED)
+                .build();
+
+        assertThat(unknownStateVersion.getName()).isEqualTo(VERSION_RESOURCE);
+        assertThat(unknownStateVersion.getStateValue()).isEqualTo(99);
+        assertThat(unknownStateVersion.getState()).isEqualTo(SecretVersion.State.UNRECOGNIZED);
+        assertThat(SecretVersion.State.forNumber(99)).isNull();
+        assertThat(disabledVersion.getState()).isEqualTo(SecretVersion.State.DISABLED);
+        assertThat(disabledVersion.getStateValue()).isEqualTo(SecretVersion.State.DISABLED_VALUE);
+    }
+
+    @Test
     void secretCrudAndPagingRequestsCarryNamesMasksAndResponses() {
         Secret automaticSecret = Secret.newBuilder()
                 .setName(SECRET_RESOURCE)
