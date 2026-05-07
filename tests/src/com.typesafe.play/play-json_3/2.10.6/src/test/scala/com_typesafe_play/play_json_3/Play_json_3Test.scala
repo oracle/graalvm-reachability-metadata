@@ -53,6 +53,12 @@ object InventoryItem:
       (__ \ "tags").readWithDefault[Seq[String]](Seq.empty[String])
   )(InventoryItem.apply _)
 
+object TicketStatus extends Enumeration:
+  type TicketStatus = Value
+  val Open, PendingReview, Resolved = Value
+
+  given Format[TicketStatus] = Json.formatEnum(this)
+
 class Play_json_3Test {
   @Test
   def parsesNavigatesAndPrintsJsonValues(): Unit = {
@@ -192,6 +198,18 @@ class Play_json_3Test {
         assertTrue(messages.contains("error.expected.nonblank"))
         assertTrue(messages.contains("error.expected.positive"))
       case success => fail(s"Expected validation errors, got $success")
+  }
+
+  @Test
+  def readsAndWritesScalaEnumerationValuesByName(): Unit = {
+    import TicketStatus.TicketStatus
+
+    val status: TicketStatus = TicketStatus.PendingReview
+    val json: JsValue = Json.toJson(status)
+
+    assertEquals(JsString("PendingReview"), json)
+    assertEquals(JsSuccess(TicketStatus.Resolved), JsString("Resolved").validate[TicketStatus])
+    assertTrue(JsString("Archived").validate[TicketStatus].isError)
   }
 
   @Test
