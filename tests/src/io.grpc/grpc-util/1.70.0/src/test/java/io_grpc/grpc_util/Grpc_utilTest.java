@@ -17,6 +17,7 @@ import io.grpc.ChannelLogger;
 import io.grpc.ClientCall;
 import io.grpc.ClientStreamTracer;
 import io.grpc.ConnectivityState;
+import io.grpc.ConnectivityStateInfo;
 import io.grpc.EquivalentAddressGroup;
 import io.grpc.LoadBalancer;
 import io.grpc.ManagedChannel;
@@ -38,6 +39,7 @@ import io.grpc.util.ForwardingLoadBalancer;
 import io.grpc.util.ForwardingLoadBalancerHelper;
 import io.grpc.util.ForwardingSubchannel;
 import io.grpc.util.GracefulSwitchLoadBalancer;
+import io.grpc.util.HealthProducerHelper;
 import io.grpc.util.MutableHandlerRegistry;
 import io.grpc.util.OutlierDetectionLoadBalancerProvider;
 import io.grpc.util.TransmitStatusRuntimeExceptionInterceptor;
@@ -359,6 +361,35 @@ public class Grpc_utilTest {
     }
 
     @Test
+    void healthProducerHelperMirrorsSubchannelStateToHealthConsumer() {
+        EquivalentAddressGroup addressGroup = new EquivalentAddressGroup(new InetSocketAddress("localhost", 10090));
+        RecordingSubchannel delegateSubchannel = new RecordingSubchannel(List.of(addressGroup));
+        try (RecordingHelper delegate = new RecordingHelper(delegateSubchannel)) {
+            HealthProducerHelper helper = new HealthProducerHelper(delegate);
+            List<ConnectivityStateInfo> loadBalancerStates = new ArrayList<>();
+            List<ConnectivityStateInfo> healthConsumerStates = new ArrayList<>();
+            LoadBalancer.CreateSubchannelArgs createArgs = LoadBalancer.CreateSubchannelArgs.newBuilder()
+                    .setAddresses(List.of(addressGroup))
+                    .setAttributes(Attributes.EMPTY)
+                    .addOption(LoadBalancer.HEALTH_CONSUMER_LISTENER_ARG_KEY, healthConsumerStates::add)
+                    .build();
+
+            LoadBalancer.Subchannel subchannel = helper.createSubchannel(createArgs);
+            assertThat(delegate.events).containsExactly("createSubchannel:1");
+            assertThat(subchannel).isNotSameAs(delegateSubchannel);
+            assertThat(subchannel.getAttributes().get(LoadBalancer.HAS_HEALTH_PRODUCER_LISTENER_KEY)).isTrue();
+
+            subchannel.start(loadBalancerStates::add);
+            ConnectivityStateInfo ready = ConnectivityStateInfo.forNonError(ConnectivityState.READY);
+            delegateSubchannel.stateListener.onSubchannelState(ready);
+
+            assertThat(delegateSubchannel.events).containsExactly("start");
+            assertThat(loadBalancerStates).containsExactly(ready);
+            assertThat(healthConsumerStates).containsExactly(ready);
+        }
+    }
+
+    @Test
     void gracefulSwitchLoadBalancerKeepsCurrentPolicyUntilPendingPolicyIsReady() {
         EquivalentAddressGroup addressGroup = new EquivalentAddressGroup(new InetSocketAddress("localhost", 10080));
         try (RecordingHelper helper = new RecordingHelper(new RecordingSubchannel(List.of(addressGroup)))) {
@@ -611,6 +642,7 @@ public class Grpc_utilTest {
     private static final class RecordingSubchannel extends LoadBalancer.Subchannel {
         private final List<String> events = new ArrayList<>();
         private final List<EquivalentAddressGroup> addresses;
+        private LoadBalancer.SubchannelStateListener stateListener;
 
         private RecordingSubchannel(List<EquivalentAddressGroup> addresses) {
             this.addresses = addresses;
@@ -619,6 +651,7 @@ public class Grpc_utilTest {
         @Override
         public void start(LoadBalancer.SubchannelStateListener listener) {
             events.add("start");
+            stateListener = listener;
         }
 
         @Override
