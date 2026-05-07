@@ -51,8 +51,8 @@ public class DuckTypedPSKKeyManagerTest {
         SSLContext serverContext = newContext(serverKeyManager);
         SSLSocketFactory clientFactory = clientContext.getSocketFactory();
         SSLSocketFactory serverFactory = serverContext.getSocketFactory();
-        Conscrypt.setUseEngineSocket(clientFactory, false);
-        Conscrypt.setUseEngineSocket(serverFactory, false);
+        Conscrypt.setUseEngineSocket(clientFactory, true);
+        Conscrypt.setUseEngineSocket(serverFactory, true);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try (ServerSocket serverSocket = new ServerSocket(
