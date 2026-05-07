@@ -148,6 +148,48 @@ class Otel4s_core_common_3Test {
   }
 
   @Test
+  def contextualSyntaxProvidesTypedContextOperationsWithLazyDefaults(): Unit = {
+    import org.typelevel.otel4s.context.syntax._
+
+    final case class SyntaxContext(values: Map[TestKey[_], Any])
+
+    implicit val contextual: Contextual.Keyed[SyntaxContext, TestKey] =
+      new Contextual[SyntaxContext] {
+        type Key[A] = TestKey[A]
+
+        def get[A](ctx: SyntaxContext)(key: TestKey[A]): Option[A] =
+          ctx.values.get(key).map(_.asInstanceOf[A])
+
+        def updated[A](ctx: SyntaxContext)(key: TestKey[A], value: A): SyntaxContext =
+          ctx.copy(values = ctx.values.updated(key, value))
+
+        val root: SyntaxContext = SyntaxContext(Map.empty)
+      }
+
+    val stringKey: TestKey[String] = new TestKey[String]("request-id")
+    val numberKey: TestKey[Int] = new TestKey[Int]("attempt")
+    val root: SyntaxContext = Contextual[SyntaxContext].root
+    val withRequestId: SyntaxContext = root.updated(stringKey, "request-123")
+    val withAttempt: SyntaxContext = withRequestId.updated(numberKey, 2)
+
+    assertEquals(Some("request-123"), withAttempt.get(stringKey))
+    assertEquals(Some(2), withAttempt.get(numberKey))
+    assertEquals("request-123", withAttempt.getOrElse(stringKey, "fallback"))
+
+    var defaultEvaluated: Boolean = false
+    val existing: String = withAttempt.getOrElse(
+      stringKey, {
+        defaultEvaluated = true
+        "unused"
+      }
+    )
+
+    assertEquals("request-123", existing)
+    assertFalse(defaultEvaluated)
+    assertEquals("fallback", root.getOrElse(stringKey, "fallback"))
+  }
+
+  @Test
   def textMapPropagatorsComposeExtractionInjectionAndFieldsInOrder(): Unit = {
     val first: TextMapPropagator[List[String]] = RecordingPropagator("traceparent", "trace", "out-trace")
     val second: TextMapPropagator[List[String]] = RecordingPropagator("baggage", "bag", "out-bag")
