@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.maven.surefire.util.DefaultScanResult;
-import org.apache.maven.surefire.util.TestsToRun;
+import org.apache.maven.surefire.api.util.DefaultScanResult;
+import org.apache.maven.surefire.api.util.TestsToRun;
 import org.junit.jupiter.api.Test;
 
 public class DefaultScanResultTest {
