@@ -7,7 +7,7 @@
 package org_scalameta.scalafmt_config_2_13
 
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
+import java.nio.file.{Files, Path}
 
 import scala.io.Codec
 
@@ -135,6 +135,46 @@ class Scalafmt_config_2_13Test {
       assertThat(expectRight(parsed.isGit)).isFalse()
     } finally {
       Files.deleteIfExists(path)
+      ()
+    }
+  }
+
+  @Test
+  def resolvesRelativeIncludesFromConfigurationFiles(): Unit = {
+    val directory: Path = Files.createTempDirectory("scalafmt-config-includes")
+    val includedConfig: Path = directory.resolve("shared.conf")
+    val mainConfig: Path = directory.resolve(".scalafmt.conf")
+
+    try {
+      Files.writeString(
+        includedConfig,
+        """
+          |version = "from-included-file"
+          |runner.ignoreWarnings = true
+          |project.git = true
+          |""".stripMargin,
+        StandardCharsets.UTF_8
+      )
+      Files.writeString(
+        mainConfig,
+        """
+          |include "shared.conf"
+          |runner.fatalWarnings = false
+          |""".stripMargin,
+        StandardCharsets.UTF_8
+      )
+
+      val parsed: ConfParsed = ConfParsed.fromPath(mainConfig)
+
+      assertThat(parsed.conf.isOk).isTrue()
+      assertThat(expectRight(parsed.version)).isEqualTo("from-included-file")
+      assertThat(expectRight(parsed.ignoreWarnings)).isTrue()
+      assertThat(expectRight(parsed.isGit)).isTrue()
+      assertThat(expectRight(parsed.fatalWarnings)).isFalse()
+    } finally {
+      Files.deleteIfExists(mainConfig)
+      Files.deleteIfExists(includedConfig)
+      Files.deleteIfExists(directory)
       ()
     }
   }
