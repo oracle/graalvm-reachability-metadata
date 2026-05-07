@@ -8,6 +8,7 @@ package software_amazon_awssdk.http_auth_aws_eventstream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -65,6 +66,29 @@ public class Http_auth_aws_eventstreamTest {
         assertThat(decoded.getHeaders().get("sequence").getInteger()).isEqualTo(42);
         assertThat(bytesFrom(decoded.getHeaders().get("binary").getByteBuffer())).containsExactly(byteBufferHeader);
         assertThat(decoded.getPayload()).containsExactly(PAYLOAD);
+    }
+
+    @Test
+    void messageEncodesToOutputStreamAndHeadersEncodeIndependently() {
+        Map<String, HeaderValue> headers = new LinkedHashMap<>();
+        headers.put("operation", HeaderValue.fromString("subscribe"));
+        headers.put("attempt", HeaderValue.fromInteger(3));
+        Message message = new Message(headers, PAYLOAD);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        message.encode(output);
+        byte[] encodedMessage = output.toByteArray();
+        byte[] encodedHeaders = Message.encodeHeaders(headers.entrySet());
+        ByteBuffer wireMessage = ByteBuffer.wrap(encodedMessage);
+        int totalLength = wireMessage.getInt();
+        int headerLength = wireMessage.getInt();
+        wireMessage.getInt();
+        byte[] headerSection = new byte[headerLength];
+        wireMessage.get(headerSection);
+
+        assertThat(totalLength).isEqualTo(encodedMessage.length);
+        assertThat(headerSection).containsExactly(encodedHeaders);
+        assertThat(Message.decode(ByteBuffer.wrap(encodedMessage))).isEqualTo(message);
     }
 
     @Test
