@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Attributes;
+import io.grpc.BindableService;
 import io.grpc.CallCredentials;
 import io.grpc.CallOptions;
 import io.grpc.ChannelCredentials;
@@ -22,7 +23,9 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Server;
 import io.grpc.ServerCall;
+import io.grpc.ServerCallHandler;
 import io.grpc.ServerCredentials;
+import io.grpc.ServerServiceDefinition;
 import io.grpc.ServerTransportFilter;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -162,6 +165,29 @@ public class Grpc_altsTest {
     }
 
     @Test
+    void altsServerBuilderRegistersBindableServices() throws IOException, InterruptedException {
+        Server server = AltsServerBuilder.forPort(0)
+                .enableUntrustedAltsForTesting()
+                .setHandshakerAddressForTesting("127.0.0.1:1")
+                .directExecutor()
+                .addService(new EchoBindableService())
+                .build();
+
+        try {
+            server.start();
+
+            ServerServiceDefinition service = server.getServices().stream()
+                    .filter(serviceDefinition -> "alts.TestService".equals(
+                            serviceDefinition.getServiceDescriptor().getName()))
+                    .findFirst()
+                    .orElseThrow();
+            assertThat(service.getMethod(UNARY_METHOD.getFullMethodName())).isNotNull();
+        } finally {
+            shutdownServer(server);
+        }
+    }
+
+    @Test
     void altsChannelBuilderProducesBoundedRpcFailureWhenHandshakeCannotComplete() throws InterruptedException {
         ManagedChannel channel = AltsChannelBuilder.forAddress("127.0.0.1", 1)
                 .addTargetServiceAccount("target@example.iam.gserviceaccount.com")
@@ -240,6 +266,26 @@ public class Grpc_altsTest {
             } catch (IOException e) {
                 throw new IllegalStateException("Unable to parse string payload", e);
             }
+        }
+    }
+
+    private static final class EchoBindableService implements BindableService {
+        @Override
+        public ServerServiceDefinition bindService() {
+            return ServerServiceDefinition.builder("alts.TestService")
+                    .addMethod(UNARY_METHOD, new EchoServerCallHandler())
+                    .build();
+        }
+    }
+
+    private static final class EchoServerCallHandler implements ServerCallHandler<String, String> {
+        @Override
+        public ServerCall.Listener<String> startCall(ServerCall<String, String> call, Metadata headers) {
+            call.sendHeaders(new Metadata());
+            call.sendMessage("response");
+            call.close(Status.OK, new Metadata());
+            return new ServerCall.Listener<>() {
+            };
         }
     }
 
