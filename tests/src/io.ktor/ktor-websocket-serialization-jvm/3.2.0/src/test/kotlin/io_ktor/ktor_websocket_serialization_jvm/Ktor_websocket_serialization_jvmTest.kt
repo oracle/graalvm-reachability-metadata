@@ -130,6 +130,34 @@ public class Ktor_websocket_serialization_jvmTest {
     }
 
     @Test
+    fun `reified APIs preserve parameterized payload type information`(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val session: TestWebSocketSession = TestWebSocketSession()
+            try {
+                val expectedTypeInfo: TypeInfo = typeInfo<List<String>>()
+                val payload: List<String> = listOf("alpha", "beta")
+                val converter: RecordingWebsocketContentConverter = RecordingWebsocketContentConverter(
+                    serializedFrame = Frame.Text("encoded-list"),
+                    deserializedValue = payload,
+                )
+
+                session.sendSerializedBase<List<String>>(payload, converter, Charsets.UTF_8)
+                session.queueIncoming(Frame.Text("encoded-list"))
+                val value: List<String> = session.receiveDeserializedBase<List<String>>(
+                    converter,
+                    Charsets.UTF_8,
+                ) as List<String>
+
+                assertThat(value).isEqualTo(payload)
+                assertThat(converter.serializeCalls.single().typeInfo).isEqualTo(expectedTypeInfo)
+                assertThat(converter.deserializeCalls.single().typeInfo).isEqualTo(expectedTypeInfo)
+            } finally {
+                session.close()
+            }
+        }
+    }
+
+    @Test
     fun `receiveDeserializedBase rejects frames that the converter declares unsupported`(): Unit {
         val session: TestWebSocketSession = TestWebSocketSession()
         val pingFrame: Frame = Frame.Ping(byteArrayOf(1, 2, 3))
