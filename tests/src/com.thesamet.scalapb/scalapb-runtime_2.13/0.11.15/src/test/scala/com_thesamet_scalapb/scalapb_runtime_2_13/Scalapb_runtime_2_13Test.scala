@@ -8,7 +8,9 @@ package com_thesamet_scalapb.scalapb_runtime_2_13
 
 import com.google.protobuf.ByteString
 import com.google.protobuf.CodedOutputStream
+import com.google.protobuf.{DescriptorProtos => JavaDescriptorProtos}
 import com.google.protobuf.any.{Any => ProtoAny}
+import com.google.protobuf.descriptor.FieldDescriptorProto
 import com.google.protobuf.duration.Duration
 import com.google.protobuf.field_mask.FieldMask
 import com.google.protobuf.struct.ListValue
@@ -237,6 +239,42 @@ class Scalapb_runtime_2_13Test {
     val tag = (100 << 3) | WireType.WIRETYPE_LENGTH_DELIMITED
     assertEquals(100, WireType.getTagFieldNumber(tag))
     assertEquals(WireType.WIRETYPE_LENGTH_DELIMITED, WireType.getTagWireType(tag))
+  }
+
+  @Test
+  def generatedEnumsExposeRecognizedUnrecognizedDescriptorsAndJavaInterop(): Unit = {
+    val fieldType = FieldDescriptorProto.Type.TYPE_STRING
+
+    assertEquals(9, fieldType.value)
+    assertEquals("TYPE_STRING", fieldType.name)
+    assertTrue(fieldType.isTypeString)
+    assertFalse(fieldType.isUnrecognized)
+    assertEquals(Some(fieldType), FieldDescriptorProto.Type.fromName("TYPE_STRING"))
+    assertEquals(fieldType, FieldDescriptorProto.Type.fromValue(fieldType.value))
+    assertEquals(Some(fieldType), fieldType.asRecognized)
+
+    val descriptor = FieldDescriptorProto.Type.scalaDescriptor
+    val descriptorValue = descriptor.findValueByNumber(fieldType.value)
+    assertEquals("google.protobuf.FieldDescriptorProto.Type", descriptor.fullName)
+    assertTrue(descriptorValue.isDefined)
+    assertEquals("TYPE_STRING", descriptorValue.get.name)
+    assertEquals("TYPE_STRING", fieldType.scalaValueDescriptor.name)
+    assertEquals(fieldType.value, fieldType.scalaValueDescriptor.number)
+    assertFalse(fieldType.scalaValueDescriptor.isUnrecognized)
+    assertEquals(FieldDescriptorProto.Type.javaDescriptor.getFullName, descriptor.fullName)
+
+    val javaType = FieldDescriptorProto.Type.toJavaValue(fieldType)
+    assertEquals(JavaDescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING, javaType)
+    assertEquals(fieldType, FieldDescriptorProto.Type.fromJavaValue(javaType))
+
+    val unrecognized = FieldDescriptorProto.Type.fromValue(123456)
+    assertTrue(unrecognized.isUnrecognized)
+    assertEquals(None, unrecognized.asRecognized)
+    assertEquals(123456, unrecognized.value)
+
+    val unrecognizedDescriptor = descriptor.findValueByNumberCreatingIfUnknown(123456)
+    assertTrue(unrecognizedDescriptor.isUnrecognized)
+    assertEquals(123456, unrecognizedDescriptor.number)
   }
 
   @Test
