@@ -65,8 +65,17 @@ import io.grpc.xds.shaded.io.envoyproxy.envoy.config.core.v3.Node;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.extensions.transport_sockets.tls.v3.CommonTlsContext;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.BucketId;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaResponse;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaResponse.BucketAction;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaServiceGrpc;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaUsageReports;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaUsageReports.BucketQuotaUsage;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.service.status.v3.ClientStatusDiscoveryServiceGrpc;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.service.status.v3.ClientStatusRequest;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.type.v3.RateLimitStrategy;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.type.v3.RateLimitStrategy.RequestsPerTimeUnit;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.type.v3.RateLimitUnit;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -302,6 +311,77 @@ public class Grpc_xdsTest {
         assertThat(OpenRcaServiceGrpc.newStub(channel)).isNotNull();
         assertThat(OpenRcaServiceGrpc.newBlockingStub(channel)).isNotNull();
         assertThat(OpenRcaServiceGrpc.newFutureStub(channel)).isNotNull();
+    }
+
+    @Test
+    void rateLimitQuotaServiceProtosDescriptorsAndStubsAreUsable() {
+        BucketId bucketId = BucketId.newBuilder()
+                .putBucket("route", "checkout")
+                .putBucket("tenant", "test-tenant")
+                .build();
+        RateLimitQuotaUsageReports usageReports = RateLimitQuotaUsageReports.newBuilder()
+                .setDomain("payments")
+                .addBucketQuotaUsages(BucketQuotaUsage.newBuilder()
+                        .setBucketId(bucketId)
+                        .setTimeElapsed(Duration.newBuilder().setSeconds(5))
+                        .setNumRequestsAllowed(12)
+                        .setNumRequestsDenied(3))
+                .build();
+        RateLimitQuotaUsageReports parsedUsageReports = usageReports.toBuilder().build();
+
+        assertThat(parsedUsageReports.getDomain()).isEqualTo("payments");
+        assertThat(parsedUsageReports.getBucketQuotaUsagesCount()).isEqualTo(1);
+        assertThat(parsedUsageReports.getBucketQuotaUsages(0).getBucketId().getBucketOrThrow("route"))
+                .isEqualTo("checkout");
+        assertThat(parsedUsageReports.getBucketQuotaUsages(0).getTimeElapsed().getSeconds()).isEqualTo(5);
+        assertThat(parsedUsageReports.getBucketQuotaUsages(0).getNumRequestsAllowed()).isEqualTo(12);
+        assertThat(parsedUsageReports.getBucketQuotaUsages(0).getNumRequestsDenied()).isEqualTo(3);
+
+        RateLimitStrategy strategy = RateLimitStrategy.newBuilder()
+                .setRequestsPerTimeUnit(RequestsPerTimeUnit.newBuilder()
+                        .setRequestsPerTimeUnit(100)
+                        .setTimeUnit(RateLimitUnit.MINUTE))
+                .build();
+        RateLimitQuotaResponse response = RateLimitQuotaResponse.newBuilder()
+                .addBucketAction(BucketAction.newBuilder()
+                        .setBucketId(bucketId)
+                        .setQuotaAssignmentAction(BucketAction.QuotaAssignmentAction.newBuilder()
+                                .setAssignmentTimeToLive(Duration.newBuilder().setSeconds(30))
+                                .setRateLimitStrategy(strategy)))
+                .build();
+        RateLimitQuotaResponse parsedResponse = response.toBuilder().build();
+
+        assertThat(parsedResponse.getBucketActionCount()).isEqualTo(1);
+        assertThat(parsedResponse.getBucketAction(0).getBucketActionCase())
+                .isEqualTo(BucketAction.BucketActionCase.QUOTA_ASSIGNMENT_ACTION);
+        assertThat(parsedResponse.getBucketAction(0)
+                .getQuotaAssignmentAction()
+                .getAssignmentTimeToLive()
+                .getSeconds())
+                .isEqualTo(30);
+        assertThat(parsedResponse.getBucketAction(0)
+                .getQuotaAssignmentAction()
+                .getRateLimitStrategy()
+                .getRequestsPerTimeUnit()
+                .getTimeUnit())
+                .isEqualTo(RateLimitUnit.MINUTE);
+
+        assertThat(RateLimitQuotaServiceGrpc.SERVICE_NAME)
+                .isEqualTo("envoy.service.rate_limit_quota.v3.RateLimitQuotaService");
+        assertThat(RateLimitQuotaServiceGrpc.getStreamRateLimitQuotasMethod().getType())
+                .isEqualTo(MethodDescriptor.MethodType.BIDI_STREAMING);
+        assertThat(RateLimitQuotaServiceGrpc.getServiceDescriptor().getMethods())
+                .contains(RateLimitQuotaServiceGrpc.getStreamRateLimitQuotasMethod());
+        assertThat(RateLimitQuotaServiceGrpc.bindService(new RateLimitQuotaServiceGrpc.AsyncService() {})
+                .getServiceDescriptor()
+                .getName())
+                .isEqualTo(RateLimitQuotaServiceGrpc.SERVICE_NAME);
+
+        Channel channel = new NoopChannel();
+        assertThat(RateLimitQuotaServiceGrpc.newStub(channel)).isNotNull();
+        assertThat(RateLimitQuotaServiceGrpc.newBlockingV2Stub(channel)).isNotNull();
+        assertThat(RateLimitQuotaServiceGrpc.newBlockingStub(channel)).isNotNull();
+        assertThat(RateLimitQuotaServiceGrpc.newFutureStub(channel)).isNotNull();
     }
 
     @Test
