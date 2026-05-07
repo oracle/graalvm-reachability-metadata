@@ -13,6 +13,7 @@ import io.circe.DecodingFailure
 import io.circe.Error
 import io.circe.Json
 import io.circe.ParsingFailure
+import io.circe.jawn.CirceSupportParser
 import io.circe.jawn.JawnParser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
+import org.typelevel.jawn.AsyncParser
 
 import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
@@ -225,6 +227,25 @@ class Circe_jawn_3Test {
 
     assertEquals("windowed", expectRight(parsed.hcursor.get[String]("body")))
     assertEquals(Message(77L, "windowed", List(true, false)), decoded)
+  }
+
+  @Test
+  def asyncParserEmitsJsonValuesFromIncrementalValueStreams(): Unit = {
+    val supportParser = new CirceSupportParser(None, true)
+    val asyncParser = supportParser.async(AsyncParser.ValueStream)
+    val firstChunk: String = "{\"event\":\"created\",\"id\":1}\n{\"event\":\"updated\",\"id\":"
+    val finalChunk: String = "2}\n[true,false]"
+
+    val firstValues: List[Json] = expectRight(asyncParser.absorb(firstChunk)(using supportParser.facade)).toList
+    val finalValues: List[Json] = expectRight(asyncParser.finalAbsorb(finalChunk)(using supportParser.facade)).toList
+    val values: List[Json] = firstValues ++ finalValues
+
+    assertEquals(3, values.length)
+    assertEquals("created", expectRight(values.head.hcursor.get[String]("event")))
+    assertEquals(1, expectRight(values.head.hcursor.get[Int]("id")))
+    assertEquals("updated", expectRight(values(1).hcursor.get[String]("event")))
+    assertEquals(2, expectRight(values(1).hcursor.get[Int]("id")))
+    assertEquals(List(true, false), expectRight(values(2).as[List[Boolean]]))
   }
 
   @Test
