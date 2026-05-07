@@ -80,6 +80,16 @@ class Twirl_api_3Test {
   }
 
   @Test
+  def baseScalaTemplateDisplaysScalaXmlNodeSeqAsTrustedMarkup(): Unit = {
+    val textNode: scala.xml.Text = scala.xml.Text("Tom & Jerry")
+    val nodeSeq: scala.xml.NodeSeq = scala.xml.Elem(null, "span", scala.xml.Null, scala.xml.TopScope, false, textNode)
+    val template: BaseScalaTemplate[Html, HtmlFormat.type] = new BaseScalaTemplate(HtmlFormat)
+
+    assertContent(template._display_(nodeSeq), "<span>Tom &amp; Jerry</span>", MimeTypes.HTML)
+    assertContent(html"<article>$nodeSeq</article>", "<article><span>Tom &amp; Jerry</span></article>", MimeTypes.HTML)
+  }
+
+  @Test
   def baseScalaTemplateDisplaysGeneratedTemplateValues(): Unit = {
     val template: BaseScalaTemplate[Html, HtmlFormat.type] = new BaseScalaTemplate(HtmlFormat)
     def display(value: Any): Html = template._display_(value)(classTag[Html])
