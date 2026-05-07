@@ -106,6 +106,40 @@ class Sourcecode_2_13Test {
     assertEquals(Seq(Seq.empty), noArgs)
   }
 
+  @Test
+  def wrapsRawValuesForSourceValueParameters(): Unit = {
+    assertEquals("wrapped-name", nameValue("wrapped-name"))
+    assertEquals("wrapped.full.Name", fullNameValue("wrapped.full.Name"))
+    assertEquals("/tmp/Sourcecode_2_13Test.scala", fileValue("/tmp/Sourcecode_2_13Test.scala"))
+    assertEquals("Sourcecode_2_13Test.scala", fileNameValue("Sourcecode_2_13Test.scala"))
+    assertEquals("com_lihaoyi.sourcecode_2_13", packageValue("com_lihaoyi.sourcecode_2_13"))
+    assertEquals("Sourcecode_2_13Test#wrappedRawValuesForSourceValueParameters", enclosingValue("Sourcecode_2_13Test#wrappedRawValuesForSourceValueParameters"))
+    assertEquals("machine-name", machineNameValue("machine-name"))
+    assertEquals("machine.full.Name", machineFullNameValue("machine.full.Name"))
+    assertEquals("Machine#enclosing", machineEnclosingValue("Machine#enclosing"))
+    assertEquals(321, lineValue(321))
+  }
+
+  private def nameValue(name: sourcecode.Name): String = name.value
+
+  private def fullNameValue(fullName: sourcecode.FullName): String = fullName.value
+
+  private def fileValue(file: sourcecode.File): String = file.value
+
+  private def fileNameValue(fileName: sourcecode.FileName): String = fileName.value
+
+  private def packageValue(pkg: sourcecode.Pkg): String = pkg.value
+
+  private def enclosingValue(enclosing: sourcecode.Enclosing): String = enclosing.value
+
+  private def machineNameValue(name: sourcecode.Name.Machine): String = name.value
+
+  private def machineFullNameValue(fullName: sourcecode.FullName.Machine): String = fullName.value
+
+  private def machineEnclosingValue(enclosing: sourcecode.Enclosing.Machine): String = enclosing.value
+
+  private def lineValue(line: sourcecode.Line): Int = line.value
+
   private def currentName()(implicit name: sourcecode.Name): String = name.value
 
   private def currentFullName()(implicit fullName: sourcecode.FullName): String = fullName.value
