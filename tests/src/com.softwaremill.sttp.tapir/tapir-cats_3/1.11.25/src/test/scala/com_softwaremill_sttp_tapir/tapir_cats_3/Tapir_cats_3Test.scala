@@ -32,6 +32,7 @@ import sttp.tapir.EndpointOutput
 import sttp.tapir.ModifyFunctor
 import sttp.tapir.PublicEndpoint
 import sttp.tapir.Schema
+import sttp.tapir.SchemaType
 import sttp.tapir.Validator
 import sttp.tapir.endpoint
 import sttp.tapir.header
@@ -42,6 +43,7 @@ import sttp.tapir.integ.cats.ValidatorCats
 import sttp.tapir.integ.cats.codec._
 import sttp.tapir.integ.cats.instances
 import sttp.tapir.integ.cats.syntax._
+import sttp.tapir._
 import sttp.tapir.server.ServerEndpoint
 
 
@@ -186,6 +188,25 @@ class Tapir_cats_3Test {
   }
 
   @Test
+  def schemaModifyTraversesCatsCollectionsUsingEachSyntax(): Unit = {
+    import sttp.tapir.generic.auto._
+    import sttp.tapir.integ.cats.instances._
+
+    val schema: Schema[Team] = implicitly[Schema[Team]]
+      .modify(_.members.each.name)(_.validate(Validator.minLength(2)).description("team member name"))
+
+    val validTeam: Team = Team(NonEmptyList.of(TeamMember("Ada"), TeamMember("Bo")))
+    val invalidTeam: Team = Team(NonEmptyList.of(TeamMember("A")))
+
+    assertTrue(schema.applyValidation(validTeam).isEmpty)
+
+    val validationErrors = schema.applyValidation(invalidTeam)
+    assertEquals(1, validationErrors.size)
+    assertEquals(List("members", "name"), validationErrors.head.path.map(_.name))
+    assertEquals(Some("team member name"), nestedMemberNameSchema(schema).description)
+  }
+
+  @Test
   def monadErrorImapKTranslatesAllCoreOperations(): Unit = {
     val toBox: EitherThrowable ~> Box = new (EitherThrowable ~> Box) {
       override def apply[A](fa: EitherThrowable[A]): Box[A] = Box(fa)
@@ -242,6 +263,25 @@ class Tapir_cats_3Test {
       case _                         => assertFalse(false)
     }
 
+  private def nestedMemberNameSchema(schema: Schema[Team]): Schema[_] = {
+    val membersSchema: Schema[_] = productFieldSchema(schema, "members")
+    val memberSchema: Schema[_] = arrayElementSchema(membersSchema)
+    productFieldSchema(memberSchema, "name")
+  }
+
+  private def productFieldSchema(schema: Schema[_], fieldName: String): Schema[_] =
+    schema.schemaType match {
+      case SchemaType.SProduct(fields) =>
+        fields.find(_.name.name == fieldName).map(_.schema).getOrElse(fail(s"Expected product field $fieldName in $schema"))
+      case other => fail(s"Expected product schema, got $other")
+    }
+
+  private def arrayElementSchema(schema: Schema[_]): Schema[_] =
+    schema.schemaType match {
+      case SchemaType.SArray(element) => element
+      case other                      => fail(s"Expected array schema, got $other")
+    }
+
   private type EitherThrowable[A] = Either[Throwable, A]
 
   private val eitherThrowableMonad: MonadError[EitherThrowable] = new MonadError[EitherThrowable] {
@@ -273,4 +313,8 @@ class Tapir_cats_3Test {
   private final case class GreetingResponse(body: String, traceId: String)
 
   private final case class RequestContext(session: String, requestId: String)
+
+  private final case class Team(members: NonEmptyList[TeamMember])
+
+  private final case class TeamMember(name: String)
 }
