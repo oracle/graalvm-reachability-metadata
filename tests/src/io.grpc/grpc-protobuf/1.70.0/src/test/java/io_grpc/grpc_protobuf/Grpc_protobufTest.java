@@ -6,6 +6,7 @@
  */
 package io_grpc.grpc_protobuf;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
@@ -180,6 +181,23 @@ public class Grpc_protobufTest {
 
         assertThat(status.getCode()).isEqualTo(Code.UNKNOWN.getNumber());
         assertThat(status.getMessage()).isEqualTo("transport failed");
+    }
+
+    @Test
+    void statusProtoFindsRichRpcStatusInThrowableCauseChain() throws Exception {
+        StringValue detail = StringValue.newBuilder().setValue("missing permission").build();
+        Status rpcStatus = Status.newBuilder()
+                .setCode(Code.PERMISSION_DENIED.getNumber())
+                .setMessage("access denied")
+                .addDetails(Any.pack(detail))
+                .build();
+        RuntimeException wrapper = new RuntimeException("top level",
+                new IllegalArgumentException("middle level", StatusProto.toStatusException(rpcStatus)));
+
+        Status extracted = StatusProto.fromThrowable(wrapper);
+
+        assertThat(extracted).isEqualTo(rpcStatus);
+        assertThat(extracted.getDetails(0).unpack(StringValue.class)).isEqualTo(detail);
     }
 
     @Test
