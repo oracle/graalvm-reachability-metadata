@@ -186,8 +186,15 @@ public abstract class TckExtension {
             if (changedMetadataFiles.stream().anyMatch(f -> f.startsWith(metadataDir))) {
                 return true;
             }
-            Path testDir = getTestDir(c);
-            return changedTestFiles.stream().anyMatch(f -> f.startsWith(testDir));
+            if (changedTestFiles.isEmpty()) {
+                return false;
+            }
+            try {
+                Path testDir = getTestDir(c);
+                return changedTestFiles.stream().anyMatch(f -> f.startsWith(testDir));
+            } catch (RuntimeException ignored) {
+                return false;
+            }
         }).distinct().collect(Collectors.toCollection(ArrayList::new));
 
         return changedCoordinates;

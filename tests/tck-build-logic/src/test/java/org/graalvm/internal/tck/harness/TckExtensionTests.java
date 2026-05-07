@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -162,6 +163,71 @@ class TckExtensionTests {
                 );
     }
 
+    @Test
+    void diffCoordinatesIgnoresUnrelatedLibrariesWithoutTests() throws Exception {
+        writeRepoFile("metadata/com.example/demo/1.0.0/reachability-metadata.json", """
+                {
+                  "reflection": []
+                }
+                """);
+        writeRepoFile("metadata/com.example/demo/index.json", """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "test-version": "0.9.0",
+                    "tested-versions": [
+                      "1.0.0"
+                    ]
+                  }
+                ]
+                """);
+        writeRepoFile("metadata/com.example/orphan/2.0.0/reachability-metadata.json", """
+                {
+                  "reflection": []
+                }
+                """);
+        writeRepoFile("metadata/com.example/orphan/index.json", """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "2.0.0",
+                    "tested-versions": [
+                      "2.0.0"
+                    ]
+                  }
+                ]
+                """);
+        Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/0.9.0"));
+        Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
+        Files.writeString(tempDir.resolve("LICENSE"), "test");
+
+        git("init");
+        git("config", "user.email", "test@example.com");
+        git("config", "user.name", "Test User");
+        git("add", ".");
+        git("commit", "-m", "base");
+        String baseCommit = gitOutput("rev-parse", "HEAD");
+
+        writeRepoFile("metadata/com.example/demo/1.0.0/reachability-metadata.json", """
+                {
+                  "reflection": [
+                    {
+                      "type": "com.example.Demo"
+                    }
+                  ]
+                }
+                """);
+        git("add", ".");
+        git("commit", "-m", "head");
+        String headCommit = gitOutput("rev-parse", "HEAD");
+
+        TckExtension extension = createExtensionForTempDir();
+
+        assertThat(extension.diffCoordinates(baseCommit, headCommit))
+                .containsExactly("com.example:demo:1.0.0");
+    }
+
     private TckExtension createExtension(String metadataIndexJson) throws IOException {
         Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
         Files.writeString(tempDir.resolve("metadata/com.example/demo/index.json"), metadataIndexJson);
@@ -169,10 +235,56 @@ class TckExtensionTests {
         Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
         Files.writeString(tempDir.resolve("LICENSE"), "test");
 
+        return createExtensionForTempDir();
+    }
+
+    private TckExtension createExtensionForTempDir() {
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
         return project.getExtensions().create("tck", TckExtension.class, project);
+    }
+
+    private void writeRepoFile(String relativePath, String content) throws IOException {
+        Path file = tempDir.resolve(relativePath);
+        Files.createDirectories(file.getParent());
+        Files.writeString(file, content);
+    }
+
+    private void git(String... args) throws Exception {
+        int exitCode = new ProcessBuilder(argsWithGit(args))
+                .directory(tempDir.toFile())
+                .redirectErrorStream(true)
+                .start()
+                .waitFor();
+        if (exitCode != 0) {
+            throw new IllegalStateException("git command failed: " + String.join(" ", argsWithGit(args)));
+        }
+    }
+
+    private String gitOutput(String... args) throws Exception {
+        Process process = new ProcessBuilder(argsWithGit(args))
+                .directory(tempDir.toFile())
+                .redirectErrorStream(true)
+                .start();
+        int exitCode = process.waitFor();
+        String output;
+        try {
+            output = new String(process.getInputStream().readAllBytes()).trim();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        if (exitCode != 0) {
+            throw new IllegalStateException("git command failed: " + String.join(" ", argsWithGit(args)));
+        }
+        return output;
+    }
+
+    private String[] argsWithGit(String... args) {
+        String[] command = new String[args.length + 1];
+        command[0] = "git";
+        System.arraycopy(args, 0, command, 1, args.length);
+        return command;
     }
 
     private static String toJsonArray(List<String> values) {
