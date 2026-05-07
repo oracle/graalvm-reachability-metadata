@@ -24,6 +24,13 @@ class Metaconfig_pprint_2_13Test {
   }
 
   @Test
+  def defaultTypePrinterRendersLiteralSingletonTypes(): Unit = {
+    assertEquals("42", renderPlain[42])
+    assertEquals("true", renderPlain[true])
+    assertEquals("ready", renderPlain["ready"])
+  }
+
+  @Test
   def defaultTypePrinterRendersTuplesFunctionsAndInfixTypes(): Unit = {
     assertEquals("(String, Int)", renderPlain[(String, Int)])
     assertEquals("(String, Int, Boolean)", renderPlain[(String, Int, Boolean)])
