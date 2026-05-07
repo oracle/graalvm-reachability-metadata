@@ -22,6 +22,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -35,6 +36,7 @@ from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt5"
+ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK = "addLibraryAsLatestMetadataIndexJson"
 
 # Default strategy names per mode
 DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
@@ -243,7 +245,13 @@ def update_metadata_index_json(
 ) -> None:
     """Update metadata index.json for the target library version."""
     new_version_coordinates = f"{group}:{artifact}:{updated_library_version}"
-    run_gradle_task(config.metadata_index_task, new_version_coordinates)
+    metadata_index_task = config.metadata_index_task
+    if (
+            metadata_index_task != ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK
+            and is_newer_than_latest_metadata_version(os.getcwd(), group, artifact, updated_library_version)
+    ):
+        metadata_index_task = ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK
+    run_gradle_task(metadata_index_task, new_version_coordinates)
 
 
 def create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version):
