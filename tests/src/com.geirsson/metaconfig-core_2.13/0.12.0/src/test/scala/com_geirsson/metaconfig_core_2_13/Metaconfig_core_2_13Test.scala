@@ -17,6 +17,8 @@ import java.nio.file.Paths
 import metaconfig.Conf
 import metaconfig.ConfCodec
 import metaconfig.ConfDecoder
+import metaconfig.ConfDecoderEx
+import metaconfig.ConfDecoderExT
 import metaconfig.ConfDynamic
 import metaconfig.ConfEncoder
 import metaconfig.ConfError
@@ -147,6 +149,42 @@ class Metaconfig_core_2_13Test {
 
     val upperCaseEncoder: ConfEncoder[String] = ConfEncoder.StringEncoder.contramap[String](_.toUpperCase)
     assertThat(upperCaseEncoder.write("lower")).isEqualTo(Conf.Str("LOWER"))
+  }
+
+  @Test
+  def extendedDecodersApplyIncrementalCollectionUpdatesAgainstExistingState(): Unit = {
+    val baseItems: List[String] = List("base")
+    val itemUpdate: Conf = Conf.Obj("+" -> Conf.Lst(Conf.Str("extra"), Conf.Str("last")))
+    val listDecoder: ConfDecoderEx[List[String]] = ConfDecoderExT.canBuildSeq[String, List]
+
+    val appendedItems: Configured[List[String]] = itemUpdate.getEx(Some(baseItems))(listDecoder)
+    assertThat(appendedItems.get.asJava).containsExactly("base", "extra", "last")
+
+    val replacementItems: Configured[List[String]] =
+      Conf.Lst(Conf.Str("replacement")).getEx(Some(baseItems))(listDecoder)
+    assertThat(replacementItems.get.asJava).containsExactly("replacement")
+
+    val baseAliases: ListMap[String, Int] = ListMap("existing" -> 1)
+    val aliasUpdate: Conf = Conf.Obj(
+      "+" -> Conf.Obj(
+        "new" -> Conf.fromInt(2),
+        "other" -> Conf.fromNumberOrString("3")
+      )
+    )
+    val mapDecoder: ConfDecoderEx[ListMap[String, Int]] = ConfDecoderExT.canBuildStringMap[Int, ListMap]
+
+    val appendedAliases: Configured[ListMap[String, Int]] =
+      aliasUpdate.getEx(Some(baseAliases))(mapDecoder)
+    assertThat(appendedAliases.get).isEqualTo(
+      ListMap("existing" -> 1, "new" -> 2, "other" -> 3)
+    )
+
+    val root: Conf = Conf.Obj("items" -> itemUpdate)
+    val updatedFromPath: Configured[List[String]] = Conf.getEx(baseItems, root, Seq("items"))(listDecoder)
+    assertThat(updatedFromPath.get.asJava).containsExactly("base", "extra", "last")
+
+    val unchangedWhenMissing: Configured[List[String]] = Conf.getEx(baseItems, root, Seq("missing"))(listDecoder)
+    assertThat(unchangedWhenMissing.get.asJava).containsExactly("base")
   }
 
   @Test
