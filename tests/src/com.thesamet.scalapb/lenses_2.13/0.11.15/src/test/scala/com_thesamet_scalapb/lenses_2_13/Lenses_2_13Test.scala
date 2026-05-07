@@ -166,6 +166,20 @@ class Lenses_2_13Test {
   }
 
   @Test
+  def collectionLensesAppendFromOneShotIterableOnceSources(): Unit = {
+    val profile: Profile = sampleProfile
+
+    assertEquals(
+      profile.copy(tags = Vector("compiler", "native-image", "agent", "metadata")),
+      (tagsLens :++= Iterator("agent", "metadata"))(profile)
+    )
+    assertEquals(
+      profile.copy(flags = Set("fast", "deterministic", "native", "jvm")),
+      (flagsLens :++= Iterator("native", "jvm"))(profile)
+    )
+  }
+
+  @Test
   def mapLensAccessesAddsAndTransformsEntriesAndValues(): Unit = {
     val profile: Profile = sampleProfile
 
