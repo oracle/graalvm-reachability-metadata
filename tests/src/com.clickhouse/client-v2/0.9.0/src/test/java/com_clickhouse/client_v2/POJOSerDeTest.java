@@ -36,7 +36,7 @@ public class POJOSerDeTest {
         ByteArrayOutputStream expected = new ByteArrayOutputStream();
         BinaryStreamUtils.writeInt32(expected, 42);
         BinaryStreamUtils.writeString(expected, "native image");
-        assertThat(serializers).containsOnlyKeys("id", "display_name");
+        assertThat(serializers.keySet()).containsExactlyInAnyOrder("id", "display_name");
         assertThat(actual.toByteArray()).isEqualTo(expected.toByteArray());
     }
 
