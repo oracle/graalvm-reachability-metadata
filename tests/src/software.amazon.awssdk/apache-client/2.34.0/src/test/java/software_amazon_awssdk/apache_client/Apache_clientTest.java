@@ -28,7 +28,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.conn.DnsResolver;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import software.amazon.awssdk.http.AbortableInputStream;
@@ -183,6 +186,54 @@ public class Apache_clientTest {
             assertThat(readResponse(response)).isEqualTo("from-origin");
             assertThat(originRequests).hasValue(1);
             assertThat(proxyRequests).hasValue(0);
+        }
+    }
+
+    @Test
+    void apacheClientUsesConfiguredCredentialsProviderForOriginAuthentication() throws Exception {
+        String expectedAuthorization = "Basic "
+                + Base64.getEncoder().encodeToString("originUser:secret".getBytes(UTF_8));
+        AtomicInteger requests = new AtomicInteger();
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            requests.incrementAndGet();
+            assertThat(exchange.getRequestMethod()).isEqualTo("GET");
+            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/authenticated");
+
+            String authorization = exchange.getRequestHeaders().getFirst("Authorization");
+            if (authorization == null) {
+                exchange.getResponseHeaders().add("WWW-Authenticate", "Basic realm=\"origin\"");
+                writeResponse(exchange, 401, "credentials required");
+                return;
+            }
+
+            assertThat(authorization).isEqualTo(expectedAuthorization);
+            writeResponse(exchange, 200, "authenticated");
+        })) {
+            BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(
+                    new AuthScope(server.uri("").getHost(), server.port()),
+                    new UsernamePasswordCredentials("originUser", "secret"));
+
+            try (SdkHttpClient client = ApacheHttpClient.builder()
+                    .connectionTimeout(SHORT_TIMEOUT)
+                    .socketTimeout(SHORT_TIMEOUT)
+                    .connectionAcquisitionTimeout(SHORT_TIMEOUT)
+                    .useIdleConnectionReaper(false)
+                    .credentialsProvider(credentialsProvider)
+                    .build()) {
+                SdkHttpFullRequest request = SdkHttpFullRequest.builder()
+                        .method(SdkHttpMethod.GET)
+                        .uri(server.uri("/authenticated"))
+                        .build();
+
+                HttpExecuteResponse response = client.prepareRequest(HttpExecuteRequest.builder()
+                        .request(request)
+                        .build()).call();
+
+                assertThat(response.httpResponse().statusCode()).isEqualTo(200);
+                assertThat(readResponse(response)).isEqualTo("authenticated");
+                assertThat(requests).hasValue(2);
+            }
         }
     }
 
