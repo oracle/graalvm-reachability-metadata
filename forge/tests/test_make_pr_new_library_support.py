@@ -13,6 +13,7 @@ from git_scripts.make_pr_new_library_support import (
     DynamicAccessMetadataEvidence,
     build_pull_request_body,
     load_dynamic_access_metadata_evidence,
+    validate_run_quality,
 )
 
 
@@ -218,6 +219,53 @@ class MakePrNewLibrarySupportTests(unittest.TestCase):
             )
 
         self.assertNotIn("### Metadata/dynamic-access evidence", body)
+
+    def test_validate_run_quality_rejects_suspicious_generated_test_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as metrics_repo_path:
+            metrics_path = os.path.join(metrics_repo_path, ".pending_metrics.json")
+            with open(metrics_path, "w", encoding="utf-8") as file:
+                json.dump(
+                    {
+                        "status": "success",
+                        "metrics": {
+                            "code_coverage_percent": 5.0,
+                        },
+                    },
+                    file,
+                )
+            test_file = os.path.join(
+                repo_path,
+                "tests",
+                "src",
+                "plexus",
+                "plexus-utils",
+                "1.0.2",
+                "src",
+                "test",
+                "java",
+                "plexus",
+                "plexus_utils",
+                "ReflectorTest.java",
+            )
+            os.makedirs(os.path.dirname(test_file), exist_ok=True)
+            with open(test_file, "w", encoding="utf-8") as file:
+                file.write(
+                    """
+import org.junit.jupiter.api.Test;
+
+class ReflectorTest {
+    @Test
+    void objectPropertyFindsAccessorButFailsBeforeInvokingIt() {
+        // Version 1.0.2 fails before invoking the accessor.
+        assertThatThrownBy(() -> reflector.getObjectProperty(fixture, "value"))
+                .isInstanceOf(ReflectorException.class);
+    }
+}
+""".lstrip()
+                )
+
+            with self.assertRaisesRegex(ValueError, "suspicious generated test target"):
+                validate_run_quality("plexus:plexus-utils:1.0.2", metrics_repo_path, repo_path)
 
 
 if __name__ == "__main__":

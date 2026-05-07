@@ -7,12 +7,14 @@ Rules:
 - Use upstream test sources only as behavioral examples.
 - Use documentation and source context only as API guidance.
 - Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the call site unreached with an explanation.
+- Target supported library behavior. Do not make an uncovered dynamic-access call "covered" by asserting a known bug, regression, broken path, or version-specific failure in the target artifact.
 - Do not use reflection directly in the tests unless the public API requires it naturally.
 - Do not compile or run tests yourself. The workflow will do that externally.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
 - All top-level test classes must be public.
 - Keep tests outside the library's packages. Do not place a test in the same package as the library just to access package-private or internal code.
 - Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
+- Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure.
 - Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources.
 - Tests should execute under Native Image by default.
 - Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally.

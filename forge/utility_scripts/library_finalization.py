@@ -14,6 +14,10 @@ from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.style_checks import run_style_fix_and_checks
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.test_quality_checks import (
+    collect_generated_test_validity_issues,
+    format_generated_test_validity_issue,
+)
 
 
 def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subprocess.CompletedProcess[str]:
@@ -213,6 +217,16 @@ def run_library_finalization(
         return False
     log_stage("style-checks", f"Running style checks for {library}")
     if not run_style_fix_and_checks(repo_path, library, model_name=model_name):
+        return False
+    test_source_root = os.path.join(repo_path, "tests", "src", group, artifact, library_version, "src", "test")
+    generated_test_validity_issues = collect_generated_test_validity_issues(test_source_root)
+    if generated_test_validity_issues:
+        for issue in generated_test_validity_issues:
+            log_stage(
+                "generated-test-quality",
+                "WARNING: Suspicious generated test target requires human review: "
+                f"{format_generated_test_validity_issue(issue, repo_path)}",
+            )
         return False
     log_stage("generate-library-stats", f"Running generateLibraryStats for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "generateLibraryStats", f"-Pcoordinates={library}"]):

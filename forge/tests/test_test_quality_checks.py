@@ -11,6 +11,8 @@ import unittest
 from utility_scripts.test_quality_checks import (
     SCAFFOLD_PLACEHOLDER_TEXT,
     cleanup_scaffold_placeholder_tests,
+    collect_generated_test_validity_issues,
+    format_generated_test_validity_issue,
     format_placeholder_occurrence,
 )
 
@@ -192,6 +194,58 @@ class ExampleTest {
             self.assertEqual(result.removed_files, [])
             self.assertTrue(os.path.exists(placeholder_file))
             self.assertEqual(len(result.remaining_placeholders), 1)
+
+    def test_reports_version_specific_broken_behavior_exception_target(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            test_file = os.path.join(tmp_dir, "ReflectorTest.java")
+            self._write_file(
+                test_file,
+                """
+package plexus.plexus_utils;
+
+import org.junit.jupiter.api.Test;
+
+class ReflectorTest {
+    @Test
+    void objectPropertyFindsAccessorButFailsBeforeInvokingIt() {
+        // Version 1.0.2 finds getValue, then looks on Class.class, and fails before Method.invoke.
+        assertThatThrownBy(() -> reflector.getObjectProperty(fixture, "value"))
+                .isInstanceOf(ReflectorException.class)
+                .hasCauseInstanceOf(NoSuchFieldException.class);
+    }
+}
+""",
+            )
+
+            issues = collect_generated_test_validity_issues(tmp_dir)
+
+            self.assertEqual(len(issues), 1)
+            self.assertEqual(issues[0].file_path, test_file)
+            self.assertIn("version-specific broken behavior", issues[0].reason)
+            self.assertIn("FailsBefore", format_generated_test_validity_issue(issues[0], tmp_dir))
+
+    def test_allows_ordinary_negative_path_exception_assertions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            self._write_file(
+                os.path.join(tmp_dir, "ParserTest.java"),
+                """
+package org.example;
+
+import org.junit.jupiter.api.Test;
+
+class ParserTest {
+    @Test
+    void invalidInputThrowsUsefulException() {
+        assertThatThrownBy(() -> parser.parse("not-json"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+}
+""",
+            )
+
+            issues = collect_generated_test_validity_issues(tmp_dir)
+
+            self.assertEqual(issues, [])
 
     @staticmethod
     def _write_file(file_path: str, content: str) -> None:
