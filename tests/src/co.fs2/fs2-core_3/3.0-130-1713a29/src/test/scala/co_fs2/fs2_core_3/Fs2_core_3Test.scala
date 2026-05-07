@@ -6,15 +6,17 @@
  */
 package co_fs2.fs2_core_3
 
-import cats.effect.ContextShift
+import cats.effect.Deferred
 import cats.effect.IO
-import cats.effect.Timer
-import cats.effect.concurrent.Deferred
+import cats.effect.Outcome
+import cats.effect.std.Queue
+import cats.effect.unsafe.implicits.global
 import fs2.Chunk
 import fs2.Pull
 import fs2.Stream
-import fs2.compression
-import fs2.concurrent.Queue
+import fs2.compression.Compression
+import fs2.compression.DeflateParams
+import fs2.compression.InflateParams
 import fs2.concurrent.Signal
 import fs2.hash
 import fs2.text
@@ -34,13 +36,9 @@ import java.time.Instant
 import java.util.Base64
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
-import scala.concurrent.ExecutionContext
 import scala.jdk.CollectionConverters.*
 
 class Fs2_core_3Test {
-  private implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
-  private implicit val timer: Timer[IO] = IO.timer(ExecutionContext.global)
-
   @Test
   @Timeout(value = 60, unit = TimeUnit.SECONDS)
   def streamTransformationsCompileToExpectedCollections(): Unit = {
@@ -147,7 +145,6 @@ class Fs2_core_3Test {
       .byteBuffer(ByteBuffer.wrap(Array[Byte](10, 20, 30, 40)))
       .drop(1)
       .take(2)
-      .toBytes
       .toArray
 
     assertEquals(List(20, 30, 40), positiveTens)
@@ -203,8 +200,8 @@ class Fs2_core_3Test {
     val expectedDigest: Array[Byte] = MessageDigest.getInstance("SHA-256").digest(payload)
 
     val deflatedRoundTrip: Vector[Byte] = byteStream(payload, 7)
-      .through(compression.deflate[IO](compression.DeflateParams.BEST_SPEED))
-      .through(compression.inflate[IO]())
+      .through(Compression[IO].deflate(DeflateParams.BEST_SPEED))
+      .through(Compression[IO].inflate(InflateParams.DEFAULT))
       .compile
       .toVector
       .unsafeRunSync()
@@ -212,13 +209,13 @@ class Fs2_core_3Test {
     val modificationTime: Instant = Instant.parse("2020-01-02T03:04:05Z")
     val gzipRoundTrip: Vector[Byte] = byteStream(payload, 9)
       .through(
-        compression.gzip[IO](
+        Compression[IO].gzip(
           fileName = Some("payload.txt"),
           modificationTime = Some(modificationTime),
           comment = Some("metadata")
         )
       )
-      .through(compression.gunzip[IO]())
+      .through(Compression[IO].gunzip())
       .flatMap { result =>
         Stream.eval(IO {
           assertEquals(Some("payload.txt"), result.fileName)
@@ -265,7 +262,11 @@ class Fs2_core_3Test {
       _ <- thirdGate.complete(())
       _ <- secondGate.complete(())
       _ <- firstGate.complete(())
-      values <- fiber.join
+      values <- fiber.join.flatMap {
+        case Outcome.Succeeded(values) => values
+        case Outcome.Errored(error) => IO.raiseError(error)
+        case Outcome.Canceled() => IO.raiseError(new IllegalStateException("mapAsync stream was canceled"))
+      }
     } yield values).unsafeRunSync()
 
     assertEquals(Vector(1, 2, 3), ordered)
@@ -274,34 +275,30 @@ class Fs2_core_3Test {
   @Test
   @Timeout(value = 60, unit = TimeUnit.SECONDS)
   def queuesExposeBoundedOffersChunksAndTermination(): Unit = {
-    val queueResult: (Boolean, Boolean, Boolean, List[Int], Option[Int], Int, Int) = (for {
+    val queueResult: (Boolean, Boolean, Boolean, List[Int], Option[Int], Int) = (for {
       queue <- Queue.bounded[IO, Int](2)
-      firstOffer <- queue.offer1(1)
-      secondOffer <- queue.offer1(2)
-      thirdOffer <- queue.offer1(3)
-      chunk <- queue.dequeueChunk1(5)
-      empty <- queue.tryDequeue1
-      _ <- queue.enqueue1(4)
-      dequeued <- queue.dequeue1
-      mapped = queue.imap[String](_.toString)(_.toInt)
-      _ <- mapped.enqueue1("5")
-      mappedDequeued <- queue.dequeue1
+      firstOffer <- queue.tryOffer(1)
+      secondOffer <- queue.tryOffer(2)
+      thirdOffer <- queue.tryOffer(3)
+      chunk <- Stream.fromQueueUnterminated(queue, 5).take(2).compile.toList
+      empty <- queue.tryTake
+      _ <- queue.offer(4)
+      dequeued <- queue.take
     } yield (
       firstOffer,
       secondOffer,
       thirdOffer,
-      chunk.toList,
+      chunk,
       empty,
-      dequeued,
-      mappedDequeued
+      dequeued
     )).unsafeRunSync()
 
     val terminated: Vector[String] = (for {
-      queue <- Queue.noneTerminated[IO, String]
-      _ <- queue.enqueue1(Some("alpha"))
-      _ <- queue.enqueue1(Some("beta"))
-      _ <- queue.enqueue1(None)
-      values <- queue.dequeue.compile.toVector
+      queue <- Queue.unbounded[IO, Option[String]]
+      _ <- queue.offer(Some("alpha"))
+      _ <- queue.offer(Some("beta"))
+      _ <- queue.offer(None)
+      values <- Stream.fromQueueNoneTerminated(queue, 5).compile.toVector
     } yield values).unsafeRunSync()
 
     assertTrue(queueResult._1)
@@ -310,7 +307,6 @@ class Fs2_core_3Test {
     assertEquals(List(1, 2), queueResult._4)
     assertEquals(None, queueResult._5)
     assertEquals(4, queueResult._6)
-    assertEquals(5, queueResult._7)
     assertEquals(Vector("alpha", "beta"), terminated)
   }
 
@@ -328,7 +324,7 @@ class Fs2_core_3Test {
   private def byteStream(bytes: Array[Byte], chunkSize: Int): Stream[IO, Byte] = {
     val chunks: Vector[Chunk[Byte]] = bytes
       .grouped(chunkSize)
-      .map(chunk => Chunk.bytes(chunk))
+      .map(chunk => Chunk.array(chunk))
       .toVector
     Stream.emits(chunks).covary[IO].flatMap(chunk => Stream.chunk(chunk).covary[IO])
   }
