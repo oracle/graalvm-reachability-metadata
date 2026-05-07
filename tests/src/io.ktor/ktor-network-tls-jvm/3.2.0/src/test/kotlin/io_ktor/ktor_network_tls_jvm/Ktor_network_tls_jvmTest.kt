@@ -246,6 +246,37 @@ public class Ktor_network_tls_jvmTest {
     }
 
     @Test
+    fun keyStoreLoadingWithoutExplicitAliasLoadsAllCertificateEntries(): Unit {
+        val keyStore = KeyStore.getInstance("PKCS12").apply {
+            load(null, null)
+            setKeyEntry(
+                "primary",
+                testPrivateKey(),
+                KEY_PASSWORD,
+                arrayOf<java.security.cert.Certificate>(testCertificate())
+            )
+            setKeyEntry(
+                "secondary",
+                testPrivateKey(),
+                KEY_PASSWORD,
+                arrayOf<java.security.cert.Certificate>(testCertificate())
+            )
+        }
+
+        val config = TLSConfigBuilder().apply {
+            addKeyStore(keyStore, KEY_PASSWORD)
+        }.build()
+
+        assertThat(config.certificates).hasSize(2)
+        assertThat(config.certificates)
+            .allSatisfy { certificateAndKey ->
+                assertThat(certificateAndKey.certificateChain.single().subjectX500Principal.name)
+                    .contains("CN=localhost")
+                assertThat(certificateAndKey.key.algorithm).isEqualTo("RSA")
+            }
+    }
+
+    @Test
     fun tlsClosesUnderlyingSocketWhenHandshakeChannelFails(): Unit = runBlocking {
         val socket = ImmediateEofSocket()
         var failure: Throwable? = null
