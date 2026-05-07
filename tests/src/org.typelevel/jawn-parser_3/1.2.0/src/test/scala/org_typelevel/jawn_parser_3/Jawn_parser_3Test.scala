@@ -230,6 +230,26 @@ class Jawn_parser_3Test {
   }
 
   @Test
+  def channelParserParsesTokensSplitAcrossSmallChannelBuffers(): Unit = {
+    val message: String = "abcdefghijklmnopλqrstuvwxyz"
+    val json: String =
+      s"""{"message":"$message\\nescaped","values":[1234567890,-0.125e+2,true,null]}"""
+    val channel = Channels.newChannel(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)))
+
+    val parsed: Json = ChannelParser.fromChannel[Json](channel, bufferSize = 5).parse()
+
+    assertThat(parsed).isEqualTo(JObject(Map(
+      "message" -> JString(message + "\nescaped"),
+      "values" -> JArray(List(
+        JNumber("1234567890", decIndex = -1, expIndex = -1),
+        JNumber("-0.125e+2", decIndex = 2, expIndex = 6),
+        JBoolean(true),
+        JNull
+      ))
+    )))
+  }
+
+  @Test
   def channelParserComputesPowerOfTwoBufferSizesAndRejectsInvalidSizes(): Unit = {
     assertThat(ChannelParser.computeBufferSize(0)).isEqualTo(0)
     assertThat(ChannelParser.computeBufferSize(1)).isEqualTo(1)
