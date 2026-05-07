@@ -18,8 +18,10 @@ import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.Security;
 import java.security.Signature;
+import java.security.spec.ECGenParameterSpec;
 import java.util.HexFormat;
 import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -129,6 +131,30 @@ public class Bouncy_castle_bcTest {
         assertThat(decrypted).isEqualTo(plaintext);
         assertThat(encrypt.getProvider()).isSameAs(provider);
         assertThat(decrypt.getProvider()).isSameAs(provider);
+    }
+
+    @Test
+    void ecdhKeyAgreementDerivesMatchingSecretsWithBouncyCastleProvider() throws Exception {
+        Provider provider = new BouncyCastleLoader().getProvider();
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("EC", provider);
+        generator.initialize(new ECGenParameterSpec("secp256r1"));
+        KeyPair aliceKeyPair = generator.generateKeyPair();
+        KeyPair bobKeyPair = generator.generateKeyPair();
+
+        KeyAgreement aliceAgreement = KeyAgreement.getInstance("ECDH", provider);
+        aliceAgreement.init(aliceKeyPair.getPrivate());
+        aliceAgreement.doPhase(bobKeyPair.getPublic(), true);
+        byte[] aliceSecret = aliceAgreement.generateSecret();
+
+        KeyAgreement bobAgreement = KeyAgreement.getInstance("ECDH", provider);
+        bobAgreement.init(bobKeyPair.getPrivate());
+        bobAgreement.doPhase(aliceKeyPair.getPublic(), true);
+        byte[] bobSecret = bobAgreement.generateSecret();
+
+        assertThat(aliceSecret).isNotEmpty();
+        assertThat(bobSecret).isEqualTo(aliceSecret);
+        assertThat(aliceAgreement.getProvider()).isSameAs(provider);
+        assertThat(bobAgreement.getProvider()).isSameAs(provider);
     }
 
     @Test
