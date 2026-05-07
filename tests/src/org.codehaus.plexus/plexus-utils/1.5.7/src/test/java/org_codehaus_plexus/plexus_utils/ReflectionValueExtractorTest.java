@@ -6,6 +6,11 @@
  */
 package org_codehaus_plexus.plexus_utils;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +35,24 @@ public class ReflectionValueExtractorTest {
         assertThat(value).isEqualTo(Boolean.TRUE);
     }
 
+    @Test
+    void evaluatesIndexedListPropertyExpression() throws Exception {
+        Project project = new Project(new Build("target/classes"));
+
+        Object value = ReflectionValueExtractor.evaluate("project.build.sourceRoots[1].directory", project);
+
+        assertThat(value).isEqualTo("src/integration-test/java");
+    }
+
+    @Test
+    void evaluatesMappedPropertyExpression() throws Exception {
+        Project project = new Project(new Build("target/classes"));
+
+        Object value = ReflectionValueExtractor.evaluate("project.build.sourceRootsById(main).directory", project);
+
+        assertThat(value).isEqualTo("src/main/java");
+    }
+
     public static class Project {
         private final Build build;
 
@@ -44,9 +67,18 @@ public class ReflectionValueExtractorTest {
 
     public static class Build {
         private final String outputDirectory;
+        private final List<SourceRoot> sourceRoots;
+        private final Map<String, SourceRoot> sourceRootsById;
 
         public Build(String outputDirectory) {
             this.outputDirectory = outputDirectory;
+            this.sourceRoots = Arrays.asList(
+                    new SourceRoot("src/main/java"),
+                    new SourceRoot("src/integration-test/java")
+            );
+            this.sourceRootsById = new LinkedHashMap<>();
+            this.sourceRootsById.put("main", sourceRoots.get(0));
+            this.sourceRootsById.put("integration-test", sourceRoots.get(1));
         }
 
         public String getOutputDirectory() {
@@ -55,6 +87,26 @@ public class ReflectionValueExtractorTest {
 
         public boolean isActive() {
             return true;
+        }
+
+        public List<SourceRoot> getSourceRoots() {
+            return sourceRoots;
+        }
+
+        public Map<String, SourceRoot> getSourceRootsById() {
+            return sourceRootsById;
+        }
+    }
+
+    public static class SourceRoot {
+        private final String directory;
+
+        public SourceRoot(String directory) {
+            this.directory = directory;
+        }
+
+        public String getDirectory() {
+            return directory;
         }
     }
 }
