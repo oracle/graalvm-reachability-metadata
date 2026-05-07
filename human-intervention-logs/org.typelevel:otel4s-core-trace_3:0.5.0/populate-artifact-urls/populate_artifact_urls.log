@@ -1,0 +1,800 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e03b5-31c7-7fb3-8709-50b2d0c0f4d2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.typelevel:otel4s-core-trace_3:0.5.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [0.5.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/index.json
+- Entry selector: "metadata-version" = "0.5.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 0.5.0
+- Entry metadata-version: 0.5.0
+- Entry test-version: 0.5.0
+- Entry tested-versions: [0.5.0]
+codex
+I’ll verify the artifact metadata and versioned URLs first, then patch only the missing fields in the target `index.json`. I’ll also check the local repository patterns so the values match how this metadata repo represents Maven source/test/doc links.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.typelevel/otel4s-core-trace_3/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.5.0",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.5.0"
+    ],
+    "allowed-packages" : [
+      "org.typelevel.otel4s.trace"
+    ]
+  },
+  {
+    "metadata-version" : "0.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/otel4s",
+    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
+    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.4.0"
+    ],
+    "allowed-packages" : [
+      "org.typelevel.otel4s.trace"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n \"otel4s|source-code-url|documentation-url|test-code-url|language\" metadata/org.typelevel -g 'index.json'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+metadata/org.typelevel/cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-core_3/$version$/cats-core_3-$version$-sources.jar",
+metadata/org.typelevel/cats-core_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/cats/tree/v$version$/tests/src/test",
+metadata/org.typelevel/cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-core_3/$version$/cats-core_3-$version$-javadoc.jar",
+metadata/org.typelevel/cats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/twiddles-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
+metadata/org.typelevel/twiddles-core_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
+metadata/org.typelevel/twiddles-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
+metadata/org.typelevel/twiddles-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/alleycats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/alleycats-core_3/$version$/alleycats-core_3-$version$-sources.jar",
+metadata/org.typelevel/alleycats-core_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/cats/tree/v$version$/alleycats-core/src/test",
+metadata/org.typelevel/alleycats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/alleycats-core_3/$version$/alleycats-core_3-$version$-javadoc.jar",
+metadata/org.typelevel/alleycats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-effect_3/$version$/cats-effect_3-$version$-sources.jar",
+metadata/org.typelevel/cats-effect_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/cats-effect/tree/v$version$/tests",
+metadata/org.typelevel/cats-effect_3/index.json:8:    "documentation-url" : "https://github.com/typelevel/cats-effect/tree/v$version$/docs",
+metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:113:    "source-code-url" : "https://repo1.maven.org/maven2/org/typelevel/cats-effect_3/2.5.1/cats-effect_3-2.5.1-sources.jar",
+metadata/org.typelevel/cats-effect_3/index.json:115:    "test-code-url" : "https://github.com/typelevel/cats-effect/tree/v2.5.1/core/shared/src/test/scala",
+metadata/org.typelevel/cats-effect_3/index.json:116:    "documentation-url" : "https://repo1.maven.org/maven2/org/typelevel/cats-effect_3/2.5.1/cats-effect_3-2.5.1-javadoc.jar",
+metadata/org.typelevel/cats-effect_3/index.json:118:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/scalac-compat-annotation_3/$version$/scalac-compat-annotation_3-$version$-sources.jar",
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/scalac-compat/tree/v$version$/annotation/src/test",
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/scalac-compat-annotation_3/$version$/scalac-compat-annotation_3-$version$-javadoc.jar",
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+metadata/org.typelevel/case-insensitive_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/case-insensitive_3/$version$/case-insensitive_3-$version$-sources.jar",
+metadata/org.typelevel/case-insensitive_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/case-insensitive/tree/v$version$/tests",
+metadata/org.typelevel/case-insensitive_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/case-insensitive_3/$version$/case-insensitive_3-$version$-javadoc.jar",
+metadata/org.typelevel/case-insensitive_3/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-trace_3/index.json:5:    "language" : {
+metadata/org.typelevel/otel4s-core-trace_3/index.json:13:      "org.typelevel.otel4s.trace"
+metadata/org.typelevel/otel4s-core-trace_3/index.json:18:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
+metadata/org.typelevel/otel4s-core-trace_3/index.json:19:    "repository-url" : "https://github.com/typelevel/otel4s",
+metadata/org.typelevel/otel4s-core-trace_3/index.json:20:    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
+metadata/org.typelevel/otel4s-core-trace_3/index.json:21:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
+metadata/org.typelevel/otel4s-core-trace_3/index.json:22:    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+metadata/org.typelevel/otel4s-core-trace_3/index.json:23:    "language" : {
+metadata/org.typelevel/otel4s-core-trace_3/index.json:31:      "org.typelevel.otel4s.trace"
+metadata/org.typelevel/cats-effect-kernel_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-effect-kernel_3/$version$/cats-effect-kernel_3-$version$-sources.jar",
+metadata/org.typelevel/cats-effect-kernel_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/cats-effect/tree/v$version$/kernel/shared/src/test",
+metadata/org.typelevel/cats-effect-kernel_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-effect-kernel_3/$version$/cats-effect-kernel_3-$version$-javadoc.jar",
+metadata/org.typelevel/cats-effect-kernel_3/index.json:10:    "language" : {
+metadata/org.typelevel/vault_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/typelevel/vault_3/$version$/vault_3-$version$-sources.jar",
+metadata/org.typelevel/vault_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/vault/tree/v$version$/core/src/test/scala",
+metadata/org.typelevel/vault_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/typelevel/vault_3/$version$/vault_3-$version$-javadoc.jar",
+metadata/org.typelevel/vault_3/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/scalac-compat-annotation_2.13/$version$/scalac-compat-annotation_2.13-$version$-sources.jar",
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:7:    "test-code-url" : "https://github.com/typelevel/scalac-compat/tree/v$version$/annotation/src/test",
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/scalac-compat-annotation_2.13/$version$/scalac-compat-annotation_2.13-$version$-javadoc.jar",
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-common_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-common_3/$version$/otel4s-core-common_3-$version$-sources.jar",
+metadata/org.typelevel/otel4s-core-common_3/index.json:6:    "repository-url" : "https://github.com/typelevel/otel4s",
+metadata/org.typelevel/otel4s-core-common_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/common/src/test/scala",
+metadata/org.typelevel/otel4s-core-common_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-common_3/$version$/otel4s-core-common_3-$version$-javadoc.jar",
+metadata/org.typelevel/otel4s-core-common_3/index.json:9:    "description" : "otel4s Core Common provides the shared Scala APIs and data types for OpenTelemetry instrumentation in otel4s, including attributes, context propagation, and instrument metadata. It is the cross-platform core layer used by otel4s modules to model telemetry concerns independently of a specific backend implementation.",
+metadata/org.typelevel/otel4s-core-common_3/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-common_3/index.json:18:      "org.typelevel.otel4s"
+metadata/org.typelevel/log4cats-slf4j_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/log4cats-slf4j_3/$version$/log4cats-slf4j_3-$version$-sources.jar",
+metadata/org.typelevel/log4cats-slf4j_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/log4cats/tree/v$version$/slf4j/src/test",
+metadata/org.typelevel/log4cats-slf4j_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/log4cats-slf4j_3/$version$/log4cats-slf4j_3-$version$-javadoc.jar",
+metadata/org.typelevel/log4cats-slf4j_3/index.json:10:    "language" : {
+metadata/org.typelevel/paiges-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/paiges-core_2.13/$version$/paiges-core_2.13-$version$-sources.jar",
+metadata/org.typelevel/paiges-core_2.13/index.json:7:    "test-code-url" : "https://github.com/typelevel/paiges/tree/v$version$/core/src/test/scala",
+metadata/org.typelevel/paiges-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/paiges-core_2.13/$version$/paiges-core_2.13-$version$-javadoc.jar",
+metadata/org.typelevel/paiges-core_2.13/index.json:10:    "language" : {
+metadata/org.typelevel/keypool_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/keypool_3/$version$/keypool_3-$version$-sources.jar",
+metadata/org.typelevel/keypool_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/keypool/tree/v$version$/core/src/test",
+metadata/org.typelevel/keypool_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/keypool_3/$version$/keypool_3-$version$-javadoc.jar",
+metadata/org.typelevel/keypool_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-parse_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-parse_3/$version$/cats-parse_3-$version$-sources.jar",
+metadata/org.typelevel/cats-parse_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/cats-parse/tree/v$version$/core/shared/src/test",
+metadata/org.typelevel/cats-parse_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-parse_3/$version$/cats-parse_3-$version$-javadoc.jar",
+metadata/org.typelevel/cats-parse_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-mtl_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-mtl_3/$version$/cats-mtl_3-$version$-sources.jar",
+metadata/org.typelevel/cats-mtl_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/cats-mtl/tree/v$version$/tests/shared/src/test/scala",
+metadata/org.typelevel/cats-mtl_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-mtl_3/$version$/cats-mtl_3-$version$-javadoc.jar",
+metadata/org.typelevel/cats-mtl_3/index.json:10:    "language" : {
+metadata/org.typelevel/jawn-parser_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/jawn-parser_3/$version$/jawn-parser_3-$version$-sources.jar",
+metadata/org.typelevel/jawn-parser_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/jawn/tree/v$version$/parser",
+metadata/org.typelevel/jawn-parser_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/jawn-parser_3/$version$/jawn-parser_3-$version$-javadoc.jar",
+metadata/org.typelevel/jawn-parser_3/index.json:10:    "language" : {
+metadata/org.typelevel/log4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/log4cats-core_3/$version$/log4cats-core_3-$version$-sources.jar",
+metadata/org.typelevel/log4cats-core_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/log4cats/tree/v$version$/core/shared/src/test/scala",
+metadata/org.typelevel/log4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/log4cats-core_3/$version$/log4cats-core_3-$version$-javadoc.jar",
+metadata/org.typelevel/log4cats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/munit-cats-effect_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/typelevel/munit-cats-effect_3/2.2.0/munit-cats-effect_3-2.2.0-sources.jar",
+metadata/org.typelevel/munit-cats-effect_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/munit-cats-effect/tree/v2.2.0/core/src/test",
+metadata/org.typelevel/munit-cats-effect_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/typelevel/munit-cats-effect_3/2.2.0/munit-cats-effect_3-2.2.0-javadoc.jar",
+metadata/org.typelevel/munit-cats-effect_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\": \"https://github.com/typelevel|\"language\": \\{\"name\": \"scala\", \"version\": \"3\"\\}' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.typelevel otel4s-core-trace_3 0.5.0 sources javadoc
+codex
+The local file already has a `0.4.0` entry with Maven source/javadoc templates and a GitHub test path, so I’m checking whether the same template renders correctly for `0.5.0` and whether Maven publishes a separate test artifact.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/0.5.0/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/0.5.0/otel4s-core-trace_3-0.5.0-sources.jar" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/0.5.0/otel4s-core-trace_3-0.5.0-javadoc.jar" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/typelevel/otel4s/tree/v0.5.0/core/trace/src/test" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 211ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/typelevel/otel4s-core-trace_3/0.5.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/typelevel/otel4s-core-trace_3/0.5.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="otel4s-core-trace_3-0.5.0-javadoc.jar" title="otel4s-core-trace_3-0.5.0-javadoc.jar">otel4s-core-trace_3-0.5.0-javadoc.jar</a>             2024-03-29 09:56   3095098      
+<a href="otel4s-core-trace_3-0.5.0-javadoc.jar.asc" title="otel4s-core-trace_3-0.5.0-javadoc.jar.asc">otel4s-core-trace_3-0.5.0-javadoc.jar.asc</a>         2024-03-29 09:56       228      
+<a href="otel4s-core-trace_3-0.5.0-javadoc.jar.asc.md5" title="otel4s-core-trace_3-0.5.0-javadoc.jar.asc.md5">otel4s-core-trace_3-0.5.0-javadoc.jar.asc.md5</a>     2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0-javadoc.jar.asc.sha1" title="otel4s-core-trace_3-0.5.0-javadoc.jar.asc.sha1">otel4s-core-trace_3-0.5.0-javadoc.jar.asc.sha...</a>  2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0-javadoc.jar.md5" title="otel4s-core-trace_3-0.5.0-javadoc.jar.md5">otel4s-core-trace_3-0.5.0-javadoc.jar.md5</a>         2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0-javadoc.jar.sha1" title="otel4s-core-trace_3-0.5.0-javadoc.jar.sha1">otel4s-core-trace_3-0.5.0-javadoc.jar.sha1</a>        2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0-sources.jar" title="otel4s-core-trace_3-0.5.0-sources.jar">otel4s-core-trace_3-0.5.0-sources.jar</a>             2024-03-29 09:56     29426      
+<a href="otel4s-core-trace_3-0.5.0-sources.jar.asc" title="otel4s-core-trace_3-0.5.0-sources.jar.asc">otel4s-core-trace_3-0.5.0-sources.jar.asc</a>         2024-03-29 09:56       228      
+<a href="otel4s-core-trace_3-0.5.0-sources.jar.asc.md5" title="otel4s-core-trace_3-0.5.0-sources.jar.asc.md5">otel4s-core-trace_3-0.5.0-sources.jar.asc.md5</a>     2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0-sources.jar.asc.sha1" title="otel4s-core-trace_3-0.5.0-sources.jar.asc.sha1">otel4s-core-trace_3-0.5.0-sources.jar.asc.sha...</a>  2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0-sources.jar.md5" title="otel4s-core-trace_3-0.5.0-sources.jar.md5">otel4s-core-trace_3-0.5.0-sources.jar.md5</a>         2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0-sources.jar.sha1" title="otel4s-core-trace_3-0.5.0-sources.jar.sha1">otel4s-core-trace_3-0.5.0-sources.jar.sha1</a>        2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0.jar" title="otel4s-core-trace_3-0.5.0.jar">otel4s-core-trace_3-0.5.0.jar</a>                     2024-03-29 09:56    199501      
+<a href="otel4s-core-trace_3-0.5.0.jar.asc" title="otel4s-core-trace_3-0.5.0.jar.asc">otel4s-core-trace_3-0.5.0.jar.asc</a>                 2024-03-29 09:56       228      
+<a href="otel4s-core-trace_3-0.5.0.jar.asc.md5" title="otel4s-core-trace_3-0.5.0.jar.asc.md5">otel4s-core-trace_3-0.5.0.jar.asc.md5</a>             2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0.jar.asc.sha1" title="otel4s-core-trace_3-0.5.0.jar.asc.sha1">otel4s-core-trace_3-0.5.0.jar.asc.sha1</a>            2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0.jar.md5" title="otel4s-core-trace_3-0.5.0.jar.md5">otel4s-core-trace_3-0.5.0.jar.md5</a>                 2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0.jar.sha1" title="otel4s-core-trace_3-0.5.0.jar.sha1">otel4s-core-trace_3-0.5.0.jar.sha1</a>                2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0.pom" title="otel4s-core-trace_3-0.5.0.pom">otel4s-core-trace_3-0.5.0.pom</a>                     2024-03-29 09:56      4003      
+<a href="otel4s-core-trace_3-0.5.0.pom.asc" title="otel4s-core-trace_3-0.5.0.pom.asc">otel4s-core-trace_3-0.5.0.pom.asc</a>                 2024-03-29 09:56       228      
+<a href="otel4s-core-trace_3-0.5.0.pom.asc.md5" title="otel4s-core-trace_3-0.5.0.pom.asc.md5">otel4s-core-trace_3-0.5.0.pom.asc.md5</a>             2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0.pom.asc.sha1" title="otel4s-core-trace_3-0.5.0.pom.asc.sha1">otel4s-core-trace_3-0.5.0.pom.asc.sha1</a>            2024-03-29 09:56        40      
+<a href="otel4s-core-trace_3-0.5.0.pom.md5" title="otel4s-core-trace_3-0.5.0.pom.md5">otel4s-core-trace_3-0.5.0.pom.md5</a>                 2024-03-29 09:56        32      
+<a href="otel4s-core-trace_3-0.5.0.pom.sha1" title="otel4s-core-trace_3-0.5.0.pom.sha1">otel4s-core-trace_3-0.5.0.pom.sha1</a>                2024-03-29 09:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 337ms:
+200 https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/0.5.0/otel4s-core-trace_3-0.5.0-sources.jar
+
+ succeeded in 437ms:
+200 https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/0.5.0/otel4s-core-trace_3-0.5.0-javadoc.jar
+
+ succeeded in 584ms:
+200 https://github.com/typelevel/otel4s/tree/v0.5.0/core/trace/src/test
+
+web search: 
+web search: Maven Central org.typelevel otel4s-core-trace_3 0.5.0 sources javadoc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/0.5.0/otel4s-core-trace_3-0.5.0.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/otel4s/contents/core/trace/src/test?ref=v0.5.0' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/typelevel/otel4s/tree/v0.5.0" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://javadoc.io/doc/org.typelevel/otel4s-core-trace_3/0.5.0/" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 151ms:
+[
+  {
+    "name": "scala",
+    "path": "core/trace/src/test/scala",
+    "sha": "920808022708b73e3fa50d888e4069ed57aa1882",
+    "size": 0,
+    "url": "https://api.github.com/repos/typelevel/otel4s/contents/core/trace/src/test/scala?ref=v0.5.0",
+    "html_url": "https://github.com/typelevel/otel4s/tree/v0.5.0/core/trace/src/test/scala",
+    "git_url": "https://api.github.com/repos/typelevel/otel4s/git/trees/920808022708b73e3fa50d888e4069ed57aa1882",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/typelevel/otel4s/contents/core/trace/src/test/scala?ref=v0.5.0",
+      "git": "https://api.github.com/repos/typelevel/otel4s/git/trees/920808022708b73e3fa50d888e4069ed57aa1882",
+      "html": "https://github.com/typelevel/otel4s/tree/v0.5.0/core/trace/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 182ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.typelevel</groupId>
+    <artifactId>otel4s-core-trace_3</artifactId>
+    <packaging>jar</packaging>
+    <description>otel4s-core-trace</description>
+    <url>https://typelevel.org/otel4s</url>
+    <version>0.5.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>otel4s-core-trace</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Typelevel</name>
+        <url>https://typelevel.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/typelevel/otel4s</url>
+        <connection>scm:git:https://github.com/typelevel/otel4s.git</connection>
+        <developerConnection>scm:git:git@github.com:typelevel/otel4s.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>rossabaker</id>
+            <name>Ross A. Baker</name>
+            <url>https://github.com/rossabaker</url>
+            <email>@rossabaker</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.javadoc.io/doc/org.typelevel/otel4s-docs_3/0.5.0/</info.apiURL>
+        <info.releaseNotesUrl>https://github.com/typelevel/otel4s/releases/tag/v0.5.0</info.releaseNotesUrl>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>otel4s-core-common_3</artifactId>
+            <version>0.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalac-compat-annotation_3</artifactId>
+            <version>0.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit_3</artifactId>
+            <version>1.0.0-M11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit-scalacheck_3</artifactId>
+            <version>1.0.0-M11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>munit-cats-effect_3</artifactId>
+            <version>2.0.0-M4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect-kernel_3</artifactId>
+            <version>3.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scodec</groupId>
+            <artifactId>scodec-bits_3</artifactId>
+            <version>1.1.38</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-laws_3</artifactId>
+            <version>2.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>discipline-munit_3</artifactId>
+            <version>2.0.0-M3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalacheck-effect-munit_3</artifactId>
+            <version>2.0.0-M2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 848ms:
+200 https://github.com/typelevel/otel4s/tree/v0.5.0
+
+ succeeded in 6546ms:
+200 https://javadoc.io/doc/org.typelevel/otel4s-core-trace_3/0.5.0/index.html
+
+codex
+Maven Central publishes the `0.5.0` sources and javadoc jars, but no separate test jar in that artifact directory. The GitHub tag `v0.5.0` has the trace tests under `core/trace/src/test`, and the POM confirms the canonical SCM repository root is `https://github.com/typelevel/otel4s`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/index.json
+diff --git a/metadata/org.typelevel/otel4s-core-trace_3/index.json b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21f12f47c210cc125bed01393ffdfbfe..8cf9a89a2e15de90556cf078497e329b8f65c110
+--- a/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.typelevel/otel4s-core-trace_3/index.json b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21f12f47c210cc125bed01393ffdfbfe..8cf9a89a2e15de90556cf078497e329b8f65c110
+--- a/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+I’ve patched the missing fields on the `0.5.0` entry and left the existing Scala 3 language field unchanged. Next I’m validating JSON shape and running the repository’s metadata check for this coordinate.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.typelevel/otel4s-core-trace_3/index.json >/dev/null' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.typelevel:otel4s-core-trace_3:0.5.0 --stacktrace' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+diff --git a/metadata/org.typelevel/otel4s-core-trace_3/index.json b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21f12f47c210cc125bed01393ffdfbfe..8cf9a89a2e15de90556cf078497e329b8f65c110
+--- a/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 14065ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for org.typelevel:otel4s-core-trace_3:0.5.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/0.5.0/
+> Task :checkMetadataFiles FAILED
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.typelevel:otel4s-core-trace_3:0.5.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/0.5.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.typelevel:otel4s-core-trace_3:0.5.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/0.5.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 13s
+
+diff --git a/metadata/org.typelevel/otel4s-core-trace_3/index.json b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21f12f47c210cc125bed01393ffdfbfe..8cf9a89a2e15de90556cf078497e329b8f65c110
+--- a/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The targeted metadata check fails for a pre-existing structural reason: the selected coordinate directory lacks `metadata/org.typelevel/otel4s-core-trace_3/0.5.0/reachability-metadata.json`. The JSON file itself parses correctly, so I’m doing a final diff review before closing out.
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.typelevel/otel4s-core-trace_3/index.json metadata/org.typelevel/otel4s-core-trace_3/0.5.0' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 0ms:
+ M metadata/org.typelevel/otel4s-core-trace_3/index.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.typelevel/otel4s-core-trace_3/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015
+ succeeded in 0ms:
+diff --git i/metadata/org.typelevel/otel4s-core-trace_3/index.json w/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21..8cf9a89a2e 100644
+--- i/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ w/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.typelevel/otel4s-core-trace_3/index.json b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21f12f47c210cc125bed01393ffdfbfe..8cf9a89a2e15de90556cf078497e329b8f65c110
+--- a/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+web search: 
+web search: org.typelevel otel4s-core-trace_3 0.5.0 Maven Central
+web search: 
+web search: https://github.com/typelevel/otel4s/tree/v0.5.0/core/trace/src/test
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/index.json) for the `metadata-version` `0.5.0` entry with the Maven sources/javadoc templates, canonical Typelevel otel4s repository, GitHub `v0.5.0` test path, and the two-sentence description. I left the existing `language` field unchanged as Scala 3; the artifact and repo are Scala/Typelevel otel4s, and the test path exists at the `v0.5.0` tag. ([central.sonatype.com](https://central.sonatype.com/artifact/org.typelevel/otel4s-core-trace_3?utm_source=openai))
+
+Validation:
+- `jq . metadata/org.typelevel/otel4s-core-trace_3/index.json >/dev/null` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.typelevel:otel4s-core-trace_3:0.5.0 --stacktrace` failed because `metadata/org.typelevel/otel4s-core-trace_3/0.5.0/reachability-metadata.json` is missing, which is outside the requested index-field update.
+diff --git a/metadata/org.typelevel/otel4s-core-trace_3/index.json b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+index b3453d4f21f12f47c210cc125bed01393ffdfbfe..8cf9a89a2e15de90556cf078497e329b8f65c110
+--- a/metadata/org.typelevel/otel4s-core-trace_3/index.json
++++ b/metadata/org.typelevel/otel4s-core-trace_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/otel4s",
++    "test-code-url" : "https://github.com/typelevel/otel4s/tree/v$version$/core/trace/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/otel4s-core-trace_3/$version$/otel4s-core-trace_3-$version$-javadoc.jar",
++    "description" : "otel4s-core-trace provides the core tracing API for otel4s, a Scala OpenTelemetry implementation built around Cats Effect and Typelevel abstractions. The module defines span, tracer, context, status, trace flag, and trace state types for instrumenting Scala libraries with lightweight, backend-agnostic tracing.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+49,059
+Updated [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/metadata/org.typelevel/otel4s-core-trace_3/index.json) for the `metadata-version` `0.5.0` entry with the Maven sources/javadoc templates, canonical Typelevel otel4s repository, GitHub `v0.5.0` test path, and the two-sentence description. I left the existing `language` field unchanged as Scala 3; the artifact and repo are Scala/Typelevel otel4s, and the test path exists at the `v0.5.0` tag. ([central.sonatype.com](https://central.sonatype.com/artifact/org.typelevel/otel4s-core-trace_3?utm_source=openai))
+
+Validation:
+- `jq . metadata/org.typelevel/otel4s-core-trace_3/index.json >/dev/null` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.typelevel:otel4s-core-trace_3:0.5.0 --stacktrace` failed because `metadata/org.typelevel/otel4s-core-trace_3/0.5.0/reachability-metadata.json` is missing, which is outside the requested index-field update.
+Ran agent for org.typelevel:otel4s-core-trace_3:0.5.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/build/agent-url-discovery-logs/org.typelevel-otel4s-core-trace_3-0.5.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6388-20e08015/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 1 executed, 8 up-to-date
