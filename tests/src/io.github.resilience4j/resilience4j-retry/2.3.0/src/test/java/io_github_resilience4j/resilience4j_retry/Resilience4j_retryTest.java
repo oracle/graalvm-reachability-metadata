@@ -9,6 +9,7 @@ package io_github_resilience4j.resilience4j_retry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.github.resilience4j.core.registry.RegistryEvent;
 import io.github.resilience4j.retry.MaxRetriesExceeded;
 import io.github.resilience4j.retry.MaxRetriesExceededException;
 import io.github.resilience4j.retry.Retry;
@@ -23,6 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executors;
@@ -325,6 +327,58 @@ public class Resilience4j_retryTest {
             .containsEntry("region", "local");
         assertThat(fromSupplier.getRetryConfig().getMaxAttempts()).isEqualTo(1);
         assertThat(registry.getAllRetries()).containsExactlyInAnyOrder(fromNamedConfig, fromSupplier);
+    }
+
+    @Test
+    void registryPublishesLifecycleEventsWhenEntriesAreReplacedAndRemoved() {
+        RetryConfig initialConfig = RetryConfig.custom()
+            .maxAttempts(1)
+            .waitDuration(Duration.ZERO)
+            .build();
+        RetryConfig replacementConfig = RetryConfig.custom()
+            .maxAttempts(2)
+            .waitDuration(Duration.ZERO)
+            .build();
+        RetryRegistry registry = RetryRegistry.of(initialConfig);
+        List<RegistryEvent.Type> eventTypes = new ArrayList<>();
+        List<String> eventEntries = new ArrayList<>();
+
+        registry.getEventPublisher()
+            .onEntryAdded(event -> {
+                eventTypes.add(event.getEventType());
+                eventEntries.add("added:" + event.getAddedEntry().getName());
+            })
+            .onEntryReplaced(event -> {
+                eventTypes.add(event.getEventType());
+                eventEntries.add("replaced:"
+                    + event.getOldEntry().getRetryConfig().getMaxAttempts()
+                    + "->"
+                    + event.getNewEntry().getRetryConfig().getMaxAttempts());
+            })
+            .onEntryRemoved(event -> {
+                eventTypes.add(event.getEventType());
+                eventEntries.add("removed:" + event.getRemovedEntry().getName());
+            });
+
+        Retry original = registry.retry("inventory", Map.of("phase", "initial"));
+        Retry replacement = Retry.of("inventory", replacementConfig, Map.of("phase", "replacement"));
+        Optional<Retry> replaced = registry.replace("inventory", replacement);
+        Optional<Retry> current = registry.find("inventory");
+        Optional<Retry> removed = registry.remove("inventory");
+
+        assertThat(replaced).isPresent();
+        assertThat(replaced.get()).isSameAs(original);
+        assertThat(current).isPresent();
+        assertThat(current.get()).isSameAs(replacement);
+        assertThat(removed).isPresent();
+        assertThat(removed.get()).isSameAs(replacement);
+        assertThat(registry.find("inventory")).isEmpty();
+        assertThat(registry.remove("missing")).isEmpty();
+        assertThat(eventTypes).containsExactly(
+            RegistryEvent.Type.ADDED,
+            RegistryEvent.Type.REPLACED,
+            RegistryEvent.Type.REMOVED);
+        assertThat(eventEntries).containsExactly("added:inventory", "replaced:1->2", "removed:inventory");
     }
 
     private static final class TransientServiceException extends RuntimeException {
