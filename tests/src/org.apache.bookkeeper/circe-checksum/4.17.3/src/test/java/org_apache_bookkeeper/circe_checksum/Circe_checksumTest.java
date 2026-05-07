@@ -8,7 +8,7 @@ package org_apache_bookkeeper.circe_checksum;
 
 import org.junit.jupiter.api.Test;
 
-class Circe_checksumTest {
+public class Circe_checksumTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
