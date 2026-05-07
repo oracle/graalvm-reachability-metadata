@@ -1,0 +1,1549 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e019b-0dee-7592-a4db-21d5f2826f7d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.play:play-streams_3:2.9.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.9.7" when "$version$" is replaced with "2.9.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+- Set "coordinates" to "com.typesafe.play:play-streams_3:2.9.7".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.9.7".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Play Framework sources, then patch the JSON directly. Since this asks for current URLs and artifact classification, I’ll use web lookup plus local repo checks.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.typesafe\\.play-play-streams_3-2\\.9\\.7\\.json|play-streams'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+{
+  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"not-for-native-image\"|play-streams|com.typesafe.play' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json:2:  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language": {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language": {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_2.13/$version$/twirl-api_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_2.13/$version$/twirl-api_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/com.typesafe.play/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-functional_2.13/$version$/play-functional_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-functional_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-functional_2.13/$version$/play-functional_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-functional_3/$version$/play-functional_3-$version$-sources.jar",
+metadata/com.typesafe.play/play-functional_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-functional_3/$version$/play-functional_3-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/dev.zio/zio_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-logging_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-cats_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-managed_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-json_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.typelevel/cats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+metadata/org.typelevel/munit-cats-effect_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.typelevel/alleycats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect-kernel_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-parse_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-resilience-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-core-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-fx-coroutines-jvm/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum-circe_3/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum_3/index.json:10:    "language" : {
+metadata/com.typesafe/ssl-config-core_2.13/index.json:10:    "language" : {
+metadata/org.scodec/scodec-bits_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/serialization-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/org.scalameta/munit_3/index.json:10:    "language" : {
+metadata/org.scalameta/scalameta_2.13/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/core_3/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/circe_3/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:69:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:87:    "language" : {
+metadata/io.ktor/ktor-server-status-pages-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-okhttp-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-java-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jwt-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-cio-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-logging-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-json-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-protobuf-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-websockets-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-test-host-jvm/index.json:10:    "language" : {
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/co.fs2/fs2-reactive-streams_3/index.json:10:    "language" : {
+metadata/co.fs2/fs2-core_3/index.json:10:    "language": {
+metadata/co.fs2/fs2-io_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/org.http4s/http4s-core_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-ember-server_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+metadata/com.monovore/decline_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/com.monovore/decline-effect_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/sqlite-driver/index.json:10:    "language" : {
+metadata/com.chuusai/shapeless_2.13/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:10:    "language" : {
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/io.kotest/kotest-extensions-jvm/index.json:10:    "language" : {
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/io.kotest/kotest-property-jvm/index.json:10:    "language" : {
+metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/app.cash.turbine/turbine-jvm/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-parsing_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/requests_3/index.json:10:    "language" : {
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:31:    "language" : {
+metadata/org.scala-lang.modules/scala-collection-compat_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/os-lib_3/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/unroll-annotation_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:31:    "language" : {
+metadata/com.lihaoyi/pprint_3/index.json:10:    "language" : {
+metadata/org.webjars/jquery/index.json:3:    "not-for-native-image": true,
+metadata/com.lihaoyi/upickle-core_3/index.json:10:    "language" : {
+metadata/io.insert-koin/koin-test/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-ktor/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-core/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ghik/silencer-lib_2.13.16/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+
+web search: 
+web search: com.typesafe.play play-streams_3 2.9.7 Maven
+web search: 
+web search: https://github.com/playframework/playframework/tree/2.9.7
+codex
+The local file is currently just the coordinates. I found this is the Play Framework repository and a Scala 3 artifact by its `_3` suffix, and I’m checking Maven Central now for preferred source/doc/test artifacts before choosing GitHub fallbacks.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/2.9.7/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/2.9.7/play-streams_3-2.9.7.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/playframework/playframework/2.9.7/core/play-streams/src/main/scala/play/api/libs/streams/Streams.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test?ref=2.9.7' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 223ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/play/play-streams_3/2.9.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/play/play-streams_3/2.9.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="play-streams_3-2.9.7-javadoc.jar" title="play-streams_3-2.9.7-javadoc.jar">play-streams_3-2.9.7-javadoc.jar</a>                  2025-03-12 23:53   2734986      
+<a href="play-streams_3-2.9.7-javadoc.jar.asc" title="play-streams_3-2.9.7-javadoc.jar.asc">play-streams_3-2.9.7-javadoc.jar.asc</a>              2025-03-12 23:53       833      
+<a href="play-streams_3-2.9.7-javadoc.jar.asc.md5" title="play-streams_3-2.9.7-javadoc.jar.asc.md5">play-streams_3-2.9.7-javadoc.jar.asc.md5</a>          2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7-javadoc.jar.asc.sha1" title="play-streams_3-2.9.7-javadoc.jar.asc.sha1">play-streams_3-2.9.7-javadoc.jar.asc.sha1</a>         2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7-javadoc.jar.md5" title="play-streams_3-2.9.7-javadoc.jar.md5">play-streams_3-2.9.7-javadoc.jar.md5</a>              2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7-javadoc.jar.sha1" title="play-streams_3-2.9.7-javadoc.jar.sha1">play-streams_3-2.9.7-javadoc.jar.sha1</a>             2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7-sources.jar" title="play-streams_3-2.9.7-sources.jar">play-streams_3-2.9.7-sources.jar</a>                  2025-03-12 23:53     15953      
+<a href="play-streams_3-2.9.7-sources.jar.asc" title="play-streams_3-2.9.7-sources.jar.asc">play-streams_3-2.9.7-sources.jar.asc</a>              2025-03-12 23:53       833      
+<a href="play-streams_3-2.9.7-sources.jar.asc.md5" title="play-streams_3-2.9.7-sources.jar.asc.md5">play-streams_3-2.9.7-sources.jar.asc.md5</a>          2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7-sources.jar.asc.sha1" title="play-streams_3-2.9.7-sources.jar.asc.sha1">play-streams_3-2.9.7-sources.jar.asc.sha1</a>         2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7-sources.jar.md5" title="play-streams_3-2.9.7-sources.jar.md5">play-streams_3-2.9.7-sources.jar.md5</a>              2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7-sources.jar.sha1" title="play-streams_3-2.9.7-sources.jar.sha1">play-streams_3-2.9.7-sources.jar.sha1</a>             2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7.jar" title="play-streams_3-2.9.7.jar">play-streams_3-2.9.7.jar</a>                          2025-03-12 23:53    111059      
+<a href="play-streams_3-2.9.7.jar.asc" title="play-streams_3-2.9.7.jar.asc">play-streams_3-2.9.7.jar.asc</a>                      2025-03-12 23:53       833      
+<a href="play-streams_3-2.9.7.jar.asc.md5" title="play-streams_3-2.9.7.jar.asc.md5">play-streams_3-2.9.7.jar.asc.md5</a>                  2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7.jar.asc.sha1" title="play-streams_3-2.9.7.jar.asc.sha1">play-streams_3-2.9.7.jar.asc.sha1</a>                 2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7.jar.md5" title="play-streams_3-2.9.7.jar.md5">play-streams_3-2.9.7.jar.md5</a>                      2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7.jar.sha1" title="play-streams_3-2.9.7.jar.sha1">play-streams_3-2.9.7.jar.sha1</a>                     2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7.pom" title="play-streams_3-2.9.7.pom">play-streams_3-2.9.7.pom</a>                          2025-03-12 23:53      3656      
+<a href="play-streams_3-2.9.7.pom.asc" title="play-streams_3-2.9.7.pom.asc">play-streams_3-2.9.7.pom.asc</a>                      2025-03-12 23:53       833      
+<a href="play-streams_3-2.9.7.pom.asc.md5" title="play-streams_3-2.9.7.pom.asc.md5">play-streams_3-2.9.7.pom.asc.md5</a>                  2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7.pom.asc.sha1" title="play-streams_3-2.9.7.pom.asc.sha1">play-streams_3-2.9.7.pom.asc.sha1</a>                 2025-03-12 23:53        40      
+<a href="play-streams_3-2.9.7.pom.md5" title="play-streams_3-2.9.7.pom.md5">play-streams_3-2.9.7.pom.md5</a>                      2025-03-12 23:53        32      
+<a href="play-streams_3-2.9.7.pom.sha1" title="play-streams_3-2.9.7.pom.sha1">play-streams_3-2.9.7.pom.sha1</a>                     2025-03-12 23:53        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 147ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 198ms:
+[
+  {
+    "name": "java",
+    "path": "core/play-streams/src/test/java",
+    "sha": "335437cb41639d1e9efdeaba12f2f675f4543e6d",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/java?ref=2.9.7",
+    "html_url": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test/java",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/335437cb41639d1e9efdeaba12f2f675f4543e6d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/java?ref=2.9.7",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/335437cb41639d1e9efdeaba12f2f675f4543e6d",
+      "html": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "core/play-streams/src/test/resources",
+    "sha": "13ef0af3ec1f6f1b84860193732410eeb8d56804",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/resources?ref=2.9.7",
+    "html_url": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test/resources",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/13ef0af3ec1f6f1b84860193732410eeb8d56804",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/resources?ref=2.9.7",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/13ef0af3ec1f6f1b84860193732410eeb8d56804",
+      "html": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "core/play-streams/src/test/scala",
+    "sha": "eed9c7a5f2d02509f0cc53cbc9ddb1d638bccf4c",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/scala?ref=2.9.7",
+    "html_url": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test/scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/eed9c7a5f2d02509f0cc53cbc9ddb1d638bccf4c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/scala?ref=2.9.7",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/eed9c7a5f2d02509f0cc53cbc9ddb1d638bccf4c",
+      "html": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 395ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.play</groupId>
+    <artifactId>play-streams_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Play-Streams</description>
+    <url>https://github.com/playframework/playframework</url>
+    <version>2.9.7</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Play-Streams</name>
+    <organization>
+        <name>The Play Framework Project</name>
+        <url>https://playframework.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/playframework/playframework</url>
+        <connection>scm:git:https://github.com/playframework/playframework.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/playframework.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>playframework</id>
+            <name>The Play Framework Contributors</name>
+            <url>https://github.com/playframework</url>
+            <email>contact@playframework.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.playframework.com/documentation/2.9.7/api/scala/index.html</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_3</artifactId>
+            <version>2.6.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_3</artifactId>
+            <version>4.20.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_3</artifactId>
+            <version>4.20.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sbt</groupId>
+            <artifactId>junit-interface</artifactId>
+            <version>0.13.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.17</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.play/play-ws_2.13/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.10",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-integration-test/src/test/scala/play/it/libs",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-javadoc.jar",
+    "description" : "Play WS provides Play Framework's HTTP web service client APIs for Scala and Java, including request, response, body reader, and body writer abstractions. It adapts Play-specific request and response types to the standalone WS client implementation used for asynchronous HTTP calls.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.9.10"
+    ],
+    "allowed-packages" : [
+      "play.api.libs.ws",
+      "play.libs.ws"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.play/play-configuration_3/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+    "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.9.7",
+      "2.9.8",
+      "2.9.9",
+      "2.9.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.play/play-functional_3/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.10.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-functional_3/$version$/play-functional_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/play-json",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-functional_3/$version$/play-functional_3-$version$-javadoc.jar",
+    "description" : "Play Functional provides the functional combinator abstractions and syntax used by Play JSON, including functors, applicatives, monoids, and product builders. It supplies reusable Scala APIs for composing validation, reading, and writing logic in Play-based data transformations.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.10.6",
+      "2.10.7",
+      "2.10.8"
+    ],
+    "allowed-packages" : [
+      "play.api.libs.functional"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams?ref=2.9.7' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 190ms:
+[
+  {
+    "name": "src",
+    "path": "core/play-streams/src",
+    "sha": "30dddbfca9077555e94c26144470e2d170a9ad8b",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src?ref=2.9.7",
+    "html_url": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/30dddbfca9077555e94c26144470e2d170a9ad8b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src?ref=2.9.7",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/30dddbfca9077555e94c26144470e2d170a9ad8b",
+      "html": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/2.9.7/play-streams_3-2.9.7-sources.jar -o /tmp/play-streams_3-2.9.7-sources.jar && jar tf /tmp/play-streams_3-2.9.7-sources.jar | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/2.9.7/play-streams_3-2.9.7.jar -o /tmp/play-streams_3-2.9.7.jar && jar tf /tmp/play-streams_3-2.9.7.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main?ref=2.9.7' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 189ms:
+[
+  {
+    "name": "java",
+    "path": "core/play-streams/src/main/java",
+    "sha": "2a13df9594261d68276578bf63f40f68fd3090a9",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/java?ref=2.9.7",
+    "html_url": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/main/java",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/2a13df9594261d68276578bf63f40f68fd3090a9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/java?ref=2.9.7",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/2a13df9594261d68276578bf63f40f68fd3090a9",
+      "html": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/main/java"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "core/play-streams/src/main/scala",
+    "sha": "f82284ddc4d5fbad6f7ee1c399b9e839762bf6d9",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala?ref=2.9.7",
+    "html_url": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/main/scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/f82284ddc4d5fbad6f7ee1c399b9e839762bf6d9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala?ref=2.9.7",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/f82284ddc4d5fbad6f7ee1c399b9e839762bf6d9",
+      "html": "https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/main/scala"
+    }
+  }
+]
+
+ succeeded in 585ms:
+META-INF/MANIFEST.MF
+play/
+play/api/
+play/api/libs/
+play/api/libs/streams/
+play/libs/
+play/libs/streams/
+play/api/libs/streams/Accumulator.scala
+play/api/libs/streams/ActorFlow.scala
+play/api/libs/streams/AkkaStreams.scala
+play/api/libs/streams/Execution.scala
+play/api/libs/streams/GzipFlow.scala
+play/api/libs/streams/Probes.scala
+play/libs/streams/Accumulator.java
+play/libs/streams/ActorFlow.java
+
+ succeeded in 655ms:
+META-INF/MANIFEST.MF
+play/
+play/api/
+play/api/libs/
+play/api/libs/streams/
+play/libs/
+play/libs/streams/
+play/api/libs/streams/Accumulator$$anon$1.class
+play/api/libs/streams/Accumulator$.class
+play/api/libs/streams/Accumulator.class
+play/api/libs/streams/Accumulator.tasty
+play/api/libs/streams/ActorFlow$$anon$1.class
+play/api/libs/streams/ActorFlow$$anon$2.class
+play/api/libs/streams/ActorFlow$$anon$3.class
+play/api/libs/streams/ActorFlow$.class
+play/api/libs/streams/ActorFlow.class
+play/api/libs/streams/ActorFlow.tasty
+play/api/libs/streams/AkkaStreams$$anon$1.class
+play/api/libs/streams/AkkaStreams$$anon$2.class
+play/api/libs/streams/AkkaStreams$$anon$3.class
+play/api/libs/streams/AkkaStreams$$anon$4.class
+play/api/libs/streams/AkkaStreams$.class
+play/api/libs/streams/AkkaStreams.class
+play/api/libs/streams/AkkaStreams.tasty
+play/api/libs/streams/Execution$.class
+play/api/libs/streams/Execution$Implicits$.class
+play/api/libs/streams/Execution$trampoline$.class
+play/api/libs/streams/Execution$trampoline$Empty$.class
+play/api/libs/streams/Execution.class
+play/api/libs/streams/Execution.tasty
+play/api/libs/streams/FlattenedAccumulator.class
+play/api/libs/streams/FlattenedAccumulator.tasty
+play/api/libs/streams/GzipFlow$$anon$2.class
+play/api/libs/streams/GzipFlow$$anon$3.class
+play/api/libs/streams/GzipFlow$.class
+play/api/libs/streams/GzipFlow$Chunker$$anon$1.class
+play/api/libs/streams/GzipFlow$Chunker.class
+play/api/libs/streams/GzipFlow.class
+play/api/libs/streams/GzipFlow.tasty
+play/api/libs/streams/Probes$$anon$1.class
+play/api/libs/streams/Probes$$anon$2.class
+play/api/libs/streams/Probes$$anon$3.class
+play/api/libs/streams/Probes$$anon$4.class
+play/api/libs/streams/Probes$$anon$5$$anon$6.class
+play/api/libs/streams/Probes$$anon$5.class
+play/api/libs/streams/Probes$.class
+play/api/libs/streams/Probes$Probe.class
+play/api/libs/streams/Probes.class
+play/api/libs/streams/Probes.tasty
+play/api/libs/streams/SinkAccumulator.class
+play/api/libs/streams/SinkAccumulator.tasty
+play/api/libs/streams/StrictAccumulator.class
+play/api/libs/streams/StrictAccumulator.tasty
+play/libs/streams/Accumulator$FlattenSubscriber$1.class
+play/libs/streams/Accumulator$FlattenSubscriber.class
+play/libs/streams/Accumulator$NoOpSubscriber.class
+play/libs/streams/Accumulator$SinkAccumulator.class
+play/libs/streams/Accumulator$StrictAccumulator$1.class
+play/libs/streams/Accumulator$StrictAccumulator.class
+play/libs/streams/Accumulator.class
+play/libs/streams/ActorFlow$1.class
+play/libs/streams/ActorFlow$2.class
+play/libs/streams/ActorFlow.class
+
+codex
+Maven Central has the runtime JAR, sources JAR, and Javadoc JAR, but no test JAR in the artifact directory. I’m using Maven for source/docs per the repository convention and the tagged Play Framework `core/play-streams/src/test` tree for tests.
+exec
+/usr/bin/bash -lc "unzip -p /tmp/play-streams_3-2.9.7-sources.jar play/api/libs/streams/Accumulator.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.api.libs.streams
+
+import java.util.Optional
+
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+import akka.stream.scaladsl.Flow
+import akka.stream.scaladsl.Keep
+import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.Source
+import akka.stream.Materializer
+
+/**
+ * An accumulator of elements into a future of a result.
+ *
+ * This is essentially a lightweight wrapper around a Sink that gets materialised to a Future, but provides convenient
+ * methods for working directly with that future as well as transforming the input.
+ */
+sealed trait Accumulator[-E, +A] {
+
+  /**
+   * Map the result of this accumulator to something else.
+   */
+  def map[B](f: A => B)(implicit executor: ExecutionContext): Accumulator[E, B]
+
+  /**
+   * Map the result of this accumulator to a future of something else.
+   */
+  def mapFuture[B](f: A => Future[B])(implicit executor: ExecutionContext): Accumulator[E, B]
+
+  /**
+   * Recover from errors encountered by this accumulator.
+   */
+  def recover[B >: A](pf: PartialFunction[Throwable, B])(implicit executor: ExecutionContext): Accumulator[E, B]
+
+  /**
+   * Recover from errors encountered by this accumulator.
+   */
+  def recoverWith[B >: A](pf: PartialFunction[Throwable, Future[B]])(
+      implicit executor: ExecutionContext
+  ): Accumulator[E, B]
+
+  /**
+   * Return a new accumulator that first feeds the input through the given flow before it goes through this accumulator.
+   */
+  def through[F](flow: Flow[F, E, _]): Accumulator[F, A]
+
+  /**
+   * Right associative operator alias for through.
+   *
+   * This can be used for a more fluent DSL that matches the flow of the data, for example:
+   *
+   * {{{
+   *   val intAccumulator: Accumulator[Int, Unit] = ...
+   *   val toInt = Flow[String].map(_.toInt)
+   *   val stringAccumulator = toInt ~>: intAccumulator
+   * }}}
+   */
+  def ~>:[F](flow: Flow[F, E, _]): Accumulator[F, A] = through(flow)
+
+  /**
+   * Run this accumulator by feeding in the given source.
+   */
+  def run(source: Source[E, _])(implicit materializer: Materializer): Future[A]
+
+  /**
+   * Run this accumulator by feeding nothing into it.
+   */
+  def run()(implicit materializer: Materializer): Future[A]
+
+  /**
+   * Run this accumulator by feeding a single element into it.
+   */
+  def run(elem: E)(implicit materializer: Materializer): Future[A]
+
+  /**
+   * Right associative operator alias for run.
+   *
+   * This can be used for a more fluent DSL that matches the flow of the data, for example:
+   *
+   * {{{
+   *   val intAccumulator: Accumulator[Int, Int] = ...
+   *   val source = Source(1 to 3)
+   *   val intFuture = source ~>: intAccumulator
+   * }}}
+   */
+  def ~>:(source: Source[E, _])(implicit materializer: Materializer): Future[A] = run(source)
+
+  /**
+   * Convert this accumulator to a Sink that gets materialised to a Future.
+   */
+  def toSink: Sink[E, Future[A]]
+
+  /**
+   * Convert this accumulator to a Java Accumulator.
+   *
+   * @return The Java accumulator.
+   */
+  def asJava: play.libs.streams.Accumulator[E @uV, A @uV]
+}
+
+/**
+ * An accumulator backed by a sink.
+ *
+ * This is essentially a lightweight wrapper around a Sink that gets materialised to a Future, but provides convenient
+ * methods for working directly with that future as well as transforming the input.
+ */
+private class SinkAccumulator[-E, +A](wrappedSink: => Sink[E, Future[A]]) extends Accumulator[E, A] {
+  private lazy val sink: Sink[E, Future[A]] = wrappedSink
+
+  def map[B](f: A => B)(implicit executor: ExecutionContext): Accumulator[E, B] =
+    new SinkAccumulator(sink.mapMaterializedValue(_.map(f)))
+
+  def mapFuture[B](f: A => Future[B])(implicit executor: ExecutionContext): Accumulator[E, B] =
+    new SinkAccumulator(sink.mapMaterializedValue(_.flatMap(f)))
+
+  def recover[B >: A](pf: PartialFunction[Throwable, B])(implicit executor: ExecutionContext): Accumulator[E, B] =
+    new SinkAccumulator(sink.mapMaterializedValue(_.recover(pf)))
+
+  def recoverWith[B >: A](
+      pf: PartialFunction[Throwable, Future[B]]
+  )(implicit executor: ExecutionContext): Accumulator[E, B] =
+    new SinkAccumulator(sink.mapMaterializedValue(_.recoverWith(pf)))
+
+  def through[F](flow: Flow[F, E, _]): Accumulator[F, A] = new SinkAccumulator(flow.toMat(sink)(Keep.right))
+
+  def run(source: Source[E, _])(implicit materializer: Materializer): Future[A] = source.toMat(sink)(Keep.right).run()
+  def run()(implicit materializer: Materializer): Future[A]                     = run(Source.empty)
+  def run(elem: E)(implicit materializer: Materializer): Future[A]              = run(Source.single(elem))
+
+  def toSink: Sink[E, Future[A]] = sink
+
+  def asJava: play.libs.streams.Accumulator[E @uV, A @uV] = {
+    play.libs.streams.Accumulator.fromSink(sink.mapMaterializedValue(_.asJava).asJava)
+  }
+}
+
+private class StrictAccumulator[-E, +A](handler: Option[E] => Future[A], val toSink: Sink[E, Future[A]])
+    extends Accumulator[E, A] {
+  private def mapMat[B](f: Future[A] => Future[B])(implicit executor: ExecutionContext): StrictAccumulator[E, B] = {
+    new StrictAccumulator(handler.andThen(f), toSink.mapMaterializedValue(f))
+  }
+
+  override def map[B](f: A => B)(implicit executor: ExecutionContext): Accumulator[E, B] =
+    mapMat { future =>
+      future.value match {
+        case Some(Success(a)) => Future.fromTry(Try(f(a))) // optimize already completed case
+        case _                => future.map(f)
+      }
+    }
+
+  def mapFuture[B](f: A => Future[B])(implicit executor: ExecutionContext): Accumulator[E, B] =
+    mapMat { future =>
+      future.value match {
+        case Some(Success(a)) => // optimize already completed case
+          Try(f(a)) match {
+            case Success(fut) => fut
+            case Failure(ex)  => Future.failed(ex)
+          }
+        case _ => future.flatMap(f)
+      }
+    }
+
+  def recover[B >: A](pf: PartialFunction[Throwable, B])(implicit executor: ExecutionContext): Accumulator[E, B] =
+    mapMat { future =>
+      future.value match {
+        case Some(Success(_)) => future // optimize already completed case
+        case _                => future.recover(pf)
+      }
+    }
+
+  def recoverWith[B >: A](
+      pf: PartialFunction[Throwable, Future[B]]
+  )(implicit executor: ExecutionContext): Accumulator[E, B] =
+    mapMat { future =>
+      future.value match {
+        case Some(Success(_)) => future // optimize already completed case
+        case _                => future.recoverWith(pf)
+      }
+    }
+
+  override def through[F](flow: Flow[F, E, _]): Accumulator[F, A] = {
+    new SinkAccumulator(flow.toMat(toSink)(Keep.right))
+  }
+
+  override def run(source: Source[E, _])(implicit materializer: Materializer): Future[A] = source.runWith(toSink)
+  override def run()(implicit materializer: Materializer): Future[A]                     = handler(None)
+  override def run(elem: E)(implicit materializer: Materializer): Future[A]              = handler(Some(elem))
+
+  override def asJava: play.libs.streams.Accumulator[E @uV, A @uV] =
+    play.libs.streams.Accumulator.strict(
+      (t: Optional[E]) => handler(t.toScala).asJava,
+      toSink.mapMaterializedValue(_.asJava).asJava
+    )
+}
+
+private class FlattenedAccumulator[-E, +A](future: Future[Accumulator[E, A]])(implicit materializer: Materializer)
+    extends SinkAccumulator[E, A](Accumulator.futureToSink(future)) {
+  override def run(source: Source[E, _])(implicit materializer: Materializer): Future[A] = {
+    future.flatMap(_.run(source))(materializer.executionContext)
+  }
+
+  override def run()(implicit materializer: Materializer): Future[A] =
+    future.flatMap(_.run())(materializer.executionContext)
+}
+
+object Accumulator {
+  private[streams] def futureToSink[E, A](
+      future: Future[Accumulator[E, A]]
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/play-streams_3-2.9.7-sources.jar play/api/libs/streams/ActorFlow.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.api.libs.streams
+
+import akka.actor._
+import akka.stream.scaladsl.Flow
+import akka.stream.scaladsl.Keep
+import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.Source
+import akka.stream.Materializer
+import akka.stream.OverflowStrategy
+
+/**
+ * Provides a flow that is handled by an actor.
+ *
+ * See https://github.com/akka/akka/issues/16985.
+ */
+object ActorFlow {
+
+  /**
+   * Create a flow that is handled by an actor.
+   *
+   * Messages can be sent downstream by sending them to the actor passed into the props function.  This actor meets
+   * the contract of the actor returned by [[https://doc.akka.io/api/akka/2.6/akka/stream/scaladsl/Source$.html#actorRef[T](bufferSize:Int,overflowStrategy:akka.stream.OverflowStrategy):akka.stream.scaladsl.Source[T,akka.actor.ActorRef]] akka.stream.scaladsl.Source.actorRef]].
+   *
+   * The props function should return the props for an actor to handle the flow. This actor will be created using the
+   * passed in [[https://doc.akka.io/api/akka/2.6/akka/actor/ActorRefFactory.html akka.actor.ActorRefFactory]]. Each message received will be sent to the actor - there is no back pressure,
+   * if the actor is unable to process the messages, they will queue up in the actors mailbox. The upstream can be
+   * cancelled by the actor terminating itself.
+   *
+   * @param props A function that creates the props for actor to handle the flow.
+   * @param bufferSize The maximum number of elements to buffer.
+   * @param overflowStrategy The strategy for how to handle a buffer overflow.
+   */
+  def actorRef[In, Out](
+      props: ActorRef => Props,
+      bufferSize: Int = 16,
+      overflowStrategy: OverflowStrategy = OverflowStrategy.fail
+  )(implicit factory: ActorRefFactory, mat: Materializer): Flow[In, Out, _] = {
+    val (outActor, publisher) = Source
+      .actorRef[Out](bufferSize, overflowStrategy)
+      .toMat(Sink.asPublisher(false))(Keep.both)
+      .run()
+
+    Flow.fromSinkAndSource(
+      Sink.actorRef(
+        factory.actorOf(Props(new Actor {
+          val flowActor = context.watch(context.actorOf(props(outActor), "flowActor"))
+
+          def receive = {
+            case _: Status.Success => flowActor ! PoisonPill
+            case _: Status.Failure => flowActor ! PoisonPill
+            case _: Terminated     => context.stop(self)
+            case other             => flowActor ! other
+          }
+
+          override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
+            case _ => SupervisorStrategy.Stop
+          }
+        })),
+        Status.Success(())
+      ),
+      Source.fromPublisher(publisher)
+    )
+  }
+}
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/play-streams_3-2.9.7-sources.jar play/api/libs/streams/AkkaStreams.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.api.libs.streams
+
+import scala.concurrent.Future
+
+import akka.stream._
+import akka.stream.scaladsl._
+import akka.stream.stage._
+import akka.Done
+
+/**
+ * Utilities for Akka Streams merging and bypassing of packets.
+ */
+object AkkaStreams {
+
+  /**
+   * Bypass the given flow using the given splitter function.
+   *
+   * If the splitter function returns Left, they will go through the flow.  If it returns Right, they will bypass the
+   * flow.
+   */
+  def bypassWith[In, FlowIn, Out](splitter: In => Either[FlowIn, Out]): Flow[FlowIn, Out, _] => Flow[In, Out, _] = {
+    bypassWith(Flow[In].map(splitter))
+  }
+
+  /**
+   * Using the given splitter flow, allow messages to bypass a flow.
+   *
+   * If the splitter flow produces Left, they will be fed into the flow. If it produces Right, they will bypass the
+   * flow.
+   */
+  def bypassWith[In, FlowIn, Out](
+      splitter: Flow[In, Either[FlowIn, Out], _],
+      mergeStrategy: Graph[UniformFanInShape[Out, Out], _] = onlyFirstCanFinishMerge[Out](2)
+  ): Flow[FlowIn, Out, _] => Flow[In, Out, _] = { flow =>
+    val bypasser = Flow.fromGraph(GraphDSL.create[FlowShape[Either[FlowIn, Out], Out]]() { implicit builder =>
+      import GraphDSL.Implicits._
+
+      // Eager cancel must be true so that if the flow cancels, that will be propagated upstream.
+      // However, that means the bypasser must block cancel, since when this flow finishes, the merge
+      // will result in a cancel flowing up through the bypasser, which could lead to dropped messages.
+      val broadcast = builder.add(Broadcast[Either[FlowIn, Out]](2, eagerCancel = true))
+      val merge     = builder.add(mergeStrategy)
+
+      // Normal flow
+      broadcast.out(0) ~> Flow[Either[FlowIn, Out]].collect {
+        case Left(in) => in
+      } ~> flow ~> merge.in(0)
+
+      // Bypass flow, need to ignore downstream finish
+      broadcast.out(1) ~> ignoreAfterCancellation[Either[FlowIn, Out]] ~> Flow[Either[FlowIn, Out]].collect {
+        case Right(out) => out
+      } ~> merge.in(1)
+
+      FlowShape(broadcast.in, merge.out)
+    })
+
+    splitter.via(bypasser)
+  }
+
+  def onlyFirstCanFinishMerge[T](inputPorts: Int) = GraphDSL.create[UniformFanInShape[T, T]]() { implicit builder =>
+    import GraphDSL.Implicits._
+
+    val merge = builder.add(Merge[T](inputPorts, eagerComplete = true))
+
+    val blockFinishes = (1 until inputPorts).map { i =>
+      val blockFinish = builder.add(ignoreAfterFinish[T])
+      blockFinish.out ~> merge.in(i)
+      blockFinish.in
+    }
+
+    val inlets = Seq(merge.in(0)) ++ blockFinishes
+
+    UniformFanInShape(merge.out, inlets: _*)
+  }
+
+  /**
+   * A flow that will ignore upstream finishes.
+   */
+  def ignoreAfterFinish[T]: Flow[T, T, _] =
+    Flow[T].via(new GraphStage[FlowShape[T, T]] {
+      val in  = Inlet[T]("AkkaStreams.in")
+      val out = Outlet[T]("AkkaStreams.out")
+
+      override def shape: FlowShape[T, T] = FlowShape.of(in, out)
+
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+        new GraphStageLogic(shape) with OutHandler with InHandler {
+          override def onPush(): Unit = push(out, grab(in))
+
+          override def onPull(): Unit = {
+            if (!isClosed(in)) {
+              pull(in)
+            }
+          }
+
+          override def onUpstreamFinish() = {
+            if (isAvailable(out)) onPull()
+          }
+
+          override def onUpstreamFailure(cause: Throwable) = {
+            if (isAvailable(out)) onPull()
+          }
+
+          setHandlers(in, out, this)
+        }
+    })
+
+  /**
+   * A flow that will ignore downstream cancellation, and instead will continue receiving and ignoring the stream.
+   */
+  def ignoreAfterCancellation[T]: Flow[T, T, Future[Done]] = {
+    Flow.fromGraph(GraphDSL.createGraph(Sink.ignore) { implicit builder => ignore =>
+      import GraphDSL.Implicits._
+      // This pattern is an effective way to absorb cancellation, Sink.ignore will keep the broadcast always flowing
+      // even after sink.inlet cancels.
+      val broadcast = builder.add(Broadcast[T](2, eagerCancel = false))
+      broadcast.out(0) ~> ignore.in
+      FlowShape(broadcast.in, broadcast.out(1))
+    })
+  }
+}
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/play-streams_3-2.9.7-sources.jar play/api/libs/streams/GzipFlow.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.api.libs.streams
+
+import java.util.zip.Deflater
+
+import akka.stream._
+import akka.stream.scaladsl.Compression
+import akka.stream.scaladsl.Flow
+import akka.stream.stage._
+import akka.util.ByteString
+
+/**
+ * A simple Gzip Flow
+ *
+ * GZIPs each chunk separately.
+ */
+object GzipFlow {
+
+  /**
+   * Create a Gzip Flow with the given buffer size. The bufferSize controls how much data is sent to the Gzip compressor in
+   * one go. You can use `0` or `Int.MaxValue` to disable the buffer completely.
+   *
+   * In general, it is recommended to turn off the buffer and prevent generation of overlong chunks at the source.
+   */
+  def gzip(
+      bufferSize: Int = 512,
+      compressionLevel: Int = Deflater.DEFAULT_COMPRESSION
+  ): Flow[ByteString, ByteString, _] = {
+    Flow[ByteString]
+      .via(chunkerIfNeeded(bufferSize))
+      .via(Compression.gzip(compressionLevel))
+  }
+
+  private def chunkerIfNeeded(bufferSize: Int): Flow[ByteString, ByteString, Any] =
+    if (bufferSize > 0 || bufferSize < Int.MaxValue) Flow.fromGraph(new Chunker(bufferSize))
+    else Flow[ByteString]
+
+  // https://doc.akka.io/docs/akka/2.6/stream/stream-cookbook.html#chunking-up-a-stream-of-bytestrings-into-limited-size-bytestrings
+  private class Chunker(val chunkSize: Int) extends GraphStage[FlowShape[ByteString, ByteString]] {
+    private val in  = Inlet[ByteString]("Chunker.in")
+    private val out = Outlet[ByteString]("Chunker.out")
+
+    override val shape: FlowShape[ByteString, ByteString] = FlowShape.of(in, out)
+    override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+      private var buffer = ByteString.empty
+
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = emitChunk()
+        }
+      )
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            val elem = grab(in)
+            buffer ++= elem
+            emitChunk()
+          }
+
+          override def onUpstreamFinish(): Unit = {
+            if (buffer.isEmpty) completeStage()
+            else {
+              // There are elements left in buffer, so
+              // we keep accepting downstream pulls and push from buffer until emptied.
+              //
+              // It might be though, that the upstream finished while it was pulled, in which
+              // case we will not get an onPull from the downstream, because we already had one.
+              // In that case we need to emit from the buffer.
+              if (isAvailable(out)) emitChunk()
+            }
+          }
+        }
+      )
+
+      private def emitChunk(): Unit = {
+        if (buffer.isEmpty) {
+          if (isClosed(in)) completeStage()
+          else pull(in)
+        } else {
+          val (chunk, nextBuffer) = buffer.splitAt(chunkSize)
+          buffer = nextBuffer
+          push(out, chunk)
+        }
+      }
+    }
+  }
+}
+
+codex
+I’m going to patch the discovered metadata with Maven Central source and Javadoc URLs, the tagged upstream test directory, and Scala 3 language metadata. The artifact is a JVM JAR with class files, so I’m leaving the `not-for-native-image` fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.play:play-streams_3:2.9.7",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
+  "repository-url": "https://github.com/playframework/playframework",
+  "test-code-url": "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
+  "description": "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in 'https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/2.9.7/play-streams_3-2.9.7-sources.jar' 'https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/2.9.7/play-streams_3-2.9.7-javadoc.jar' 'https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test'; do curl -fsSI \""'$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1165ms:
+HTTP/2 200 
+HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: https://github.com/playframework/playframework/tree/2.9.7/core/play-streams/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com typesafe play play-streams_3 2.9.7 play-streams_3-2.9.7-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/typesafe/play/
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com artifact com.typesafe.play play-streams_3 2.9.7
+web search: 
+web search: 
+web search: 
+web search: "play-streams_3-2.9.7.pom" "scala3-library_3"
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+exec
+/usr/bin/bash -lc 'python3 -m json.tool build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json >/dev/null' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 603ms:
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
+     3	  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
+     4	  "repository-url" : "https://github.com/playframework/playframework",
+     5	  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
+     7	  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "3"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Maven Central com.typesafe.play play-streams_3 2.9.7
+codex
+Updated [com.typesafe.play-play-streams_3-2.9.7.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json:1) with Maven source/Javadoc URLs, the tagged Play Framework test URL, repository URL, Scala 3 language metadata, and a two-sentence description. Maven Central lists `play-streams_3` under `com.typesafe.play`, and the upstream repository is `playframework/playframework`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/com/typesafe/play/?utm_source=openai))
+
+Validation: JSON parses successfully, and the rendered source, documentation, and test URLs for `2.9.7` return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+index bd301d09888aede6ab864f7d7f2d60f36ba3b35e..2ff1f3d6a6ce73228853644ee3968e56f5cd9c46
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7"
++  "coordinates" : "com.typesafe.play:play-streams_3:2.9.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's Scala and Java stream utilities built on Akka Streams, including accumulators, actor-backed flows, gzip flows, and helper flows for bypassing or merging streams. It supports Play components that consume, transform, and materialize asynchronous stream data while exposing both Scala and Java APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+80,792
+Updated [com.typesafe.play-play-streams_3-2.9.7.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/build/discovered-artifact-metadata/com.typesafe.play-play-streams_3-2.9.7.json:1) with Maven source/Javadoc URLs, the tagged Play Framework test URL, repository URL, Scala 3 language metadata, and a two-sentence description. Maven Central lists `play-streams_3` under `com.typesafe.play`, and the upstream repository is `playframework/playframework`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/com/typesafe/play/?utm_source=openai))
+
+Validation: JSON parses successfully, and the rendered source, documentation, and test URLs for `2.9.7` return HTTP 200.
+Ran agent for com.typesafe.play:play-streams_3:2.9.7 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/build/agent-artifact-discovery-logs/com.typesafe.play-play-streams_3-2.9.7.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5020-1b549c23/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 32s
+9 actionable tasks: 9 executed
