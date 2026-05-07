@@ -11,6 +11,7 @@ import io.ktor.util.Attributes
 import io.ktor.util.DeflateEncoder
 import io.ktor.util.Encoder
 import io.ktor.util.GZipEncoder
+import io.ktor.util.StatelessHmacNonceManager
 import io.ktor.util.StringValuesBuilderImpl
 import io.ktor.util.appendIfNameAndValueAbsent
 import io.ktor.util.converters.ConversionService
@@ -168,6 +169,23 @@ public class Ktor_utils_jvmTest {
             assertThat(result).isEqualTo("start|setup|transform")
             assertThat(events).containsExactly("setup:start", "transform:start|setup")
             assertThat(pipeline.items.map { it.name }).containsExactly("setup", "transform")
+        }
+    }
+
+    @Test
+    fun statelessHmacNonceManagerVerifiesGeneratedNoncesAndRejectsTampering(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val manager = StatelessHmacNonceManager(
+                key = "strong test nonce key".toByteArray(Charsets.UTF_8),
+                nonceGenerator = { "generated-nonce" },
+            )
+
+            val nonce = manager.newNonce()
+            val tamperedNonce = nonce.replace("generated-nonce", "tampered-nonce")
+
+            assertThat(manager.verifyNonce(nonce)).isTrue()
+            assertThat(manager.verifyNonce(tamperedNonce)).isFalse()
+            assertThat(manager.verifyNonce("not-a-valid-nonce")).isFalse()
         }
     }
 
