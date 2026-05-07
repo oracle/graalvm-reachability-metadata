@@ -22,6 +22,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.runBlocking
@@ -258,6 +259,32 @@ public class Ktor_websocket_serialization_jvmTest {
             .hasMessageContaining("Int")
     }
 
+    @Test
+    fun `receiveDeserializedBase propagates closed incoming channel without invoking converter`(): Unit {
+        val session: TestWebSocketSession = TestWebSocketSession()
+        val converter: RecordingWebsocketContentConverter = RecordingWebsocketContentConverter(
+            deserializedValue = "unused",
+        )
+        session.closeIncoming()
+
+        assertThatThrownBy {
+            runBlocking {
+                withTimeout(TEST_TIMEOUT_MILLIS) {
+                    try {
+                        session.receiveDeserializedBase(typeInfo<String>(), converter, Charsets.UTF_8)
+                    } finally {
+                        session.close()
+                    }
+                }
+            }
+        }
+            .isInstanceOf(ClosedReceiveChannelException::class.java)
+            .satisfies(Consumer { _: Throwable ->
+                assertThat(converter.deserializeCalls).isEmpty()
+                assertThat(converter.serializeCalls).isEmpty()
+            })
+    }
+
     private companion object {
         private const val TEST_TIMEOUT_MILLIS: Long = 5_000
     }
@@ -313,6 +340,10 @@ private class TestWebSocketSession : WebSocketSession {
     }
 
     suspend fun receiveOutgoing(): Frame = outgoingChannel.receive()
+
+    fun closeIncoming(): Unit {
+        incomingChannel.close()
+    }
 
     override suspend fun flush(): Unit = Unit
 
