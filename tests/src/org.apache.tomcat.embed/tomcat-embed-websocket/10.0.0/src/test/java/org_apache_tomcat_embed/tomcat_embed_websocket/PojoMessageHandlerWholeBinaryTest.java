@@ -8,8 +8,11 @@ package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,31 +34,54 @@ import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
 import org.junit.jupiter.api.Test;
 
-public class PojoMessageHandlerWholeBaseTest {
+public class PojoMessageHandlerWholeBinaryTest {
 
     @Test
-    void wholeTextMessageWithDecoderInvokesWrappedPojoHandler() throws DeploymentException {
-        PayloadTextDecoder.reset();
+    void wholeBinaryMessageWithBinaryDecoderInvokesWrappedPojoHandler() throws DeploymentException {
+        PayloadBinaryDecoder.reset();
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
-                .decoders(List.of(PayloadTextDecoder.class))
+                .decoders(List.of(PayloadBinaryDecoder.class))
                 .build();
         WsSession session = newSession(config);
         PayloadHandler payloadHandler = new PayloadHandler();
 
         session.addMessageHandler(payloadHandler);
         MessageHandler wrappedHandler = session.getMessageHandlers().iterator().next();
-        asWholeTextHandler(wrappedHandler).onMessage("decoded-value");
+        asWholeBinaryHandler(wrappedHandler).onMessage(ByteBuffer.wrap(bytes("binary-payload")));
 
         assertThat(wrappedHandler).isNotSameAs(payloadHandler);
-        assertThat(PayloadTextDecoder.constructions()).isGreaterThanOrEqualTo(1);
-        assertThat(PayloadTextDecoder.initializedWith()).isSameAs(config);
-        assertThat(payloadHandler.receivedPayload.value).isEqualTo("decoded-value");
+        assertThat(PayloadBinaryDecoder.constructions()).isGreaterThanOrEqualTo(2);
+        assertThat(PayloadBinaryDecoder.initializedWith()).isSameAs(config);
+        assertThat(payloadHandler.receivedPayload.value).isEqualTo("binary-payload");
+    }
+
+    @Test
+    void wholeBinaryMessageWithBinaryStreamDecoderInvokesWrappedPojoHandler() throws DeploymentException {
+        PayloadBinaryStreamDecoder.reset();
+        ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
+                .decoders(List.of(PayloadBinaryStreamDecoder.class))
+                .build();
+        WsSession session = newSession(config);
+        PayloadHandler payloadHandler = new PayloadHandler();
+
+        session.addMessageHandler(payloadHandler);
+        MessageHandler wrappedHandler = session.getMessageHandlers().iterator().next();
+        asWholeBinaryHandler(wrappedHandler).onMessage(ByteBuffer.wrap(bytes("stream-payload")));
+
+        assertThat(wrappedHandler).isNotSameAs(payloadHandler);
+        assertThat(PayloadBinaryStreamDecoder.constructions()).isGreaterThanOrEqualTo(2);
+        assertThat(PayloadBinaryStreamDecoder.initializedWith()).isSameAs(config);
+        assertThat(payloadHandler.receivedPayload.value).isEqualTo("stream-payload");
     }
 
     @SuppressWarnings("unchecked")
-    private static MessageHandler.Whole<String> asWholeTextHandler(MessageHandler handler) {
+    private static MessageHandler.Whole<ByteBuffer> asWholeBinaryHandler(MessageHandler handler) {
         assertThat(handler).isInstanceOf(MessageHandler.Whole.class);
-        return (MessageHandler.Whole<String>) handler;
+        return (MessageHandler.Whole<ByteBuffer>) handler;
+    }
+
+    private static byte[] bytes(String value) {
+        return value.getBytes(StandardCharsets.UTF_8);
     }
 
     private static WsSession newSession(EndpointConfig endpointConfig) throws DeploymentException {
@@ -81,11 +107,11 @@ public class PojoMessageHandlerWholeBaseTest {
         }
     }
 
-    public static class PayloadTextDecoder implements Decoder.Text<Payload> {
+    public static class PayloadBinaryDecoder implements Decoder.Binary<Payload> {
         private static final AtomicInteger CONSTRUCTIONS = new AtomicInteger();
         private static final AtomicReference<EndpointConfig> INITIALIZED_WITH = new AtomicReference<>();
 
-        public PayloadTextDecoder() {
+        public PayloadBinaryDecoder() {
             CONSTRUCTIONS.incrementAndGet();
         }
 
@@ -103,13 +129,51 @@ public class PojoMessageHandlerWholeBaseTest {
         }
 
         @Override
-        public Payload decode(String s) throws DecodeException {
-            return new Payload(s);
+        public Payload decode(ByteBuffer bytes) throws DecodeException {
+            byte[] payload = new byte[bytes.remaining()];
+            bytes.get(payload);
+            return new Payload(new String(payload, StandardCharsets.UTF_8));
         }
 
         @Override
-        public boolean willDecode(String s) {
+        public boolean willDecode(ByteBuffer bytes) {
             return true;
+        }
+
+        @Override
+        public void init(EndpointConfig config) {
+            INITIALIZED_WITH.set(config);
+        }
+
+        @Override
+        public void destroy() {
+        }
+    }
+
+    public static class PayloadBinaryStreamDecoder implements Decoder.BinaryStream<Payload> {
+        private static final AtomicInteger CONSTRUCTIONS = new AtomicInteger();
+        private static final AtomicReference<EndpointConfig> INITIALIZED_WITH = new AtomicReference<>();
+
+        public PayloadBinaryStreamDecoder() {
+            CONSTRUCTIONS.incrementAndGet();
+        }
+
+        static void reset() {
+            CONSTRUCTIONS.set(0);
+            INITIALIZED_WITH.set(null);
+        }
+
+        static int constructions() {
+            return CONSTRUCTIONS.get();
+        }
+
+        static EndpointConfig initializedWith() {
+            return INITIALIZED_WITH.get();
+        }
+
+        @Override
+        public Payload decode(InputStream bytes) throws DecodeException, IOException {
+            return new Payload(new String(bytes.readAllBytes(), StandardCharsets.UTF_8));
         }
 
         @Override

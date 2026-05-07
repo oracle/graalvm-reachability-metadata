@@ -12,19 +12,17 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.SendHandler;
-import javax.websocket.SendResult;
-import javax.websocket.Session;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.DecodeException;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.SendHandler;
+import jakarta.websocket.SendResult;
+import jakarta.websocket.Session;
 
 import org.apache.tomcat.websocket.DecoderEntry;
 import org.apache.tomcat.websocket.Util;
@@ -113,8 +111,6 @@ public class UtilTest {
     }
 
     private static class NoOpRemoteEndpoint extends WsRemoteEndpointImplBase {
-        private final Lock lock = new ReentrantLock();
-
         @Override
         protected void doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
             handler.onResult(new SendResult());
@@ -127,11 +123,6 @@ public class UtilTest {
 
         @Override
         protected void doClose() {
-        }
-
-        @Override
-        protected Lock getLock() {
-            return lock;
         }
     }
 }

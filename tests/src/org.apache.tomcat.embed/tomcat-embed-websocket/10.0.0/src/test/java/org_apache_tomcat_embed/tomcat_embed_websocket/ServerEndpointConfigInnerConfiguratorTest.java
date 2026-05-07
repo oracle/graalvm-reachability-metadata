@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 import org.apache.tomcat.websocket.server.DefaultServerEndpointConfigurator;
 import org.junit.jupiter.api.Test;
