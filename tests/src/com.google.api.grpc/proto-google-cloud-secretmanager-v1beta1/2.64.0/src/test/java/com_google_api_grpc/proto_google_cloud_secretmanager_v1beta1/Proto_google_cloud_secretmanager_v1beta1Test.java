@@ -360,6 +360,20 @@ public class Proto_google_cloud_secretmanager_v1beta1Test {
     }
 
     @Test
+    void serviceDescriptorExposesFlattenedMethodSignaturesForClientHelpers() {
+        Descriptors.ServiceDescriptor service = ServiceProto.getDescriptor()
+                .findServiceByName("SecretManagerService");
+
+        assertThat(service).isNotNull();
+        assertMethodSignatures(service, "ListSecrets", "parent");
+        assertMethodSignatures(service, "CreateSecret", "parent,secret_id,secret");
+        assertMethodSignatures(service, "AddSecretVersion", "parent,payload");
+        assertMethodSignatures(service, "UpdateSecret", "secret,update_mask");
+        assertMethodSignatures(service, "AccessSecretVersion", "name");
+        assertMethodSignatures(service, "DestroySecretVersion", "name");
+    }
+
+    @Test
     void iamPolicyRequestsTargetSecretResourcesAndPreserveConditions() {
         Binding accessorBinding = Binding.newBuilder()
                 .setRole("roles/secretmanager.secretAccessor")
@@ -442,6 +456,17 @@ public class Proto_google_cloud_secretmanager_v1beta1Test {
         assertThat(Secret.getDescriptor().findFieldByName("labels").isMapField()).isTrue();
         assertThat(SecretPayload.getDescriptor().findFieldByName("data").getType())
                 .isEqualTo(Descriptors.FieldDescriptor.Type.BYTES);
+    }
+
+    private static void assertMethodSignatures(
+            Descriptors.ServiceDescriptor service,
+            String methodName,
+            String... expectedSignatures) {
+        Descriptors.MethodDescriptor method = service.findMethodByName(methodName);
+
+        assertThat(method).isNotNull();
+        assertThat(method.getOptions().getExtension(ClientProto.methodSignature))
+                .containsExactly(expectedSignatures);
     }
 
     private static void assertHttp(
