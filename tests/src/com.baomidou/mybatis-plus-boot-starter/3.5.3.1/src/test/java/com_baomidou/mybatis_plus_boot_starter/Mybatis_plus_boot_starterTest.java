@@ -6,6 +6,7 @@
  */
 package com_baomidou.mybatis_plus_boot_starter;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,6 +20,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.AES;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.ddl.IDdl;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
@@ -101,6 +105,41 @@ public class Mybatis_plus_boot_starterTest {
     }
 
     @Test
+    void interceptorBeanIsAppliedToPaginatedMapperQueries() {
+        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(PaginationInterceptorApplication.class)
+                .web(WebApplicationType.NONE)
+                .properties(Map.of(
+                        "spring.datasource.url", "jdbc:h2:mem:mybatisPlusBootStarterPagination;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                        "spring.datasource.driver-class-name", "org.h2.Driver",
+                        "spring.datasource.hikari.maximum-pool-size", "2",
+                        "spring.datasource.hikari.connection-timeout", "2000",
+                        "spring.main.banner-mode", "off",
+                        "logging.level.root", "WARN"))
+                .run()) {
+            JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
+            jdbcTemplate.execute("""
+                    CREATE TABLE account (
+                        id BIGINT PRIMARY KEY,
+                        user_name VARCHAR(64) NOT NULL,
+                        age INTEGER NOT NULL
+                    )
+                    """);
+            jdbcTemplate.update("INSERT INTO account (id, user_name, age) VALUES (?, ?, ?)", 1L, "Ada Lovelace", 36);
+            jdbcTemplate.update("INSERT INTO account (id, user_name, age) VALUES (?, ?, ?)", 2L, "Grace Hopper", 85);
+            jdbcTemplate.update("INSERT INTO account (id, user_name, age) VALUES (?, ?, ?)", 3L, "Katherine Johnson", 101);
+
+            AccountMapper mapper = context.getBean(AccountMapper.class);
+            Page<Account> page = mapper.selectPage(new Page<>(2, 1), Wrappers.<Account>query().orderByAsc("id"));
+
+            assertThat(page.getTotal()).isEqualTo(3);
+            assertThat(page.getPages()).isEqualTo(3);
+            assertThat(page.getRecords())
+                    .extracting(Account::getUserName)
+                    .containsExactly("Grace Hopper");
+        }
+    }
+
+    @Test
     void propertiesResolveMapperLocationsAndCanBeCustomized() {
         MybatisPlusProperties properties = new MybatisPlusProperties();
         properties.setMapperLocations(new String[] {
@@ -166,6 +205,25 @@ public class Mybatis_plus_boot_starterTest {
 
         assertThat(ddl.invocations()).isEqualTo(1);
         assertThat(ddl.observedSqlFiles()).containsExactly("schema/account.sql", "schema/audit.sql");
+    }
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    public static class PaginationInterceptorApplication {
+
+        @Bean
+        MapperFactoryBean<AccountMapper> accountMapper(SqlSessionFactory sqlSessionFactory) {
+            MapperFactoryBean<AccountMapper> mapperFactoryBean = new MapperFactoryBean<>(AccountMapper.class);
+            mapperFactoryBean.setSqlSessionFactory(sqlSessionFactory);
+            return mapperFactoryBean;
+        }
+
+        @Bean
+        MybatisPlusInterceptor mybatisPlusInterceptor() {
+            MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+            interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.H2));
+            return interceptor;
+        }
     }
 
     @SpringBootConfiguration
