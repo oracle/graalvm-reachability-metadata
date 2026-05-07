@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.xml.sax.SAXParseException
 
 import scala.jdk.CollectionConverters._
+import scala.xml.Document
 import scala.xml.Elem
 import scala.xml.Group
 import scala.xml.Node
@@ -28,10 +29,7 @@ import scala.xml.Utility
 import scala.xml.XML
 import scala.xml.dtd.DocType
 import scala.xml.dtd.SystemID
-import scala.xml.pull.EvElemEnd
-import scala.xml.pull.EvElemStart
-import scala.xml.pull.EvText
-import scala.xml.pull.XMLEventReader
+import scala.xml.parsing.ConstructingParser
 import scala.xml.transform.RewriteRule
 import scala.xml.transform.RuleTransformer
 
@@ -188,29 +186,30 @@ class Scala_xml_2_13Test {
   }
 
   @Test
-  def streamsXmlAsPullEvents(): Unit = {
+  def constructsDocumentWithMarkupParser(): Unit = {
     val source: Source = Source.fromString(
-      """<orders><order id="o1"><item quantity="2">pencils</item></order><order id="o2"/></orders>"""
+      """<?xml version="1.0" encoding="UTF-8"?>
+        |<orders><order id="o1"><item quantity="2">pencils</item></order><order id="o2"/></orders>""".stripMargin
     )
 
     try {
-      val reader: XMLEventReader = new XMLEventReader(source)
-      val events: List[scala.xml.pull.XMLEvent] = reader.toList
+      val document: Document = ConstructingParser.fromSource(source, preserveWS = false).document()
+      val root: Elem = document.docElem.asInstanceOf[Elem]
 
-      val startLabels: Seq[String] = events.collect { case EvElemStart(_, label, _, _) => label }
-      assertThat(startLabels.asJava).containsExactly("orders", "order", "item", "order")
+      assertThat(document.version).isEqualTo(Some("1.0"))
+      assertThat(document.encoding).isEqualTo(Some("UTF-8"))
+      assertThat(root.label).isEqualTo("orders")
 
-      val orderIds: Seq[String] = events.collect { case EvElemStart(_, "order", attributes, _) => attributes.asAttrMap("id") }
+      val orderLabels: Seq[String] = (root \ "order").map(_.label)
+      assertThat(orderLabels.asJava).containsExactly("order", "order")
+
+      val orderIds: Seq[String] = (root \ "order").map(order => (order \ "@id").text)
       assertThat(orderIds.asJava).containsExactly("o1", "o2")
 
-      val itemQuantities: Seq[String] = events.collect {
-        case EvElemStart(_, "item", attributes, _) => attributes.asAttrMap("quantity")
-      }
-      assertThat(itemQuantities.asJava).containsExactly("2")
-      assertThat(events.collect { case EvText(text) => text }.asJava).containsExactly("pencils")
-
-      val endLabels: Seq[String] = events.collect { case EvElemEnd(_, label) => label }
-      assertThat(endLabels.asJava).containsExactly("item", "order", "order", "orders")
+      val items: NodeSeq = root \\ "item"
+      assertThat(items.map(item => (item \ "@quantity").text).asJava).containsExactly("2")
+      assertThat(items.map(_.text).asJava).containsExactly("pencils")
+      assertThat(root.child.collect { case elem: Elem => elem.label }.asJava).containsExactly("order", "order")
     } finally {
       source.close()
     }
