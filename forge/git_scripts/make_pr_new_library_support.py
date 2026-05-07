@@ -10,7 +10,7 @@ import re
 import shutil
 import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
@@ -55,6 +55,7 @@ DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS = 8
 class DynamicAccessMetadataEvidence:
     covered_call_sites: list[str]
     metadata_rules: list[str]
+    test_only_metadata_rules: list[str] = field(default_factory=list)
 
 
 def _extract_covered_dynamic_access_calls(library_stats: dict | None) -> int | None:
@@ -76,22 +77,30 @@ def format_dynamic_access_metadata_entry_note(
         metadata_entries: int,
         library_stats: dict | None,
         evidence: DynamicAccessMetadataEvidence | None = None,
+        test_only_metadata_entries: int = 0,
 ) -> str:
     """Explain large dynamic-access/metadata-entry count differences in generated PR bodies."""
     covered_calls = _extract_covered_dynamic_access_calls(library_stats)
     if covered_calls is None:
         return ""
-    if metadata_entries > 0 and covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
+    total_metadata_entries = metadata_entries + test_only_metadata_entries
+    if total_metadata_entries > 0 and covered_calls < total_metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
         return ""
-    if metadata_entries <= 0 and covered_calls <= 0:
+    if total_metadata_entries <= 0 and covered_calls <= 0:
         return ""
 
+    metadata_entries_line = f"- Metadata entries: {total_metadata_entries}"
+    if test_only_metadata_entries > 0:
+        metadata_entries_line = (
+            f"- Metadata entries: {total_metadata_entries} "
+            f"({metadata_entries} shipped, {test_only_metadata_entries} test-only)"
+        )
     lines = [
         "",
         "### Metadata/dynamic-access evidence",
         "",
         f"- Covered dynamic-access calls: {covered_calls}",
-        f"- Metadata entries: {metadata_entries}",
+        metadata_entries_line,
         "- These counts are different dimensions: covered dynamic-access calls count observed call sites, "
         "while metadata entries count generated reachability-config items. Depending on the access type, "
         "a single metadata rule can cover multiple observed call sites, or no shipped rule may be required "
@@ -103,11 +112,22 @@ def format_dynamic_access_metadata_entry_note(
     if evidence and evidence.metadata_rules:
         lines.append("- Generated metadata rules:")
         lines.extend(f"  - {metadata_rule}" for metadata_rule in evidence.metadata_rules)
-    lines.append(
-        "- Use the call-site and metadata-rule lists together to review whether the observed dynamic-access "
-        "paths are explained by the generated reachability metadata."
-    )
+    if evidence and evidence.test_only_metadata_rules:
+        lines.append("- Generated test-only metadata rules:")
+        lines.extend(f"  - {metadata_rule}" for metadata_rule in evidence.test_only_metadata_rules)
+    if has_reviewable_dynamic_access_metadata_evidence(evidence):
+        lines.append(
+            "- Use the call-site and metadata-rule lists together to review whether the observed dynamic-access "
+            "paths are explained by the generated reachability metadata."
+        )
     return "\n".join(lines) + "\n"
+
+
+def has_reviewable_dynamic_access_metadata_evidence(evidence: DynamicAccessMetadataEvidence | None) -> bool:
+    """Return True when mismatch evidence contains both call sites and generated rule summaries."""
+    if evidence is None:
+        return False
+    return bool(evidence.covered_call_sites and (evidence.metadata_rules or evidence.test_only_metadata_rules))
 
 
 def load_dynamic_access_metadata_evidence(repo_path: str, coordinates: str) -> DynamicAccessMetadataEvidence | None:
@@ -133,14 +153,30 @@ def load_dynamic_access_metadata_evidence(repo_path: str, coordinates: str) -> D
         version,
         "reachability-metadata.json",
     )
+    test_metadata_path = os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        version,
+        "src",
+        "test",
+        "resources",
+        "META-INF",
+        "native-image",
+        "reachability-metadata.json",
+    )
 
     covered_call_sites = _load_covered_dynamic_access_call_sites(report_path)
     metadata_rules = _load_metadata_rule_summaries(metadata_path)
-    if not covered_call_sites and not metadata_rules:
+    test_only_metadata_rules = _load_metadata_rule_summaries(test_metadata_path)
+    if not covered_call_sites and not metadata_rules and not test_only_metadata_rules:
         return None
     return DynamicAccessMetadataEvidence(
         covered_call_sites=covered_call_sites,
         metadata_rules=metadata_rules,
+        test_only_metadata_rules=test_only_metadata_rules,
     )
 
 
@@ -315,7 +351,12 @@ Summary:
 - Generated lines of code: {generated_loc}
 - Tested library lines of code: {tested_library_loc}
 """
-    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats, dynamic_access_evidence)
+    body += format_dynamic_access_metadata_entry_note(
+        entries_found,
+        library_stats,
+        dynamic_access_evidence,
+        test_only_metadata_entries=test_only_metadata_entries,
+    )
     body += "\n" + format_forge_revision_section() + "\n"
     if library_stats:
         body += "\n" + format_stats_section(library_stats) + "\n"
@@ -409,6 +450,15 @@ def create_pull_request(
 
     library_stats = load_library_stats(repo_path, coordinates)
     dynamic_access_evidence = load_dynamic_access_metadata_evidence(repo_path, coordinates)
+    quality_issues = collect_new_library_support_quality_issues(
+        matched,
+        has_reviewable_dynamic_access_metadata_evidence=has_reviewable_dynamic_access_metadata_evidence(
+            dynamic_access_evidence,
+        ),
+    )
+    if quality_issues:
+        details = "; ".join(quality_issues)
+        raise ValueError(f"Refusing to create PR for {coordinates}: {details}")
     body = build_pull_request_body(
         issue_no=issue_no,
         coordinates=coordinates,
@@ -606,10 +656,18 @@ def update_large_library_state_after_publish(
     state.save(state_path)
 
 
-def validate_run_quality(coordinates: str, metrics_repo_path: str) -> None:
+def validate_run_quality(coordinates: str, metrics_repo_path: str, repo_path: str | None = None) -> None:
     """Raise ValueError if the run metrics are not good enough for a PR."""
     matched = read_pending_metrics(metrics_repo_path)
-    quality_issues = collect_new_library_support_quality_issues(matched)
+    dynamic_access_evidence = None
+    if repo_path is not None:
+        dynamic_access_evidence = load_dynamic_access_metadata_evidence(repo_path, coordinates)
+    quality_issues = collect_new_library_support_quality_issues(
+        matched,
+        has_reviewable_dynamic_access_metadata_evidence=has_reviewable_dynamic_access_metadata_evidence(
+            dynamic_access_evidence,
+        ),
+    )
     if quality_issues:
         details = "; ".join(quality_issues)
         raise ValueError(f"Refusing to create PR for {coordinates}: {details}")
@@ -628,7 +686,7 @@ def main(argv=None):
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     ensure_gh_authenticated()
-    validate_run_quality(coordinates, metrics_repo_path)
+    validate_run_quality(coordinates, metrics_repo_path, repo_path)
 
     branch = push_current_branch_to_origin(
         coordinates=coordinates,

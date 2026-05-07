@@ -27,6 +27,8 @@ from git_scripts.common_git import git_remote_exists
 DEFAULT_INPUT_RATE_PER_1M = 3.00
 DEFAULT_CACHED_INPUT_RATE_PER_1M = 3.00
 DEFAULT_OUTPUT_RATE_PER_1M = 12.00
+DYNAMIC_ACCESS_MIN_COVERAGE_RATIO = 0.20
+DYNAMIC_ACCESS_METADATA_ENTRY_GAP_RATIO = 1.75
 
 INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "oca/gpt-5.4": 2.50,
@@ -1017,16 +1019,82 @@ def commit_run_metrics_with_retry(
             shutil.rmtree(snapshot_root, ignore_errors=True)
 
 
-def collect_new_library_support_quality_issues(run_metrics: dict) -> list[str]:
+def _dynamic_access_stats_from_run_metrics(run_metrics: dict) -> dict | None:
+    stats = run_metrics.get("stats")
+    if not isinstance(stats, dict):
+        return None
+    dynamic_access = stats.get("dynamicAccess")
+    if not isinstance(dynamic_access, dict):
+        return None
+    return dynamic_access
+
+
+def _dynamic_access_call_counts(dynamic_access: dict) -> tuple[int, int, float] | None:
+    total_calls = int(dynamic_access.get("totalCalls", 0) or 0)
+    if total_calls <= 0:
+        return None
+    covered_calls = int(dynamic_access.get("coveredCalls", 0) or 0)
+    coverage_ratio = dynamic_access.get("coverageRatio")
+    if coverage_ratio is None:
+        coverage_ratio = covered_calls / total_calls
+    return covered_calls, total_calls, float(coverage_ratio)
+
+
+def _run_metrics_metadata_entry_count(metrics: dict, key: str) -> int:
+    return int(metrics.get(key, 0) or 0)
+
+
+def _has_dynamic_access_metadata_entry_gap(covered_calls: int, metadata_entries: int) -> bool:
+    if covered_calls <= 0:
+        return False
+    if metadata_entries <= 0:
+        return True
+    return covered_calls >= metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_GAP_RATIO
+
+
+def collect_new_library_support_quality_issues(
+        run_metrics: dict,
+        has_reviewable_dynamic_access_metadata_evidence: bool = False,
+) -> list[str]:
     """Return validation failures for a new-library-support run that is not meaningful enough for a PR."""
     status = run_metrics.get("status")
     if status not in {"success", "success_with_intervention", "chunk_ready"}:
         return [f"workflow status is `{status or 'unknown'}`"]
 
     metrics = run_metrics.get("metrics") or {}
+    issues = []
 
-    code_coverage_percent = float(metrics.get("code_coverage_percent", 0.0) or 0.0)
+    raw_code_coverage_percent = metrics.get("code_coverage_percent", run_metrics.get("code_coverage_percent", 0.0))
+    code_coverage_percent = float(raw_code_coverage_percent or 0.0)
     if code_coverage_percent <= 0.0:
-        return ["library coverage percentage is zero"]
+        issues.append("library coverage percentage is zero")
 
-    return []
+    dynamic_access = _dynamic_access_stats_from_run_metrics(run_metrics)
+    dynamic_access_counts = None if dynamic_access is None else _dynamic_access_call_counts(dynamic_access)
+    if dynamic_access_counts is not None:
+        covered_calls, total_calls, coverage_ratio = dynamic_access_counts
+        if coverage_ratio <= DYNAMIC_ACCESS_MIN_COVERAGE_RATIO:
+            issues.append(
+                "dynamic-access coverage is "
+                f"{covered_calls}/{total_calls} ({coverage_ratio * 100.0:.2f}%), "
+                f"at or below the required {DYNAMIC_ACCESS_MIN_COVERAGE_RATIO * 100.0:.0f}%"
+            )
+
+        metadata_entries = _run_metrics_metadata_entry_count(metrics, "metadata_entries")
+        test_only_metadata_entries = _run_metrics_metadata_entry_count(metrics, "test_only_metadata_entries")
+        total_metadata_entries = metadata_entries + test_only_metadata_entries
+        if covered_calls > 0 and total_metadata_entries <= 0:
+            issues.append(
+                "covered dynamic-access calls were reported but no shipped or test-only metadata entries were generated"
+            )
+        elif (
+                _has_dynamic_access_metadata_entry_gap(covered_calls, total_metadata_entries)
+                and not has_reviewable_dynamic_access_metadata_evidence
+        ):
+            issues.append(
+                "covered dynamic-access calls "
+                f"({covered_calls}) are disproportionate to shipped plus test-only metadata entries "
+                f"({total_metadata_entries}) without reviewable call-site and metadata-rule evidence"
+            )
+
+    return issues

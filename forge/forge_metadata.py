@@ -90,7 +90,7 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.metrics_writer import read_pending_metrics
+from utility_scripts.metrics_writer import DYNAMIC_ACCESS_MIN_COVERAGE_RATIO, read_pending_metrics
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
     get_forge_subdir_name,
@@ -195,7 +195,7 @@ SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
 ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
 FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
 FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
-LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
+LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = DYNAMIC_ACCESS_MIN_COVERAGE_RATIO
 HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"

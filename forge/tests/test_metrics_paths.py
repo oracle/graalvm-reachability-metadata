@@ -15,6 +15,7 @@ from ai_workflows.add_new_library_support import (
 from ai_workflows.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
 from utility_scripts.library_stats import load_library_stats_entry, resolve_stats_file_path
 from utility_scripts.metrics_writer import (
+    collect_new_library_support_quality_issues,
     count_metadata_entries,
     count_test_only_metadata_entries,
     create_run_metrics_output_json,
@@ -67,6 +68,28 @@ class DummyAgent:
 
 
 class MetricsPathTests(unittest.TestCase):
+    def test_new_library_quality_rejects_zero_dynamic_access_coverage(self) -> None:
+        issues = collect_new_library_support_quality_issues(
+            {
+                "status": "success",
+                "code_coverage_percent": 8.43,
+                "metrics": {
+                    "metadata_entries": 0,
+                },
+                "stats": {
+                    "dynamicAccess": {
+                        "coveredCalls": 0,
+                        "totalCalls": 8,
+                        "coverageRatio": 0.0,
+                        "breakdown": {},
+                    },
+                },
+            }
+        )
+
+        self.assertTrue(issues)
+        self.assertIn("dynamic-access coverage is 0/8", "; ".join(issues))
+
     def test_count_metadata_entries_uses_metadata_version_for_tested_version(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo", "1.0.0")
