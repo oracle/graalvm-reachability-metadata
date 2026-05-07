@@ -22,6 +22,8 @@ import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.api.gax.rpc.ClientStreamingCallable;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.UnaryCallable;
@@ -41,12 +43,14 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.protobuf.ProtoUtils;
 import io.grpc.stub.ServerCalls;
+import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
@@ -66,6 +70,13 @@ public class Gax_grpcTest {
             .<StringValue, StringValue>newBuilder()
             .setType(MethodDescriptor.MethodType.SERVER_STREAMING)
             .setFullMethodName(MethodDescriptor.generateFullMethodName(SERVICE_NAME, "Expand"))
+            .setRequestMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
+            .setResponseMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
+            .build();
+    private static final MethodDescriptor<StringValue, StringValue> COLLECT_METHOD = MethodDescriptor
+            .<StringValue, StringValue>newBuilder()
+            .setType(MethodDescriptor.MethodType.CLIENT_STREAMING)
+            .setFullMethodName(MethodDescriptor.generateFullMethodName(SERVICE_NAME, "Collect"))
             .setRequestMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
             .setResponseMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
             .build();
@@ -118,6 +129,49 @@ public class Gax_grpcTest {
             List<StringValue> responses = callable.all().call(StringValue.of("abc"), context);
 
             assertThat(responses).extracting(StringValue::getValue).containsExactly("a", "b", "c");
+        } finally {
+            fixture.close();
+        }
+    }
+
+    @Test
+    void rawClientStreamingCallableAggregatesClientMessages() throws Exception {
+        InProcessFixture fixture = InProcessFixture.start(collectService());
+        try {
+            ClientStreamingCallable<StringValue, StringValue> callable = GrpcRawCallableFactory
+                    .createClientStreamingCallable(GrpcCallSettings.create(COLLECT_METHOD), Set.of());
+            GrpcCallContext context = GrpcCallContext
+                    .of(fixture.channel(), CallOptions.DEFAULT)
+                    .withTimeoutDuration(Duration.ofSeconds(5));
+            CountDownLatch completed = new CountDownLatch(1);
+            AtomicReference<StringValue> response = new AtomicReference<>();
+            AtomicReference<Throwable> error = new AtomicReference<>();
+
+            ApiStreamObserver<StringValue> requests = callable.clientStreamingCall(new ApiStreamObserver<>() {
+                @Override
+                public void onNext(StringValue value) {
+                    response.set(value);
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    error.set(throwable);
+                    completed.countDown();
+                }
+
+                @Override
+                public void onCompleted() {
+                    completed.countDown();
+                }
+            }, context);
+            requests.onNext(StringValue.of("one"));
+            requests.onNext(StringValue.of("two"));
+            requests.onNext(StringValue.of("three"));
+            requests.onCompleted();
+
+            assertThat(completed.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(error.get()).isNull();
+            assertThat(response.get().getValue()).isEqualTo("one,two,three");
         } finally {
             fixture.close();
         }
@@ -336,6 +390,34 @@ public class Gax_grpcTest {
                         observer.onNext(StringValue.of(String.valueOf(request.getValue().charAt(index))));
                     }
                     observer.onCompleted();
+                }))
+                .build();
+    }
+
+    private static ServerServiceDefinition collectService() {
+        return ServerServiceDefinition
+                .builder(SERVICE_NAME)
+                .addMethod(COLLECT_METHOD, ServerCalls.asyncClientStreamingCall(observer -> new StreamObserver<>() {
+                    private final StringBuilder response = new StringBuilder();
+
+                    @Override
+                    public void onNext(StringValue value) {
+                        if (!response.isEmpty()) {
+                            response.append(',');
+                        }
+                        response.append(value.getValue());
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        observer.onError(throwable);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        observer.onNext(StringValue.of(response.toString()));
+                        observer.onCompleted();
+                    }
                 }))
                 .build();
     }
