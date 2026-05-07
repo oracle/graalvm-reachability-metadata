@@ -162,6 +162,17 @@ class Cats_mtl_3Test {
   }
 
   @Test
+  def chronicleDiscloseReportsWarningsWithEmptySuccessValues(): Unit = {
+    type WarningOr[A] = Ior[Vector[String], A]
+
+    val chronicle: Chronicle[WarningOr, Vector[String]] = Chronicle[WarningOr, Vector[String]]
+
+    assertEquals(Ior.Both(Vector("empty-count"), 0), chronicle.disclose[Int](Vector("empty-count")))
+    assertEquals(Ior.Both(Vector("empty-text"), ""), chronicle.disclose[String](Vector("empty-text")))
+    assertEquals(Ior.Both(Vector("incremented"), 1), chronicle.disclose[Int](Vector("incremented")).map(_ + 1))
+  }
+
+  @Test
   def transformerInstancesComposeCapabilities(): Unit = {
     type ErrorOr[A] = Either[String, A]
     type LoggedEither[A] = WriterT[ErrorOr, Vector[String], A]
