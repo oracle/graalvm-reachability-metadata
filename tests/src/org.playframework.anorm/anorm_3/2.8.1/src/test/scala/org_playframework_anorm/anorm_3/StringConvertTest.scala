@@ -7,13 +7,20 @@
 package org_playframework_anorm.anorm_3
 
 import java.io.File
+import java.lang.module.FindException
+import java.lang.module.ModuleFinder
+import java.lang.reflect.Type
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.time.Instant
 import java.util.OptionalDouble
 import java.util.OptionalInt
 import java.util.OptionalLong
+import java.util.Set
 
 import com.google.common.reflect.TypeToken
 import org.assertj.core.api.Assertions.assertThat
+import org.graalvm.internal.tck.NativeImageSupport
 import org.joda.convert.StringConvert
 import org.junit.jupiter.api.Test
 
@@ -60,6 +67,20 @@ class StringConvertTest {
   }
 
   @Test
+  def registersGuavaConverterWhenLoadedAsNamedModules(): Unit = {
+    try {
+      assertThat(convertGuavaTypeTokenInNamedModuleLayer()).isEqualTo("java.lang.String")
+    } catch {
+      case error: Error =>
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+          throw error
+        }
+      case _: FindException =>
+        // Native Image code sources point at the executable, not the original modular JAR.
+    }
+  }
+
+  @Test
   def registersConvertersUsingPublicMethodNamesAndConstructors(): Unit = {
     val convert: StringConvert = new StringConvert(false)
 
@@ -78,6 +99,51 @@ class StringConvertTest {
     convert.registerMethodConstructor(classOf[CharSequenceConstructorValue], "asText")
     assertThat(convert.convertFromString(classOf[CharSequenceConstructorValue], "delta").asText()).isEqualTo("delta")
   }
+
+  private def convertGuavaTypeTokenInNamedModuleLayer(): String = {
+    val jodaConvertJar: Path = jarPath(classOf[StringConvert])
+    val classPathTypeTokenClass: Class[?] = Class.forName("com.google.common.reflect.TypeToken")
+    val guavaJar: Path = jarPath(classPathTypeTokenClass)
+    val finder: ModuleFinder = ModuleFinder.of(jodaConvertJar, guavaJar)
+    val jodaConvertModuleName: String = moduleName(finder, "org.joda.convert")
+    val guavaModuleName: String = moduleName(finder, "com.google.common.reflect")
+    val configuration = ModuleLayer.boot().configuration().resolve(
+      finder,
+      ModuleFinder.of(),
+      Set.of(jodaConvertModuleName, guavaModuleName)
+    )
+    val layer: ModuleLayer = ModuleLayer.boot().defineModulesWithOneLoader(
+      configuration,
+      ClassLoader.getPlatformClassLoader()
+    )
+    val loader: ClassLoader = layer.findLoader(jodaConvertModuleName)
+    val thread: Thread = Thread.currentThread()
+    val originalLoader: ClassLoader = thread.getContextClassLoader
+
+    try {
+      thread.setContextClassLoader(loader)
+      val stringConvertType: Class[?] = Class.forName("org.joda.convert.StringConvert", true, loader)
+      val convert: Object = stringConvertType.getConstructor().newInstance()
+      val typeTokenClass: Class[?] = Class.forName("com.google.common.reflect.TypeToken", true, loader)
+      val token: Object = typeTokenClass.getMethod("of", classOf[Type]).invoke(null, classOf[String])
+      stringConvertType.getMethod("convertToString", classOf[Class[?]], classOf[Object])
+        .invoke(convert, typeTokenClass, token)
+        .asInstanceOf[String]
+    } finally {
+      thread.setContextClassLoader(originalLoader)
+    }
+  }
+
+  private def jarPath(typ: Class[?]): Path =
+    Paths.get(typ.getProtectionDomain.getCodeSource.getLocation.toURI)
+
+  private def moduleName(finder: ModuleFinder, packageName: String): String =
+    finder.findAll().stream()
+      .filter(reference => reference.descriptor().packages().contains(packageName))
+      .findFirst()
+      .orElseThrow(() => new IllegalStateException("No module contains package " + packageName))
+      .descriptor()
+      .name()
 }
 
 final class CharSequenceConstructorValue(raw: CharSequence) {
