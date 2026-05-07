@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
@@ -159,6 +160,35 @@ public class Resilience4j_bulkheadTest {
 
         assertThatThrownBy(() -> failedCall.toCompletableFuture().join())
             .hasCauseInstanceOf(IllegalStateException.class);
+        assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void synchronousDecoratorsReleasePermissionsAfterSuccessAndFailure() throws Exception {
+        Bulkhead bulkhead = Bulkhead.of("sync-decorators", BulkheadConfig.custom()
+            .maxConcurrentCalls(1)
+            .maxWaitDuration(NO_WAIT)
+            .build());
+        AtomicInteger successfulInvocations = new AtomicInteger();
+
+        Callable<String> decoratedCallable = Bulkhead.decorateCallable(bulkhead, () -> {
+            assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isZero();
+            successfulInvocations.incrementAndGet();
+            return "decorated";
+        });
+
+        assertThat(decoratedCallable.call()).isEqualTo("decorated");
+        assertThat(successfulInvocations).hasValue(1);
+        assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isEqualTo(1);
+
+        Supplier<String> failingSupplier = Bulkhead.decorateSupplier(bulkhead, () -> {
+            assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isZero();
+            throw new IllegalStateException("synchronous failure");
+        });
+
+        assertThatThrownBy(failingSupplier::get)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("synchronous failure");
         assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isEqualTo(1);
     }
 
