@@ -47,6 +47,18 @@ case class MoneyDto(value: BigDecimal, code: String)
 case class Registration(name: String)
 case class UserProfile(name: String, active: Boolean = true, role: String = "reader")
 
+final class LegacyTicket(
+    private val ticketIdValue: String,
+    private val ownerValue: String,
+    private val openValue: Boolean
+) {
+  def ticketId: String = ticketIdValue
+  def owner: String = ownerValue
+  def open: Boolean = openValue
+}
+
+case class TicketView(ticketId: String, owner: String, open: Boolean)
+
 enum WireStatus {
   case NewOrder, PaidOrder, CancelledOrder
 }
@@ -166,6 +178,18 @@ class Chimney_3Test {
       .transform
 
     assertEquals(UserProfile("Katherine Johnson", active = true, role = "reader"), profile)
+  }
+
+  @Test
+  def readsParameterlessMethodsAsSourceFieldsWhenEnabled(): Unit = {
+    val ticket: LegacyTicket = new LegacyTicket("TCK-123", "Dorothy Vaughan", openValue = true)
+
+    val view: TicketView = ticket
+      .into[TicketView]
+      .enableMethodAccessors
+      .transform
+
+    assertEquals(TicketView("TCK-123", "Dorothy Vaughan", open = true), view)
   }
 
   @Test
