@@ -8,7 +8,7 @@ package org_apache_pulsar.pulsar_client_api;
 
 import org.junit.jupiter.api.Test;
 
-class Pulsar_client_apiTest {
+public class Pulsar_client_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
