@@ -18,11 +18,13 @@ import org.scalafmt.sysops.GitOps
 import org.scalafmt.sysops.OsSpecific
 
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.attribute.BasicFileAttributes
+import java.util.concurrent.TimeUnit
 import scala.io.Codec
 import scala.jdk.CollectionConverters._
 import scala.util.Success
@@ -285,6 +287,51 @@ class Scalafmt_sysops_2_13Test {
   }
 
   @Test
+  def gitOpsImplDiscoversRepositoryAndReportsTrackedDirtyAndDiffFiles(): Unit = {
+    withTempDirectory { tempDirectory: Path =>
+      implicit val codec: Codec = Codec.UTF8
+      val repository: Path = tempDirectory.toAbsolutePath
+      val sourceDirectory: Path = repository.resolve("src")
+      val trackedFile: Path = sourceDirectory.resolve("Tracked.scala")
+      val unchangedFile: Path = repository.resolve("README.md")
+      val untrackedFile: Path = sourceDirectory.resolve("Untracked.scala")
+      val baselineBranch: String = "baseline-for-scalafmt-sysops-test"
+
+      runCommand(repository, "git", "init")
+      runCommand(repository, "git", "config", "user.email", "test@example.invalid")
+      runCommand(repository, "git", "config", "user.name", "Scalafmt Sysops Test")
+      runCommand(repository, "git", "config", "commit.gpgsign", "false")
+      runCommand(repository, "git", "checkout", "-b", baselineBranch)
+      Files.createDirectories(sourceDirectory)
+      FileOps.writeFile(trackedFile, "object Tracked\n")
+      FileOps.writeFile(unchangedFile, "# Readme\n")
+      runCommand(repository, "git", "add", ".")
+      runCommand(repository, "git", "commit", "-m", "initial commit")
+      runCommand(repository, "git", "checkout", "-b", "feature")
+      FileOps.writeFile(trackedFile, "object Tracked { val value = 1 }\n")
+      FileOps.writeFile(untrackedFile, "object Untracked\n")
+
+      val gitOps: GitOps = GitOps.FactoryImpl(AbsoluteFile(repository))
+      val repositoryRoot: Option[AbsoluteFile] = gitOps.rootDir
+      assertTrue(repositoryRoot.isDefined)
+      assertEquals(repository, repositoryRoot.get.path)
+
+      val trackedFiles: Set[AbsoluteFile] = gitOps.lsTree().toSet
+      assertTrue(trackedFiles.contains(AbsoluteFile(trackedFile)))
+      assertTrue(trackedFiles.contains(AbsoluteFile(unchangedFile)))
+      assertFalse(trackedFiles.contains(AbsoluteFile(untrackedFile)))
+
+      val dirtyFiles: Set[AbsoluteFile] = gitOps.status().toSet
+      assertEquals(Set(AbsoluteFile(trackedFile), AbsoluteFile(untrackedFile)), dirtyFiles)
+      assertEquals(dirtyFiles, gitOps.status(AbsoluteFile(sourceDirectory)).toSet)
+
+      val filesChangedFromBaseline: Seq[AbsoluteFile] = gitOps.diff(baselineBranch)
+      assertEquals(Seq(AbsoluteFile(trackedFile)), filesChangedFromBaseline)
+      assertEquals(filesChangedFromBaseline, gitOps.diff(baselineBranch, AbsoluteFile(sourceDirectory)))
+    }
+  }
+
+  @Test
   def gitOpsExtensionMethodsResolveRootAndProposedConfigurationFiles(): Unit = {
     import org.scalafmt.sysops.GitOps._
 
@@ -333,6 +380,22 @@ class Scalafmt_sysops_2_13Test {
     val directory: Path = Files.createTempDirectory("scalafmt-sysops-test-")
     try testBody(directory)
     finally deleteRecursively(directory)
+  }
+
+  private def runCommand(workingDirectory: Path, command: String*): Unit = {
+    val process = new ProcessBuilder(command: _*)
+      .directory(workingDirectory.toFile)
+      .redirectErrorStream(true)
+      .start()
+    val finished: Boolean = process.waitFor(30, TimeUnit.SECONDS)
+    if (!finished) {
+      process.destroyForcibly()
+      process.waitFor(5, TimeUnit.SECONDS)
+    }
+    val output: String =
+      if (process.isAlive) "" else new String(process.getInputStream.readAllBytes(), StandardCharsets.UTF_8)
+    assertTrue(finished, s"Command timed out: ${command.mkString(" ")}\n$output")
+    assertEquals(0, process.exitValue(), s"Command failed: ${command.mkString(" ")}\n$output")
   }
 
   private def deleteRecursively(path: Path): Unit = {
