@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import sttp.monad.MonadError
+import sttp.monad.syntax.*
 import sttp.tapir.integ.cats.effect.CatsMonadError
 
 import java.util.concurrent.CopyOnWriteArrayList
@@ -191,6 +193,39 @@ class Tapir_cats_effect_3Test {
 
     assertEquals("blocking:42", await(program))
   }
+
+  @Test
+  def catsMonadErrorCanPowerTapirMonadSyntaxForIoPrograms(): Unit = {
+    given MonadError[IO] = monad
+
+    val events: CopyOnWriteArrayList[String] = new CopyOnWriteArrayList[String]()
+    val boom: IllegalStateException = new IllegalStateException("syntax failure")
+    val program: IO[String] = syntaxProgram[IO](events, boom)
+
+    assertSame(monad, MonadError[IO])
+    assertEquals("recovered", await(program))
+    assertEquals(List("seen:request", "finalized"), events.asScala.toList)
+  }
+
+  private def syntaxProgram[F[_]](
+      events: CopyOnWriteArrayList[String],
+      boom: IllegalStateException
+  )(using effect: MonadError[F]): F[String] =
+    effect.unit("request")
+      .flatTap { (value: String) =>
+        effect.eval {
+          events.add(s"seen:$value")
+          ()
+        }
+      }
+      .flatMap(_ => effect.error[String](boom))
+      .handleError {
+        case e: IllegalStateException if e eq boom => effect.unit("recovered")
+      }
+      .ensure(effect.eval {
+        events.add("finalized")
+        ()
+      })
 
   private def append(events: CopyOnWriteArrayList[String], event: String): IO[Unit] =
     monad.eval {
