@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.ClientEndpointProvider;
+import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.core.SdkField;
 import software.amazon.awssdk.core.SdkPojo;
 import software.amazon.awssdk.core.client.config.SdkClientConfiguration;
@@ -33,6 +34,7 @@ import software.amazon.awssdk.core.interceptor.ExecutionAttributes;
 import software.amazon.awssdk.core.protocol.MarshallLocation;
 import software.amazon.awssdk.core.protocol.MarshallingType;
 import software.amazon.awssdk.core.traits.LocationTrait;
+import software.amazon.awssdk.core.traits.PayloadTrait;
 import software.amazon.awssdk.http.AbortableInputStream;
 import software.amazon.awssdk.http.SdkHttpFullRequest;
 import software.amazon.awssdk.http.SdkHttpFullResponse;
@@ -237,6 +239,54 @@ public class Aws_json_protocolTest {
     }
 
     @Test
+    void protocolMarshallerSendsExplicitBinaryPayloadWithoutJsonEnvelope() throws IOException {
+        AwsJsonProtocolFactory factory = AwsJsonProtocolFactory.builder()
+                                                              .clientConfiguration(clientConfiguration())
+                                                              .protocol(AwsJsonProtocol.REST_JSON)
+                                                              .protocolVersion("1.1")
+                                                              .build();
+        OperationInfo operationInfo = OperationInfo.builder()
+                                                   .requestUri("/payload")
+                                                   .httpMethod(SdkHttpMethod.POST)
+                                                   .operationIdentifier("ExampleService.PutPayload")
+                                                   .hasPayloadMembers(true)
+                                                   .hasExplicitPayloadMember(true)
+                                                   .build();
+
+        SdkHttpFullRequest request = factory.createProtocolMarshaller(operationInfo)
+                                            .marshall(BinaryPayloadPojo.requestPojo());
+
+        assertThat(request.method()).isEqualTo(SdkHttpMethod.POST);
+        assertThat(request.encodedPath()).isEqualTo("/payload");
+        assertThat(request.firstMatchingHeader("Content-Length")).contains("16");
+        assertThat(utf8Content(request)).isEqualTo("raw bytes {json}");
+    }
+
+    @Test
+    void responseHandlerUnmarshallsExplicitBinaryPayloadWithoutParsingJson() throws Exception {
+        AwsJsonProtocolFactory factory = AwsJsonProtocolFactory.builder()
+                                                              .clientConfiguration(clientConfiguration())
+                                                              .protocol(AwsJsonProtocol.REST_JSON)
+                                                              .protocolVersion("1.1")
+                                                              .build();
+        JsonOperationMetadata binaryPayloadOperation = JsonOperationMetadata.builder()
+                                                                           .isPayloadJson(false)
+                                                                           .build();
+        HttpResponseHandler<BinaryPayloadPojo> handler = factory.createResponseHandler(binaryPayloadOperation,
+                                                                                       BinaryPayloadPojo::new);
+        SdkHttpFullResponse response = SdkHttpFullResponse.builder()
+                                                          .statusCode(200)
+                                                          .putHeader("Content-Type", "application/octet-stream")
+                                                          .content(AbortableInputStream.create(
+                                                              new StringInputStream("not-json { raw }")))
+                                                          .build();
+
+        BinaryPayloadPojo pojo = handler.handle(response, new ExecutionAttributes());
+
+        assertThat(pojo.payload().asUtf8String()).isEqualTo("not-json { raw }");
+    }
+
+    @Test
     void protocolMarshallerSerializesDocumentPayloadMember() throws IOException {
         AwsJsonProtocolFactory factory = AwsJsonProtocolFactory.builder()
                                                               .clientConfiguration(clientConfiguration())
@@ -399,6 +449,23 @@ public class Aws_json_protocolTest {
                        .build();
     }
 
+    private static SdkField<SdkBytes> sdkBytesPayloadField(String memberName,
+                                                           MarshallLocation location,
+                                                           String locationName) {
+        return SdkField.<SdkBytes>builder(MarshallingType.SDK_BYTES)
+                       .memberName(memberName)
+                       .getter(getterTarget -> ((BinaryPayloadPojo) getterTarget).sdkBytesValue(memberName))
+                       .setter((setterTarget, value) -> ((BinaryPayloadPojo) setterTarget).setSdkBytesValue(memberName,
+                                                                                                             value))
+                       .traits(LocationTrait.builder()
+                                            .location(location)
+                                            .locationName(locationName)
+                                            .unmarshallLocationName(locationName)
+                                            .build(),
+                               PayloadTrait.create())
+                       .build();
+    }
+
     private static SdkField<Document> documentField(String memberName, MarshallLocation location, String locationName) {
         return SdkField.<Document>builder(MarshallingType.DOCUMENT)
                        .memberName(memberName)
@@ -555,6 +622,56 @@ public class Aws_json_protocolTest {
 
         @Override
         public ProtocolPojo build() {
+            return this;
+        }
+
+        @Override
+        public Map<String, SdkField<?>> sdkFieldNameToField() {
+            return SdkPojo.super.sdkFieldNameToField();
+        }
+    }
+
+    private static final class BinaryPayloadPojo implements SdkPojo, Buildable {
+        private static final String PAYLOAD = "payload";
+        private static final SdkField<SdkBytes> PAYLOAD_FIELD = sdkBytesPayloadField(PAYLOAD,
+                                                                                     MarshallLocation.PAYLOAD,
+                                                                                     "Payload");
+        private static final List<SdkField<?>> SDK_FIELDS = Arrays.asList(PAYLOAD_FIELD);
+
+        private SdkBytes payload;
+
+        static BinaryPayloadPojo requestPojo() {
+            BinaryPayloadPojo pojo = new BinaryPayloadPojo();
+            pojo.payload = SdkBytes.fromUtf8String("raw bytes {json}");
+            return pojo;
+        }
+
+        SdkBytes payload() {
+            return payload;
+        }
+
+        SdkBytes sdkBytesValue(String memberName) {
+            if (PAYLOAD.equals(memberName)) {
+                return payload;
+            }
+            throw new IllegalArgumentException("Unknown bytes member: " + memberName);
+        }
+
+        void setSdkBytesValue(String memberName, SdkBytes value) {
+            if (PAYLOAD.equals(memberName)) {
+                payload = value;
+                return;
+            }
+            throw new IllegalArgumentException("Unknown bytes member: " + memberName);
+        }
+
+        @Override
+        public List<SdkField<?>> sdkFields() {
+            return SDK_FIELDS;
+        }
+
+        @Override
+        public BinaryPayloadPojo build() {
             return this;
         }
 
