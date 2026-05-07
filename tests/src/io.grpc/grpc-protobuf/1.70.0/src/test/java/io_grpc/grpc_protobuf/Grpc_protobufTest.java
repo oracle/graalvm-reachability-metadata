@@ -7,13 +7,17 @@
 package io_grpc.grpc_protobuf;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.MethodDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.MethodDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
+import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.StringValue;
@@ -107,6 +111,26 @@ public class Grpc_protobufTest {
     }
 
     @Test
+    void extensionRegistryParsesRegisteredExtensions() throws Exception {
+        FileDescriptor fileDescriptor = buildExtendedMessageFileDescriptor();
+        Descriptor hostDescriptor = fileDescriptor.findMessageTypeByName("Host");
+        FieldDescriptor extensionField = fileDescriptor.findExtensionByName("label");
+        DynamicMessage defaultInstance = DynamicMessage.getDefaultInstance(hostDescriptor);
+        DynamicMessage message = DynamicMessage.newBuilder(hostDescriptor)
+                .setField(extensionField, "registered extension")
+                .build();
+        ExtensionRegistry registry = ExtensionRegistry.newInstance();
+        registry.add(extensionField);
+        ProtoUtils.setExtensionRegistry(registry);
+
+        Marshaller<DynamicMessage> marshaller = ProtoUtils.marshaller(defaultInstance);
+        DynamicMessage parsed = marshaller.parse(new ByteArrayInputStream(message.toByteArray()));
+
+        assertThat(parsed.getField(extensionField)).isEqualTo("registered extension");
+        assertThat(parsed.getAllFields()).containsEntry(extensionField, "registered extension");
+    }
+
+    @Test
     void statusProtoConvertsRpcStatusToRuntimeExceptionAndBack() {
         Status rpcStatus = Status.newBuilder()
                 .setCode(Code.INVALID_ARGUMENT.getNumber())
@@ -193,6 +217,27 @@ public class Grpc_protobufTest {
                     .build();
         }
         return value;
+    }
+
+    private static FileDescriptor buildExtendedMessageFileDescriptor() throws Exception {
+        DescriptorProto host = DescriptorProto.newBuilder()
+                .setName("Host")
+                .addExtensionRange(ExtensionRange.newBuilder().setStart(100).setEnd(101))
+                .build();
+        FieldDescriptorProto extension = FieldDescriptorProto.newBuilder()
+                .setName("label")
+                .setNumber(100)
+                .setLabel(FieldDescriptorProto.Label.LABEL_OPTIONAL)
+                .setType(FieldDescriptorProto.Type.TYPE_STRING)
+                .setExtendee(".testing.Host")
+                .build();
+        FileDescriptorProto file = FileDescriptorProto.newBuilder()
+                .setName("testing/extended-message.proto")
+                .setPackage("testing")
+                .addMessageType(host)
+                .addExtension(extension)
+                .build();
+        return FileDescriptor.buildFrom(file, new FileDescriptor[0]);
     }
 
     private static FileDescriptor buildGreeterFileDescriptor() throws Exception {
