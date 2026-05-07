@@ -11,6 +11,7 @@ import cats.kernel.Hash
 import cats.kernel.LowerBounded
 import cats.kernel.Monoid
 import cats.kernel.Order
+import java.util.Locale
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -138,13 +139,30 @@ class Case_insensitive_3Test {
   }
 
   @Test
-  def globMatchesRuntimeLiteralPartsAndReturnsCapturedSegments(): Unit = {
-    val literalParts: List[String] = List("route=", "; method=", "; status=", "; end")
-    val request: CIString = CIString("ROUTE=/Api/Items; METHOD=GET; STATUS=Accepted; END")
-    val captures: Option[Seq[CIString]] = glob(literalParts, request)
+  def caseInsensitiveOperationsAreIndependentOfDefaultLocale(): Unit = {
+    val originalLocale: Locale = Locale.getDefault
+    try {
+      Locale.setDefault(Locale.forLanguageTag("tr-TR"))
 
-    captures match {
-      case Some(Seq(route, method, status)) =>
+      val upper: CIString = CIString("TITLE")
+      val lower: CIString = CIString("title")
+      val header: CIString = CIString("X-API-ID")
+
+      assertEquals(upper, lower)
+      assertEquals(upper.hashCode(), lower.hashCode())
+      assertEquals(0, upper.compare(lower))
+      assertTrue(header.contains(CIString("api")))
+    } finally {
+      Locale.setDefault(originalLocale)
+    }
+  }
+
+  @Test
+  def ciExtractorMatchesRouteSegmentsAndRejectsTrailingText(): Unit = {
+    val request: CIString = CIString("ROUTE=/Api/Items; METHOD=GET; STATUS=Accepted; END")
+
+    request match {
+      case ci"route=$route; method=$method; status=$status; end" =>
         assertEquals(CIString("/api/items"), route)
         assertEquals("/Api/Items", route.toString)
         assertEquals(CIString("get"), method)
@@ -154,6 +172,10 @@ class Case_insensitive_3Test {
       case other => throw new AssertionError(s"Expected route, method, and status captures, but got $other")
     }
 
-    assertEquals(None, glob(literalParts, CIString("route=/api/items; method=GET; status=Accepted; end; trailing=true")))
+    CIString("route=/api/items; method=GET; status=Accepted; end; trailing=true") match {
+      case ci"route=$route; method=$method; status=$status; end" =>
+        throw new AssertionError(s"Unexpected route match: $route, $method, $status")
+      case _ => assertTrue(true)
+    }
   }
 }
