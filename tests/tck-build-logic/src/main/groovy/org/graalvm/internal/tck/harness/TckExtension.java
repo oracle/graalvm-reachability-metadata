@@ -414,11 +414,10 @@ public abstract class TckExtension {
             List<String> tv = (List<String>) entry.get("tested-versions");
             if (tv != null && tv.contains(version)) {
                 String metaVersion = (String) entry.get("metadata-version");
-                Path result = artifactDir.resolve(metaVersion);
-                if (Files.isDirectory(result)) {
-                    return result;
+                if (metaVersion == null || metaVersion.isBlank()) {
+                    throw new RuntimeException("Index.json for " + groupId + ":" + artifactId + " has no metadata-version for " + version);
                 }
-                throw new RuntimeException("Index.json for " + groupId + ":" + artifactId + " maps version " + version + " to missing dir " + result);
+                return artifactDir.resolve(metaVersion);
             }
         }
         throw new RuntimeException("Missing metadata for " + coordinates);
@@ -496,8 +495,15 @@ public abstract class TckExtension {
             for (Map<String, ?> entry : index) {
                 List<String> tested = (List<String>) entry.get("tested-versions");
                 String metaVer = (String) entry.get("metadata-version");
+                String testVer = entryTestVersion(entry);
 
-                if (tested == null || metaVer == null || !Files.isDirectory(fullDir.resolve(metaVer))) {
+                if (tested == null || metaVer == null || testVer == null) {
+                    continue;
+                }
+
+                Path metadataDir = fullDir.resolve(metaVer);
+                Path testDir = testRoot().resolve(g).resolve(a).resolve(testVer);
+                if (!Files.isDirectory(metadataDir) && !Files.isDirectory(testDir)) {
                     continue;
                 }
 
@@ -507,6 +513,22 @@ public abstract class TckExtension {
             }
         });
         return new ArrayList<>(results);
+    }
+
+    private static String entryTestVersion(Map<String, ?> entry) {
+        Object testVersion = entry.get("test-version");
+        if (testVersion != null) {
+            String value = testVersion.toString().trim();
+            if (!value.isEmpty()) {
+                return value;
+            }
+        }
+        Object metadataVersion = entry.get("metadata-version");
+        if (metadataVersion == null) {
+            return null;
+        }
+        String value = metadataVersion.toString().trim();
+        return value.isEmpty() ? null : value;
     }
 
     /**
