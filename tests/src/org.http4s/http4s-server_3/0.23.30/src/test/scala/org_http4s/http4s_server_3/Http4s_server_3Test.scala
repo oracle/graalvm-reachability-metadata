@@ -28,6 +28,8 @@ import org.http4s.implicits.*
 import org.http4s.server.ContextMiddleware
 import org.http4s.server.Router
 import org.http4s.server.middleware.AutoSlash
+import org.http4s.server.middleware.CORS
+import org.http4s.server.middleware.CORSConfig
 import org.http4s.server.middleware.DefaultHead
 import org.http4s.server.middleware.EntityLimiter
 import org.http4s.server.middleware.HSTS
@@ -168,6 +170,54 @@ class Http4s_server_3Test {
   }
 
   @Test
+  def corsPolicyHandlesActualAndPreflightCorsRequests(): Unit = {
+    val app: HttpApp[IO] = HttpApp[IO] { request =>
+      Response[IO](Status.Ok)
+        .withEntity(s"served-${request.method.name}")
+        .putHeaders(Header.Raw(ci"X-Response-Token", "token-value"))
+        .pure[IO]
+    }
+    val corsConfig: CORSConfig = CORSConfig.default
+      .withAllowCredentials(false)
+      .withAnyMethod(false)
+      .withAllowedMethods(Some(Set(Method.GET, Method.POST)))
+      .withAllowedHeaders(Some(Set("X-Requested-With")))
+      .withExposedHeaders(Some(Set("X-Response-Token")))
+      .withMaxAge(20.seconds)
+    val corsApp: HttpApp[IO] = CORS(app, corsConfig)
+
+    val actual: Response[IO] = run(
+      corsApp(Request[IO](Method.GET, uri"/cors").putHeaders(Header.Raw(ci"Origin", "https://client.example")))
+    )
+    assertEquals(Status.Ok, actual.status)
+    assertEquals("served-GET", bodyText(actual))
+    assertEquals(Some("https://client.example"), rawHeader(actual, ci"Access-Control-Allow-Origin"))
+    assertTrue(hasCommaSeparatedHeaderValue(actual, ci"Access-Control-Expose-Headers", "X-Response-Token"))
+    assertEquals(Some("token-value"), rawHeader(actual, ci"X-Response-Token"))
+
+    val preflight: Response[IO] = run(
+      corsApp(
+        Request[IO](Method.OPTIONS, uri"/cors").putHeaders(
+          Header.Raw(ci"Origin", "https://client.example"),
+          Header.Raw(ci"Access-Control-Request-Method", "POST"),
+          Header.Raw(ci"Access-Control-Request-Headers", "X-Requested-With"),
+        )
+      )
+    )
+    assertEquals(Status.Ok, preflight.status)
+    assertEquals("", bodyText(preflight))
+    assertEquals(Some("https://client.example"), rawHeader(preflight, ci"Access-Control-Allow-Origin"))
+    assertEquals(Set("GET", "POST"), commaSeparatedHeaderValues(preflight, ci"Access-Control-Allow-Methods"))
+    assertTrue(hasCommaSeparatedHeaderValue(preflight, ci"Access-Control-Allow-Headers", "X-Requested-With"))
+    assertEquals(Some("20"), rawHeader(preflight, ci"Access-Control-Max-Age"))
+
+    val nonCors: Response[IO] = run(corsApp(Request[IO](Method.GET, uri"/cors")))
+    assertEquals(Status.Ok, nonCors.status)
+    assertEquals("served-GET", bodyText(nonCors))
+    assertEquals(None, rawHeader(nonCors, ci"Access-Control-Allow-Origin"))
+  }
+
+  @Test
   def entityLimiterAllowsBoundedBodiesAndFailsOversizedBodiesWhenRead(): Unit = {
     val echoLength: HttpApp[IO] = HttpApp[IO] { request =>
       request.as[String].map(body => Response[IO](Status.Ok).withEntity(s"length=${body.length}"))
@@ -251,6 +301,12 @@ object Http4s_server_3Test {
 
   private def rawHeader(response: Response[IO], name: CIString): Option[String] =
     response.headers.get(name).map(_.head.value)
+
+  private def commaSeparatedHeaderValues(response: Response[IO], name: CIString): Set[String] =
+    rawHeader(response, name).fold(Set.empty[String])(_.split(',').iterator.map(_.trim).filter(_.nonEmpty).toSet)
+
+  private def hasCommaSeparatedHeaderValue(response: Response[IO], name: CIString, value: String): Boolean =
+    commaSeparatedHeaderValues(response, name).exists(_.equalsIgnoreCase(value))
 
   private def run[A](io: IO[A]): A =
     io.timeout(5.seconds).unsafeRunSync()
