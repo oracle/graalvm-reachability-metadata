@@ -1,0 +1,1285 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e01d3-0037-7482-8447-09f109bd1998
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.akka:akka-serialization-jackson_3:2.6.21
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.6.21" when "$version$" is replaced with "2.6.21".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+- Set "coordinates" to "com.typesafe.akka:akka-serialization-jackson_3:2.6.21".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.6.21".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/source links first, then update the JSON in place using the repository’s existing metadata style.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json && sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 78 May  7 11:44 build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+{
+  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+
+exec
+/usr/bin/bash -lc "rg -n 'akka-serialization-jackson|documentation-url|source-code-url|test-code-url|language' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:25:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:26:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:43:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:44:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+metadata/org.jetbrains.exposed/exposed-json/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/documentation-website/Writerside/topics/JSON-And-JSONB-types.topic",
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-kotlin-datetime/src/test/kotlin",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/shared/zio_3/$version$/zio_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/zio/src/test",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/shared/zio_3/$version$/zio_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/core/src/test",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/ws_3/$version$/ws_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/ws/src/test",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/ws_3/$version$/ws_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:31:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:46:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/$version$/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:9:    "description" : "ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.",
+metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/$version$/antlr-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/$version$/runtime/Java/src/test",
+metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+metadata/org.antlr/antlr-runtime/index.json:9:    "description" : "ANTLR 3 Runtime provides the Java runtime support needed by lexers, parsers, and tree parsers generated by ANTLR 3. It includes token streams, recognizer base classes, error handling, and tree APIs used to execute grammars generated from language descriptions.",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/org.antlr/antlr/3.5.2/reachability-metadata.json:28:      "glob" : "org/antlr/tool/templates/messages/languages/en.stg"
+metadata/org.antlr/antlr/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/org.antlr/antlr/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/$version$/tool/src/test",
+metadata/org.antlr/antlr/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr/$version$/antlr-$version$-javadoc.jar",
+metadata/org.antlr/ST4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-sources.jar",
+metadata/org.antlr/ST4/index.json:7:    "test-code-url" : "https://github.com/antlr/stringtemplate4/tree/$version$/test",
+metadata/org.antlr/ST4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-util-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+metadata/org.apache.camel/camel-util-json/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+metadata/org.apache.camel/camel-util-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/org.apache.camel/apt/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-sources.jar",
+metadata/org.apache.camel/apt/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/apt/src/test",
+metadata/org.apache.camel/apt/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+
+web search: 
+web search: Maven Central com.typesafe.akka akka-serialization-jackson_3 2.6.21 sources javadoc test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/
+web search: 
+web search: https://doc.akka.io/api/akka/2.6/akka/serialization/jackson/index.html
+web search: 
+web search: site:doc.akka.io/docs/akka/2.6.21 serialization-jackson.html
+codex
+The local file only had coordinates. I found Maven Central publishes the Scala 3 artifact version, so I’m checking the available classifiers before choosing Maven URLs over GitHub links where possible.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.akka</groupId>
+    <artifactId>akka-serialization-jackson_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://akka.io/</url>
+    <version>2.6.21</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>akka-serialization-jackson</name>
+    <inceptionYear>2009</inceptionYear>
+    <organization>
+        <name>Lightbend Inc.</name>
+        <url>https://www.lightbend.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/akka/akka</url>
+        <connection>scm:git:https://github.com/akka/akka.git</connection>
+        <developerConnection>scm:git:git@github.com:akka/akka.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>akka-contributors</id>
+            <name>Akka Contributors</name>
+            <url>https://github.com/akka/akka/graphs/contributors</url>
+            <email>akka.official@gmail.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://doc.akka.io/api/akka/2.6.21</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_3</artifactId>
+            <version>2.6.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor-typed_3</artifactId>
+            <version>2.6.21</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_3</artifactId>
+            <version>2.6.21</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor-tests_3</artifactId>
+            <version>2.6.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-testkit_3</artifactId>
+            <version>2.6.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-cbor</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_3</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.9</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "for u in \\
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-sources.jar \\
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-javadoc.jar \\
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-test-sources.jar \\
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-tests.jar; do printf '%s -> ' \""'$u"; curl -fsSI "$u" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 276ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/akka/akka-serialization-jackson_3/2.6.21</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/akka/akka-serialization-jackson_3/2.6.21</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="akka-serialization-jackson_3-2.6.21-javadoc.jar" title="akka-serialization-jackson_3-2.6.21-javadoc.jar">akka-serialization-jackson_3-2.6.21-javadoc.j...</a>  2023-06-21 09:18       189      
+<a href="akka-serialization-jackson_3-2.6.21-javadoc.jar.asc" title="akka-serialization-jackson_3-2.6.21-javadoc.jar.asc">akka-serialization-jackson_3-2.6.21-javadoc.j...</a>  2023-06-21 09:18       488      
+<a href="akka-serialization-jackson_3-2.6.21-javadoc.jar.asc.md5" title="akka-serialization-jackson_3-2.6.21-javadoc.jar.asc.md5">akka-serialization-jackson_3-2.6.21-javadoc.j...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21-javadoc.jar.asc.sha1" title="akka-serialization-jackson_3-2.6.21-javadoc.jar.asc.sha1">akka-serialization-jackson_3-2.6.21-javadoc.j...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21-javadoc.jar.md5" title="akka-serialization-jackson_3-2.6.21-javadoc.jar.md5">akka-serialization-jackson_3-2.6.21-javadoc.j...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21-javadoc.jar.sha1" title="akka-serialization-jackson_3-2.6.21-javadoc.jar.sha1">akka-serialization-jackson_3-2.6.21-javadoc.j...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21-sources.jar" title="akka-serialization-jackson_3-2.6.21-sources.jar">akka-serialization-jackson_3-2.6.21-sources.j...</a>  2023-06-21 09:18     22054      
+<a href="akka-serialization-jackson_3-2.6.21-sources.jar.asc" title="akka-serialization-jackson_3-2.6.21-sources.jar.asc">akka-serialization-jackson_3-2.6.21-sources.j...</a>  2023-06-21 09:18       488      
+<a href="akka-serialization-jackson_3-2.6.21-sources.jar.asc.md5" title="akka-serialization-jackson_3-2.6.21-sources.jar.asc.md5">akka-serialization-jackson_3-2.6.21-sources.j...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21-sources.jar.asc.sha1" title="akka-serialization-jackson_3-2.6.21-sources.jar.asc.sha1">akka-serialization-jackson_3-2.6.21-sources.j...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21-sources.jar.md5" title="akka-serialization-jackson_3-2.6.21-sources.jar.md5">akka-serialization-jackson_3-2.6.21-sources.j...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21-sources.jar.sha1" title="akka-serialization-jackson_3-2.6.21-sources.jar.sha1">akka-serialization-jackson_3-2.6.21-sources.j...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21.buildinfo" title="akka-serialization-jackson_3-2.6.21.buildinfo">akka-serialization-jackson_3-2.6.21.buildinfo</a>     2023-06-21 09:18       802      
+<a href="akka-serialization-jackson_3-2.6.21.buildinfo.asc" title="akka-serialization-jackson_3-2.6.21.buildinfo.asc">akka-serialization-jackson_3-2.6.21.buildinfo...</a>  2023-06-21 09:18       488      
+<a href="akka-serialization-jackson_3-2.6.21.buildinfo.asc.md5" title="akka-serialization-jackson_3-2.6.21.buildinfo.asc.md5">akka-serialization-jackson_3-2.6.21.buildinfo...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21.buildinfo.asc.sha1" title="akka-serialization-jackson_3-2.6.21.buildinfo.asc.sha1">akka-serialization-jackson_3-2.6.21.buildinfo...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21.buildinfo.md5" title="akka-serialization-jackson_3-2.6.21.buildinfo.md5">akka-serialization-jackson_3-2.6.21.buildinfo...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21.buildinfo.sha1" title="akka-serialization-jackson_3-2.6.21.buildinfo.sha1">akka-serialization-jackson_3-2.6.21.buildinfo...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21.jar" title="akka-serialization-jackson_3-2.6.21.jar">akka-serialization-jackson_3-2.6.21.jar</a>           2023-06-21 09:18    181104      
+<a href="akka-serialization-jackson_3-2.6.21.jar.asc" title="akka-serialization-jackson_3-2.6.21.jar.asc">akka-serialization-jackson_3-2.6.21.jar.asc</a>       2023-06-21 09:18       488      
+<a href="akka-serialization-jackson_3-2.6.21.jar.asc.md5" title="akka-serialization-jackson_3-2.6.21.jar.asc.md5">akka-serialization-jackson_3-2.6.21.jar.asc.m...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21.jar.asc.sha1" title="akka-serialization-jackson_3-2.6.21.jar.asc.sha1">akka-serialization-jackson_3-2.6.21.jar.asc.s...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21.jar.md5" title="akka-serialization-jackson_3-2.6.21.jar.md5">akka-serialization-jackson_3-2.6.21.jar.md5</a>       2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21.jar.sha1" title="akka-serialization-jackson_3-2.6.21.jar.sha1">akka-serialization-jackson_3-2.6.21.jar.sha1</a>      2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21.pom" title="akka-serialization-jackson_3-2.6.21.pom">akka-serialization-jackson_3-2.6.21.pom</a>           2023-06-21 09:18      5125      
+<a href="akka-serialization-jackson_3-2.6.21.pom.asc" title="akka-serialization-jackson_3-2.6.21.pom.asc">akka-serialization-jackson_3-2.6.21.pom.asc</a>       2023-06-21 09:18       488      
+<a href="akka-serialization-jackson_3-2.6.21.pom.asc.md5" title="akka-serialization-jackson_3-2.6.21.pom.asc.md5">akka-serialization-jackson_3-2.6.21.pom.asc.m...</a>  2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21.pom.asc.sha1" title="akka-serialization-jackson_3-2.6.21.pom.asc.sha1">akka-serialization-jackson_3-2.6.21.pom.asc.s...</a>  2023-06-21 09:18        40      
+<a href="akka-serialization-jackson_3-2.6.21.pom.md5" title="akka-serialization-jackson_3-2.6.21.pom.md5">akka-serialization-jackson_3-2.6.21.pom.md5</a>       2023-06-21 09:18        32      
+<a href="akka-serialization-jackson_3-2.6.21.pom.sha1" title="akka-serialization-jackson_3-2.6.21.pom.sha1">akka-serialization-jackson_3-2.6.21.pom.sha1</a>      2023-06-21 09:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 789ms:
+200
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-test-sources.jar -> curl: (22) The requested URL returned error: 404
+404
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-tests.jar -> curl: (22) The requested URL returned error: 404
+404
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/akka/akka.git 'refs/tags/v2.6.21' 'refs/tags/2.6.21'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka/contents?ref=v2.6.21 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+exec
+/usr/bin/bash -lc "curl -fsSL https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 518ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "a471183ddc0ba91987b4e132d15d83dbde2d8e1d",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.github?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/.github",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/a471183ddc0ba91987b4e132d15d83dbde2d8e1d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.github?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/a471183ddc0ba91987b4e132d15d83dbde2d8e1d",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "f914f3e6f62fb9f4d788271ea9a94a6db0d27b1b",
+    "size": 1213,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.gitignore?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.gitignore",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/f914f3e6f62fb9f4d788271ea9a94a6db0d27b1b",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.gitignore?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/f914f3e6f62fb9f4d788271ea9a94a6db0d27b1b",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.gitignore"
+    }
+  },
+  {
+    "name": ".jvmopts-ci",
+    "path": ".jvmopts-ci",
+    "sha": "8d097d6f456a93f3ad259c9bdd047e93799e3d62",
+    "size": 345,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.jvmopts-ci?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.jvmopts-ci",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/8d097d6f456a93f3ad259c9bdd047e93799e3d62",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.jvmopts-ci",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.jvmopts-ci?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/8d097d6f456a93f3ad259c9bdd047e93799e3d62",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.jvmopts-ci"
+    }
+  },
+  {
+    "name": ".sbt-java-formatter.conf",
+    "path": ".sbt-java-formatter.conf",
+    "sha": "3e3b0b7a1204f5463a8f487cae4b9c5e4b172fbc",
+    "size": 913,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.sbt-java-formatter.conf?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.sbt-java-formatter.conf",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/3e3b0b7a1204f5463a8f487cae4b9c5e4b172fbc",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.sbt-java-formatter.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.sbt-java-formatter.conf?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/3e3b0b7a1204f5463a8f487cae4b9c5e4b172fbc",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.sbt-java-formatter.conf"
+    }
+  },
+  {
+    "name": ".sbtopts",
+    "path": ".sbtopts",
+    "sha": "f4e83bbac4476fc622cd17fd37ff610bc5982bab",
+    "size": 95,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.sbtopts?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.sbtopts",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/f4e83bbac4476fc622cd17fd37ff610bc5982bab",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.sbtopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.sbtopts?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/f4e83bbac4476fc622cd17fd37ff610bc5982bab",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.sbtopts"
+    }
+  },
+  {
+    "name": ".scala-steward.conf",
+    "path": ".scala-steward.conf",
+    "sha": "3070aaa00cfec992fa63cd2fb762a4b131594a54",
+    "size": 1459,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.scala-steward.conf?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.scala-steward.conf",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/3070aaa00cfec992fa63cd2fb762a4b131594a54",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.scala-steward.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.scala-steward.conf?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/3070aaa00cfec992fa63cd2fb762a4b131594a54",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.scala-steward.conf"
+    }
+  },
+  {
+    "name": ".scalafix.conf",
+    "path": ".scalafix.conf",
+    "sha": "32662d3687f24f5c0b54fd80ea12a30d5831e2b9",
+    "size": 1070,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.scalafix.conf?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.scalafix.conf",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/32662d3687f24f5c0b54fd80ea12a30d5831e2b9",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.scalafix.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.scalafix.conf?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/32662d3687f24f5c0b54fd80ea12a30d5831e2b9",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.scalafix.conf"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "5d45e749f669ecabf5b9605e1f4c4be1f552cf88",
+    "size": 996,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/.scalafmt.conf?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/5d45e749f669ecabf5b9605e1f4c4be1f552cf88",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/.scalafmt.conf?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/5d45e749f669ecabf5b9605e1f4c4be1f552cf88",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "372fcb58864509207e8ab7cfad05593bd630eddb",
+    "size": 367,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/CODE_OF_CONDUCT.md?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/372fcb58864509207e8ab7cfad05593bd630eddb",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/CODE_OF_CONDUCT.md?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/372fcb58864509207e8ab7cfad05593bd630eddb",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "302760f22698415d6d95a6270afcea333d690540",
+    "size": 38750,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/CONTRIBUTING.md?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/302760f22698415d6d95a6270afcea333d690540",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/CONTRIBUTING.md?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/302760f22698415d6d95a6270afcea333d690540",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "COPYING.protobuf",
+    "path": "COPYING.protobuf",
+    "sha": "705db579c94f7fe3e95528e9fb0d7de71d606369",
+    "size": 1732,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/COPYING.protobuf?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/COPYING.protobuf",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/705db579c94f7fe3e95528e9fb0d7de71d606369",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/COPYING.protobuf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/COPYING.protobuf?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/705db579c94f7fe3e95528e9fb0d7de71d606369",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/COPYING.protobuf"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "c145bf14199d319ce9305fc95b326c39a3f32f07",
+    "size": 11708,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/LICENSE?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/LICENSE",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/c145bf14199d319ce9305fc95b326c39a3f32f07",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/LICENSE?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/c145bf14199d319ce9305fc95b326c39a3f32f07",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "fa5b6bf897392431f68030aeda2cdee070a9f286",
+    "size": 3646,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/README.md?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/README.md",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/fa5b6bf897392431f68030aeda2cdee070a9f286",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/README.md?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/fa5b6bf897392431f68030aeda2cdee070a9f286",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/README.md"
+    }
+  },
+  {
+    "name": "RELEASING.md",
+    "path": "RELEASING.md",
+    "sha": "f14dabf1d87baac7ac967001d53dce63f35a2259",
+    "size": 2684,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/RELEASING.md?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/RELEASING.md",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/f14dabf1d87baac7ac967001d53dce63f35a2259",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/RELEASING.md",
+    "type": "file",
+    "_links": {
+
+ succeeded in 556ms:
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Serialization with Jackson &bull; Akka Documentation</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Serialization with Jackson for Akka."/>
+<link rel="canonical" href="https://doc.akka.io/libraries/akka-core/current/serialization-jackson.html"/>
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/foundation/dist/js/foundation.min.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/normalize.css/normalize.css"/>
+<link rel="stylesheet" type="text/css" href="lib/foundation/dist/css/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/docsearch.js/2/docsearch.min.css" />
+<link rel="stylesheet" type="text/css" href="css/icons.css"/>
+<link rel="stylesheet" type="text/css" href="css/page-8.css"/>
+<link rel="stylesheet" type="text/css" href="css/banner-2.css"/>
+<link rel="shortcut icon" href="images/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png"/>
+<link rel="manifest" href="images/manifest.json"/>
+<meta name="msapplication-TileImage" content="images/mstile-150x150.png"/>
+<meta name="msapplication-TileColor" content="#15a9ce"/>
+<meta name="theme-color" content="#15a9ce"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<!-- OneTrust Cookies Consent Notice (Production Standard, akka.io, en-GB) start -->
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="28b912e7-09e9-43d5-91e4-3d1897044004" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice (Production Standard, akka.io, en-GB) end -->
+<!-- Google Tag Manager now loads Google Analytics and any other tracking scripts. GTM also performs respects a users cookie choices-->
+<script type="text/javascript">
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KBJGH35');
+</script>
+
+</head>
+
+<body id="underlay" data-toggler="nav-open">
+<div id="lightbend-banner" class="lightbend-banner akka full-width" data-category="OSS Lightbend Banner Impression" data-label="Akka Banner Impression">
+<div class="oss-wrapper">
+<div class="oss-brand">
+<a class="oss-track-link-label" data-category="OSS Lightbend Banner Clicks" data-label="Lightbend Logo - Akka Banner" href="https://www.lightbend.com">
+<img class="lightbend-logo" src="images/banner-logos/lightbend-reverse.svg" alt="Lightbend" title="Lightbend">
+</a>
+</div>
+<div class="oss-ad no-drop-down">
+<nav id="lightbendRotator" class="lightbend-rotator">
+<a class="oss-track-link-label" data-category="OSS Lightbend Banner Clicks" data-label="Promo Rotator - Introducing Akka Cloud to Edge Continuum. Build once for the Cloud. Seamlessly deploy to the Edge. [Learn more] - Akka Banner" href="https://www.lightbend.com/blog/akka-edge-unifying-the-cloud-and-edge">
+Introducing Akka Cloud to Edge Continuum. Build once for the Cloud. Seamlessly deploy to the Edge. <span class="akka-btn">Learn more</span>
+</a>
+</nav>
+</div>
+</div>
+</div>
+
+<header class="site-header hide-for-large">
+<div class="sticky-header clearfix">
+<a href="https://akka.io"><img class="logo" src="images/akka-logo-reverse.svg"/></a>
+
+<button class="menu-icon float-right" type="button" data-toggle="underlay overlay"></button>
+</div>
+<div id="overlay" class="overlay-nav" data-toggler="nav-open">
+<header class="nav-header">
+<div class="nav-header-title">
+<h1><a href="index.html">Akka Documentation</a></h1>
+</div>
+<div class="nav-header-version">
+Version 2.6.21
+</div>
+<div class="nav-header-groups">
+<select class="supergroup" name="Language"><option class="group" value="group-scala">Scala</option><option class="group" value="group-java">Java</option></select>
+</div>
+<div id="overlay-search-container" class="nav-header-search">
+<input id="overlay-search" type="search" class="search" placeholder="Search" />
+
+ succeeded in 685ms:
+94c0518211c1a5a3b9929a313253716bc5bcc6d4	refs/tags/v2.6.21
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/akka/akka/git/trees/v2.6.21?recursive=1' | rg 'akka-serialization-jackson/.+src/test|akka-serialization-jackson/src/test|serialization-jackson' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21.jar -o /tmp/akka-serialization-jackson_3-2.6.21.jar && jar tf /tmp/akka-serialization-jackson_3-2.6.21.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-sources.jar -o /tmp/akka-serialization-jackson_3-2.6.21-sources.jar && jar tf /tmp/akka-serialization-jackson_3-2.6.21-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 134ms:
+META-INF/MANIFEST.MF
+akka/
+akka/serialization/
+akka/serialization/jackson/
+akka/serialization/jackson/ActorRefModule.scala
+akka/serialization/jackson/ActorSystemAccess.scala
+akka/serialization/jackson/AddressModule.scala
+akka/serialization/jackson/AkkaJacksonModule.scala
+akka/serialization/jackson/AkkaSerializationModule.scala
+akka/serialization/jackson/FiniteDurationModule.scala
+akka/serialization/jackson/JacksonMigration.scala
+akka/serialization/jackson/JacksonModule.scala
+akka/serialization/jackson/JacksonObjectMapperProvider.scala
+akka/serialization/jackson/JacksonSerializer.scala
+akka/serialization/jackson/StreamRefModule.scala
+akka/serialization/jackson/TypedActorRefModule.scala
+reference.conf
+
+ succeeded in 157ms:
+META-INF/MANIFEST.MF
+META-INF/
+akka/
+akka/serialization/
+akka/serialization/jackson/
+akka/serialization/jackson/ActorRefDeserializer$.class
+akka/serialization/jackson/ActorRefDeserializer.class
+akka/serialization/jackson/ActorRefDeserializer.tasty
+akka/serialization/jackson/ActorRefModule.class
+akka/serialization/jackson/ActorRefModule.tasty
+akka/serialization/jackson/ActorRefSerializer$.class
+akka/serialization/jackson/ActorRefSerializer.class
+akka/serialization/jackson/ActorRefSerializer.tasty
+akka/serialization/jackson/ActorSystemAccess$.class
+akka/serialization/jackson/ActorSystemAccess.class
+akka/serialization/jackson/ActorSystemAccess.tasty
+akka/serialization/jackson/AddressDeserializer$.class
+akka/serialization/jackson/AddressDeserializer.class
+akka/serialization/jackson/AddressDeserializer.tasty
+akka/serialization/jackson/AddressModule.class
+akka/serialization/jackson/AddressModule.tasty
+akka/serialization/jackson/AddressSerializer$.class
+akka/serialization/jackson/AddressSerializer.class
+akka/serialization/jackson/AddressSerializer.tasty
+akka/serialization/jackson/AkkaJacksonModule$.class
+akka/serialization/jackson/AkkaJacksonModule.class
+akka/serialization/jackson/AkkaJacksonModule.tasty
+akka/serialization/jackson/AkkaSerializationDeserializer.class
+akka/serialization/jackson/AkkaSerializationDeserializer.tasty
+akka/serialization/jackson/AkkaSerializationSerializer.class
+akka/serialization/jackson/AkkaSerializationSerializer.tasty
+akka/serialization/jackson/AkkaStreamJacksonModule$.class
+akka/serialization/jackson/AkkaStreamJacksonModule.class
+akka/serialization/jackson/AkkaStreamJacksonModule.tasty
+akka/serialization/jackson/AkkaTypedJacksonModule$.class
+akka/serialization/jackson/AkkaTypedJacksonModule.class
+akka/serialization/jackson/AkkaTypedJacksonModule.tasty
+akka/serialization/jackson/Compression$.class
+akka/serialization/jackson/Compression$Algoritm.class
+akka/serialization/jackson/Compression$GZip$.class
+akka/serialization/jackson/Compression$GZip.class
+akka/serialization/jackson/Compression$LZ4$.class
+akka/serialization/jackson/Compression$LZ4.class
+akka/serialization/jackson/Compression$Off$.class
+akka/serialization/jackson/Compression.class
+akka/serialization/jackson/Compression.tasty
+akka/serialization/jackson/FiniteDurationDeserializer$.class
+akka/serialization/jackson/FiniteDurationDeserializer.class
+akka/serialization/jackson/FiniteDurationDeserializer.tasty
+akka/serialization/jackson/FiniteDurationModule.class
+akka/serialization/jackson/FiniteDurationModule.tasty
+akka/serialization/jackson/FiniteDurationSerializer$.class
+akka/serialization/jackson/FiniteDurationSerializer.class
+akka/serialization/jackson/FiniteDurationSerializer.tasty
+akka/serialization/jackson/JacksonCborSerializer.class
+akka/serialization/jackson/JacksonCborSerializer.tasty
+akka/serialization/jackson/JacksonJsonSerializer.class
+akka/serialization/jackson/JacksonJsonSerializer.tasty
+akka/serialization/jackson/JacksonMigration.class
+akka/serialization/jackson/JacksonMigration.tasty
+akka/serialization/jackson/JacksonModule$.class
+akka/serialization/jackson/JacksonModule$DeserializerResolverByClass.class
+akka/serialization/jackson/JacksonModule$SerializerResolverByClass.class
+akka/serialization/jackson/JacksonModule.class
+akka/serialization/jackson/JacksonModule.tasty
+akka/serialization/jackson/JacksonObjectMapperFactory.class
+akka/serialization/jackson/JacksonObjectMapperFactory.tasty
+akka/serialization/jackson/JacksonObjectMapperProvider$.class
+akka/serialization/jackson/JacksonObjectMapperProvider.class
+akka/serialization/jackson/JacksonObjectMapperProvider.tasty
+akka/serialization/jackson/JacksonObjectMapperProviderSetup$.class
+akka/serialization/jackson/JacksonObjectMapperProviderSetup.class
+akka/serialization/jackson/JacksonObjectMapperProviderSetup.tasty
+akka/serialization/jackson/JacksonSerializer$.class
+akka/serialization/jackson/JacksonSerializer$GadgetClassDenyList.class
+akka/serialization/jackson/JacksonSerializer$LZ4Meta$.class
+akka/serialization/jackson/JacksonSerializer$LZ4Meta.class
+akka/serialization/jackson/JacksonSerializer.class
+akka/serialization/jackson/JacksonSerializer.tasty
+akka/serialization/jackson/SinkRefDeserializer$.class
+
+ succeeded in 826ms:
+      "path": "akka-docs/src/main/paradox/serialization-jackson.md",
+      "path": "akka-serialization-jackson",
+      "path": "akka-serialization-jackson/src",
+      "path": "akka-serialization-jackson/src/main",
+      "path": "akka-serialization-jackson/src/main/mima-filters",
+      "path": "akka-serialization-jackson/src/main/mima-filters/2.6.6.backwards.excludes",
+      "path": "akka-serialization-jackson/src/main/mima-filters/2.6.6.backwards.excludes/terminology-cleanup.excludes",
+      "path": "akka-serialization-jackson/src/main/resources",
+      "path": "akka-serialization-jackson/src/main/resources/reference.conf",
+      "path": "akka-serialization-jackson/src/main/scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/ActorRefModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/ActorSystemAccess.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/AddressModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/AkkaJacksonModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/AkkaSerializationModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/FiniteDurationModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/JacksonMigration.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/JacksonModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/JacksonObjectMapperProvider.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/JacksonSerializer.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/StreamRefModule.scala",
+      "path": "akka-serialization-jackson/src/main/scala/akka/serialization/jackson/TypedActorRefModule.scala",
+      "path": "akka-serialization-jackson/src/test",
+      "path": "akka-serialization-jackson/src/test/java",
+      "path": "akka-serialization-jackson/src/test/java/akka",
+      "path": "akka-serialization-jackson/src/test/java/akka/serialization",
+      "path": "akka-serialization-jackson/src/test/java/akka/serialization/jackson",
+      "path": "akka-serialization-jackson/src/test/java/akka/serialization/jackson/JavaTestEventMigrationV2.java",
+      "path": "akka-serialization-jackson/src/test/java/akka/serialization/jackson/JavaTestEventMigrationV2WithV3.java",
+      "path": "akka-serialization-jackson/src/test/java/akka/serialization/jackson/JavaTestEventMigrationV3.java",
+      "path": "akka-serialization-jackson/src/test/java/akka/serialization/jackson/JavaTestMessages.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/MySerializable.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/SerializationDocTest.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v1",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v1/Customer.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v1/ItemAdded.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v1/OrderAdded.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v1withv2",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v1withv2/ItemAddedMigration.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a/Address.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a/Customer.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a/CustomerMigration.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a/ItemAdded.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a/OrderPlaced.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2a/OrderPlacedMigration.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2b",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2b/ItemAdded.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2b/ItemAddedMigration.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2c",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2c/ItemAdded.java",
+      "path": "akka-serialization-jackson/src/test/java/jdoc/akka/serialization/jackson/v2c/ItemAddedMigration.java",
+      "path": "akka-serialization-jackson/src/test/resources",
+      "path": "akka-serialization-jackson/src/test/resources/reference.conf",
+      "path": "akka-serialization-jackson/src/test/scala",
+      "path": "akka-serialization-jackson/src/test/scala/akka",
+      "path": "akka-serialization-jackson/src/test/scala/akka/serialization",
+      "path": "akka-serialization-jackson/src/test/scala/akka/serialization/jackson",
+      "path": "akka-serialization-jackson/src/test/scala/akka/serialization/jackson/CborSerializable.scala",
+      "path": "akka-serialization-jackson/src/test/scala/akka/serialization/jackson/JacksonSerializerSpec.scala",
+      "path": "akka-serialization-jackson/src/test/scala/akka/serialization/jackson/JsonSerializable.scala",
+      "path": "akka-serialization-jackson/src/test/scala/akka/serialization/jackson/ScalaTestEventMigration.scala",
+      "path": "akka-serialization-jackson/src/test/scala/doc",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/CustomAdtSerializer.scala",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/SerializationDocSpec.scala",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/v1",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/v1/Customer.scala",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/v1/ItemAdded.scala",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/v1/OrderAdded.scala",
+      "path": "akka-serialization-jackson/src/test/scala/doc/akka/serialization/jackson/v1withv2",
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar 2>&1 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+unzip:  cannot find or open /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar, /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar.zip or /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar.ZIP.
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/akka/akka | sed -n '1,30p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+exec
+/usr/bin/bash -lc "for u in \\
+https://github.com/akka/akka/tree/v2.6.21/akka-serialization-jackson/src/test \\
+https://github.com/akka/akka-core/tree/v2.6.21/akka-serialization-jackson/src/test \\
+https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html; do printf '%s -> ' \""'$u"; curl -fsSIL "$u" | awk '"'BEGIN{code=\"\"} /"'^HTTP/{code=$2} END{print code}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 796ms:
+HTTP/2 301 
+date: Thu, 07 May 2026 09:45:22 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/akka/akka-core
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=mDdi6k38Np0YsYuP%2BondsOJtEoUwv4Xi49QWJ2aIj2OedZ2PptASA%2Bqx5us%2FtO3XRgYOefwspuCOWj%2FToRadI3OG2lKQQV9qxNY51SpPIEOXusTHMyisg8ajjFTPtA6xJyuNFNDMyuc2y4M8YkN%2FS8TcVzWFJCU%2B711b1%2FXwECuxiBG%2B9wFCcO94%2BRM43ltpNbVybuWC5RPYQS6ubPN6FEm7t3HxI5xLLDLMlirQm%2BIvXl3n%2Be8jdNoyN%2BIPPYQKi055W%2B0lpfhxAsNQ%2FALoxQ%3D%3D--g83DG63UjCgAYL4b--gGLgWH8qcmKDmnARG4Fd2w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.246988398.1778147122; expires=Fri, 07 May 2027 09:45:22 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 09:45:22 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510B:295ABA:55FC5E3:4422E60:69FC5F32
+
+HTTP/2 200 
+date: Thu, 07 May 2026 09:45:23 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1134cd0fa105a6e81fcd16e2eb072294"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+
+ succeeded in 1304ms:
+200
+https://github.com/akka/akka-core/tree/v2.6.21/akka-serialization-jackson/src/test -> 200
+https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html -> 200
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-javadoc.jar -o /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar && unzip -l /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar 2>&1 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+Archive:  /tmp/akka-serialization-jackson_3-2.6.21-javadoc.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+       25  2010-01-01 00:00   META-INF/MANIFEST.MF
+---------                     -------
+       25                     1 file
+
+exec
+/usr/bin/bash -lc "for u in \\
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21.jar \\
+https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-sources.jar \\
+https://github.com/akka/akka-core/tree/v2.6.21/akka-serialization-jackson/src/test \\
+https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html; do printf '%s -> ' \""'$u"; curl -fsSIL "$u" | awk '"'BEGIN{code=\"\"} /"'^HTTP/{code=$2} END{print code}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 593ms:
+200
+https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html -> 200
+
+web search: 
+web search: https://github.com/akka/akka-core/tree/v2.6.21/akka-serialization-jackson/src/test
+web search: 
+web search: repo1.maven.org com/typesafe/akka/akka-serialization-jackson_3/2.6.21 akka-serialization-jackson_3-2.6.21-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "rg -n 'com\\.typesafe\\.akka|github.com/akka' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json:2:  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:6:    "repository-url" : "https://github.com/akka/akka-http",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:7:    "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-core/src/test/scala/akka/http/impl/engine/parsing",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:6:    "repository-url" : "https://github.com/akka/akka-core",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:6:    "repository-url" : "https://github.com/akka/akka-core",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:24:    "repository-url" : "https://github.com/akka/akka-core",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.0-M2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-javadoc.jar",
+    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.9.0-M2"
+    ],
+    "allowed-packages" : [
+      "akka.protobufv3.internal"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.8.8",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.8.8"
+    ],
+    "allowed-packages" : [
+      "akka.protobufv3.internal"
+    ]
+  },
+  {
+    "metadata-version" : "2.6.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.6.21",
+      "2.7.0",
+      "2.7.1",
+      "2.8.0",
+      "2.8.1",
+      "2.8.2",
+      "2.8.3",
+      "2.8.4",
+      "2.8.5",
+      "2.8.6",
+      "2.8.7"
+    ],
+    "allowed-packages" : [
+      "akka.protobufv3.internal"
+    ]
+  }
+]
+
+codex
+The artifact is a JVM jar with `.class` and Scala 3 TASTy files, so it remains a Native Image metadata target. I’m going to add the Scala 3 language marker and leave the `not-for-native-image` fields out.
+exec
+/usr/bin/bash -lc "for u in \\
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-sources.jar \\
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSIL "$u" | awk '"'BEGIN{code=\"\"} /"'^HTTP/{code=$2} END{print code}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 812ms:
+200
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-javadoc.jar -> 200
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+index 7d16de1f28c3bd5fc46e113cfa4f4cc6ceceb623..360baf786c2ee9b27543aaa5f0756f20a0c011c1
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
++  "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
++  "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+index 7d16de1f28c3bd5fc46e113cfa4f4cc6ceceb623..360baf786c2ee9b27543aaa5f0756f20a0c011c1
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
++  "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
++  "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
+  "repository-url": "https://github.com/akka/akka-core",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
+  "documentation-url": "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
+  "description": "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/2.6.21/akka-serialization-jackson_3-2.6.21-sources.jar \\
+https://github.com/akka/akka-core/tree/v2.6.21/akka-serialization-jackson/src/test \\
+https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html; do printf '%s -> ' \""'$u"; curl -fsSIL "$u" | awk '"'BEGIN{code=\"\"} /"'^HTTP/{code=$2} END{print code}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+index 7d16de1f28c3bd5fc46e113cfa4f4cc6ceceb623..360baf786c2ee9b27543aaa5f0756f20a0c011c1
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
++  "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
++  "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1171ms:
+200
+https://doc.akka.io/docs/akka/2.6.21/serialization-jackson.html -> 200
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+index 7d16de1f28c3bd5fc46e113cfa4f4cc6ceceb623..360baf786c2ee9b27543aaa5f0756f20a0c011c1
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
++  "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
++  "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+index 7d16de1f28c3bd5fc46e113cfa4f4cc6ceceb623..360baf786c2ee9b27543aaa5f0756f20a0c011c1
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
++  "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
++  "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Maven Central akka-serialization-jackson_3 2.6.21
+codex
+Updated [com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json).
+
+I set the repository, Maven sources URL, GitHub test suite URL, versioned Akka documentation URL, two-sentence description, and Scala 3 language marker. I left `not-for-native-image` absent because the published jar contains JVM `.class` files, so it is still a Native Image metadata target.
+
+Verification: `jq` parsed the JSON successfully, and the substituted source/test/docs URLs for `2.6.21` returned HTTP 200. Maven Central lists the artifact version, Akka’s docs describe the Jackson serializer, and the canonical GitHub repo exposes the `akka-serialization-jackson` source tree. ([repo1.maven.org](https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/?utm_source=openai))
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+index 7d16de1f28c3bd5fc46e113cfa4f4cc6ceceb623..360baf786c2ee9b27543aaa5f0756f20a0c011c1
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-serialization-jackson_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/$version$/akka-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-serialization-jackson/src/test",
++  "documentation-url" : "https://doc.akka.io/docs/akka/$version$/serialization-jackson.html",
++  "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+83,207
+Updated [com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/build/discovered-artifact-metadata/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.json).
+
+I set the repository, Maven sources URL, GitHub test suite URL, versioned Akka documentation URL, two-sentence description, and Scala 3 language marker. I left `not-for-native-image` absent because the published jar contains JVM `.class` files, so it is still a Native Image metadata target.
+
+Verification: `jq` parsed the JSON successfully, and the substituted source/test/docs URLs for `2.6.21` returned HTTP 200. Maven Central lists the artifact version, Akka’s docs describe the Jackson serializer, and the canonical GitHub repo exposes the `akka-serialization-jackson` source tree. ([repo1.maven.org](https://repo1.maven.org/maven2/com/typesafe/akka/akka-serialization-jackson_3/?utm_source=openai))
+Ran agent for com.typesafe.akka:akka-serialization-jackson_3:2.6.21 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/build/agent-artifact-discovery-logs/com.typesafe.akka-akka-serialization-jackson_3-2.6.21.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5019-1a972211/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 53s
+9 actionable tasks: 9 executed
