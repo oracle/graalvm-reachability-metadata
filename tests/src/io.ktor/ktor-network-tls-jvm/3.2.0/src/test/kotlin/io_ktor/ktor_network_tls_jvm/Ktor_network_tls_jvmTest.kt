@@ -60,6 +60,7 @@ import java.security.spec.PKCS8EncodedKeySpec
 import java.time.Duration
 import java.util.Base64
 import java.util.concurrent.CancellationException
+import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 public class Ktor_network_tls_jvmTest {
@@ -182,6 +183,23 @@ public class Ktor_network_tls_jvmTest {
         assertThatThrownBy { keysGenerationAlgorithm("Ed25519") }
             .isInstanceOf(IllegalStateException::class.java)
             .hasMessageContaining("Couldn't find KeyPairGenerator algorithm")
+    }
+
+    @Test
+    fun tlsConfigBuilderProvidesDefaultsAndRejectsUnsupportedTrustManagers(): Unit {
+        val defaultConfig = TLSConfigBuilder().build()
+
+        assertThat(defaultConfig.random).isNotNull()
+        assertThat(defaultConfig.trustManager).isInstanceOf(X509TrustManager::class.java)
+        assertThat(defaultConfig.cipherSuites).containsExactlyElementsOf(CIOCipherSuites.SupportedSuites)
+        assertThat(defaultConfig.certificates).isEmpty()
+        assertThat(defaultConfig.serverName).isNull()
+
+        assertThatThrownBy {
+            TLSConfigBuilder().trustManager = object : TrustManager { }
+        }
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessageContaining("Only [X509TrustManager] supported")
     }
 
     @Test
