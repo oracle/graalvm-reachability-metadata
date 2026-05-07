@@ -193,6 +193,38 @@ public class Aws_query_protocolTest {
     }
 
     @Test
+    void queryProtocolFactoryMarshallsFlattenedCollectionPayloadMembers() {
+        AwsQueryProtocolFactory factory = AwsQueryProtocolFactory.builder()
+            .clientConfiguration(clientConfiguration("https://query.example.com/service"))
+            .defaultServiceExceptionSupplier(TestServiceException.Builder::new)
+            .build();
+        OperationInfo operationInfo = OperationInfo.builder()
+            .requestUri("/")
+            .httpMethod(SdkHttpMethod.POST)
+            .operationIdentifier("DescribeFlattenedCollections")
+            .apiVersion("2010-05-08")
+            .hasPayloadMembers(true)
+            .build();
+        Map<String, String> dimensions = new LinkedHashMap<>();
+        dimensions.put("size", "large");
+        dimensions.put("color", "blue");
+        FlattenedCollectionQueryRequest collectionRequest = new FlattenedCollectionQueryRequest(
+            List.of("red", "blue"), dimensions);
+
+        SdkHttpFullRequest queryRequest = factory.createProtocolMarshaller(operationInfo)
+            .marshall(collectionRequest);
+
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Tags.1")).contains("red");
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Tags.2")).contains("blue");
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Tags.member.1")).isEmpty();
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Dimensions.1.Key")).contains("size");
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Dimensions.1.Value")).contains("large");
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Dimensions.2.Key")).contains("color");
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Dimensions.2.Value")).contains("blue");
+        assertThat(queryRequest.firstMatchingRawQueryParameter("Dimensions.entry.1.Key")).isEmpty();
+    }
+
+    @Test
     void queryResponseHandlerUnmarshallsCollectionPayloadMembers() throws Exception {
         AwsQueryProtocolFactory factory = AwsQueryProtocolFactory.builder()
             .defaultServiceExceptionSupplier(TestServiceException.Builder::new)
@@ -221,6 +253,37 @@ public class Aws_query_protocolTest {
             """);
 
         CollectionQueryResponse unmarshalled = handler.handle(response, new ExecutionAttributes());
+
+        assertThat(unmarshalled.tags()).containsExactly("red", "blue");
+        assertThat(unmarshalled.dimensions()).containsEntry("size", "large")
+            .containsEntry("color", "blue");
+    }
+
+    @Test
+    void queryResponseHandlerUnmarshallsFlattenedCollectionPayloadMembers() throws Exception {
+        AwsQueryProtocolFactory factory = AwsQueryProtocolFactory.builder()
+            .defaultServiceExceptionSupplier(TestServiceException.Builder::new)
+            .build();
+        HttpResponseHandler<FlattenedCollectionQueryResponse> handler = factory.createResponseHandler(
+            FlattenedCollectionQueryResponse.Builder::new);
+        SdkHttpFullResponse response = response(200, """
+            <DescribeFlattenedCollectionsResponse>
+                <DescribeFlattenedCollectionsResult>
+                    <Tags>red</Tags>
+                    <Tags>blue</Tags>
+                    <Dimensions>
+                        <Key>size</Key>
+                        <Value>large</Value>
+                    </Dimensions>
+                    <Dimensions>
+                        <Key>color</Key>
+                        <Value>blue</Value>
+                    </Dimensions>
+                </DescribeFlattenedCollectionsResult>
+            </DescribeFlattenedCollectionsResponse>
+            """);
+
+        FlattenedCollectionQueryResponse unmarshalled = handler.handle(response, new ExecutionAttributes());
 
         assertThat(unmarshalled.tags()).containsExactly("red", "blue");
         assertThat(unmarshalled.dimensions()).containsEntry("size", "large")
@@ -461,6 +524,45 @@ public class Aws_query_protocolTest {
             .build();
     }
 
+    private static SdkField<List<?>> flattenedCollectionRequestTagsPayloadField(String memberName) {
+        return SdkField.<List<?>>builder(MarshallingType.LIST)
+            .memberName(memberName)
+            .getter(value -> ((FlattenedCollectionQueryRequest) value).tags)
+            .traits(collectionLocationTrait(memberName), stringListTrait(true))
+            .build();
+    }
+
+    private static SdkField<Map<String, ?>> flattenedCollectionRequestDimensionsPayloadField(String memberName) {
+        return SdkField.<Map<String, ?>>builder(MarshallingType.MAP)
+            .memberName(memberName)
+            .getter(value -> ((FlattenedCollectionQueryRequest) value).dimensions)
+            .traits(collectionLocationTrait(memberName), stringMapTrait(true))
+            .build();
+    }
+
+    private static SdkField<List<?>> flattenedCollectionResponseTagsPayloadField(String memberName) {
+        return SdkField.<List<?>>builder(MarshallingType.LIST)
+            .memberName(memberName)
+            .getter(value -> value instanceof FlattenedCollectionQueryResponse.Builder
+                ? ((FlattenedCollectionQueryResponse.Builder) value).tags
+                : ((FlattenedCollectionQueryResponse) value).tags)
+            .setter((target, value) -> ((FlattenedCollectionQueryResponse.Builder) target).tags = stringList(value))
+            .traits(collectionLocationTrait(memberName), stringListTrait(true))
+            .build();
+    }
+
+    private static SdkField<Map<String, ?>> flattenedCollectionResponseDimensionsPayloadField(String memberName) {
+        return SdkField.<Map<String, ?>>builder(MarshallingType.MAP)
+            .memberName(memberName)
+            .getter(value -> value instanceof FlattenedCollectionQueryResponse.Builder
+                ? ((FlattenedCollectionQueryResponse.Builder) value).dimensions
+                : ((FlattenedCollectionQueryResponse) value).dimensions)
+            .setter((target, value) ->
+                ((FlattenedCollectionQueryResponse.Builder) target).dimensions = stringMap(value))
+            .traits(collectionLocationTrait(memberName), stringMapTrait(true))
+            .build();
+    }
+
     private static LocationTrait collectionLocationTrait(String memberName) {
         return LocationTrait.builder()
             .location(MarshallLocation.PAYLOAD)
@@ -542,6 +644,25 @@ public class Aws_query_protocolTest {
         }
     }
 
+    private static final class FlattenedCollectionQueryRequest implements SdkPojo {
+        private static final List<SdkField<?>> SDK_FIELDS = List.of(
+            flattenedCollectionRequestTagsPayloadField("Tags"),
+            flattenedCollectionRequestDimensionsPayloadField("Dimensions"));
+
+        private final List<?> tags;
+        private final Map<String, ?> dimensions;
+
+        private FlattenedCollectionQueryRequest(List<?> tags, Map<String, ?> dimensions) {
+            this.tags = tags;
+            this.dimensions = dimensions;
+        }
+
+        @Override
+        public List<SdkField<?>> sdkFields() {
+            return SDK_FIELDS;
+        }
+    }
+
     private static final class CollectionQueryResponse extends AwsResponse implements SdkPojo {
         private static final List<SdkField<?>> SDK_FIELDS = List.of(
             collectionResponseTagsPayloadField("Tags"),
@@ -590,6 +711,63 @@ public class Aws_query_protocolTest {
             @Override
             public CollectionQueryResponse build() {
                 return new CollectionQueryResponse(this);
+            }
+
+            @Override
+            public List<SdkField<?>> sdkFields() {
+                return SDK_FIELDS;
+            }
+        }
+    }
+
+    private static final class FlattenedCollectionQueryResponse extends AwsResponse implements SdkPojo {
+        private static final List<SdkField<?>> SDK_FIELDS = List.of(
+            flattenedCollectionResponseTagsPayloadField("Tags"),
+            flattenedCollectionResponseDimensionsPayloadField("Dimensions"));
+
+        private final List<String> tags;
+        private final Map<String, String> dimensions;
+
+        private FlattenedCollectionQueryResponse(Builder builder) {
+            super(builder);
+            this.tags = builder.tags;
+            this.dimensions = builder.dimensions;
+        }
+
+        private List<String> tags() {
+            return tags;
+        }
+
+        private Map<String, String> dimensions() {
+            return dimensions;
+        }
+
+        @Override
+        public Builder toBuilder() {
+            return new Builder(this);
+        }
+
+        @Override
+        public List<SdkField<?>> sdkFields() {
+            return SDK_FIELDS;
+        }
+
+        private static final class Builder extends AwsResponse.BuilderImpl implements SdkPojo, Buildable {
+            private List<String> tags;
+            private Map<String, String> dimensions;
+
+            private Builder() {
+            }
+
+            private Builder(FlattenedCollectionQueryResponse response) {
+                super(response);
+                this.tags = response.tags;
+                this.dimensions = response.dimensions;
+            }
+
+            @Override
+            public FlattenedCollectionQueryResponse build() {
+                return new FlattenedCollectionQueryResponse(this);
             }
 
             @Override
