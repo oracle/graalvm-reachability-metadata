@@ -174,6 +174,135 @@ object Akka_serialization_jackson_3Test {
   val SingletonNotificationClassName = SingletonNotification.getClass.getName
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
 
+  val NativeFallbackConfig: Config = ConfigFactory.parseString("""
+      akka.version = "2.6.21"
+      akka.loggers = []
+      akka.logging-filter = "akka.event.DefaultLoggingFilter"
+      akka.loggers-dispatcher = "akka.actor.default-dispatcher"
+      akka.logger-startup-timeout = 5s
+      akka.loglevel = "INFO"
+      akka.stdout-loglevel = "WARNING"
+      akka.log-config-on-start = off
+      akka.log-dead-letters = 10
+      akka.log-dead-letters-during-shutdown = off
+      akka.log-dead-letters-suspend-duration = 5 minutes
+      akka.library-extensions = ["akka.serialization.SerializationExtension$"]
+      akka.extensions = []
+      akka.jvm-exit-on-fatal-error = on
+      akka.jvm-shutdown-hooks = on
+      akka.fail-mixed-versions = on
+
+      akka.actor {
+        provider = "local"
+        guardian-supervisor-strategy = "akka.actor.DefaultSupervisorStrategy"
+        creation-timeout = 20s
+        unstarted-push-timeout = 10s
+        serialize-messages = off
+        serialize-creators = off
+        no-serialization-verification-needed-class-prefix = ["akka."]
+        allow-java-serialization = off
+        warn-about-java-serializer-usage = on
+        warn-on-no-serialization-verification = on
+
+        debug {
+          receive = off
+          autoreceive = off
+          lifecycle = off
+          fsm = off
+          event-stream = off
+          unhandled = off
+          router-misconfiguration = off
+        }
+
+        deployment {
+          default {
+            virtual-nodes-factor = 10
+          }
+        }
+
+        default-dispatcher {
+          type = "Dispatcher"
+          executor = "default-executor"
+          default-executor {
+            fallback = "fork-join-executor"
+          }
+          fork-join-executor {
+            parallelism-min = 8
+            parallelism-factor = 1.0
+            parallelism-max = 64
+            task-peeking-mode = "FIFO"
+          }
+          thread-pool-executor {
+            fixed-pool-size = off
+            core-pool-size-min = 8
+            core-pool-size-factor = 3.0
+            core-pool-size-max = 64
+            max-pool-size-min = 8
+            max-pool-size-factor = 3.0
+            max-pool-size-max = 64
+            task-queue-size = -1
+            task-queue-type = "linked"
+            allow-core-timeout = on
+          }
+          shutdown-timeout = 1s
+          throughput = 5
+          throughput-deadline-time = 0ms
+          attempt-teamwork = on
+          mailbox-requirement = ""
+        }
+
+        internal-dispatcher {
+          type = "Dispatcher"
+          executor = "fork-join-executor"
+          throughput = 5
+          fork-join-executor {
+            parallelism-min = 4
+            parallelism-factor = 1.0
+            parallelism-max = 64
+          }
+        }
+
+        default-blocking-io-dispatcher {
+          type = "Dispatcher"
+          executor = "thread-pool-executor"
+          throughput = 1
+          thread-pool-executor {
+            fixed-pool-size = 16
+          }
+        }
+
+        default-mailbox {
+          mailbox-type = "akka.dispatch.UnboundedMailbox"
+        }
+
+        serializers {
+          java = "akka.serialization.JavaSerializer"
+          bytes = "akka.serialization.ByteArraySerializer"
+          primitive-long = "akka.serialization.LongSerializer"
+          primitive-int = "akka.serialization.IntSerializer"
+          primitive-string = "akka.serialization.StringSerializer"
+          primitive-bytestring = "akka.serialization.ByteStringSerializer"
+          primitive-boolean = "akka.serialization.BooleanSerializer"
+          jackson-json = "akka.serialization.jackson.JacksonJsonSerializer"
+          jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
+        }
+      }
+
+      akka.serialization.jackson {
+        jackson-modules += "akka.serialization.jackson.AkkaJacksonModule"
+        jackson-modules += "akka.serialization.jackson.AkkaTypedJacksonModule"
+        jackson-modules += "akka.serialization.jackson.AkkaStreamJacksonModule"
+        jackson-modules += "com.fasterxml.jackson.module.paramnames.ParameterNamesModule"
+        jackson-modules += "com.fasterxml.jackson.datatype.jdk8.Jdk8Module"
+        jackson-modules += "com.fasterxml.jackson.datatype.jsr310.JavaTimeModule"
+        jackson-modules += "com.fasterxml.jackson.module.scala.DefaultScalaModule"
+        visibility {
+          FIELD = ANY
+        }
+        type-in-manifest = on
+      }
+      """)
+
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
       akka.actor.serialization-bindings {
@@ -203,7 +332,9 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
+    .withFallback(NativeFallbackConfig)
     .withFallback(ConfigFactory.load())
+    .resolve()
 }
 
 final case class MapperEnvelope(
