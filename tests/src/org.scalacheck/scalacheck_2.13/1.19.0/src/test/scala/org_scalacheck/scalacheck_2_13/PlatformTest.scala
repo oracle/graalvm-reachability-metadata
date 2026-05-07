@@ -16,9 +16,9 @@ import sbt.testing.Event
 import sbt.testing.EventHandler
 import sbt.testing.Fingerprint
 import sbt.testing.Logger
-import sbt.testing.Selector
 import sbt.testing.Status
 import sbt.testing.SubclassFingerprint
+import sbt.testing.SuiteSelector
 import sbt.testing.Task
 import sbt.testing.TaskDef
 
@@ -54,7 +54,7 @@ class PlatformTest {
       Array.empty[String],
       loader
     )
-    val taskDef: TaskDef = new TaskDef(fullyQualifiedName, fingerprint, true, Array.empty[Selector])
+    val taskDef: TaskDef = new TaskDef(fullyQualifiedName, fingerprint, true, Array(new SuiteSelector))
     val rootTasks: Array[Task] = runner.tasks(Array(taskDef))
     val statuses: ListBuffer[Status] = ListBuffer.empty[Status]
     val handler: EventHandler = (event: Event) => statuses += event.status()
