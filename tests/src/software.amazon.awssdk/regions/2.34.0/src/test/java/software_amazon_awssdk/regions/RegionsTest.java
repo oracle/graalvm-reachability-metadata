@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.profiles.ProfileFile;
@@ -30,6 +31,7 @@ import software.amazon.awssdk.regions.ServiceMetadataConfiguration;
 import software.amazon.awssdk.regions.ServicePartitionMetadata;
 import software.amazon.awssdk.regions.providers.AwsProfileRegionProvider;
 import software.amazon.awssdk.regions.providers.AwsRegionProviderChain;
+import software.amazon.awssdk.regions.providers.LazyAwsRegionProvider;
 import software.amazon.awssdk.regions.providers.SystemSettingsRegionProvider;
 
 public class RegionsTest {
@@ -259,6 +261,26 @@ public class RegionsTest {
                 System.setProperty("aws.region", previousRegion);
             }
         }
+    }
+
+    @Test
+    void lazyRegionProviderInitializesDelegateOnFirstUseAndReusesIt() {
+        AtomicInteger delegateCreations = new AtomicInteger();
+        AtomicInteger regionLookups = new AtomicInteger();
+        LazyAwsRegionProvider provider = new LazyAwsRegionProvider(() -> {
+            delegateCreations.incrementAndGet();
+            return () -> {
+                regionLookups.incrementAndGet();
+                return Region.EU_CENTRAL_1;
+            };
+        });
+
+        assertThat(delegateCreations.get()).isZero();
+
+        assertThat(provider.getRegion()).isSameAs(Region.EU_CENTRAL_1);
+        assertThat(provider.getRegion()).isSameAs(Region.EU_CENTRAL_1);
+        assertThat(delegateCreations.get()).isOne();
+        assertThat(regionLookups.get()).isEqualTo(2);
     }
 
     @Test
