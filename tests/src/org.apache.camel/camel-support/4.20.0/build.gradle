@@ -16,6 +16,14 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty "camel.threads.virtual.enabled", "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dcamel.threads.virtual.enabled=true")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
