@@ -9,6 +9,7 @@ package io_ktor.ktor_sse_jvm
 import io.ktor.sse.ServerSentEvent
 import io.ktor.sse.ServerSentEventMetadata
 import io.ktor.sse.TypedServerSentEvent
+import io.ktor.utils.io.InternalAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -107,6 +108,49 @@ public class Ktor_sse_jvmTest {
         assertThat(event.toString()).isEqualTo(
             "TypedServerSentEvent(data=Payload(id=7, name=kotlin), event=typed, id=typed-7, retry=2000, " +
                 "comments=typed-comment)",
+        )
+    }
+
+    @Test
+    @OptIn(InternalAPI::class)
+    fun `typed server sent event serializes typed payload with custom serializer`() {
+        var serializedPayloads = 0
+        val event = TypedServerSentEvent(
+            data = Payload(id = 12, name = "serialized"),
+            event = "payload-ready",
+            id = "payload-12",
+            retry = 3_000,
+            comments = "serialized-comment",
+        )
+
+        val wireFormat = event.toString { payload: Payload ->
+            serializedPayloads += 1
+            "${payload.id}:${payload.name}\nconfirmed"
+        }
+
+        assertThat(serializedPayloads).isEqualTo(1)
+        assertThat(wireFormat).isEqualTo(
+            "data: 12:serialized\r\n" +
+                "data: confirmed\r\n" +
+                "event: payload-ready\r\n" +
+                "id: payload-12\r\n" +
+                "retry: 3000\r\n" +
+                ": serialized-comment\r\n",
+        )
+    }
+
+    @Test
+    @OptIn(InternalAPI::class)
+    fun `typed server sent event custom serializer is not used when typed payload is absent`() {
+        val event = TypedServerSentEvent<Payload>(event = "heartbeat", id = "empty-payload")
+
+        val wireFormat = event.toString { payload: Payload ->
+            throw AssertionError("Serializer should not be called for absent payload $payload")
+        }
+
+        assertThat(wireFormat).isEqualTo(
+            "event: heartbeat\r\n" +
+                "id: empty-payload\r\n",
         )
     }
 
