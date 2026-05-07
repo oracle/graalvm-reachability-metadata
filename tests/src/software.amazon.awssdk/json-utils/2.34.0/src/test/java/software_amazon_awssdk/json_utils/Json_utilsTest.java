@@ -8,6 +8,7 @@ package software_amazon_awssdk.json_utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import software.amazon.awssdk.protocols.jsoncore.JsonNodeVisitor;
 import software.amazon.awssdk.protocols.jsoncore.JsonValueNodeFactory;
 import software.amazon.awssdk.protocols.jsoncore.JsonWriter;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonFactory;
+import software.amazon.awssdk.thirdparty.jackson.core.JsonParseException;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonParser;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonToken;
 import software.amazon.awssdk.thirdparty.jackson.core.json.JsonReadFeature;
@@ -109,6 +111,23 @@ public class Json_utilsTest {
         assertThatThrownBy(() -> strictParser.parse(jsonWithComment))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("Unexpected character");
+    }
+
+    @Test
+    void parserCanRemoveErrorLocationsFromParseFailures() {
+        String malformedJson = "{\"valid\": true, \"broken\": [}";
+        JsonNodeParser parserWithLocations = JsonNodeParser.builder()
+            .removeErrorLocations(false)
+            .build();
+        JsonNodeParser parserWithoutLocations = JsonNodeParser.builder()
+            .removeErrorLocations(true)
+            .build();
+
+        Throwable failureWithLocations = catchThrowable(() -> parserWithLocations.parse(malformedJson));
+        Throwable failureWithoutLocations = catchThrowable(() -> parserWithoutLocations.parse(malformedJson));
+
+        assertThat(jsonParseException(failureWithLocations).getLocation()).isNotNull();
+        assertThat(jsonParseException(failureWithoutLocations).getLocation()).isNull();
     }
 
     @Test
@@ -223,6 +242,17 @@ public class Json_utilsTest {
             .build())
             .isInstanceOf(JsonWriter.JsonGenerationException.class)
             .hasMessageContaining("boom");
+    }
+
+    private static JsonParseException jsonParseException(Throwable failure) {
+        Throwable current = failure;
+        while (current != null) {
+            if (current instanceof JsonParseException jsonParseException) {
+                return jsonParseException;
+            }
+            current = current.getCause();
+        }
+        throw new AssertionError("Expected parse failure to contain a JsonParseException.");
     }
 
     private static final class ScalarDescriptionNode implements JsonNode {
