@@ -9,6 +9,7 @@ package io_ktor.ktor_serialization_jvm
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.content.NullBody
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.http.headersOf
@@ -28,6 +29,7 @@ import io.ktor.serialization.suitableCharsetOrNull
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.typeInfo
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.InternalAPI
 import io.ktor.utils.io.toByteArray
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
@@ -127,6 +129,60 @@ public class KtorSerializationJvmTest {
         assertThat(decoded).isEqualTo(Message("decoded", 11))
         assertThat(converter.deserializedTypes).containsExactly(Message::class)
         assertThat(converter.deserializationCharsets).containsExactly(StandardCharsets.UTF_16)
+    }
+
+    @Test
+    @OptIn(InternalAPI::class)
+    public fun converterChainDeserializesWithFirstConverterThatProducesValue(): Unit = runSuspendTest {
+        val refusingConverter = RefusingContentConverter()
+        val matchingConverter = MessageContentConverter()
+        val unusedConverter = FailingContentConverter()
+        val converters = listOf<ContentConverter>(refusingConverter, matchingConverter, unusedConverter)
+
+        val result = converters.deserialize(
+            body = ByteReadChannel("name=chain;count=31".toByteArray(StandardCharsets.UTF_8)),
+            typeInfo = typeInfo<Message>(),
+            charset = StandardCharsets.UTF_8,
+        )
+
+        assertThat(result).isEqualTo(Message("chain", 31))
+        assertThat(refusingConverter.attemptedTypes).containsExactly(Message::class)
+        assertThat(matchingConverter.deserializedTypes).containsExactly(Message::class)
+        assertThat(unusedConverter.wasInvoked).isFalse()
+    }
+
+    @Test
+    @OptIn(InternalAPI::class)
+    public fun converterChainLeavesUnreadBodyForCallerWhenNoConverterAcceptsIt(): Unit = runSuspendTest {
+        val refusingConverter = RefusingContentConverter()
+        val converters = listOf<ContentConverter>(refusingConverter)
+        val payload = "raw-body".toByteArray(StandardCharsets.UTF_8)
+        val body = ByteReadChannel(payload)
+
+        val result = converters.deserialize(
+            body = body,
+            typeInfo = typeInfo<Message>(),
+            charset = StandardCharsets.UTF_8,
+        )
+
+        assertThat(result).isSameAs(body)
+        assertThat((result as ByteReadChannel).toByteArray()).containsExactly(*payload)
+        assertThat(refusingConverter.attemptedTypes).containsExactly(Message::class)
+    }
+
+    @Test
+    @OptIn(InternalAPI::class)
+    public fun converterChainMapsConsumedNullableBodyToNullBody(): Unit = runSuspendTest {
+        val converter = ConsumingNullContentConverter()
+
+        val result = listOf<ContentConverter>(converter).deserialize(
+            body = ByteReadChannel("ignored".toByteArray(StandardCharsets.UTF_8)),
+            typeInfo = typeInfo<Message?>(),
+            charset = StandardCharsets.UTF_8,
+        )
+
+        assertThat(result).isSameAs(NullBody)
+        assertThat(converter.consumedPayloads).containsExactly("ignored")
     }
 
     @Test
@@ -272,6 +328,66 @@ private class ConfigurableContentConverter : ContentConverter {
         typeInfo: TypeInfo,
         content: ByteReadChannel,
     ): Any? = null
+}
+
+private class RefusingContentConverter : ContentConverter {
+    val attemptedTypes: MutableList<KClass<*>> = mutableListOf()
+
+    override suspend fun serialize(
+        contentType: ContentType,
+        charset: Charset,
+        typeInfo: TypeInfo,
+        value: Any?,
+    ): OutgoingContent? = null
+
+    override suspend fun deserialize(
+        charset: Charset,
+        typeInfo: TypeInfo,
+        content: ByteReadChannel,
+    ): Any? {
+        attemptedTypes += typeInfo.type
+        return null
+    }
+}
+
+private class FailingContentConverter : ContentConverter {
+    var wasInvoked: Boolean = false
+
+    override suspend fun serialize(
+        contentType: ContentType,
+        charset: Charset,
+        typeInfo: TypeInfo,
+        value: Any?,
+    ): OutgoingContent? = null
+
+    override suspend fun deserialize(
+        charset: Charset,
+        typeInfo: TypeInfo,
+        content: ByteReadChannel,
+    ): Any? {
+        wasInvoked = true
+        error("Converter chain should stop after the first successful deserialization")
+    }
+}
+
+private class ConsumingNullContentConverter : ContentConverter {
+    val consumedPayloads: MutableList<String> = mutableListOf()
+
+    override suspend fun serialize(
+        contentType: ContentType,
+        charset: Charset,
+        typeInfo: TypeInfo,
+        value: Any?,
+    ): OutgoingContent? = null
+
+    override suspend fun deserialize(
+        charset: Charset,
+        typeInfo: TypeInfo,
+        content: ByteReadChannel,
+    ): Any? {
+        consumedPayloads += String(content.toByteArray(), charset)
+        return null
+    }
 }
 
 private class MessageContentConverter : ContentConverter {
