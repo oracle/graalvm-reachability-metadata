@@ -10,12 +10,15 @@ import io.ktor.utils.io.ByteChannel
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.FrameParser
+import io.ktor.websocket.FrameTooBigException
 import io.ktor.websocket.FrameType
 import io.ktor.websocket.ProtocolViolationException
 import io.ktor.websocket.RawWebSocket
 import io.ktor.websocket.WebSocketDeflateExtension
 import io.ktor.websocket.WebSocketExtensionHeader
 import io.ktor.websocket.WebSocketExtensionsConfig
+import io.ktor.websocket.WebSocketReader
+import io.ktor.websocket.WebSocketWriter
 import io.ktor.websocket.close
 import io.ktor.websocket.parseWebSocketExtensions
 import io.ktor.websocket.readBytes
@@ -237,6 +240,29 @@ public class Ktor_websockets_jvmTest {
         val ping = Frame.Ping(byteArrayOf(1, 2, 3))
         assertThat(thresholdExtension.processOutgoingFrame(smallText)).isSameAs(smallText)
         assertThat(thresholdExtension.processOutgoingFrame(ping)).isSameAs(ping)
+    }
+
+    @Test
+    fun webSocketReaderRejectsFramesLargerThanConfiguredMaximum() = runBlocking {
+        val channel = ByteChannel(autoFlush = true)
+        val writer = WebSocketWriter(channel, coroutineContext, false)
+        val reader = WebSocketReader(channel, coroutineContext, 4)
+        val payload = "exceeds"
+
+        try {
+            writer.send(Frame.Text(payload))
+            writer.flush()
+
+            val failure = runCatching {
+                withTimeout(5_000) { reader.incoming.receive() }
+            }.exceptionOrNull()
+
+            assertThat(failure).isInstanceOf(FrameTooBigException::class.java)
+            assertThat((failure as FrameTooBigException).frameSize).isEqualTo(payload.toByteArray().size.toLong())
+        } finally {
+            writer.outgoing.close()
+            channel.close()
+        }
     }
 
     @Test
