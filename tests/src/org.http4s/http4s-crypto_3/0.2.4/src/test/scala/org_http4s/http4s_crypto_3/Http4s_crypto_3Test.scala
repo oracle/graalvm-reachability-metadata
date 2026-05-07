@@ -68,6 +68,20 @@ final class Http4s_crypto_3Test {
   }
 
   @Test
+  def hmacJavaSecretKeyInteropPreservesAlgorithmAndKeyBytes(): Unit = {
+    val algorithm: HmacAlgorithm = HmacAlgorithm.SHA256
+    val originalKey: SecretKey[HmacAlgorithm] = SecretKeySpec(hmacKey, algorithm)
+    val exportedKey: javax.crypto.SecretKey = originalKey.toJava
+    val importedKey: SecretKey[HmacAlgorithm] = rightValue(Hmac[Result].importJavaKey(exportedKey))
+    val importedDigest: ByteVector = rightValue(Hmac[Result].digest(importedKey, data))
+    val directDigest: ByteVector = rightValue(Hmac[Result].digest(originalKey, data))
+
+    assertEquals(algorithm, importedKey.algorithm)
+    assertEquals(directDigest, importedDigest)
+    assertEquals(hmacKey, ByteVector.view(exportedKey.getEncoded))
+  }
+
+  @Test
   def hmacKeyGeneratorCreatesUsableKeysForEachAlgorithm(): Unit = {
     val vectors: List[(HmacAlgorithm, Int)] = List(
       HmacAlgorithm.SHA1 -> 20,
