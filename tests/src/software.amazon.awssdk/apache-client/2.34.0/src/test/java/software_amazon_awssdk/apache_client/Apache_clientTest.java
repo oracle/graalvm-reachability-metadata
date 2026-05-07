@@ -243,7 +243,7 @@ public class Apache_clientTest {
         DnsResolver resolver = host -> {
             resolvedHost.set(host);
             if ("aws.test".equals(host)) {
-                return new InetAddress[] { InetAddress.getLoopbackAddress() };
+                return new InetAddress[] {InetAddress.getLoopbackAddress()};
             }
             return InetAddress.getAllByName(host);
         };
