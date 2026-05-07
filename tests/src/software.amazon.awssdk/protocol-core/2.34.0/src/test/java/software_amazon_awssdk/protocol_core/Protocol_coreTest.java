@@ -253,6 +253,28 @@ public class Protocol_coreTest {
             .hasMessageContaining("MarshallingType not found");
     }
 
+    @Test
+    void marshallingRegistryBuilderCopiesExistingRegistrationsAndAddsNewOnes() {
+        final TestMarshallingRegistry original = TestMarshallingRegistry.builder()
+                                                                        .registerMarshaller(MarshallLocation.PAYLOAD,
+                                                                                            MarshallingType.STRING,
+                                                                                            "original-payload")
+                                                                        .build();
+        final TestMarshallingRegistry copied = TestMarshallingRegistry.builder(original)
+                                                                      .registerMarshaller(MarshallLocation.HEADER,
+                                                                                          MarshallingType.STRING,
+                                                                                          "copied-header")
+                                                                      .registerMarshaller(MarshallLocation.PAYLOAD,
+                                                                                          MarshallingType.STRING,
+                                                                                          "copied-payload")
+                                                                      .build();
+
+        assertThat(copied.marshallerFor(MarshallLocation.PAYLOAD, "value")).isEqualTo("copied-payload");
+        assertThat(copied.marshallerFor(MarshallLocation.HEADER, "value")).isEqualTo("copied-header");
+        assertThat(original.marshallerFor(MarshallLocation.PAYLOAD, "value")).isEqualTo("original-payload");
+        assertThat(original.marshallerFor(MarshallLocation.HEADER, "value")).isNull();
+    }
+
     private static SdkField<Instant> instantField(MarshallLocation location) {
         return field(MarshallingType.INSTANT, location, null);
     }
@@ -293,11 +315,22 @@ public class Protocol_coreTest {
             return new Builder();
         }
 
+        private static Builder builder(TestMarshallingRegistry registry) {
+            return new Builder(registry);
+        }
+
         private Object marshallerFor(MarshallLocation location, Object value) {
             return get(location, toMarshallingType(value));
         }
 
         private static final class Builder extends AbstractMarshallingRegistry.Builder {
+            private Builder() {
+            }
+
+            private Builder(TestMarshallingRegistry registry) {
+                super(registry);
+            }
+
             private <T> Builder registerMarshaller(MarshallLocation location,
                                                    MarshallingType<T> marshallingType,
                                                    Object marshaller) {
