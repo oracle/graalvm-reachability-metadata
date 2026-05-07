@@ -6,6 +6,8 @@
  */
 package org_typelevel.vault_3
 
+import cats.Contravariant
+import cats.Functor
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import org.assertj.core.api.Assertions.assertThat
@@ -136,6 +138,25 @@ class Vault_3Test {
     assertThat(textVault.lookup(textKey)).isEqualTo(Some("123"))
     assertThat(textVault.lookup(intKey)).isEqualTo(Some(123))
     assertThat(textVault.lookup(booleanKey)).isEqualTo(Some(true))
+  }
+
+  @Test
+  def companionTypeClassInstancesAdaptKeysInGenericCode(): Unit = {
+    final case class CountText(value: String)
+
+    val insertContravariant: Contravariant[InsertKey] = InsertKey.ContravariantInsertKey
+    val lookupFunctor: Functor[LookupKey] = LookupKey.FunctorLookupKey
+    val rawKey: Key[Int] = newKey[Int]()
+
+    val countTextInsertKey: InsertKey[CountText] = insertContravariant.contramap(rawKey)(count => count.value.toInt)
+    val presentLookupKey: LookupKey[String] = lookupFunctor.as(rawKey, "present")
+    val doubledLookupKey: LookupKey[Int] = lookupFunctor.map(rawKey)(_ * 2)
+
+    val vault: Vault = Vault.empty.insert(countTextInsertKey, CountText("21"))
+
+    assertThat(vault.lookup(rawKey)).isEqualTo(Some(21))
+    assertThat(vault.lookup(presentLookupKey)).isEqualTo(Some("present"))
+    assertThat(vault.lookup(doubledLookupKey)).isEqualTo(Some(42))
   }
 
   @Test
