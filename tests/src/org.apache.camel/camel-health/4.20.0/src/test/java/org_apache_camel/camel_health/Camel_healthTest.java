@@ -6,10 +6,17 @@
  */
 package org_apache_camel.camel_health;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.camel.health.HealthCheck;
@@ -22,8 +29,11 @@ import org.apache.camel.impl.health.AbstractHealthCheck;
 import org.apache.camel.impl.health.ContextHealthCheck;
 import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
 import org.apache.camel.impl.health.DefaultHealthChecksLoader;
+import org.apache.camel.impl.health.HealthCheckRegistryRepository;
 import org.apache.camel.impl.health.ProducersHealthCheckRepository;
 import org.apache.camel.impl.health.RouteControllerHealthCheck;
+import org.apache.camel.spi.PackageScanResourceResolver;
+import org.apache.camel.spi.Resource;
 import org.apache.camel.support.SimpleRegistry;
 import org.junit.jupiter.api.Test;
 
@@ -225,7 +235,12 @@ public class Camel_healthTest {
 
     @Test
     void loaderAndBuiltInRouteControllerHealthCheckUseCamelHealthServices() {
-        DefaultCamelContext context = new DefaultCamelContext();
+        SimpleRegistry simpleRegistry = new SimpleRegistry();
+        simpleRegistry.bind("route-controller-health-check", HealthCheck.class, new RouteControllerHealthCheck());
+        DefaultCamelContext context = new DefaultCamelContext(simpleRegistry);
+        context.getCamelContextExtension().addContextPlugin(
+                PackageScanResourceResolver.class,
+                new SingleHealthCheckResourceResolver("META-INF/services/org/apache/camel/health-check/route-controller-check"));
         try {
             DefaultHealthChecksLoader loader = new DefaultHealthChecksLoader(context);
             Collection<HealthCheck> loadedChecks = loader.loadHealthChecks();
@@ -254,6 +269,35 @@ public class Camel_healthTest {
     }
 
     @Test
+    void registryRepositoryStreamsHealthChecksBoundInCamelRegistry() {
+        SimpleRegistry simpleRegistry = new SimpleRegistry();
+        RecordingHealthCheck registered = new RecordingHealthCheck("registry", "registry-bound", true, true);
+        simpleRegistry.bind("registeredHealthCheck", HealthCheck.class, registered);
+        DefaultCamelContext context = new DefaultCamelContext(simpleRegistry);
+        HealthCheckRegistryRepository repository = new HealthCheckRegistryRepository();
+        repository.setCamelContext(context);
+
+        try {
+            assertThat(repository.getId()).isEqualTo("registry-health-check-repository");
+            assertThat(repository.getCamelContext()).isSameAs(context);
+            assertThat(repository.stream()).singleElement().isSameAs(registered);
+            assertThat(repository.getCheck("registry-bound")).containsSame(registered);
+
+            HealthCheck.Result result = registered.call(Map.of("source", "registry"));
+            assertThat(result.getState()).isEqualTo(HealthCheck.State.UP);
+            assertThat(result.getDetails())
+                    .containsEntry(HealthCheck.CHECK_ID, "registry-bound")
+                    .containsEntry(HealthCheck.CHECK_GROUP, "registry")
+                    .containsEntry("source", "registry");
+
+            repository.setEnabled(false);
+            assertThat(repository.stream()).isEmpty();
+        } finally {
+            context.stop();
+        }
+    }
+
+    @Test
     void writableProducerRepositoryAddsRemovesAndFindsChecks() {
         ProducersHealthCheckRepository repository = new ProducersHealthCheckRepository();
         repository.setCamelContext(new DefaultCamelContext());
@@ -275,6 +319,85 @@ public class Camel_healthTest {
         repository.removeHealthCheck(first);
         assertThat(repository.getCheck("producer:first")).isEmpty();
         assertThat(repository.stream()).singleElement().isSameAs(second);
+    }
+
+    private static final class SingleHealthCheckResourceResolver implements PackageScanResourceResolver {
+        private final Set<ClassLoader> classLoaders = new HashSet<>();
+        private final Resource resource;
+        private boolean started;
+        private String acceptableSchemes;
+
+        private SingleHealthCheckResourceResolver(String location) {
+            this.resource = new NamedResource(location);
+        }
+
+        @Override
+        public Set<ClassLoader> getClassLoaders() {
+            return classLoaders;
+        }
+
+        @Override
+        public void addClassLoader(ClassLoader classLoader) {
+            classLoaders.add(classLoader);
+        }
+
+        @Override
+        public void setAcceptableSchemes(String schemes) {
+            acceptableSchemes = schemes;
+        }
+
+        @Override
+        public Collection<Resource> findResources(String location) {
+            return List.of(resource);
+        }
+
+        @Override
+        public Collection<Resource> findResources(String location, Predicate<String> filter) {
+            if (filter.test(resource.getLocation())) {
+                return List.of(resource);
+            }
+            return List.of();
+        }
+
+        @Override
+        public void start() {
+            started = true;
+        }
+
+        @Override
+        public void stop() {
+            started = false;
+            acceptableSchemes = null;
+        }
+    }
+
+    private static final class NamedResource implements Resource {
+        private final String location;
+
+        private NamedResource(String location) {
+            this.location = location;
+        }
+
+        @Override
+        public String getScheme() {
+            return "classpath";
+        }
+
+        @Override
+        public String getLocation() {
+            return location;
+        }
+
+        @Override
+        public boolean exists() {
+            return true;
+        }
+
+        @Override
+        public InputStream getInputStream() {
+            return new ByteArrayInputStream("class=org.apache.camel.impl.health.RouteControllerHealthCheck"
+                    .getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     private static final class RecordingHealthCheck extends AbstractHealthCheck {
