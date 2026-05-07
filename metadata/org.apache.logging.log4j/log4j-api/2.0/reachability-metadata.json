@@ -32,6 +32,39 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.logging.log4j.LogManager"
+      },
+      "type" : "org.apache.logging.log4j.LogManager",
+      "methods" : [
+        {
+          "name" : "getFactory",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.ThreadContext"
+      },
+      "type" : "org.apache.logging.log4j.ThreadContext",
+      "methods" : [
+        {
+          "name" : "put",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name" : "get",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.logging.log4j.spi.AbstractLogger"
       },
       "type" : "org.apache.logging.log4j.message.ParameterizedMessageFactory",
@@ -78,12 +111,6 @@
     }
   ],
   "resources" : [
-    {
-      "condition" : {
-        "typeReached" : "org.apache.logging.log4j.util.ProviderUtil"
-      },
-      "glob" : "META-INF/log4j-provider.properties"
-    },
     {
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.util.PropertiesUtil"

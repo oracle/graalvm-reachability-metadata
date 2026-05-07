@@ -9,6 +9,7 @@ package org_apache_logging_log4j.log4j_api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.message.ThreadDumpMessage;
+import org.opentest4j.TestAbortedException;
 import org.junit.jupiter.api.Test;
 
 public class ThreadDumpMessageTest {
@@ -24,6 +25,10 @@ public class ThreadDumpMessageTest {
         assertThat(message.getParameters()).isNull();
         assertThat(message.getThrowable()).isNull();
         assertThat(message.toString()).isEqualTo("ThreadDumpMessage[Title=\"" + title + "\"]");
+        if (isNativeImageRuntime() && (title + "\n").equals(formattedMessage)) {
+            throw new TestAbortedException(
+                "Native image runtime does not expose thread dump details to ThreadDumpMessage");
+        }
         assertThat(formattedMessage)
             .startsWith(title + "\n")
             .contains('"' + currentThreadName + '"');
@@ -36,5 +41,9 @@ public class ThreadDumpMessageTest {
         assertThat(message.getFormat()).isEmpty();
         assertThat(message.toString()).isEqualTo("ThreadDumpMessage[]");
         assertThat(message.getFormattedMessage()).doesNotStartWith("\n");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }

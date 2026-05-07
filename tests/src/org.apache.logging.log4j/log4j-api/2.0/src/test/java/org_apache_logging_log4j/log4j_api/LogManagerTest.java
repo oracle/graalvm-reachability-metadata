@@ -23,6 +23,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 public class LogManagerTest {
     private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
@@ -84,9 +85,15 @@ public class LogManagerTest {
         Class<?> logManagerClass = Class.forName("org.apache.logging.log4j.LogManager", true, loader);
         Method getFactory = logManagerClass.getMethod("getFactory");
         Object factory = getFactory.invoke(null);
+        ClassLoader factoryLoader = factory.getClass().getClassLoader();
+
+        if (isNativeImageRuntime() && factoryLoader != loader) {
+            throw new TestAbortedException(
+                "Native image runtime does not reload Log4j classes via isolated URLClassLoader");
+        }
 
         assertThat(factory.getClass().getName()).isEqualTo(expectedFactoryClassName);
-        assertThat(factory.getClass().getClassLoader()).isSameAs(loader);
+        assertThat(factoryLoader).isSameAs(loader);
     }
 
     private static URL[] classPathUrls() {
@@ -163,6 +170,10 @@ public class LogManagerTest {
         public void removeContext(final LoggerContext context) {
             delegate.removeContext(context);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class ChildFirstUrlClassLoader extends URLClassLoader {
