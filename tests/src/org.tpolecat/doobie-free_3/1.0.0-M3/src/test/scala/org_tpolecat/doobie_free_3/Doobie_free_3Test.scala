@@ -9,9 +9,8 @@ package org_tpolecat.doobie_free_3
 import cats.Id
 import cats.catsInstancesForId
 import cats.~>
-import cats.effect.Blocker
-import cats.effect.ContextShift
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.instances.all._
 import doobie.free.Embedded
 import doobie.free.KleisliInterpreter
@@ -67,14 +66,10 @@ import javax.sql.rowset.serial.SerialClob
 import javax.sql.rowset.serial.SQLInputImpl
 import javax.sql.rowset.serial.SQLOutputImpl
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
 
 class Doobie_free_3Test {
-  private given ContextShift[IO] = IO.contextShift(ExecutionContext.global)
-
-  private val interpreter: KleisliInterpreter[IO] =
-    KleisliInterpreter[IO](Blocker.liftExecutionContext(ExecutionContext.global))
+  private val interpreter: KleisliInterpreter[IO] = KleisliInterpreter[IO]
 
   @Test
   def blobProgramsRunAgainstJdbcBlobImplementations(): Unit = {
@@ -493,7 +488,10 @@ class Doobie_free_3Test {
   }
 
   private def runIo[A](io: IO[A]): A =
-    io.unsafeRunTimed(5.seconds).getOrElse(fail("IO did not complete within the test timeout"))
+    io.timeoutTo(
+      5.seconds,
+      IO.raiseError(new AssertionError("IO did not complete within the test timeout"))
+    ).unsafeRunSync()
 
   private final class InMemoryNClob(initialValue: String) extends NClob {
     private val delegate: SerialClob = new SerialClob(initialValue.toCharArray)
