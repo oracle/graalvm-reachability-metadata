@@ -14,8 +14,10 @@ import cats.Invariant
 import cats.MonadError
 import cats.Monoid
 import cats.Order
+import cats.Semigroup
 import cats.Show
 import cats.Traverse
+import cats.data.NonEmptyList
 import cats.implicits._
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -142,6 +144,21 @@ class Scodec_cats_3Test {
     assertThat(emptyString).isEqualTo(Attempt.successful(DecodeResult("", BitVector.fromValidHex("ab"))))
     assertThat(decoderMonad.raiseError[Int](raised).decode(source)).isEqualTo(Attempt.failure[DecodeResult[Int]](raised))
     assertThat(Show[Decoder[Int]].show(uint8)).isNotBlank
+  }
+
+  @Test
+  def combinesDecodersForSemigroupOnlyResults(): Unit = {
+    val nonEmptyByteDecoder: Decoder[NonEmptyList[Int]] = uint8.map(NonEmptyList.one)
+    val combinedDecoder: Decoder[NonEmptyList[Int]] = Semigroup[Decoder[NonEmptyList[Int]]].combine(
+      nonEmptyByteDecoder,
+      nonEmptyByteDecoder
+    )
+
+    val decoded: Attempt[DecodeResult[NonEmptyList[Int]]] = combinedDecoder.decode(BitVector.fromValidHex("0a0bff"))
+
+    assertThat(decoded).isEqualTo(
+      Attempt.successful(DecodeResult(NonEmptyList.of(10, 11), BitVector.fromValidHex("ff")))
+    )
   }
 
   @Test
