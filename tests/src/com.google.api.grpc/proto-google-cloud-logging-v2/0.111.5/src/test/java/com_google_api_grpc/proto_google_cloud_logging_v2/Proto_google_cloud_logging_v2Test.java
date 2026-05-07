@@ -24,7 +24,10 @@ import com.google.logging.v2.CopyLogEntriesMetadata;
 import com.google.logging.v2.CopyLogEntriesRequest;
 import com.google.logging.v2.CreateBucketRequest;
 import com.google.logging.v2.CreateLinkRequest;
+import com.google.logging.v2.CreateLogMetricRequest;
 import com.google.logging.v2.DeleteLinkRequest;
+import com.google.logging.v2.DeleteLogMetricRequest;
+import com.google.logging.v2.GetLogMetricRequest;
 import com.google.logging.v2.IndexConfig;
 import com.google.logging.v2.IndexType;
 import com.google.logging.v2.LifecycleState;
@@ -33,6 +36,8 @@ import com.google.logging.v2.LinkMetadata;
 import com.google.logging.v2.LinkName;
 import com.google.logging.v2.ListLogEntriesRequest;
 import com.google.logging.v2.ListLogEntriesResponse;
+import com.google.logging.v2.ListLogMetricsRequest;
+import com.google.logging.v2.ListLogMetricsResponse;
 import com.google.logging.v2.LocationMetadata;
 import com.google.logging.v2.LogBucket;
 import com.google.logging.v2.LogBucketName;
@@ -61,6 +66,7 @@ import com.google.logging.v2.TailLogEntriesRequest;
 import com.google.logging.v2.TailLogEntriesResponse;
 import com.google.logging.v2.UpdateBucketRequest;
 import com.google.logging.v2.UpdateCmekSettingsRequest;
+import com.google.logging.v2.UpdateLogMetricRequest;
 import com.google.logging.v2.UpdateSettingsRequest;
 import com.google.logging.v2.WriteLogEntriesPartialErrors;
 import com.google.logging.v2.WriteLogEntriesRequest;
@@ -342,6 +348,52 @@ public class Proto_google_cloud_logging_v2Test {
                 .isEqualTo(7);
         assertThat(LoggingProto.getDescriptor().getMessageTypes())
                 .anyMatch(descriptor -> descriptor.getName().equals("WriteLogEntriesRequest"));
+    }
+
+    @Test
+    void logMetricServiceMessagesRepresentCrudAndPagination() {
+        LogMetric metric = newLogMetric();
+        LogMetric updatedMetric = metric.toBuilder()
+                .setDescription("Updated count of error log entries")
+                .setDisabled(true)
+                .putLabelExtractors("severity", "EXTRACT(severity)")
+                .build();
+        String parent = ProjectName.format(PROJECT_ID);
+        String metricName = metric.getName();
+
+        CreateLogMetricRequest createRequest = CreateLogMetricRequest.newBuilder()
+                .setParent(parent)
+                .setMetric(metric)
+                .build();
+        ListLogMetricsRequest listRequest = ListLogMetricsRequest.newBuilder()
+                .setParent(parent)
+                .setPageSize(2)
+                .setPageToken("first-page")
+                .build();
+        ListLogMetricsResponse listResponse = ListLogMetricsResponse.newBuilder()
+                .addMetrics(metric)
+                .addMetrics(updatedMetric)
+                .setNextPageToken("second-page")
+                .build();
+        GetLogMetricRequest getRequest = GetLogMetricRequest.newBuilder().setMetricName(metricName).build();
+        UpdateLogMetricRequest updateRequest = UpdateLogMetricRequest.newBuilder()
+                .setMetricName(metricName)
+                .setMetric(updatedMetric)
+                .build();
+        DeleteLogMetricRequest deleteRequest = DeleteLogMetricRequest.newBuilder().setMetricName(metricName).build();
+
+        assertThat(createRequest.getParent()).isEqualTo(parent);
+        assertThat(createRequest.hasMetric()).isTrue();
+        assertThat(createRequest.getMetric().getMetricDescriptor().getType())
+                .isEqualTo("logging.googleapis.com/user/error_count");
+        assertThat(listRequest.getPageSize()).isEqualTo(2);
+        assertThat(listRequest.getPageToken()).isEqualTo("first-page");
+        assertThat(listResponse.getMetricsList()).containsExactly(metric, updatedMetric);
+        assertThat(listResponse.getNextPageToken()).isEqualTo("second-page");
+        assertThat(getRequest.getMetricName()).isEqualTo(metricName);
+        assertThat(updateRequest.getMetric().getDisabled()).isTrue();
+        assertThat(updateRequest.getMetric().getLabelExtractorsMap()).containsEntry("severity", "EXTRACT(severity)");
+        assertThat(deleteRequest.getMetricName()).isEqualTo(metricName);
     }
 
     @Test
