@@ -59,7 +59,7 @@ public class ELUtilTest {
                 new ELClass(Operations.class),
                 "join",
                 null,
-                new Object[] { "letters", "a", "b" });
+                new Object[] {"letters", "a", "b" });
 
         assertThat(result).isEqualTo("letters:a,b");
         assertThat(context.isPropertyResolved()).isTrue();
@@ -74,8 +74,8 @@ public class ELUtilTest {
                 context,
                 new ELClass(NonPublicConstructable.class),
                 "<init>",
-                new Class<?>[] { String.class },
-                new Object[] { "created" });
+                new Class<?>[] {String.class },
+                new Object[] {"created" });
 
         assertThat(result).isInstanceOf(PublicConstructable.class);
         assertThat(((PublicConstructable) result).getName()).isEqualTo("created");
@@ -91,8 +91,8 @@ public class ELUtilTest {
                 context,
                 new NonPublicGreeter(),
                 "greet",
-                new Class<?>[] { String.class },
-                new Object[] { "Ada" });
+                new Class<?>[] {String.class },
+                new Object[] {"Ada" });
 
         assertThat(result).isEqualTo("Hello Ada");
         assertThat(context.isPropertyResolved()).isTrue();
@@ -107,8 +107,8 @@ public class ELUtilTest {
                 context,
                 new NonPublicDerived(),
                 "describe",
-                new Class<?>[] { String.class },
-                new Object[] { "base" });
+                new Class<?>[] {String.class },
+                new Object[] {"base" });
 
         assertThat(result).isEqualTo("described base");
         assertThat(context.isPropertyResolved()).isTrue();
