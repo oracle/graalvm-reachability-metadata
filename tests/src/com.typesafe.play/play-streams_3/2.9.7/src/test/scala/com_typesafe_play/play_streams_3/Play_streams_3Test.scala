@@ -27,9 +27,11 @@ import akka.actor.Props
 import akka.actor.Status
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
+import akka.stream.SourceShape
 import akka.stream.SystemMaterializer
 import akka.stream.scaladsl.Compression
 import akka.stream.scaladsl.Flow
+import akka.stream.scaladsl.GraphDSL
 import akka.stream.scaladsl.Keep
 import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
@@ -130,6 +132,24 @@ class Play_streams_3Test {
 
       val result: Seq[String] = await(Source(List(1, 2, 3, 4)).via(flow).runWith(Sink.seq[String]))
       assertThat(result.asJava).containsExactlyInAnyOrder("bypassed:1", "flowed:20", "bypassed:3", "flowed:40")
+    }
+  }
+
+  @Test
+  def onlyFirstCanFinishMergeIgnoresSecondaryInputCompletion(): Unit = {
+    withActorSystem("only-first-can-finish-merge") { (_, materializer) =>
+      implicit val implicitMaterializer: Materializer = materializer
+      val merged: Source[String, ?] = Source.fromGraph(GraphDSL.create() { implicit builder =>
+        import GraphDSL.Implicits.*
+
+        val merge = builder.add(AkkaStreams.onlyFirstCanFinishMerge[String](2))
+        Source.single("from-primary") ~> merge.in(0)
+        Source.empty[String] ~> merge.in(1)
+        SourceShape(merge.out)
+      })
+
+      val result: Seq[String] = await(merged.runWith(Sink.seq[String]))
+      assertThat(result.asJava).containsExactly("from-primary")
     }
   }
 
