@@ -153,6 +153,25 @@ public class RegionsTest {
     }
 
     @Test
+    void stsServiceMetadataResolvesFipsEndpointVariantsAndSigningRegion() {
+        ServiceMetadata sts = ServiceMetadata.of("sts");
+        Region usWestTwoFips = Region.of("us-west-2-fips");
+        ServiceEndpointKey taggedFips = ServiceEndpointKey.builder()
+                .region(Region.US_WEST_2)
+                .tags(EndpointTag.FIPS)
+                .build();
+        ServiceEndpointKey pseudoRegionFips = ServiceEndpointKey.builder()
+                .region(usWestTwoFips)
+                .build();
+
+        assertThat(sts.regions()).contains(Region.US_WEST_2, usWestTwoFips);
+        assertThat(sts.endpointFor(taggedFips)).hasToString("sts-fips.us-west-2.amazonaws.com");
+        assertThat(sts.endpointFor(pseudoRegionFips)).hasToString("sts-fips.us-west-2.amazonaws.com");
+        assertThat(sts.signingRegion(taggedFips)).isSameAs(Region.US_WEST_2);
+        assertThat(sts.signingRegion(pseudoRegionFips)).isSameAs(Region.US_WEST_2);
+    }
+
+    @Test
     void s3ServiceMetadataSupportsUsEastOneRegionalReconfiguration() {
         ServiceMetadata s3 = ServiceMetadata.of("s3");
         ServiceMetadata legacyS3 = s3.reconfigure(builder -> builder.putAdvancedOption(
