@@ -331,6 +331,36 @@ class Fs2_kafka_3Test {
   }
 
   @Test
+  def transactionalProducerSettingsAddTransactionalPropertiesImmutably(): Unit = {
+    val baseProducerSettings: ProducerSettings[IO, String, String] = ProducerSettings[IO, String, String](
+      Serializer.string[IO],
+      Serializer.string[IO]
+    ).withBootstrapServers("localhost:9092")
+      .withClientId("transactional-producer")
+
+    val transactionalSettings: TransactionalProducerSettings[IO, String, String] =
+      TransactionalProducerSettings("transactional-id", baseProducerSettings)
+    val timedSettings: TransactionalProducerSettings[IO, String, String] =
+      transactionalSettings.withTransactionTimeout(7.seconds)
+
+    assertFalse(baseProducerSettings.properties.contains(ProducerConfig.TRANSACTIONAL_ID_CONFIG))
+    assertFalse(transactionalSettings.producerSettings.properties.contains(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG))
+    assertEquals("transactional-id", transactionalSettings.transactionalId)
+    assertEquals(
+      "transactional-id",
+      transactionalSettings.producerSettings.properties(ProducerConfig.TRANSACTIONAL_ID_CONFIG)
+    )
+    assertEquals(
+      "transactional-id",
+      timedSettings.producerSettings.properties(ProducerConfig.TRANSACTIONAL_ID_CONFIG)
+    )
+    assertEquals("7000", timedSettings.producerSettings.properties(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG))
+    assertEquals("localhost:9092", timedSettings.producerSettings.properties(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG))
+    assertEquals("transactional-producer", timedSettings.producerSettings.properties(ProducerConfig.CLIENT_ID_CONFIG))
+    assertTrue(timedSettings.show.contains("transactionalId = transactional-id"))
+  }
+
+  @Test
   def committableOffsetsBatchAndTransactionalRecordsUsePublicCommitApi(): Unit = {
     val committed = new AtomicReference[List[Map[TopicPartition, OffsetAndMetadata]]](Nil)
     val commit: Map[TopicPartition, OffsetAndMetadata] => IO[Unit] = offsets =>
