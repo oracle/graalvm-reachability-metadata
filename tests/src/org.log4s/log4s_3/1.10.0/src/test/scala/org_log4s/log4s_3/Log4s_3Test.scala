@@ -190,6 +190,25 @@ class Log4s_3Test {
   }
 
   @Test
+  def mdcWithCtxRestoresOriginalValuesWhenBlockThrows(): Unit = {
+    MDC.clear()
+    MDC("request") = "r-1"
+
+    val failure: IllegalStateException = new IllegalStateException("context failure")
+    val thrown: IllegalStateException = assertThrows(
+      classOf[IllegalStateException],
+      () =>
+        MDC.withCtx("request" -> "r-2", "span" -> "s-1") {
+          assertEquals(Map("request" -> "r-2", "span" -> "s-1"), MDC.toMap)
+          throw failure
+        }
+    )
+
+    assertSame(failure, thrown)
+    assertEquals(Map("request" -> "r-1"), MDC.toMap)
+  }
+
+  @Test
   def mdcContextIsIsolatedByThread(): Unit = {
     MDC.clear()
     MDC("thread") = "main"
