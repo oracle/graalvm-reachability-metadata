@@ -36,6 +36,7 @@ import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
 import io.grpc.ClientInterceptors;
 import io.grpc.Deadline;
+import io.grpc.ForwardingClientCall;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
@@ -130,6 +131,47 @@ public class Grpc_stubTest {
         assertThat(asyncStub.getCallOptions().getOnReadyThreshold()).isEqualTo(512);
         assertThat(blockingStub.getCallOptions().getOption(CUSTOM_OPTION)).isEqualTo("blocking");
         assertThat(deadline.isExpired()).isFalse();
+    }
+
+    @Test
+    void abstractStubWithInterceptorsAppliesClientInterceptorsToDerivedStub() {
+        RecordingChannel baseChannel = new RecordingChannel(response("intercepted-response"));
+        TestAsyncStub originalStub = AbstractAsyncStub.newStub(TestAsyncStub::new, baseChannel)
+                .withOption(CUSTOM_OPTION, "interceptor-option");
+        AtomicReference<MethodDescriptor<?, ?>> interceptedMethod = new AtomicReference<>();
+        AtomicReference<String> interceptedOption = new AtomicReference<>();
+        ClientInterceptor interceptor = new ClientInterceptor() {
+            @Override
+            public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
+                    MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel next) {
+                interceptedMethod.set(methodDescriptor);
+                interceptedOption.set(callOptions.getOption(CUSTOM_OPTION));
+                ClientCall<ReqT, RespT> delegate = next.newCall(methodDescriptor, callOptions);
+                return new ForwardingClientCall.SimpleForwardingClientCall<>(delegate) {
+                    @Override
+                    public void start(Listener<RespT> responseListener, Metadata headers) {
+                        headers.put(HEADER_KEY, "from-stub-interceptor");
+                        super.start(responseListener, headers);
+                    }
+                };
+            }
+        };
+        TestAsyncStub interceptedStub = originalStub.withInterceptors(interceptor);
+        RecordingStreamObserver<String> observer = new RecordingStreamObserver<>();
+
+        ClientCalls.asyncUnaryCall(
+                interceptedStub.getChannel().newCall(UNARY_METHOD, interceptedStub.getCallOptions()),
+                "stub-request",
+                observer);
+
+        assertThat(originalStub.getChannel()).isSameAs(baseChannel);
+        assertThat(interceptedStub.getChannel()).isNotSameAs(baseChannel);
+        assertThat(interceptedMethod.get()).isSameAs(UNARY_METHOD);
+        assertThat(interceptedOption.get()).isEqualTo("interceptor-option");
+        assertThat(baseChannel.lastCall().startHeaders().get(HEADER_KEY)).isEqualTo("from-stub-interceptor");
+        assertThat(baseChannel.lastCall().sentMessages()).containsExactly("stub-request");
+        assertThat(observer.messages()).containsExactly("intercepted-response");
+        assertThat(observer.completed()).isTrue();
     }
 
     @Test
