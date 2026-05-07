@@ -25,6 +25,7 @@ from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
+from utility_scripts.test_quality_checks import find_native_image_skip_guards, format_native_image_skip_occurrence
 
 RUN_STATUS_SUCCESS = "success"
 RUN_STATUS_FAILURE = "failure"
@@ -409,11 +410,34 @@ class WorkflowStrategy(ABC):
             model_name=self.model_name,
         ):
             return RUN_STATUS_FAILURE, None
+        if not self._run_generated_test_quality_gate():
+            return RUN_STATUS_FAILURE, None
         log_stage("commit-iteration", f"Running commit iteration for {self.library}")
         if not self._commit_library_iteration():
             return RUN_STATUS_FAILURE, None
         checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         return test_retry_status, checkpoint_commit_hash
+
+    def _run_generated_test_quality_gate(self) -> bool:
+        """Reject generated tests that skip native-image assertions before committing."""
+        test_source_root = os.path.join(
+            self.reachability_repo_path,
+            "tests",
+            "src",
+            self.group,
+            self.artifact,
+            self.version,
+        )
+        native_image_skip_guards = find_native_image_skip_guards(test_source_root)
+        if not native_image_skip_guards:
+            return True
+        for occurrence in native_image_skip_guards:
+            log_stage(
+                "generated-test-quality",
+                f"Native-image test skip detected: "
+                f"{format_native_image_skip_occurrence(occurrence, self.reachability_repo_path)}",
+            )
+        return False
 
     def _run_split_test_only_metadata(self, library: str) -> bool:
         """Split test-only metadata before stats generation or committing."""

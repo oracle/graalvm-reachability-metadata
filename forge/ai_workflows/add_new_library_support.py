@@ -47,7 +47,12 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
 )
 from utility_scripts.stage_logger import log_stage
-from utility_scripts.test_quality_checks import cleanup_scaffold_placeholder_tests, format_placeholder_occurrence
+from utility_scripts.test_quality_checks import (
+    cleanup_scaffold_placeholder_tests,
+    find_native_image_skip_guards,
+    format_native_image_skip_occurrence,
+    format_placeholder_occurrence,
+)
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
@@ -563,6 +568,15 @@ def main(argv=None):
                     f"WARNING: Scaffold placeholder test remains in generated sources: "
                     f"{format_placeholder_occurrence(occurrence, reachability_repo_path)}",
                 )
+        native_image_skip_guards = find_native_image_skip_guards(test_source_layout.source_root)
+        if native_image_skip_guards:
+            for occurrence in native_image_skip_guards:
+                log_stage(
+                    "generated-test-quality",
+                    f"Native-image test skip detected: "
+                    f"{format_native_image_skip_occurrence(occurrence, reachability_repo_path)}",
+                )
+            workflow_status = RUN_STATUS_FAILURE
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         if is_benchmark_mode:

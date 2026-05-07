@@ -14,6 +14,7 @@ from utility_scripts.local_ci_verification import (
     CommandRecord,
     LOCAL_CI_VERIFICATION_KEY,
     LocalCIVerificationResult,
+    LocalCIVerificationError,
     classify_repo_fix_paths,
     fetch_pr_base_ref,
     format_local_ci_verification_pr_section,
@@ -22,6 +23,7 @@ from utility_scripts.local_ci_verification import (
     _github_repo_slug_from_url,
     _graalvm_home_for_java_version,
     _merge_test_matrix_entries,
+    _run_generated_test_quality_validation,
     _run_infrastructure_matrix_entries,
     _run_recorded_command,
     _run_recorded_command_without_new_docker_images,
@@ -251,6 +253,76 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertEqual(captured_env["JAVA_HOME"], "/matrix/jdk")
         self.assertEqual(captured_env["GRADLE_OPTS"], "-Xmx2g -Dfile.encoding=UTF-8")
         self.assertNotIn("JAVA_OPTS", captured_env)
+
+    def test_generated_test_quality_validation_rejects_native_image_short_circuit(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            test_file = os.path.join(
+                repo_path,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "java",
+                "org_example",
+                "demo",
+                "DemoTest.java",
+            )
+            os.makedirs(os.path.dirname(test_file), exist_ok=True)
+            with open(test_file, "w", encoding="utf-8") as file:
+                file.write(
+                    """
+package org_example.demo;
+
+import org.junit.jupiter.api.Test;
+
+class DemoTest {
+    @Test
+    void skipsNativeImage() {
+        if (NativeImageSupport.isNativeImageRuntime()) {
+            return;
+        }
+    }
+}
+""".lstrip()
+                )
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+
+            failed = _run_generated_test_quality_validation(
+                repo_path,
+                ["tests/src/org.example/demo/1.0.0/src/test/java/org_example/demo/DemoTest.java"],
+                result,
+            )
+
+            self.assertIsNotNone(failed)
+            self.assertEqual(result.commands[0].gate, "generated-test-quality")
+            self.assertIn("DemoTest.java", result.commands[0].output_excerpt)
+
+    def test_generated_test_quality_failure_does_not_run_fixup(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            _git(repo_path, "init")
+            with open(os.path.join(repo_path, "README.md"), "w", encoding="utf-8") as file:
+                file.write("base\n")
+            base = _commit_all(repo_path, "base")
+            failed = CommandRecord(
+                gate="generated-test-quality",
+                command=["generated-test-quality", "tests/src/org.example/demo/1.0.0"],
+                returncode=1,
+                output_excerpt="DemoTest.java: native-image guard returns before exercising assertions",
+            )
+
+            with patch("utility_scripts.local_ci_verification._run_verification_once", return_value=failed), \
+                    patch("utility_scripts.local_ci_verification._run_fixup") as fixup:
+                with self.assertRaises(LocalCIVerificationError):
+                    run_local_ci_verification(
+                        repo_path=repo_path,
+                        coordinates="org.example:demo:1.0.0",
+                        base_commit=base,
+                    )
+
+            fixup.assert_not_called()
 
     def test_test_matrix_skips_docker_networking_for_non_docker_coordinate(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")

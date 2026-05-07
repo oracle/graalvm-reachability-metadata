@@ -19,11 +19,17 @@ from pathlib import Path
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
+from utility_scripts.test_quality_checks import (
+    TEST_SOURCE_EXTENSIONS,
+    find_native_image_skip_guards,
+    format_native_image_skip_occurrence,
+)
 
 LOCAL_CI_VERIFICATION_KEY = "local_ci_verification"
 HUMAN_INTERVENTION_LABEL = "human-intervention"
 MAX_OUTPUT_CHARS = 12000
 MAX_FIXUP_ATTEMPTS = 2
+NON_FIXABLE_GATES = {"generated-test-quality"}
 CODEX_MODEL_NAME = "oca/gpt-5.4"
 CODEX_TIMEOUT_SECONDS = 1800
 DEFAULT_BASE_BRANCH = "master"
@@ -125,7 +131,7 @@ def run_local_ci_verification(
 
         result.failure_gate = failed_command.gate
         result.failure_command = failed_command.command
-        if attempt >= max_fixup_attempts:
+        if failed_command.gate in NON_FIXABLE_GATES or attempt >= max_fixup_attempts:
             result.status = "failure"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
             _write_verification_metrics(metrics_repo_path, result)
@@ -236,6 +242,9 @@ def _run_verification_once(
         result: LocalCIVerificationResult,
 ) -> CommandRecord | None:
     changed_files = changed_files_for_ci(repo_path, base_commit)
+    failed = _run_generated_test_quality_validation(repo_path, changed_files, result)
+    if failed is not None:
+        return failed
 
     try:
         changed_metadata_matrix = _gradle_json_output(
@@ -309,6 +318,54 @@ def _run_verification_once(
             return failed
 
     return None
+
+
+def _run_generated_test_quality_validation(
+        repo_path: str,
+        changed_files: list[str],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    test_source_roots = _changed_test_source_roots(repo_path, changed_files)
+    if not test_source_roots:
+        return None
+
+    occurrences = [
+        occurrence
+        for source_root in test_source_roots
+        for occurrence in find_native_image_skip_guards(source_root)
+    ]
+    command = [
+        "generated-test-quality",
+        *[os.path.relpath(source_root, repo_path) for source_root in test_source_roots],
+    ]
+    output = "\n".join(format_native_image_skip_occurrence(occurrence, repo_path) for occurrence in occurrences)
+    if not occurrences:
+        result.commands.append(CommandRecord(
+            gate="generated-test-quality",
+            command=command,
+            returncode=0,
+            output_excerpt="No generated native-image skips detected.",
+        ))
+        return None
+
+    record = CommandRecord(
+        gate="generated-test-quality",
+        command=command,
+        returncode=1,
+        output_excerpt=output[:MAX_OUTPUT_CHARS],
+    )
+    result.commands.append(record)
+    return record
+
+
+def _changed_test_source_roots(repo_path: str, changed_files: list[str]) -> list[str]:
+    roots: set[str] = set()
+    for path in changed_files:
+        parts = path.split("/")
+        if len(parts) < 6 or parts[0:2] != ["tests", "src"] or not path.endswith(TEST_SOURCE_EXTENSIONS):
+            continue
+        roots.add(os.path.join(repo_path, *parts[:5]))
+    return sorted(roots)
 
 
 def _run_test_matrix_entries(
