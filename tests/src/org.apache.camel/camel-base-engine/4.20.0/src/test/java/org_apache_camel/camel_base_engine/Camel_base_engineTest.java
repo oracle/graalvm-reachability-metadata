@@ -8,7 +8,7 @@ package org_apache_camel.camel_base_engine;
 
 import org.junit.jupiter.api.Test;
 
-class Camel_base_engineTest {
+public class Camel_base_engineTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
