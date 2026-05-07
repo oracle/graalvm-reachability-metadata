@@ -24,6 +24,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.TopicPartition
+import org.apache.kafka.common.serialization.{Deserializer as KafkaDeserializer, Serializer as KafkaSerializer}
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -190,6 +191,51 @@ class Fs2_kafka_3Test {
     assertEquals(Some(3), traversedConsumer.get.serializedKeySize)
     assertEquals(Some(5), traversedConsumer.get.serializedValueSize)
     assertEquals(Some(7), traversedConsumer.get.leaderEpoch)
+  }
+
+  @Test
+  def serializersAndDeserializersDelegateToKafkaImplementationsWithHeaders(): Unit = {
+    final class HeaderAwareKafkaSerializer extends KafkaSerializer[String] {
+      override def serialize(topic: String, data: String): Array[Byte] =
+        bytes(s"$topic:$data")
+
+      override def serialize(
+          topic: String,
+          headers: org.apache.kafka.common.header.Headers,
+          data: String
+      ): Array[Byte] = {
+        val suffix = new String(headers.lastHeader("suffix").value, StandardCharsets.UTF_8)
+        bytes(s"$topic:$data:$suffix")
+      }
+    }
+
+    final class HeaderAwareKafkaDeserializer extends KafkaDeserializer[String] {
+      override def deserialize(topic: String, data: Array[Byte]): String =
+        s"$topic:${new String(data, StandardCharsets.UTF_8)}"
+
+      override def deserialize(
+          topic: String,
+          headers: org.apache.kafka.common.header.Headers,
+          data: Array[Byte]
+      ): String = {
+        val prefix = new String(headers.lastHeader("prefix").value, StandardCharsets.UTF_8)
+        s"$prefix:$topic:${new String(data, StandardCharsets.UTF_8)}"
+      }
+    }
+
+    val delegatedSerializer: Serializer[IO, String] = Serializer.delegate(new HeaderAwareKafkaSerializer)
+    val serialized: Array[Byte] = delegatedSerializer
+      .serialize("topic-a", Headers(Header("suffix", "tail")), "payload")
+      .unsafeRunSync()
+
+    assertArrayEquals(bytes("topic-a:payload:tail"), serialized)
+
+    val delegatedDeserializer: Deserializer[IO, String] = Deserializer.delegate(new HeaderAwareKafkaDeserializer)
+    val deserialized: String = delegatedDeserializer
+      .deserialize("topic-b", Headers(Header("prefix", "head")), bytes("payload"))
+      .unsafeRunSync()
+
+    assertEquals("head:topic-b:payload", deserialized)
   }
 
   @Test
