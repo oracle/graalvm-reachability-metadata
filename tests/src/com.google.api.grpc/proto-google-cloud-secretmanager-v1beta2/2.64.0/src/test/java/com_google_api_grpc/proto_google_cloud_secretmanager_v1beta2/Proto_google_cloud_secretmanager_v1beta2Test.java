@@ -35,9 +35,18 @@ import com.google.cloud.secretmanager.v1beta2.SecretName;
 import com.google.cloud.secretmanager.v1beta2.SecretPayload;
 import com.google.cloud.secretmanager.v1beta2.SecretVersion;
 import com.google.cloud.secretmanager.v1beta2.SecretVersionName;
+import com.google.cloud.secretmanager.v1beta2.ServiceProto;
 import com.google.cloud.secretmanager.v1beta2.Topic;
 import com.google.cloud.secretmanager.v1beta2.UpdateSecretRequest;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors.MethodDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.Duration;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
@@ -303,6 +312,56 @@ public class Proto_google_cloud_secretmanager_v1beta2Test {
         assertThat(listResponse.getSecretsList()).containsExactly(secret);
         assertThat(listResponse.getNextPageToken()).isEqualTo("page-2");
         assertThat(listResponse.getTotalSize()).isEqualTo(1);
+    }
+
+    @Test
+    void iamPolicyMessagesAndServiceDescriptorsRepresentPermissionManagement() {
+        Binding binding = Binding.newBuilder()
+                .setRole("roles/secretmanager.secretAccessor")
+                .addMembers("serviceAccount:secret-reader@test-project.iam.gserviceaccount.com")
+                .build();
+        Policy policy = Policy.newBuilder()
+                .addBindings(binding)
+                .setEtag(ByteString.copyFromUtf8("policy-etag"))
+                .build();
+        FieldMask updateMask = FieldMask.newBuilder().addPaths("bindings").build();
+
+        SetIamPolicyRequest setRequest = SetIamPolicyRequest.newBuilder()
+                .setResource(REGIONAL_SECRET_NAME)
+                .setPolicy(policy)
+                .setUpdateMask(updateMask)
+                .build();
+        GetIamPolicyRequest getRequest = GetIamPolicyRequest.newBuilder()
+                .setResource(REGIONAL_SECRET_NAME)
+                .build();
+        TestIamPermissionsRequest testRequest = TestIamPermissionsRequest.newBuilder()
+                .setResource(REGIONAL_SECRET_NAME)
+                .addPermissions("secretmanager.versions.access")
+                .addPermissions("secretmanager.versions.add")
+                .build();
+        TestIamPermissionsResponse testResponse = TestIamPermissionsResponse.newBuilder()
+                .addPermissions("secretmanager.versions.access")
+                .build();
+        ServiceDescriptor secretManagerService = ServiceProto.getDescriptor().findServiceByName("SecretManagerService");
+        MethodDescriptor setIamPolicyMethod = secretManagerService.findMethodByName("SetIamPolicy");
+        MethodDescriptor getIamPolicyMethod = secretManagerService.findMethodByName("GetIamPolicy");
+        MethodDescriptor testIamPermissionsMethod = secretManagerService.findMethodByName("TestIamPermissions");
+
+        assertThat(setRequest.getResource()).isEqualTo(REGIONAL_SECRET_NAME);
+        assertThat(setRequest.getPolicy().getBindingsList()).containsExactly(binding);
+        assertThat(setRequest.getUpdateMask().getPathsList()).containsExactly("bindings");
+        assertThat(getRequest.getResource()).isEqualTo(REGIONAL_SECRET_NAME);
+        assertThat(testRequest.getPermissionsList())
+                .containsExactly("secretmanager.versions.access", "secretmanager.versions.add");
+        assertThat(testResponse.getPermissionsList()).containsExactly("secretmanager.versions.access");
+        assertThat(setIamPolicyMethod.getInputType().getFullName()).isEqualTo("google.iam.v1.SetIamPolicyRequest");
+        assertThat(setIamPolicyMethod.getOutputType().getFullName()).isEqualTo("google.iam.v1.Policy");
+        assertThat(getIamPolicyMethod.getInputType().getFullName()).isEqualTo("google.iam.v1.GetIamPolicyRequest");
+        assertThat(getIamPolicyMethod.getOutputType().getFullName()).isEqualTo("google.iam.v1.Policy");
+        assertThat(testIamPermissionsMethod.getInputType().getFullName())
+                .isEqualTo("google.iam.v1.TestIamPermissionsRequest");
+        assertThat(testIamPermissionsMethod.getOutputType().getFullName())
+                .isEqualTo("google.iam.v1.TestIamPermissionsResponse");
     }
 
     @Test
