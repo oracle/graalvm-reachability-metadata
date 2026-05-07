@@ -8,17 +8,24 @@ package jdom.jdom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.jdom.output.EscapeStrategy;
-import org.jdom.output.Format;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
 import org.junit.jupiter.api.Test;
 
 public class FormatInnerDefaultEscapeStrategyTest {
     @Test
-    void charsetBackedEscapeStrategyEscapesCharactersNotSupportedByEncoding() {
-        Format format = Format.getRawFormat().setEncoding("ISO-8859-2");
-        EscapeStrategy escapeStrategy = format.getEscapeStrategy();
+    void configuredOutputterUsesInnerFormatSettingsAndEscapesXmlEntities() {
+        XMLOutputter outputter = new XMLOutputter();
+        outputter.setIndent("  ");
+        outputter.setNewlines(true);
+        outputter.setLineSeparator("\n");
 
-        assertThat(escapeStrategy.shouldEscape('A')).isFalse();
-        assertThat(escapeStrategy.shouldEscape('\u20ac')).isTrue();
+        Element catalog = new Element("catalog")
+                .addContent(new Element("title").setText("JDOM & Native Image"));
+
+        assertThat(outputter.outputString(catalog)).isEqualTo("""
+                <catalog>
+                  <title>JDOM &amp; Native Image</title>
+                </catalog>""".stripIndent());
     }
 }

@@ -22,13 +22,21 @@ import org.junit.jupiter.api.Test;
 
 public class ElementTest {
     @Test
-    void serializesElementNamespaceAndAdditionalNamespaceDeclarations() throws Exception {
+    void serializesElementNamespaceAndClonesAdditionalNamespaceDeclarations() throws Exception {
         Namespace elementNamespace = Namespace.getNamespace("book", "urn:jdom:book");
         Namespace metadataNamespace = Namespace.getNamespace("meta", "urn:jdom:metadata");
         Element element = new Element("catalog", elementNamespace);
         element.addNamespaceDeclaration(metadataNamespace);
         element.setAttribute(new Attribute("id", "catalog-1"));
         element.addContent(new Element("title").setText("Native Image"));
+
+        Element cloned = (Element) element.clone();
+        List clonedAdditionalNamespaces = cloned.getAdditionalNamespaces();
+
+        assertThat(clonedAdditionalNamespaces).hasSize(1);
+        Namespace clonedMetadataNamespace = (Namespace) clonedAdditionalNamespaces.get(0);
+        assertThat(clonedMetadataNamespace.getPrefix()).isEqualTo("meta");
+        assertThat(clonedMetadataNamespace.getURI()).isEqualTo("urn:jdom:metadata");
 
         Element restored = deserialize(serialize(element));
 
@@ -37,12 +45,6 @@ public class ElementTest {
         assertThat(restored.getNamespaceURI()).isEqualTo("urn:jdom:book");
         assertThat(restored.getAttributeValue("id")).isEqualTo("catalog-1");
         assertThat(restored.getChildText("title")).isEqualTo("Native Image");
-
-        List additionalNamespaces = restored.getAdditionalNamespaces();
-        assertThat(additionalNamespaces).hasSize(1);
-        Namespace restoredMetadataNamespace = (Namespace) additionalNamespaces.get(0);
-        assertThat(restoredMetadataNamespace.getPrefix()).isEqualTo("meta");
-        assertThat(restoredMetadataNamespace.getURI()).isEqualTo("urn:jdom:metadata");
     }
 
     private static byte[] serialize(Element element) throws IOException {

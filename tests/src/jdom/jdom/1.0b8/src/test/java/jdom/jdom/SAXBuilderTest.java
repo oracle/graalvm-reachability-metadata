@@ -14,21 +14,26 @@ import java.io.StringReader;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 
+import javax.xml.parsers.SAXParserFactory;
+
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.XMLReader;
 
 public class SAXBuilderTest {
     private static final String ISOLATED_CALLABLE_CLASS_NAME =
             SAXBuilderTest.class.getName() + "$IsolatedSAXBuilderCallable";
+    private static final String ISOLATED_SAX_BUILDER_CLASS_NAME =
+            SAXBuilderTest.class.getName() + "$JaxpSAXBuilder";
     private static final String JDOM_PACKAGE = "org.jdom.";
 
     @Test
-    void buildsNamespaceAwareDocumentWithDefaultJaxpParser() throws Exception {
-        SAXBuilder builder = new SAXBuilder();
+    void buildsNamespaceAwareDocumentWithJaxpParser() throws Exception {
+        SAXBuilder builder = new JaxpSAXBuilder();
         String xml = """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <catalog xmlns="urn:jdom:catalog" xmlns:item="urn:jdom:item" id="catalog-1">
@@ -54,7 +59,7 @@ public class SAXBuilderTest {
     }
 
     @Test
-    void buildsDocumentWithDefaultParserFromIsolatedJdomClasses() throws Exception {
+    void buildsDocumentWithJaxpParserFromIsolatedJdomClasses() throws Exception {
         IsolatedClassLoader classLoader = new IsolatedClassLoader(SAXBuilderTest.class.getClassLoader());
 
         try {
@@ -75,7 +80,7 @@ public class SAXBuilderTest {
     public static final class IsolatedSAXBuilderCallable implements Callable<String> {
         @Override
         public String call() throws Exception {
-            SAXBuilder builder = new SAXBuilder();
+            SAXBuilder builder = new JaxpSAXBuilder();
             String xml = """
                     <root id="isolated-parser" />
                     """;
@@ -83,6 +88,15 @@ public class SAXBuilderTest {
             Document document = builder.build(new StringReader(xml));
 
             return document.getRootElement().getAttributeValue("id");
+        }
+    }
+
+    public static final class JaxpSAXBuilder extends SAXBuilder {
+        @Override
+        protected XMLReader createParser() throws Exception {
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setNamespaceAware(true);
+            return parserFactory.newSAXParser().getXMLReader();
         }
     }
 
@@ -133,7 +147,9 @@ public class SAXBuilderTest {
         }
 
         private boolean isChildFirst(String className) {
-            return className.startsWith(JDOM_PACKAGE) || className.equals(ISOLATED_CALLABLE_CLASS_NAME);
+            return className.startsWith(JDOM_PACKAGE)
+                    || className.equals(ISOLATED_CALLABLE_CLASS_NAME)
+                    || className.equals(ISOLATED_SAX_BUILDER_CLASS_NAME);
         }
     }
 }

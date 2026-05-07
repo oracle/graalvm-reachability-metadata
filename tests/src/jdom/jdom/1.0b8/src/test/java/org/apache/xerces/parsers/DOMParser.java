@@ -18,12 +18,51 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class DOMParser {
+    private static int documentAccessCount;
+    private static int instanceCount;
+    private static int parseCount;
+    private static int setErrorHandlerCount;
+    private static int setFeatureCount;
+
     private final DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
 
     private ErrorHandler errorHandler;
     private Document document;
 
+    public DOMParser() {
+        instanceCount++;
+    }
+
+    public static void resetInvocationCounts() {
+        documentAccessCount = 0;
+        instanceCount = 0;
+        parseCount = 0;
+        setErrorHandlerCount = 0;
+        setFeatureCount = 0;
+    }
+
+    public static int getDocumentAccessCount() {
+        return documentAccessCount;
+    }
+
+    public static int getInstanceCount() {
+        return instanceCount;
+    }
+
+    public static int getParseCount() {
+        return parseCount;
+    }
+
+    public static int getSetErrorHandlerCount() {
+        return setErrorHandlerCount;
+    }
+
+    public static int getSetFeatureCount() {
+        return setFeatureCount;
+    }
+
     public void setFeature(String name, boolean value) throws ParserConfigurationException {
+        setFeatureCount++;
         if ("http://xml.org/sax/features/namespaces".equals(name)) {
             factory.setNamespaceAware(value);
         } else if (!"http://xml.org/sax/features/validation".equals(name)) {
@@ -32,10 +71,12 @@ public class DOMParser {
     }
 
     public void setErrorHandler(ErrorHandler errorHandler) {
+        setErrorHandlerCount++;
         this.errorHandler = errorHandler;
     }
 
     public void parse(InputSource inputSource) throws IOException, SAXException {
+        parseCount++;
         try {
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
             if (errorHandler != null) {
@@ -48,6 +89,7 @@ public class DOMParser {
     }
 
     public Document getDocument() {
+        documentAccessCount++;
         return document;
     }
 }

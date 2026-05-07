@@ -16,9 +16,36 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class XMLParser {
+    private static int instanceCount;
+    private static int parseCount;
+    private static int getDocumentCount;
+
     private Document document;
 
+    public XMLParser() {
+        instanceCount++;
+    }
+
+    public static void resetInvocationCounts() {
+        instanceCount = 0;
+        parseCount = 0;
+        getDocumentCount = 0;
+    }
+
+    public static int getInstanceCount() {
+        return instanceCount;
+    }
+
+    public static int getParseCount() {
+        return parseCount;
+    }
+
+    public static int getDocumentAccessCount() {
+        return getDocumentCount;
+    }
+
     public void parse(InputSource inputSource) throws IOException, SAXException {
+        parseCount++;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
         factory.setNamespaceAware(true);
         try {
@@ -29,6 +56,7 @@ public class XMLParser {
     }
 
     public Document getDocument() {
+        getDocumentCount++;
         return document;
     }
 }
