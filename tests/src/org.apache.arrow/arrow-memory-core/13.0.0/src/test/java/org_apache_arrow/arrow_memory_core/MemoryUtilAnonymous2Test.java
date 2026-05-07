@@ -15,7 +15,6 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,12 +41,13 @@ public class MemoryUtilAnonymous2Test {
         ConstructorLookupTarget lookupTarget = new ConstructorLookupTarget(0L, 0);
         replaceDirectBufferField(privilegedActionClass, privilegedAction, lookupTarget);
 
-        Object result = AccessController.doPrivileged(privilegedAction);
+        Object result = privilegedAction.run();
 
         assertThat(result).isInstanceOf(Constructor.class);
         Constructor<?> constructor = (Constructor<?>) result;
         assertThat(constructor.getDeclaringClass()).isEqualTo(ConstructorLookupTarget.class);
-        assertThat(constructor.getParameterTypes()).containsExactly(long.class, int.class);
+        assertThat(constructor.getParameterTypes())
+                .containsExactly(long.class, expectedCapacityParameterType());
     }
 
     private static void replaceDirectBufferField(
@@ -60,11 +60,22 @@ public class MemoryUtilAnonymous2Test {
         MemoryUtil.UNSAFE.putObject(privilegedAction, fieldOffset, directBufferReplacement);
     }
 
+    private static Class<?> expectedCapacityParameterType() {
+        int majorVersion = Integer.parseInt(
+                System.getProperty("java.specification.version").split("\\D+")[0]
+        );
+        return majorVersion >= 21 ? long.class : int.class;
+    }
+
     public static final class ConstructorLookupTarget {
         private final long address;
-        private final int capacity;
+        private final long capacity;
 
         private ConstructorLookupTarget(long address, int capacity) {
+            this(address, (long) capacity);
+        }
+
+        private ConstructorLookupTarget(long address, long capacity) {
             this.address = address;
             this.capacity = capacity;
         }
