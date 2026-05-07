@@ -200,6 +200,44 @@ public class Kotlinx_serialization_json_io_jvmTest {
     }
 
     @Test
+    fun decodesSourceSequenceLazilyAsElementsAreRequested(): Unit {
+        val serializer: CountingProjectSerializer = CountingProjectSerializer(ProjectSerializer)
+        val source: Buffer = Buffer().apply {
+            writeString(
+                """
+                {"name":"first","stars":1,"tags":["lazy"],"active":true}
+                {"name":"second","stars":2,"tags":["lazy","stream"],"active":false}
+                {"name":"third","stars":3,"tags":[],"active":true}
+                """.trimIndent(),
+            )
+        }
+        val sequence: Sequence<Project> = Json.decodeSourceToSequence(
+            source,
+            serializer,
+            DecodeSequenceMode.WHITESPACE_SEPARATED,
+        )
+
+        assertThat(serializer.decodedCount).isZero()
+
+        val iterator: Iterator<Project> = sequence.iterator()
+        val first: Project = iterator.next()
+
+        assertThat(first).isEqualTo(
+            Project(name = "first", stars = 1, tags = listOf("lazy"), active = true),
+        )
+        assertThat(serializer.decodedCount).isEqualTo(1)
+
+        val rest: List<Project> = iterator.asSequence().toList()
+
+        assertThat(rest).containsExactly(
+            Project(name = "second", stars = 2, tags = listOf("lazy", "stream"), active = false),
+            Project(name = "third", stars = 3, tags = emptyList(), active = true),
+        )
+        assertThat(serializer.decodedCount).isEqualTo(3)
+        assertThat(source.exhausted()).isTrue()
+    }
+
+    @Test
     fun decodesStructuredValueFromChunkedRawSource(): Unit {
         val rawSource = ChunkedRawSource(
             listOf(
@@ -294,6 +332,20 @@ private data class Project(
     val tags: List<String>,
     val active: Boolean,
 )
+
+private class CountingProjectSerializer(private val delegate: KSerializer<Project>) : KSerializer<Project> {
+    var decodedCount: Int = 0
+        private set
+
+    override val descriptor: SerialDescriptor = delegate.descriptor
+
+    override fun serialize(encoder: Encoder, value: Project): Unit = delegate.serialize(encoder, value)
+
+    override fun deserialize(decoder: Decoder): Project {
+        decodedCount++
+        return delegate.deserialize(decoder)
+    }
+}
 
 private class ChunkedRawSource(private val chunks: List<ByteArray>) : RawSource {
     var closed: Boolean = false
