@@ -266,6 +266,36 @@ public class Ktor_websockets_jvmTest {
     }
 
     @Test
+    fun frameConstructorsReadRemainingByteBufferContent() {
+        val textBytes = "xhello!".toByteArray()
+        val textBuffer = ByteBuffer.wrap(textBytes)
+        textBuffer.position(1)
+        textBuffer.limit(6)
+
+        val text = Frame.Text(true, textBuffer)
+        textBytes[2] = '?'.code.toByte()
+
+        assertThat(text.fin).isTrue()
+        assertThat(text.frameType).isEqualTo(FrameType.TEXT)
+        assertThat(text.readText()).isEqualTo("hello")
+        assertThat(textBuffer.position()).isEqualTo(6)
+        assertThat(textBuffer.hasRemaining()).isFalse()
+
+        val binaryBuffer = ByteBuffer.wrap(byteArrayOf(99, 10, 11, 12, 88))
+        binaryBuffer.position(1)
+        binaryBuffer.limit(4)
+
+        val binary = Frame.Binary(true, binaryBuffer)
+        binaryBuffer.put(2, 42)
+
+        assertThat(binary.fin).isTrue()
+        assertThat(binary.frameType).isEqualTo(FrameType.BINARY)
+        assertThat(binary.readBytes()).containsExactly(10.toByte(), 11.toByte(), 12.toByte())
+        assertThat(binaryBuffer.position()).isEqualTo(4)
+        assertThat(binaryBuffer.hasRemaining()).isFalse()
+    }
+
+    @Test
     fun rawWebSocketSessionsExchangeMaskedFramesAndCloseHandshake() = runBlocking {
         val clientToServer = ByteChannel(autoFlush = true)
         val serverToClient = ByteChannel(autoFlush = true)
