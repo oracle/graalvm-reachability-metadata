@@ -142,6 +142,52 @@ class Log4cats_core_3Test {
   }
 
   @Test
+  def structuredLoggerWithModifiedContextRewritesDefaultAndCallContexts(): Unit = {
+    val failure: IllegalStateException = IllegalStateException("context failure")
+    val sink: RecordingSelfAwareStructuredLogger = RecordingSelfAwareStructuredLogger("modified-context")
+    val logger: StructuredLogger[Id] =
+      StructuredLogger.withModifiedContext[Id](sink) { context =>
+        (context - "secret") ++ Map(
+          "component" -> context.getOrElse("component", "payments"),
+          "context_keys" -> context.keys.toList.sorted.mkString(",")
+        )
+      }
+
+    logger.info("plain default context")
+    logger.debug(Map("request" -> "r-4", "secret" -> "redacted"))("lookup")
+    logger.error(Map("component" -> "orders", "request" -> "r-5"), failure)("failed")
+
+    assertEquals(3, sink.entries.size)
+    assertEquals(
+      RecordedLog(
+        "modified-context",
+        LogLevel.Info,
+        Map("component" -> "payments", "context_keys" -> ""),
+        None,
+        "plain default context"
+      ),
+      sink.entries.head
+    )
+    assertEquals(
+      RecordedLog(
+        "modified-context",
+        LogLevel.Debug,
+        Map("request" -> "r-4", "component" -> "payments", "context_keys" -> "request,secret"),
+        None,
+        "lookup"
+      ),
+      sink.entries(1)
+    )
+    assertEquals(LogLevel.Error, sink.entries(2).level)
+    assertEquals(
+      Map("component" -> "orders", "request" -> "r-5", "context_keys" -> "component,request"),
+      sink.entries(2).context
+    )
+    assertSame(failure, sink.entries(2).throwable.get)
+    assertEquals("failed", sink.entries(2).message)
+  }
+
+  @Test
   def logMessagesReplayIntoConcreteLoggers(): Unit = {
     val failure: IllegalStateException = IllegalStateException("boom")
     val plainSink: RecordingSelfAwareStructuredLogger = RecordingSelfAwareStructuredLogger("plain")
