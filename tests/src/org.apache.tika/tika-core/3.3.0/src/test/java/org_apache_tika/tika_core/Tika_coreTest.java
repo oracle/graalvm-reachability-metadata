@@ -8,7 +8,7 @@ package org_apache_tika.tika_core;
 
 import org.junit.jupiter.api.Test;
 
-class Tika_coreTest {
+public class Tika_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
