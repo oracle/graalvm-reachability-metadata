@@ -7,11 +7,9 @@
 package org_codehaus_plexus.plexus_utils;
 
 import org.codehaus.plexus.util.reflection.Reflector;
-import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReflectorTest {
     @Test
@@ -49,16 +47,11 @@ public class ReflectorTest {
     }
 
     @Test
-    void objectPropertyCannotReachAccessorInvocationInVersion104() {
+    void readsObjectPropertyThroughBeanAccessor() throws Exception {
         Reflector reflector = new Reflector();
         ReflectorFixture fixture = new ReflectorFixture("property-value");
 
-        // `getObjectProperty` finds `getValue`, but then looks for `value` on `Class.class`
-        // before invoking the accessor. `Class` exposes no public fields, so version 1.0.4
-        // always fails at that field lookup before the final `Method.invoke` call site.
-        assertThatThrownBy(() -> reflector.getObjectProperty(fixture, "value"))
-                .isInstanceOf(ReflectorException.class)
-                .hasCauseInstanceOf(NoSuchFieldException.class);
+        assertThat(reflector.getObjectProperty(fixture, "value")).isEqualTo("property-value");
     }
 
     public static class ReflectorFixture {

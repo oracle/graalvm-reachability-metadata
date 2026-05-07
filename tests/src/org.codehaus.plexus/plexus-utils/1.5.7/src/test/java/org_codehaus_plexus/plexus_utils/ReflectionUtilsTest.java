@@ -8,6 +8,8 @@ package org_codehaus_plexus.plexus_utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,45 @@ public class ReflectionUtilsTest {
         assertThat(ReflectionUtils.getSetter("count", ChildBean.class)).isNull();
     }
 
+    @Test
+    void listsDeclaredFieldsFromClassHierarchy() {
+        List<?> fields = ReflectionUtils.getFieldsIncludingSuperclasses(ChildBean.class);
+
+        assertThat(fields)
+                .extracting(field -> ((Field) field).getName())
+                .contains("childValue", "parentValue", "statusValue");
+    }
+
+    @Test
+    void listsOnlyPublicInstanceSetters() {
+        List<?> setters = ReflectionUtils.getSetters(ChildBean.class);
+
+        assertThat(setters)
+                .extracting(setter -> ((Method) setter).getName())
+                .contains("setName")
+                .doesNotContain("setStatus", "setCount");
+    }
+
+    @Test
+    void setsAndReadsPrivateFieldInSuperclass() throws Exception {
+        ChildBean bean = new ChildBean();
+
+        ReflectionUtils.setVariableValueInObject(bean, "parentValue", "configured");
+        Object value = ReflectionUtils.getValueIncludingSuperclasses("parentValue", bean);
+
+        assertThat(value).isEqualTo("configured");
+    }
+
+    @Test
+    void gathersDeclaredFieldValuesFromObject() throws Exception {
+        ValueBean bean = new ValueBean("alpha", 7);
+
+        Map<?, ?> values = ReflectionUtils.getVariablesAndValuesIncludingSuperclasses(bean);
+
+        assertThat(values.get("item")).isEqualTo("alpha");
+        assertThat(values.get("priority")).isEqualTo(7);
+    }
+
     public static class ParentBean {
         private static String statusValue;
 
@@ -62,8 +103,22 @@ public class ReflectionUtilsTest {
     }
 
     public static class ChildBean extends ParentBean {
+        private String childValue;
+
         public String setCount(Integer count) {
-            return String.valueOf(count);
+            childValue = String.valueOf(count);
+            return childValue;
+        }
+    }
+
+    public static class ValueBean {
+        private final String item;
+
+        private final int priority;
+
+        ValueBean(String item, int priority) {
+            this.item = item;
+            this.priority = priority;
         }
     }
 }
