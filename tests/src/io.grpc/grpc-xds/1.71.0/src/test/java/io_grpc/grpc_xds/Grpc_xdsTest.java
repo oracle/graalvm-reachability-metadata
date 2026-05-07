@@ -37,6 +37,7 @@ import io.grpc.Status;
 import io.grpc.SynchronizationContext;
 import io.grpc.xds.CdsLoadBalancerProvider;
 import io.grpc.xds.ClusterImplLoadBalancerProvider;
+import io.grpc.xds.ClusterManagerLoadBalancerProvider;
 import io.grpc.xds.ClusterResolverLoadBalancerProvider;
 import io.grpc.xds.CsdsService;
 import io.grpc.xds.EnvoyServerProtoData;
@@ -178,6 +179,41 @@ public class Grpc_xdsTest {
         assertConfigRejected(new PriorityLoadBalancerProvider(), Map.of());
         assertConfigRejected(new ClusterResolverLoadBalancerProvider(), Map.of());
         assertConfigRejected(new ClusterImplLoadBalancerProvider(), Map.of());
+    }
+
+    @Test
+    void clusterManagerLoadBalancerProviderParsesNamedChildPolicies() {
+        ClusterManagerLoadBalancerProvider provider = new ClusterManagerLoadBalancerProvider();
+        RingHashLoadBalancerProvider ringHashProvider = new RingHashLoadBalancerProvider();
+        LeastRequestLoadBalancerProvider leastRequestProvider = new LeastRequestLoadBalancerProvider();
+
+        assertRegisteredProvider(LoadBalancerRegistry.getDefaultRegistry(), provider);
+
+        NameResolver.ConfigOrError result = provider.parseLoadBalancingPolicyConfig(Map.of(
+                "childPolicy",
+                Map.of(
+                        "payments-child",
+                        Map.of(
+                                "lbPolicy",
+                                List.of(Map.of(
+                                        ringHashProvider.getPolicyName(),
+                                        Map.of("minRingSize", 128.0, "maxRingSize", 1024.0)))),
+                        "orders-child",
+                        Map.of(
+                                "lbPolicy",
+                                List.of(Map.of(
+                                        leastRequestProvider.getPolicyName(),
+                                        Map.of("choiceCount", 2.0)))))));
+
+        assertThat(result.getError()).isNull();
+        assertThat(result.getConfig()).isNotNull();
+        assertThat(result.getConfig().toString()).contains("payments-child", "orders-child");
+
+        assertConfigRejected(provider, Map.of());
+        assertConfigRejected(provider, Map.of("childPolicy", Map.of()));
+        assertConfigRejected(provider, Map.of(
+                "childPolicy",
+                Map.of("broken-child", Map.of("lbPolicy", List.of(Map.of("unknown_policy", Map.of()))))));
     }
 
     @Test
