@@ -263,6 +263,39 @@ class Log4cats_core_3Test {
   }
 
   @Test
+  def loggerFactoryTransformerInstancesCreateLiftedNamedLoggers(): Unit = {
+    val factory: RecordingLoggerFactory = RecordingLoggerFactory()
+    given LoggerFactory[Id] = factory
+
+    val optionFactory: LoggerFactory[OptionId] = LoggerFactory.optionTFactory[Id]
+    val optionLogger: Option[SelfAwareStructuredLogger[OptionId]] =
+      optionFactory.fromName("option.factory").value
+    assertTrue(optionLogger.isDefined)
+    assertEquals(Some(()), optionLogger.get.info("from option factory").value)
+
+    val eitherFactory: LoggerFactory[EitherId] = LoggerFactory.eitherTFactory[Id, String]
+    val eitherLogger: Either[String, SelfAwareStructuredLogger[EitherId]] =
+      eitherFactory.fromName("either.factory").value
+    assertTrue(eitherLogger.isRight)
+    assertEquals(Right(()), eitherLogger.toOption.get.warn("from either factory").value)
+
+    val kleisliFactory: LoggerFactory[KleisliId] = LoggerFactory.kleisliFactory[Id, String]
+    val kleisliLogger: SelfAwareStructuredLogger[KleisliId] =
+      kleisliFactory.fromName("kleisli.factory").run("environment")
+    assertEquals((), kleisliLogger.error("from kleisli factory").run("environment"))
+
+    assertEquals(List("option.factory", "either.factory", "kleisli.factory"), factory.requestedNames)
+    assertEquals(
+      List(
+        RecordedLog("option.factory", LogLevel.Info, Map.empty, None, "from option factory"),
+        RecordedLog("either.factory", LogLevel.Warn, Map.empty, None, "from either factory"),
+        RecordedLog("kleisli.factory", LogLevel.Error, Map.empty, None, "from kleisli factory")
+      ),
+      factory.entries
+    )
+  }
+
+  @Test
   def loggerSyntaxAndTransformerInstancesDelegateToUnderlyingLogger(): Unit = {
     val sink: RecordingSelfAwareStructuredLogger = RecordingSelfAwareStructuredLogger("syntax")
     given Logger[Id] = sink
