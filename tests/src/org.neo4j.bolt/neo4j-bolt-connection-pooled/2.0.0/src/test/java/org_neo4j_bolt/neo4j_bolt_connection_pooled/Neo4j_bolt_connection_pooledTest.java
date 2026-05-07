@@ -58,6 +58,7 @@ import org.neo4j.bolt.connection.SecurityPlan;
 import org.neo4j.bolt.connection.SecurityPlans;
 import org.neo4j.bolt.connection.TelemetryApi;
 import org.neo4j.bolt.connection.TransactionType;
+import org.neo4j.bolt.connection.exception.BoltFailureException;
 import org.neo4j.bolt.connection.exception.MinVersionAcquisitionException;
 import org.neo4j.bolt.connection.pooled.PooledBoltConnectionProvider;
 import org.neo4j.bolt.connection.summary.ResetSummary;
@@ -287,6 +288,44 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThat(delegate.logoffCount()).isEqualTo(1);
             assertThat(delegate.logonTokens()).containsExactly(OTHER_AUTH_TOKEN);
             assertThat(await(second.authInfo()).authToken()).isEqualTo(OTHER_AUTH_TOKEN);
+
+            await(second.close());
+        } finally {
+            await(provider.close());
+        }
+    }
+
+    @Test
+    void authorizationExpiredFlushErrorForcesReauthBeforeReuse() throws Exception {
+        MutableClock clock = new MutableClock(1_000L);
+        RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
+        PooledBoltConnectionProvider provider = newProvider(
+                delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 0L, -1L, clock);
+
+        try {
+            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            FakeBoltConnection delegate = delegateProvider.connections().get(0);
+            BoltFailureException authExpired = new BoltFailureException(
+                    "Neo.ClientError.Security.AuthorizationExpired",
+                    "authorization expired",
+                    "50N42",
+                    "authorization expired",
+                    Map.of(),
+                    null);
+            RecordingResponseHandler responseHandler = new RecordingResponseHandler();
+
+            delegate.nextFlushError(authExpired);
+            await(first.flush(responseHandler));
+            await(first.close());
+
+            assertThat(responseHandler.errors()).containsExactly(authExpired);
+
+            BoltConnection second = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+
+            assertThat(delegateProvider.connectCalls()).hasSize(1);
+            assertThat(delegate.logoffCount()).isEqualTo(1);
+            assertThat(delegate.logonTokens()).containsExactly(AUTH_TOKEN);
+            assertThat(await(second.authInfo()).authToken()).isEqualTo(AUTH_TOKEN);
 
             await(second.close());
         } finally {
@@ -551,6 +590,7 @@ public class Neo4j_bolt_connection_pooledTest {
         private BoltConnectionState state = BoltConnectionState.OPEN;
         private AuthInfo authInfo;
         private Duration lastReadTimeout;
+        private Throwable nextFlushError;
         private int resetCount;
         private int flushCount;
         private int closeCount;
@@ -595,6 +635,10 @@ public class Neo4j_bolt_connection_pooledTest {
 
         private void state(BoltConnectionState state) {
             this.state = state;
+        }
+
+        private void nextFlushError(Throwable nextFlushError) {
+            this.nextFlushError = nextFlushError;
         }
 
         @Override
@@ -706,6 +750,13 @@ public class Neo4j_bolt_connection_pooledTest {
         @Override
         public CompletionStage<Void> flush(ResponseHandler handler) {
             flushCount++;
+            if (nextFlushError != null) {
+                Throwable error = nextFlushError;
+                nextFlushError = null;
+                handler.onError(error);
+                handler.onComplete();
+                return CompletableFuture.completedStage(null);
+            }
             handler.onResetSummary(new TestResetSummary());
             handler.onComplete();
             return CompletableFuture.completedStage(null);
@@ -780,6 +831,19 @@ public class Neo4j_bolt_connection_pooledTest {
     }
 
     private record TestResetSummary() implements ResetSummary {
+    }
+
+    private static final class RecordingResponseHandler implements ResponseHandler {
+        private final List<Throwable> errors = new ArrayList<>();
+
+        private List<Throwable> errors() {
+            return errors;
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            errors.add(throwable);
+        }
     }
 
     private record SimpleValue(String value) implements Value {
