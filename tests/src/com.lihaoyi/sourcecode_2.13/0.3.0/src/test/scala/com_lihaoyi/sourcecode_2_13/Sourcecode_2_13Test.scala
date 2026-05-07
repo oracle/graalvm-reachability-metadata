@@ -120,6 +120,34 @@ class Sourcecode_2_13Test {
     assertEquals(321, lineValue(321))
   }
 
+  @Test
+  def supportsSourceValueExtractorsAndCopies(): Unit = {
+    val line: sourcecode.Line = sourcecode.Line(10)
+    val copiedLine: sourcecode.Line = line.copy(value = 11)
+    val file: sourcecode.File = sourcecode.File("Input.scala")
+    val machineName: sourcecode.Name.Machine = sourcecode.Name.Machine("syntheticName")
+    val text: sourcecode.Text[Int] = sourcecode.Text(42, "answer")
+    val args: sourcecode.Args = sourcecode.Args(Seq(Seq(text)))
+
+    val sourcecode.Line(extractedLine) = line
+    val sourcecode.File(extractedFile) = file
+    val sourcecode.Name.Machine(extractedMachineName) = machineName
+    val sourcecode.Text(extractedValue, extractedSource) = text
+    val sourcecode.Args(extractedArgs) = args
+
+    assertEquals(10, extractedLine)
+    assertEquals("Input.scala", extractedFile)
+    assertEquals("syntheticName", extractedMachineName)
+    assertEquals(42, extractedValue)
+    assertEquals("answer", extractedSource)
+    assertEquals(Seq(Seq(text)), extractedArgs)
+    assertEquals(sourcecode.Line(11), copiedLine)
+    assertEquals(sourcecode.File("Copied.scala"), file.copy(value = "Copied.scala"))
+    assertEquals(sourcecode.Name.Machine("copiedSyntheticName"), machineName.copy(value = "copiedSyntheticName"))
+    assertEquals(sourcecode.Text(43, "answer"), text.copy(value = 43))
+    assertEquals(sourcecode.Args(Seq.empty), args.copy(value = Seq.empty))
+  }
+
   private def nameValue(name: sourcecode.Name): String = name.value
 
   private def fullNameValue(fullName: sourcecode.FullName): String = fullName.value
