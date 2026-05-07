@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test
 import sttp.tapir.integ.cats.effect.CatsMonadError
 
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration.DurationInt
@@ -155,6 +157,29 @@ class Tapir_cats_effect_3Test {
     assertTrue(events.isEmpty)
     assertEquals("recovered", await(recovered))
     assertEquals(List("construct", "finalizer"), events.asScala.toList)
+  }
+
+  @Test
+  def ensureRunsFinalizerWhenProgramIsCanceled(): Unit = {
+    val started: CountDownLatch = new CountDownLatch(1)
+    val finalized: AtomicBoolean = new AtomicBoolean(false)
+    val neverCompleting: IO[String] = monad.flatMap(monad.eval(started.countDown()))(_ => IO.never)
+    val guarded: IO[String] = monad.ensure(
+      neverCompleting,
+      monad.eval {
+        finalized.set(true)
+        ()
+      }
+    )
+
+    val program: IO[Unit] = for {
+      fiber <- guarded.start
+      _ <- IO.blocking(assertTrue(started.await(2, TimeUnit.SECONDS)))
+      _ <- fiber.cancel
+    } yield ()
+
+    await(program)
+    assertTrue(finalized.get())
   }
 
   @Test
