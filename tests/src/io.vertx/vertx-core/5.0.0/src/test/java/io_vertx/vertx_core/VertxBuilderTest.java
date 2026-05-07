@@ -6,73 +6,69 @@
  */
 package io_vertx.vertx_core;
 
-import io.vertx.core.Promise;
+import io.vertx.core.Completable;
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxBuilder;
+import io.vertx.core.VertxBuilder;
 import io.vertx.core.shareddata.AsyncMap;
 import io.vertx.core.shareddata.Counter;
 import io.vertx.core.shareddata.Lock;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.core.spi.cluster.NodeInfo;
 import io.vertx.core.spi.cluster.NodeListener;
-import io.vertx.core.spi.cluster.NodeSelector;
 import io.vertx.core.spi.cluster.RegistrationInfo;
+import io.vertx.core.spi.cluster.RegistrationListener;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class VertxBuilderTest {
 
-    private static final String CLUSTER_MANAGER_CLASS_PROPERTY = "vertx.cluster.managerClass";
-
     @Test
-    void initInstantiatesClusterManagerFromSystemProperty() {
-        int instancesBeforeInit = SystemPropertyClusterManager.instances();
-        String previousClusterManagerClass = System.getProperty(CLUSTER_MANAGER_CLASS_PROPERTY);
-        System.setProperty(CLUSTER_MANAGER_CLASS_PROPERTY, SystemPropertyClusterManager.class.getName());
+    void buildClusteredUsesProgrammaticClusterManager() throws TimeoutException {
+        SystemPropertyClusterManager clusterManager = new SystemPropertyClusterManager();
+        Vertx vertx = null;
         try {
-            VertxBuilder builder = new VertxBuilder();
+            VertxBuilder builder = Vertx.builder().withClusterManager(clusterManager);
 
-            builder.init();
+            vertx = builder.buildClustered().await(10, TimeUnit.SECONDS);
 
-            assertInstanceOf(SystemPropertyClusterManager.class, builder.clusterManager());
-            assertEquals(instancesBeforeInit + 1, SystemPropertyClusterManager.instances());
+            assertNotNull(vertx);
+            assertEquals(1, clusterManager.initCount());
+            assertEquals(1, clusterManager.joinCount());
         } finally {
-            restoreSystemProperty(previousClusterManagerClass);
-        }
-    }
-
-    private static void restoreSystemProperty(String previousValue) {
-        if (previousValue == null) {
-            System.clearProperty(CLUSTER_MANAGER_CLASS_PROPERTY);
-        } else {
-            System.setProperty(CLUSTER_MANAGER_CLASS_PROPERTY, previousValue);
+            if (vertx != null) {
+                vertx.close().await(10, TimeUnit.SECONDS);
+            }
         }
     }
 
     public static class SystemPropertyClusterManager implements ClusterManager {
-        private static final AtomicInteger INSTANCES = new AtomicInteger();
+        private final AtomicInteger initCount = new AtomicInteger();
+        private final AtomicInteger joinCount = new AtomicInteger();
 
-        public SystemPropertyClusterManager() {
-            INSTANCES.incrementAndGet();
+        int initCount() {
+            return initCount.get();
         }
 
-        static int instances() {
-            return INSTANCES.get();
-        }
-
-        @Override
-        public void init(Vertx vertx, NodeSelector nodeSelector) {
+        int joinCount() {
+            return joinCount.get();
         }
 
         @Override
-        public <K, V> void getAsyncMap(String name, Promise<AsyncMap<K, V>> promise) {
+        public void init(Vertx vertx) {
+            initCount.incrementAndGet();
+        }
+
+        @Override
+        public <K, V> void getAsyncMap(String name, Completable<AsyncMap<K, V>> promise) {
             promise.fail(new UnsupportedOperationException("Async maps are not used by this test cluster manager"));
         }
 
@@ -82,12 +78,12 @@ public class VertxBuilderTest {
         }
 
         @Override
-        public void getLockWithTimeout(String name, long timeout, Promise<Lock> promise) {
+        public void getLockWithTimeout(String name, long timeout, Completable<Lock> promise) {
             promise.fail(new UnsupportedOperationException("Locks are not used by this test cluster manager"));
         }
 
         @Override
-        public void getCounter(String name, Promise<Counter> promise) {
+        public void getCounter(String name, Completable<Counter> promise) {
             promise.fail(new UnsupportedOperationException("Counters are not used by this test cluster manager"));
         }
 
@@ -106,8 +102,8 @@ public class VertxBuilderTest {
         }
 
         @Override
-        public void setNodeInfo(NodeInfo nodeInfo, Promise<Void> promise) {
-            promise.complete();
+        public void setNodeInfo(NodeInfo nodeInfo, Completable<Void> promise) {
+            promise.succeed();
         }
 
         @Override
@@ -116,18 +112,19 @@ public class VertxBuilderTest {
         }
 
         @Override
-        public void getNodeInfo(String nodeId, Promise<NodeInfo> promise) {
-            promise.complete(null);
+        public void getNodeInfo(String nodeId, Completable<NodeInfo> promise) {
+            promise.succeed(null);
         }
 
         @Override
-        public void join(Promise<Void> promise) {
-            promise.complete();
+        public void join(Completable<Void> promise) {
+            joinCount.incrementAndGet();
+            promise.succeed();
         }
 
         @Override
-        public void leave(Promise<Void> promise) {
-            promise.complete();
+        public void leave(Completable<Void> promise) {
+            promise.succeed();
         }
 
         @Override
@@ -136,18 +133,22 @@ public class VertxBuilderTest {
         }
 
         @Override
-        public void addRegistration(String address, RegistrationInfo registrationInfo, Promise<Void> promise) {
-            promise.complete();
+        public void registrationListener(RegistrationListener registrationListener) {
         }
 
         @Override
-        public void removeRegistration(String address, RegistrationInfo registrationInfo, Promise<Void> promise) {
-            promise.complete();
+        public void addRegistration(String address, RegistrationInfo registrationInfo, Completable<Void> promise) {
+            promise.succeed();
         }
 
         @Override
-        public void getRegistrations(String address, Promise<List<RegistrationInfo>> promise) {
-            promise.complete(Collections.emptyList());
+        public void removeRegistration(String address, RegistrationInfo registrationInfo, Completable<Void> promise) {
+            promise.succeed();
+        }
+
+        @Override
+        public void getRegistrations(String address, Completable<List<RegistrationInfo>> promise) {
+            promise.succeed(Collections.emptyList());
         }
     }
 }
