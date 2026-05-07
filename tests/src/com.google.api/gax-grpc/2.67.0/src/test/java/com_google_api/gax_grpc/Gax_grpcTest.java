@@ -22,6 +22,7 @@ import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.protobuf.StringValue;
@@ -61,6 +62,13 @@ public class Gax_grpcTest {
             .setRequestMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
             .setResponseMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
             .build();
+    private static final MethodDescriptor<StringValue, StringValue> EXPAND_METHOD = MethodDescriptor
+            .<StringValue, StringValue>newBuilder()
+            .setType(MethodDescriptor.MethodType.SERVER_STREAMING)
+            .setFullMethodName(MethodDescriptor.generateFullMethodName(SERVICE_NAME, "Expand"))
+            .setRequestMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
+            .setResponseMarshaller(ProtoUtils.marshaller(StringValue.getDefaultInstance()))
+            .build();
 
     @Test
     void rawUnaryCallableUsesGrpcContextHeadersAndCallSettings() throws Exception {
@@ -92,6 +100,24 @@ public class Gax_grpcTest {
                     .containsEntry("message", "abc");
             assertThat(callSettings.getRequestMutator().apply(StringValue.of("abc")).getValue()).isEqualTo("abc!");
             assertThat(callSettings.toBuilder().build()).isNotSameAs(callSettings);
+        } finally {
+            fixture.close();
+        }
+    }
+
+    @Test
+    void rawServerStreamingCallableCollectsResponses() throws Exception {
+        InProcessFixture fixture = InProcessFixture.start(expandService());
+        try {
+            ServerStreamingCallable<StringValue, StringValue> callable = GrpcRawCallableFactory
+                    .createServerStreamingCallable(GrpcCallSettings.create(EXPAND_METHOD), Set.of());
+            GrpcCallContext context = GrpcCallContext
+                    .of(fixture.channel(), CallOptions.DEFAULT)
+                    .withTimeoutDuration(Duration.ofSeconds(5));
+
+            List<StringValue> responses = callable.all().call(StringValue.of("abc"), context);
+
+            assertThat(responses).extracting(StringValue::getValue).containsExactly("a", "b", "c");
         } finally {
             fixture.close();
         }
@@ -297,6 +323,18 @@ public class Gax_grpcTest {
                 .builder(SERVICE_NAME)
                 .addMethod(ECHO_METHOD, ServerCalls.asyncUnaryCall((request, observer) -> {
                     observer.onNext(StringValue.of(request.getValue().toUpperCase(Locale.ROOT)));
+                    observer.onCompleted();
+                }))
+                .build();
+    }
+
+    private static ServerServiceDefinition expandService() {
+        return ServerServiceDefinition
+                .builder(SERVICE_NAME)
+                .addMethod(EXPAND_METHOD, ServerCalls.asyncServerStreamingCall((request, observer) -> {
+                    for (int index = 0; index < request.getValue().length(); index++) {
+                        observer.onNext(StringValue.of(String.valueOf(request.getValue().charAt(index))));
+                    }
                     observer.onCompleted();
                 }))
                 .build();
