@@ -43,6 +43,7 @@ import io.grpc.netty.shaded.io.netty.channel.EventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
+import io.grpc.netty.shaded.io.netty.handler.ssl.ClientAuth;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 
 public class Grpc_netty_shadedTest {
@@ -191,6 +192,40 @@ public class Grpc_netty_shadedTest {
                     .build();
 
             assertEquals("echo:secure", invokeUnary(channel, "secure"));
+        } finally {
+            shutdown(channel, server);
+        }
+    }
+
+    @Test
+    void tlsNettyTransportHandlesMutualCertificateAuthentication(@TempDir Path tempDir) throws Exception {
+        Path certificateFile = Files.writeString(tempDir.resolve("localhost-cert.pem"), CERTIFICATE_PEM);
+        Path privateKeyFile = Files.writeString(tempDir.resolve("localhost-key.pem"), PRIVATE_KEY_PEM);
+        SslContext serverSslContext = GrpcSslContexts
+                .forServer(certificateFile.toFile(), privateKeyFile.toFile())
+                .trustManager(certificateFile.toFile())
+                .clientAuth(ClientAuth.REQUIRE)
+                .build();
+        SslContext clientSslContext = GrpcSslContexts.forClient()
+                .trustManager(certificateFile.toFile())
+                .keyManager(certificateFile.toFile(), privateKeyFile.toFile())
+                .build();
+        Server server = null;
+        ManagedChannel channel = null;
+        try {
+            server = NettyServerBuilder.forPort(0)
+                    .sslContext(serverSslContext)
+                    .directExecutor()
+                    .addService(echoService())
+                    .build()
+                    .start();
+            channel = NettyChannelBuilder.forAddress("localhost", server.getPort())
+                    .sslContext(clientSslContext)
+                    .overrideAuthority("localhost")
+                    .directExecutor()
+                    .build();
+
+            assertEquals("echo:mutual", invokeUnary(channel, "mutual"));
         } finally {
             shutdown(channel, server);
         }
