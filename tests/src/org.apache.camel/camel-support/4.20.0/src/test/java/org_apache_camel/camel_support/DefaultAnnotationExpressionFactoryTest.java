@@ -19,7 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultAnnotationExpressionFactoryTest {
     @Test
     void readsExpressionValueFromAnnotation() {
-        ValueExpression annotation = AnnotatedExpression.class.getAnnotation(ValueExpression.class);
+        Class<AnnotatedExpression> annotatedExpressionAnnotationAccess = AnnotatedExpression.class;
+        ValueExpression annotation = annotatedExpressionAnnotationAccess.getAnnotation(ValueExpression.class);
         ExposingAnnotationExpressionFactory factory = new ExposingAnnotationExpressionFactory();
 
         String expression = factory.expressionFrom(annotation);

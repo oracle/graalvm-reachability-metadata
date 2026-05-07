@@ -33,7 +33,7 @@ public class ApiMethodHelperTest {
     @Test
     void invokeMethodConvertsDerivedArrayToDeclaredSuperArrayParameter() {
         SampleApi api = new SampleApiImpl();
-        Map<String, Object> properties = Map.of("values", new Integer[] { 1, 2, 3 });
+        Map<String, Object> properties = Map.of("values", new Integer[] {1, 2, 3 });
 
         Object result = ApiMethodHelper.invokeMethod(api, SampleApiMethod.SUM_NUMBERS, properties);
 

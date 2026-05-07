@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ResumablesTest {
     @Test
     void resumeEachReturnsTypedArrayContainingOnlyResumableEntries() {
-        String[] entries = { "already-processed", "pending-a", "pending-b" };
+        String[] entries = {"already-processed", "pending-a", "pending-b" };
 
         String[] resumableEntries = Resumables.resumeEach(entries, entry -> entry.startsWith("pending"));
 
@@ -25,7 +25,7 @@ public class ResumablesTest {
 
     @Test
     void resumeEachReturnsOriginalArrayWhenAllEntriesAreResumable() {
-        Integer[] entries = { 1, 2, 3 };
+        Integer[] entries = {1, 2, 3 };
 
         Integer[] resumableEntries = Resumables.resumeEach(entries, entry -> entry > 0);
 
