@@ -21,6 +21,7 @@ import org.typelevel.otel4s.AttributeKey
 import org.typelevel.otel4s.AttributeType
 import org.typelevel.otel4s.context.propagation.TextMapGetter
 import org.typelevel.otel4s.context.propagation.TextMapUpdater
+import org.typelevel.otel4s.meta.InstrumentMeta
 import org.typelevel.otel4s.trace.Span
 import org.typelevel.otel4s.trace.SpanBuilder
 import org.typelevel.otel4s.trace.SpanContext
@@ -301,6 +302,41 @@ class Otel4s_core_trace_3Test {
   }
 
   @Test
+  def spanMapKTranslatesEffectsWhileDelegatingToOriginalBackend(): Unit = {
+    val context: SpanContext = SpanContext(
+      SpanContext.TraceId.fromLongs(0x1011121314151617L, 0x2021222324252627L),
+      SpanContext.SpanId.fromLong(0x3031323334353637L),
+      TraceFlags.Sampled,
+      TraceState.empty.updated("vendor", "mapped"),
+      remote = false
+    )
+    val recordingBackend = new RecordingSpanBackend(context)
+    val span: Span[Id] = new Span[Id] {
+      val backend: Span.Backend[Id] = recordingBackend
+    }
+    val mapped: Span[Option] = span.mapK(new FunctionK[Id, Option] {
+      def apply[A](fa: Id[A]): Option[A] = Some(fa)
+    })
+
+    assertEquals(context, mapped.context)
+    assertEquals(Some(()), mapped.updateName("mapped-operation"))
+    assertEquals(Some(()), mapped.addAttribute(Attribute("mapped.single", "value")))
+    assertEquals(Some(()), mapped.addEvent("mapped.event", Attribute("event.attr", 7L)))
+    assertEquals(Some(()), mapped.setStatus(Status.Error, "mapped failure"))
+    assertEquals(Some(()), mapped.end(250.millis))
+    assertEquals(
+      List(
+        "updateName:mapped-operation",
+        "addAttributes:1",
+        "addEvent:mapped.event:1",
+        "setStatusWithDescription:mapped failure",
+        "endAt:250"
+      ),
+      recordingBackend.operations.toList
+    )
+  }
+
+  @Test
   def enabledTracerMacrosCreateChildAndRootSpanOpsThroughBuilder(): Unit = {
     val childTracer = new RecordingTracer
     val childResult: String = childTracer
@@ -428,5 +464,55 @@ class Otel4s_core_trace_3Test {
 
   private final class RecordingSpan extends Span[Id] {
     val backend: Span.Backend[Id] = Span.Backend.noop[Id]
+  }
+
+  private final class RecordingSpanBackend(override val context: SpanContext) extends Span.Backend[Id] {
+    val operations: ListBuffer[String] = ListBuffer.empty
+    val meta: InstrumentMeta[Id] = Tracer.Meta.enabled[Id]
+
+    def updateName(name: String): Id[Unit] = {
+      operations += s"updateName:$name"
+      ()
+    }
+
+    def addAttributes(attributes: Attribute[_]*): Id[Unit] = {
+      operations += s"addAttributes:${attributes.size}"
+      ()
+    }
+
+    def addEvent(name: String, attributes: Attribute[_]*): Id[Unit] = {
+      operations += s"addEvent:$name:${attributes.size}"
+      ()
+    }
+
+    def addEvent(name: String, timestamp: FiniteDuration, attributes: Attribute[_]*): Id[Unit] = {
+      operations += s"addEventAt:$name:${timestamp.toMillis}:${attributes.size}"
+      ()
+    }
+
+    def recordException(throwable: Throwable, attributes: Attribute[_]*): Id[Unit] = {
+      operations += s"recordException:${throwable.getClass.getSimpleName}:${attributes.size}"
+      ()
+    }
+
+    def setStatus(status: Status): Id[Unit] = {
+      operations += "setStatus"
+      ()
+    }
+
+    def setStatus(status: Status, description: String): Id[Unit] = {
+      operations += s"setStatusWithDescription:$description"
+      ()
+    }
+
+    def end: Id[Unit] = {
+      operations += "end"
+      ()
+    }
+
+    def end(timestamp: FiniteDuration): Id[Unit] = {
+      operations += s"endAt:${timestamp.toMillis}"
+      ()
+    }
   }
 }
