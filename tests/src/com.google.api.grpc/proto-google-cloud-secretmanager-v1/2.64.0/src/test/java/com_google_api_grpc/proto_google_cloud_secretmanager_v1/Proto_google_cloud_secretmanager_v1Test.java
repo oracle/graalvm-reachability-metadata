@@ -339,6 +339,37 @@ public class Proto_google_cloud_secretmanager_v1Test {
     }
 
     @Test
+    void buildsAutomaticReplicationStatusForSecretVersion() {
+        CustomerManagedEncryptionStatus encryptionStatus = CustomerManagedEncryptionStatus.newBuilder()
+                .setKmsKeyVersionName(kmsKeyVersionName(LOCATION))
+                .build();
+        ReplicationStatus.AutomaticStatus automaticStatus = ReplicationStatus.AutomaticStatus.newBuilder()
+                .setCustomerManagedEncryption(encryptionStatus)
+                .build();
+        ReplicationStatus replicationStatus = ReplicationStatus.newBuilder()
+                .setAutomatic(automaticStatus)
+                .build();
+
+        SecretVersion secretVersion = SecretVersion.newBuilder()
+                .setName(SECRET_VERSION_NAME)
+                .setState(SecretVersion.State.DESTROYED)
+                .setReplicationStatus(replicationStatus)
+                .build();
+
+        assertThat(replicationStatus.getReplicationStatusCase())
+                .isEqualTo(ReplicationStatus.ReplicationStatusCase.AUTOMATIC);
+        assertThat(replicationStatus.hasAutomatic()).isTrue();
+        assertThat(replicationStatus.getAutomatic()).isEqualTo(automaticStatus);
+        assertThat(replicationStatus.getAutomatic().getCustomerManagedEncryption().getKmsKeyVersionName())
+                .isEqualTo(kmsKeyVersionName(LOCATION));
+        assertThat(secretVersion.hasReplicationStatus()).isTrue();
+        assertThat(secretVersion.getReplicationStatus()).isEqualTo(replicationStatus);
+        assertThat(secretVersion.getState()).isEqualTo(SecretVersion.State.DESTROYED);
+        assertThat(replicationStatus.toBuilder().clearAutomatic().build().getReplicationStatusCase())
+                .isEqualTo(ReplicationStatus.ReplicationStatusCase.REPLICATIONSTATUS_NOT_SET);
+    }
+
+    @Test
     void buildsSecretManagerRequestsAndResponses() {
         Secret secret = Secret.newBuilder()
                 .setName(SECRET_NAME)
