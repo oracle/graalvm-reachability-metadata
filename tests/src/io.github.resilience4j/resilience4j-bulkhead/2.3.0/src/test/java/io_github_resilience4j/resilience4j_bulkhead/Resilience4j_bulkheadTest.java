@@ -24,6 +24,9 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -87,6 +90,45 @@ public class Resilience4j_bulkheadTest {
             BulkheadEvent.Type.CALL_REJECTED,
             BulkheadEvent.Type.CALL_FINISHED);
         assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void semaphoreBulkheadWaitsForPermissionUntilPermitIsReleased() throws Exception {
+        Bulkhead bulkhead = Bulkhead.of("waiting-semaphore", BulkheadConfig.custom()
+            .maxConcurrentCalls(1)
+            .maxWaitDuration(Duration.ofSeconds(5))
+            .build());
+        assertThat(bulkhead.tryAcquirePermission()).isTrue();
+        CountDownLatch waitingCallStarted = new CountDownLatch(1);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        boolean initialPermitReleased = false;
+
+        try {
+            Future<String> waitingCall = executor.submit(() -> {
+                waitingCallStarted.countDown();
+                bulkhead.acquirePermission();
+                try {
+                    return "entered";
+                } finally {
+                    bulkhead.onComplete();
+                }
+            });
+
+            assertThat(waitingCallStarted.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isZero();
+
+            bulkhead.onComplete();
+            initialPermitReleased = true;
+
+            assertThat(waitingCall.get(5, TimeUnit.SECONDS)).isEqualTo("entered");
+            assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isEqualTo(1);
+        } finally {
+            if (!initialPermitReleased) {
+                bulkhead.onComplete();
+            }
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
