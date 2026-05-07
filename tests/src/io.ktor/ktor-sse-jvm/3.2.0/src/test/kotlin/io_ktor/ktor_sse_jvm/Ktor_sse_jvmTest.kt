@@ -46,6 +46,38 @@ public class Ktor_sse_jvmTest {
     }
 
     @Test
+    fun `server sent event preserves empty fields and blank lines in wire format`() {
+        val event = ServerSentEvent(
+            data = "first line\n\nthird line\n",
+            event = "",
+            id = "",
+            retry = 0,
+            comments = "\nheartbeat\n",
+        )
+
+        assertMetadata(
+            metadata = event,
+            expectedData = "first line\n\nthird line\n",
+            expectedEvent = "",
+            expectedId = "",
+            expectedRetry = 0,
+            expectedComments = "\nheartbeat\n",
+        )
+        assertThat(event.toString()).isEqualTo(
+            "data: first line\r\n" +
+                "data: \r\n" +
+                "data: third line\r\n" +
+                "data: \r\n" +
+                "event: \r\n" +
+                "id: \r\n" +
+                "retry: 0\r\n" +
+                ": \r\n" +
+                ": heartbeat\r\n" +
+                ": \r\n",
+        )
+    }
+
+    @Test
     fun `server sent event supports defaults copies destructuring and equality`() {
         val emptyEvent = ServerSentEvent()
         assertMetadata(
