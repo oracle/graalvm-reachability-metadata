@@ -6,16 +6,39 @@
  */
 package plexus.plexus_utils;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import org.codehaus.plexus.util.ReflectionUtils;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ReflectionUtilsTest {
     @Test
+    @Order(1)
+    void invokesCompilerGeneratedClassLiteralLookup() throws Throwable {
+        MethodHandle classLookup = MethodHandles.privateLookupIn(ReflectionUtils.class, MethodHandles.lookup())
+                .findStatic(ReflectionUtils.class, "class$", MethodType.methodType(Class.class, String.class));
+
+        assertThat(classLookup.invoke("java.lang.Object")).isSameAs(Object.class);
+    }
+
+    @Test
+    @Order(2)
+    void returnsNullForMissingFieldDeclaredOnlyByObjectSuperclass() {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("missingValue", DirectBean.class);
+
+        assertThat(field).isNull();
+    }
+
+    @Test
+    @Order(3)
     void findsFieldsDeclaredOnSuperclasses() {
         Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("inheritedValue", ChildBean.class);
 
@@ -25,13 +48,24 @@ public class ReflectionUtilsTest {
     }
 
     @Test
-    void findsPublicVoidInstanceSetter() {
-        Method setter = ReflectionUtils.getSetter("name", ChildBean.class);
+    @Order(4)
+    void findsFieldsDeclaredOnExactClass() {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("childValue", ChildBean.class);
 
-        assertThat(setter).isNotNull();
-        assertThat(setter.getName()).isEqualTo("setName");
-        assertThat(setter.getReturnType()).isEqualTo(Void.TYPE);
-        assertThat(setter.getParameterTypes()).containsExactly(String.class);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("childValue");
+        assertThat(field.getDeclaringClass()).isEqualTo(ChildBean.class);
+    }
+
+    @Test
+    @Order(5)
+    void returnsNullWhenFieldIsAbsentAcrossHierarchy() {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("missingValue", ChildBean.class);
+
+        assertThat(field).isNull();
+    }
+
+    public static class DirectBean {
     }
 
     public static class ParentBean {
@@ -39,8 +73,6 @@ public class ReflectionUtilsTest {
     }
 
     public static class ChildBean extends ParentBean {
-        public void setName(String name) {
-            inheritedValue = name;
-        }
+        public String childValue;
     }
 }
