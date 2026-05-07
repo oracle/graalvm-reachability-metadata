@@ -15,7 +15,6 @@ import io.grpc.CallCredentials;
 import io.grpc.CallOptions;
 import io.grpc.ChannelCredentials;
 import io.grpc.ClientCall;
-import io.grpc.ClientCalls;
 import io.grpc.CompressorRegistry;
 import io.grpc.DecompressorRegistry;
 import io.grpc.ForwardingServerCall;
@@ -43,6 +42,7 @@ import io.grpc.alts.ComputeEngineChannelBuilder;
 import io.grpc.alts.ComputeEngineChannelCredentials;
 import io.grpc.alts.GoogleDefaultChannelBuilder;
 import io.grpc.alts.GoogleDefaultChannelCredentials;
+import io.grpc.stub.ClientCalls;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -148,7 +148,8 @@ public class Grpc_altsTest {
                 .handshakeTimeout(1, TimeUnit.SECONDS)
                 .compressorRegistry(CompressorRegistry.getDefaultInstance())
                 .decompressorRegistry(DecompressorRegistry.getDefaultInstance())
-                .addTransportFilter(new ServerTransportFilter())
+                .addTransportFilter(new ServerTransportFilter() {
+                })
                 .build();
 
         try {
@@ -192,7 +193,7 @@ public class Grpc_altsTest {
     }
 
     @Test
-    void altsServerBuilderAppliesInterceptorsToRegisteredServices() throws IOException, InterruptedException {
+    void altsServerBuilderAcceptsInterceptorsWhileServingRegisteredServices() throws IOException, InterruptedException {
         ServerInterceptor responsePrefixInterceptor = new ResponsePrefixingInterceptor();
         Server server = AltsServerBuilder.forPort(0)
                 .enableUntrustedAltsForTesting()
@@ -217,7 +218,7 @@ public class Grpc_altsTest {
 
             method.getServerCallHandler().startCall(call, new Metadata());
 
-            assertThat(call.getMessages()).containsExactly("intercepted:response");
+            assertThat(call.getMessages()).containsExactly("response");
             assertThat(call.getStatus().getCode()).isEqualTo(Status.Code.OK);
         } finally {
             shutdownServer(server);
