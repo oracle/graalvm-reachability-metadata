@@ -52,6 +52,20 @@ class Anorm_tokenizer_3Test {
   }
 
   @Test
+  def identityMakerCanBeUsedAsAGivenForShowValues(): Unit = {
+    given Show.Maker[Show] = Show.Maker.Identity
+
+    val statements: Seq[Show] = Seq(
+      new StringShow("select id from users"),
+      new StringShow("where email = {email}")
+    )
+
+    val rendered: Seq[String] = statements.map(statement => Show.mkString(statement))
+
+    assertEquals(Seq("select id from users", "where email = {email}"), rendered)
+  }
+
+  @Test
   def mkStringUsesTheProvidedShowMaker(): Unit = {
     given identifierShowMaker: Show.Maker[Identifier] with {
       override def apply(subject: Identifier): Show = {
