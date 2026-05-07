@@ -78,6 +78,27 @@ class Quill_util_3Test {
   }
 
   @Test
+  def scalafmtFormatFormatsForComprehensionsWithGuards(): Unit = {
+    val unformattedCode: String =
+      """object Queries{def pairs(numbers:List[Int],names:List[String]):List[(Int,String)]=for{number<-numbers
+        |if number%2==0
+        |name<-names if name.nonEmpty}yield(number,name)}
+        |""".stripMargin
+
+    val formatted: String = ScalafmtFormat(unformattedCode)
+
+    assertThat(formatted).contains(
+      "def pairs(numbers: List[Int], names: List[String]): List[(Int, String)] ="
+    )
+    assertThat(formatted).contains("for {")
+    assertThat(formatted).contains("number <- numbers")
+    assertThat(formatted).contains("if number % 2 == 0")
+    assertThat(formatted).contains("name <- names")
+    assertThat(formatted).contains("if name.nonEmpty")
+    assertThat(formatted).contains("} yield (number, name)")
+  }
+
+  @Test
   def scalafmtFormatReturnsOriginalCodeForParseFailuresWithoutTraceByDefault(): Unit = {
     val invalidCode: String = "object Broken { def value: Int = "
     val consoleOutput: ByteArrayOutputStream = new ByteArrayOutputStream()
