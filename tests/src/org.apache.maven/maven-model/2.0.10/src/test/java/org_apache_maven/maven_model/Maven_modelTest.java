@@ -75,7 +75,7 @@ public class Maven_modelTest {
         assertThat(model.getInceptionYear()).isEqualTo("2006");
 
         Parent parent = model.getParent();
-        assertThat(parent.getId()).isEqualTo("org.example:demo-parent::1.0");
+        assertThat(parent.getId()).isEqualTo("org.example:demo-parent:pom:1.0");
         assertThat(parent.getRelativePath()).isEqualTo("../pom.xml");
 
         Organization organization = model.getOrganization();
@@ -288,7 +288,7 @@ public class Maven_modelTest {
         assertThat(((License) roundTripped.getLicenses().get(0)).getName()).isEqualTo("EPL-2.0");
         assertThat(((Developer) roundTripped.getDevelopers().get(0)).getId()).isEqualTo("dev2");
         assertThat(((Contributor) roundTripped.getContributors().get(0)).getName()).isEqualTo("Dorothy Vaughan");
-        assertThat(roundTripped.getParent().getId()).isEqualTo("org.example:demo-parent::1.0");
+        assertThat(roundTripped.getParent().getId()).isEqualTo("org.example:demo-parent:pom:1.0");
         assertThat(roundTripped.getDistributionManagement().getRelocation().getArtifactId()).isEqualTo("new-artifact");
         assertThat(roundTripped.getBuild().getPluginManagement().getPlugins()).hasSize(1);
         assertThat(((Plugin) roundTripped.getBuild().getPlugins().get(0)).getExecutionsAsMap())
