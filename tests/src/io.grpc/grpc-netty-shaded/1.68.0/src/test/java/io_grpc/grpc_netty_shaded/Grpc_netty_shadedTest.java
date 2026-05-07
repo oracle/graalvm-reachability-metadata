@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,7 +40,11 @@ import io.grpc.Status;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import io.grpc.netty.shaded.io.netty.channel.DefaultEventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.EventLoopGroup;
+import io.grpc.netty.shaded.io.netty.channel.local.LocalAddress;
+import io.grpc.netty.shaded.io.netty.channel.local.LocalChannel;
+import io.grpc.netty.shaded.io.netty.channel.local.LocalServerChannel;
 import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
@@ -163,6 +168,38 @@ public class Grpc_netty_shadedTest {
             shutdownGracefully(clientGroup);
             shutdownGracefully(workerGroup);
             shutdownGracefully(bossGroup);
+        }
+    }
+
+    @Test
+    void localNettyTransportHandlesSocketAddressChannels() throws Exception {
+        EventLoopGroup serverGroup = new DefaultEventLoopGroup(1);
+        EventLoopGroup clientGroup = new DefaultEventLoopGroup(1);
+        LocalAddress address = new LocalAddress("grpc-netty-shaded-" + UUID.randomUUID());
+        Server server = null;
+        ManagedChannel channel = null;
+        try {
+            server = NettyServerBuilder.forAddress(address)
+                    .bossEventLoopGroup(serverGroup)
+                    .workerEventLoopGroup(serverGroup)
+                    .channelType(LocalServerChannel.class)
+                    .directExecutor()
+                    .addService(echoService())
+                    .build()
+                    .start();
+            channel = NettyChannelBuilder.forAddress(address)
+                    .eventLoopGroup(clientGroup)
+                    .channelType(LocalChannel.class, LocalAddress.class)
+                    .usePlaintext()
+                    .overrideAuthority("localhost")
+                    .directExecutor()
+                    .build();
+
+            assertEquals("echo:local", invokeUnary(channel, "local"));
+        } finally {
+            shutdown(channel, server);
+            shutdownGracefully(clientGroup);
+            shutdownGracefully(serverGroup);
         }
     }
 
