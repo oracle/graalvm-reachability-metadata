@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -241,6 +242,29 @@ public class Resilience4j_timelimiterTest {
             "added:checkout", "replaced:checkout", "removed:checkout");
         assertThatThrownBy(() -> registry.timeLimiter("missing", "does-not-exist"))
             .isInstanceOf(ConfigurationNotFoundException.class);
+    }
+
+    @Test
+    void registryCreatesTimeLimiterFromConfigSupplierOnlyWhenEntryIsAbsent() {
+        TimeLimiterConfig suppliedConfig = TimeLimiterConfig.custom()
+            .timeoutDuration(Duration.ofMillis(150))
+            .cancelRunningFuture(false)
+            .build();
+        TimeLimiterRegistry registry = TimeLimiterRegistry.ofDefaults();
+        AtomicInteger supplierCalls = new AtomicInteger();
+
+        TimeLimiter created = registry.timeLimiter("shipping", () -> {
+            supplierCalls.incrementAndGet();
+            return suppliedConfig;
+        });
+        TimeLimiter cached = registry.timeLimiter("shipping", () -> {
+            supplierCalls.incrementAndGet();
+            return TimeLimiterConfig.ofDefaults();
+        });
+
+        assertThat(cached).isSameAs(created);
+        assertThat(supplierCalls.get()).isEqualTo(1);
+        assertThat(created.getTimeLimiterConfig()).isSameAs(suppliedConfig);
     }
 
     private static ScheduledExecutorService newScheduler() {
