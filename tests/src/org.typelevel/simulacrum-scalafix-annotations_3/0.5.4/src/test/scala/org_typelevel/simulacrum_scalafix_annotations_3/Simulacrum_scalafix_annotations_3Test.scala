@@ -56,6 +56,22 @@ class Simulacrum_scalafix_annotations_3Test {
     assertEquals("None", optionRenderer.render(None))
     assertEquals("renderer", booleanRenderer.annotationOnlyDescription)
   }
+
+  @Test
+  def annotatedHigherKindedTypeclassSupportsPolymorphicCurriedOperations(): Unit = {
+    import SimulacrumAnnotationFixtures.Functor
+    import SimulacrumAnnotationFixtures.Functor.given
+    import SimulacrumAnnotationFixtures.Functor.syntax.*
+
+    val numbers: List[Int] = List(1, 2, 3)
+
+    assertEquals(
+      List("n=1", "n=2", "n=3"),
+      Functor[List].map(numbers)(number => s"n=$number")
+    )
+    assertEquals(Some(4), Option(2).fmap(number => number * 2))
+    assertEquals(None, (None: Option[Int]).fmap(number => number + 1))
+  }
 }
 
 private object SimulacrumAnnotationFixtures {
@@ -104,6 +120,30 @@ private object SimulacrumAnnotationFixtures {
 
     def optionRenderer[A]: Renderer[Option[A]] = new Renderer[Option[A]] {
       override def render(value: Option[A]): String = value.fold("None")(element => s"Some($element)")
+    }
+  }
+
+  @typeclass
+  trait Functor[F[_]] {
+    @op("fmap")
+    def map[A, B](fa: F[A])(function: A => B): F[B]
+  }
+
+  object Functor {
+    def apply[F[_]](using instance: Functor[F]): Functor[F] = instance
+
+    given Functor[List] with {
+      override def map[A, B](fa: List[A])(function: A => B): List[B] = fa.map(function)
+    }
+
+    given Functor[Option] with {
+      override def map[A, B](fa: Option[A])(function: A => B): Option[B] = fa.map(function)
+    }
+
+    object syntax {
+      extension [F[_], A](fa: F[A])(using instance: Functor[F]) {
+        def fmap[B](function: A => B): F[B] = instance.map(fa)(function)
+      }
     }
   }
 }
