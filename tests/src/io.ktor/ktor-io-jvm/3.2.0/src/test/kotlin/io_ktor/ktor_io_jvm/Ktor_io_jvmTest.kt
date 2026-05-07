@@ -10,6 +10,8 @@ import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.ClosedByteChannelException
+import io.ktor.utils.io.asSink
+import io.ktor.utils.io.asSource as asRawSource
 import io.ktor.utils.io.copyAndClose
 import io.ktor.utils.io.counted
 import io.ktor.utils.io.discard
@@ -219,6 +221,32 @@ public class Ktor_io_jvmTest {
 
         assertThat(bytesRead).isEqualTo("nio-source".length.toLong())
         assertThat(textBytes.decodeToString()).isEqualTo("nio-source")
+    }
+
+    @Test
+    fun byteChannelCanBeAccessedThroughKotlinxIoRawSourceAndSinkAdapters(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val channel: ByteChannel = ByteChannel(autoFlush = true)
+            val sink = channel.asSink()
+            val source = channel.asRawSource()
+            val payload: ByteArray = "raw-sink-adapter".toByteArray(StandardCharsets.UTF_8)
+            val outbound = Buffer()
+            val inbound = Buffer()
+
+            outbound.write(payload, 0, payload.size)
+            sink.write(outbound, payload.size.toLong())
+            sink.flush()
+
+            val bytesRead: Long = source.readAtMostTo(inbound, payload.size.toLong())
+            val actual: ByteArray = ByteArray(bytesRead.toInt())
+            inbound.readAtMostTo(actual, 0, actual.size)
+            sink.close()
+            source.close()
+
+            assertThat(bytesRead).isEqualTo(payload.size.toLong())
+            assertThat(actual.decodeToString()).isEqualTo("raw-sink-adapter")
+            assertThat(outbound.exhausted()).isTrue()
+        }
     }
 
     @Test
