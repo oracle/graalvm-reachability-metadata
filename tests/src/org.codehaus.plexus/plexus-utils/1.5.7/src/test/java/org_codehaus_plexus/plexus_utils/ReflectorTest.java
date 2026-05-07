@@ -7,9 +7,11 @@
 package org_codehaus_plexus.plexus_utils;
 
 import org.codehaus.plexus.util.reflection.Reflector;
+import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReflectorTest {
     @Test
@@ -52,6 +54,16 @@ public class ReflectorTest {
         ReflectorFixture fixture = new ReflectorFixture("property-value");
 
         assertThat(reflector.getObjectProperty(fixture, "value")).isEqualTo("property-value");
+    }
+
+    @Test
+    void reportsMissingFieldAfterSearchingThroughObjectClass() {
+        Reflector reflector = new Reflector();
+        ReflectorFixture fixture = new ReflectorFixture("field-value");
+
+        assertThatThrownBy(() -> reflector.getField(fixture, "missingField"))
+                .isInstanceOf(ReflectorException.class)
+                .hasCauseInstanceOf(NoSuchFieldException.class);
     }
 
     public static class ReflectorFixture {
