@@ -6,10 +6,13 @@
  */
 package com_clickhouse.jdbc_v2;
 
+import com.clickhouse.data.ClickHouseColumn;
+import com.clickhouse.data.ClickHouseDataType;
 import com.clickhouse.data.Tuple;
 import com.clickhouse.jdbc.DataSourceImpl;
 import com.clickhouse.jdbc.Driver;
 import com.clickhouse.jdbc.PreparedStatementImpl;
+import com.clickhouse.jdbc.metadata.ResultSetMetaDataImpl;
 import com.clickhouse.jdbc.types.Array;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +27,7 @@ import java.sql.JDBCType;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
@@ -35,6 +39,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -264,6 +269,48 @@ public class Jdbc_v2Test {
                 emptyArray.free();
             }
         }
+    }
+
+    @Test
+    void resultSetMetadataDescribesClickHouseColumnsAsJdbcColumns() throws Exception {
+        List<ClickHouseColumn> columns = List.of(
+                ClickHouseColumn.of("id", "Int32"),
+                ClickHouseColumn.of("amount", "Nullable(Decimal(12, 2))"),
+                ClickHouseColumn.of("tags", "Array(String)"));
+        Map<ClickHouseDataType, Class<?>> typeClassMap = new LinkedHashMap<>();
+        typeClassMap.put(ClickHouseDataType.Int32, Integer.class);
+        typeClassMap.put(ClickHouseDataType.Decimal, BigDecimal.class);
+        typeClassMap.put(ClickHouseDataType.Array, Object[].class);
+
+        ResultSetMetaData metadata = new ResultSetMetaDataImpl(
+                columns, "analytics", "local", "events", typeClassMap);
+
+        assertThat(metadata.getColumnCount()).isEqualTo(3);
+        assertThat(metadata.getColumnName(1)).isEqualTo("id");
+        assertThat(metadata.getColumnLabel(1)).isEqualTo("id");
+        assertThat(metadata.getColumnType(1)).isEqualTo(Types.INTEGER);
+        assertThat(metadata.getColumnTypeName(1)).isEqualTo("Int32");
+        assertThat(metadata.isSigned(1)).isTrue();
+        assertThat(metadata.isNullable(1)).isEqualTo(ResultSetMetaData.columnNoNulls);
+        assertThat(metadata.getColumnClassName(1)).isEqualTo(Integer.class.getName());
+
+        assertThat(metadata.getSchemaName(2)).isEqualTo("analytics");
+        assertThat(metadata.getCatalogName(2)).isEqualTo("local");
+        assertThat(metadata.getTableName(2)).isEqualTo("events");
+        assertThat(metadata.getColumnType(2)).isEqualTo(Types.DECIMAL);
+        assertThat(metadata.getColumnTypeName(2)).contains("Decimal");
+        assertThat(metadata.getPrecision(2)).isEqualTo(12);
+        assertThat(metadata.getScale(2)).isEqualTo(2);
+        assertThat(metadata.isNullable(2)).isEqualTo(ResultSetMetaData.columnNullable);
+        assertThat(metadata.getColumnClassName(2)).isEqualTo(BigDecimal.class.getName());
+
+        assertThat(metadata.getColumnType(3)).isEqualTo(Types.ARRAY);
+        assertThat(metadata.getColumnTypeName(3)).isEqualTo("Array(String)");
+        assertThat(metadata.getColumnClassName(3)).isEqualTo(Object[].class.getName());
+        assertThat(metadata.isAutoIncrement(3)).isFalse();
+        assertThat(metadata.isReadOnly(3)).isTrue();
+        assertThat(metadata.isWritable(3)).isFalse();
+        assertThatThrownBy(() -> metadata.getColumnName(0)).isInstanceOf(SQLException.class);
     }
 
     @Test
