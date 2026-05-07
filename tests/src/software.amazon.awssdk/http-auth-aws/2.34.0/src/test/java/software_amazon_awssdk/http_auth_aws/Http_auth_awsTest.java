@@ -122,6 +122,37 @@ public class Http_auth_awsTest {
     }
 
     @Test
+    void v4SignerCanSignRequestsWithUnsignedPayloads() throws IOException {
+        AwsV4HttpSigner signer = AwsV4HttpSigner.create();
+        String body = "payload to preserve";
+        SdkHttpFullRequest unsignedRequest = baseRequest()
+            .method(SdkHttpMethod.PUT)
+            .putHeader("Content-Length", String.valueOf(body.getBytes(StandardCharsets.UTF_8).length))
+            .build();
+        ContentStreamProvider payload = ContentStreamProvider.fromUtf8String(body);
+
+        SignedRequest signedRequest = signer.sign(request -> request
+            .identity(BASIC_CREDENTIALS)
+            .request(unsignedRequest)
+            .payload(payload)
+            .putProperty(AwsV4HttpSigner.SERVICE_SIGNING_NAME, "s3")
+            .putProperty(AwsV4HttpSigner.REGION_NAME, "us-east-1")
+            .putProperty(AwsV4HttpSigner.SIGNING_CLOCK, FIXED_CLOCK)
+            .putProperty(AwsV4HttpSigner.PAYLOAD_SIGNING_ENABLED, false));
+
+        SdkHttpRequest request = signedRequest.request();
+        String authorizationHeader = requiredHeader(request, "Authorization");
+
+        assertThat(request.method()).isEqualTo(SdkHttpMethod.PUT);
+        assertThat(requiredHeader(request, "X-Amz-Date")).isEqualTo("20200102T030405Z");
+        assertThat(requiredHeader(request, "X-Amz-Content-Sha256")).isEqualTo("UNSIGNED-PAYLOAD");
+        assertThat(authorizationHeader).startsWith("AWS4-HMAC-SHA256 ");
+        assertThat(authorizationHeader).contains("Credential=AKIDEXAMPLE/20200102/us-east-1/s3/aws4_request");
+        assertThat(new String(signedRequest.payload().orElseThrow().newStream().readAllBytes(), StandardCharsets.UTF_8))
+            .isEqualTo(body);
+    }
+
+    @Test
     void v4SignerCanPresignRequestsIntoQueryParameters() {
         AwsV4HttpSigner signer = AwsV4HttpSigner.create();
         SdkHttpFullRequest unsignedRequest = baseRequest()
