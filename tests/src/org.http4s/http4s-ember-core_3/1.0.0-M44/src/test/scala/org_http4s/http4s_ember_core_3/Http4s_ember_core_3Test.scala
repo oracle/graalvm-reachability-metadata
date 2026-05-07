@@ -86,6 +86,34 @@ class Http4s_ember_core_3Test {
   }
 
   @Test
+  def h2PushPromisesPreserveOrderedPromisedRequestMetadata(): Unit = {
+    val firstPushedRequest: Request[Pure] = Request[Pure]()
+      .withAttribute(H2Keys.StreamIdentifier, 11)
+    val secondPushedRequest: Request[Pure] = Request[Pure]()
+      .withAttribute(H2Keys.StreamIdentifier, 13)
+      .withAttribute(H2Keys.PushPromiseInitialStreamIdentifier, 7)
+    val pushPromises: List[Request[Pure]] = List(firstPushedRequest, secondPushedRequest)
+
+    val request: Request[Pure] = Request[Pure]()
+      .withAttribute(H2Keys.PushPromises, pushPromises)
+
+    val storedPushPromises: Option[List[Request[Pure]]] =
+      request.attributes.lookup(H2Keys.PushPromises)
+
+    assertEquals(Some(pushPromises), storedPushPromises)
+    assertEquals(
+      List(Some(11), Some(13)),
+      storedPushPromises.getOrElse(Nil).map(_.attributes.lookup(H2Keys.StreamIdentifier)),
+    )
+    assertEquals(
+      List(None, Some(7)),
+      storedPushPromises.getOrElse(Nil).map(
+        _.attributes.lookup(H2Keys.PushPromiseInitialStreamIdentifier)
+      ),
+    )
+  }
+
+  @Test
   def h2KeysCanBeDeletedWithoutAffectingOtherAttributes(): Unit = {
     val initialRequest: Request[Pure] = Request[Pure]()
       .withAttribute(H2Keys.StreamIdentifier, 3)
