@@ -50,8 +50,7 @@ final class Compiler_interfaceTest {
     assertThat(DependencyContext.values()).containsExactly(
       DependencyContext.DependencyByMemberRef,
       DependencyContext.DependencyByInheritance,
-      DependencyContext.LocalDependencyByInheritance,
-      DependencyContext.DependencyByMacroExpansion
+      DependencyContext.LocalDependencyByInheritance
     )
     assertThat(UseScope.values()).containsExactly(UseScope.Default, UseScope.Implicit, UseScope.PatMatTarget)
     assertThat(CompileOrder.values()).containsExactly(
@@ -65,8 +64,6 @@ final class Compiler_interfaceTest {
     assertThat(ParameterModifier.valueOf("ByName")).isSameAs(ParameterModifier.ByName)
     assertThat(DependencyContext.valueOf("LocalDependencyByInheritance"))
       .isSameAs(DependencyContext.LocalDependencyByInheritance)
-    assertThat(DependencyContext.valueOf("DependencyByMacroExpansion"))
-      .isSameAs(DependencyContext.DependencyByMacroExpansion)
     assertThat(UseScope.valueOf("PatMatTarget")).isSameAs(UseScope.PatMatTarget)
     assertThat(CompileOrder.valueOf("ScalaThenJava")).isSameAs(CompileOrder.ScalaThenJava)
   }
