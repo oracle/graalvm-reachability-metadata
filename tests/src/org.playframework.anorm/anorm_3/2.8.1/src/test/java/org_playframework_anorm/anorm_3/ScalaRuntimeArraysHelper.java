@@ -13,7 +13,7 @@ public final class ScalaRuntimeArraysHelper {
     }
 
     public static String[][] newStringMatrix(int rows, int columns) {
-        Object matrix = Arrays.newArray(String.class, String[][].class, new int[] { rows, columns });
+        Object matrix = Arrays.newArray(String.class, String[][].class, new int[] {rows, columns });
         return (String[][]) matrix;
     }
 }
