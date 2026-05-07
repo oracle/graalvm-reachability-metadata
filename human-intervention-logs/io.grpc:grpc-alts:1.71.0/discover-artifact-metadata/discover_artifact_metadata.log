@@ -1,0 +1,574 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0467-c1a0-74e1-aa72-4d1415f6444e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.grpc:grpc-alts:1.71.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.71.0" when "$version$" is replaced with "1.71.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+- Set "coordinates" to "io.grpc:grpc-alts:1.71.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.71.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream gRPC sources before editing the JSON. Then I’ll update the target file directly and sanity-check the result.
+web search: 
+web search: Maven Central io.grpc grpc-alts 1.71.0 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/grpc/grpc-alts/1.71.0/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://grpc.io/docs/languages/java/alts/
+codex
+Maven Central confirms `grpc-alts` publishes the main JAR, sources JAR, and Javadoc JAR for `1.71.0`; I’m checking the existing metadata style now so the URLs match this repo’s conventions.
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"io\\.grpc:grpc-|grpc-alts|repository-url.*grpc-java|source-code-url.*repo1.maven.org/maven2/io/grpc' build/discovered-artifact-metadata metadata -g '*.json'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json:2:  "coordinates" : "io.grpc:grpc-alts:1.71.0"
+metadata/io.grpc/grpc-context/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-context/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-sources.jar",
+metadata/io.grpc/grpc-context/index.json:64:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-xds/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-services/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-googleapis/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-googleapis/$version$/grpc-googleapis-$version$-sources.jar",
+metadata/io.grpc/grpc-googleapis/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-auth/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-opentelemetry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-opentelemetry/$version$/grpc-opentelemetry-$version$-sources.jar",
+metadata/io.grpc/grpc-opentelemetry/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-stub/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-grpclb/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-grpclb/$version$/grpc-grpclb-$version$-sources.jar",
+metadata/io.grpc/grpc-grpclb/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-api/$version$/grpc-api-$version$-sources.jar",
+metadata/io.grpc/grpc-api/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-rls/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-rls/$version$/grpc-rls-$version$-sources.jar",
+metadata/io.grpc/grpc-rls/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-sources.jar",
+metadata/io.grpc/grpc-core/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-alts/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
+metadata/io.grpc/grpc-alts/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-alts/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
+metadata/io.grpc/grpc-alts/index.json:9:    "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol.",
+metadata/io.grpc/grpc-inprocess/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+{
+  "coordinates" : "io.grpc:grpc-alts:1.71.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-alts</artifactId>
+  <version>1.71.0</version>
+  <name>io.grpc:grpc-alts</name>
+  <description>gRPC: ALTS</description>
+  <url>https://github.com/grpc/grpc-java</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>grpc.io</id>
+      <name>gRPC Contributors</name>
+      <email>grpc-io@googlegroups.com</email>
+      <url>https://grpc.io/</url>
+      <organization>gRPC Authors</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/grpc/grpc-java.git</connection>
+    <developerConnection>scm:git:git@github.com:grpc/grpc-java.git</developerConnection>
+    <url>https://github.com/grpc/grpc-java</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-auth</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-core</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-context</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-grpclb</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.25.5</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.conscrypt</groupId>
+      <artifactId>conscrypt-openjdk-uber</artifactId>
+      <version>2.5.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.3.1-jre</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>1.24.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.71.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.grpc/grpc-alts/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.68.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
+    "repository-url" : "https://github.com/grpc/grpc-java",
+    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
+    "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol.",
+    "tested-versions" : [
+      "1.68.0",
+      "1.68.1",
+      "1.68.2",
+      "1.68.3",
+      "1.69.0",
+      "1.69.1",
+      "1.70.0",
+      "1.71.0",
+      "1.72.0",
+      "1.73.0",
+      "1.74.0",
+      "1.75.0",
+      "1.76.0",
+      "1.76.1",
+      "1.76.2",
+      "1.76.3",
+      "1.77.0",
+      "1.77.1",
+      "1.78.0",
+      "1.79.0",
+      "1.80.0",
+      "1.81.0"
+    ],
+    "allowed-packages" : [
+      "io.grpc.alts",
+      "io.grpc.netty.shaded.io.netty.handler.ssl",
+      "io.grpc.netty.shaded.io.netty.internal.tcnative"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 21:46:38 GMT
+content-type: application/java-archive
+content-length: 157598
+cf-ray: 9f836b26fbe1985f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1412169
+etag: "b4c6e9e6139d6be915be66b744659086"
+last-modified: Tue, 04 Mar 2025 17:48:16 GMT
+x-checksum-md5: b4c6e9e6139d6be915be66b744659086
+x-checksum-sha1: 99d6823a87e669d89c5ad7fa015f69c5a5c6083a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/grpc/grpc-java/tree/v1.71.0/alts/src/test' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 230ms:
+HTTP/2 404 
+date: Thu, 07 May 2026 21:46:38 GMT
+content-type: text/html
+cf-ray: 9f836b275c899a60-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 606ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 21:46:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3d69b606097c76f96405a6cab9046c4c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=MORflcdcjFtjnbThIFwcx16zgvpUra3KOVInRGSKxecBSrePLQlODnI3TD%2FN%2FwuvbSuKoVrpYGHik4buFynoG6lqQq59l9YezqQcjwfWOFP3cOXuLKNQWLMYbO5XiCy9cqRTsu4vW%2BMZltj2g29irQuk56Hrg0Zn3O2UwfJBcl1j8XT1t5PDl0FTYi5T%2BsjtACKcZO3XiELw%2Fc%2FLqZmplK8%2BLX8BJLLUQv41NWe7GaDvV%2BNCvUT%2BBcyZVJdAjFy%2FkEj1pWZpxfPLBgmGdWM6lg%3D%3D--UpoOfH%2FtFi4wiV2c--UtXc6KSFaM5cTP6edQBukQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1735468475.1778190398; expires=Fri, 07 May 2027 21:46:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 21:46:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:168136:91901EF:71D8B4B:69FD083E
+
+
+web search: 
+web search: https://github.com/grpc/grpc-java/tree/v1.71.0/alts/src/test/java
+web search: 
+web search: central sonatype io.grpc grpc-alts 1.71.0
+web search: 
+web search: gRPC Java ALTS Application Layer Transport Security grpc alts
+codex
+The existing checked-in `grpc-alts` metadata already uses Maven sources and Javadocs plus the tagged upstream Java test tree. I’m going to mirror that for the discovered `1.71.0` entry, keeping language and `not-for-native-image` absent because this is a normal JVM JAR with Java classes.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+index f4b8a8afb2c947152be85d4cce5792b6e11bebdd..b1fa9f1ac178522e572cb9efc905127eaf0b6cd1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-alts:1.71.0"
++  "coordinates" : "io.grpc:grpc-alts:1.71.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
++  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+index f4b8a8afb2c947152be85d4cce5792b6e11bebdd..b1fa9f1ac178522e572cb9efc905127eaf0b6cd1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-alts:1.71.0"
++  "coordinates" : "io.grpc:grpc-alts:1.71.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
++  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+ }
+
+codex
+The file is updated. I’m validating the JSON and checking that the `$version$` substitutions resolve for the Maven artifacts and tagged test URL.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+{
+  "coordinates": "io.grpc:grpc-alts:1.71.0",
+  "repository-url": "https://github.com/grpc/grpc-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
+  "test-code-url": "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
+  "description": "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 21:46:59 GMT
+content-type: application/java-archive
+content-length: 383178
+cf-ray: 9f836baa5dc8985f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2119243
+etag: "5193f8941c05e75d5ce5ddeab7bf52c4"
+last-modified: Tue, 04 Mar 2025 17:48:18 GMT
+x-checksum-md5: 5193f8941c05e75d5ce5ddeab7bf52c4
+x-checksum-sha1: bb4e453a55b04895df61bfe2df1787fae8e909df
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/grpc/grpc-java/tree/v1.71.0/alts/src/test/java' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+exec
+/usr/bin/bash -lc 'jar tf ~/.m2/repository/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0.jar 2>/dev/null | head || (tmp=$(mktemp); curl -fsSL https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0.jar -o "$tmp" && jar tf "$tmp" | head)' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+index f4b8a8afb2c947152be85d4cce5792b6e11bebdd..b1fa9f1ac178522e572cb9efc905127eaf0b6cd1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-alts:1.71.0"
++  "coordinates" : "io.grpc:grpc-alts:1.71.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
++  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+ }
+
+ succeeded in 637ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 21:47:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6f5ef77f9620cb092cf3213e3787f716"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=JGda7YILEKZEhrRQJJzS7PjGAIDLF9OEcKQ4EHn0JlFe0t0O%2BTbjZUTLfX6Kzgmp2mxjld8h%2FLl1CnQ2UEJLXltjsg7xPsbN2BHxZHkskqRLie1dxKSAePn3eHTQielZwTpuf9SdYxugeKpKEEHnQ0p2rt5Tcj4%2FLNxQvIiaMaLA6bPpoIW7du2mUEi0lSpekWVc%2BuY%2FnRnPY9TyIc7s5ffsIDObMLbp1aD8iztM4Gv%2F5sf46IqhIjjihnV3mCpNe0APJwxQxtsm4eOo9rW0eg%3D%3D--fqfLzVA87eMVRBI2--%2BCESedfjvDrMhB5BoUsctA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.391917868.1778190419; expires=Fri, 07 May 2027 21:46:59 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 21:46:59 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:168136:919D3D3:71E3261:69FD0853
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/1.71.0/ | rg 'grpc-alts-1.71.0-(sources|javadoc|test)'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/1.71.0/grpc-alts-1.71.0.jar -o "$tmp" && jar tf "$tmp" | rg '"'\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+io/grpc/alts/AltsServerCredentials.class
+io/grpc/alts/GoogleDefaultChannelBuilder.class
+io/grpc/alts/HandshakerServiceChannel.class
+io/grpc/alts/AltsChannelCredentials$FailingProtocolNegotiator$1.class
+io/grpc/alts/AuthorizationUtil.class
+io/grpc/alts/AltsServerCredentials$Builder.class
+io/grpc/alts/InternalCheckGcpEnvironment.class
+io/grpc/alts/GoogleDefaultChannelCredentials.class
+io/grpc/alts/AltsChannelCredentials$FailingProtocolNegotiator.class
+io/grpc/alts/HandshakerServiceChannel$EventLoopHoldingChannel.class
+
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+index f4b8a8afb2c947152be85d4cce5792b6e11bebdd..b1fa9f1ac178522e572cb9efc905127eaf0b6cd1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-alts:1.71.0"
++  "coordinates" : "io.grpc:grpc-alts:1.71.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
++  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+ }
+
+ succeeded in 182ms:
+<a href="grpc-alts-1.71.0-javadoc.jar" title="grpc-alts-1.71.0-javadoc.jar">grpc-alts-1.71.0-javadoc.jar</a>                      2025-03-04 17:48    383178      
+<a href="grpc-alts-1.71.0-javadoc.jar.asc" title="grpc-alts-1.71.0-javadoc.jar.asc">grpc-alts-1.71.0-javadoc.jar.asc</a>                  2025-03-04 17:48       659      
+<a href="grpc-alts-1.71.0-javadoc.jar.md5" title="grpc-alts-1.71.0-javadoc.jar.md5">grpc-alts-1.71.0-javadoc.jar.md5</a>                  2025-03-04 17:48        32      
+<a href="grpc-alts-1.71.0-javadoc.jar.sha1" title="grpc-alts-1.71.0-javadoc.jar.sha1">grpc-alts-1.71.0-javadoc.jar.sha1</a>                 2025-03-04 17:48        40      
+<a href="grpc-alts-1.71.0-javadoc.jar.sha256" title="grpc-alts-1.71.0-javadoc.jar.sha256">grpc-alts-1.71.0-javadoc.jar.sha256</a>               2025-03-04 17:48        64      
+<a href="grpc-alts-1.71.0-javadoc.jar.sha512" title="grpc-alts-1.71.0-javadoc.jar.sha512">grpc-alts-1.71.0-javadoc.jar.sha512</a>               2025-03-04 17:48       128      
+<a href="grpc-alts-1.71.0-sources.jar" title="grpc-alts-1.71.0-sources.jar">grpc-alts-1.71.0-sources.jar</a>                      2025-03-04 17:48    157598      
+<a href="grpc-alts-1.71.0-sources.jar.asc" title="grpc-alts-1.71.0-sources.jar.asc">grpc-alts-1.71.0-sources.jar.asc</a>                  2025-03-04 17:48       659      
+<a href="grpc-alts-1.71.0-sources.jar.md5" title="grpc-alts-1.71.0-sources.jar.md5">grpc-alts-1.71.0-sources.jar.md5</a>                  2025-03-04 17:48        32      
+<a href="grpc-alts-1.71.0-sources.jar.sha1" title="grpc-alts-1.71.0-sources.jar.sha1">grpc-alts-1.71.0-sources.jar.sha1</a>                 2025-03-04 17:48        40      
+<a href="grpc-alts-1.71.0-sources.jar.sha256" title="grpc-alts-1.71.0-sources.jar.sha256">grpc-alts-1.71.0-sources.jar.sha256</a>               2025-03-04 17:48        64      
+<a href="grpc-alts-1.71.0-sources.jar.sha512" title="grpc-alts-1.71.0-sources.jar.sha512">grpc-alts-1.71.0-sources.jar.sha512</a>               2025-03-04 17:48       128      
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+ succeeded in 0ms:
+{
+  "coordinates" : "io.grpc:grpc-alts:1.71.0",
+  "repository-url" : "https://github.com/grpc/grpc-java",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
+  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
+  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+index f4b8a8afb2c947152be85d4cce5792b6e11bebdd..b1fa9f1ac178522e572cb9efc905127eaf0b6cd1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-alts:1.71.0"
++  "coordinates" : "io.grpc:grpc-alts:1.71.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
++  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+ }
+
+ succeeded in 232ms:
+!! build/
+
+web search: 
+web search: site:mvnrepository.com/artifact/io.grpc/grpc-alts/1.71.0 grpc-alts 1.71.0
+web search: 
+web search: https://github.com/grpc/grpc-java/tree/v1.71.0/alts/src/test/java
+web search: 
+web search: grpc-alts-1.71.0-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/
+web search: 
+web search: 
+web search: 
+web search: site:grpc.io/docs ALTS gRPC Java Application Layer Transport Security
+codex
+Updated [io.grpc-grpc-alts-1.71.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json) with repository, Maven sources, tagged upstream tests, Maven Javadocs, and a two-sentence description.
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. I also verified the JSON with `jq`, confirmed the Maven sources/Javadocs resolve, and confirmed the tagged GitHub test path exists; the artifact homepage points to `grpc/grpc-java`, Maven has the `1.71.0` entry, and the ALTS description is backed by the gRPC Java ALTS docs. ([mvnrepository.com](https://mvnrepository.com/artifact/io.grpc/grpc-alts/1.71.0?utm_source=openai))
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+index f4b8a8afb2c947152be85d4cce5792b6e11bebdd..b1fa9f1ac178522e572cb9efc905127eaf0b6cd1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-alts:1.71.0"
++  "coordinates" : "io.grpc:grpc-alts:1.71.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/alts/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-alts/$version$/grpc-alts-$version$-javadoc.jar",
++  "description" : "grpc-alts provides Google Application Layer Transport Security support for gRPC Java, including credentials and handshaker integration for client and server channels. It lets JVM gRPC applications use ALTS-based authentication and encryption in environments that support the ALTS protocol."
+ }
+
+tokens used
+72,124
+Updated [io.grpc-grpc-alts-1.71.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/build/discovered-artifact-metadata/io.grpc-grpc-alts-1.71.0.json) with repository, Maven sources, tagged upstream tests, Maven Javadocs, and a two-sentence description.
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. I also verified the JSON with `jq`, confirmed the Maven sources/Javadocs resolve, and confirmed the tagged GitHub test path exists; the artifact homepage points to `grpc/grpc-java`, Maven has the `1.71.0` entry, and the ALTS description is backed by the gRPC Java ALTS docs. ([mvnrepository.com](https://mvnrepository.com/artifact/io.grpc/grpc-alts/1.71.0?utm_source=openai))
+Ran agent for io.grpc:grpc-alts:1.71.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/build/agent-artifact-discovery-logs/io.grpc-grpc-alts-1.71.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4660-67ca141f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 4s
+9 actionable tasks: 9 executed
