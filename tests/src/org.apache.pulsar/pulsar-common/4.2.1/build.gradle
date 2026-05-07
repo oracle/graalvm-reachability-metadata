@@ -18,6 +18,7 @@ dependencies {
 tasks.withType(Test).configureEach {
     jvmArgs += [
         "--add-exports=java.management/sun.management=ALL-UNNAMED",
+        "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED",
         "--add-opens=java.management/sun.management=ALL-UNNAMED"
     ]
 }
@@ -35,6 +36,7 @@ graalvmNative {
         all {
             buildArgs.addAll([
                 '--add-exports=java.management/sun.management=ALL-UNNAMED',
+                '--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED',
                 '--add-opens=java.management/sun.management=ALL-UNNAMED'
             ])
         }
