@@ -166,6 +166,22 @@ class Akka_parsing_3Test {
     assertThat(CharUtils.lowerHexDigit(15)).isEqualTo('f')
   }
 
+  @Test
+  def appliesSemanticActionsAndPredicatesDuringParsing(): Unit = {
+    val parser: KeyValueRecordParser = new KeyValueRecordParser(ParserInput("env=prod;region=eu"), expectedFields = 2)
+    val record: KeyValueRecord = parser.Record.run().get
+
+    assertThat(record).isEqualTo(KeyValueRecord(Map("env" -> "prod", "region" -> "eu")))
+    assertThat(parser.acceptedFieldCount).isEqualTo(2)
+
+    val invalidInput: String = "env=prod;region=eu;extra=yes"
+    val rejectedParser: KeyValueRecordParser = new KeyValueRecordParser(ParserInput(invalidInput), expectedFields = 2)
+    val rejected: Failure[KeyValueRecord] = rejectedParser.Record.run().asInstanceOf[Failure[KeyValueRecord]]
+    val error: ParseError = rejected.exception.asInstanceOf[ParseError]
+
+    assertThat(error.position.index).isEqualTo(invalidInput.length)
+  }
+
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
     new AssignmentParser(ParserInput(input)).InputLine.run()
 }
@@ -175,6 +191,8 @@ final case class Assignment(name: String, value: Int)
 final case class HexColor(red: Int, green: Int, blue: Int, alpha: Option[Int])
 
 final case class IdQuery(resource: String, ids: Seq[Int], verbose: Boolean)
+
+final case class KeyValueRecord(values: Map[String, String])
 
 final class AssignmentParser(val input: ParserInput) extends Parser {
   def InputLine: Rule1[Assignment] = rule { Spacing ~ AssignmentRule ~ Spacing ~ EOI }
@@ -244,6 +262,27 @@ final class HexColorParser(val input: ParserInput) extends Parser {
   }
 
   def HexDigit: Rule0 = rule { predicate(CharPredicate.HexDigit) }
+}
+
+final class KeyValueRecordParser(val input: ParserInput, expectedFields: Int) extends Parser {
+  private var acceptedFields: Int = 0
+
+  def Record: Rule1[KeyValueRecord] = rule {
+    Fields ~ EOI ~ test(acceptedFields == expectedFields) ~> ((fields: Seq[(String, String)]) =>
+      KeyValueRecord(fields.toMap))
+  }
+
+  def Fields: Rule1[Seq[(String, String)]] = rule { oneOrMore(Field).separatedBy(';') }
+
+  def Field: Rule1[(String, String)] = rule {
+    Key ~ '=' ~ Value ~ run { acceptedFields += 1 } ~> ((key: String, value: String) => key -> value)
+  }
+
+  def Key: Rule1[String] = rule { capture(CharPredicate.Alpha ~ zeroOrMore(CharPredicate.AlphaNum ++ '_' ++ '-')) }
+
+  def Value: Rule1[String] = rule { capture(oneOrMore(noneOf(";"))) }
+
+  def acceptedFieldCount: Int = acceptedFields
 }
 
 final class DynamicTokenParser(val input: ParserInput) extends Parser with DynamicRuleHandler[DynamicTokenParser, String :: HNil] {
