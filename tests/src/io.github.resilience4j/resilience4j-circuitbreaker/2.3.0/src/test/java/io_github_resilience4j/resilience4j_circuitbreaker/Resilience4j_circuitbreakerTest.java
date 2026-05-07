@@ -28,6 +28,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker.StateTransition;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowSynchronizationStrategy;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.TransitionCheckResult;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.event.CircuitBreakerEvent.Type;
 import org.junit.jupiter.api.Test;
@@ -128,6 +129,30 @@ public class Resilience4j_circuitbreakerTest {
             throw new IOException("checked runnable failure");
         })).isInstanceOf(IOException.class).hasMessage("checked runnable failure");
         assertThat(circuitBreaker.getState()).isEqualTo(State.OPEN);
+    }
+
+    @Test
+    void transitionOnResultCanOpenCircuitAfterSuccessfulCall() {
+        CircuitBreakerConfig config = CircuitBreakerConfig.custom()
+                .slidingWindowSize(10)
+                .minimumNumberOfCalls(10)
+                .failureRateThreshold(100.0f)
+                .transitionOnResult(result -> result.isLeft() && "maintenance".equals(result.getLeft())
+                        ? TransitionCheckResult.transitionToOpenAndWaitFor(Duration.ofSeconds(5))
+                        : TransitionCheckResult.noTransition())
+                .build();
+        CircuitBreaker circuitBreaker = CircuitBreaker.of("transition-on-result", config);
+
+        assertThat(circuitBreaker.executeSupplier(() -> "ready")).isEqualTo("ready");
+        assertThat(circuitBreaker.getState()).isEqualTo(State.CLOSED);
+
+        assertThat(circuitBreaker.executeSupplier(() -> "maintenance")).isEqualTo("maintenance");
+
+        assertThat(circuitBreaker.getState()).isEqualTo(State.OPEN);
+        assertThat(circuitBreaker.getMetrics().getNumberOfSuccessfulCalls()).isEqualTo(2);
+        assertThat(circuitBreaker.getMetrics().getNumberOfFailedCalls()).isZero();
+        assertThatExceptionOfType(CallNotPermittedException.class)
+                .isThrownBy(() -> circuitBreaker.executeSupplier(() -> "blocked"));
     }
 
     @Test
