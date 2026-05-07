@@ -98,6 +98,7 @@ from utility_scripts.repo_path_resolver import (
     require_complete_reachability_repo,
     resolve_repo_roots,
 )
+from utility_scripts.source_context import GradleBootstrapFailure
 from utility_scripts.stage_logger import log_failure_banner, log_stage, log_success_banner
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
@@ -223,6 +224,7 @@ LATEST_EA_GRAALVM_ENV_VAR = "GRAALVM_HOME_LATEST_EA"
 INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
 INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
 INTERRUPT_REASON_SHUTDOWN = "shutdown request"
+INTERRUPT_REASON_GRADLE_BOOTSTRAP = "Gradle bootstrap infrastructure failure"
 SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
 
 _user_interrupt_requested = threading.Event()
@@ -4128,8 +4130,11 @@ def run_claimed_issue(
             strategy_name,
             keep_tests_without_dynamic_access,
         )
+    except GradleBootstrapFailure:
+        raise
     except KeyboardInterrupt:
-        mark_user_interrupt_requested()
+        if not is_user_interrupt_requested():
+            mark_user_interrupt_requested()
         raise
     except Exception as exc:
         if is_user_interrupt_requested():
@@ -4454,11 +4459,29 @@ def process_claimed_issue_lifecycle(
                 file=sys.stderr,
             )
         return handled
+    except GradleBootstrapFailure as exc:
+        if not lifecycle_completed:
+            mark_user_interrupt_requested(INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+            revert_claimed_issue(claimed_issue, INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+            log_failure_banner(
+                format_issue_result_message(
+                    claimed_issue,
+                    (
+                        "Workflow stopped on shared Gradle bootstrap infrastructure failure; "
+                        "the issue claim was reverted without failed-work preservation or "
+                        "human-intervention follow-up."
+                    ),
+                ),
+                file=sys.stderr,
+            )
+            raise KeyboardInterrupt from exc
+        raise
     except BaseException as exc:
         if not lifecycle_completed:
             if is_interrupt_exception(exc) or is_user_interrupt_requested():
-                mark_user_interrupt_requested()
-                revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                if not is_user_interrupt_requested():
+                    mark_user_interrupt_requested()
+                revert_claimed_issue(claimed_issue, get_user_interrupt_reason())
                 raise
             else:
                 try:
@@ -4478,8 +4501,9 @@ def process_claimed_issue_lifecycle(
                         file=sys.stderr,
                     )
                 except KeyboardInterrupt:
-                    mark_user_interrupt_requested()
-                    revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                    if not is_user_interrupt_requested():
+                        mark_user_interrupt_requested()
+                    revert_claimed_issue(claimed_issue, get_user_interrupt_reason())
                     raise
                 return False
         raise
@@ -5347,13 +5371,13 @@ def process_issues_with_label(
     except KeyboardInterrupt:
         if is_shutdown_requested():
             mark_shutdown_requested()
-        else:
+        elif not is_user_interrupt_requested():
             mark_user_interrupt_requested()
         interrupt_reason = get_user_interrupt_reason()
         interrupt_message = (
             f"Shutdown requested via {describe_active_shutdown_signal_path()}"
             if interrupt_reason == INTERRUPT_REASON_SHUTDOWN
-            else "Ctrl+C received"
+            else f"{interrupt_reason} detected"
         )
         print(
             f"\n[{interrupt_message}. Reverting all active claimed issues before exit.]",
