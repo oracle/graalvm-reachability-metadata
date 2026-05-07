@@ -146,6 +146,31 @@ public class Resilience4j_ratelimiterTest {
 
     @Test
     @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void drainsRemainingPermissionsWhenDecoratedOperationFails() {
+        RateLimiterConfig config = RateLimiterConfig.custom()
+                .limitForPeriod(3)
+                .limitRefreshPeriod(LONG_REFRESH_PERIOD)
+                .timeoutDuration(Duration.ZERO)
+                .drainPermissionsOnResult(result -> !result.isRight())
+                .build();
+        RateLimiter rateLimiter = RateLimiter.of("drain-on-error", config);
+        AtomicInteger calls = new AtomicInteger();
+        Supplier<String> failingSupplier = RateLimiter.decorateSupplier(rateLimiter, () -> {
+            calls.incrementAndGet();
+            throw new IllegalStateException("backend unavailable");
+        });
+
+        assertThatThrownBy(failingSupplier::get)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("backend unavailable");
+
+        assertThat(calls).hasValue(1);
+        assertThat(rateLimiter.getMetrics().getAvailablePermissions()).isZero();
+        assertThat(rateLimiter.acquirePermission()).isFalse();
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
     void publishesSuccessFailureAndDrainEvents() {
         RateLimiterConfig config = RateLimiterConfig.custom()
                 .limitForPeriod(2)
