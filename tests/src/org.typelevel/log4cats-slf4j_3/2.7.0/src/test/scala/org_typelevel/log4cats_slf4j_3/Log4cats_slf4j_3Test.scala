@@ -6,6 +6,7 @@
  */
 package org_typelevel.log4cats_slf4j_3
 
+import cats.arrow.FunctionK
 import cats.effect.IO
 import cats.effect.SyncIO
 import cats.effect.unsafe.implicits.global
@@ -17,6 +18,7 @@ import org.slf4j.helpers.MessageFormatter
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.LoggerFactory
 import org.typelevel.log4cats.LoggerName
+import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.syntax.*
 import org.typelevel.log4cats.slf4j.Slf4jFactory
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -170,6 +172,24 @@ class Log4cats_slf4j_3Test {
 
     assertThat(delegate.events.map(_.message).asJava).containsExactly("direct:one", "two", "three")
     assertThat(delegate.events.map(_.level).asJava).containsExactly("info", "warn", "error")
+  }
+
+  @Test
+  def slf4jBackedLoggerCanBeMappedToAnotherEffectType(): Unit = {
+    val delegate: RecordingSlf4jLogger = RecordingSlf4jLogger("map-k")
+    val toIO: FunctionK[SyncIO, IO] = new FunctionK[SyncIO, IO] {
+      override def apply[A](value: SyncIO[A]): IO[A] = IO(value.unsafeRunSync())
+    }
+    val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLoggerFromSlf4j[SyncIO](delegate).mapK(toIO)
+    val cause: IllegalArgumentException = IllegalArgumentException("mapped")
+
+    assertThat(logger.isWarnEnabled.unsafeRunSync()).isTrue()
+    logger.info("mapped info").unsafeRunSync()
+    logger.warn(cause)("mapped warn").unsafeRunSync()
+
+    assertThat(delegate.events.map(_.level).asJava).containsExactly("info", "warn")
+    assertThat(delegate.events.map(_.message).asJava).containsExactly("mapped info", "mapped warn")
+    assertThat(delegate.events.last.throwable.orNull).isSameAs(cause)
   }
 
   @Test
