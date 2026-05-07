@@ -153,6 +153,38 @@ public class Http_auth_awsTest {
     }
 
     @Test
+    void v4SignerAddsFlexibleChecksumHeaderWithoutChunkEncoding() throws IOException {
+        AwsV4HttpSigner signer = AwsV4HttpSigner.create();
+        SdkHttpFullRequest unsignedRequest = baseRequest()
+            .method(SdkHttpMethod.PUT)
+            .putHeader("Content-Length", "11")
+            .build();
+
+        SignedRequest signedRequest = signer.sign(request -> request
+            .identity(BASIC_CREDENTIALS)
+            .request(unsignedRequest)
+            .payload(ContentStreamProvider.fromUtf8String("hello world"))
+            .putProperty(AwsV4HttpSigner.SERVICE_SIGNING_NAME, "s3")
+            .putProperty(AwsV4HttpSigner.REGION_NAME, "us-east-1")
+            .putProperty(AwsV4HttpSigner.SIGNING_CLOCK, FIXED_CLOCK)
+            .putProperty(AwsV4HttpSigner.CHECKSUM_ALGORITHM, DefaultChecksumAlgorithm.CRC32));
+
+        SdkHttpRequest request = signedRequest.request();
+        String signedPayload = new String(
+            signedRequest.payload().orElseThrow().newStream().readAllBytes(), StandardCharsets.UTF_8);
+        String authorizationHeader = requiredHeader(request, "Authorization");
+
+        assertThat(requiredHeader(request, "X-Amz-Checksum-Crc32")).isEqualTo("DUoRhQ==");
+        assertThat(requiredHeader(request, "X-Amz-Content-Sha256"))
+            .isEqualTo("b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
+        assertThat(request.firstMatchingHeader("Content-Encoding")).isEmpty();
+        assertThat(request.firstMatchingHeader("X-Amz-Trailer")).isEmpty();
+        assertThat(request.firstMatchingHeader("X-Amz-Decoded-Content-Length")).isEmpty();
+        assertThat(authorizationHeader).contains("x-amz-checksum-crc32");
+        assertThat(signedPayload).isEqualTo("hello world");
+    }
+
+    @Test
     void v4SignerCanPresignRequestsIntoQueryParameters() {
         AwsV4HttpSigner signer = AwsV4HttpSigner.create();
         SdkHttpFullRequest unsignedRequest = baseRequest()
