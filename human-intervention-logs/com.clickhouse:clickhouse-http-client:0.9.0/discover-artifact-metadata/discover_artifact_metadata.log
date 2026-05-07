@@ -1,0 +1,950 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e03e1-a37a-78b3-bca8-1c9666281fc8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.clickhouse:clickhouse-http-client:0.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.9.0" when "$version$" is replaced with "0.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+- Set "coordinates" to "com.clickhouse:clickhouse-http-client:0.9.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.9.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven/source references first, then update the JSON in place using the repo’s existing metadata style.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json && sed -n '1,200p' build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+-rw-rw-r-- 1 vjovanov vjovanov 68 May  7 21:19 build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+{
+  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'clickhouse-http-client|clickhouse-jdbc|com.clickhouse' ." in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+./COVERAGE.md:33:| [`com.clickhouse:org.roaringbitmap`](https://github.com/ClickHouse/clickhouse-java) | 1.9.2 | 100% (0/0 calls) | <details><summary>Show</summary> This artifact repackages RoaringBitmap with JPMS module metadata for use by ClickHouse Java. It provides compressed bitmap data structures for efficient storage and fast set operations over integer and long sets.</details> |
+./stats/com.clickhouse/org.apache.commons.compress/1.9.2/execution-metrics.json:4:    "library": "com.clickhouse:org.apache.commons.compress:1.9.2",
+./stats/com.clickhouse/org.apache.commons.compress/1.9.2/execution-metrics.json:63:      "test_file": "tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/src/test/java/com_clickhouse/org_apache_commons_compress/MessagesTest.java",
+./stats/com.clickhouse/org.apache.commons.compress/1.9.2/execution-metrics.json:64:      "metadata_file": "metadata/com.clickhouse/org.apache.commons.compress/1.9.2/reachability-metadata.json"
+./stats/com.clickhouse/org.roaringbitmap/1.9.2/execution-metrics.json:4:    "library": "com.clickhouse:org.roaringbitmap:1.9.2",
+./stats/com.clickhouse/org.roaringbitmap/1.9.2/execution-metrics.json:52:      "test_file": "tests/src/com.clickhouse/org.roaringbitmap/1.9.2/src/test/java/com_clickhouse/org_roaringbitmap/Org_roaringbitmapTest.java",
+./stats/com.clickhouse/org.roaringbitmap/1.9.2/execution-metrics.json:53:      "metadata_file": "metadata/com.clickhouse/org.roaringbitmap/1.9.2/reachability-metadata.json"
+./stats/com.clickhouse/clickhouse-data/0.9.0/execution-metrics.json:4:    "library": "com.clickhouse:clickhouse-data:0.9.0",
+./stats/com.clickhouse/clickhouse-data/0.9.0/execution-metrics.json:64:      "test_file": "tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoMultiPolygonValueTest.java",
+./stats/com.clickhouse/clickhouse-data/0.9.0/execution-metrics.json:65:      "metadata_file": "metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json"
+./metadata/com.clickhouse/org.apache.commons.compress/1.9.2/reachability-metadata.json:195:      "bundle": "com_clickhouse.org_apache_commons_compress.MessagesTestMissingBundle"
+./metadata/com.clickhouse/org.apache.commons.compress/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
+./metadata/com.clickhouse/org.apache.commons.compress/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
+./metadata/com.clickhouse/org.apache.commons.compress/index.json:9:    "description" : "This artifact repackages Apache Commons Compress under the com.clickhouse group as a JPMS-friendly alias. It provides Java APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZIP2, LZ4, and Snappy.",
+./metadata/com.clickhouse/org.roaringbitmap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/org.roaringbitmap/$version$/org.roaringbitmap-$version$-sources.jar",
+./metadata/com.clickhouse/org.roaringbitmap/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/org.roaringbitmap/$version$/org.roaringbitmap-$version$-javadoc.jar",
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:5:        "typeReached" : "com.clickhouse.data.ClickHouseFormat"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:7:      "type" : "com.clickhouse.data.ClickHouseFormat",
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:19:        "typeReached" : "com.clickhouse.data.mapper.DynamicRecordMapper$PropertySetter"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:21:      "type" : "com.clickhouse.data.ClickHouseValue",
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:35:        "typeReached" : "com.clickhouse.data.compress.DeflateSupport$Factory"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:37:      "type" : "com.clickhouse.data.compress.DeflateSupport$PreferredImpl",
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:47:        "typeReached" : "com.clickhouse.data.compress.GzipSupport$Factory"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:49:      "type" : "com.clickhouse.data.compress.GzipSupport$DefaultImpl",
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:59:        "typeReached" : "com.clickhouse.data.value.ClickHouseGeoRingValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:65:        "typeReached" : "com.clickhouse.data.value.ClickHouseGeoPolygonValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:71:        "typeReached" : "com.clickhouse.data.value.ClickHouseGeoMultiPolygonValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:77:        "typeReached" : "com.clickhouse.data.ClickHouseColumn"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:83:        "typeReached" : "com.clickhouse.data.ClickHouseValues"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:89:        "typeReached" : "com.clickhouse.data.ClickHouseValues"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:95:        "typeReached" : "com.clickhouse.data.value.ClickHouseArrayValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:101:        "typeReached" : "com.clickhouse.data.value.ClickHouseNestedValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:107:        "typeReached" : "com.clickhouse.data.value.ClickHouseArrayValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:113:        "typeReached" : "com.clickhouse.data.value.ClickHouseArrayValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:119:        "typeReached" : "com.clickhouse.data.value.ClickHouseArrayValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:125:        "typeReached" : "com.clickhouse.data.value.ClickHouseNestedValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:131:        "typeReached" : "com.clickhouse.data.UnloadableClassLoader"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:137:        "typeReached" : "com.clickhouse.data.value.ClickHouseArrayValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:143:        "typeReached" : "com.clickhouse.data.ClickHouseValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:149:        "typeReached" : "com.clickhouse.data.value.ClickHouseArrayValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:155:        "typeReached" : "com.clickhouse.data.value.ClickHouseTupleValue"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:161:        "typeReached" : "com.clickhouse.data.ClickHouseUtils"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:173:        "typeReached" : "com.clickhouse.data.UnloadableClassLoader"
+./metadata/com.clickhouse/clickhouse-data/0.9.0/reachability-metadata.json:181:        "typeReached" : "com.clickhouse.data.ClickHouseValues"
+./metadata/com.clickhouse/clickhouse-data/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-sources.jar",
+./metadata/com.clickhouse/clickhouse-data/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-javadoc.jar",
+./metadata/com.clickhouse/clickhouse-data/index.json:22:      "com.clickhouse"
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/build.gradle:14:    testImplementation "com.clickhouse:org.apache.commons.compress:$libraryVersion"
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/settings.gradle:20:rootProject.name = 'com.clickhouse.org.apache.commons.compress_tests'
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/src/test/java/com_clickhouse/org_apache_commons_compress/Pack200Test.java:7:package com_clickhouse.org_apache_commons_compress;
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/src/test/java/com_clickhouse/org_apache_commons_compress/ExtraFieldUtilsTest.java:7:package com_clickhouse.org_apache_commons_compress;
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/src/test/java/com_clickhouse/org_apache_commons_compress/MessagesTest.java:7:package com_clickhouse.org_apache_commons_compress;
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/src/test/java/com_clickhouse/org_apache_commons_compress/MessagesTest.java:20:            "com_clickhouse.org_apache_commons_compress.MessagesTestMissingBundle";
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/gradle.properties:4:library.coordinates = com.clickhouse:org.apache.commons.compress:1.9.2
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/gradle.properties:6:metadata.dir = com.clickhouse/org.apache.commons.compress/1.9.2/
+./tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/user-code-filter.json:10:      "includeClasses" : "com_clickhouse.org_apache_commons_compress.**"
+./tests/src/com.clickhouse/org.roaringbitmap/1.9.2/build.gradle:14:    testImplementation "com.clickhouse:org.roaringbitmap:$libraryVersion"
+./tests/src/com.clickhouse/org.roaringbitmap/1.9.2/settings.gradle:20:rootProject.name = 'com.clickhouse.org.roaringbitmap_tests'
+./tests/src/com.clickhouse/org.roaringbitmap/1.9.2/src/test/java/com_clickhouse/org_roaringbitmap/Org_roaringbitmapTest.java:7:package com_clickhouse.org_roaringbitmap;
+./tests/src/com.clickhouse/org.roaringbitmap/1.9.2/gradle.properties:4:library.coordinates = com.clickhouse:org.roaringbitmap:1.9.2
+./tests/src/com.clickhouse/org.roaringbitmap/1.9.2/gradle.properties:6:metadata.dir = com.clickhouse/org.roaringbitmap/1.9.2/
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/build.gradle:14:    testImplementation "com.clickhouse:clickhouse-data:$libraryVersion"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/settings.gradle:20:rootProject.name = 'com.clickhouse.clickhouse-data_tests'
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "com.clickhouse.data.mapper.AbstractRecordMapper"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "com_clickhouse.clickhouse_data.AbstractRecordMapperTest$MappedClickHouseRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "com.clickhouse.data.mapper.DynamicRecordMapper$PropertySetter"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "com_clickhouse.clickhouse_data.AbstractRecordMapperTest$MappedClickHouseRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:43:        "typeReached" : "com.clickhouse.data.mapper.RecordMapperFactory"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:45:      "type" : "com_clickhouse.clickhouse_data.AbstractRecordMapperTest$MappedClickHouseRow"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:49:        "typeReached" : "com.clickhouse.data.mapper.CustomRecordMappers$RecordCreator"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:51:      "type" : "com_clickhouse.clickhouse_data.CustomRecordMappersInnerRecordCreatorTest$CreatorMappedRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:56:            "com.clickhouse.data.ClickHouseRecord"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:63:        "typeReached" : "com.clickhouse.data.mapper.RecordMapperFactory"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:65:      "type" : "com_clickhouse.clickhouse_data.CustomRecordMappersInnerRecordCreatorTest$CreatorMappedRow"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:69:        "typeReached" : "com.clickhouse.data.mapper.AbstractRecordMapper"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:71:      "type" : "com_clickhouse.clickhouse_data.DynamicRecordMapperInnerObjectSetterTest$ObjectSetterRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:81:        "typeReached" : "com.clickhouse.data.mapper.DynamicRecordMapper$ObjectSetter"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:83:      "type" : "com_clickhouse.clickhouse_data.DynamicRecordMapperInnerObjectSetterTest$ObjectSetterRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:95:        "typeReached" : "com.clickhouse.data.mapper.RecordMapperFactory"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:97:      "type" : "com_clickhouse.clickhouse_data.DynamicRecordMapperInnerObjectSetterTest$ObjectSetterRow"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:101:        "typeReached" : "com.clickhouse.data.mapper.AbstractRecordMapper"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:103:      "type" : "com_clickhouse.clickhouse_data.DynamicRecordMapperInnerValueSetterTest$ValueSetterRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:113:        "typeReached" : "com.clickhouse.data.mapper.DynamicRecordMapper$ValueSetter"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:115:      "type" : "com_clickhouse.clickhouse_data.DynamicRecordMapperInnerValueSetterTest$ValueSetterRow",
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:120:            "com.clickhouse.data.ClickHouseValue"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:127:        "typeReached" : "com.clickhouse.data.mapper.RecordMapperFactory"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:129:      "type" : "com_clickhouse.clickhouse_data.DynamicRecordMapperInnerValueSetterTest$ValueSetterRow"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:135:        "typeReached" : "com.clickhouse.data.ClickHouseUtils"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:137:      "glob" : "com_clickhouse/clickhouse_data/clickhouse-utils-resource.txt"
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoMultiPolygonValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoMultiPolygonValueTest.java:11:import com.clickhouse.data.value.ClickHouseGeoMultiPolygonValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseTupleValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseTupleValueTest.java:11:import com.clickhouse.data.value.ClickHouseTupleValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseUtilsTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseUtilsTest.java:11:import com.clickhouse.data.ClickHouseUtils;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseUtilsTest.java:28:        String resourceName = "com_clickhouse/clickhouse_data/clickhouse-utils-resource.txt";
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:11:import com.clickhouse.data.ClickHouseColumn;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:12:import com.clickhouse.data.ClickHouseRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:13:import com.clickhouse.data.ClickHouseRecordMapper;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:14:import com.clickhouse.data.ClickHouseSimpleRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:15:import com.clickhouse.data.ClickHouseValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerObjectSetterTest.java:16:import com.clickhouse.data.value.ClickHouseStringValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:11:import com.clickhouse.data.ClickHouseColumn;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:12:import com.clickhouse.data.ClickHouseRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:13:import com.clickhouse.data.ClickHouseRecordMapper;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:14:import com.clickhouse.data.ClickHouseSimpleRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:15:import com.clickhouse.data.ClickHouseValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/DynamicRecordMapperInnerValueSetterTest.java:16:import com.clickhouse.data.value.ClickHouseStringValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:11:import com.clickhouse.data.ClickHouseColumn;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:12:import com.clickhouse.data.ClickHouseRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:13:import com.clickhouse.data.ClickHouseRecordMapper;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:14:import com.clickhouse.data.ClickHouseSimpleRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:15:import com.clickhouse.data.ClickHouseValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:16:import com.clickhouse.data.value.ClickHouseIntegerValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/CustomRecordMappersInnerRecordCreatorTest.java:17:import com.clickhouse.data.value.ClickHouseStringValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseArrayValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseArrayValueTest.java:11:import com.clickhouse.data.value.ClickHouseArrayValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseArrayValueTest.java:12:import com.clickhouse.data.value.ClickHouseIntegerValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoPolygonValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoPolygonValueTest.java:11:import com.clickhouse.data.value.ClickHouseGeoPolygonValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/UnloadableClassLoaderTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/UnloadableClassLoaderTest.java:11:import com.clickhouse.data.UnloadableClassLoader;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseCompressionAlgorithmTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseCompressionAlgorithmTest.java:11:import com.clickhouse.data.ClickHouseCompression;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseCompressionAlgorithmTest.java:12:import com.clickhouse.data.ClickHouseCompressionAlgorithm;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:11:import com.clickhouse.data.ClickHouseColumn;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:12:import com.clickhouse.data.ClickHouseRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:13:import com.clickhouse.data.ClickHouseRecordMapper;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:14:import com.clickhouse.data.ClickHouseSimpleRecord;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:15:import com.clickhouse.data.ClickHouseValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:16:import com.clickhouse.data.value.ClickHouseIntegerValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/AbstractRecordMapperTest.java:17:import com.clickhouse.data.value.ClickHouseStringValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseColumnTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseColumnTest.java:11:import com.clickhouse.data.ClickHouseArraySequence;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseColumnTest.java:12:import com.clickhouse.data.ClickHouseColumn;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseColumnTest.java:13:import com.clickhouse.data.ClickHouseDataConfig;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseColumnTest.java:14:import com.clickhouse.data.ClickHouseDataType;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseValueTest.java:11:import com.clickhouse.data.ClickHouseValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseValueTest.java:12:import com.clickhouse.data.value.ClickHouseStringValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseNestedValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseNestedValueTest.java:11:import com.clickhouse.data.ClickHouseColumn;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseNestedValueTest.java:12:import com.clickhouse.data.value.ClickHouseNestedValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseFormatTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseFormatTest.java:11:import com.clickhouse.data.ClickHouseFormat;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseValuesTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseValuesTest.java:11:import com.clickhouse.data.ClickHouseValues;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoRingValueTest.java:7:package com_clickhouse.clickhouse_data;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/src/test/java/com_clickhouse/clickhouse_data/ClickHouseGeoRingValueTest.java:11:import com.clickhouse.data.value.ClickHouseGeoRingValue;
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/gradle.properties:4:library.coordinates = com.clickhouse:clickhouse-data:0.9.0
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/gradle.properties:6:metadata.dir = com.clickhouse/clickhouse-data/0.9.0/
+./tests/src/com.clickhouse/clickhouse-data/0.9.0/user-code-filter.json:7:      "includeClasses" : "com.clickhouse.**"
+
+web search: 
+web search: com.clickhouse clickhouse-http-client 0.9.0 Maven Central
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/clickhouse/clickhouse-http-client/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/
+codex
+The first pass shows Maven Central has the 0.9.0 artifact, but its directory listing is sparse for this module, so I’m checking the POM and available classifiers directly before choosing Maven versus GitHub URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.clickhouse</groupId>
+  <artifactId>clickhouse-http-client</artifactId>
+  <version>0.9.0</version>
+  <name>ClickHouse HTTP Client</name>
+  <description>HTTP client for ClickHouse</description>
+  <url>https://github.com/ClickHouse/clickhouse-java/tree/main/clickhouse-http-client</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>zhicwu</id>
+      <name>Zhichun Wu</name>
+      <email>zhicwu@gmail.com</email>
+      <timezone>+8</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-http-client</connection>
+    <developerConnection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-http-client</developerConnection>
+    <url>https://github.com/ClickHouse/clickhouse-java/clickhouse-http-client</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.clickhouse</groupId>
+      <artifactId>clickhouse-client</artifactId>
+      <version>0.9.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.clickhouse</groupId>
+          <artifactId>clickhouse-data</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.clickhouse</groupId>
+          <artifactId>org.roaringbitmap</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>dnsjava</groupId>
+          <artifactId>dnsjava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.clickhouse</groupId>
+      <artifactId>clickhouse-data</artifactId>
+      <version>0.9.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.clickhouse</groupId>
+          <artifactId>org.roaringbitmap</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.tukaani</groupId>
+          <artifactId>xz</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xerial.snappy</groupId>
+          <artifactId>snappy-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-compress</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.aayushatharva.brotli4j</groupId>
+          <artifactId>brotli4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.luben</groupId>
+          <artifactId>zstd-jni</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.brotli</groupId>
+          <artifactId>dec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.lz4</groupId>
+          <artifactId>lz4-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.ben-manes.caffeine</groupId>
+          <artifactId>caffeine</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jctools</groupId>
+          <artifactId>jctools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.3.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents.core5</groupId>
+          <artifactId>httpcore5</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents.core5</groupId>
+          <artifactId>httpcore5-h2</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.conscrypt</groupId>
+          <artifactId>conscrypt-openjdk-uber</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.brotli</groupId>
+          <artifactId>dec</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
+      <version>5.2.4</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5-h2</artifactId>
+      <version>5.2.4</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents.core5</groupId>
+          <artifactId>httpcore5</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.conscrypt</groupId>
+          <artifactId>conscrypt-openjdk-uber</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.7</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>annotations-api</artifactId>
+      <version>6.0.53</version>
+      <scope>provided</scope>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-sources.jar; curl -fsSI https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-javadoc.jar; curl -fsSI https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-tests.jar; curl -fsSI https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-test-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0.jar -o /tmp/clickhouse-http-client-0.9.0.jar && jar tf /tmp/clickhouse-http-client-0.9.0.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 103ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/versions/
+META-INF/versions/11/
+META-INF/versions/11/com/
+META-INF/versions/11/com/clickhouse/
+META-INF/versions/11/com/clickhouse/client/
+META-INF/versions/11/com/clickhouse/client/http/
+META-INF/services/
+META-INF/native-image/
+META-INF/native-image/com.clickhouse/
+META-INF/native-image/com.clickhouse/clickhouse-http-client/
+com/
+com/clickhouse/
+com/clickhouse/client/
+com/clickhouse/client/http/
+com/clickhouse/client/http/config/
+META-INF/versions/11/com/clickhouse/client/http/ClickHouseResponseHandler.class
+META-INF/versions/11/com/clickhouse/client/http/HttpClientConnectionImpl.class
+META-INF/versions/11/com/clickhouse/client/http/ClickHouseHttpConnectionFactory.class
+META-INF/versions/11/com/clickhouse/client/http/HttpClientConnectionImpl$NoProxySelector.class
+META-INF/services/com.clickhouse.client.ClickHouseClient
+META-INF/native-image/com.clickhouse/clickhouse-http-client/native-image.properties
+com/clickhouse/client/http/ClickHouseHttpProto.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl.class
+com/clickhouse/client/http/ClickHouseHttpConnection.class
+com/clickhouse/client/http/ClickHouseHttpEntity.class
+com/clickhouse/client/http/HttpUrlConnectionImpl.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$SocketFactory.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$1.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$SSLSocketFactory.class
+com/clickhouse/client/http/ClickHouseHttpClient.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$ApacheHttpClientSocketFactory.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$HttpConnectionManager.class
+com/clickhouse/client/http/ClickHouseHttpResponse.class
+com/clickhouse/client/http/ClickHouseHttpConnectionFactory.class
+com/clickhouse/client/http/ClickHouseHttpConnection$1.class
+com/clickhouse/client/http/ClickHouseHttpClient$HostNameAndAddress.class
+com/clickhouse/client/http/config/ClickHouseHttpOption.class
+com/clickhouse/client/http/config/HttpConnectionProvider.class
+META-INF/versions/11/module-info.class
+
+ exited 22 in 656ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 07 May 2026 19:20:02 GMT
+content-type: text/html
+cf-ray: 9f8294676e1ce5d9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 07 May 2026 19:20:03 GMT
+content-type: text/html
+cf-ray: 9f8294690d9cbc65-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0.pom | sed -n '/<description>/,/<\\/description>/p; /<url>/p; /<scm>/,/<\\/scm>/p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+  <description>HTTP client for ClickHouse</description>
+  <url>https://github.com/ClickHouse/clickhouse-java/tree/main/clickhouse-http-client</url>
+  <url>https://github.com/ClickHouse/clickhouse-java/tree/main/clickhouse-http-client</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>zhicwu</id>
+      <name>Zhichun Wu</name>
+      <email>zhicwu@gmail.com</email>
+      <timezone>+8</timezone>
+    </developer>
+  </developers>
+  <scm>
+  <scm>
+    <connection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-http-client</connection>
+    <connection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-http-client</connection>
+    <developerConnection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-http-client</developerConnection>
+    <developerConnection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-http-client</developerConnection>
+    <url>https://github.com/ClickHouse/clickhouse-java/clickhouse-http-client</url>
+    <url>https://github.com/ClickHouse/clickhouse-java/clickhouse-http-client</url>
+    <url>https://github.com/ClickHouse/clickhouse-java/clickhouse-http-client</url>
+  </scm>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.clickhouse</groupId>
+      <artifactId>clickhouse-client</artifactId>
+      <version>0.9.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.clickhouse</groupId>
+          <artifactId>clickhouse-data</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.clickhouse</groupId>
+          <artifactId>org.roaringbitmap</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>dnsjava</groupId>
+          <artifactId>dnsjava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.clickhouse</groupId>
+      <artifactId>clickhouse-data</artifactId>
+      <version>0.9.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.clickhouse</groupId>
+          <artifactId>org.roaringbitmap</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.tukaani</groupId>
+          <artifactId>xz</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xerial.snappy</groupId>
+          <artifactId>snappy-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-compress</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.aayushatharva.brotli4j</groupId>
+          <artifactId>brotli4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.luben</groupId>
+          <artifactId>zstd-jni</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.brotli</groupId>
+          <artifactId>dec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.lz4</groupId>
+          <artifactId>lz4-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.ben-manes.caffeine</groupId>
+          <artifactId>caffeine</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jctools</groupId>
+          <artifactId>jctools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.3.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents.core5</groupId>
+          <artifactId>httpcore5</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents.core5</groupId>
+          <artifactId>httpcore5-h2</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.conscrypt</groupId>
+          <artifactId>conscrypt-openjdk-uber</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.brotli</groupId>
+          <artifactId>dec</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
+      <version>5.2.4</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5-h2</artifactId>
+      <version>5.2.4</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents.core5</groupId>
+          <artifactId>httpcore5</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.conscrypt</groupId>
+          <artifactId>conscrypt-openjdk-uber</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.7</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>annotations-api</artifactId>
+      <version>6.0.53</version>
+      <scope>provided</scope>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/ClickHouse/clickhouse-java.git '*0.9.0*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-sources.jar -o /tmp/clickhouse-http-client-0.9.0-sources.jar && jar tf /tmp/clickhouse-http-client-0.9.0-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 122ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/clickhouse/
+com/clickhouse/client/
+com/clickhouse/client/http/
+com/clickhouse/client/http/config/
+META-INF/services/
+META-INF/native-image/
+META-INF/native-image/com.clickhouse/
+META-INF/native-image/com.clickhouse/clickhouse-http-client/
+META-INF/maven/
+META-INF/maven/com.clickhouse/
+META-INF/maven/com.clickhouse/clickhouse-http-client/
+com/clickhouse/client/http/ClickHouseHttpResponse.java
+com/clickhouse/client/http/ClickHouseHttpConnection.java
+com/clickhouse/client/http/ClickHouseHttpProto.java
+com/clickhouse/client/http/ApacheHttpConnectionImpl.java
+com/clickhouse/client/http/ClickHouseHttpClient.java
+com/clickhouse/client/http/HttpUrlConnectionImpl.java
+com/clickhouse/client/http/config/ClickHouseHttpOption.java
+com/clickhouse/client/http/config/HttpConnectionProvider.java
+com/clickhouse/client/http/ClickHouseHttpConnectionFactory.java
+com/clickhouse/client/http/ClickHouseHttpEntity.java
+META-INF/services/com.clickhouse.client.ClickHouseClient
+META-INF/native-image/com.clickhouse/clickhouse-http-client/native-image.properties
+META-INF/maven/com.clickhouse/clickhouse-http-client/pom.xml
+META-INF/maven/com.clickhouse/clickhouse-http-client/pom.properties
+
+ succeeded in 331ms:
+27ccb8e525670cb58aa808d31bb1cd7fb98afc3d	refs/tags/v0.9.0
+
+web search: 
+web search: https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-http-client/src/test/java
+web search: 
+web search: Maven Central com.clickhouse clickhouse-http-client 0.9.0 sources javadoc jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/clickhouse/clickhouse-http-client/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: "clickhouse-http-client-0.9.0-sources.jar"
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/com.clickhouse/clickhouse-data/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.9.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-sources.jar",
+    "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
+    "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-data/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-javadoc.jar",
+    "description" : "ClickHouse Data provides Java utilities for processing ClickHouse data values and formats without requiring a live ClickHouse connection. It includes support for type mapping, value conversion, serialization, streaming, and compression used by ClickHouse Java client components.",
+    "tested-versions" : [
+      "0.9.0",
+      "0.9.1",
+      "0.9.2",
+      "0.9.3",
+      "0.9.4",
+      "0.9.5",
+      "0.9.6",
+      "0.9.7",
+      "0.9.8"
+    ],
+    "allowed-packages" : [
+      "com.clickhouse"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-http-client/src/test/java?ref=v0.9.0 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+exec
+/usr/bin/bash -lc "jar tf /tmp/clickhouse-http-client-0.9.0.jar | rg '\\.class"'$|'"\\.kotlin_module"'$|scala|groovy'"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+META-INF/versions/11/com/clickhouse/client/http/ClickHouseResponseHandler.class
+META-INF/versions/11/com/clickhouse/client/http/HttpClientConnectionImpl.class
+META-INF/versions/11/com/clickhouse/client/http/ClickHouseHttpConnectionFactory.class
+META-INF/versions/11/com/clickhouse/client/http/HttpClientConnectionImpl$NoProxySelector.class
+com/clickhouse/client/http/ClickHouseHttpProto.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl.class
+com/clickhouse/client/http/ClickHouseHttpConnection.class
+com/clickhouse/client/http/ClickHouseHttpEntity.class
+com/clickhouse/client/http/HttpUrlConnectionImpl.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$SocketFactory.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$1.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$SSLSocketFactory.class
+com/clickhouse/client/http/ClickHouseHttpClient.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$ApacheHttpClientSocketFactory.class
+com/clickhouse/client/http/ApacheHttpConnectionImpl$HttpConnectionManager.class
+com/clickhouse/client/http/ClickHouseHttpResponse.class
+com/clickhouse/client/http/ClickHouseHttpConnectionFactory.class
+com/clickhouse/client/http/ClickHouseHttpConnection$1.class
+com/clickhouse/client/http/ClickHouseHttpClient$HostNameAndAddress.class
+com/clickhouse/client/http/config/ClickHouseHttpOption.class
+com/clickhouse/client/http/config/HttpConnectionProvider.class
+META-INF/versions/11/module-info.class
+
+ succeeded in 220ms:
+[
+  {
+    "name": "com",
+    "path": "clickhouse-http-client/src/test/java/com",
+    "sha": "5b7fd2fe3977b0c10d9591f33ae3b3c2f5ccee5d",
+    "size": 0,
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-http-client/src/test/java/com?ref=v0.9.0",
+    "html_url": "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-http-client/src/test/java/com",
+    "git_url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/5b7fd2fe3977b0c10d9591f33ae3b3c2f5ccee5d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-http-client/src/test/java/com?ref=v0.9.0",
+      "git": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/5b7fd2fe3977b0c10d9591f33ae3b3c2f5ccee5d",
+      "html": "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-http-client/src/test/java/com"
+    }
+  }
+]
+
+codex
+I found a source JAR and Javadoc JAR on Maven Central, no published test classifier, and a matching GitHub `v0.9.0` tag with module tests under `clickhouse-http-client/src/test`. The artifact JAR contains JVM `.class` files and no Kotlin/Groovy/Scala markers, so I’m leaving language and not-for-native-image fields out.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+index 8f49e7884bec7482e4e1500f30445a8ba3b95275..89ed1e75e5684cac544b2894cdde67ad74db29a3
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-http-client/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-javadoc.jar",
++  "description" : "ClickHouse HTTP Client is the HTTP transport implementation for the ClickHouse Java client. It sends requests to ClickHouse over HTTP using Java URLConnection or Apache HttpClient integrations and provides connection, response, entity, and configuration classes for higher-level ClickHouse client APIs."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+index 8f49e7884bec7482e4e1500f30445a8ba3b95275..89ed1e75e5684cac544b2894cdde67ad74db29a3
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-http-client/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-javadoc.jar",
++  "description" : "ClickHouse HTTP Client is the HTTP transport implementation for the ClickHouse Java client. It sends requests to ClickHouse over HTTP using Java URLConnection or Apache HttpClient integrations and provides connection, response, entity, and configuration classes for higher-level ClickHouse client APIs."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+ succeeded in 0ms:
+{
+  "coordinates": "com.clickhouse:clickhouse-http-client:0.9.0",
+  "repository-url": "https://github.com/ClickHouse/clickhouse-java",
+  "source-code-url": "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-sources.jar",
+  "test-code-url": "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-http-client/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-javadoc.jar",
+  "description": "ClickHouse HTTP Client is the HTTP transport implementation for the ClickHouse Java client. It sends requests to ClickHouse over HTTP using Java URLConnection or Apache HttpClient integrations and provides connection, response, entity, and configuration classes for higher-level ClickHouse client APIs."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-sources.jar \\
+  https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-http-client/src/test \\
+  https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-javadoc.jar; do
+  code="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+index 8f49e7884bec7482e4e1500f30445a8ba3b95275..89ed1e75e5684cac544b2894cdde67ad74db29a3
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-http-client/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-javadoc.jar",
++  "description" : "ClickHouse HTTP Client is the HTTP transport implementation for the ClickHouse Java client. It sends requests to ClickHouse over HTTP using Java URLConnection or Apache HttpClient integrations and provides connection, response, entity, and configuration classes for higher-level ClickHouse client APIs."
+ }
+
+ succeeded in 1045ms:
+200 https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-http-client/src/test
+200 https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/0.9.0/clickhouse-http-client-0.9.0-javadoc.jar
+
+web search: 
+web search: site:mvnrepository.com/artifact/com.clickhouse/clickhouse-http-client/0.9.0 clickhouse-http-client 0.9.0
+web search: 
+web search: https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-http-client/src/test
+codex
+Updated [com.clickhouse-clickhouse-http-client-0.9.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json).
+
+I used Maven Central URLs for sources and Javadoc, and the GitHub `v0.9.0` test directory because no Maven test classifier was available. The artifact is a JVM JAR, not language-specific, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Maven identifies it as `com.clickhouse:clickhouse-http-client:jar:0.9.0` and “HTTP client for ClickHouse”; the tagged GitHub test directory exists under `clickhouse-http-client/src/test`. ([mvnrepository.com](https://mvnrepository.com/artifact/com.clickhouse/clickhouse-http-client/0.9.0?utm_source=openai))
+
+Validated the JSON with `jq` and checked the resolved source, test, and documentation URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+index 8f49e7884bec7482e4e1500f30445a8ba3b95275..89ed1e75e5684cac544b2894cdde67ad74db29a3
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-http-client:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-http-client/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-http-client/$version$/clickhouse-http-client-$version$-javadoc.jar",
++  "description" : "ClickHouse HTTP Client is the HTTP transport implementation for the ClickHouse Java client. It sends requests to ClickHouse over HTTP using Java URLConnection or Apache HttpClient integrations and provides connection, response, entity, and configuration classes for higher-level ClickHouse client APIs."
+ }
+
+tokens used
+68,892
+Updated [com.clickhouse-clickhouse-http-client-0.9.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-http-client-0.9.0.json).
+
+I used Maven Central URLs for sources and Javadoc, and the GitHub `v0.9.0` test directory because no Maven test classifier was available. The artifact is a JVM JAR, not language-specific, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Maven identifies it as `com.clickhouse:clickhouse-http-client:jar:0.9.0` and “HTTP client for ClickHouse”; the tagged GitHub test directory exists under `clickhouse-http-client/src/test`. ([mvnrepository.com](https://mvnrepository.com/artifact/com.clickhouse/clickhouse-http-client/0.9.0?utm_source=openai))
+
+Validated the JSON with `jq` and checked the resolved source, test, and documentation URLs return HTTP 200.
+Ran agent for com.clickhouse:clickhouse-http-client:0.9.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/build/agent-artifact-discovery-logs/com.clickhouse-clickhouse-http-client-0.9.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4751-7a2c3d3a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 16s
+9 actionable tasks: 9 executed
