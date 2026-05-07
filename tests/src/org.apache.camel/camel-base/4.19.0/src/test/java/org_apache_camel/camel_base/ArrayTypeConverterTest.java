@@ -26,7 +26,7 @@ public class ArrayTypeConverterTest {
     @Test
     void convertsArrayToCompatibleArrayType() {
         CharSequence[] converted = converter.convertTo(
-                CharSequence[].class, null, new String[] { "alpha", "beta" });
+                CharSequence[].class, null, new String[] {"alpha", "beta" });
 
         assertThat(converted).containsExactly("alpha", "beta");
         assertThat(converted.getClass()).isEqualTo(CharSequence[].class);
