@@ -34,6 +34,7 @@ import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -129,6 +130,30 @@ public class Resilience4j_reactorTest {
         } finally {
             bulkhead.releasePermission();
         }
+    }
+
+    @Test
+    void bulkheadOperatorReleasesPermitWhenSubscriptionIsCancelled() {
+        BulkheadConfig config = BulkheadConfig.custom()
+            .maxConcurrentCalls(1)
+            .maxWaitDuration(Duration.ZERO)
+            .build();
+        Bulkhead bulkhead = Bulkhead.of("reactor-cancelled-bulkhead", config);
+
+        Disposable subscription = Mono.<String>never()
+            .transformDeferred(BulkheadOperator.of(bulkhead))
+            .subscribe();
+
+        assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isZero();
+        subscription.dispose();
+        assertThat(subscription.isDisposed()).isTrue();
+        assertThat(bulkhead.getMetrics().getAvailableConcurrentCalls()).isEqualTo(1);
+
+        String value = Mono.just("after-cancel")
+            .transformDeferred(BulkheadOperator.of(bulkhead))
+            .block(BLOCK_TIMEOUT);
+
+        assertThat(value).isEqualTo("after-cancel");
     }
 
     @Test
