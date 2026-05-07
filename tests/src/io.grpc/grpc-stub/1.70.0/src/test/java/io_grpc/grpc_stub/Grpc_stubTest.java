@@ -208,6 +208,24 @@ public class Grpc_stubTest {
     }
 
     @Test
+    void blockingClientStreamingCallReturnsResponseAfterHalfClose() throws Exception {
+        RecordingChannel clientStreamingChannel = new RecordingChannel(
+                responses(request -> List.of("joined:" + request)), true, false);
+        BlockingClientCall<String, String> clientStreamingCall = ClientCalls.blockingClientStreamingCall(
+                clientStreamingChannel, CLIENT_STREAMING_METHOD, CallOptions.DEFAULT);
+        RecordingClientCall rawClientStreamingCall = clientStreamingChannel.lastCall();
+
+        assertThat(clientStreamingCall.write("red", 5, TimeUnit.SECONDS)).isTrue();
+        assertThat(clientStreamingCall.write("blue", 5, TimeUnit.SECONDS)).isTrue();
+        clientStreamingCall.halfClose();
+
+        assertThat(clientStreamingCall.read(5, TimeUnit.SECONDS)).isEqualTo("joined:red,blue");
+        assertThat(clientStreamingCall.read(5, TimeUnit.SECONDS)).isNull();
+        assertThat(rawClientStreamingCall.sentMessages()).containsExactly("red", "blue");
+        assertThat(rawClientStreamingCall.halfClosed()).isTrue();
+    }
+
+    @Test
     void blockingV2CallsReadWriteHalfCloseAndCancel() throws Exception {
         RecordingChannel streamingChannel = new RecordingChannel(responses(request -> List.of("server:" + request)));
         BlockingClientCall<String, String> bidiCall = ClientCalls.blockingBidiStreamingCall(
@@ -466,6 +484,7 @@ public class Grpc_stubTest {
 
     private static final class RecordingChannel extends Channel {
         private final Function<String, List<String>> responder;
+        private final boolean respondOnHalfClose;
         private final boolean respondOnRequest;
         private RecordingClientCall lastCall;
 
@@ -474,14 +493,20 @@ public class Grpc_stubTest {
         }
 
         private RecordingChannel(Function<String, List<String>> responder, boolean respondOnRequest) {
+            this(responder, false, respondOnRequest);
+        }
+
+        private RecordingChannel(Function<String, List<String>> responder, boolean respondOnHalfClose,
+                boolean respondOnRequest) {
             this.responder = responder;
+            this.respondOnHalfClose = respondOnHalfClose;
             this.respondOnRequest = respondOnRequest;
         }
 
         @Override
         public <ReqT, RespT> ClientCall<ReqT, RespT> newCall(
                 MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions) {
-            lastCall = new RecordingClientCall(responder, false, respondOnRequest);
+            lastCall = new RecordingClientCall(responder, respondOnHalfClose, respondOnRequest);
             @SuppressWarnings("unchecked")
             ClientCall<ReqT, RespT> typedCall = (ClientCall<ReqT, RespT>) lastCall;
             return typedCall;
