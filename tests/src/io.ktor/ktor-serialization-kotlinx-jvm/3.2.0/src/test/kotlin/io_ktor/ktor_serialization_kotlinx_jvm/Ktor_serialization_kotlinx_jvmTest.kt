@@ -178,6 +178,38 @@ public class KtorSerializationKotlinxJvmTest {
     }
 
     @Test
+    public fun converterSupportsNullableDeclaredTypes(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val format = RecordingStringFormat(decodedValue = null)
+            val converter = KotlinxSerializationConverter(format)
+            val contentType = ContentType.Text.Plain
+            val typeInfo = typeInfo<String?>()
+
+            val outgoingContent = converter.serializeToByteArrayContent(
+                value = null,
+                typeInfo = typeInfo,
+                contentType = contentType,
+                charset = StandardCharsets.UTF_8
+            )
+            val decoded = converter.deserialize(
+                charset = StandardCharsets.UTF_8,
+                typeInfo = typeInfo,
+                content = ByteReadChannel("null".toByteArray(StandardCharsets.UTF_8))
+            )
+
+            assertThat(outgoingContent.contentType?.withoutParameters()).isEqualTo(contentType)
+            assertThat(outgoingContent.bytes().toString(StandardCharsets.UTF_8)).contains("null")
+            assertThat(decoded).isNull()
+            val encodeCall = format.encodeCalls.single()
+            assertThat(encodeCall.descriptorName).contains("String")
+            assertThat(encodeCall.value).isNull()
+            val decodeCall = format.decodeCalls.single()
+            assertThat(decodeCall.descriptorName).contains("String")
+            assertThat(decodeCall.payload).isEqualTo("null")
+        }
+    }
+
+    @Test
     public fun malformedStringPayloadIsWrappedInKtorConversionException(): Unit {
         val format = RecordingStringFormat(decodeFailure = SerializationException("broken text"))
         val converter = KotlinxSerializationConverter(format)
