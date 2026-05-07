@@ -91,6 +91,19 @@ class Twiddles_core_3Test {
   }
 
   @Test
+  def syntaxSupportsContravariantOrderingComposition(): Unit = {
+    import org.typelevel.twiddles.syntax.*
+
+    val profileOrdering: Ordering[Profile] =
+      (summon[Ordering[Int]] *: summon[Ordering[String]]).to[Profile]
+
+    assertThat(profileOrdering.compare(Profile(1, "Ada"), Profile(2, "Ada"))).isLessThan(0)
+    assertThat(profileOrdering.compare(Profile(2, "Ada"), Profile(2, "Grace"))).isLessThan(0)
+    assertThat(profileOrdering.compare(Profile(2, "Grace"), Profile(2, "Ada"))).isGreaterThan(0)
+    assertThat(profileOrdering.compare(Profile(2, "Grace"), Profile(2, "Grace"))).isEqualTo(0)
+  }
+
+  @Test
   def twiddleSyntaxComposesPublicDecoderApi(): Unit = {
     import TestDecoder.*
 
