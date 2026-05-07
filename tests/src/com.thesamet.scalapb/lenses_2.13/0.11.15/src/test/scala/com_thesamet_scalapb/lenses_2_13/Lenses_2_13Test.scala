@@ -81,6 +81,18 @@ class Lenses_2_13Test {
   }
 
   @Test
+  def unitLensActsAsIdentityForLensComposition(): Unit = {
+    val profile: Profile = sampleProfile
+    val unitThenNameLens: Lens[Profile, String] = Lens.unit[Profile].compose(nameLens)
+    val nameThenUnitLens: Lens[Profile, String] = nameLens.compose(Lens.unit[String])
+
+    assertEquals(nameLens.get(profile), unitThenNameLens.get(profile))
+    assertEquals(nameLens.get(profile), nameThenUnitLens.get(profile))
+    assertEquals(profile.copy(name = "Grace"), unitThenNameLens.set("Grace")(profile))
+    assertEquals(profile.copy(name = "adA"), nameThenUnitLens.modify(_.reverse)(profile))
+  }
+
+  @Test
   def objectLensBuildsNestedFieldsAndAppliesBatchUpdates(): Unit = {
     val profile: Profile = sampleProfile
     val addressObjectLens: ObjectLens[Profile, Address] = new ObjectLens[Profile, Address](addressLens)
