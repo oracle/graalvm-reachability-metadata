@@ -466,7 +466,7 @@ public class Aws_coreTest {
     void authPreferenceResolverUsesSystemPropertyBeforeProfile() {
         String property = SdkSystemSetting.AWS_AUTH_SCHEME_PREFERENCE.property();
         String previous = System.getProperty(property);
-        System.setProperty(property, " sigv4a , bearer ");
+        System.setProperty(property, " sigv4a, bearer ");
         try {
             ProfileFile profileFile = ProfileFile.builder()
                     .type(ProfileFile.Type.CONFIGURATION)
