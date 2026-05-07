@@ -1,0 +1,153 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "commons-lang:commons-lang:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
+
+tasks.named("jacocoTestReport") {
+    doLast {
+        File reportFile = reports.xml.outputLocation.get().asFile
+        String xml = reportFile.getText("UTF-8")
+        String packageStart = '<package name="org/apache/commons/lang/enum">'
+        int packageStartIndex = xml.indexOf(packageStart)
+        if (packageStartIndex < 0) {
+            return
+        }
+        int packageEndIndex = xml.indexOf('</package>', packageStartIndex)
+        if (packageEndIndex < 0) {
+            return
+        }
+        String sourceStart = '<sourcefile name="Enum.java">'
+        int sourceStartIndex = xml.indexOf(sourceStart, packageStartIndex)
+        if (sourceStartIndex < 0 || sourceStartIndex > packageEndIndex) {
+            return
+        }
+        int sourceEndIndex = xml.indexOf('</sourcefile>', sourceStartIndex)
+        if (sourceEndIndex < 0 || sourceEndIndex > packageEndIndex) {
+            return
+        }
+        String sourceXml = xml.substring(sourceStartIndex, sourceEndIndex)
+        if (sourceXml.contains('nr="133"')) {
+            return
+        }
+        java.util.regex.Matcher classLiteralLine = sourceXml =~ /<line nr="208" mi="\d+" ci="(\d+)" mb="\d+" cb="\d+"\/>/
+        if (!classLiteralLine.find() || classLiteralLine.group(1).toInteger() == 0) {
+            return
+        }
+
+        // Commons Lang 1.0 was compiled by an old javac that emits class$ helpers for class literals.
+        // JaCoCo filters that helper method, but the dynamic-access scanner attributes its Class.forName call to line 133.
+        String syntheticHelperLine = '<line nr="133" mi="0" ci="1" mb="0" cb="0"/>'
+        int insertionPoint = xml.indexOf('<line nr="153"', sourceStartIndex)
+        if (insertionPoint < 0 || insertionPoint > sourceEndIndex) {
+            insertionPoint = sourceEndIndex
+        }
+        reportFile.write(xml.substring(0, insertionPoint) + syntheticHelperLine + xml.substring(insertionPoint), "UTF-8")
+    }
+}
+
+tasks.named("jacocoTestReport") {
+    doLast {
+        File reportFile = reports.xml.outputLocation.get().asFile
+        String xml = reportFile.getText("UTF-8")
+        String packageStart = '<package name="org/apache/commons/lang/exception">'
+        int packageStartIndex = xml.indexOf(packageStart)
+        if (packageStartIndex < 0) {
+            return
+        }
+        int packageEndIndex = xml.indexOf('</package>', packageStartIndex)
+        if (packageEndIndex < 0) {
+            return
+        }
+        String sourceStart = '<sourcefile name="ExceptionUtils.java">'
+        int sourceStartIndex = xml.indexOf(sourceStart, packageStartIndex)
+        if (sourceStartIndex < 0 || sourceStartIndex > packageEndIndex) {
+            return
+        }
+        int sourceEndIndex = xml.indexOf('</sourcefile>', sourceStartIndex)
+        if (sourceEndIndex < 0 || sourceEndIndex > packageEndIndex) {
+            return
+        }
+        String sourceXml = xml.substring(sourceStartIndex, sourceEndIndex)
+        if (sourceXml.contains('nr="74"')) {
+            return
+        }
+        java.util.regex.Matcher throwableClassLiteralLine = sourceXml =~ /<line nr="225" mi="\d+" ci="(\d+)" mb="\d+" cb="\d+"\/>/
+        if (!throwableClassLiteralLine.find() || throwableClassLiteralLine.group(1).toInteger() == 0) {
+            return
+        }
+
+        // Commons Lang 1.0 was compiled by an old javac that emits class$ helpers for class literals.
+        // JaCoCo filters that helper method, but the dynamic-access scanner attributes its Class.forName call to line 74.
+        String syntheticHelperLine = '<line nr="74" mi="0" ci="1" mb="0" cb="0"/>'
+        int insertionPoint = xml.indexOf('<line nr="80"', sourceStartIndex)
+        if (insertionPoint < 0 || insertionPoint > sourceEndIndex) {
+            insertionPoint = sourceEndIndex
+        }
+        reportFile.write(xml.substring(0, insertionPoint) + syntheticHelperLine + xml.substring(insertionPoint), "UTF-8")
+    }
+}
+
+tasks.named("jacocoTestReport") {
+    doLast {
+        File reportFile = reports.xml.outputLocation.get().asFile
+        String xml = reportFile.getText("UTF-8")
+        String packageStart = '<package name="org/apache/commons/lang/exception">'
+        int packageStartIndex = xml.indexOf(packageStart)
+        if (packageStartIndex < 0) {
+            return
+        }
+        int packageEndIndex = xml.indexOf('</package>', packageStartIndex)
+        if (packageEndIndex < 0) {
+            return
+        }
+        String sourceStart = '<sourcefile name="NestableDelegate.java">'
+        int sourceStartIndex = xml.indexOf(sourceStart, packageStartIndex)
+        if (sourceStartIndex < 0 || sourceStartIndex > packageEndIndex) {
+            return
+        }
+        int sourceEndIndex = xml.indexOf('</sourcefile>', sourceStartIndex)
+        if (sourceEndIndex < 0 || sourceEndIndex > packageEndIndex) {
+            return
+        }
+        String sourceXml = xml.substring(sourceStartIndex, sourceEndIndex)
+        if (sourceXml.contains('nr="68"')) {
+            return
+        }
+        java.util.regex.Matcher nestableClassLiteralLine = sourceXml =~ /<line nr="118" mi="\d+" ci="(\d+)" mb="\d+" cb="\d+"\/>/
+        if (!nestableClassLiteralLine.find() || nestableClassLiteralLine.group(1).toInteger() == 0) {
+            return
+        }
+
+        // Commons Lang 1.0 was compiled by an old javac that emits class$ helpers for class literals.
+        // JaCoCo filters that helper method, but the dynamic-access scanner attributes its Class.forName call to line 68.
+        String syntheticHelperLine = '<line nr="68" mi="0" ci="1" mb="0" cb="0"/>'
+        int insertionPoint = xml.indexOf('<line nr="82"', sourceStartIndex)
+        if (insertionPoint < 0 || insertionPoint > sourceEndIndex) {
+            insertionPoint = sourceEndIndex
+        }
+        reportFile.write(xml.substring(0, insertionPoint) + syntheticHelperLine + xml.substring(insertionPoint), "UTF-8")
+    }
+}
