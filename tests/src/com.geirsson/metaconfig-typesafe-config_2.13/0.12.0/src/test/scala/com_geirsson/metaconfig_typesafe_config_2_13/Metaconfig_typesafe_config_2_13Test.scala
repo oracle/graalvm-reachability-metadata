@@ -150,6 +150,28 @@ class Metaconfig_typesafe_config_2_13Test {
   }
 
   @Test
+  def convertsCallerProvidedTypesafeConfigWithObjectLists(): Unit = {
+    val config: Config = ConfigFactory.parseString(
+      """|service-name = "inline-service",
+         |database { url = "jdbc:h2:mem:metaconfig", pool-size = 8 },
+         |features = [{ name = "search", enabled = true }, { name = "metrics", enabled = false }]
+         |""".stripMargin.replace("\n", " ")
+    )
+    val converted: Conf.Obj = asObj(configuredValue(TypesafeConfig2Class.gimmeConf(config)))
+
+    assertEquals("inline-service", configuredValue(converted.get[String]("service-name")))
+    assertEquals("jdbc:h2:mem:metaconfig", configuredValue(converted.getNested[String]("database", "url")))
+    assertEquals(8, configuredValue(converted.getNested[Int]("database", "pool-size")))
+    assertEquals(
+      Conf.Lst(
+        Conf.Obj("name" -> Conf.Str("search"), "enabled" -> Conf.Bool(true)),
+        Conf.Obj("name" -> Conf.Str("metrics"), "enabled" -> Conf.Bool(false))
+      ),
+      converted.field("features").get
+    )
+  }
+
+  @Test
   def reportsInvalidInputsAsConfiguredErrors(): Unit = {
     val missingFile: Path = Files.createTempFile("metaconfig-missing", ".conf")
     assertTrue(Files.deleteIfExists(missingFile))
