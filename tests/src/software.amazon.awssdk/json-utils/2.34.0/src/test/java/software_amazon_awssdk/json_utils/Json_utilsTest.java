@@ -29,6 +29,7 @@ import software.amazon.awssdk.thirdparty.jackson.core.JsonParseException;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonParser;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonToken;
 import software.amazon.awssdk.thirdparty.jackson.core.json.JsonReadFeature;
+import software.amazon.awssdk.thirdparty.jackson.core.util.JsonParserDelegate;
 import org.junit.jupiter.api.Test;
 
 public class Json_utilsTest {
@@ -151,6 +152,20 @@ public class Json_utilsTest {
     }
 
     @Test
+    void defaultValueNodeFactoryCreatesEmbeddedObjectNodes() throws IOException {
+        List<String> embeddedValue = List.of("binary-like-value");
+        try (JsonParser parser = new EmbeddedObjectParser(
+            JsonNodeParser.DEFAULT_JSON_FACTORY.createParser("null"), embeddedValue)) {
+            JsonNode node = JsonValueNodeFactory.DEFAULT.node(parser, JsonToken.VALUE_EMBEDDED_OBJECT);
+
+            assertThat(node.isEmbeddedObject()).isTrue();
+            assertThat(node.asEmbeddedObject()).isSameAs(embeddedValue);
+            assertThat(node.text()).isNull();
+            assertThat(node.visit(new DescribingVisitor())).isEqualTo("embedded:" + embeddedValue);
+        }
+    }
+
+    @Test
     void visitorDispatchesToMethodsMatchingParsedNodeTypes() {
         JsonNode root = JsonNode.parser().parse("""
             {"string":"text","number":5,"bool":false,"none":null,"array":[1],"object":{"a":1}}
@@ -253,6 +268,20 @@ public class Json_utilsTest {
             current = current.getCause();
         }
         throw new AssertionError("Expected parse failure to contain a JsonParseException.");
+    }
+
+    private static final class EmbeddedObjectParser extends JsonParserDelegate {
+        private final Object embeddedObject;
+
+        private EmbeddedObjectParser(JsonParser delegate, Object embeddedObject) {
+            super(delegate);
+            this.embeddedObject = embeddedObject;
+        }
+
+        @Override
+        public Object getEmbeddedObject() {
+            return embeddedObject;
+        }
     }
 
     private static final class ScalarDescriptionNode implements JsonNode {
