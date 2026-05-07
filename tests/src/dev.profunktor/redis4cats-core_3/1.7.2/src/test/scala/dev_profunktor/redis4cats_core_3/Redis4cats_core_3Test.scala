@@ -8,8 +8,9 @@ package dev_profunktor.redis4cats_core_3
 
 import dev.profunktor.redis4cats.codecs.Codecs
 import dev.profunktor.redis4cats.codecs.splits.{SplitEpi, SplitMono}
+import dev.profunktor.redis4cats.connection.{InvalidRedisURI, RedisURI}
 import dev.profunktor.redis4cats.data.RedisCodec
-import org.junit.jupiter.api.Assertions.{assertEquals, assertNotSame}
+import org.junit.jupiter.api.Assertions.{assertEquals, assertNotSame, assertTrue}
 import org.junit.jupiter.api.Test
 
 import java.nio.ByteBuffer
@@ -47,6 +48,24 @@ class Redis4cats_core_3Test {
     assertEquals("xxxx", lengthToString(StringLength(4)))
     assertEquals(StringLength(4), lengthToString.reverseGet("data"))
     assertEquals("SplitMono", trimmedLength.productPrefix)
+  }
+
+  @Test
+  def redisUriParsesValidUrisAndReportsInvalidOnes(): Unit = {
+    val validUri: RedisURI = RedisURI.fromString("rediss://:secret@localhost:6380/2").toOption.get
+
+    assertEquals("localhost", validUri.underlying.getHost)
+    assertEquals(6380, validUri.underlying.getPort)
+    assertEquals(2, validUri.underlying.getDatabase)
+    assertEquals("secret", new String(validUri.underlying.getPassword))
+    assertTrue(validUri.underlying.isSsl)
+
+    val invalidUri: String = "ftp://localhost:6379"
+    val invalidResult: Either[InvalidRedisURI, RedisURI] = RedisURI.fromString(invalidUri)
+    assertTrue(invalidResult.isLeft)
+    val error: InvalidRedisURI = invalidResult.swap.toOption.get
+    assertEquals(invalidUri, error.uri)
+    assertTrue(error.getMessage.nonEmpty)
   }
 
   @Test
