@@ -6,9 +6,14 @@
  */
 package dev_profunktor.redis4cats_core_3
 
+import dev.profunktor.redis4cats.codecs.Codecs
 import dev.profunktor.redis4cats.codecs.splits.{SplitEpi, SplitMono}
+import dev.profunktor.redis4cats.data.RedisCodec
 import org.junit.jupiter.api.Assertions.{assertEquals, assertNotSame}
 import org.junit.jupiter.api.Test
+
+import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 
 class Redis4cats_core_3Test {
   @Test
@@ -43,8 +48,56 @@ class Redis4cats_core_3Test {
     assertEquals(StringLength(4), lengthToString.reverseGet("data"))
     assertEquals("SplitMono", trimmedLength.productPrefix)
   }
+
+  @Test
+  def derivedCodecTransformsValuesWhileKeepingBaseKeyEncoding(): Unit = {
+    val counterSplit: SplitEpi[String, CounterValue] =
+      SplitEpi[String, CounterValue](value => CounterValue(value.toLong), _.value.toString)
+    val codec: RedisCodec[String, CounterValue] = Codecs.derive(RedisCodec.Utf8, counterSplit)
+
+    assertEquals("counter:primary", utf8String(codec.underlying.encodeKey("counter:primary")))
+    assertEquals("12", utf8String(codec.underlying.encodeValue(CounterValue(12L))))
+    assertEquals("counter:secondary", codec.underlying.decodeKey(utf8Buffer("counter:secondary")))
+    assertEquals(CounterValue(34L), codec.underlying.decodeValue(utf8Buffer("34")))
+  }
+
+  @Test
+  def derivedCodecTransformsKeysAndValues(): Unit = {
+    val cacheKeySplit: SplitEpi[String, CacheKey] =
+      SplitEpi[String, CacheKey](CacheKey.parse, key => s"${key.namespace}:${key.id}")
+    val usernameSplit: SplitEpi[String, Username] =
+      SplitEpi[String, Username](Username.apply, _.value)
+    val codec: RedisCodec[CacheKey, Username] =
+      Codecs.derive(RedisCodec.Utf8, cacheKeySplit, usernameSplit)
+
+    assertEquals("user:42", utf8String(codec.underlying.encodeKey(CacheKey("user", 42L))))
+    assertEquals("alice", utf8String(codec.underlying.encodeValue(Username("alice"))))
+    assertEquals(CacheKey("session", 7L), codec.underlying.decodeKey(utf8Buffer("session:7")))
+    assertEquals(Username("bob"), codec.underlying.decodeValue(utf8Buffer("bob")))
+  }
+
+  private def utf8Buffer(value: String): ByteBuffer =
+    ByteBuffer.wrap(value.getBytes(StandardCharsets.UTF_8))
+
+  private def utf8String(buffer: ByteBuffer): String = {
+    val readableBuffer: ByteBuffer = buffer.asReadOnlyBuffer()
+    val bytes: Array[Byte] = new Array[Byte](readableBuffer.remaining())
+    readableBuffer.get(bytes)
+    new String(bytes, StandardCharsets.UTF_8)
+  }
 }
 
 final case class CounterValue(value: Long)
 
 final case class StringLength(value: Int)
+
+final case class CacheKey(namespace: String, id: Long)
+
+object CacheKey {
+  def parse(value: String): CacheKey = {
+    val parts: Array[String] = value.split(":", 2)
+    CacheKey(parts(0), parts(1).toLong)
+  }
+}
+
+final case class Username(value: String)
