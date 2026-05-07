@@ -103,6 +103,25 @@ class Zio_constraintless_3Test {
     assertThat(containsBooleanPrefix).isTrue()
   }
 
+  @Test
+  def membershipEvidenceFromRequestedTypeCollectionCanSelectInstancesFromAvailableTypes(): Unit = {
+    type Available = String :: Int :: Boolean :: End
+    type Requested = Boolean :: Int :: End
+    val evidence: AreElementsOf[Requested, Available] = AreElementsOf[Requested, Available]
+    val instances: Instances[Label, Available] = summon[Instances[Label, Available]]
+
+    val renderedValues: List[String] = evidence match {
+      case AreElementsOf.TypeCollection(booleanEvidence, AreElementsOf.TypeCollection(intEvidence, AreElementsOf.NilCollection())) =>
+        List(
+          instances.withInstance[Boolean, String](_.label(true))(booleanEvidence),
+          instances.withInstance[Int, String](_.label(7))(intEvidence)
+        )
+      case other => fail(s"Expected membership evidence for Boolean and Int followed by NilCollection, got $other")
+    }
+
+    assertThat(renderedValues).isEqualTo(List("boolean:true", "int:7"))
+  }
+
   private def describeElementEvidence[A, As <: zio.constraintless.TypeList](
       evidence: IsElementOf[A, As]
   ): String =
