@@ -51,6 +51,7 @@ import org.eclipse.aether.spi.connector.transport.TransportListener;
 import org.eclipse.aether.spi.connector.transport.Transporter;
 import org.eclipse.aether.spi.connector.transport.TransporterProvider;
 import org.eclipse.aether.spi.io.ChecksumProcessor;
+import org.eclipse.aether.spi.io.PathProcessorSupport;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.eclipse.aether.transfer.NoRepositoryConnectorException;
 import org.eclipse.aether.transfer.NoRepositoryLayoutException;
@@ -93,11 +94,11 @@ public class Maven_resolver_connector_basicTest {
             Path artifactTarget = tempDirectory.resolve("downloaded-artifact.jar");
             Path metadataTarget = tempDirectory.resolve("downloaded-metadata.xml");
             Path existenceTarget = tempDirectory.resolve("existence-check.jar");
-            ArtifactDownload artifactDownload = new ArtifactDownload(artifact, "resolve", artifactTarget.toFile(), null)
+            ArtifactDownload artifactDownload = new ArtifactDownload(artifact, "resolve", artifactTarget, null)
                     .setListener(listener);
-            MetadataDownload metadataDownload = new MetadataDownload(metadata, "resolve", metadataTarget.toFile(), null)
+            MetadataDownload metadataDownload = new MetadataDownload(metadata, "resolve", metadataTarget, null)
                     .setListener(listener);
-            ArtifactDownload existenceCheck = new ArtifactDownload(artifact, "resolve", existenceTarget.toFile(), null)
+            ArtifactDownload existenceCheck = new ArtifactDownload(artifact, "resolve", existenceTarget, null)
                     .setExistenceCheck(true)
                     .setListener(listener);
 
@@ -141,8 +142,8 @@ public class Maven_resolver_connector_basicTest {
 
         RepositoryConnector connector = newConnector(transporter, Collections.emptyMap());
         try {
-            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource.toFile()).setListener(listener);
-            MetadataUpload metadataUpload = new MetadataUpload(metadata, metadataSource.toFile()).setListener(listener);
+            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource).setListener(listener);
+            MetadataUpload metadataUpload = new MetadataUpload(metadata, metadataSource).setListener(listener);
 
             connector.put(List.of(artifactUpload), List.of(metadataUpload));
 
@@ -205,8 +206,8 @@ public class Maven_resolver_connector_basicTest {
                         Collections.emptyMap())
                 .newInstance(session(), repository());
         try {
-            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource.toFile());
-            MetadataUpload metadataUpload = new MetadataUpload(metadata, metadataSource.toFile());
+            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource);
+            MetadataUpload metadataUpload = new MetadataUpload(metadata, metadataSource);
 
             connector.put(List.of(artifactUpload), List.of(metadataUpload));
 
@@ -236,7 +237,7 @@ public class Maven_resolver_connector_basicTest {
     void transportNotFoundIsReportedOnArtifactDownload() throws Exception {
         InMemoryTransporter transporter = new InMemoryTransporter();
         ArtifactDownload download = new ArtifactDownload(
-                artifact(), "resolve", tempDirectory.resolve("missing.jar").toFile(), null)
+                artifact(), "resolve", tempDirectory.resolve("missing.jar"), null)
                 .setListener(new RecordingTransferListener());
 
         RepositoryConnector connector = newConnector(transporter, Collections.emptyMap());
@@ -280,18 +281,21 @@ public class Maven_resolver_connector_basicTest {
                 null,
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 new NoChecksumPolicyProvider(),
+                new PathProcessorSupport(),
                 new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
                 (session, remoteRepository) -> new InMemoryTransporter(),
                 null,
                 new NoChecksumPolicyProvider(),
+                new PathProcessorSupport(),
                 new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
                 (session, remoteRepository) -> new InMemoryTransporter(),
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 null,
+                new PathProcessorSupport(),
                 new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
@@ -299,11 +303,20 @@ public class Maven_resolver_connector_basicTest {
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 new NoChecksumPolicyProvider(),
                 null,
+                new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
                 (session, remoteRepository) -> new InMemoryTransporter(),
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 new NoChecksumPolicyProvider(),
+                new PathProcessorSupport(),
+                null,
+                Collections.emptyMap()));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                (session, remoteRepository) -> new InMemoryTransporter(),
+                (session, remoteRepository) -> new SimpleRepositoryLayout(),
+                new NoChecksumPolicyProvider(),
+                new PathProcessorSupport(),
                 new NioChecksumProcessor(),
                 null));
 
@@ -352,12 +365,13 @@ public class Maven_resolver_connector_basicTest {
                 transporterProvider,
                 layoutProvider,
                 new NoChecksumPolicyProvider(),
+                new PathProcessorSupport(),
                 new NioChecksumProcessor(),
                 checksumSources);
     }
 
     private static RepositorySystemSession session() {
-        return new DefaultRepositorySystemSession()
+        return new DefaultRepositorySystemSession(unused -> Boolean.TRUE)
                 .setConfigProperty("aether.connector.basic.downstreamThreads", Integer.valueOf(1))
                 .setConfigProperty("aether.connector.basic.upstreamThreads", Integer.valueOf(1))
                 .setConfigProperty("aether.connector.basic.parallelPut", Boolean.FALSE);
