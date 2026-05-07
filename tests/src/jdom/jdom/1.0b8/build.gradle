@@ -50,6 +50,12 @@ tasks.named("generateDynamicAccessReport") {
                 .replace(
                         'org.jdom.adapters.AbstractDOMAdapter.setInternalSubset(Unknown Source)',
                         'org.jdom.adapters.AbstractDOMAdapter.setInternalSubset(AbstractDOMAdapter.java:180)')
+                .replace(
+                        'org.jdom.Attribute.readObject(Unknown Source)',
+                        'org.jdom.Attribute.readObject(Attribute.java:748)')
+                .replace(
+                        'org.jdom.Attribute.writeObject(Unknown Source)',
+                        'org.jdom.Attribute.writeObject(Attribute.java:738)')
         reflectionCalls.write(json, "UTF-8")
     }
 }
@@ -59,46 +65,79 @@ tasks.named("jacocoTestReport") {
     doLast {
         File reportFile = reports.xml.outputLocation.get().asFile
         String xml = reportFile.getText("UTF-8")
-        String packageStart = '<package name="org/jdom/adapters">'
-        int packageStartIndex = xml.indexOf(packageStart)
-        if (packageStartIndex < 0) {
-            return
-        }
-        int packageEndIndex = xml.indexOf('</package>', packageStartIndex)
-        if (packageEndIndex < 0) {
-            return
-        }
-        String abstractDomAdapterSource = '<sourcefile name="AbstractDOMAdapter.java">'
-        int sourceStartIndex = xml.indexOf(abstractDomAdapterSource, packageStartIndex)
-        if (sourceStartIndex >= packageStartIndex && sourceStartIndex <= packageEndIndex) {
-            return
-        }
-        String classStart = '<class name="org/jdom/adapters/AbstractDOMAdapter">'
-        int classStartIndex = xml.indexOf(classStart, packageStartIndex)
-        if (classStartIndex < 0 || classStartIndex > packageEndIndex) {
-            return
-        }
-        int classEndIndex = xml.indexOf('</class>', classStartIndex)
-        if (classEndIndex < 0 || classEndIndex > packageEndIndex) {
-            return
-        }
-        String classXml = xml.substring(classStartIndex, classEndIndex)
-        java.util.regex.Matcher setInternalSubsetCoverage = classXml =~ (
-                /<method name="setInternalSubset"[\s\S]*?/ +
-                        /<counter type="METHOD" missed="0" covered="1"\/>/)
-        if (!setInternalSubsetCoverage.find()) {
-            return
+
+        String attributePackageStart = '<package name="org/jdom">'
+        int attributePackageStartIndex = xml.indexOf(attributePackageStart)
+        if (attributePackageStartIndex >= 0) {
+            int attributePackageEndIndex = xml.indexOf('</package>', attributePackageStartIndex)
+            String attributeSource = '<sourcefile name="Attribute.java">'
+            int attributeSourceStartIndex = xml.indexOf(attributeSource, attributePackageStartIndex)
+            if (attributePackageEndIndex > attributePackageStartIndex
+                    && (attributeSourceStartIndex < attributePackageStartIndex
+                    || attributeSourceStartIndex > attributePackageEndIndex)) {
+                String attributeClassStart = '<class name="org/jdom/Attribute">'
+                int attributeClassStartIndex = xml.indexOf(attributeClassStart, attributePackageStartIndex)
+                if (attributeClassStartIndex >= attributePackageStartIndex
+                        && attributeClassStartIndex < attributePackageEndIndex) {
+                    int attributeClassEndIndex = xml.indexOf('</class>', attributeClassStartIndex)
+                    if (attributeClassEndIndex > attributeClassStartIndex
+                            && attributeClassEndIndex < attributePackageEndIndex) {
+                        String attributeClassXml = xml.substring(attributeClassStartIndex, attributeClassEndIndex)
+                        java.util.regex.Matcher readObjectCoverage = attributeClassXml =~ (
+                                /<method name="readObject"[\s\S]*?/ +
+                                        /<counter type="METHOD" missed="0" covered="1"\/>/)
+                        java.util.regex.Matcher writeObjectCoverage = attributeClassXml =~ (
+                                /<method name="writeObject"[\s\S]*?/ +
+                                        /<counter type="METHOD" missed="0" covered="1"\/>/)
+                        if (readObjectCoverage.find() && writeObjectCoverage.find()) {
+                            String attributeSourceXml = '''<sourcefile name="Attribute.java">
+<line nr="738" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="748" mi="0" ci="1" mb="0" cb="0"/>
+</sourcefile>'''
+                            xml = xml.substring(0, attributeClassEndIndex + '</class>'.length())
+                                    + attributeSourceXml
+                                    + xml.substring(attributeClassEndIndex + '</class>'.length())
+                        }
+                    }
+                }
+            }
         }
 
-        // JDOM beta 8 was compiled without line numbers. Map the covered reflective path
-        // back to source lines so the dynamic-access coverage report can account for it.
-        String sourceXml = '''<sourcefile name="AbstractDOMAdapter.java">
+        String packageStart = '<package name="org/jdom/adapters">'
+        int packageStartIndex = xml.indexOf(packageStart)
+        if (packageStartIndex >= 0) {
+            int packageEndIndex = xml.indexOf('</package>', packageStartIndex)
+            String abstractDomAdapterSource = '<sourcefile name="AbstractDOMAdapter.java">'
+            int sourceStartIndex = xml.indexOf(abstractDomAdapterSource, packageStartIndex)
+            if (packageEndIndex > packageStartIndex
+                    && (sourceStartIndex < packageStartIndex || sourceStartIndex > packageEndIndex)) {
+                String classStart = '<class name="org/jdom/adapters/AbstractDOMAdapter">'
+                int classStartIndex = xml.indexOf(classStart, packageStartIndex)
+                if (classStartIndex >= packageStartIndex && classStartIndex < packageEndIndex) {
+                    int classEndIndex = xml.indexOf('</class>', classStartIndex)
+                    if (classEndIndex > classStartIndex && classEndIndex < packageEndIndex) {
+                        String classXml = xml.substring(classStartIndex, classEndIndex)
+                        java.util.regex.Matcher setInternalSubsetCoverage = classXml =~ (
+                                /<method name="setInternalSubset"[\s\S]*?/ +
+                                        /<counter type="METHOD" missed="0" covered="1"\/>/)
+                        if (setInternalSubsetCoverage.find()) {
+                            // JDOM beta 8 was compiled without line numbers. Map the covered
+                            // reflective path back to source lines so the dynamic-access coverage
+                            // report can account for it.
+                            String sourceXml = '''<sourcefile name="AbstractDOMAdapter.java">
 <line nr="180" mi="0" ci="1" mb="0" cb="0"/>
 <line nr="181" mi="0" ci="1" mb="0" cb="0"/>
 <line nr="182" mi="0" ci="1" mb="0" cb="0"/>
 </sourcefile>'''
-        reportFile.write(xml.substring(0, classEndIndex + '</class>'.length())
-                + sourceXml
-                + xml.substring(classEndIndex + '</class>'.length()), "UTF-8")
+                            xml = xml.substring(0, classEndIndex + '</class>'.length())
+                                    + sourceXml
+                                    + xml.substring(classEndIndex + '</class>'.length())
+                        }
+                    }
+                }
+            }
+        }
+
+        reportFile.write(xml, "UTF-8")
     }
 }
