@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
 import org.typelevel.jawn.AsyncParser
 import org.typelevel.jawn.ChannelParser
+import org.typelevel.jawn.FContext
 import org.typelevel.jawn.Facade
 import org.typelevel.jawn.IncompleteParseException
 import org.typelevel.jawn.ParseException
@@ -205,6 +206,30 @@ class Jawn_parser_3Test {
   }
 
   @Test
+  def positionAwareFacadeReceivesSourceOffsets(): Unit = {
+    implicit val positionedFacade: Facade[LocatedJson] = PositionedFacade
+    val json: String =
+      """{"plain":"alpha","escaped":"line\nbreak","number":-2.5e3,"flag":false,"missing":null}"""
+
+    val parsed: LocatedJson = Parser.parseUnsafe[LocatedJson](json)
+
+    parsed match {
+      case LObject(fields, keySpans, startIndex, finishIndex) =>
+        assertThat(startIndex).isEqualTo(0)
+        assertThat(finishIndex).isEqualTo(json.length - 1)
+        assertThat(keySpans("plain")).isEqualTo(spanOf(json, "\"plain\""))
+        assertThat(keySpans("escaped")).isEqualTo(spanOf(json, "\"escaped\""))
+        assertThat(fields("plain")).isEqualTo(LString("alpha", spanOf(json, "\"alpha\"")))
+        assertThat(fields("escaped")).isEqualTo(LString("line\nbreak", spanOf(json, "\"line\\nbreak\"")))
+        assertThat(fields("number")).isEqualTo(LNumber("-2.5e3", decIndex = 2, expIndex = 4, index = json.indexOf("-2.5e3")))
+        assertThat(fields("flag")).isEqualTo(LBoolean(value = false, index = json.indexOf("false")))
+        assertThat(fields("missing")).isEqualTo(LNull(index = json.indexOf("null")))
+      case other =>
+        throw new AssertionError(s"Expected positioned object, got $other")
+    }
+  }
+
+  @Test
   def channelParserComputesPowerOfTwoBufferSizesAndRejectsInvalidSizes(): Unit = {
     assertThat(ChannelParser.computeBufferSize(0)).isEqualTo(0)
     assertThat(ChannelParser.computeBufferSize(1)).isEqualTo(1)
@@ -223,6 +248,12 @@ class Jawn_parser_3Test {
       case Right(values) => values.toVector
       case Left(error) => throw new AssertionError(s"Unexpected parse failure: ${error.msg}")
     }
+
+  private def spanOf(source: String, token: String): SourceSpan = {
+    val start: Int = source.indexOf(token)
+    assertThat(start).isGreaterThanOrEqualTo(0)
+    SourceSpan(start, start + token.length)
+  }
 
   private def expectIllegalArgumentException(operation: => Any): IllegalArgumentException =
     assertThrows(
@@ -245,6 +276,21 @@ object Jawn_parser_3Test {
   final case class JArray(values: List[Json]) extends Json
   final case class JObject(values: Map[String, Json]) extends Json
 
+  final case class SourceSpan(start: Int, limit: Int)
+
+  sealed trait LocatedJson
+  final case class LNull(index: Int) extends LocatedJson
+  final case class LBoolean(value: Boolean, index: Int) extends LocatedJson
+  final case class LNumber(value: String, decIndex: Int, expIndex: Int, index: Int) extends LocatedJson
+  final case class LString(value: String, span: SourceSpan) extends LocatedJson
+  final case class LArray(values: List[LocatedJson], startIndex: Int, finishIndex: Int) extends LocatedJson
+  final case class LObject(
+    values: Map[String, LocatedJson],
+    keySpans: Map[String, SourceSpan],
+    startIndex: Int,
+    finishIndex: Int
+  ) extends LocatedJson
+
   object JsonFacade extends Facade.SimpleFacade[Json] {
     override def jnull: Json = JNull
 
@@ -260,5 +306,88 @@ object Jawn_parser_3Test {
     override def jarray(vs: List[Json]): Json = JArray(vs)
 
     override def jobject(vs: Map[String, Json]): Json = JObject(vs)
+  }
+
+  object PositionedFacade extends Facade[LocatedJson] {
+    override def singleContext(index: Int): FContext[LocatedJson] = new SingleContext
+
+    override def arrayContext(index: Int): FContext[LocatedJson] = new ArrayContext(index)
+
+    override def objectContext(index: Int): FContext[LocatedJson] = new ObjectContext(index)
+
+    override def jnull(index: Int): LocatedJson = LNull(index)
+
+    override def jfalse(index: Int): LocatedJson = LBoolean(value = false, index = index)
+
+    override def jtrue(index: Int): LocatedJson = LBoolean(value = true, index = index)
+
+    override def jnum(s: CharSequence, decIndex: Int, expIndex: Int, index: Int): LocatedJson =
+      LNumber(s.toString, decIndex, expIndex, index)
+
+    override def jstring(s: CharSequence, index: Int): LocatedJson =
+      LString(s.toString, SourceSpan(index, index))
+
+    override def jstring(s: CharSequence, start: Int, limit: Int): LocatedJson =
+      LString(s.toString, SourceSpan(start, limit))
+
+    private final class SingleContext extends FContext[LocatedJson] {
+      private var value: LocatedJson = _
+
+      override def add(s: CharSequence, index: Int): Unit = value = jstring(s, index)
+
+      override def add(s: CharSequence, start: Int, limit: Int): Unit = value = jstring(s, start, limit)
+
+      override def add(v: LocatedJson, index: Int): Unit = value = v
+
+      override def finish(index: Int): LocatedJson = value
+
+      override def isObj: Boolean = false
+    }
+
+    private final class ArrayContext(startIndex: Int) extends FContext[LocatedJson] {
+      private var values: List[LocatedJson] = Nil
+
+      override def add(s: CharSequence, index: Int): Unit = values ::= jstring(s, index)
+
+      override def add(s: CharSequence, start: Int, limit: Int): Unit = values ::= jstring(s, start, limit)
+
+      override def add(v: LocatedJson, index: Int): Unit = values ::= v
+
+      override def finish(index: Int): LocatedJson = LArray(values.reverse, startIndex, index)
+
+      override def isObj: Boolean = false
+    }
+
+    private final class ObjectContext(startIndex: Int) extends FContext[LocatedJson] {
+      private var pendingKey: Option[String] = None
+      private var values: Map[String, LocatedJson] = Map.empty
+      private var keySpans: Map[String, SourceSpan] = Map.empty
+
+      override def add(s: CharSequence, index: Int): Unit = add(s, index, index)
+
+      override def add(s: CharSequence, start: Int, limit: Int): Unit =
+        pendingKey match {
+          case Some(key) =>
+            values = values.updated(key, jstring(s, start, limit))
+            pendingKey = None
+          case None =>
+            val key: String = s.toString
+            keySpans = keySpans.updated(key, SourceSpan(start, limit))
+            pendingKey = Some(key)
+        }
+
+      override def add(v: LocatedJson, index: Int): Unit =
+        pendingKey match {
+          case Some(key) =>
+            values = values.updated(key, v)
+            pendingKey = None
+          case None =>
+            throw new IllegalStateException("Object value received before object key")
+        }
+
+      override def finish(index: Int): LocatedJson = LObject(values, keySpans, startIndex, index)
+
+      override def isObj: Boolean = true
+    }
   }
 }
