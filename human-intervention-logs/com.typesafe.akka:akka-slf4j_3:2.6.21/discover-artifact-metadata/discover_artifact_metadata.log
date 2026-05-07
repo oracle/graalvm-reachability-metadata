@@ -1,0 +1,777 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e01ad-24cd-7383-ac36-17df6d0628c1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.akka:akka-slf4j_3:2.6.21
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.6.21" when "$version$" is replaced with "2.6.21".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+- Set "coordinates" to "com.typesafe.akka:akka-slf4j_3:2.6.21".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.6.21".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata shape first, then verify the artifact’s Maven and upstream URLs before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json && sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+-rw-rw-r-- 1 vjovanov vjovanov 62 May  7 11:03 build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+{
+  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'akka-slf4j|com.typesafe.akka' metadata build/discovered-artifact-metadata | head -50" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json:2:  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
+
+web search: 
+web search: Maven Central com.typesafe.akka akka-slf4j_3 2.6.21 sources javadoc tests jar
+codex
+I found the existing project convention prefers Maven Central source and javadoc JAR URLs when those artifacts exist. Next I’m checking whether Akka publishes a test artifact for this exact module/version, otherwise I’ll use the version tag in the upstream repository for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.akka</groupId>
+    <artifactId>akka-slf4j_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://akka.io/</url>
+    <version>2.6.21</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>akka-slf4j</name>
+    <inceptionYear>2009</inceptionYear>
+    <organization>
+        <name>Lightbend Inc.</name>
+        <url>https://www.lightbend.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/akka/akka</url>
+        <connection>scm:git:https://github.com/akka/akka.git</connection>
+        <developerConnection>scm:git:git@github.com:akka/akka.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>akka-contributors</id>
+            <name>Akka Contributors</name>
+            <url>https://github.com/akka/akka/graphs/contributors</url>
+            <email>akka.official@gmail.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://doc.akka.io/api/akka/2.6.21</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_3</artifactId>
+            <version>2.6.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-testkit_3</artifactId>
+            <version>2.6.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/akka/akka/tree/v2.6.21/akka-slf4j/src/test || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 263ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/akka/akka-slf4j_3/2.6.21</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/akka/akka-slf4j_3/2.6.21</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="akka-slf4j_3-2.6.21-javadoc.jar" title="akka-slf4j_3-2.6.21-javadoc.jar">akka-slf4j_3-2.6.21-javadoc.jar</a>                   2023-06-21 09:18       189      
+<a href="akka-slf4j_3-2.6.21-javadoc.jar.asc" title="akka-slf4j_3-2.6.21-javadoc.jar.asc">akka-slf4j_3-2.6.21-javadoc.jar.asc</a>               2023-06-21 09:18       488      
+<a href="akka-slf4j_3-2.6.21-javadoc.jar.asc.md5" title="akka-slf4j_3-2.6.21-javadoc.jar.asc.md5">akka-slf4j_3-2.6.21-javadoc.jar.asc.md5</a>           2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21-javadoc.jar.asc.sha1" title="akka-slf4j_3-2.6.21-javadoc.jar.asc.sha1">akka-slf4j_3-2.6.21-javadoc.jar.asc.sha1</a>          2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21-javadoc.jar.md5" title="akka-slf4j_3-2.6.21-javadoc.jar.md5">akka-slf4j_3-2.6.21-javadoc.jar.md5</a>               2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21-javadoc.jar.sha1" title="akka-slf4j_3-2.6.21-javadoc.jar.sha1">akka-slf4j_3-2.6.21-javadoc.jar.sha1</a>              2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21-sources.jar" title="akka-slf4j_3-2.6.21-sources.jar">akka-slf4j_3-2.6.21-sources.jar</a>                   2023-06-21 09:18      2737      
+<a href="akka-slf4j_3-2.6.21-sources.jar.asc" title="akka-slf4j_3-2.6.21-sources.jar.asc">akka-slf4j_3-2.6.21-sources.jar.asc</a>               2023-06-21 09:18       488      
+<a href="akka-slf4j_3-2.6.21-sources.jar.asc.md5" title="akka-slf4j_3-2.6.21-sources.jar.asc.md5">akka-slf4j_3-2.6.21-sources.jar.asc.md5</a>           2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21-sources.jar.asc.sha1" title="akka-slf4j_3-2.6.21-sources.jar.asc.sha1">akka-slf4j_3-2.6.21-sources.jar.asc.sha1</a>          2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21-sources.jar.md5" title="akka-slf4j_3-2.6.21-sources.jar.md5">akka-slf4j_3-2.6.21-sources.jar.md5</a>               2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21-sources.jar.sha1" title="akka-slf4j_3-2.6.21-sources.jar.sha1">akka-slf4j_3-2.6.21-sources.jar.sha1</a>              2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21.buildinfo" title="akka-slf4j_3-2.6.21.buildinfo">akka-slf4j_3-2.6.21.buildinfo</a>                     2023-06-21 09:18       737      
+<a href="akka-slf4j_3-2.6.21.buildinfo.asc" title="akka-slf4j_3-2.6.21.buildinfo.asc">akka-slf4j_3-2.6.21.buildinfo.asc</a>                 2023-06-21 09:18       488      
+<a href="akka-slf4j_3-2.6.21.buildinfo.asc.md5" title="akka-slf4j_3-2.6.21.buildinfo.asc.md5">akka-slf4j_3-2.6.21.buildinfo.asc.md5</a>             2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21.buildinfo.asc.sha1" title="akka-slf4j_3-2.6.21.buildinfo.asc.sha1">akka-slf4j_3-2.6.21.buildinfo.asc.sha1</a>            2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21.buildinfo.md5" title="akka-slf4j_3-2.6.21.buildinfo.md5">akka-slf4j_3-2.6.21.buildinfo.md5</a>                 2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21.buildinfo.sha1" title="akka-slf4j_3-2.6.21.buildinfo.sha1">akka-slf4j_3-2.6.21.buildinfo.sha1</a>                2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21.jar" title="akka-slf4j_3-2.6.21.jar">akka-slf4j_3-2.6.21.jar</a>                           2023-06-21 09:18     25454      
+<a href="akka-slf4j_3-2.6.21.jar.asc" title="akka-slf4j_3-2.6.21.jar.asc">akka-slf4j_3-2.6.21.jar.asc</a>                       2023-06-21 09:18       488      
+<a href="akka-slf4j_3-2.6.21.jar.asc.md5" title="akka-slf4j_3-2.6.21.jar.asc.md5">akka-slf4j_3-2.6.21.jar.asc.md5</a>                   2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21.jar.asc.sha1" title="akka-slf4j_3-2.6.21.jar.asc.sha1">akka-slf4j_3-2.6.21.jar.asc.sha1</a>                  2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21.jar.md5" title="akka-slf4j_3-2.6.21.jar.md5">akka-slf4j_3-2.6.21.jar.md5</a>                       2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21.jar.sha1" title="akka-slf4j_3-2.6.21.jar.sha1">akka-slf4j_3-2.6.21.jar.sha1</a>                      2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21.pom" title="akka-slf4j_3-2.6.21.pom">akka-slf4j_3-2.6.21.pom</a>                           2023-06-21 09:18      2647      
+<a href="akka-slf4j_3-2.6.21.pom.asc" title="akka-slf4j_3-2.6.21.pom.asc">akka-slf4j_3-2.6.21.pom.asc</a>                       2023-06-21 09:18       488      
+<a href="akka-slf4j_3-2.6.21.pom.asc.md5" title="akka-slf4j_3-2.6.21.pom.asc.md5">akka-slf4j_3-2.6.21.pom.asc.md5</a>                   2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21.pom.asc.sha1" title="akka-slf4j_3-2.6.21.pom.asc.sha1">akka-slf4j_3-2.6.21.pom.asc.sha1</a>                  2023-06-21 09:18        40      
+<a href="akka-slf4j_3-2.6.21.pom.md5" title="akka-slf4j_3-2.6.21.pom.md5">akka-slf4j_3-2.6.21.pom.md5</a>                       2023-06-21 09:18        32      
+<a href="akka-slf4j_3-2.6.21.pom.sha1" title="akka-slf4j_3-2.6.21.pom.sha1">akka-slf4j_3-2.6.21.pom.sha1</a>                      2023-06-21 09:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 765ms:
+HTTP/2 301 
+date: Thu, 07 May 2026 09:03:19 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=LbKrUoqTakyDQzg711g9Z%2FCELJgC6OPrhqWg7SSJhfcTorrFvbcEZAx52WmBfrWYIUgRJ1KeLNhGqLJAeJJdX5Dp96XFRKYa5%2BoDJ2Bxa28SPq75LXdOvUyy75%2FWjfXM4a9%2Fz0lSo2tYtz8G9gWPWTd7%2BbMmV9Ognm%2B9G4FVhI0ZxBJe7k76WIvDF%2FhaMjBwkrFEstODQdQB5N66ht7J0b9lq4NUIona7Uzwc2Jx0BiKMqZqLWYARdx%2FBblaVBa80ga26J20lYzEurD%2BvCndNg%3D%3D--7gKQBHVFvOhxFPiL--hxJJORGsn71HZpo0bgA07w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2112155905.1778144599; expires=Fri, 07 May 2027 09:03:19 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 09:03:19 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510C:1134A9:4DC5BFA:3DA2A2F:69FC5557
+
+HTTP/2 200 
+date: Thu, 07 May 2026 09:03:20 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"73232c4e9c2e9f732604b7cde189eabd"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ElRUDzJIOnIfBr%2FY2gEzZu%2BeUPe4x0hVYmF%2BcniNphs5l2pUhtpXi7DdMoBEsFiN8usDFISz0fIZFQ0c7kB5GahRQp1%2B63PDRw%2F3y0JVJKhlIlQNaFV%2B4Mg2fPVwj8oW6NvnZtAtVEH9xEgiQ1aQsNETg%2Bcwf4g0TiKwEs%2FZ4PKFpvPGwQtYv82DwEcIUXEfmb7uxbYKgBMg6CJuDIjpLi2tAhW1qEnbQVQMiApFaEXeJZYjxxY5az6vNTY0BJL0%2Fwybi4tNh%2F4U%2BccmZcJBow%3D%3D--58CmAjup%2FRfPJ7Gt--0iJQHJhoLWMd9m%2F8oO2iUw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2118903420.1778144600; expires=Fri, 07 May 2027 09:03:20 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 09:03:20 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510C:1134A9:4DC5E93:3DA2C79:69FC5557
+
+
+web search: 
+web search: 
+web search: 
+web search: com.typesafe.akka akka-slf4j_3 2.6.21 Maven Central
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.0-M2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-javadoc.jar",
+    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.9.0-M2"
+    ],
+    "allowed-packages" : [
+      "akka.protobufv3.internal"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.typesafe.akka/akka-parsing_2.13/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "10.5.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/akka/akka-http",
+    "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-core/src/test/scala/akka/http/impl/engine/parsing",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-javadoc.jar",
+    "description" : "Akka Parsing provides Akka HTTP's internal parsing toolkit, including the parboiled2-based parser DSL and supporting parser input, rule, and error-formatting utilities. It underpins Akka HTTP's HTTP message parsing so higher-level modules can parse requests, responses, headers, and related protocol data efficiently.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "10.5.3"
+    ],
+    "allowed-packages" : [
+      "akka.http.ccompat",
+      "akka.macros",
+      "akka.parboiled2"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test?ref=v2.6.21 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala?ref=v2.6.21 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21.buildinfo | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 195ms:
+[
+  {
+    "name": "resources",
+    "path": "akka-slf4j/src/test/resources",
+    "sha": "08909b23382661bc6b19f89d34d5f0788177392f",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/resources?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test/resources",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/08909b23382661bc6b19f89d34d5f0788177392f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/resources?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/08909b23382661bc6b19f89d34d5f0788177392f",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "akka-slf4j/src/test/scala",
+    "sha": "8c6db72d028360075097b5d989a5bd4015ef56a1",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test/scala",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/8c6db72d028360075097b5d989a5bd4015ef56a1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/8c6db72d028360075097b5d989a5bd4015ef56a1",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 205ms:
+[
+  {
+    "name": "akka",
+    "path": "akka-slf4j/src/test/scala/akka",
+    "sha": "885aad3c7f5f750c5d44e37a09ca814299369a4a",
+    "size": 0,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test/scala/akka",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/trees/885aad3c7f5f750c5d44e37a09ca814299369a4a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/trees/885aad3c7f5f750c5d44e37a09ca814299369a4a",
+      "html": "https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test/scala/akka"
+    }
+  }
+]
+
+ succeeded in 360ms:
+buildinfo.version=0.1-SNAPSHOT
+name=akka-slf4j
+group-id=com.typesafe.akka
+artifact-id=akka-slf4j_3
+version=2.6.21
+java.version=11.0.9
+os.name=Linux
+build-tool=sbt
+sbt.version=1.7.1
+scala.version=3.1.2
+scala.binary-version=3
+date=1687338936820
+outputs.0.filename=akka-slf4j_3-2.6.21.pom
+outputs.0.length=2647
+outputs.0.checksums.sha512=d90348ee1c750409da638ee645ea9d4b19492ef072e774030be67707d235cc8153bc1d5b5a45b37b6235f26ec6e36793ea40fdef342599199faffb0fdff3bde7
+outputs.1.filename=akka-slf4j_3-2.6.21.jar
+outputs.1.length=25454
+outputs.1.checksums.sha512=d22ca6b3f0028c93646143074414aeeeb750d8a331815ff47982f2ed2d7769bbd27057feb805add97ba9fca22fa88e1897ead2e3db29d0dfcc8f347cf8d3c27a
+source.scm.uri=scm:git:git@github.com:akka/akka.git
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/akka-slf4j_3-2.6.21.jar" https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21.jar; jar tf "$tmp/akka-slf4j_3-2.6.21.jar" | sed -n '"'1,220p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/akka-slf4j_3-2.6.21-sources.jar" https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21-sources.jar; jar tf "$tmp/akka-slf4j_3-2.6.21-sources.jar" | sed -n '"'1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/main/scala/akka/event/slf4j?ref=v2.6.21 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 136ms:
+META-INF/MANIFEST.MF
+akka/
+akka/event/
+akka/event/slf4j/
+akka/event/slf4j/Slf4jLogger.scala
+
+ succeeded in 172ms:
+META-INF/MANIFEST.MF
+META-INF/
+akka/
+akka/event/
+akka/event/slf4j/
+akka/event/slf4j/Logger$.class
+akka/event/slf4j/Logger.class
+akka/event/slf4j/Logger.tasty
+akka/event/slf4j/SLF4JLogging.class
+akka/event/slf4j/SLF4JLogging.tasty
+akka/event/slf4j/Slf4jLogMarker$.class
+akka/event/slf4j/Slf4jLogMarker.class
+akka/event/slf4j/Slf4jLogMarker.tasty
+akka/event/slf4j/Slf4jLogger$$anon$1.class
+akka/event/slf4j/Slf4jLogger.class
+akka/event/slf4j/Slf4jLogger.tasty
+akka/event/slf4j/Slf4jLoggingFilter.class
+akka/event/slf4j/Slf4jLoggingFilter.tasty
+
+ succeeded in 210ms:
+[
+  {
+    "name": "Slf4jLogger.scala",
+    "path": "akka-slf4j/src/main/scala/akka/event/slf4j/Slf4jLogger.scala",
+    "sha": "70c96fbd2a49720bfeb2d0212d361a102b807678",
+    "size": 7599,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/main/scala/akka/event/slf4j/Slf4jLogger.scala?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/main/scala/akka/event/slf4j/Slf4jLogger.scala",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/70c96fbd2a49720bfeb2d0212d361a102b807678",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/akka-slf4j/src/main/scala/akka/event/slf4j/Slf4jLogger.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/main/scala/akka/event/slf4j/Slf4jLogger.scala?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/70c96fbd2a49720bfeb2d0212d361a102b807678",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/main/scala/akka/event/slf4j/Slf4jLogger.scala"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com typesafe akka akka-slf4j_3 2.6.21 akka-slf4j_3-2.6.21.pom
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka/event/slf4j?ref=v2.6.21 | sed -n '1,260p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/resources?ref=v2.6.21 | sed -n '1,260p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 189ms:
+[
+  {
+    "name": "Slf4jLoggerSpec.scala",
+    "path": "akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggerSpec.scala",
+    "sha": "adb59590ddc4f2ae9a27b6de12e83f58beea0f6b",
+    "size": 9131,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggerSpec.scala?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggerSpec.scala",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/adb59590ddc4f2ae9a27b6de12e83f58beea0f6b",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggerSpec.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggerSpec.scala?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/adb59590ddc4f2ae9a27b6de12e83f58beea0f6b",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggerSpec.scala"
+    }
+  },
+  {
+    "name": "Slf4jLoggingFilterSpec.scala",
+    "path": "akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggingFilterSpec.scala",
+    "sha": "d41af6bdd87dfd459d11579f517730f324ff3442",
+    "size": 3562,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggingFilterSpec.scala?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggingFilterSpec.scala",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/d41af6bdd87dfd459d11579f517730f324ff3442",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggingFilterSpec.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggingFilterSpec.scala?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/d41af6bdd87dfd459d11579f517730f324ff3442",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/test/scala/akka/event/slf4j/Slf4jLoggingFilterSpec.scala"
+    }
+  }
+]
+
+ succeeded in 196ms:
+[
+  {
+    "name": "logback-test.xml",
+    "path": "akka-slf4j/src/test/resources/logback-test.xml",
+    "sha": "7eec3dd3ca2c6fae6603119bdc874d2f86c63a82",
+    "size": 1045,
+    "url": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/resources/logback-test.xml?ref=v2.6.21",
+    "html_url": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/test/resources/logback-test.xml",
+    "git_url": "https://api.github.com/repos/akka/akka-core/git/blobs/7eec3dd3ca2c6fae6603119bdc874d2f86c63a82",
+    "download_url": "https://raw.githubusercontent.com/akka/akka-core/v2.6.21/akka-slf4j/src/test/resources/logback-test.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/akka/akka-core/contents/akka-slf4j/src/test/resources/logback-test.xml?ref=v2.6.21",
+      "git": "https://api.github.com/repos/akka/akka-core/git/blobs/7eec3dd3ca2c6fae6603119bdc874d2f86c63a82",
+      "html": "https://github.com/akka/akka-core/blob/v2.6.21/akka-slf4j/src/test/resources/logback-test.xml"
+    }
+  }
+]
+
+codex
+The artifact publishes sources and javadocs on Maven Central, but I don’t see a Maven test JAR/test-sources artifact for `akka-slf4j_3`. I’m going to use the tagged upstream `akka-slf4j/src/test` directory for the test suite and mark the language as Scala 3 because this is the `_3` cross-built artifact and the build info reports `scala.binary-version=3`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.akka:akka-slf4j_3:2.6.21",
+  "repository-url": "https://github.com/akka/akka-core",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
+  "description": "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21-sources.jar \\
+  https://github.com/akka/akka-core/tree/v2.6.21/akka-slf4j/src/test \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21-javadoc.jar \\
+  https://github.com/akka/akka-core; do
+  printf '%s -> ' \""'$url"
+  curl -L -o /dev/null -s -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1989ms:
+200
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/akka-slf4j_3-2.6.21-javadoc.jar -> 200
+https://github.com/akka/akka-core -> 200
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 447ms:
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/2.6.21/
+web search: 
+web search: https://central.sonatype.com/artifact/com.typesafe.akka/akka-slf4j_3
+codex
+Updated [com.typesafe.akka-akka-slf4j_3-2.6.21.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json) with repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata.
+
+I left `not-for-native-image` absent because this is a normal JVM `jar` artifact and MvnRepository identifies it as the Scala 3 target. ([mvnrepository.com](https://mvnrepository.com/artifact/com.typesafe.akka/akka-slf4j_3/2.6.21)) Validated the JSON with `jq` and confirmed the resolved repository/source/test/documentation URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+index 5b91b056bf99f22d8a5f10a86d98ba6fa7bac61d..6bdb3883a8d00083e18d03deeb8a7599a8cb42b8
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21"
++  "coordinates" : "com.typesafe.akka:akka-slf4j_3:2.6.21",
++  "repository-url" : "https://github.com/akka/akka-core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/akka/akka-core/tree/v$version$/akka-slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-slf4j_3/$version$/akka-slf4j_3-$version$-javadoc.jar",
++  "description" : "Akka SLF4J integrates Akka's event bus logging with the SLF4J facade by providing logger, marker, and filtering support for actor systems. It lets Akka applications route framework and application log events to any SLF4J backend while preserving Akka logging metadata.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+60,375
+Updated [com.typesafe.akka-akka-slf4j_3-2.6.21.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/build/discovered-artifact-metadata/com.typesafe.akka-akka-slf4j_3-2.6.21.json) with repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata.
+
+I left `not-for-native-image` absent because this is a normal JVM `jar` artifact and MvnRepository identifies it as the Scala 3 target. ([mvnrepository.com](https://mvnrepository.com/artifact/com.typesafe.akka/akka-slf4j_3/2.6.21)) Validated the JSON with `jq` and confirmed the resolved repository/source/test/documentation URLs return HTTP 200.
+Ran agent for com.typesafe.akka:akka-slf4j_3:2.6.21 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/build/agent-artifact-discovery-logs/com.typesafe.akka-akka-slf4j_3-2.6.21.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4995-a7fdfc77/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 28s
+9 actionable tasks: 9 executed
