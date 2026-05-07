@@ -1,0 +1,1274 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e029a-8a5c-77e3-8d08-3d50eb7c7f59
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.typelevel:literally_3:1.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.0" when "$version$" is replaced with "1.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+- Set "coordinates" to "org.typelevel:literally_3:1.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub and then patch the JSON in place. First I’m checking the existing file shape so the edit stays consistent.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+{
+  "coordinates" : "org.typelevel:literally_3:1.1.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "literally_3|org.typelevel:literally|literally" build/discovered-artifact-metadata metadata tests -S' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json:2:  "coordinates" : "org.typelevel:literally_3:1.1.0"
+tests/src/org.jboss.logging/jboss-logging-processor/2.0.2.Final/src/test/java/org_jboss_logging/jboss_logging_processor/Jboss_logging_processorTest.java:98:                "Use {0} and %s literally");
+tests/src/org.jboss.logging/jboss-logging-processor/2.1.0.Final/src/test/java/org_jboss_logging/jboss_logging_processor/Jboss_logging_processorTest.java:115:                "Use {0} and %s literally");
+
+web search: 
+web search: Maven Central org.typelevel literally_3 1.1.0 POM scm url
+web search: 
+web search: https://central.sonatype.com/artifact/org.typelevel/literally_3
+web search: 
+web search: repo1.maven.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0.pom
+codex
+The Maven Central entry confirms this is a published JAR with SCM pointing at `typelevel/literally`; I’m checking the 1.1.0 artifact directory now for sources, docs, and whether a test JAR was published.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.typelevel</groupId>
+    <artifactId>literally_3</artifactId>
+    <packaging>jar</packaging>
+    <description>literally</description>
+    <url>https://github.com/typelevel/literally</url>
+    <version>1.1.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>literally</name>
+    <inceptionYear>2021</inceptionYear>
+    <organization>
+        <name>Typelevel</name>
+        <url>https://typelevel.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/typelevel/literally</url>
+        <connection>scm:git:https://github.com/typelevel/literally.git</connection>
+        <developerConnection>scm:git:git@github.com:typelevel/literally.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>mpilquist</id>
+            <name>Michael Pilquist</name>
+            <url>https://github.com/mpilquist</url>
+            <email>@mpilquist</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.javadoc.io/doc/org.typelevel/literally_3/1.1.0/</info.apiURL>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.1.3</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/literally/tags' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 292ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/typelevel/literally_3/1.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/typelevel/literally_3/1.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="literally_3-1.1.0-javadoc.jar" title="literally_3-1.1.0-javadoc.jar">literally_3-1.1.0-javadoc.jar</a>                     2022-07-31 01:02   1826653      
+<a href="literally_3-1.1.0-javadoc.jar.asc" title="literally_3-1.1.0-javadoc.jar.asc">literally_3-1.1.0-javadoc.jar.asc</a>                 2022-07-31 01:02       228      
+<a href="literally_3-1.1.0-javadoc.jar.asc.md5" title="literally_3-1.1.0-javadoc.jar.asc.md5">literally_3-1.1.0-javadoc.jar.asc.md5</a>             2022-07-31 01:02        32      
+<a href="literally_3-1.1.0-javadoc.jar.asc.sha1" title="literally_3-1.1.0-javadoc.jar.asc.sha1">literally_3-1.1.0-javadoc.jar.asc.sha1</a>            2022-07-31 01:02        40      
+<a href="literally_3-1.1.0-javadoc.jar.md5" title="literally_3-1.1.0-javadoc.jar.md5">literally_3-1.1.0-javadoc.jar.md5</a>                 2022-07-31 01:02        32      
+<a href="literally_3-1.1.0-javadoc.jar.sha1" title="literally_3-1.1.0-javadoc.jar.sha1">literally_3-1.1.0-javadoc.jar.sha1</a>                2022-07-31 01:02        40      
+<a href="literally_3-1.1.0-sources.jar" title="literally_3-1.1.0-sources.jar">literally_3-1.1.0-sources.jar</a>                     2022-07-31 01:02      1401      
+<a href="literally_3-1.1.0-sources.jar.asc" title="literally_3-1.1.0-sources.jar.asc">literally_3-1.1.0-sources.jar.asc</a>                 2022-07-31 01:02       228      
+<a href="literally_3-1.1.0-sources.jar.asc.md5" title="literally_3-1.1.0-sources.jar.asc.md5">literally_3-1.1.0-sources.jar.asc.md5</a>             2022-07-31 01:02        32      
+<a href="literally_3-1.1.0-sources.jar.asc.sha1" title="literally_3-1.1.0-sources.jar.asc.sha1">literally_3-1.1.0-sources.jar.asc.sha1</a>            2022-07-31 01:02        40      
+<a href="literally_3-1.1.0-sources.jar.md5" title="literally_3-1.1.0-sources.jar.md5">literally_3-1.1.0-sources.jar.md5</a>                 2022-07-31 01:02        32      
+<a href="literally_3-1.1.0-sources.jar.sha1" title="literally_3-1.1.0-sources.jar.sha1">literally_3-1.1.0-sources.jar.sha1</a>                2022-07-31 01:02        40      
+<a href="literally_3-1.1.0.jar" title="literally_3-1.1.0.jar">literally_3-1.1.0.jar</a>                             2022-07-31 01:02      4081      
+<a href="literally_3-1.1.0.jar.asc" title="literally_3-1.1.0.jar.asc">literally_3-1.1.0.jar.asc</a>                         2022-07-31 01:02       228      
+<a href="literally_3-1.1.0.jar.asc.md5" title="literally_3-1.1.0.jar.asc.md5">literally_3-1.1.0.jar.asc.md5</a>                     2022-07-31 01:02        32      
+<a href="literally_3-1.1.0.jar.asc.sha1" title="literally_3-1.1.0.jar.asc.sha1">literally_3-1.1.0.jar.asc.sha1</a>                    2022-07-31 01:02        40      
+<a href="literally_3-1.1.0.jar.md5" title="literally_3-1.1.0.jar.md5">literally_3-1.1.0.jar.md5</a>                         2022-07-31 01:02        32      
+<a href="literally_3-1.1.0.jar.sha1" title="literally_3-1.1.0.jar.sha1">literally_3-1.1.0.jar.sha1</a>                        2022-07-31 01:02        40      
+<a href="literally_3-1.1.0.pom" title="literally_3-1.1.0.pom">literally_3-1.1.0.pom</a>                             2022-07-31 01:02      1836      
+<a href="literally_3-1.1.0.pom.asc" title="literally_3-1.1.0.pom.asc">literally_3-1.1.0.pom.asc</a>                         2022-07-31 01:02       228      
+<a href="literally_3-1.1.0.pom.asc.md5" title="literally_3-1.1.0.pom.asc.md5">literally_3-1.1.0.pom.asc.md5</a>                     2022-07-31 01:02        32      
+<a href="literally_3-1.1.0.pom.asc.sha1" title="literally_3-1.1.0.pom.asc.sha1">literally_3-1.1.0.pom.asc.sha1</a>                    2022-07-31 01:02        40      
+<a href="literally_3-1.1.0.pom.md5" title="literally_3-1.1.0.pom.md5">literally_3-1.1.0.pom.md5</a>                         2022-07-31 01:02        32      
+<a href="literally_3-1.1.0.pom.sha1" title="literally_3-1.1.0.pom.sha1">literally_3-1.1.0.pom.sha1</a>                        2022-07-31 01:02        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 251ms:
+[
+  {
+    "name": "v1.2.0",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.2.0",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.2.0",
+    "commit": {
+      "sha": "1207e8aae0e9bf80a08afa5f4736cf5fbf7025eb",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/1207e8aae0e9bf80a08afa5f4736cf5fbf7025eb"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4yLjA="
+  },
+  {
+    "name": "v1.1.0",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.1.0",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.1.0",
+    "commit": {
+      "sha": "ba0b394ad6f92eefe95d0f413bab46cced12fd1d",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/ba0b394ad6f92eefe95d0f413bab46cced12fd1d"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4xLjA="
+  },
+  {
+    "name": "v1.0.3",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.0.3",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.0.3",
+    "commit": {
+      "sha": "ba0b394ad6f92eefe95d0f413bab46cced12fd1d",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/ba0b394ad6f92eefe95d0f413bab46cced12fd1d"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4wLjM="
+  },
+  {
+    "name": "v1.0.2",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.0.2",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.0.2",
+    "commit": {
+      "sha": "707eae734788e7bec2a282c384db5ff0110dd0e7",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/707eae734788e7bec2a282c384db5ff0110dd0e7"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4wLjI="
+  },
+  {
+    "name": "v1.0.1",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.0.1",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.0.1",
+    "commit": {
+      "sha": "d1f4e84e1b521cfe25805aacc3b9e225fd7cbc26",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/d1f4e84e1b521cfe25805aacc3b9e225fd7cbc26"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4wLjE="
+  },
+  {
+    "name": "v1.0.0",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.0.0",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.0.0",
+    "commit": {
+      "sha": "fbbccd274265adce6b600c5535ccfbfccd320518",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/fbbccd274265adce6b600c5535ccfbfccd320518"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4wLjA="
+  },
+  {
+    "name": "v1.0.0-RC1",
+    "zipball_url": "https://api.github.com/repos/typelevel/literally/zipball/refs/tags/v1.0.0-RC1",
+    "tarball_url": "https://api.github.com/repos/typelevel/literally/tarball/refs/tags/v1.0.0-RC1",
+    "commit": {
+      "sha": "17eb67d392a23f059424dc958ee9664bb74959d6",
+      "url": "https://api.github.com/repos/typelevel/literally/commits/17eb67d392a23f059424dc958ee9664bb74959d6"
+    },
+    "node_id": "MDM6UmVmMzQ0OTU2NTE3OnJlZnMvdGFncy92MS4wLjAtUkMx"
+  }
+]
+
+codex
+There is a sources JAR and javadoc JAR on Maven Central, but no published tests JAR in the artifact directory. I’m checking nearby metadata conventions and the tagged GitHub tree for the test path before editing.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/literally/git/trees/v1.1.0?recursive=1' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/typelevel/literally/v1.1.0/README.md' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 211ms:
+{
+  "sha": "ba0b394ad6f92eefe95d0f413bab46cced12fd1d",
+  "url": "https://api.github.com/repos/typelevel/literally/git/trees/ba0b394ad6f92eefe95d0f413bab46cced12fd1d",
+  "tree": [
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d5cef8f4b6631f34f6a4e49de19e43d014bd14a0",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/d5cef8f4b6631f34f6a4e49de19e43d014bd14a0"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "374d8f7086ae3e27cece3934304d19c5469b176c",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/374d8f7086ae3e27cece3934304d19c5469b176c"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4eee5cd9e4ff95433adad13a0db498e1b3f06e7a",
+      "size": 9339,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/4eee5cd9e4ff95433adad13a0db498e1b3f06e7a"
+    },
+    {
+      "path": ".github/workflows/clean.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "547aaa43e25de692092b602bb308642221a6cd77",
+      "size": 2337,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/547aaa43e25de692092b602bb308642221a6cd77"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dc0fa80c736dd57ad5f3101739a3a07b08703a4",
+      "size": 60,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/7dc0fa80c736dd57ad5f3101739a3a07b08703a4"
+    },
+    {
+      "path": ".scalafmt.conf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d0ed0a8ea31a398cf4487314769168bed642abc",
+      "size": 99,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/1d0ed0a8ea31a398cf4487314769168bed642abc"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "size": 11357,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fcd25969f99da2f956bc8e5f4559a55adf3e1ee4",
+      "size": 2376,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/fcd25969f99da2f956bc8e5f4559a55adf3e1ee4"
+    },
+    {
+      "path": "build.sbt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffecab0bb8e9c1d666bce3457398b0321bbb7453",
+      "size": 1235,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/ffecab0bb8e9c1d666bce3457398b0321bbb7453"
+    },
+    {
+      "path": "core",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b51580f29f79e803301bb3a5d4ab3475d94e5137",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/b51580f29f79e803301bb3a5d4ab3475d94e5137"
+    },
+    {
+      "path": "core/shared",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c571004f17bf96b987aa108ef5b4d54560c982a8",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/c571004f17bf96b987aa108ef5b4d54560c982a8"
+    },
+    {
+      "path": "core/shared/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "770438aed4a8caf5f06809432823a474372834b0",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/770438aed4a8caf5f06809432823a474372834b0"
+    },
+    {
+      "path": "core/shared/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d8fe4ebf29bfdad7c5094b7598c68770dba0a8eb",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/d8fe4ebf29bfdad7c5094b7598c68770dba0a8eb"
+    },
+    {
+      "path": "core/shared/src/main/scala-2",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "30696e2a07d289d8120e686da99b7482810d4e4d",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/30696e2a07d289d8120e686da99b7482810d4e4d"
+    },
+    {
+      "path": "core/shared/src/main/scala-2/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9a36c785d5d9cc20b7fb4510aaea2144cc406b38",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/9a36c785d5d9cc20b7fb4510aaea2144cc406b38"
+    },
+    {
+      "path": "core/shared/src/main/scala-2/org/typelevel",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bb5610a27856c44325faebcb222004931d4a81aa",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/bb5610a27856c44325faebcb222004931d4a81aa"
+    },
+    {
+      "path": "core/shared/src/main/scala-2/org/typelevel/literally",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6456408a45224f1f6b0e620f3f4b6236a3b4139e",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/6456408a45224f1f6b0e620f3f4b6236a3b4139e"
+    },
+    {
+      "path": "core/shared/src/main/scala-2/org/typelevel/literally/Literally.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58abf4bb7b6bd299649d07a84fc5df88ab0cd2c9",
+      "size": 1119,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/58abf4bb7b6bd299649d07a84fc5df88ab0cd2c9"
+    },
+    {
+      "path": "core/shared/src/main/scala-3",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "20eac48865b394e8ada098bad6e134876925bc18",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/20eac48865b394e8ada098bad6e134876925bc18"
+    },
+    {
+      "path": "core/shared/src/main/scala-3/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7fffa57cc7fe65bceaaa6ce127d88947283fb387",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/7fffa57cc7fe65bceaaa6ce127d88947283fb387"
+    },
+    {
+      "path": "core/shared/src/main/scala-3/org/typelevel",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a14ebf6187cef70e86936ee956fb2502c3887afa",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/a14ebf6187cef70e86936ee956fb2502c3887afa"
+    },
+    {
+      "path": "core/shared/src/main/scala-3/org/typelevel/literally",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f38d34234530de566dddc29be5eb87a3eb09c0f7",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/f38d34234530de566dddc29be5eb87a3eb09c0f7"
+    },
+    {
+      "path": "core/shared/src/main/scala-3/org/typelevel/literally/Literally.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc0e872c60f615532e3411f0f6d7a0627c560e9f",
+      "size": 1384,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/bc0e872c60f615532e3411f0f6d7a0627c560e9f"
+    },
+    {
+      "path": "project",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6de665012c210160007601197d1741d6562e1863",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/6de665012c210160007601197d1741d6562e1863"
+    },
+    {
+      "path": "project/build.properties",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22af2628c41386225b9b373f5d933a0e69d19e33",
+      "size": 18,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/22af2628c41386225b9b373f5d933a0e69d19e33"
+    },
+    {
+      "path": "project/plugins.sbt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "856b63e8b6da6f60dc028b35a95f8f0bc7de8e37",
+      "size": 258,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/856b63e8b6da6f60dc028b35a95f8f0bc7de8e37"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4b8d6402106f6a487fad5ab8d5243ebdefbedefc",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/4b8d6402106f6a487fad5ab8d5243ebdefbedefc"
+    },
+    {
+      "path": "tests/shared",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "065b34137d4655e6071a58f9973cfe557466e658",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/065b34137d4655e6071a58f9973cfe557466e658"
+    },
+    {
+      "path": "tests/shared/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0cdbe590d865931b4fd3cfe7d5e39226c4fd3ea7",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/0cdbe590d865931b4fd3cfe7d5e39226c4fd3ea7"
+    },
+    {
+      "path": "tests/shared/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6149dae1fe35a17e64b45e3ada65700da33dd9d7",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/6149dae1fe35a17e64b45e3ada65700da33dd9d7"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3795452f7a38ab261ced6b9f1cb3be3511725129",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/3795452f7a38ab261ced6b9f1cb3be3511725129"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "81f168bf0f5c51a664191bc476ea4cb08b691a50",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/81f168bf0f5c51a664191bc476ea4cb08b691a50"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2/org/typelevel",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ce49a2276466a3fcfd76efb3b74711da68a1b4a5",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/ce49a2276466a3fcfd76efb3b74711da68a1b4a5"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2/org/typelevel/literally",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1edb9a8b53d8bf90878d7a18323f6c74e4de5a05",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/1edb9a8b53d8bf90878d7a18323f6c74e4de5a05"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2/org/typelevel/literally/examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8a7f62bdd6ca3854e788778bb03473e9273f3b55",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/8a7f62bdd6ca3854e788778bb03473e9273f3b55"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2/org/typelevel/literally/examples/ShortString.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "091ef148e62f2e6d97a159c1461e398289389d94",
+      "size": 938,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/091ef148e62f2e6d97a159c1461e398289389d94"
+    },
+    {
+      "path": "tests/shared/src/main/scala-2/org/typelevel/literally/examples/literals.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e6227d257bb5d7ce17f50bd3ae614dbc298266b",
+      "size": 1813,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/3e6227d257bb5d7ce17f50bd3ae614dbc298266b"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "82183deae0ff916869ed3d5513eba8a3a9ac424f",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/82183deae0ff916869ed3d5513eba8a3a9ac424f"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8ece3d396b600af18a00b9c08b08009450dcc906",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/8ece3d396b600af18a00b9c08b08009450dcc906"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3/org/typelevel",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1b64616d1906a03e1b292b9bc577f9341ac2be5b",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/1b64616d1906a03e1b292b9bc577f9341ac2be5b"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3/org/typelevel/literally",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0a3265384e7b362238cca380a3fba3fb2f0b139e",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/0a3265384e7b362238cca380a3fba3fb2f0b139e"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3/org/typelevel/literally/examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "439a6ed6c74fb48ebb2105de264c817ed1d0d193",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/439a6ed6c74fb48ebb2105de264c817ed1d0d193"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3/org/typelevel/literally/examples/ShortString.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b1140b8c105db8a3466511a15e557863e0903ce",
+      "size": 885,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/4b1140b8c105db8a3466511a15e557863e0903ce"
+    },
+    {
+      "path": "tests/shared/src/main/scala-3/org/typelevel/literally/examples/literals.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87171f9f0041cd279d92c3f79b2ba1e792790d9c",
+      "size": 1517,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/87171f9f0041cd279d92c3f79b2ba1e792790d9c"
+    },
+    {
+      "path": "tests/shared/src/main/scala",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2693ee38358bf9dcbe3ad5ed7a307bed8e4a47f7",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/2693ee38358bf9dcbe3ad5ed7a307bed8e4a47f7"
+    },
+    {
+      "path": "tests/shared/src/main/scala/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "66a31a64fea54bb055e29da3dc80412139d438c5",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/66a31a64fea54bb055e29da3dc80412139d438c5"
+    },
+    {
+      "path": "tests/shared/src/main/scala/org/typelevel",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "144f56d9d578c3df1fe7f940f4805337674ceefe",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/144f56d9d578c3df1fe7f940f4805337674ceefe"
+    },
+    {
+      "path": "tests/shared/src/main/scala/org/typelevel/literally",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "64cbafa741fe4f4221429fb22cc0d99f3e16df3e",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/64cbafa741fe4f4221429fb22cc0d99f3e16df3e"
+    },
+    {
+      "path": "tests/shared/src/main/scala/org/typelevel/literally/examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4031283ecaabda330e8303be1bee4629e83e8119",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/4031283ecaabda330e8303be1bee4629e83e8119"
+    },
+    {
+      "path": "tests/shared/src/main/scala/org/typelevel/literally/examples/Port.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9aea2179a3278235c5a0c4f9da15991ba975a78",
+      "size": 835,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/d9aea2179a3278235c5a0c4f9da15991ba975a78"
+    },
+    {
+      "path": "tests/shared/src/test",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4c68a7333258119bf9c173f4643070539989732c",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/4c68a7333258119bf9c173f4643070539989732c"
+    },
+    {
+      "path": "tests/shared/src/test/scala",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6d7fa815f28a5ee22c473f04582ad2df63aa21e3",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/6d7fa815f28a5ee22c473f04582ad2df63aa21e3"
+    },
+    {
+      "path": "tests/shared/src/test/scala/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fa87197220d520aca8dd163325ed173e6443cc63",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/fa87197220d520aca8dd163325ed173e6443cc63"
+    },
+    {
+      "path": "tests/shared/src/test/scala/org/typelevel",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "37638e276c9158b33271006c5439e90ad71d88e8",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/37638e276c9158b33271006c5439e90ad71d88e8"
+    },
+    {
+      "path": "tests/shared/src/test/scala/org/typelevel/literally",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "915bf59ff3b5eb94018c8d8eed8a4bb1ab23d960",
+      "url": "https://api.github.com/repos/typelevel/literally/git/trees/915bf59ff3b5eb94018c8d8eed8a4bb1ab23d960"
+    },
+    {
+      "path": "tests/shared/src/test/scala/org/typelevel/literally/LiterallySuite.scala",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a68bbfe084862458611fc2b7d274b5888f3992d2",
+      "size": 1337,
+      "url": "https://api.github.com/repos/typelevel/literally/git/blobs/a68bbfe084862458611fc2b7d274b5888f3992d2"
+    }
+  ],
+  "truncated": false
+}
+
+ succeeded in 229ms:
+# Literally
+
+Compile time validation of literal values built from strings.
+
+Consider a type like `Port`:
+
+```scala
+case class Port private (value: Int)
+
+object Port {
+  val MinValue = 0
+  val MaxValue = 65535
+
+  def fromInt(i: Int): Option[Port] =
+    if (i < MinValue || i > MaxValue) None else Some(new Port(i))
+}
+```
+
+This library simplifies the definition of literal values which are validated at compilation time:
+
+```scala
+val p: Port = port"8080"
+// p: Port = Port(8080)
+
+val q: Port = port"100000"
+// <console>:17: error: invalid port - must be integer between 0 and 65535
+```
+
+Validation is performed at compile time. This library provides the macro implementations for both Scala 2 and Scala 3 which powers custom string literals.
+
+### Usage
+
+Defining a custom string literal for a type `A` involves:
+- Implementing an `org.typelevel.literally.Literally[A]` instance
+- Defining an extension method on a `StringContext` which uses the defined `Literally[A]` instance
+
+```scala
+import org.typelevel.literally.Literally
+
+object literals:      
+  extension (inline ctx: StringContext)
+    inline def port(inline args: Any*): Port =
+      ${PortLiteral('ctx, 'args)}
+
+  object PortLiteral extends Literally[Port]:
+    def validate(s: String)(using Quotes) =
+      s.toIntOption.flatMap(Port.fromInt) match
+        case None => Left(s"invalid port - must be integer between ${Port.MinValue} and ${Port.MaxValue}")
+        case Some(_) => Right('{Port.fromInt(${Expr(s)}.toInt).get})
+```
+
+The same pattern is used for Scala 2, though the syntax for extension methods and macros are a bit different:
+
+```scala
+import scala.util.Try
+import org.typelevel.literally.Literally
+
+object literals {
+  implicit class short(val sc: StringContext) extends AnyVal {
+    def port(args: Any*): Port = macro PortLiteral.make
+  }
+
+  object PortLiteral extends Literally[Port] {
+    def validate(c: Context)(s: String): Either[String, c.Expr[Port]] = {
+      import c.universe.{Try => _, _}
+      Try(s.toInt).toOption.flatMap(Port.fromInt) match {
+        case None => Left(s"invalid port - must be integer between ${Port.MinValue} and ${Port.MaxValue}")
+        case Some(_) => Right(c.Expr(q"Port.fromInt($s.toInt).get"))
+      }
+    }
+
+    def make(c: Context)(args: c.Expr[Any]*): c.Expr[Port] = apply(c)(args: _*)
+  }
+}
+```
+
+The `tests` directory in this project has more examples.
+
+
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+./metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:24:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:42:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+./metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/io.suzaku/boopickle_2.13/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/org.openjfx/javafx-base/index.json:6:    "repository-url": "https://github.com/openjdk/jfx",
+./metadata/org.openjfx/javafx-base/index.json:22:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.suzaku/boopickle_3/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/suzaku-io/boopickle",
+    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.4.0",
+      "1.5.0"
+    ],
+    "allowed-packages" : [
+      "boopickle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata -g 'index.json' | head -60" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/org.scodec/scodec-bits_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/async-extensions-jvm/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/sqlite-driver/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/core_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/com.softwaremill.sttp.client4/circe_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum-circe_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/com.beachape/enumeratum_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+metadata/co.fs2/fs2-reactive-streams_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/co.fs2/fs2-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0-tests.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0.jar -o /tmp/literally_3-1.1.0.jar && jar tf /tmp/literally_3-1.1.0.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+org/
+org/typelevel/
+org/typelevel/literally/
+org/typelevel/literally/Literally.class
+org/typelevel/literally/Literally.tasty
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0-sources.jar -o /tmp/literally_3-1.1.0-sources.jar && jar tf /tmp/literally_3-1.1.0-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+org/
+org/typelevel/
+org/typelevel/literally/
+org/typelevel/literally/Literally.scala
+
+ succeeded in 283ms:
+curl: (22) HTTP/2 404 
+date: Thu, 07 May 2026 13:23:07 GMT
+content-type: text/html
+cf-ray: 9f80899209cabc72-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+The requested URL returned error: 404
+
+codex
+The artifact JAR contains JVM `.class` output, so it remains a Native Image metadata target; I’m leaving `not-for-native-image` absent. I’m going to set Scala 3 language metadata, use Maven Central for sources/docs, and GitHub tag `v$version$` for the tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+diff --git a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+index 82a144ced59fe59545a24925f0a183c8cce4e5b1..618a2786deecbcbb5d1c9ff82b20adf8f584dbce
+--- a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.typelevel:literally_3:1.1.0"
++  "coordinates" : "org.typelevel:literally_3:1.1.0",
++  "repository-url" : "https://github.com/typelevel/literally",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
++  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+index 82a144ced59fe59545a24925f0a183c8cce4e5b1..618a2786deecbcbb5d1c9ff82b20adf8f584dbce
+--- a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.typelevel:literally_3:1.1.0"
++  "coordinates" : "org.typelevel:literally_3:1.1.0",
++  "repository-url" : "https://github.com/typelevel/literally",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
++  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+{
+  "coordinates": "org.typelevel:literally_3:1.1.0",
+  "repository-url": "https://github.com/typelevel/literally",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
+  "description": "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 13:23:19 GMT
+content-type: application/java-archive
+content-length: 1401
+cf-ray: 9f8089e1bb3c03b1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 266288
+etag: "45225f61689c8f40e55408a9d8103e36"
+last-modified: Sun, 31 Jul 2022 01:02:56 GMT
+x-checksum-md5: 45225f61689c8f40e55408a9d8103e36
+x-checksum-sha1: c7d05117621fe8629ef2b75e40c1de2e48df759d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/typelevel/literally/tree/v1.1.0/tests/shared/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 334ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 13:23:20 GMT
+content-type: application/java-archive
+content-length: 1826653
+cf-ray: 9f8089e1cc0dc4a5-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "0cd13720b68fce9679110851dea6df0c"
+last-modified: Sun, 31 Jul 2022 01:02:55 GMT
+x-checksum-md5: 0cd13720b68fce9679110851dea6df0c
+x-checksum-sha1: 4d852a9896153e75491541bc8d95b3b0f9899d1b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+index 82a144ced59fe59545a24925f0a183c8cce4e5b1..618a2786deecbcbb5d1c9ff82b20adf8f584dbce
+--- a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.typelevel:literally_3:1.1.0"
++  "coordinates" : "org.typelevel:literally_3:1.1.0",
++  "repository-url" : "https://github.com/typelevel/literally",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
++  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 640ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 13:23:20 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0b5822c7dfce3971d5583dd8ac031704"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=iHUUdCLb1h2G1Oe2VApyJ9Iq0qFNKTAUjl67NEh0geYC4g1k0kycd2d5wdTB%2FKLk0rYcVmQN7sqNfbAXABsim3MxH%2FFTUw7tlo6BxvY4%2B9%2BURgPEmguo30dlu%2FZk86vcTLcQPI%2BMAnu8MdsTh7XoGx7zpwFIFv%2B1YXRRrtKSerAoe%2FESh5LbWz3p7FkyK%2BJLkKmebFIAFa72R4MG68O1aZIFSEvOqWYNFI24B2Vg%2FEdp4wBcZPPOt5ijM1kCLG1OfEsOwdnoiR9Pq%2BcNBGXb4w%3D%3D--195qr4MKzwfVaJPL--GUyrjaX%2F5FcHa%2BCMFedVoQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1589615047.1778160199; expires=Fri, 07 May 2027 13:23:19 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 13:23:19 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 518D:2D2ABD:2DC6FEC:24B655E:69FC9247
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.typelevel:literally_3:1.1.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+diff --git a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+index 82a144ced59fe59545a24925f0a183c8cce4e5b1..618a2786deecbcbb5d1c9ff82b20adf8f584dbce
+--- a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.typelevel:literally_3:1.1.0"
++  "coordinates" : "org.typelevel:literally_3:1.1.0",
++  "repository-url" : "https://github.com/typelevel/literally",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
++  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 4379ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+No matching coordinates found for metadata checks. Nothing to do.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The JSON parses and the version-substituted sources, javadoc, and tagged GitHub test URL all return HTTP 200. The repo’s metadata checker does not inspect this discovered-output path, so it reported “No matching coordinates found” while still completing successfully.
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+ succeeded in 0ms:
+{
+  "coordinates" : "org.typelevel:literally_3:1.1.0",
+  "repository-url" : "https://github.com/typelevel/literally",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
+  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339
+diff --git a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+index 82a144ced59fe59545a24925f0a183c8cce4e5b1..618a2786deecbcbb5d1c9ff82b20adf8f584dbce
+--- a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.typelevel:literally_3:1.1.0"
++  "coordinates" : "org.typelevel:literally_3:1.1.0",
++  "repository-url" : "https://github.com/typelevel/literally",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
++  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 310ms:
+web search: 
+web search: https://github.com/typelevel/literally/tree/v1.1.0/tests/shared/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/typelevel/literally_3/1.1.0/literally_3-1.1.0.pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.typelevel/literally_3
+codex
+Updated [org.typelevel-literally_3-1.1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json).
+
+I set the Maven Central sources/docs URLs, the tagged GitHub test URL, repository root, two-sentence description, and Scala 3 language field. The description is based on the project README’s compile-time literal validation and Scala 2/3 macro support notes, and the test URL resolves to the `v1.1.0` test tree. ([raw.githubusercontent.com](https://raw.githubusercontent.com/typelevel/literally/v1.1.0/README.md))
+
+Verification: `jq` parses the JSON; substituted source, javadoc, and test URLs return HTTP 200. I did not set `not-for-native-image` because the artifact JAR contains JVM `.class` output.
+diff --git a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+index 82a144ced59fe59545a24925f0a183c8cce4e5b1..618a2786deecbcbb5d1c9ff82b20adf8f584dbce
+--- a/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.typelevel:literally_3:1.1.0"
++  "coordinates" : "org.typelevel:literally_3:1.1.0",
++  "repository-url" : "https://github.com/typelevel/literally",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/literally/tree/v$version$/tests/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/literally_3/$version$/literally_3-$version$-javadoc.jar",
++  "description" : "Literally is a Scala macro library for defining custom string literal interpolators whose values are validated at compile time. It provides the macro support needed to turn validated string input into strongly typed values for both Scala 2 and Scala 3 APIs.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+60,295
+Updated [org.typelevel-literally_3-1.1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/discovered-artifact-metadata/org.typelevel-literally_3-1.1.0.json).
+
+I set the Maven Central sources/docs URLs, the tagged GitHub test URL, repository root, two-sentence description, and Scala 3 language field. The description is based on the project README’s compile-time literal validation and Scala 2/3 macro support notes, and the test URL resolves to the `v1.1.0` test tree. ([raw.githubusercontent.com](https://raw.githubusercontent.com/typelevel/literally/v1.1.0/README.md))
+
+Verification: `jq` parses the JSON; substituted source, javadoc, and test URLs return HTTP 200. I did not set `not-for-native-image` because the artifact JAR contains JVM `.class` output.
+Ran agent for org.typelevel:literally_3:1.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/agent-artifact-discovery-logs/org.typelevel-literally_3-1.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4891-6877d339/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 11s
+9 actionable tasks: 9 executed

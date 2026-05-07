@@ -1,0 +1,19 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Done.
+
+Changes made:
+- Removed the generated runtime Scala compiler tests from:
+  - `tests/src/org.typelevel/literally_3/1.1.0/src/test/scala/org_typelevel/literally_3/Literally_3Test.scala`
+- Removed the now-unused `scala3-compiler_3` test dependency from:
+  - `tests/src/org.typelevel/literally_3/1.1.0/build.gradle`
+- Wrote the intervention report to:
+  - `post-gen-interventions/org.typelevel_literally_3_1.1.0.md`
+
+Root cause:
+- The failures were not metadata-related.
+- The generated tests attempted to invoke the Scala 3 compiler inside the native executable, where the compiler could not find Scala core libraries / classpath support.
+- The remaining runtime-value test was preserved because it still exercises useful native-image coverage for `org.typelevel.literally.Literally`.
+
+Verification:
+- `cd tests/src/org.typelevel/literally_3/1.1.0 && ../../../../../gradlew nativeTest --console=plain --stacktrace`
+- Passed successfully.
