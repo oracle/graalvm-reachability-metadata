@@ -132,6 +132,16 @@ class Twirl_api_3Test {
   }
 
   @Test
+  def baseScalaTemplateCompanionConstructsAndExtractsTemplates(): Unit = {
+    val created: BaseScalaTemplate[Html, HtmlFormat.type] = BaseScalaTemplate(HtmlFormat)
+    val extracted: BaseScalaTemplate[Html, HtmlFormat.type] = BaseScalaTemplate.unapply(created)
+
+    assertSame(HtmlFormat, created.format)
+    assertSame(HtmlFormat, extracted.format)
+    assertSame(created, extracted)
+  }
+
+  @Test
   def templateInterfacesCanBeImplementedLikeGeneratedTemplates(): Unit = {
     val index: Template0[Html] = new Template0[Html] {
       override def render(): Html = html"<h1>${"Welcome & hello"}</h1>"
