@@ -8,6 +8,7 @@ package org_typelevel.otel4s_core_common_3
 
 import cats.Hash
 import cats.Id
+import cats.Monoid
 import cats.~>
 import cats.data.EitherT
 import cats.data.Ior
@@ -211,6 +212,45 @@ class Otel4s_core_common_3Test {
     assertEquals(Nil, noop.fields.toList)
     assertEquals(List("existing"), noop.extract(List("existing"), Map("traceparent" -> "in")))
     assertEquals(Map("kept" -> "value"), noop.inject(List("existing"), Map("kept" -> "value")))
+  }
+
+  @Test
+  def textMapPropagatorMonoidCombinesDelegatesAndPreservesIdentityBehavior(): Unit = {
+    val monoid: Monoid[TextMapPropagator[List[String]]] =
+      Monoid[TextMapPropagator[List[String]]]
+    val first: TextMapPropagator[List[String]] =
+      RecordingPropagator("traceparent", "trace", "out-trace")
+    val second: TextMapPropagator[List[String]] =
+      RecordingPropagator("baggage", "bag", "out-bag")
+    val duplicateField: TextMapPropagator[List[String]] =
+      RecordingPropagator("traceparent", "trace-again", "out-trace-again")
+
+    val leftIdentity: TextMapPropagator[List[String]] = monoid.combine(monoid.empty, first)
+    val rightIdentity: TextMapPropagator[List[String]] = monoid.combine(first, monoid.empty)
+    assertEquals(List("traceparent"), leftIdentity.fields.toList)
+    assertEquals(List("trace"), leftIdentity.extract(Nil, Map("traceparent" -> "in")))
+    assertEquals(
+      Map("out-trace" -> "existing"),
+      rightIdentity.inject(List("existing"), Map.empty[String, String])
+    )
+
+    val combined: TextMapPropagator[List[String]] = monoid.combine(
+      monoid.combine(first, second),
+      duplicateField
+    )
+    val extracted: List[String] = combined.extract(Nil, Map("traceparent" -> "in", "baggage" -> "items"))
+    val injected: Map[String, String] = combined.inject(extracted, Map.empty[String, String])
+
+    assertEquals(List("traceparent", "baggage"), combined.fields.toList)
+    assertEquals(List("trace", "bag", "trace-again"), extracted)
+    assertEquals(
+      Map(
+        "out-trace" -> "trace,bag,trace-again",
+        "out-bag" -> "trace,bag,trace-again",
+        "out-trace-again" -> "trace,bag,trace-again"
+      ),
+      injected
+    )
   }
 
   @Test
