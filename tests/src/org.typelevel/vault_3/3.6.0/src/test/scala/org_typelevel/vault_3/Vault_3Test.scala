@@ -178,5 +178,26 @@ class Vault_3Test {
     assertThat(vault.lookup(firstKey)).isEqualTo(Some("primary"))
   }
 
+  @Test
+  def instanceEmptyCreatesAnEmptyVaultWithoutChangingOriginalVault(): Unit = {
+    val nameKey: Key[String] = newKey[String]()
+    val countKey: Key[Int] = newKey[Int]()
+
+    val original: Vault = Vault.empty
+      .insert(nameKey, "stored")
+      .insert(countKey, 3)
+    val emptied: Vault = original.empty
+
+    assertThat(emptied.isEmpty).isTrue
+    assertThat(emptied.size).isEqualTo(0)
+    assertThat(emptied.contains(nameKey)).isFalse
+    assertThat(emptied.lookup(nameKey)).isEqualTo(None)
+    assertThat(emptied.lookup(countKey)).isEqualTo(None)
+    assertThat(original.isEmpty).isFalse
+    assertThat(original.size).isEqualTo(2)
+    assertThat(original.lookup(nameKey)).isEqualTo(Some("stored"))
+    assertThat(original.lookup(countKey)).isEqualTo(Some(3))
+  }
+
   private def newKey[A](): Key[A] = Key.newKey[IO, A].unsafeRunSync()
 }
