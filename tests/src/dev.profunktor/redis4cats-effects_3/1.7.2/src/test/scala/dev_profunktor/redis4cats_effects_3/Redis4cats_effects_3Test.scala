@@ -58,6 +58,28 @@ class Redis4cats_effects_3Test {
   }
 
   @Test
+  def sortedSetCommandModelsPreserveScoresRangesAndLimits(): Unit = {
+    val first: ScoreWithValue[String] = ScoreWithValue(Score(10.25), "alpha")
+    val second: ScoreWithValue[String] = first.copy(score = Score(11.5), value = "beta")
+
+    assertEquals(Score(10.25), first.score)
+    assertEquals("alpha", first.value)
+    assertEquals(ScoreWithValue(Score(11.5), "beta"), second)
+
+    val scoreRange: ZRange[Double] = ZRange(1.5, 10.0)
+    val lexicographicRange: ZRange[String] = ZRange("a", "z")
+    val limit: RangeLimit = RangeLimit(2L, 5L)
+
+    assertEquals(1.5d, scoreRange.start, 0.0d)
+    assertEquals(10.0d, scoreRange.end, 0.0d)
+    assertEquals("a", lexicographicRange.start)
+    assertEquals("z", lexicographicRange.end)
+    assertEquals(2L, limit.offset)
+    assertEquals(5L, limit.count)
+    assertEquals(RangeLimit(0L, 10L), limit.copy(offset = 0L, count = 10L))
+  }
+
+  @Test
   def redisEnumsAndAlgebraicArgumentsExposeExpectedPublicValues(): Unit = {
     assertEquals(io.lettuce.core.FlushMode.SYNC, FlushMode.Sync.asJava)
     assertEquals(io.lettuce.core.FlushMode.ASYNC, FlushMode.Async.asJava)
