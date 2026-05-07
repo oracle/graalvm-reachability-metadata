@@ -14,11 +14,14 @@ import com.baomidou.mybatisplus.autoconfigure.DdlApplicationRunner;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.SafetyEncryptProcessor;
+import com.baomidou.mybatisplus.autoconfigure.SqlSessionFactoryBeanCustomizer;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.AES;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.ddl.IDdl;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
@@ -117,6 +120,25 @@ public class Mybatis_plus_boot_starterTest {
     }
 
     @Test
+    void sqlSessionFactoryBeanCustomizerInstallsCustomObjectFactory() {
+        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(FactoryBeanCustomizerApplication.class)
+                .web(WebApplicationType.NONE)
+                .properties(Map.of(
+                        "spring.datasource.url", "jdbc:h2:mem:mybatisPlusBootStarterFactoryCustomizer;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                        "spring.datasource.driver-class-name", "org.h2.Driver",
+                        "spring.datasource.hikari.maximum-pool-size", "1",
+                        "spring.datasource.hikari.connection-timeout", "2000",
+                        "spring.main.banner-mode", "off",
+                        "logging.level.root", "WARN"))
+                .run()) {
+            ObjectFactory objectFactory = context.getBean(SqlSessionFactory.class).getConfiguration().getObjectFactory();
+
+            assertThat(objectFactory).isInstanceOf(AccountDefaultsObjectFactory.class);
+            assertThat(objectFactory.create(Account.class).getUserName()).isEqualTo("created by custom object factory");
+        }
+    }
+
+    @Test
     void safetyEncryptProcessorDecryptsOriginTrackedPropertiesWhenKeyIsPresent() {
         String key = "1234567890abcdef";
         String encryptedPassword = "mpw:" + AES.encrypt("native-friendly-secret", key);
@@ -144,6 +166,23 @@ public class Mybatis_plus_boot_starterTest {
 
         assertThat(ddl.invocations()).isEqualTo(1);
         assertThat(ddl.observedSqlFiles()).containsExactly("schema/account.sql", "schema/audit.sql");
+    }
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    public static class FactoryBeanCustomizerApplication {
+
+        @Bean
+        MapperFactoryBean<AccountMapper> accountMapper(SqlSessionFactory sqlSessionFactory) {
+            MapperFactoryBean<AccountMapper> mapperFactoryBean = new MapperFactoryBean<>(AccountMapper.class);
+            mapperFactoryBean.setSqlSessionFactory(sqlSessionFactory);
+            return mapperFactoryBean;
+        }
+
+        @Bean
+        SqlSessionFactoryBeanCustomizer sqlSessionFactoryBeanCustomizer() {
+            return factory -> factory.setObjectFactory(new AccountDefaultsObjectFactory());
+        }
     }
 
     @SpringBootConfiguration
@@ -204,6 +243,27 @@ public class Mybatis_plus_boot_starterTest {
 
         public void setAge(Integer age) {
             this.age = age;
+        }
+    }
+
+    private static final class AccountDefaultsObjectFactory extends DefaultObjectFactory {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public <T> T create(Class<T> type) {
+            return initialize(super.create(type));
+        }
+
+        @Override
+        public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
+            return initialize(super.create(type, constructorArgTypes, constructorArgs));
+        }
+
+        private <T> T initialize(T instance) {
+            if (instance instanceof Account account) {
+                account.setUserName("created by custom object factory");
+            }
+            return instance;
         }
     }
 
