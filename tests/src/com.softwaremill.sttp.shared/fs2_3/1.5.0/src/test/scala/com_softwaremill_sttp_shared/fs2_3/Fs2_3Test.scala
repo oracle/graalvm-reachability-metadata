@@ -7,6 +7,7 @@
 package com_softwaremill_sttp_shared.fs2_3
 
 import cats.effect.IO
+import cats.effect.SyncIO
 import cats.effect.unsafe.implicits.global
 import fs2.Chunk
 import fs2.Stream
@@ -103,9 +104,22 @@ class Fs2_3Test {
     assertSame(boom, result.left.toOption.get)
   }
 
+  @Test
+  def fs2StreamsAndLimitBytesWorkWithSyncIOEffects(): Unit = {
+    val streams: Fs2Streams[SyncIO] = Fs2Streams[SyncIO]
+    val binary: streams.BinaryStream =
+      Stream.eval(SyncIO.delay(4.toByte)) ++ Stream.emits(Seq[Byte](5, 6)).covary[SyncIO]
+    val limitToPayloadSize: streams.Pipe[Byte, Byte] = source => Fs2Streams.limitBytes(source, maxBytes = 3L)
+
+    assertEquals(Right(List[Byte](4, 5, 6)), collectSyncIO(binary.through(limitToPayloadSize)))
+  }
+
   private def chunk(bytes: Byte*): Stream[IO, Byte] = Stream.chunk(Chunk.array(bytes.toArray)).covary[IO]
 
   private def collect[A](stream: Stream[IO, A]): Either[Throwable, List[A]] = stream.compile.toList.attempt.unsafeRunSync()
+
+  private def collectSyncIO[A](stream: Stream[SyncIO, A]): Either[Throwable, List[A]] =
+    stream.compile.toList.attempt.unsafeRunSync()
 
   private def assertLimitExceeded(result: Either[Throwable, List[Byte]], expectedMaxBytes: Long): Unit = {
     assertTrue(result.isLeft)
