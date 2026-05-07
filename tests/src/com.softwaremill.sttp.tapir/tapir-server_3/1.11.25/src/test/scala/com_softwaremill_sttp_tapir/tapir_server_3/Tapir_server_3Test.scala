@@ -34,6 +34,7 @@ import sttp.tapir.auth
 import sttp.tapir.endpoint
 import sttp.tapir.header
 import sttp.tapir.path
+import sttp.tapir.paths
 import sttp.tapir.query
 import sttp.tapir.statusCode
 import sttp.tapir.stringBody
@@ -120,6 +121,22 @@ class Tapir_server_3Test {
     assertEquals("accepted:TAPIR", accepted.body.getOrElse(""))
     assertEquals(StatusCode.BadRequest, rejected.code)
     assertEquals("empty body", rejected.body.getOrElse(""))
+  }
+
+  @Test
+  def wildcardPathCaptureProvidesAllRemainingSegmentsToServerLogic(): Unit = {
+    val fileEndpoint: ServerEndpoint[Any, Identity] = endpoint.get
+      .in("files" / paths)
+      .out(stringBody)
+      .serverLogicSuccessPure[Identity]((segments: List[String]) => s"requested:${segments.mkString("/")}")
+
+    val response: ServerResponse[String] = responseFor(
+      request(Method.GET, uri"http://example.test/files/docs/reference/readme.txt"),
+      List(fileEndpoint)
+    )
+
+    assertEquals(StatusCode.Ok, response.code)
+    assertEquals("requested:docs/reference/readme.txt", response.body.getOrElse(""))
   }
 
   @Test
