@@ -53,6 +53,19 @@ object InventoryItem:
       (__ \ "tags").readWithDefault[Seq[String]](Seq.empty[String])
   )(InventoryItem.apply _)
 
+case class PaymentMethod(cardLast4: String, billingCountry: String, preferred: Boolean)
+
+object PaymentMethod:
+  given OFormat[PaymentMethod] = (
+    (__ \ "card" \ "last4").format[String] and
+      (__ \ "billing" \ "country").format[String] and
+      (__ \ "preferred").format[Boolean]
+  )(
+    (cardLast4: String, billingCountry: String, preferred: Boolean) =>
+      PaymentMethod(cardLast4, billingCountry, preferred),
+    (method: PaymentMethod) => (method.cardLast4, method.billingCountry, method.preferred)
+  )
+
 object TicketStatus extends Enumeration:
   type TicketStatus = Value
   val Open, PendingReview, Resolved = Value
@@ -198,6 +211,24 @@ class Play_json_3Test {
         assertTrue(messages.contains("error.expected.nonblank"))
         assertTrue(messages.contains("error.expected.positive"))
       case success => fail(s"Expected validation errors, got $success")
+  }
+
+  @Test
+  def mapsNestedJsonPathsWithCombinatorFormat(): Unit = {
+    val json: JsObject = Json.obj(
+      "card" -> Json.obj("last4" -> "4242"),
+      "billing" -> Json.obj("country" -> "US"),
+      "preferred" -> true
+    )
+
+    val method: PaymentMethod = json.as[PaymentMethod]
+    assertEquals(PaymentMethod("4242", "US", true), method)
+
+    val written: JsObject = Json.toJsObject(method.copy(preferred = false))
+    assertEquals("4242", (written \ "card" \ "last4").as[String])
+    assertEquals("US", (written \ "billing" \ "country").as[String])
+    assertFalse((written \ "preferred").as[Boolean])
+    assertEquals(Set("card", "billing", "preferred"), written.keys.toSet)
   }
 
   @Test
