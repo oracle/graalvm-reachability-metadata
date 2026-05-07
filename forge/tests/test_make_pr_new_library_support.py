@@ -13,10 +13,30 @@ from git_scripts.make_pr_new_library_support import (
     DynamicAccessMetadataEvidence,
     build_pull_request_body,
     load_dynamic_access_metadata_evidence,
+    validate_run_quality,
 )
 
 
 class MakePrNewLibrarySupportTests(unittest.TestCase):
+    def test_validate_run_quality_refuses_low_dynamic_access_coverage(self) -> None:
+        run_metrics = {
+            "status": "success",
+            "metrics": {
+                "code_coverage_percent": 8.43,
+            },
+            "stats": {
+                "dynamicAccess": {
+                    "coveredCalls": 0,
+                    "totalCalls": 8,
+                    "coverageRatio": 0.0,
+                },
+            },
+        }
+
+        with patch("git_scripts.make_pr_new_library_support.read_pending_metrics", return_value=run_metrics):
+            with self.assertRaisesRegex(ValueError, "dynamic-access coverage is 0/8"):
+                validate_run_quality("org.wildfly.common:wildfly-common:1.5.0.Final", "/tmp/metrics")
+
     def test_build_pull_request_body_explains_large_dynamic_access_metadata_count_gap(self) -> None:
         body = build_pull_request_body(
             issue_no=4527,

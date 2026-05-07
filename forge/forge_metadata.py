@@ -90,7 +90,10 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.metrics_writer import read_pending_metrics
+from utility_scripts.metrics_writer import (
+    NEW_LIBRARY_DYNAMIC_ACCESS_MIN_COVERAGE_RATIO,
+    read_pending_metrics,
+)
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
     get_forge_subdir_name,
@@ -194,7 +197,7 @@ SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
 ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
 FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
 FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
-LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
+LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = NEW_LIBRARY_DYNAMIC_ACCESS_MIN_COVERAGE_RATIO
 HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"
@@ -4368,6 +4371,52 @@ def handle_failed_claimed_issue(
     revert_claimed_issue(claimed_issue, reason)
 
 
+def route_successful_run_to_human_intervention(
+        claimed_issue: ClaimedIssue,
+        started_at: float | None = None,
+) -> bool:
+    """Route a completed but non-PR-quality run to human intervention before finalization."""
+    if claimed_issue.label != LABEL_LIBRARY_NEW:
+        return False
+
+    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success=True)
+    if candidate is None:
+        return False
+
+    preservation_result = preserve_failed_work_for_follow_up(claimed_issue)
+    if is_user_interrupt_requested():
+        raise KeyboardInterrupt
+
+    try:
+        comment_body = run_human_intervention_analysis(
+            claimed_issue,
+            candidate,
+            started_at,
+            preservation_result,
+        )
+        comment_body = ensure_preserved_branch_link_in_comment(comment_body, preservation_result)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to apply human-intervention follow-up to issue #{claimed_issue.issue['number']}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+        comment_body = None
+    if is_user_interrupt_requested():
+        raise KeyboardInterrupt
+    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    try:
+        refresh_preserved_branch_logs(claimed_issue, preservation_result)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to refresh preserved logs for issue #{claimed_issue.issue['number']}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+    revert_claimed_issue(claimed_issue, "human intervention required")
+    return True
+
+
 def handle_completed_run(run_result: WorkflowRunResult) -> bool:
     """Finalize a completed workflow run and return the final handled result."""
     claimed_issue = run_result.claimed_issue
@@ -4380,6 +4429,11 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 "workflow failure",
                 started_at=run_result.started_at,
             )
+            return False
+        if route_successful_run_to_human_intervention(
+                claimed_issue,
+                started_at=run_result.started_at,
+        ):
             return False
         try:
             finalize_successful_issue(claimed_issue)

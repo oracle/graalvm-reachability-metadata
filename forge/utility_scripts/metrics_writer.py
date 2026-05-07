@@ -43,6 +43,8 @@ OUTPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "oca/gpt-5.5": 30.00,
 }
 
+NEW_LIBRARY_DYNAMIC_ACCESS_MIN_COVERAGE_RATIO = 0.20
+
 
 def calc_token_cost(token_count: int, rate_per_1m: float) -> float:
     return round((token_count / 1_000_000.0) * rate_per_1m, 4)
@@ -1024,16 +1026,67 @@ def commit_run_metrics_with_retry(
             shutil.rmtree(snapshot_root, ignore_errors=True)
 
 
+def _get_metric_number(run_metrics: dict, key: str) -> float:
+    """Read a numeric metrics value, accepting legacy top-level entries as a fallback."""
+    metrics = run_metrics.get("metrics")
+    if isinstance(metrics, dict):
+        value = metrics.get(key)
+        if isinstance(value, (int, float)):
+            return float(value)
+
+    value = run_metrics.get(key)
+    if isinstance(value, (int, float)):
+        return float(value)
+    return 0.0
+
+
+def _new_library_dynamic_access_quality_issue(run_metrics: dict) -> str | None:
+    """Return a blocking dynamic-access quality issue for a PR-eligible new-library run."""
+    stats = run_metrics.get("stats")
+    if not isinstance(stats, dict):
+        return None
+
+    dynamic_access = stats.get("dynamicAccess")
+    if not isinstance(dynamic_access, dict):
+        return None
+
+    total_calls = dynamic_access.get("totalCalls")
+    covered_calls = dynamic_access.get("coveredCalls")
+    if not isinstance(total_calls, int) or not isinstance(covered_calls, int):
+        return None
+    if total_calls <= 0:
+        return None
+
+    coverage_ratio = dynamic_access.get("coverageRatio")
+    if not isinstance(coverage_ratio, (int, float)):
+        coverage_ratio = covered_calls / total_calls
+    coverage_ratio = float(coverage_ratio)
+    if coverage_ratio > NEW_LIBRARY_DYNAMIC_ACCESS_MIN_COVERAGE_RATIO:
+        return None
+
+    coverage_percent = coverage_ratio * 100.0
+    required_percent = NEW_LIBRARY_DYNAMIC_ACCESS_MIN_COVERAGE_RATIO * 100.0
+    return (
+        "dynamic-access coverage is "
+        f"{covered_calls}/{total_calls} ({coverage_percent:.2f}%); "
+        f"new-library PRs require coverage above {required_percent:.0f}% when dynamic-access calls exist"
+    )
+
+
 def collect_new_library_support_quality_issues(run_metrics: dict) -> list[str]:
     """Return validation failures for a new-library-support run that is not meaningful enough for a PR."""
     status = run_metrics.get("status")
     if status not in {"success", "success_with_intervention", "chunk_ready"}:
         return [f"workflow status is `{status or 'unknown'}`"]
 
-    metrics = run_metrics.get("metrics") or {}
+    issues: list[str] = []
 
-    code_coverage_percent = float(metrics.get("code_coverage_percent", 0.0) or 0.0)
+    code_coverage_percent = _get_metric_number(run_metrics, "code_coverage_percent")
     if code_coverage_percent <= 0.0:
-        return ["library coverage percentage is zero"]
+        issues.append("library coverage percentage is zero")
 
-    return []
+    dynamic_access_issue = _new_library_dynamic_access_quality_issue(run_metrics)
+    if dynamic_access_issue is not None:
+        issues.append(dynamic_access_issue)
+
+    return issues

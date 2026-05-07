@@ -129,6 +129,70 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             "--metrics-repo-path", "/tmp/metrics-worktree",
         ])
 
+    def test_resolve_human_intervention_candidate_uses_twenty_percent_dynamic_access_gate(self) -> None:
+        claimed_issue = _claimed_issue()
+        run_metrics = {
+            "status": "success",
+            "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+            "stats": {
+                "dynamicAccess": {
+                    "coveredCalls": 1,
+                    "totalCalls": 8,
+                    "coverageRatio": 0.125,
+                },
+            },
+        }
+
+        with patch.object(forge_metadata, "_load_pending_run_metrics", return_value=run_metrics), \
+                patch.object(forge_metadata, "load_strategy_by_name", return_value={"workflow": "dynamic_access_iterative"}):
+            candidate = forge_metadata.resolve_human_intervention_candidate(claimed_issue)
+
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertEqual("low_dynamic_access_coverage", candidate.reason)
+        self.assertEqual(1, candidate.coverage.covered_calls)
+        self.assertEqual(8, candidate.coverage.total_calls)
+
+    def test_completed_successful_run_routes_human_intervention_before_finalization(self) -> None:
+        claimed_issue = _claimed_issue()
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            workflow_status="success",
+            coverage=forge_metadata.DynamicAccessCoverageSnapshot(
+                covered_calls=0,
+                total_calls=8,
+                coverage_ratio=0.0,
+                source="stats",
+            ),
+        )
+        preservation_result = forge_metadata.FailurePreservationResult(
+            branch_name="ai/test/human-intervention",
+            branch_url="https://github.com/example/repo/tree/ai/test/human-intervention",
+            committed_changes=True,
+        )
+
+        with patch.object(forge_metadata, "resolve_human_intervention_candidate", return_value=candidate), \
+                patch.object(forge_metadata, "preserve_failed_work_for_follow_up", return_value=preservation_result), \
+                patch.object(forge_metadata, "run_human_intervention_analysis", return_value="Human intervention needed"), \
+                patch.object(forge_metadata, "post_human_intervention_comment_and_label") as post_follow_up, \
+                patch.object(forge_metadata, "refresh_preserved_branch_logs") as refresh_logs, \
+                patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
+                patch.object(forge_metadata, "finalize_successful_issue") as finalize_successful_issue:
+            handled = forge_metadata.handle_completed_run(
+                forge_metadata.WorkflowRunResult(
+                    claimed_issue=claimed_issue,
+                    success=True,
+                    started_at=123.0,
+                )
+            )
+
+        self.assertFalse(handled)
+        finalize_successful_issue.assert_not_called()
+        post_follow_up.assert_called_once()
+        self.assertIn("Preserved work branch", post_follow_up.call_args.args[1])
+        refresh_logs.assert_called_once_with(claimed_issue, preservation_result)
+        revert_claimed_issue.assert_called_once_with(claimed_issue, "human intervention required")
+
 
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_does_not_log_github_query_by_default(self) -> None:
