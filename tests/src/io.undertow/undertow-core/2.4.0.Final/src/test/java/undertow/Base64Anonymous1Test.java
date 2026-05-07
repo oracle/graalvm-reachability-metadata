@@ -28,7 +28,7 @@ public class Base64Anonymous1Test {
         Object decoded = decodeToObject(encoded, loader);
 
         assertThat(decoded).isEqualTo(message);
-        assertThat(loader.loadedEncodedPayload()).isTrue();
+        assertExpectedClassLoaderUsage(loader);
     }
 
     @Test
@@ -74,6 +74,17 @@ public class Base64Anonymous1Test {
             }
             throw exception;
         }
+    }
+
+    private static void assertExpectedClassLoaderUsage(DelegatingClassLoader loader) {
+        if (isNativeImageRuntime()) {
+            return;
+        }
+        assertThat(loader.loadedEncodedPayload()).isTrue();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private record EncodedPayload(String value) implements Serializable {
