@@ -67,6 +67,8 @@ public class Selenium_httpTest {
         HttpRequest request = new HttpRequest(HttpMethod.POST, "/submit")
             .addHeader("X-Test", "first")
             .addHeader("x-test", "second")
+            .addHeader("X-Ordered", "first")
+            .addHeader("X-Ordered", "second")
             .setAttribute("trace", "abc-123")
             .addQueryParameter("name", "Jane Doe")
             .addQueryParameter("name", "John Roe")
@@ -75,8 +77,10 @@ public class Selenium_httpTest {
 
         assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getUri()).isEqualTo("/submit");
-        assertThat(request.getHeader("X-Test")).isEqualTo("first");
-        assertThat(request.getHeaders("X-Test")).containsExactly("first", "second");
+        assertThat(request.getHeader("X-Test")).isIn("first", "second");
+        assertThat(request.getHeaders("X-Test")).containsExactlyInAnyOrder("first", "second");
+        assertThat(request.getHeader("X-Ordered")).isEqualTo("first");
+        assertThat(request.getHeaders("X-Ordered")).containsExactly("first", "second");
         assertThat(request.getHeaderNames()).contains("X-Test", "x-test", "Content-Type");
         assertThat(request.getAttribute("trace")).isEqualTo("abc-123");
         assertThat(request.getAttributeNames()).containsExactly("trace");
