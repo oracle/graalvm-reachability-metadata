@@ -69,6 +69,19 @@ class Zio_constraintless_3Test {
   }
 
   @Test
+  def resolvesRepeatedRequestedTypesIndependently(): Unit = {
+    val evidence: AreElementsOf[String :: String :: End, String :: Int :: End] =
+      AreElementsOf[String :: String :: End, String :: Int :: End]
+
+    evidence match {
+      case AreElementsOf.TypeCollection(firstStringEvidence, AreElementsOf.TypeCollection(secondStringEvidence, AreElementsOf.NilCollection())) =>
+        assertThat(describeElementEvidence(firstStringEvidence)).isEqualTo("head")
+        assertThat(describeElementEvidence(secondStringEvidence)).isEqualTo("head")
+      case other => fail(s"Expected two independent String element evidences followed by NilCollection, got $other")
+    }
+  }
+
+  @Test
   def instancesSelectsTypeClassForHeadMiddleAndTailElements(): Unit = {
     type Supported = String :: Int :: Boolean :: End
     val instances: Instances[Label, Supported] = summon[Instances[Label, Supported]]
