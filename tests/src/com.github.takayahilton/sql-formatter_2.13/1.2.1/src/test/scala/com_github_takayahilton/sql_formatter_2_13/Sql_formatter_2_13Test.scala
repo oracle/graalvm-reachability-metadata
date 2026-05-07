@@ -213,6 +213,35 @@ class SqlFormatterTest {
   }
 
   @Test
+  def formatsSetOperationsBetweenSelectStatements(): Unit = {
+    val result: String = SqlFormatter.format(
+      "SELECT user_id, display_name FROM active_users " +
+        "UNION ALL SELECT archived_user_id, display_name FROM archived_users " +
+        "EXCEPT SELECT banned_user_id, display_name FROM banned_users;"
+    )
+
+    assertThat(result).isEqualTo(
+      """|SELECT
+         |  user_id,
+         |  display_name
+         |FROM
+         |  active_users
+         |UNION ALL
+         |SELECT
+         |  archived_user_id,
+         |  display_name
+         |FROM
+         |  archived_users
+         |EXCEPT
+         |SELECT
+         |  banned_user_id,
+         |  display_name
+         |FROM
+         |  banned_users;""".stripMargin
+    )
+  }
+
+  @Test
   def formatsCouchbaseN1qlObjectsArraysAndDollarParameters(): Unit = {
     val formatter: AbstractFormatter = SqlFormatter.of(SqlDialect.CouchbaseN1QL)
 
