@@ -7,6 +7,7 @@
 package com_typesafe_play.play_streams_3
 
 import java.util.Arrays
+import java.util.Locale
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
@@ -38,6 +39,7 @@ import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.reactivestreams.Processor
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import play.api.libs.streams.Accumulator
@@ -240,6 +242,35 @@ class Play_streams_3Test {
   }
 
   @Test
+  def processorProbeDelegatesBothSubscriberAndPublisherSides(): Unit = {
+    val events = new ConcurrentLinkedQueue[String]()
+    val requested = new AtomicLong(0L)
+    val processor: Processor[String, String] = new UppercaseProcessor
+    val probed: Processor[String, String] = Probes.processorProbe[String, String]("processor", processor, identity, identity)
+
+    probed.subscribe(new Subscriber[String] {
+      override def onSubscribe(s: Subscription): Unit = {
+        events.add("subscribe")
+        s.request(2)
+      }
+
+      override def onNext(t: String): Unit = events.add(s"next:$t")
+      override def onError(t: Throwable): Unit = events.add(s"error:${t.getClass.getSimpleName}")
+      override def onComplete(): Unit = events.add("complete")
+    })
+    probed.onSubscribe(new Subscription {
+      override def request(n: Long): Unit = requested.addAndGet(n)
+      override def cancel(): Unit = events.add("upstream-cancel")
+    })
+    probed.onNext("alpha")
+    probed.onNext("beta")
+    probed.onComplete()
+
+    assertThat(events.asScala.toSeq.asJava).containsExactly("subscribe", "next:ALPHA", "next:BETA", "complete")
+    assertThat(requested.get()).isEqualTo(Long.MaxValue)
+  }
+
+  @Test
   def ignoreAfterCancellationKeepsUpstreamDrainedForRemainingConsumers(): Unit = {
     withActorSystem("ignore-after-cancel") { (_, materializer) =>
       implicit val implicitMaterializer: Materializer = materializer
@@ -274,5 +305,25 @@ object Play_streams_3Test {
     override def receive: Receive = { case text: String => out ! text.reverse }
 
     override def postStop(): Unit = out ! Status.Success(())
+  }
+
+  private final class UppercaseProcessor extends Processor[String, String] {
+    private var downstream: Subscriber[_ >: String] = _
+
+    override def subscribe(s: Subscriber[_ >: String]): Unit = {
+      downstream = s
+      s.onSubscribe(new Subscription {
+        override def request(n: Long): Unit = ()
+        override def cancel(): Unit = ()
+      })
+    }
+
+    override def onSubscribe(s: Subscription): Unit = s.request(Long.MaxValue)
+
+    override def onNext(t: String): Unit = downstream.onNext(t.toUpperCase(Locale.ROOT))
+
+    override def onError(t: Throwable): Unit = downstream.onError(t)
+
+    override def onComplete(): Unit = downstream.onComplete()
   }
 }
