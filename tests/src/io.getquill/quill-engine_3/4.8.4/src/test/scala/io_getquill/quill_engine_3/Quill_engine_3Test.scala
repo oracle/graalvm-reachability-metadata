@@ -26,6 +26,8 @@ import io.getquill.ast.Assignment
 import io.getquill.ast.BinaryOperation
 import io.getquill.ast.Constant
 import io.getquill.ast.Delete
+import io.getquill.ast.Distinct
+import io.getquill.ast.Drop
 import io.getquill.ast.Entity
 import io.getquill.ast.EqualityOperator
 import io.getquill.ast.Filter
@@ -44,6 +46,7 @@ import io.getquill.ast.QuotedReference
 import io.getquill.ast.Renameable
 import io.getquill.ast.ScalarTag
 import io.getquill.ast.SortBy
+import io.getquill.ast.Take
 import io.getquill.ast.Tuple
 import io.getquill.ast.Update
 import io.getquill.ast.Visibility
@@ -258,6 +261,23 @@ class Quill_engine_3Test {
     val countAdults: Aggregation = Aggregation(AggregationOperator.size, adultPeople)
     assertThat(translateSql(countAdults))
       .isEqualTo("SELECT COUNT(p.*) FROM Person p WHERE p.age > 21")
+  }
+
+  @Test
+  def mirrorSqlDialectTranslatesDistinctPagination(): Unit = {
+    val p: Ident = Ident("p", personQuat)
+    val adultPeople: Filter = Filter(
+      person,
+      p,
+      BinaryOperation(Property(p, "age"), NumericOperator.`>`, Constant.auto(21))
+    )
+    val pageOfDistinctAdults: Take = Take(
+      Drop(Distinct(adultPeople), Constant.auto(5)),
+      Constant.auto(10)
+    )
+
+    assertThat(translateSql(pageOfDistinctAdults))
+      .isEqualTo("SELECT DISTINCT p.id, p.firstName, p.age, p.active FROM Person p WHERE p.age > 21 LIMIT 10 OFFSET 5")
   }
 
   @Test
