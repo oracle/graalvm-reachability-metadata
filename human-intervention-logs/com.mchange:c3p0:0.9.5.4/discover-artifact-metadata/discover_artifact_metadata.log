@@ -1,0 +1,887 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0014-468c-7bc3-aa34-1d8467df805e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.mchange:c3p0:0.9.5.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.9.5.4" when "$version$" is replaced with "0.9.5.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+- Set "coordinates" to "com.mchange:c3p0:0.9.5.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.9.5.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata shape, then verify the c3p0 artifact URLs from Maven/upstream before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+{
+  "coordinates" : "com.mchange:c3p0:0.9.5.4"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\"|\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json:2:  "coordinates" : "com.mchange:c3p0:0.9.5.4"
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+
+web search: 
+web search: com.mchange c3p0 0.9.5.4 maven sources tests repository
+web search: 
+web search: https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/
+codex
+Maven Central has the published jar, sources jar, and javadoc jar for `0.9.5.4`, but no test-sources artifact in that version directory. I’m checking the POM and upstream tags now so the test URL can still land on the matching release.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>com.mchange</groupId>
+ <artifactId>c3p0</artifactId> 
+ <packaging>jar</packaging> 
+ <version>0.9.5.4</version>
+
+ <name>c3p0</name>
+ <description>a JDBC Connection pooling / Statement caching library</description>
+ <url>https://github.com/swaldman/c3p0</url>
+ <licenses>
+   <license>
+     <name>GNU Lesser General Public License, Version 2.1</name>
+     <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+     <distribution>repo</distribution>
+   </license>
+   <license>                                      
+     <name>Eclipse Public License, Version 1.0</name>
+     <url>http://www.eclipse.org/org/documents/epl-v10.php</url> 
+     <distribution>repo</distribution>
+   </license>
+</licenses>
+ <scm>
+   <url>scm:git:git@github.com:swaldman/c3p0.git</url>              
+   <connection>scm:git:git@github.com:swaldman/c3p0.git</connection>
+ </scm>
+ <developers>
+   <developer>
+     <id>swaldman</id>                  
+     <name>Steve Waldman</name>         
+     <email>swaldman@mchange.com</email>
+   </developer>
+ </developers>
+ <dependencies>
+   <dependency>
+     <groupId>com.mchange</groupId>
+     <artifactId>mchange-commons-java</artifactId>
+     <version>0.2.15</version>
+   </dependency>
+ </dependencies>
+</project>
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-test-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+exec
+/usr/bin/bash -lc "find . -path '*metadata*.json' -type f | head -50" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+./stats/org.jetbrains.kotlinx/kotlinx-metadata-jvm/0.9.0/execution-metrics.json
+./stats/org.jetbrains.kotlinx/kotlinx-metadata-jvm/0.9.0/stats.json
+./metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+./metadata/org.eclipse.jetty/jetty-ee/index.json
+./metadata/org.eclipse.jetty/jetty-ee/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/index.json
+./metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/index.json
+./metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util/index.json
+./metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/index.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/index.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-session/index.json
+./metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+./metadata/org.scalatest/scalatest-compatible/index.json
+./metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+./metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+./metadata/org.awaitility/awaitility/index.json
+./metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/3.6.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json
+./metadata/com.typesafe.slick/slick_2.13/3.6.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick_2.13/index.json
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json
+./metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/index.json
+./metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json
+./metadata/jakarta.authentication/jakarta.authentication-api/3.0.0/reachability-metadata.json
+./metadata/org.springframework/spring-jcl/index.json
+./metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+
+ succeeded in 303ms:
+HTTP/2 404 
+date: Thu, 07 May 2026 01:36:46 GMT
+content-type: text/html
+cf-ray: 9f7c7ee2d9b89a60-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"description\"|\"language\"|\"not-for-native-image\"' --glob '*.json' . | head -120" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+./forge/schemas/benchmark_run_metrics_schema.json:4:  "description": "JSON Schema for benchmark-level metrics produced by Metadata Forge benchmarking.",
+./forge/schemas/benchmark_run_metrics_schema.json:127:      "description": "Collected run metrics.",
+./forge/schemas/benchmark_run_metrics_schema.json:381:        "description": "Name of the benchmark suite that was executed."
+./forge/schemas/benchmark_run_metrics_schema.json:386:        "description": "ISO-8601 timestamp marking when this benchmark record was created."
+./forge/schemas/benchmark_run_metrics_schema.json:390:        "description": "Per-library metrics collected during this benchmark run.",
+./forge/schemas/benchmark_suite_schema.json:4:  "description": "Strict JSON Schema (Draft 2020-12) for defining a Benchmark Suite in Metadata Forge.",
+./forge/schemas/benchmark_suite_schema.json:11:      "description",
+./forge/schemas/benchmark_suite_schema.json:19:        "description": "Human-readable benchmark suite name."
+./forge/schemas/benchmark_suite_schema.json:21:      "description": {
+./forge/schemas/benchmark_suite_schema.json:24:        "description": "Description of the benchmark suite."
+./forge/schemas/benchmark_suite_schema.json:29:        "description": "List of library coordinates included in this suite.",
+./forge/schemas/benchmark_suite_schema.json:33:          "description": "Dependency coordinate in the form group:artifact:version."
+./forge/schemas/benchmark_suite_schema.json:39:        "description": "Reference to a strategy name defined elsewhere."
+./forge/schemas/benchmark_suite_schema.json:47:        "description": "Benchmark suite for core libraries using baseline strategy.",
+./forge/schemas/strategy_schema.json:4:  "description": "Strict JSON Schema (Draft 2020-12) for strategy configurations used in Metadata Forge benchmarking and evaluation.",
+./forge/schemas/strategy_schema.json:11:      "description",
+./forge/schemas/strategy_schema.json:21:        "description": "Human-readable strategy name. May include a version suffix (e.g., 'Basic Iterative v1.0') to distinguish minor workflow updates or logic refinements while preserving the base strategy identity."
+./forge/schemas/strategy_schema.json:23:      "description": {
+./forge/schemas/strategy_schema.json:26:        "description": "Description of the strategy workflow and behavior."
+./forge/schemas/strategy_schema.json:31:        "description": "Name of the agent."
+./forge/schemas/strategy_schema.json:36:        "description": "Workflow strategy implementation name."
+./forge/schemas/strategy_schema.json:41:        "description": "Primary workflow to run first in composite strategies (e.g., increase_dynamic_access_coverage)."
+./forge/schemas/strategy_schema.json:46:        "description": "Model identifier to run for this strategy."
+./forge/schemas/strategy_schema.json:51:        "description": "Optional LLM provider identifier for agent backends that support provider selection."
+./forge/schemas/strategy_schema.json:55:        "description": "Prompt templates used by the workflow.",
+./forge/schemas/strategy_schema.json:67:        "description": "Optional prompt-template path for workflow-wide instructions that should be passed through the agent backend's persistent instruction layer."
+./forge/schemas/strategy_schema.json:71:        "description": "Optional tunable parameters for the strategy.",
+./forge/schemas/strategy_schema.json:96:        "description": "List of MCP configuration identifiers to enable for this strategy.",
+./forge/schemas/strategy_schema.json:108:        "description": "Baseline Codex-driven iterative workflow.",
+./forge/benchmarks/benchmark_suite.json:4:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:12:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:20:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:28:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:36:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:44:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:52:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:60:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_documentation_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:68:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:76:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_documentation_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:84:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.3` strategy.",
+./forge/benchmarks/benchmark_suite.json:92:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:100:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:108:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:116:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:124:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:132:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_graphify_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:140:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_graphify_bulk_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:148:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `basic_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:156:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `basic_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:164:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:172:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:180:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:188:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_documentation_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:196:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:204:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_documentation_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:212:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_pi_gpt-5.3` strategy.",
+./forge/benchmarks/benchmark_suite.json:220:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:228:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:236:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:244:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_bulk_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:252:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_graphify_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:260:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_graphify_bulk_codex_gpt-5.5` strategy.",
+./forge/strategies/predefined_strategies.json:4:    "description": "Same configuration as basic_iterative, but uses gpt-5.4 instead.",
+./forge/strategies/predefined_strategies.json:22:    "description": "Iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:40:    "description": "Strategy for fix_javac_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:57:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:76:    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:95:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:114:    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:133:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:153:    "description": "Dynamic-access-guided Codex workflow using downloaded upstream test sources as read-only context.",
+./forge/strategies/predefined_strategies.json:172:    "description": "Same configuration as dynamic_access_test_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:191:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context.",
+./forge/strategies/predefined_strategies.json:210:    "description": "Same configuration as dynamic_access_documentation_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:229:    "description": "Dynamic-access-guided Codex workflow using main sources plus upstream test sources.",
+./forge/strategies/predefined_strategies.json:249:    "description": "Same configuration as dynamic_access_main_sources_with_tests_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:269:    "description": "Dynamic-access-guided Codex workflow using main sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:289:    "description": "Same configuration as dynamic_access_main_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:309:    "description": "Dynamic-access-guided Codex workflow using main sources, upstream test sources, and documentation artifacts.",
+./forge/strategies/predefined_strategies.json:330:    "description": "Same configuration as dynamic_access_main_sources_with_tests_and_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:351:    "description": "Dynamic-access-guided Codex workflow using upstream test sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:371:    "description": "Same configuration as dynamic_access_test_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:391:    "description": "Composite strategy: runs javac_iterative to fix compilation, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:413:    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:435:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:458:    "description": "Strategy for fix_java_run_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the runtime error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:475:    "description": "Composite strategy: runs java_run_iterative to fix runtime failures, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:497:    "description": "Basic iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:515:    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:533:    "description": "Pi bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:552:    "description": "Codex bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:571:    "description": "Pi graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:591:    "description": "Codex graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:611:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:634:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:657:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:680:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:703:    "description": "Same configuration as basic_iterative, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:721:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:740:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:759:    "description": "Library-update strategy: skips primary workflow, directly runs dynamic-access coverage improvement on existing tests.",
+./forge/strategies/predefined_strategies.json:778:    "description": "Library-update bulk dynamic-access strategy: runs only the optimistic full-report workflow against existing tests, without per-class refinement.",
+./forge/strategies/predefined_strategies.json:798:    "description": "Library-update composite strategy: bulk dynamic-access coverage in one broad pass first, then per-class iterative refinement of any stragglers. Mirrors the iterative library-update strategy but starts with a faster bulk pass.",
+./metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+./metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+./metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:9:    "description" : "Java Data Objects (JDO) API defines standard interfaces and annotations for Java object persistence. This artifact provides the JDO 3.2 API classes used by applications and persistence providers to model, query, and manage persistent Java objects.",
+./metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+./metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:9:    "description" : "Jakarta JSON Processing API defines the standard Java API for parsing, generating, transforming, and querying JSON documents. It provides object-model and streaming APIs that applications and Jakarta EE implementations use while relying on a separate provider for the runtime implementation.",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:9:    "description" : "Jackrabbit JCR Commons provides general-purpose utility classes for applications that use the Java Content Repository (JCR) API. It supplies shared helpers for working with repositories, names, paths, values, XML handling, and other common JCR integration tasks.",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/mchange/c3p0/0.9.5.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/mchange/c3p0/0.9.5.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="c3p0-0.9.5.4-javadoc.jar" title="c3p0-0.9.5.4-javadoc.jar">c3p0-0.9.5.4-javadoc.jar</a>                          2019-03-24 06:01    635698      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc" title="c3p0-0.9.5.4-javadoc.jar.asc">c3p0-0.9.5.4-javadoc.jar.asc</a>                      2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc.md5" title="c3p0-0.9.5.4-javadoc.jar.asc.md5">c3p0-0.9.5.4-javadoc.jar.asc.md5</a>                  2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc.sha1" title="c3p0-0.9.5.4-javadoc.jar.asc.sha1">c3p0-0.9.5.4-javadoc.jar.asc.sha1</a>                 2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-javadoc.jar.md5" title="c3p0-0.9.5.4-javadoc.jar.md5">c3p0-0.9.5.4-javadoc.jar.md5</a>                      2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-javadoc.jar.sha1" title="c3p0-0.9.5.4-javadoc.jar.sha1">c3p0-0.9.5.4-javadoc.jar.sha1</a>                     2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-sources.jar" title="c3p0-0.9.5.4-sources.jar">c3p0-0.9.5.4-sources.jar</a>                          2019-03-24 06:01    361569      
+<a href="c3p0-0.9.5.4-sources.jar.asc" title="c3p0-0.9.5.4-sources.jar.asc">c3p0-0.9.5.4-sources.jar.asc</a>                      2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4-sources.jar.asc.md5" title="c3p0-0.9.5.4-sources.jar.asc.md5">c3p0-0.9.5.4-sources.jar.asc.md5</a>                  2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-sources.jar.asc.sha1" title="c3p0-0.9.5.4-sources.jar.asc.sha1">c3p0-0.9.5.4-sources.jar.asc.sha1</a>                 2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-sources.jar.md5" title="c3p0-0.9.5.4-sources.jar.md5">c3p0-0.9.5.4-sources.jar.md5</a>                      2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-sources.jar.sha1" title="c3p0-0.9.5.4-sources.jar.sha1">c3p0-0.9.5.4-sources.jar.sha1</a>                     2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.jar" title="c3p0-0.9.5.4.jar">c3p0-0.9.5.4.jar</a>                                  2019-03-24 06:01    499844      
+<a href="c3p0-0.9.5.4.jar.asc" title="c3p0-0.9.5.4.jar.asc">c3p0-0.9.5.4.jar.asc</a>                              2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4.jar.asc.md5" title="c3p0-0.9.5.4.jar.asc.md5">c3p0-0.9.5.4.jar.asc.md5</a>                          2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.jar.asc.sha1" title="c3p0-0.9.5.4.jar.asc.sha1">c3p0-0.9.5.4.jar.asc.sha1</a>                         2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.jar.md5" title="c3p0-0.9.5.4.jar.md5">c3p0-0.9.5.4.jar.md5</a>                              2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.jar.sha1" title="c3p0-0.9.5.4.jar.sha1">c3p0-0.9.5.4.jar.sha1</a>                             2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.pom" title="c3p0-0.9.5.4.pom">c3p0-0.9.5.4.pom</a>                                  2019-03-24 06:01      1527      
+<a href="c3p0-0.9.5.4.pom.asc" title="c3p0-0.9.5.4.pom.asc">c3p0-0.9.5.4.pom.asc</a>                              2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4.pom.asc.md5" title="c3p0-0.9.5.4.pom.asc.md5">c3p0-0.9.5.4.pom.asc.md5</a>                          2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.pom.asc.sha1" title="c3p0-0.9.5.4.pom.asc.sha1">c3p0-0.9.5.4.pom.asc.sha1</a>                         2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.pom.md5" title="c3p0-0.9.5.4.pom.md5">c3p0-0.9.5.4.pom.md5</a>                              2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.pom.sha1" title="c3p0-0.9.5.4.pom.sha1">c3p0-0.9.5.4.pom.sha1</a>                             2019-03-24 06:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/swaldman/c3p0.git | rg '0\\.9\\.5\\.4|v0\\.9\\.5\\.4|c3p0' | tail -40" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 291ms:
+819ffe7dd330e1bf1c8eac6a33cbfd3837fa1d83	refs/tags/c3p0-0.9.1-pre10
+3041fac5450b3e5e5884ebd921956a8b116c4ec0	refs/tags/c3p0-0.9.1-pre11
+b5f51204e507a94d33f26d81af07f628a6de24cb	refs/tags/c3p0-0.9.1-pre12
+e11fd1340644747977fa34bc3377704223b6ccb4	refs/tags/c3p0-0.9.1-pre5
+3bf2cf4c5e44d7d0ea097693bb1e0b76100e544b	refs/tags/c3p0-0.9.1-pre5a
+225c6353ea17cfb6c0dbf8bcf15821b7fcd13d02	refs/tags/c3p0-0.9.1-pre6
+87137f392e23ea878b37f5934319bdf488ae0979	refs/tags/c3p0-0.9.1-pre7
+457d3a9dd3609b9ed48305f819f4a672dd609f21	refs/tags/c3p0-0.9.1-pre9
+7af95f2bf45cf688e0e919b2c04f887a98df899d	refs/tags/c3p0-0.9.1.1
+2be3e54cc2ede5af65417ce569eb83071e35b5d1	refs/tags/c3p0-0.9.1.2
+b79eb54c98f262c76cdc64d16a0dbfe5603473d3	refs/tags/c3p0-0.9.2
+d77b2205156a212851c4b0189336b9ae7af9e0f1	refs/tags/c3p0-0.9.2-jdk14
+9be85019176612c9bec498017d3adb93b5681108	refs/tags/c3p0-0.9.2-pre1
+237703ea922b2d18cf058fe25b41cc76cc67d66d	refs/tags/c3p0-0.9.2-pre2
+f195ef2b1c15d9a0710598fb9678cbb2724e4e41	refs/tags/c3p0-0.9.2-pre2-RELEASE
+f094b9f67bfd2894537ceab029623b4b741571c1	refs/tags/c3p0-0.9.2-pre2-RELEASE^{}
+454ddbac865c941984b4e3d57e4cc4bd834ba1c5	refs/tags/c3p0-0.9.2-pre3
+65d3282329913a772a0bbe21e978e7619f21bb2a	refs/tags/c3p0-0.9.2-pre4
+e9e2db5adfcc0a41a3e0eb57a3cc77d997a92771	refs/tags/c3p0-0.9.2-pre5
+39deb5c5563383e8409df1ac9861f737bd314cb9	refs/tags/c3p0-0.9.2-pre6
+8d26e62db52f52bc7000a5e24cb779f8a039d70d	refs/tags/c3p0-0.9.2-pre7
+74d503ffdfcdf53edbfe73ac6cf62a79e48da2d8	refs/tags/c3p0-0.9.2-pre8
+9ba5276e1dd86c7fa9ff31300435d0543c36a20d	refs/tags/c3p0-0.9.2.1
+fe0dc1785224869da8ca2554af9a7e6dfe5f915b	refs/tags/c3p0-0.9.2.1-final
+01a28e054765c1d254f1cbc82ce55f0632a883ce	refs/tags/c3p0-0.9.5
+50e0ac1305f41bbc7896843dedb764f61b3368b7	refs/tags/c3p0-0.9.5-pre1
+148e310455e36ee07bbebeddc712cd3a1a22ba82	refs/tags/c3p0-0.9.5-pre10
+42494910c0bc1bd260a3a3af09df77f6e3b1d6a2	refs/tags/c3p0-0.9.5-pre2
+095608fb2a846dbaab7fadcc5aeda631a22e5d8e	refs/tags/c3p0-0.9.5-pre3
+c79fde67016f0999045414e881769cb5660c8654	refs/tags/c3p0-0.9.5-pre4
+7c131bb3f29c74e3a5b639694fd4901ae834895d	refs/tags/c3p0-0.9.5-pre5
+f70621af49ebdc5b12ae0fe40704c7a7496fec66	refs/tags/c3p0-0.9.5-pre6
+89554cf022ab18d1c6244fec802807fc49351e37	refs/tags/c3p0-0.9.5-pre7
+65ef9b4dcad7f9aea233ebbe26f57bba3cd24744	refs/tags/c3p0-0.9.5-pre8
+cec41155e59e318ee28d82eac3731c37e51eed9e	refs/tags/c3p0-0.9.5-pre9
+21a2fcf29f4d1a10a315a4f0fc2e29804442763e	refs/tags/c3p0-0.9.5.1
+9f97c814aef31b2997d6ecfad1e3875c6136317b	refs/tags/c3p0-0.9.5.2
+c422ead14de1ca530b72d5e0515880b7ed27df1e	refs/tags/c3p0-0.9.5.3
+c61c00b1f7e3d6cf23501cd02b429474e4d22c73	refs/tags/c3p0-0.9.5.4
+5640dcc2e3e216953325c9ed7059626e735e5032	refs/tags/c3p0-0.9.5.5
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 01:36:57 GMT
+content-type: application/java-archive
+content-length: 361569
+cf-ray: 9f7c7f276f8203a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1489853
+etag: "62bd742d0bfbf68a241b3bdf61e6e33b"
+last-modified: Sun, 24 Mar 2019 06:01:47 GMT
+x-checksum-md5: 62bd742d0bfbf68a241b3bdf61e6e33b
+x-checksum-sha1: c3bebeb3a803901e8bb0707cb85abe22232fee9a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 07 May 2026 01:36:57 GMT
+content-type: application/java-archive
+content-length: 635698
+cf-ray: 9f7c7f27b8cf6d88-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1532305
+etag: "24e99823ba96bca9c9a50af0835198fa"
+last-modified: Sun, 24 Mar 2019 06:01:41 GMT
+x-checksum-md5: 24e99823ba96bca9c9a50af0835198fa
+x-checksum-sha1: 8f26e261eb93fa0ebf8031cbab9ecf1258666220
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/swaldman/c3p0/git/trees/c3p0-0.9.5.4?recursive=1' | jq -r '.tree[].path' | rg '("'^|/)test|Test|tests|src'"' | head -200" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/README.md | sed -n '1,120p' || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 168ms:
+#### c3p0 ####
+
+c3p0 is a mature, highly concurrent JDBC Connection pooling library, with
+support for caching and reuse of PreparedStatements. It is licensed under 
+[LGPL v.2.1](https://github.com/swaldman/c3p0/blob/master/src/dist-static/LICENSE-LGPL)
+or [EPL v.1.0](https://github.com/swaldman/c3p0/blob/master/src/dist-static/LICENSE-EPL), 
+at your option.
+
+c3p0 is now maintained on [github](https://github.com/swaldman/c3p0).
+
+c3p0 is available as managed dependency on [Sonatype's open-source software repostory](https://oss.sonatype.org/content/repositories/releases/), 
+under <code>[groupId: com.mchange, artifactId: c3p0]</code> For available values of <code>version</code>, look [here](https://oss.sonatype.org/content/repositories/releases/com/mchange/c3p0/).
+
+You can still find releases at [sourceforge](http://sourceforge.net/projects/c3p0/).
+
+Documentation is available as part of every distribution, as well as [on-line](http://www.mchange.com/projects/c3p0/).
+
+From the current *development snapshot*, here are the latest [CHANGELOG](https://github.com/swaldman/c3p0/blob/master/src/dist-static/CHANGELOG) and [RELEASE_NOTES](https://github.com/swaldman/c3p0/blob/master/src/dist-static/RELEASE_NOTES-c3p0-0.9.5). For information on how to build from src, checkout [README-SRC](https://github.com/swaldman/c3p0/blob/master/README-SRC).
+
+Please address comments and questions to the [library author](mailto:swaldman@mchange.com), although keep in mind he is an abysmal correspondent and basically an asshole. Despite that, your feedback is very much appreciated. You may also open issues on github and/or sourceforge.
+
+Thank you for your interest in c3p0. I do hope that you find it useful!
+
+
+
+
+ succeeded in 231ms:
+dbms/oracle-thin/src
+dbms/oracle-thin/src/classes
+dbms/oracle-thin/src/classes/com
+dbms/oracle-thin/src/classes/com/mchange
+dbms/oracle-thin/src/classes/com/mchange/v2
+dbms/oracle-thin/src/classes/com/mchange/v2/c3p0
+dbms/oracle-thin/src/classes/com/mchange/v2/c3p0/dbms
+dbms/oracle-thin/src/classes/com/mchange/v2/c3p0/dbms/Debug.java
+dbms/oracle-thin/src/classes/com/mchange/v2/c3p0/dbms/OracleUtils.java
+src
+src/codegen
+src/codegen/com
+src/codegen/com/mchange
+src/codegen/com/mchange/v2
+src/codegen/com/mchange/v2/c3p0
+src/codegen/com/mchange/v2/c3p0/impl
+src/codegen/com/mchange/v2/c3p0/impl/DriverManagerDataSourceBase.beangen-xml
+src/codegen/com/mchange/v2/c3p0/impl/JndiRefDataSourceBase.beangen-xml
+src/codegen/com/mchange/v2/c3p0/impl/PoolBackedDataSourceBase.beangen-xml
+src/codegen/com/mchange/v2/c3p0/impl/WrapperConnectionPoolDataSourceBase.beangen-xml
+src/codegen/com/mchange/v2/c3p0/impl/old
+src/codegen/com/mchange/v2/c3p0/impl/old/DriverManagerDataSource.datasource-xml
+src/codegen/com/mchange/v2/c3p0/impl/old/DriverManagerDataSource.datasource-xml.orig
+src/codegen/com/mchange/v2/c3p0/impl/old/JndiRefDataSource.datasource-xml
+src/codegen/com/mchange/v2/c3p0/impl/old/JndiRefDataSource.datasource-xml.orig
+src/codegen/com/mchange/v2/c3p0/impl/old/PoolBackedDataSource.datasource-xml
+src/codegen/com/mchange/v2/c3p0/impl/old/PoolBackedDataSource.datasource-xml.orig
+src/codegen/com/mchange/v2/c3p0/impl/old/PoolBackedDataSourceBase.datasource-xml
+src/codegen/com/mchange/v2/c3p0/impl/old/WrapperConnectionPoolDataSource.datasource-xml
+src/codegen/com/mchange/v2/c3p0/impl/old/WrapperConnectionPoolDataSource.datasource-xml.orig
+src/dist-static
+src/dist-static/CHANGELOG
+src/dist-static/LICENSE
+src/dist-static/LICENSE-EPL
+src/dist-static/LICENSE-LGPL
+src/dist-static/README
+src/dist-static/RELEASE_NOTES-c3p0-0.9.2
+src/dist-static/RELEASE_NOTES-c3p0-0.9.5.1
+src/dist-static/RELEASE_NOTES-c3p0-0.9.5.2
+src/dist-static/RELEASE_NOTES-c3p0-0.9.5.3
+src/dist-static/RELEASE_NOTES-c3p0-0.9.5.4
+src/dist-static/TODO
+src/dist-static/examples
+src/dist-static/examples/JndiBindDataSource.java
+src/dist-static/examples/UseJndiDataSource.java
+src/dist-static/examples/UsePoolBackedDataSource.java
+src/dist-static/examples/UseUnpooledDataSource.java
+src/dist-static/examples/c3p0-service.xml
+src/dist-static/old
+src/dist-static/old/KNOWN-ISSUES-0.9.0
+src/dist-static/old/LICENSE
+src/dist-static/old/README
+src/dist-static/old/RELEASE-NOTES-0.8.5-pre4.txt
+src/dist-static/old/RELEASE-NOTES-0.8.5-pre7.txt
+src/dist-static/old/RELEASE_NOTES-c3p0-0.9.1-pre7
+src/dist-static/src
+src/dist-static/src/README
+src/doc
+src/doc/arrow_sm.png
+src/doc/extra.xml
+src/doc/index.html
+src/doc/old
+src/doc/old/doc-outtakes.html
+src/docweb
+src/docweb/docwebapp
+src/docweb/docwebapp/WEB-INF
+src/docweb/docwebapp/WEB-INF/jboss-web.xml
+src/docweb/docwebapp/WEB-INF/web.xml
+src/docweb/docwebear
+src/docweb/docwebear/META-INF
+src/docweb/docwebear/META-INF/application.xml
+src/java
+src/java/com
+src/java/com/mchange
+src/java/com/mchange/v2
+src/java/com/mchange/v2/c3p0
+src/java/com/mchange/v2/c3p0/AbstractComboPooledDataSource.java
+src/java/com/mchange/v2/c3p0/AbstractConnectionCustomizer.java
+src/java/com/mchange/v2/c3p0/AbstractConnectionTester.java
+src/java/com/mchange/v2/c3p0/C3P0ProxyConnection.java
+src/java/com/mchange/v2/c3p0/C3P0ProxyStatement.java
+src/java/com/mchange/v2/c3p0/C3P0Registry.java
+src/java/com/mchange/v2/c3p0/ComboPooledDataSource.java
+src/java/com/mchange/v2/c3p0/ConnectionCustomizer.java
+src/java/com/mchange/v2/c3p0/ConnectionTester.java
+src/java/com/mchange/v2/c3p0/DataSources.java
+src/java/com/mchange/v2/c3p0/DriverManagerDataSource.java
+src/java/com/mchange/v2/c3p0/DriverManagerDataSourceFactory.java
+src/java/com/mchange/v2/c3p0/FullQueryConnectionTester.java
+src/java/com/mchange/v2/c3p0/JndiRefConnectionPoolDataSource.java
+src/java/com/mchange/v2/c3p0/JndiRefForwardingDataSource.java
+src/java/com/mchange/v2/c3p0/PoolBackedDataSource.java
+src/java/com/mchange/v2/c3p0/PoolBackedDataSourceFactory.java
+src/java/com/mchange/v2/c3p0/PoolConfig.java
+src/java/com/mchange/v2/c3p0/PooledDataSource.java
+src/java/com/mchange/v2/c3p0/QueryConnectionTester.java
+src/java/com/mchange/v2/c3p0/SQLWarnings.java
+src/java/com/mchange/v2/c3p0/UnifiedConnectionTester.java
+src/java/com/mchange/v2/c3p0/WrapperConnectionPoolDataSource.java
+src/java/com/mchange/v2/c3p0/cfg
+src/java/com/mchange/v2/c3p0/cfg/C3P0Config.java
+src/java/com/mchange/v2/c3p0/cfg/C3P0ConfigFinder.java
+src/java/com/mchange/v2/c3p0/cfg/C3P0ConfigUtils.java
+src/java/com/mchange/v2/c3p0/cfg/C3P0ConfigXmlUtils.java
+src/java/com/mchange/v2/c3p0/cfg/DefaultC3P0ConfigFinder.java
+src/java/com/mchange/v2/c3p0/cfg/NamedScope.java
+src/java/com/mchange/v2/c3p0/codegen
+src/java/com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator.java
+src/java/com/mchange/v2/c3p0/codegen/C3P0ImplUtilsParentLoggerGeneratorExtension.java
+src/java/com/mchange/v2/c3p0/codegen/JdbcProxyGenerator.java
+src/java/com/mchange/v2/c3p0/codegen/UnsupportedParentLoggerGeneratorExtension.java
+src/java/com/mchange/v2/c3p0/debug
+src/java/com/mchange/v2/c3p0/debug/AfterCloseLoggingComboPooledDataSource.java
+src/java/com/mchange/v2/c3p0/debug/AfterCloseLoggingConnectionWrapper.java
+src/java/com/mchange/v2/c3p0/debug/CloseLoggingComboPooledDataSource.java
+src/java/com/mchange/v2/c3p0/debug/CloseLoggingConnectionWrapper.java
+src/java/com/mchange/v2/c3p0/debug/ConstructionLoggingComboPooledDataSource.java
+src/java/com/mchange/v2/c3p0/example
+src/java/com/mchange/v2/c3p0/example/InitSqlConnectionCustomizer.java
+src/java/com/mchange/v2/c3p0/example/IsValidOnlyConnectionTester30.java
+src/java/com/mchange/v2/c3p0/filter
+src/java/com/mchange/v2/c3p0/filter/FilterDataSource.java
+src/java/com/mchange/v2/c3p0/impl
+src/java/com/mchange/v2/c3p0/impl/AbstractC3P0PooledConnection.java
+src/java/com/mchange/v2/c3p0/impl/AbstractIdentityTokenized.java
+src/java/com/mchange/v2/c3p0/impl/AbstractPoolBackedDataSource.java
+src/java/com/mchange/v2/c3p0/impl/AuthMaskingProperties.java
+src/java/com/mchange/v2/c3p0/impl/C3P0Defaults.java
+src/java/com/mchange/v2/c3p0/impl/C3P0ImplUtils.java
+src/java/com/mchange/v2/c3p0/impl/C3P0JavaBeanObjectFactory.java
+src/java/com/mchange/v2/c3p0/impl/C3P0PooledConnection.java
+src/java/com/mchange/v2/c3p0/impl/C3P0PooledConnectionPool.java
+src/java/com/mchange/v2/c3p0/impl/C3P0PooledConnectionPoolManager.java
+src/java/com/mchange/v2/c3p0/impl/DbAuth.java
+src/java/com/mchange/v2/c3p0/impl/DefaultConnectionTester.java
+src/java/com/mchange/v2/c3p0/impl/IdentityTokenResolvable.java
+src/java/com/mchange/v2/c3p0/impl/IdentityTokenized.java
+src/java/com/mchange/v2/c3p0/impl/IdentityTokenizedCoalesceChecker.java
+src/java/com/mchange/v2/c3p0/impl/InternalPooledConnection.java
+src/java/com/mchange/v2/c3p0/impl/NewPooledConnection.java
+src/java/com/mchange/v2/c3p0/impl/NullStatementSetManagedResultSet.java
+src/java/com/mchange/v2/c3p0/impl/ProxyResultSetDetachable.java
+src/java/com/mchange/v2/c3p0/impl/SetManagedDatabaseMetaData.java
+src/java/com/mchange/v2/c3p0/impl/SetManagedResultSet.java
+src/java/com/mchange/v2/c3p0/impl/SnatchFromSetResultSet.java
+src/java/com/mchange/v2/c3p0/jboss
+src/java/com/mchange/v2/c3p0/jboss/C3P0PooledDataSource.java
+src/java/com/mchange/v2/c3p0/jboss/C3P0PooledDataSourceMBean.java
+src/java/com/mchange/v2/c3p0/management
+src/java/com/mchange/v2/c3p0/management/ActiveManagementCoordinator.java
+src/java/com/mchange/v2/c3p0/management/C3P0RegistryManager.java
+src/java/com/mchange/v2/c3p0/management/C3P0RegistryManagerMBean.java
+src/java/com/mchange/v2/c3p0/management/DynamicPooledDataSourceManagerMBean.java
+src/java/com/mchange/v2/c3p0/management/ManagementCoordinator.java
+src/java/com/mchange/v2/c3p0/management/NullManagementCoordinator.java
+src/java/com/mchange/v2/c3p0/management/PooledDataSourceManager.java
+src/java/com/mchange/v2/c3p0/management/PooledDataSourceManagerMBean.java
+src/java/com/mchange/v2/c3p0/mbean
+src/java/com/mchange/v2/c3p0/mbean/C3P0PooledDataSource.java
+src/java/com/mchange/v2/c3p0/mbean/C3P0PooledDataSourceMBean.java
+src/java/com/mchange/v2/c3p0/off
+src/java/com/mchange/v2/c3p0/off/servlet
+src/java/com/mchange/v2/c3p0/off/servlet/C3P0StatusServlet.java
+src/java/com/mchange/v2/c3p0/stmt
+src/java/com/mchange/v2/c3p0/stmt/DoubleMaxStatementCache.java
+src/java/com/mchange/v2/c3p0/stmt/GlobalMaxOnlyStatementCache.java
+src/java/com/mchange/v2/c3p0/stmt/GooGooStatementCache.java
+src/java/com/mchange/v2/c3p0/stmt/MemoryCoalescedStatementCacheKey.java
+src/java/com/mchange/v2/c3p0/stmt/PerConnectionMaxOnlyStatementCache.java
+src/java/com/mchange/v2/c3p0/stmt/SimpleStatementCacheKey.java
+src/java/com/mchange/v2/c3p0/stmt/StatementCache.java
+src/java/com/mchange/v2/c3p0/stmt/StatementCacheBenchmark.java
+src/java/com/mchange/v2/c3p0/stmt/StatementCacheKey.java
+src/java/com/mchange/v2/c3p0/stmt/ValueIdentityStatementCacheKey.java
+src/java/com/mchange/v2/c3p0/subst
+src/java/com/mchange/v2/c3p0/subst/C3P0Substitutions.java
+src/java/com/mchange/v2/c3p0/test
+src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java
+src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java
+src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java
+src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java
+src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java
+src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java
+src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java
+src/java/com/mchange/v2/c3p0/test/JndiBindTest.java
+src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java
+src/java/com/mchange/v2/c3p0/test/ListTablesTest.java
+src/java/com/mchange/v2/c3p0/test/LoadPoolBackedDataSource.java
+src/java/com/mchange/v2/c3p0/test/OneThreadRepeatedInsertOrQueryTest.java
+src/java/com/mchange/v2/c3p0/test/PSLoadPoolBackedDataSource.java
+src/java/com/mchange/v2/c3p0/test/ProxyWrappersTest.java
+src/java/com/mchange/v2/c3p0/test/RawConnectionOpTest.java
+src/java/com/mchange/v2/c3p0/test/StatsTest.java
+src/java/com/mchange/v2/c3p0/test/TestConnectionCustomizer.java
+src/java/com/mchange/v2/c3p0/test/TestRefSerStuff.java
+src/java/com/mchange/v2/c3p0/test/junit
+src/java/com/mchange/v2/c3p0/test/junit/C3P0JUnitTestCaseBase.java
+src/java/com/mchange/v2/c3p0/test/junit/ConnectionPropertiesResetJUnitTestCase.java
+src/java/com/mchange/v2/c3p0/test/junit/MarshallUnmarshallDataSourcesJUnitTestCase.java
+src/java/com/mchange/v2/c3p0/util
+
+web search: 
+web search: Maven Central com.mchange c3p0 0.9.5.4 c3p0-0.9.5.4-sources.jar javadoc
+web search: 
+web search: https://github.com/swaldman/c3p0
+codex
+I found the matching upstream tag `c3p0-0.9.5.4` and the test sources under `src/java/com/mchange/v2/c3p0/test`. I’m going to use Maven Central for the published sources and Javadocs, and GitHub for the tagged test tree because there is no Maven test-sources jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..01030a46ef7ccd528af90207af975b43552b11cc
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..01030a46ef7ccd528af90207af975b43552b11cc
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+ }
+
+codex
+The metadata file is updated. I’m doing a quick JSON parse and URL substitution check so the final file is valid and the versioned links resolve as intended.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+{
+  "coordinates": "com.mchange:c3p0:0.9.5.4",
+  "repository-url": "https://github.com/swaldman/c3p0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+  "test-code-url": "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
+  "description": "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-sources.jar https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-javadoc.jar | rg 'HTTP/|content-type|content-length'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+HTTP/2 200 
+content-type: application/java-archive
+content-length: 361569
+HTTP/2 200 
+content-type: application/java-archive
+content-length: 635698
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..01030a46ef7ccd528af90207af975b43552b11cc
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+ }
+
+ succeeded in 671ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 01:37:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4fcb8f224744012823c9ce7ad0681d76"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=1i1Bzr%2BUC7US7QsTd9gwrcHc%2BH7wtTc%2BK1XpdTw%2FWhKGSOEJgK7pXriRDa3yOcNcD8EB0WAYGHDA%2BZyhxCrcUOAJx39pJxxNjiOsYSq%2F%2F3AIntanU%2FcD2PsPXwLtEx7UP8nN%2BaHLsU99cuIa8526ZWZIbxHLsZm%2BmKab0Befv2J8Vn0LWrx%2BK8JUrgEyM27YKmRuzEN4FWQkZmwFTpY0Eeo5vqRlwBWFpiMnuQUaTH8XVlnPmehPm5cD9%2BJqZhS479VJ489Ay%2FrcgmdeTC0OaQ%3D%3D--Ea%2BKH%2BDkvHc46O5B--6PYHwEOwjxqKkn%2FHGGytUQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.479818575.1778117837; expires=Fri, 07 May 2027 01:37:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 01:37:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:BE088:7E9F81:694E54:69FBECCD
+
+
+web search: 
+web search: Maven Central c3p0 0.9.5.4 POM GitHub swaldman c3p0
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "com.mchange:c3p0:0.9.5.4",
+     3	  "repository-url" : "https://github.com/swaldman/c3p0",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
+     7	  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..01030a46ef7ccd528af90207af975b43552b11cc
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+ }
+
+web search: 
+web search: https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test
+web search: 
+web search: repo.maven.apache.org maven2 com mchange c3p0 0.9.5.4 c3p0-0.9.5.4-sources.jar
+codex
+Updated [com.mchange-c3p0-0.9.5.4.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json:1) with repository, Maven source/javadoc URLs, tagged GitHub test URL, and a two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image`: c3p0 is published as a JVM `jar` and described upstream as a Java/JDBC connection pooling library, with tagged tests present in the `c3p0-0.9.5.4` tree. ([central.sonatype.com](https://central.sonatype.com/artifact/com.mchange/c3p0/0.9.5.4?utm_source=openai))
+
+Verified with `jq` and checked the substituted source, documentation, and test URLs return `200`.
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..01030a46ef7ccd528af90207af975b43552b11cc
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It provides pooled DataSource implementations and statement caching to improve database access performance and manage connection lifecycles."
+ }
+
+tokens used
+70,877
+Updated [com.mchange-c3p0-0.9.5.4.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json:1) with repository, Maven source/javadoc URLs, tagged GitHub test URL, and a two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image`: c3p0 is published as a JVM `jar` and described upstream as a Java/JDBC connection pooling library, with tagged tests present in the `c3p0-0.9.5.4` tree. ([central.sonatype.com](https://central.sonatype.com/artifact/com.mchange/c3p0/0.9.5.4?utm_source=openai))
+
+Verified with `jq` and checked the substituted source, documentation, and test URLs return `200`.
+Ran agent for com.mchange:c3p0:0.9.5.4 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/build/agent-artifact-discovery-logs/com.mchange-c3p0-0.9.5.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-2d24220a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 59s
+9 actionable tasks: 9 executed
