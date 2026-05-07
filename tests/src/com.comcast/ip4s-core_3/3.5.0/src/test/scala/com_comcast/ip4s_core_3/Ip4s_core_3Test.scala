@@ -301,6 +301,22 @@ class Ip4s_core_3Test {
   }
 
   @Test
+  def foldsAndTransformsIpAddressesByVersion(): Unit = {
+    val ipv4Address: IpAddress = ipv4"192.0.2.10"
+    val ipv6Address: IpAddress = ipv6"2001:db8::10"
+    val replacement4: Ipv4Address = ipv4"198.51.100.7"
+    val replacement6: Ipv6Address = ipv6"2001:db8::7"
+
+    assertEquals("ipv4:192.0.2.10", ipv4Address.fold(v4 => s"ipv4:$v4", v6 => s"ipv6:$v6"))
+    assertEquals("ipv6:2001:db8::10", ipv6Address.fold(v4 => s"ipv4:$v4", v6 => s"ipv6:$v6"))
+
+    assertEquals(replacement4, ipv4Address.transform(_ => replacement4, _ => replacement6))
+    assertEquals(replacement6, ipv6Address.transform(_ => replacement4, _ => replacement6))
+    assertEquals(replacement4, (ipv4"192.0.2.10": Ipv4Address).transform(_ => replacement4, _ => replacement6))
+    assertEquals(replacement6, (ipv6"2001:db8::10": Ipv6Address).transform(_ => replacement4, _ => replacement6))
+  }
+
+  @Test
   def parsesMacAddressesAndDefensivelyReturnsByteCopies(): Unit = {
     val mac: MacAddress = MacAddress.fromString("00:11:22:aa:BB:ff").getOrElse(fail("MAC should parse"))
 
