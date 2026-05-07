@@ -293,6 +293,24 @@ public class Ktor_http_cio_jvmTest {
     }
 
     @Test
+    fun parsesBodyDelimitedByConnectionClose(): Unit = runBlocking {
+        withTimeout(10_000) {
+            val output = ByteChannel(autoFlush = true)
+            parseHttpBody(
+                HttpProtocolVersion.HTTP_1_1,
+                contentLength = -1,
+                transferEncoding = null,
+                connectionOptions = ConnectionOptions.Close,
+                input = ByteReadChannel("streamed until close"),
+                out = output
+            )
+            output.flushAndClose()
+
+            assertThat(output.toByteArray().decodeToString()).isEqualTo("streamed until close")
+        }
+    }
+
+    @Test
     fun rejectsMalformedRequestsResponsesAndUnsupportedBodyEncodings(): Unit = runBlocking {
         withTimeout(10_000) {
             assertThat(parseRequest(ByteReadChannel("\r\n\r\n"))).isNull()
