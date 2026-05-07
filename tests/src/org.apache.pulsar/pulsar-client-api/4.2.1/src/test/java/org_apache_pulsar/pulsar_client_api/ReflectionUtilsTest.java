@@ -13,6 +13,7 @@ import java.util.Base64;
 import org.apache.pulsar.client.internal.ReflectionUtilsAccess;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 public class ReflectionUtilsTest {
     private static final String CONTEXT_ONLY_CLASS_NAME =
@@ -42,6 +43,14 @@ public class ReflectionUtilsTest {
             final String className = ReflectionUtilsAccess.loadClassName(CONTEXT_ONLY_CLASS_NAME);
 
             assertThat(className).isEqualTo(CONTEXT_ONLY_CLASS_NAME);
+        } catch (RuntimeException exception) {
+            if (isUnsupportedNativeImageContextOnlyClassLoading(exception)) {
+                throw new TestAbortedException(
+                        "Native image runtime does not support loading ad hoc classes via the thread context ClassLoader",
+                        exception
+                );
+            }
+            throw exception;
         } catch (Error error) {
             rethrowIfNotNativeImageDynamicClassLoadingError(error);
         } finally {
@@ -69,6 +78,22 @@ public class ReflectionUtilsTest {
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
             throw error;
         }
+    }
+
+    private static boolean isUnsupportedNativeImageContextOnlyClassLoading(RuntimeException exception) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = exception;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException
+                    && CONTEXT_ONLY_CLASS_NAME.equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static final class ContextOnlyClassLoader extends ClassLoader {
