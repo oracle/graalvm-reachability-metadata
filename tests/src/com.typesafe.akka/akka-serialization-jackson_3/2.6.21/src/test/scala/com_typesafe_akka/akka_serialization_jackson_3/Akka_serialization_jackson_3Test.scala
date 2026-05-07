@@ -153,7 +153,7 @@ class Akka_serialization_jackson_3Test {
 
   private def withActorSystem(test: ActorSystem => Unit): Unit = {
     val systemName: String = s"akka-jackson-test-${System.nanoTime()}"
-    val system: ActorSystem = ActorSystem(systemName, TestConfig)
+    val system: ActorSystem = ActorSystem(systemName, testConfig)
     try test(system)
     finally Await.result(system.terminate(), 10.seconds)
   }
@@ -173,9 +173,26 @@ object Akka_serialization_jackson_3Test {
   val MigratingMessageClassName = s"$PackageName.MigratingMessage"
   val SingletonNotificationClassName = SingletonNotification.getClass.getName
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
+  private val actorSystemClassLoader: ClassLoader = classOf[ActorSystem].getClassLoader
 
-  val TestConfig: Config = ConfigFactory
+  private def defaultConfig: Config =
+    ConfigFactory.parseResourcesAnySyntax(actorSystemClassLoader, "application")
+
+  def testConfig: Config = ConfigFactory
     .parseString(s"""
+      akka.loggers = ["akka.event.Logging$$DefaultLogger"]
+      akka.logging-filter = "akka.event.DefaultLoggingFilter"
+      akka.loggers-dispatcher = "akka.actor.default-dispatcher"
+      akka.logger-startup-timeout = 5s
+      akka.loglevel = "INFO"
+      akka.stdout-loglevel = "WARNING"
+      akka.library-extensions = ["akka.serialization.SerializationExtension$$"]
+      akka.extensions = []
+      akka.actor.provider = "local"
+      akka.actor.deployment."/IO-DNS/inet-address".router = from-code
+      akka.actor.deployment."/IO-DNS/async-dns".router = from-code
+      akka.coordinated-shutdown.run-by-actor-system-terminate = off
+      akka.coordinated-shutdown.terminate-actor-system = off
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
@@ -203,7 +220,8 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
-    .withFallback(ConfigFactory.load())
+    .withFallback(defaultConfig)
+    .resolve()
 }
 
 final case class MapperEnvelope(
