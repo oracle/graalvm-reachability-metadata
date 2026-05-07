@@ -29,6 +29,7 @@ public class NativeLibraryLoaderTest {
     private static final String MISSING_LIBRARY_NAME = "conscrypt_loader_coverage_missing";
     private static final String EXPECTED_MAC_FALLBACK_RESOURCE = "META-INF/native/lib"
             + MISSING_LIBRARY_NAME + ".jnilib";
+    private static final String NATIVE_IMAGE_RUNTIME = "runtime";
 
     @Test
     void loadFirstAvailableChecksNativeResourcesAndHelperClassBytes() throws Exception {
@@ -72,13 +73,23 @@ public class NativeLibraryLoaderTest {
             assertThat(loadResults).isNotEmpty();
             assertThat(targetClassLoader.getClassLoadAttempts())
                     .contains(NATIVE_LIBRARY_UTIL_CLASS_NAME);
-            assertThat(targetClassLoader.getRequestedResources())
-                    .anyMatch(resource -> resource.startsWith(
-                            "META-INF/native/lib" + MISSING_LIBRARY_NAME))
-                    .contains(EXPECTED_MAC_FALLBACK_RESOURCE);
+            assertExpectedRequestedResources(targetClassLoader.getRequestedResources());
         } finally {
             restoreSystemProperty(OS_NAME_PROPERTY, previousOsName);
         }
+    }
+
+    private static void assertExpectedRequestedResources(List<String> requestedResources) {
+        assertThat(requestedResources)
+                .anyMatch(resource -> resource.startsWith("META-INF/native/lib" + MISSING_LIBRARY_NAME));
+
+        if (isNativeImageRuntime()) {
+            assertThat(requestedResources)
+                    .contains("META-INF/native/" + System.mapLibraryName(MISSING_LIBRARY_NAME));
+            return;
+        }
+
+        assertThat(requestedResources).contains(EXPECTED_MAC_FALLBACK_RESOURCE);
     }
 
     private static URL codeSourceUrl(Class<?> type) {
@@ -94,6 +105,10 @@ public class NativeLibraryLoaderTest {
         } else {
             System.setProperty(name, previousValue);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return NATIVE_IMAGE_RUNTIME.equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class ChildFirstConscryptClassLoader extends URLClassLoader {

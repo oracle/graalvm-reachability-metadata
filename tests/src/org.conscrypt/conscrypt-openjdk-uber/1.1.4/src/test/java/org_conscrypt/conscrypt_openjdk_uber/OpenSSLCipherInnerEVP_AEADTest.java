@@ -17,9 +17,11 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.conscrypt.Conscrypt;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 public class OpenSSLCipherInnerEVP_AEADTest {
+    private static final String NATIVE_IMAGE_RUNTIME = "runtime";
     private static final byte[] KEY_BYTES = new byte[] {
             0x00, 0x01, 0x02, 0x03,
             0x04, 0x05, 0x06, 0x07,
@@ -38,6 +40,10 @@ public class OpenSSLCipherInnerEVP_AEADTest {
 
     @Test
     void aesGcmDecryptWithCorruptedTagThrowsAeadBadTagException() throws Exception {
+        Assumptions.assumeFalse(
+                isNativeImageRuntime(),
+                "Conscrypt providers must be registered during native image generation");
+
         Provider provider = Conscrypt.newProvider();
         SecretKeySpec key = new SecretKeySpec(KEY_BYTES, "AES");
         GCMParameterSpec parameters = new GCMParameterSpec(128, IV_BYTES);
@@ -62,5 +68,9 @@ public class OpenSSLCipherInnerEVP_AEADTest {
 
         assertThat(ciphertext).hasSize(PLAINTEXT_BYTES.length + 16);
         return ciphertext;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return NATIVE_IMAGE_RUNTIME.equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
