@@ -41,6 +41,7 @@ import sttp.tapir.stringBody
 import sttp.tapir.stringToPath
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.interceptor.Interceptor
+import sttp.tapir.server.interceptor.RequestInterceptor
 import sttp.tapir.server.interceptor.RequestResult
 import sttp.tapir.server.interceptor.content.NotAcceptableInterceptor
 import sttp.tapir.server.interceptor.cors.CORSConfig
@@ -316,6 +317,36 @@ class Tapir_server_3Test {
     )
 
     assertTrue(exception.getMessage.contains("Illegal CORS config"))
+  }
+
+  @Test
+  def requestInterceptorRewritesRequestBeforeEndpointMatching(): Unit = {
+    val rewriteInterceptor: RequestInterceptor[Identity] = RequestInterceptor.transformServerRequest[Identity] { serverRequest =>
+      serverRequest.withOverride(
+        methodOverride = Some(Method.GET),
+        uriOverride = Some(uri"http://example.test/intercepted?token=rewritten"),
+        protocolOverride = None,
+        connectionInfoOverride = None,
+        pathSegmentsOverride = Some(List("intercepted")),
+        queryParametersOverride = Some(QueryParams.fromSeq(Seq("token" -> "rewritten"))),
+        headersOverride = Some(serverRequest.headers :+ Header("X-Intercepted", "yes"))
+      )
+    }
+    val transformedEndpoint: ServerEndpoint[Any, Identity] = endpoint.get
+      .in("intercepted")
+      .in(query[String]("token"))
+      .in(header[String]("X-Intercepted"))
+      .out(stringBody)
+      .serverLogicSuccessPure[Identity] { case (token, marker) => s"$token:$marker" }
+
+    val response: ServerResponse[String] = responseFor(
+      request(Method.POST, uri"http://example.test/original?token=original"),
+      List(transformedEndpoint),
+      defaultInterceptors.prepended(rewriteInterceptor)
+    )
+
+    assertEquals(StatusCode.Ok, response.code)
+    assertEquals("rewritten:yes", response.body.getOrElse(""))
   }
 
   @Test
