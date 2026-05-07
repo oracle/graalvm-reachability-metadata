@@ -11,6 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.NoTypeConversionAvailableException;
+import org.apache.camel.TypeConversionException;
+import org.apache.camel.TypeConverter;
 import org.apache.camel.impl.engine.DefaultBeanIntrospection;
 import org.apache.camel.impl.engine.DefaultStreamCachingStrategy;
 import org.apache.camel.spi.BeanIntrospection;
@@ -88,13 +92,16 @@ public class IntrospectionSupportTest {
     }
 
     @Test
-    void setPropertyAttemptsConvertedSetterInvocationWhenValueTypeDoesNotMatch() {
+    void setPropertyInvokesSetterWithConvertedValueWhenValueTypeDoesNotMatch() throws Exception {
         BeanIntrospection introspection = new DefaultBeanIntrospection();
         DefaultStreamCachingStrategy strategy = new DefaultStreamCachingStrategy();
 
-        assertThatThrownBy(() -> introspection.setProperty(
-                null, null, strategy, "spoolUsedHeapMemoryThreshold", "75", null, true, false, false))
-                .isInstanceOf(IllegalArgumentException.class);
+        boolean updated = introspection.setProperty(
+                null, new StringToNumberTypeConverter(), strategy, "spoolUsedHeapMemoryThreshold", "75", null, true,
+                false, false);
+
+        assertThat(updated).isTrue();
+        assertThat(strategy.getSpoolUsedHeapMemoryThreshold()).isEqualTo(75);
     }
 
     @Test
@@ -105,5 +112,56 @@ public class IntrospectionSupportTest {
                 null, null, String.class, "signers[0]", "signer", null, true, false, false))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("no setter method");
+    }
+
+    private static final class StringToNumberTypeConverter implements TypeConverter {
+        @Override
+        public boolean allowNull() {
+            return false;
+        }
+
+        @Override
+        public <T> T convertTo(Class<T> type, Object value) throws TypeConversionException {
+            try {
+                return mandatoryConvertTo(type, value);
+            } catch (NoTypeConversionAvailableException e) {
+                throw new TypeConversionException(value, type, e);
+            }
+        }
+
+        @Override
+        public <T> T convertTo(Class<T> type, Exchange exchange, Object value) throws TypeConversionException {
+            return convertTo(type, value);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T> T mandatoryConvertTo(Class<T> type, Object value)
+                throws TypeConversionException, NoTypeConversionAvailableException {
+            if ((type == int.class || type == Integer.class) && value instanceof String text) {
+                return (T) Integer.valueOf(text);
+            }
+            throw new NoTypeConversionAvailableException(value, type);
+        }
+
+        @Override
+        public <T> T mandatoryConvertTo(Class<T> type, Exchange exchange, Object value)
+                throws TypeConversionException, NoTypeConversionAvailableException {
+            return mandatoryConvertTo(type, value);
+        }
+
+        @Override
+        public <T> T tryConvertTo(Class<T> type, Object value) {
+            try {
+                return mandatoryConvertTo(type, value);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        public <T> T tryConvertTo(Class<T> type, Exchange exchange, Object value) {
+            return tryConvertTo(type, value);
+        }
     }
 }
