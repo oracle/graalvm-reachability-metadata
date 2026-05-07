@@ -128,6 +128,38 @@ class Akka_slf4j_3Test {
   }
 
   @Test
+  def slf4jLoggerPreservesThrowableCausesForErrorEvents(): Unit = {
+    val system: ActorSystem = actorSystem("error-system")
+    val latch: CountDownLatch = new CountDownLatch(1)
+    val appender: RecordingAppender = new RecordingAppender(latch)
+
+    withConfiguredLogger(classOf[Akka_slf4j_3Test], Level.ERROR, Some(appender)) { _ =>
+      try {
+        val failure: RuntimeException = new RuntimeException("database unavailable")
+        val event = Logging.Error(
+          failure,
+          "akka.slf4j.error-source",
+          classOf[Akka_slf4j_3Test],
+          "failed to persist order"
+        )
+
+        system.eventStream.publish(event)
+
+        assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue
+        val loggedEvent: ILoggingEvent = appender.events.asScala.find(_.getFormattedMessage == "failed to persist order").get
+
+        assertThat(loggedEvent.getLevel).isEqualTo(Level.ERROR)
+        assertThat(loggedEvent.getLoggerName).isEqualTo(classOf[Akka_slf4j_3Test].getName)
+        assertThat(loggedEvent.getThrowableProxy).isNotNull
+        assertThat(loggedEvent.getThrowableProxy.getClassName).isEqualTo(classOf[RuntimeException].getName)
+        assertThat(loggedEvent.getThrowableProxy.getMessage).isEqualTo("database unavailable")
+      } finally {
+        terminate(system)
+      }
+    }
+  }
+
+  @Test
   def markerLoggingAdapterEmitsFormattedMessagesThroughSlf4jLogger(): Unit = {
     val system: ActorSystem = actorSystem("adapter-system")
     val latch: CountDownLatch = new CountDownLatch(1)
