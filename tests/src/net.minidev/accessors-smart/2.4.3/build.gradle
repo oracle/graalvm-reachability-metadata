@@ -9,9 +9,43 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+Provider<Directory> generatedSourcesDir = layout.buildDirectory.dir("generated/accessors-smart-sources")
+Provider<Directory> compiledClassesDir = layout.buildDirectory.dir("classes/accessors-smart")
+
+configurations {
+    accessorsSmartSources {
+        transitive = false
+    }
+    accessorsSmartCompileClasspath
+}
+
+def unpackAccessorsSmartSources = tasks.register("unpackAccessorsSmartSources", Sync) {
+    from({ zipTree(configurations.accessorsSmartSources.singleFile) })
+    into generatedSourcesDir
+}
+
+def compileAccessorsSmartSources = tasks.register("compileAccessorsSmartSources", JavaCompile) {
+    dependsOn unpackAccessorsSmartSources
+    source generatedSourcesDir
+    classpath = configurations.accessorsSmartCompileClasspath
+    destinationDirectory = compiledClassesDir
+    options.release = 8
+}
+
+def accessorsSmartJar = tasks.register("accessorsSmartJar", Jar) {
+    dependsOn compileAccessorsSmartSources
+    from compiledClassesDir
+    archiveClassifier = "accessors-smart"
+}
+
+FileCollection accessorsSmartJarFiles = files(accessorsSmartJar.flatMap { it.archiveFile })
+accessorsSmartJarFiles.builtBy accessorsSmartJar
 
 dependencies {
-    testImplementation "net.minidev:accessors-smart:$libraryVersion"
+    accessorsSmartSources "net.minidev:accessors-smart:$libraryVersion:sources"
+    accessorsSmartCompileClasspath 'org.ow2.asm:asm:8.0.1'
+    testImplementation accessorsSmartJarFiles
+    testImplementation 'org.ow2.asm:asm:8.0.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
