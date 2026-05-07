@@ -41,6 +41,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -340,6 +341,51 @@ public class Resilience4j_micrometerTest {
                     .counter()).isNotNull();
         } finally {
             scheduler.shutdownNow();
+            meterRegistry.close();
+        }
+    }
+
+    @Test
+    void timerRegistryUsesNamedConfigurationsAndGlobalTags() {
+        SimpleMeterRegistry meterRegistry = new SimpleMeterRegistry();
+        try {
+            TimerConfig namedConfig = TimerConfig.custom()
+                    .metricNames("custom.timer.operations")
+                    .onFailureTagResolver(throwable -> "business")
+                    .build();
+            TimerRegistry timerRegistry = TimerRegistry.of(
+                    Map.of("named", namedConfig), List.of(), Map.of("application", "store"), meterRegistry);
+            Timer timer = timerRegistry.timer("inventory", "named", Map.of("operation", "reserve"));
+
+            assertThat(timer.getTimerConfig()).isSameAs(namedConfig);
+            assertThat(timer.getTags())
+                    .containsEntry("application", "store")
+                    .containsEntry("operation", "reserve");
+
+            assertThat(timer.executeSupplier(() -> "reserved")).isEqualTo("reserved");
+            assertThatThrownBy(() -> timer.executeRunnable(() -> {
+                throw new IllegalArgumentException("sold out");
+            })).isInstanceOf(IllegalArgumentException.class);
+
+            assertThat(meterRegistry.get("custom.timer.operations")
+                    .tag("name", "inventory")
+                    .tag("application", "store")
+                    .tag("operation", "reserve")
+                    .tag("kind", "successful")
+                    .timer()
+                    .count()).isEqualTo(1L);
+            assertThat(meterRegistry.get("custom.timer.operations")
+                    .tag("name", "inventory")
+                    .tag("application", "store")
+                    .tag("operation", "reserve")
+                    .tag("kind", "failed")
+                    .tag("failure", "business")
+                    .timer()
+                    .count()).isEqualTo(1L);
+            assertThat(meterRegistry.find("resilience4j.timer.calls")
+                    .tag("name", "inventory")
+                    .timer()).isNull();
+        } finally {
             meterRegistry.close();
         }
     }
