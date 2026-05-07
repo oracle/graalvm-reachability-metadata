@@ -6,7 +6,9 @@
  */
 package com_beust.jcommander;
 
+import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JcommanderTest {
     @Test
     void createsConsoleThroughJdkConsoleLookup() {
-        assertThat(JCommander.getConsole()).isNotNull();
+        assertThat(new JCommander().getConsole()).isNotNull();
     }
 
     @Test
@@ -23,12 +25,51 @@ public class JcommanderTest {
         JCommander commander = new JCommander(new RootCommand());
         commander.addCommand(new LocalizedCommand());
 
-        String description = commander.getCommandDescription("localized");
+        StringBuilder usage = new StringBuilder();
+        commander.getUsageFormatter().usage(usage);
 
-        assertThat(description).isEqualTo("localized command description");
+        assertThat(usage.toString()).contains("localized command description");
+    }
+
+    @Test
+    void parsesParameterWithStringConverterConstructor() {
+        ConvertedOptions options = new ConvertedOptions();
+
+        JCommander.newBuilder()
+                .addObject(options)
+                .build()
+                .parse("--converted", "alpha");
+
+        assertThat(options.converted.value).isEqualTo("--converted=alpha");
     }
 
     public static class RootCommand {
+    }
+
+    public static class ConvertedOptions {
+        @Parameter(names = "--converted", converter = OptionNameConverter.class)
+        private ConvertedValue converted;
+    }
+
+    public static class ConvertedValue {
+        private final String value;
+
+        public ConvertedValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public static class OptionNameConverter implements IStringConverter<ConvertedValue> {
+        private final String optionName;
+
+        public OptionNameConverter(String optionName) {
+            this.optionName = optionName;
+        }
+
+        @Override
+        public ConvertedValue convert(String value) {
+            return new ConvertedValue(optionName + "=" + value);
+        }
     }
 
     @Parameters(
