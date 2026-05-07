@@ -14,6 +14,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.duration.FiniteDuration
 
+import akka.actor.ActorRef
 import akka.actor.ActorSystem
 import akka.actor.Address
 import akka.actor.AddressFromURIString
@@ -98,6 +99,26 @@ class Akka_serialization_jackson_3Test {
   }
 
   @Test
+  def jsonSerializerRoundTripsClassicActorRefsWithAkkaModule(): Unit = {
+    withActorSystem { system =>
+      val serialization = SerializationExtension(system)
+      val payload = ActorRefPayload(name = "dead-letters-recipient", recipient = system.deadLetters)
+
+      val serializer = serialization.findSerializerFor(payload)
+      val manifest: String = Serializers.manifestFor(serializer, payload)
+      val bytes: Array[Byte] = serialization.serialize(payload).get
+      val restored = serialization.deserialize(bytes, serializer.identifier, manifest).get.asInstanceOf[ActorRefPayload]
+
+      assertThat(manifest).isEqualTo(ActorRefPayloadClassName)
+      assertThat(bytes).isNotEmpty
+      assertThat(restored.name).isEqualTo(payload.name)
+      assertThat(restored.recipient).isNotNull
+      assertThat(restored.recipient.path.toSerializationFormat)
+        .isEqualTo(system.deadLetters.path.toSerializationFormat)
+    }
+  }
+
+  @Test
   def jacksonMigrationTransformsOlderJsonSchemaBeforeDeserialization(): Unit = {
     withActorSystem { system =>
       val serialization = SerializationExtension(system)
@@ -131,6 +152,7 @@ object Akka_serialization_jackson_3Test {
   val PackageName = "com_typesafe_akka.akka_serialization_jackson_3"
   val JsonPayloadClassName = s"$PackageName.JsonPayload"
   val CborPayloadClassName = s"$PackageName.CborPayload"
+  val ActorRefPayloadClassName = s"$PackageName.ActorRefPayload"
   val MigratingMessageClassName = s"$PackageName.MigratingMessage"
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
 
@@ -139,6 +161,7 @@ object Akka_serialization_jackson_3Test {
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
+        "$ActorRefPayloadClassName" = jackson-json
         "$MigratingMessageClassName" = jackson-json
       }
       akka.serialization.jackson {
@@ -175,6 +198,8 @@ final case class MapperEnvelope(
 final case class JsonPayload(id: String, values: Vector[Int], note: Option[String])
 
 final case class CborPayload(id: String, count: Int, enabled: Boolean)
+
+final case class ActorRefPayload(name: String, recipient: ActorRef)
 
 final case class MigratingMessage(newName: String)
 
