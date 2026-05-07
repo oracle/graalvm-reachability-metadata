@@ -33,6 +33,7 @@ import doobie.free.sqlinput
 import doobie.free.sqloutput
 import doobie.free.statement
 import doobie.free.statement.StatementOp
+import doobie.util.log.LogHandler
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -69,7 +70,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration.DurationInt
 
 class Doobie_free_3Test {
-  private val interpreter: KleisliInterpreter[IO] = KleisliInterpreter[IO]
+  private val interpreter: KleisliInterpreter[IO] = KleisliInterpreter[IO](LogHandler.noop[IO])
 
   @Test
   def blobProgramsRunAgainstJdbcBlobImplementations(): Unit = {
