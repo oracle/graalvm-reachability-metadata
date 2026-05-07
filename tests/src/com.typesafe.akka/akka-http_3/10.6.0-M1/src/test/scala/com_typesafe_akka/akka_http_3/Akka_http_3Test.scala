@@ -85,6 +85,46 @@ class Akka_http_3Test {
   }
 
   @Test
+  def marshalsAndUnmarshalsMultipartFormData(): Unit = withActorSystem { (_, materializer, executionContext) =>
+    given Materializer = materializer
+    given ExecutionContext = executionContext
+
+    val descriptionEntity: HttpEntity.Strict = HttpEntity(
+      ContentTypes.`text/plain(UTF-8)`,
+      "quarterly report"
+    )
+    val fileEntity: HttpEntity.Strict = HttpEntity(
+      ContentTypes.`application/octet-stream`,
+      ByteString("file-content")
+    )
+    val descriptionPart: Multipart.FormData.BodyPart.Strict =
+      Multipart.FormData.BodyPart.Strict("description", descriptionEntity)
+    val uploadPart: Multipart.FormData.BodyPart.Strict =
+      Multipart.FormData.BodyPart.Strict("upload", fileEntity, Map("filename" -> "report.txt"))
+    val multipart: Multipart.FormData = Multipart.FormData(descriptionPart, uploadPart)
+    val requestEntity: RequestEntity = multipart.toEntity("native-test-boundary")
+    val rawBody: String = await(Unmarshal(requestEntity).to[String])
+    val parsedForm: Multipart.FormData = await(Unmarshal(requestEntity).to[Multipart.FormData])
+    val strictForm: Multipart.FormData.Strict = await(parsedForm.toStrict(TestTimeout))
+    val partsByName: Map[String, Multipart.FormData.BodyPart.Strict] =
+      strictForm.strictParts.map((part: Multipart.FormData.BodyPart.Strict) => part.name -> part).toMap
+
+    assertThat(requestEntity.contentType.mediaType.isMultipart).isTrue
+    assertThat(requestEntity.contentType.mediaType.mainType).isEqualTo("multipart")
+    assertThat(requestEntity.contentType.mediaType.subType).isEqualTo("form-data")
+    assertThat(rawBody).contains("name=\"description\"")
+    assertThat(rawBody).contains("name=\"upload\"")
+    assertThat(rawBody).contains("filename=\"report.txt\"")
+    assertThat(partsByName.keySet.asJava).containsExactlyInAnyOrder("description", "upload")
+    assertThat(partsByName("description").entity.contentType).isEqualTo(ContentTypes.`text/plain(UTF-8)`)
+    assertThat(partsByName("description").entity.data.utf8String).isEqualTo("quarterly report")
+    assertThat(partsByName("upload").additionalDispositionParams.getOrElse("filename", "missing"))
+      .isEqualTo("report.txt")
+    assertThat(partsByName("upload").entity.contentType).isEqualTo(ContentTypes.`application/octet-stream`)
+    assertThat(partsByName("upload").entity.data.utf8String).isEqualTo("file-content")
+  }
+
+  @Test
   def routesRequestsWithDirectivesAndHandlesRejections(): Unit = withActorSystem { (system, materializer, executionContext) =>
     given Materializer = materializer
     given ExecutionContext = executionContext
