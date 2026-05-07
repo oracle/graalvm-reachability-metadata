@@ -121,6 +121,22 @@ class Literally_3Test {
     }
   }
 
+  @Test
+  def returnedExpressionCanConstructDomainValues(): Unit = {
+    compileSnippetWithNativeFallback(
+      """import org_typelevel.literally_3.Literally_3TestSyntax.*
+        |
+        |object DomainLiteralValue {
+        |  val token: NormalizedLiteral = normalizedLiteral"Release_Candidate-1"
+        |  val tokenText: String = token.value
+        |}
+        |""".stripMargin
+    ).foreach { result =>
+      assertThat(result.hasErrors).isFalse
+      assertThat(result.messages).isEmpty
+    }
+  }
+
   private def compileSnippetWithNativeFallback(source: String): Option[CompilationResult] =
     try Some(compileSnippet(source))
     catch {
@@ -163,6 +179,8 @@ class Literally_3Test {
 }
 
 object Literally_3TestSyntax {
+  final case class NormalizedLiteral(value: String)
+
   object PositiveInt extends Literally[Int] {
     override def validate(s: String)(using Quotes): Either[String, Expr[Int]] =
       s.toIntOption match {
@@ -183,11 +201,21 @@ object Literally_3TestSyntax {
       else Left("Expected a literal containing an escaped line break")
   }
 
+  object NormalizedLiteralBuilder extends Literally[NormalizedLiteral] {
+    override def validate(s: String)(using Quotes): Either[String, Expr[NormalizedLiteral]] =
+      if s.matches("[A-Za-z][A-Za-z0-9_-]*") then {
+        val normalizedValue: Expr[String] = Expr(s.toLowerCase(Locale.ROOT))
+        Right('{ org_typelevel.literally_3.Literally_3TestSyntax.NormalizedLiteral($normalizedValue) })
+      } else Left(s"Expected an ASCII token literal, got: $s")
+  }
+
   extension (inline context: StringContext) {
     inline def positiveInt(inline args: Any*): Int = ${ PositiveInt('context, 'args) }
 
     inline def normalizedToken(inline args: Any*): String = ${ NormalizedToken('context, 'args) }
 
     inline def multilineText(inline args: Any*): String = ${ MultilineText('context, 'args) }
+
+    inline def normalizedLiteral(inline args: Any*): NormalizedLiteral = ${ NormalizedLiteralBuilder('context, 'args) }
   }
 }
