@@ -13,6 +13,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
+import org.slf4j.Marker
+import org.slf4j.event.Level
+import org.slf4j.helpers.AbstractLogger
 
 public class KtorEventsJvmTest {
     @Test
@@ -154,9 +157,76 @@ public class KtorEventsJvmTest {
         assertThat(observed).containsExactly("failing:payload", "after:payload")
     }
 
+    @Test
+    fun raiseCatchingReportsFailuresToTheSuppliedLogger() {
+        val events: Events = Events()
+        val definition: EventDefinition<String> = EventDefinition()
+        val logger = RecordingLogger()
+        val failure = IllegalStateException("logged failure")
+
+        events.subscribe(definition) { value: String ->
+            assertThat(value).isEqualTo("payload")
+            throw failure
+        }
+
+        assertThatCode { events.raiseCatching(definition, "payload", logger) }.doesNotThrowAnyException()
+
+        assertThat(logger.entries).hasSize(1)
+        val entry: LogEntry = logger.entries.single()
+        assertThat(entry.level).isEqualTo(Level.ERROR)
+        assertThat(entry.message).contains("handlers", "exception")
+        assertThat(entry.throwable).isSameAs(failure)
+    }
+
     private class NamedEventDefinition<T>(private val name: String) : EventDefinition<T>() {
         override fun equals(other: Any?): Boolean = other is NamedEventDefinition<*> && name == other.name
 
         override fun hashCode(): Int = name.hashCode()
     }
+
+    private class RecordingLogger : AbstractLogger() {
+        val entries: MutableList<LogEntry> = mutableListOf()
+
+        init {
+            name = "recording"
+        }
+
+        override fun isTraceEnabled(): Boolean = false
+
+        override fun isTraceEnabled(marker: Marker?): Boolean = false
+
+        override fun isDebugEnabled(): Boolean = false
+
+        override fun isDebugEnabled(marker: Marker?): Boolean = false
+
+        override fun isInfoEnabled(): Boolean = false
+
+        override fun isInfoEnabled(marker: Marker?): Boolean = false
+
+        override fun isWarnEnabled(): Boolean = false
+
+        override fun isWarnEnabled(marker: Marker?): Boolean = false
+
+        override fun isErrorEnabled(): Boolean = true
+
+        override fun isErrorEnabled(marker: Marker?): Boolean = true
+
+        override fun getFullyQualifiedCallerName(): String = "recording"
+
+        override fun handleNormalizedLoggingCall(
+            level: Level,
+            marker: Marker?,
+            messagePattern: String?,
+            arguments: Array<out Any?>?,
+            throwable: Throwable?
+        ) {
+            entries += LogEntry(level, messagePattern.orEmpty(), throwable)
+        }
+    }
+
+    private data class LogEntry(
+        val level: Level,
+        val message: String,
+        val throwable: Throwable?
+    )
 }
