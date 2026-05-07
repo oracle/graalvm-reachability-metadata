@@ -40,6 +40,11 @@ class Silencer_lib_2_13_12Test {
   }
 
   @Test
+  def noArgumentSilentAnnotationSuppressesWarningsForWholeDefinition(): Unit = {
+    assertEquals("default suppression", SilencedWarningFixture.valueAfterSuppressedDefaultWarning())
+  }
+
+  @Test
   def classObjectFieldMethodAndParameterAnnotationsPreserveRuntimeSemantics(): Unit = {
     val fixture: SilencerAnnotatedFixture = new SilencerAnnotatedFixture(" Native Image ")
 
@@ -130,6 +135,13 @@ object SilencedWarningFixture {
     val unusedSilencedWarningValue: String = "silenced"
 
     42
+  }
+
+  @silent
+  def valueAfterSuppressedDefaultWarning(): String = {
+    val unusedDefaultSuppressedValue: Int = 17
+
+    "default suppression"
   }
 }
 
