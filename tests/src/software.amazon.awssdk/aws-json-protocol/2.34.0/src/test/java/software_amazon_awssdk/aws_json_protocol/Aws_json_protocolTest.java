@@ -27,6 +27,7 @@ import software.amazon.awssdk.core.SdkField;
 import software.amazon.awssdk.core.SdkPojo;
 import software.amazon.awssdk.core.client.config.SdkClientConfiguration;
 import software.amazon.awssdk.core.client.config.SdkClientOption;
+import software.amazon.awssdk.core.document.Document;
 import software.amazon.awssdk.core.http.HttpResponseHandler;
 import software.amazon.awssdk.core.interceptor.ExecutionAttributes;
 import software.amazon.awssdk.core.protocol.MarshallLocation;
@@ -236,6 +237,68 @@ public class Aws_json_protocolTest {
     }
 
     @Test
+    void protocolMarshallerSerializesDocumentPayloadMember() throws IOException {
+        AwsJsonProtocolFactory factory = AwsJsonProtocolFactory.builder()
+                                                              .clientConfiguration(clientConfiguration())
+                                                              .protocol(AwsJsonProtocol.REST_JSON)
+                                                              .protocolVersion("1.1")
+                                                              .build();
+        OperationInfo operationInfo = OperationInfo.builder()
+                                                   .requestUri("/documents")
+                                                   .httpMethod(SdkHttpMethod.POST)
+                                                   .operationIdentifier("ExampleService.PutDocument")
+                                                   .hasPayloadMembers(true)
+                                                   .hasImplicitPayloadMembers(true)
+                                                   .build();
+
+        SdkHttpFullRequest request = factory.createProtocolMarshaller(operationInfo)
+                                            .marshall(DocumentPojo.requestPojo());
+        String payload = utf8Content(request);
+
+        assertThat(request.method()).isEqualTo(SdkHttpMethod.POST);
+        assertThat(request.encodedPath()).isEqualTo("/documents");
+        assertThat(payload).contains("\"Document\":")
+                           .contains("\"title\":\"example\"")
+                           .contains("\"active\":true")
+                           .contains("\"count\":3")
+                           .contains("\"tags\":[\"alpha\",\"beta\"]")
+                           .contains("\"metadata\":")
+                           .contains("\"empty\":null");
+    }
+
+    @Test
+    void responseHandlerUnmarshallsDocumentPayloadMember() throws Exception {
+        AwsJsonProtocolFactory factory = AwsJsonProtocolFactory.builder()
+                                                              .clientConfiguration(clientConfiguration())
+                                                              .protocol(AwsJsonProtocol.REST_JSON)
+                                                              .protocolVersion("1.1")
+                                                              .build();
+        HttpResponseHandler<DocumentPojo> handler = factory.createResponseHandler(JSON_PAYLOAD_OPERATION,
+                                                                                  DocumentPojo::new);
+        SdkHttpFullResponse response = responseWithJson(200, """
+            {
+              "Document": {
+                "title": "example",
+                "active": true,
+                "count": 3,
+                "tags": ["alpha", "beta"],
+                "metadata": {"empty": null}
+              }
+            }
+            """);
+
+        Document document = handler.handle(response, new ExecutionAttributes()).document();
+
+        assertThat(document.asMap().get("title").asString()).isEqualTo("example");
+        assertThat(document.asMap().get("active").asBoolean()).isTrue();
+        assertThat(document.asMap().get("count").asNumber().stringValue()).isEqualTo("3");
+        assertThat(document.asMap().get("tags").asList())
+            .extracting(Document::asString)
+            .containsExactly("alpha", "beta");
+        assertThat(document.asMap().get("metadata").asMap().get("empty").isNull()).isTrue();
+    }
+
+    @Test
     void errorResponseHandlerExtractsModeledAwsJsonErrorDetails() throws Exception {
         AwsJsonProtocolFactory factory = AwsJsonProtocolFactory.builder()
                                                               .clientConfiguration(clientConfiguration())
@@ -328,6 +391,20 @@ public class Aws_json_protocolTest {
                        .getter(getterTarget -> ((ProtocolPojo) getterTarget).booleanValue(memberName))
                        .setter((setterTarget, value) -> ((ProtocolPojo) setterTarget).setBooleanValue(memberName,
                                                                                                        value))
+                       .traits(LocationTrait.builder()
+                                            .location(location)
+                                            .locationName(locationName)
+                                            .unmarshallLocationName(locationName)
+                                            .build())
+                       .build();
+    }
+
+    private static SdkField<Document> documentField(String memberName, MarshallLocation location, String locationName) {
+        return SdkField.<Document>builder(MarshallingType.DOCUMENT)
+                       .memberName(memberName)
+                       .getter(getterTarget -> ((DocumentPojo) getterTarget).documentValue(memberName))
+                       .setter((setterTarget, value) -> ((DocumentPojo) setterTarget).setDocumentValue(memberName,
+                                                                                                        value))
                        .traits(LocationTrait.builder()
                                             .location(location)
                                             .locationName(locationName)
@@ -478,6 +555,63 @@ public class Aws_json_protocolTest {
 
         @Override
         public ProtocolPojo build() {
+            return this;
+        }
+
+        @Override
+        public Map<String, SdkField<?>> sdkFieldNameToField() {
+            return SdkPojo.super.sdkFieldNameToField();
+        }
+    }
+
+    private static final class DocumentPojo implements SdkPojo, Buildable {
+        private static final String DOCUMENT = "document";
+        private static final SdkField<Document> DOCUMENT_FIELD = documentField(DOCUMENT,
+                                                                               MarshallLocation.PAYLOAD,
+                                                                               "Document");
+        private static final List<SdkField<?>> SDK_FIELDS = Arrays.asList(DOCUMENT_FIELD);
+
+        private Document document;
+
+        static DocumentPojo requestPojo() {
+            DocumentPojo pojo = new DocumentPojo();
+            pojo.document = Document.fromMap(Map.of("title", Document.fromString("example"),
+                                                    "active", Document.fromBoolean(true),
+                                                    "count", Document.fromNumber(3),
+                                                    "tags", Document.fromList(Arrays.asList(
+                                                        Document.fromString("alpha"),
+                                                        Document.fromString("beta"))),
+                                                    "metadata", Document.fromMap(Map.of("empty",
+                                                                                        Document.fromNull()))));
+            return pojo;
+        }
+
+        Document document() {
+            return document;
+        }
+
+        Document documentValue(String memberName) {
+            if (DOCUMENT.equals(memberName)) {
+                return document;
+            }
+            throw new IllegalArgumentException("Unknown document member: " + memberName);
+        }
+
+        void setDocumentValue(String memberName, Document value) {
+            if (DOCUMENT.equals(memberName)) {
+                document = value;
+                return;
+            }
+            throw new IllegalArgumentException("Unknown document member: " + memberName);
+        }
+
+        @Override
+        public List<SdkField<?>> sdkFields() {
+            return SDK_FIELDS;
+        }
+
+        @Override
+        public DocumentPojo build() {
             return this;
         }
 
