@@ -226,6 +226,40 @@ public class Proto_google_cloud_secretmanager_v1beta2Test {
     }
 
     @Test
+    void automaticReplicationStatusCapturesGlobalEncryptionStateForDestroyedVersion() {
+        CustomerManagedEncryptionStatus encryptionStatus = CustomerManagedEncryptionStatus.newBuilder()
+                .setKmsKeyVersionName(KMS_KEY_VERSION)
+                .build();
+        ReplicationStatus automaticStatus = ReplicationStatus.newBuilder()
+                .setAutomatic(ReplicationStatus.AutomaticStatus.newBuilder()
+                        .setCustomerManagedEncryption(encryptionStatus))
+                .build();
+        Timestamp destroyTime = Timestamp.newBuilder().setSeconds(1_700_200_001L).build();
+
+        SecretVersion destroyedVersion = SecretVersion.newBuilder()
+                .setName(REGIONAL_VERSION_NAME)
+                .setState(SecretVersion.State.DESTROYED)
+                .setDestroyTime(destroyTime)
+                .setReplicationStatus(automaticStatus)
+                .build();
+
+        assertThat(automaticStatus.getReplicationStatusCase())
+                .isEqualTo(ReplicationStatus.ReplicationStatusCase.AUTOMATIC);
+        assertThat(automaticStatus.hasAutomatic()).isTrue();
+        assertThat(automaticStatus.hasUserManaged()).isFalse();
+        assertThat(automaticStatus.getAutomatic().hasCustomerManagedEncryption()).isTrue();
+        assertThat(automaticStatus.getAutomatic().getCustomerManagedEncryption().getKmsKeyVersionName())
+                .isEqualTo(KMS_KEY_VERSION);
+        assertThat(destroyedVersion.getName()).isEqualTo(REGIONAL_VERSION_NAME);
+        assertThat(destroyedVersion.getState()).isEqualTo(SecretVersion.State.DESTROYED);
+        assertThat(destroyedVersion.hasDestroyTime()).isTrue();
+        assertThat(destroyedVersion.getDestroyTime()).isEqualTo(destroyTime);
+        assertThat(destroyedVersion.getReplicationStatus()).isEqualTo(automaticStatus);
+        assertThat(destroyedVersion.getReplicationStatus().getAutomatic().getCustomerManagedEncryption())
+                .isEqualTo(encryptionStatus);
+    }
+
+    @Test
     void payloadRequestsAndResponsesKeepBinaryDataAndChecksum() {
         byte[] secretBytes = "s3cr3t-value".getBytes(StandardCharsets.UTF_8);
         ByteString data = ByteString.copyFrom(secretBytes);
