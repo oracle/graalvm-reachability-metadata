@@ -59,4 +59,29 @@ class Quill_jdbc_3Test {
     assertThat(result.info.executionType)
       .isEqualTo(ExecutionType.Static)
   }
+
+  @Test
+  def batchInsertActionGroupsLiftedRowsForPreparedExecution(): Unit = {
+    val people: List[PersonRow] = List(
+      PersonRow(1, "Ada", 36, active = true),
+      PersonRow(2, "Grace", 85, active = false)
+    )
+    val result: BatchActionMirror = context.run {
+      quote {
+        liftQuery(people).foreach(person => query[PersonRow].insertValue(person))
+      }
+    }
+
+    assertThat(result.groups.map { case (sql, rows) => (sql, rows.map(_.data)) })
+      .isEqualTo(
+        List(
+          "INSERT INTO PersonRow (id,name,age,active) VALUES (?, ?, ?, ?)" -> List(
+            List("_1" -> people.head.id, "_2" -> people.head.name, "_3" -> people.head.age, "_4" -> people.head.active),
+            List("_1" -> people(1).id, "_2" -> people(1).name, "_3" -> people(1).age, "_4" -> people(1).active)
+          )
+        )
+      )
+    assertThat(result.info.executionType)
+      .isEqualTo(ExecutionType.Static)
+  }
 }
