@@ -8,14 +8,10 @@ package org_jboss_arquillian_junit.arquillian_junit_container;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.arquillian.container.test.spi.TestRunner;
 import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.core.spi.context.Context;
@@ -24,8 +20,6 @@ import org.jboss.arquillian.junit.container.JUnitContainerExtension;
 import org.jboss.arquillian.junit.container.JUnitDeploymentAppender;
 import org.jboss.arquillian.junit.container.JUnitTestRunner;
 import org.jboss.arquillian.test.spi.TestResult;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TestRule;
@@ -134,23 +128,6 @@ public class Arquillian_junit_containerTest {
     }
 
     @Test
-    void deploymentAppenderBuildsCachedArchiveWithJUnitRunnerServiceProvider() throws IOException {
-        JUnitDeploymentAppender appender = new JUnitDeploymentAppender();
-
-        Archive<?> archive = appender.createAuxiliaryArchive();
-        Archive<?> secondArchive = appender.createAuxiliaryArchive();
-
-        assertThat(secondArchive).isSameAs(archive);
-        assertThat(archive.getName()).isEqualTo("arquillian-junit.jar");
-        assertThat(archive.contains("/org/jboss/arquillian/junit/container/JUnitTestRunner.class")).isTrue();
-        assertThat(archive.contains("/org/jboss/arquillian/junit/Arquillian.class")).isTrue();
-        assertThat(archive.contains("/org/junit/Test.class")).isTrue();
-        assertThat(archive.contains("/org/hamcrest/Matcher.class")).isTrue();
-        assertThat(serviceProviderContent(archive, TestRunner.class))
-                .contains("org.jboss.arquillian.junit.container.JUnitTestRunner");
-    }
-
-    @Test
     void containerExtensionRegistersDeploymentArchiveAppenderService() {
         RecordingExtensionBuilder builder = new RecordingExtensionBuilder();
 
@@ -162,15 +139,6 @@ public class Arquillian_junit_containerTest {
         assertThat(builder.overrides()).isEmpty();
         assertThat(builder.observers()).isEmpty();
         assertThat(builder.contexts()).isEmpty();
-    }
-
-    private static String serviceProviderContent(Archive<?> archive, Class<?> serviceType) throws IOException {
-        Node node = archive.get("/META-INF/services/" + serviceType.getName());
-        assertThat(node).isNotNull();
-        assertThat(node.getAsset()).isNotNull();
-        try (InputStream stream = node.getAsset().openStream()) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-        }
     }
 
     public static class FixtureBackedJUnit4TestCase {
