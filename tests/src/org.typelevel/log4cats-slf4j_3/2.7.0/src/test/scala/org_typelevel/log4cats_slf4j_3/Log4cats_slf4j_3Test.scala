@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.slf4j.helpers.MarkerIgnoringBase
 import org.slf4j.helpers.MessageFormatter
+import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.LoggerFactory
 import org.typelevel.log4cats.LoggerName
+import org.typelevel.log4cats.syntax.*
 import org.typelevel.log4cats.slf4j.Slf4jFactory
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
@@ -109,6 +111,21 @@ class Log4cats_slf4j_3Test {
     assertThat(delegate.events.asJava).isEmpty()
     assertThat(delegate.enabledChecks.asJava)
       .contains("trace", "debug", "info", "warn", "error")
+  }
+
+  @Test
+  def interpolatorSyntaxBuildsMessagesForSlf4jLogger(): Unit = {
+    val delegate: RecordingSlf4jLogger = RecordingSlf4jLogger("interpolator")
+    given Logger[SyncIO] = Slf4jLogger.getLoggerFromSlf4j[SyncIO](delegate)
+    val userId: Long = 42L
+    val action: String = "created"
+
+    info"user $userId was $action".unsafeRunSync()
+    warn"user $userId requires follow-up".unsafeRunSync()
+
+    assertThat(delegate.events.map(_.level).asJava).containsExactly("info", "warn")
+    assertThat(delegate.events.map(_.message).asJava)
+      .containsExactly("user 42 was created", "user 42 requires follow-up")
   }
 
   @Test
