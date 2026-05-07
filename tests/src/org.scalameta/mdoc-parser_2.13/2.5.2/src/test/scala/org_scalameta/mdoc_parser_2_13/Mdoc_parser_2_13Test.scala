@@ -109,6 +109,23 @@ class Mdoc_parser_2_13Test {
   }
 
   @Test
+  def acceptsClosingFenceMarkersWithTrailingWhitespace(): Unit = {
+    val markdown: String = "```scala mdoc\nprintln(1)\n```   \t\noutside\n"
+
+    val parts: Vector[MarkdownPart] = parse(markdown)
+
+    assertThat(parts.asJava).hasSize(2)
+    val fence: CodeFence = parts.head.asInstanceOf[CodeFence]
+    assertThat(fence.openBackticks.value).isEqualTo("```")
+    assertThat(fence.info.value).isEqualTo("scala mdoc\n")
+    assertThat(fence.body.value).isEqualTo("println(1)")
+    assertThat(fence.closeBackticks.value).isEqualTo("\n```   \t\n")
+    assertThat(parts(1)).isInstanceOf(classOf[Text])
+    assertThat(parts(1).asInstanceOf[Text].value).isEqualTo("outside\n")
+    assertThat(render(parts)).isEqualTo(markdown)
+  }
+
+  @Test
   def recognizesMdocModesFromFenceInfo(): Unit = {
     assertThat(fenceWithInfo("scala mdoc").getMdocMode).isEqualTo(Some(""))
     assertThat(fenceWithInfo("scala mdoc\n").getMdocMode).isEqualTo(Some(""))
