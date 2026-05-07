@@ -8,36 +8,53 @@ package org_hibernate_common.hibernate_commons_annotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.hibernate.annotations.common.util.StandardClassLoaderDelegateImpl;
+import org.hibernate.annotations.common.annotationfactory.AnnotationDescriptor;
+import org.hibernate.annotations.common.annotationfactory.AnnotationFactory;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("deprecation")
 public class StandardClassLoaderDelegateImplTest {
     @Test
-    public void classForNameUsesContextClassLoaderWhenAvailable() {
+    public void createUsingTcclBuildsProxyWithContextClassLoader() {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(StandardClassLoaderDelegateImplTest.class.getClassLoader());
+        ClassLoader testClassLoader = StandardClassLoaderDelegateImplTest.class.getClassLoader();
+        Thread.currentThread().setContextClassLoader(testClassLoader);
         try {
-            Class<?> resolvedClass = StandardClassLoaderDelegateImpl.INSTANCE.classForName(
-                    StandardClassLoaderDelegateImpl.class.getName());
+            AnnotationDescriptor descriptor = descriptor("from-tccl");
 
-            assertThat(resolvedClass).isEqualTo(StandardClassLoaderDelegateImpl.class);
+            SampleAnnotation annotation = AnnotationFactory.createUsingTccl(descriptor);
+
+            assertThat(annotation.value()).isEqualTo("from-tccl");
+            assertThat(annotation.annotationType()).isEqualTo(SampleAnnotation.class);
+            assertThat(annotation.getClass().getClassLoader()).isEqualTo(testClassLoader);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }
 
     @Test
-    public void classForNameFallsBackToHibernateCommonsAnnotationsClassLoaderWithoutContextClassLoader() {
+    public void createUsesAnnotationTypeClassLoaderWithoutContextClassLoader() {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(null);
         try {
-            Class<?> resolvedClass = StandardClassLoaderDelegateImpl.INSTANCE.classForName(
-                    StandardClassLoaderDelegateImpl.class.getName());
+            AnnotationDescriptor descriptor = descriptor("from-annotation-type-loader");
 
-            assertThat(resolvedClass).isEqualTo(StandardClassLoaderDelegateImpl.class);
+            SampleAnnotation annotation = AnnotationFactory.create(descriptor);
+
+            assertThat(annotation.value()).isEqualTo("from-annotation-type-loader");
+            assertThat(annotation.annotationType()).isEqualTo(SampleAnnotation.class);
+            assertThat(annotation.getClass().getClassLoader()).isEqualTo(SampleAnnotation.class.getClassLoader());
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
+    }
+
+    private static AnnotationDescriptor descriptor(String value) {
+        AnnotationDescriptor descriptor = new AnnotationDescriptor(SampleAnnotation.class);
+        descriptor.setValue("value", value);
+        return descriptor;
+    }
+
+    public @interface SampleAnnotation {
+        String value();
     }
 }
