@@ -6,7 +6,7 @@
  */
 package org_aesh.readline;
 
-import org.aesh.readline.terminal.TerminalBuilder;
+import org.aesh.terminal.tty.TerminalBuilder;
 import org.aesh.terminal.Terminal;
 import org.aesh.terminal.utils.OSUtils;
 import org.junit.jupiter.api.Test;

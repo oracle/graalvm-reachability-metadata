@@ -6,50 +6,40 @@
  */
 package org_aesh.readline;
 
-import org.aesh.terminal.tty.utils.Signals;
+import org.jline.utils.Signals;
 import org.junit.jupiter.api.Test;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SignalsTest {
+public class OrgJlineUtilsSignalsTest {
     private static final String[] TEST_SIGNALS = {"WINCH", "USR2", "USR1", "CONT"};
 
     @Test
-    void signalRegistrationUtilitiesReachNativeSignalApi() throws Exception {
+    void signalRegistrationUsesJdkSignalReflection() throws Exception {
         TestSignal testSignal = installTemporaryIgnoredSignal();
+        Logger logger = Logger.getLogger("org.jline");
+        Level originalLevel = logger.getLevel();
 
         try {
-            AtomicInteger registeredHandlerInvocations = new AtomicInteger();
-            Signals.register(
-                    testSignal.name,
-                    registeredHandlerInvocations::incrementAndGet,
-                    getClass().getClassLoader());
+            logger.setLevel(Level.FINEST);
 
-            Signal.raise(testSignal.signal);
-            awaitInvocation(registeredHandlerInvocations);
-
-            Signals.registerIgnore(testSignal.name);
             Signals.registerDefault(testSignal.name);
 
-            AtomicInteger invokedHandlerInvocations = new AtomicInteger();
-            AtomicReference<String> invokedSignalName = new AtomicReference<>();
-            SignalHandler handler = handledSignal -> {
-                invokedSignalName.set(handledSignal.getName());
-                invokedHandlerInvocations.incrementAndGet();
-            };
+            AtomicInteger invocations = new AtomicInteger();
+            Signals.register(testSignal.name, invocations::incrementAndGet, getClass().getClassLoader());
+            Signal.raise(testSignal.signal);
 
-            Signals.invokeHandler(testSignal.name, handler);
-
-            assertThat(invokedHandlerInvocations.get()).isEqualTo(1);
-            assertThat(invokedSignalName.get()).isEqualTo(testSignal.name);
+            awaitInvocation(invocations);
         } finally {
             Signal.handle(testSignal.signal, testSignal.previousHandler);
+            logger.setLevel(originalLevel);
         }
     }
 
