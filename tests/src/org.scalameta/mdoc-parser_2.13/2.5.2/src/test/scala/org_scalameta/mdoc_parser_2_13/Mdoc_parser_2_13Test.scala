@@ -83,6 +83,32 @@ class Mdoc_parser_2_13Test {
   }
 
   @Test
+  def parsesLongerBacktickFencesWithoutClosingOnShorterFenceMarkers(): Unit = {
+    val markdown: String =
+      "````scala mdoc\n" +
+        "val literal = \"\"\"\n" +
+        "```not a closing fence\n" +
+        "\"\"\"\n" +
+        "````\n" +
+        "after\n"
+
+    val parts: Vector[MarkdownPart] = parse(markdown)
+
+    assertThat(parts.asJava).hasSize(2)
+    val fence: CodeFence = parts.head.asInstanceOf[CodeFence]
+    assertThat(fence.openBackticks.value).isEqualTo("````")
+    assertThat(fence.info.value).isEqualTo("scala mdoc\n")
+    assertThat(fence.body.value).isEqualTo(
+      "val literal = \"\"\"\n" +
+        "```not a closing fence\n" +
+        "\"\"\""
+    )
+    assertThat(fence.closeBackticks.value).isEqualTo("\n````\n")
+    assertThat(parts(1).asInstanceOf[Text].value).isEqualTo("after\n")
+    assertThat(render(parts)).isEqualTo(markdown)
+  }
+
+  @Test
   def recognizesMdocModesFromFenceInfo(): Unit = {
     assertThat(fenceWithInfo("scala mdoc").getMdocMode).isEqualTo(Some(""))
     assertThat(fenceWithInfo("scala mdoc\n").getMdocMode).isEqualTo(Some(""))
