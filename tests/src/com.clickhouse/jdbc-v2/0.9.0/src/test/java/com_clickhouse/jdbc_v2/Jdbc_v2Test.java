@@ -238,6 +238,35 @@ public class Jdbc_v2Test {
     }
 
     @Test
+    void connectionCreatesJdbcArraysFromClickHouseTypeNames() throws Exception {
+        try (Connection connection = openConnection()) {
+            java.sql.Array stringArray = connection.createArrayOf("String", new Object[] {"alpha", "beta"});
+            java.sql.Array integerArray = connection.createArrayOf("Int32", new Object[] {1, 2, 3});
+            java.sql.Array emptyArray = connection.createArrayOf("Bool", new Object[0]);
+            try {
+                assertThat(stringArray.getBaseTypeName()).isEqualTo("String");
+                assertThat(stringArray.getBaseType()).isEqualTo(Types.VARCHAR);
+                assertThat((Object[]) stringArray.getArray()).containsExactly("alpha", "beta");
+
+                assertThat(integerArray.getBaseTypeName()).isEqualTo("Int32");
+                assertThat(integerArray.getBaseType()).isEqualTo(Types.INTEGER);
+                assertThat((Object[]) integerArray.getArray()).containsExactly(1, 2, 3);
+
+                assertThat(emptyArray.getBaseTypeName()).isEqualTo("Bool");
+                assertThat(emptyArray.getBaseType()).isEqualTo(Types.BOOLEAN);
+                assertThat((Object[]) emptyArray.getArray()).isEmpty();
+
+                assertThatThrownBy(() -> connection.createArrayOf("NotAClickHouseType", new Object[] {"value"}))
+                        .isInstanceOf(SQLException.class);
+            } finally {
+                stringArray.free();
+                integerArray.free();
+                emptyArray.free();
+            }
+        }
+    }
+
+    @Test
     void clickHouseArrayAndTupleExposeValueObjects() throws Exception {
         Array array = new Array(Arrays.asList("one", "two", "three"), "String", Types.VARCHAR);
         Tuple tuple = new Tuple("name", 42, true);
