@@ -18,18 +18,24 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class FactoryFinderTest {
     private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
 
-    private final Thread currentThread = Thread.currentThread();
-    private final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
-    private final String originalExpressionFactoryProperty = System.getProperty(EXPRESSION_FACTORY_PROPERTY);
+    private ClassLoader originalContextClassLoader;
+    private String originalExpressionFactoryProperty;
+
+    @BeforeEach
+    void captureThreadState() {
+        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        originalExpressionFactoryProperty = System.getProperty(EXPRESSION_FACTORY_PROPERTY);
+    }
 
     @AfterEach
     void restoreThreadState() {
-        currentThread.setContextClassLoader(originalContextClassLoader);
+        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         if (originalExpressionFactoryProperty == null) {
             System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
         } else {
@@ -39,8 +45,9 @@ public class FactoryFinderTest {
 
     @Test
     void looksUpServiceWithNullContextClassLoaderAndUsesPropertiesConstructor() {
-        currentThread.setContextClassLoader(null);
-        System.setProperty(EXPRESSION_FACTORY_PROPERTY, ServiceExpressionFactory.class.getName());
+        Thread.currentThread().setContextClassLoader(null);
+        System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
+        assertThat(Thread.currentThread().getContextClassLoader()).isNull();
 
         Properties properties = new Properties();
         properties.setProperty("javax.el.cacheSize", "32");
