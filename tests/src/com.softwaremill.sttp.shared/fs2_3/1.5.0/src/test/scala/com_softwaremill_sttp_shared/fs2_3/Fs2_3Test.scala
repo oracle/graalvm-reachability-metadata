@@ -80,6 +80,20 @@ class Fs2_3Test {
   }
 
   @Test
+  def limitBytesWithNegativeMaximumFailsBeforePullingTheStream(): Unit = {
+    var streamPulled: Boolean = false
+    val input: Stream[IO, Byte] = Stream.eval(IO {
+      streamPulled = true
+      1.toByte
+    })
+
+    val result: Either[Throwable, List[Byte]] = collect(Fs2Streams.limitBytes(input, maxBytes = -1L))
+
+    assertLimitExceeded(result, expectedMaxBytes = -1L)
+    assertFalse(streamPulled)
+  }
+
+  @Test
   def limitBytesPropagatesUpstreamFailuresWhenTheLimitHasNotBeenExceeded(): Unit = {
     val boom: IllegalStateException = new IllegalStateException("upstream")
     val failing: Stream[IO, Byte] = chunk(1, 2) ++ Stream.raiseError[IO](boom)
