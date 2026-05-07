@@ -19,9 +19,11 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.micrometer.Timer;
 import io.github.resilience4j.micrometer.TimerConfig;
 import io.github.resilience4j.micrometer.TimerRegistry;
+import io.github.resilience4j.micrometer.tagged.RateLimiterMetricNames;
 import io.github.resilience4j.micrometer.tagged.TaggedBulkheadMetrics;
 import io.github.resilience4j.micrometer.tagged.TaggedCircuitBreakerMetrics;
 import io.github.resilience4j.micrometer.tagged.TaggedRateLimiterMetrics;
+import io.github.resilience4j.micrometer.tagged.TaggedRateLimiterMetricsPublisher;
 import io.github.resilience4j.micrometer.tagged.TaggedRetryMetrics;
 import io.github.resilience4j.micrometer.tagged.TaggedThreadPoolBulkheadMetrics;
 import io.github.resilience4j.micrometer.tagged.TaggedTimeLimiterMetrics;
@@ -214,6 +216,49 @@ public class Resilience4j_micrometerTest {
                     .tag("name", "writer")
                     .gauge()
                     .value()).isEqualTo(1.0d);
+        } finally {
+            meterRegistry.close();
+        }
+    }
+
+    @Test
+    void taggedRateLimiterMetricsPublisherPublishesAndRemovesCustomMeters() {
+        SimpleMeterRegistry meterRegistry = new SimpleMeterRegistry();
+        try {
+            RateLimiterMetricNames metricNames = RateLimiterMetricNames.custom()
+                    .availablePermissionsMetricName("custom.ratelimiter.available")
+                    .waitingThreadsMetricName("custom.ratelimiter.waiting")
+                    .build();
+            TaggedRateLimiterMetricsPublisher publisher = new TaggedRateLimiterMetricsPublisher(
+                    metricNames, meterRegistry);
+            RateLimiterConfig config = RateLimiterConfig.custom()
+                    .limitForPeriod(1)
+                    .limitRefreshPeriod(Duration.ofMinutes(1))
+                    .timeoutDuration(Duration.ZERO)
+                    .build();
+            RateLimiterRegistry rateLimiterRegistry = RateLimiterRegistry.of(config);
+            RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("published-api", Map.of("endpoint", "reports"));
+
+            publisher.publishMetrics(rateLimiter);
+
+            assertThat(rateLimiter.acquirePermission()).isTrue();
+            assertThat(meterRegistry.get("custom.ratelimiter.available")
+                    .tag("name", "published-api")
+                    .tag("endpoint", "reports")
+                    .gauge()
+                    .value()).isEqualTo(0.0d);
+            assertThat(meterRegistry.find("resilience4j.ratelimiter.available.permissions")
+                    .tag("name", "published-api")
+                    .gauge()).isNull();
+
+            publisher.removeMetrics(rateLimiter);
+
+            assertThat(meterRegistry.find("custom.ratelimiter.available")
+                    .tag("name", "published-api")
+                    .gauge()).isNull();
+            assertThat(meterRegistry.find("custom.ratelimiter.waiting")
+                    .tag("name", "published-api")
+                    .gauge()).isNull();
         } finally {
             meterRegistry.close();
         }
