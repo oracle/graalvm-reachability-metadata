@@ -104,6 +104,20 @@ class Cats_mtl_3Test {
   }
 
   @Test
+  def handleAttemptTLiftsErrorsIntoEitherTransformer(): Unit = {
+    type ErrorOr[A] = Either[String, A]
+
+    val attemptedFailure: EitherT[ErrorOr, String, Int] =
+      Handle[ErrorOr, String].attemptT(Left("fail"): ErrorOr[Int])
+    assertEquals(Right(Left("fail")), attemptedFailure.value)
+    assertEquals(Right(4), attemptedFailure.fold(error => error.length, value => value))
+
+    val attemptedSuccess: EitherT[ErrorOr, String, Int] =
+      Handle[ErrorOr, String].attemptT(Right(9): ErrorOr[Int])
+    assertEquals(Right(Right(10)), attemptedSuccess.map(_ + 1).value)
+  }
+
+  @Test
   def statefulAndMonadPartialOrderLiftEffectsIntoStatefulStacks(): Unit = {
     type Counter[A] = StateT[Id, Int, A]
 
