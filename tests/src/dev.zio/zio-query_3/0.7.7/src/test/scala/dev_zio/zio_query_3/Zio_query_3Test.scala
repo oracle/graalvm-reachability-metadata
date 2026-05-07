@@ -163,6 +163,26 @@ class Zio_query_3Test {
   }
 
   @Test
+  def optionalDataSourceMissesCanBeRecoveredAsNone(): Unit = {
+    val calls: AtomicInteger = new AtomicInteger(0)
+    val source: DataSource[Any, GetName] = DataSource.fromFunctionOption("optional-names") { (request: GetName) =>
+      calls.incrementAndGet()
+      names.get(request.id)
+    }
+
+    val result: List[Option[String]] = unsafeRun {
+      ZQuery
+        .foreachPar(List(1, 99, 2)) { (id: Int) =>
+          ZQuery.fromRequest(GetName(id))(source).optional
+        }
+        .run
+    }.toList
+
+    assertThat(result).isEqualTo(List(Some("Ada"), None, Some("Grace")))
+    assertThat(calls.get()).isEqualTo(3)
+  }
+
+  @Test
   def partitionQueryCollectsFailuresAndSuccessesWithoutFailingTheQuery(): Unit = {
     val result: (Iterable[String], Iterable[String]) = unsafeRun {
       ZQuery
