@@ -135,6 +135,60 @@ public class Neo4j_bolt_connection_pooledTest {
     }
 
     @Test
+    void pooledConnectionDelegatesRoutingAndTransactionOperations() throws Exception {
+        MutableClock clock = new MutableClock(1_000L);
+        RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
+        PooledBoltConnectionProvider provider = newProvider(
+                delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 0L, -1L, clock);
+        Map<String, Value> parameters = Map.of("name", new SimpleValue("Ada"));
+        Map<String, Value> metadata = Map.of("source", new SimpleValue("test"));
+
+        try {
+            BoltConnection connection = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            FakeBoltConnection delegate = delegateProvider.connections().get(0);
+
+            await(connection.route(DATABASE_NAME, "neo4j-user", Set.of("bookmark-2")));
+            await(connection.beginTransaction(
+                    DATABASE_NAME,
+                    AccessMode.READ,
+                    "neo4j-user",
+                    Set.of("bookmark-2"),
+                    TransactionType.UNCONSTRAINED,
+                    Duration.ofSeconds(2),
+                    metadata,
+                    "tx-2",
+                    NotificationConfig.defaultConfig()));
+            await(connection.runInAutoCommitTransaction(
+                    DATABASE_NAME,
+                    AccessMode.WRITE,
+                    "neo4j-user",
+                    Set.of("bookmark-3"),
+                    "MATCH (n) RETURN n",
+                    parameters,
+                    Duration.ofSeconds(3),
+                    metadata,
+                    NotificationConfig.defaultConfig()));
+            await(connection.discard(5, 42));
+            await(connection.commit());
+            await(connection.rollback());
+            await(connection.clear());
+
+            assertThat(delegate.operations()).containsExactly(
+                    "route",
+                    "begin:UNCONSTRAINED",
+                    "auto:MATCH (n) RETURN n",
+                    "discard:5:42",
+                    "commit",
+                    "rollback",
+                    "clear");
+
+            await(connection.close());
+        } finally {
+            await(provider.close());
+        }
+    }
+
+    @Test
     void pendingAcquisitionCompletesWhenTheOnlyConnectionIsReleased() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
