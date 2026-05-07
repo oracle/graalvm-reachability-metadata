@@ -18,6 +18,7 @@ import io.grpc.ClientCall;
 import io.grpc.ClientCalls;
 import io.grpc.CompressorRegistry;
 import io.grpc.DecompressorRegistry;
+import io.grpc.ForwardingServerCall;
 import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
@@ -25,6 +26,8 @@ import io.grpc.Server;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerCredentials;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServerTransportFilter;
 import io.grpc.Status;
@@ -45,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -188,6 +192,39 @@ public class Grpc_altsTest {
     }
 
     @Test
+    void altsServerBuilderAppliesInterceptorsToRegisteredServices() throws IOException, InterruptedException {
+        ServerInterceptor responsePrefixInterceptor = new ResponsePrefixingInterceptor();
+        Server server = AltsServerBuilder.forPort(0)
+                .enableUntrustedAltsForTesting()
+                .setHandshakerAddressForTesting("127.0.0.1:1")
+                .directExecutor()
+                .intercept(responsePrefixInterceptor)
+                .addService(new EchoBindableService())
+                .build();
+
+        try {
+            server.start();
+
+            ServerServiceDefinition service = server.getServices().stream()
+                    .filter(serviceDefinition -> "alts.TestService".equals(
+                            serviceDefinition.getServiceDescriptor().getName()))
+                    .findFirst()
+                    .orElseThrow();
+            @SuppressWarnings("unchecked")
+            ServerMethodDefinition<String, String> method = (ServerMethodDefinition<String, String>) service.getMethod(
+                    UNARY_METHOD.getFullMethodName());
+            RecordingServerCall call = new RecordingServerCall();
+
+            method.getServerCallHandler().startCall(call, new Metadata());
+
+            assertThat(call.getMessages()).containsExactly("intercepted:response");
+            assertThat(call.getStatus().getCode()).isEqualTo(Status.Code.OK);
+        } finally {
+            shutdownServer(server);
+        }
+    }
+
+    @Test
     void altsChannelBuilderProducesBoundedRpcFailureWhenHandshakeCannotComplete() throws InterruptedException {
         ManagedChannel channel = AltsChannelBuilder.forAddress("127.0.0.1", 1)
                 .addTargetServiceAccount("target@example.iam.gserviceaccount.com")
@@ -289,6 +326,23 @@ public class Grpc_altsTest {
         }
     }
 
+    private static final class ResponsePrefixingInterceptor implements ServerInterceptor {
+        @Override
+        public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
+                ServerCall<ReqT, RespT> call,
+                Metadata headers,
+                ServerCallHandler<ReqT, RespT> next) {
+            return next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<>(call) {
+                @Override
+                public void sendMessage(RespT message) {
+                    @SuppressWarnings("unchecked")
+                    RespT prefixedMessage = (RespT) ("intercepted:" + message);
+                    super.sendMessage(prefixedMessage);
+                }
+            }, headers);
+        }
+    }
+
     private static final class PlainServerCall extends ServerCall<String, String> {
         @Override
         public void request(int numMessages) {
@@ -319,6 +373,52 @@ public class Grpc_altsTest {
         @Override
         public MethodDescriptor<String, String> getMethodDescriptor() {
             return UNARY_METHOD;
+        }
+    }
+
+    private static final class RecordingServerCall extends ServerCall<String, String> {
+        private final List<String> messages = new ArrayList<>();
+        private Status status = Status.UNKNOWN;
+
+        @Override
+        public void request(int numMessages) {
+        }
+
+        @Override
+        public void sendHeaders(Metadata headers) {
+        }
+
+        @Override
+        public void sendMessage(String message) {
+            messages.add(message);
+        }
+
+        @Override
+        public void close(Status status, Metadata trailers) {
+            this.status = status;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public Attributes getAttributes() {
+            return Attributes.EMPTY;
+        }
+
+        @Override
+        public MethodDescriptor<String, String> getMethodDescriptor() {
+            return UNARY_METHOD;
+        }
+
+        List<String> getMessages() {
+            return messages;
+        }
+
+        Status getStatus() {
+            return status;
         }
     }
 
