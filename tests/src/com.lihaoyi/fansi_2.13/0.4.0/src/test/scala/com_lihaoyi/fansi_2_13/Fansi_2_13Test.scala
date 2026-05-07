@@ -312,4 +312,28 @@ class Fansi_2_13Test {
     assertThrows(classOf[IllegalArgumentException], () => Color.True(0, 256, 0))
     assertThrows(classOf[IllegalArgumentException], () => Back.True(0, 0, 256))
   }
+
+  @Test
+  def categoryMasksAndTrueColorLookupExposeEncodedStyles(): Unit = {
+    val categoryMasks: Seq[Long] = Seq(
+      Color.mask.toLong,
+      Back.mask.toLong,
+      Bold.mask.toLong,
+      Underlined.mask.toLong,
+      Reversed.mask.toLong
+    )
+    val foregroundTrue: Attr = Color.True(1, 2, 3)
+    val backgroundTrue: Attr = Back.True(4, 5, 6)
+
+    categoryMasks.combinations(2).foreach { masks: Seq[Long] =>
+      assertEquals(0L, masks.head & masks(1))
+    }
+
+    assertEquals(foregroundTrue.escapeOpt.get, Color.lookupEscape(foregroundTrue.applyMask))
+    assertEquals(foregroundTrue.name, Color.lookupAttr(foregroundTrue.applyMask).name)
+    assertEquals(foregroundTrue.escapeOpt, Color.lookupAttr(foregroundTrue.applyMask).escapeOpt)
+    assertEquals(backgroundTrue.escapeOpt.get, Back.lookupEscape(backgroundTrue.applyMask))
+    assertEquals(backgroundTrue.name, Back.lookupAttr(backgroundTrue.applyMask).name)
+    assertEquals(backgroundTrue.escapeOpt, Back.lookupAttr(backgroundTrue.applyMask).escapeOpt)
+  }
 }
