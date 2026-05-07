@@ -12,6 +12,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.DdlApplicationRunner;
+import com.baomidou.mybatisplus.autoconfigure.IdentifierGeneratorAutoConfiguration;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusLanguageDriverAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.SafetyEncryptProcessor;
@@ -35,10 +38,18 @@ import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.env.OriginTrackedMapPropertySource;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
+import org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
+import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -47,6 +58,10 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,7 +223,7 @@ public class Mybatis_plus_boot_starterTest {
     }
 
     @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @EnableMybatisPlusTestAutoConfiguration
     public static class PaginationInterceptorApplication {
 
         @Bean
@@ -227,7 +242,7 @@ public class Mybatis_plus_boot_starterTest {
     }
 
     @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @EnableMybatisPlusTestAutoConfiguration
     public static class FactoryBeanCustomizerApplication {
 
         @Bean
@@ -244,7 +259,7 @@ public class Mybatis_plus_boot_starterTest {
     }
 
     @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @EnableMybatisPlusTestAutoConfiguration
     public static class TestApplication {
 
         @Bean
@@ -266,6 +281,24 @@ public class Mybatis_plus_boot_starterTest {
         MybatisPlusPropertiesCustomizer mybatisPlusPropertiesCustomizer() {
             return properties -> properties.setExecutorType(ExecutorType.REUSE);
         }
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ImportAutoConfiguration({
+            AopAutoConfiguration.class,
+            ConfigurationPropertiesAutoConfiguration.class,
+            PropertyPlaceholderAutoConfiguration.class,
+            DataSourceAutoConfiguration.class,
+            DataSourceTransactionManagerAutoConfiguration.class,
+            JdbcTemplateAutoConfiguration.class,
+            SqlInitializationAutoConfiguration.class,
+            TransactionAutoConfiguration.class,
+            IdentifierGeneratorAutoConfiguration.class,
+            MybatisPlusLanguageDriverAutoConfiguration.class,
+            MybatisPlusAutoConfiguration.class
+    })
+    public @interface EnableMybatisPlusTestAutoConfiguration {
     }
 
     @Mapper
