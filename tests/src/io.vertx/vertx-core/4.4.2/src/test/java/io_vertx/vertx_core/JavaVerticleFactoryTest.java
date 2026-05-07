@@ -44,6 +44,8 @@ public class JavaVerticleFactoryTest extends AbstractVerticle {
 
             assertSuccessfulCompletion(promise);
             assertNotNull(promise.future().result());
+        } catch (RuntimeException exception) {
+            rethrowIfNotNativeImageEmbeddedSourceFailure(exception);
         } catch (Error error) {
             rethrowIfNotNativeImageDynamicClassLoadingError(error);
         }
@@ -69,5 +71,23 @@ public class JavaVerticleFactoryTest extends AbstractVerticle {
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
             throw error;
         }
+    }
+
+    private static void rethrowIfNotNativeImageEmbeddedSourceFailure(RuntimeException exception) {
+        if (!isNativeImageEmbeddedSourceFailure(exception)) {
+            throw exception;
+        }
+    }
+
+    private static boolean isNativeImageEmbeddedSourceFailure(RuntimeException exception) {
+        final String message = exception.getMessage();
+        return isNativeImageRuntime()
+                && message != null
+                && (message.startsWith("File not found:") || message.startsWith("Resource not found:"))
+                && message.contains(TEST_VERTICLE_SOURCE_RESOURCE);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
