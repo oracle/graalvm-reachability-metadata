@@ -6,11 +6,165 @@
  */
 package io_ktor.ktor_sse_jvm
 
+import io.ktor.sse.ServerSentEvent
+import io.ktor.sse.ServerSentEventMetadata
+import io.ktor.sse.TypedServerSentEvent
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class Ktor_sse_jvmTest {
+public class Ktor_sse_jvmTest {
     @Test
-    fun test() {
-        println("This is just a placeholder, implement your test")
+    fun `server sent event exposes metadata and renders wire format`() {
+        val event = ServerSentEvent(
+            data = "first line\nsecond line\rthird line\r\nfourth line",
+            event = "inventory-update",
+            id = "event-42",
+            retry = 1_500,
+            comments = "keep-alive\nclient-visible",
+        )
+
+        assertMetadata(
+            metadata = event,
+            expectedData = "first line\nsecond line\rthird line\r\nfourth line",
+            expectedEvent = "inventory-update",
+            expectedId = "event-42",
+            expectedRetry = 1_500,
+            expectedComments = "keep-alive\nclient-visible",
+        )
+        assertThat(event.toString()).isEqualTo(
+            "data: first line\r\n" +
+                "data: second line\r\n" +
+                "data: third line\r\n" +
+                "data: fourth line\r\n" +
+                "event: inventory-update\r\n" +
+                "id: event-42\r\n" +
+                "retry: 1500\r\n" +
+                ": keep-alive\r\n" +
+                ": client-visible\r\n",
+        )
     }
+
+    @Test
+    fun `server sent event supports defaults copies destructuring and equality`() {
+        val emptyEvent = ServerSentEvent()
+        assertMetadata(
+            metadata = emptyEvent,
+            expectedData = null,
+            expectedEvent = null,
+            expectedId = null,
+            expectedRetry = null,
+            expectedComments = null,
+        )
+        assertThat(emptyEvent.toString()).isEmpty()
+
+        val original = ServerSentEvent(data = "payload", event = "created", id = "1", retry = 250, comments = "ready")
+        val (data, event, id, retry, comments) = original
+        assertThat(data).isEqualTo("payload")
+        assertThat(event).isEqualTo("created")
+        assertThat(id).isEqualTo("1")
+        assertThat(retry).isEqualTo(250)
+        assertThat(comments).isEqualTo("ready")
+
+        val equalCopy = original.copy()
+        val changedCopy = original.copy(data = "updated", retry = 500, comments = null)
+        assertThat(equalCopy).isEqualTo(original)
+        assertThat(equalCopy.hashCode()).isEqualTo(original.hashCode())
+        assertMetadata(
+            metadata = changedCopy,
+            expectedData = "updated",
+            expectedEvent = "created",
+            expectedId = "1",
+            expectedRetry = 500,
+            expectedComments = null,
+        )
+        assertThat(changedCopy).isNotEqualTo(original)
+        assertThat(changedCopy.toString()).isEqualTo(
+            "data: updated\r\n" +
+                "event: created\r\n" +
+                "id: 1\r\n" +
+                "retry: 500\r\n",
+        )
+    }
+
+    @Test
+    fun `typed server sent event keeps typed data and serializes to wire format`() {
+        val event = TypedServerSentEvent(
+            data = Payload(id = 7, name = "kotlin"),
+            event = "typed",
+            id = "typed-7",
+            retry = 2_000,
+            comments = "typed-comment",
+        )
+
+        assertMetadata(
+            metadata = event,
+            expectedData = Payload(id = 7, name = "kotlin"),
+            expectedEvent = "typed",
+            expectedId = "typed-7",
+            expectedRetry = 2_000,
+            expectedComments = "typed-comment",
+        )
+        assertThat(event.toString()).isEqualTo(
+            "TypedServerSentEvent(data=Payload(id=7, name=kotlin), event=typed, id=typed-7, retry=2000, " +
+                "comments=typed-comment)",
+        )
+    }
+
+    @Test
+    fun `typed server sent event supports defaults copies destructuring and equality`() {
+        val emptyEvent = TypedServerSentEvent<Payload>()
+        assertMetadata(
+            metadata = emptyEvent,
+            expectedData = null,
+            expectedEvent = null,
+            expectedId = null,
+            expectedRetry = null,
+            expectedComments = null,
+        )
+        assertThat(emptyEvent.toString()).isEqualTo(
+            "TypedServerSentEvent(data=null, event=null, id=null, retry=null, comments=null)",
+        )
+
+        val original = TypedServerSentEvent(data = Payload(id = 1, name = "one"), event = "created", id = "1")
+        val (data, event, id, retry, comments) = original
+        assertThat(data).isEqualTo(Payload(id = 1, name = "one"))
+        assertThat(event).isEqualTo("created")
+        assertThat(id).isEqualTo("1")
+        assertThat(retry).isNull()
+        assertThat(comments).isNull()
+
+        val equalCopy = original.copy()
+        val changedCopy = original.copy(data = Payload(id = 2, name = "two"), retry = 750, comments = "updated")
+        assertThat(equalCopy).isEqualTo(original)
+        assertThat(equalCopy.hashCode()).isEqualTo(original.hashCode())
+        assertMetadata(
+            metadata = changedCopy,
+            expectedData = Payload(id = 2, name = "two"),
+            expectedEvent = "created",
+            expectedId = "1",
+            expectedRetry = 750,
+            expectedComments = "updated",
+        )
+        assertThat(changedCopy).isNotEqualTo(original)
+        assertThat(changedCopy.toString()).isEqualTo(
+            "TypedServerSentEvent(data=Payload(id=2, name=two), event=created, id=1, retry=750, comments=updated)",
+        )
+    }
+
+    private fun <T> assertMetadata(
+        metadata: ServerSentEventMetadata<T>,
+        expectedData: T?,
+        expectedEvent: String?,
+        expectedId: String?,
+        expectedRetry: Long?,
+        expectedComments: String?,
+    ) {
+        assertThat(metadata.data).isEqualTo(expectedData)
+        assertThat(metadata.event).isEqualTo(expectedEvent)
+        assertThat(metadata.id).isEqualTo(expectedId)
+        assertThat(metadata.retry).isEqualTo(expectedRetry)
+        assertThat(metadata.comments).isEqualTo(expectedComments)
+    }
+
+    private data class Payload(val id: Int, val name: String)
 }
