@@ -16,6 +16,8 @@ import scala.language.implicitConversions
 
 final case class Profile(id: Int, name: String)
 final case class Label(value: String)
+final case class UserId(value: Int)
+final case class UserKey(value: String)
 
 class Twiddles_core_3Test {
   @Test
@@ -88,6 +90,23 @@ class Twiddles_core_3Test {
     assertThat(inverseProductIso.to(8 *: "Dorothy" *: EmptyTuple)).isEqualTo(Profile(8, "Dorothy"))
     assertThat(unitDroppingIso.to(9 *: () *: "Mary" *: EmptyTuple)).isEqualTo(Profile(9, "Mary"))
     assertThat(unitDroppingIso.from(Profile(10, "Annie"))).isEqualTo(10 *: () *: "Annie" *: EmptyTuple)
+  }
+
+  @Test
+  def isoInstanceSupportsCustomBidirectionalConversions(): Unit = {
+    import org.typelevel.twiddles.syntax.*
+
+    val userKeyIso: Iso[UserId, UserKey] = Iso.instance[UserId, UserKey](id => UserKey(s"user-${id.value}"))(
+      key => UserId(key.value.stripPrefix("user-").toInt)
+    )
+    given Iso[UserId, UserKey] = userKeyIso
+
+    val userId: Option[UserId] = Some(UserId(101))
+    val userKey: Option[UserKey] = userId.to[UserKey]
+    val restoredUserId: UserId = userKeyIso.from(UserKey("user-202"))
+
+    assertThat(userKey).isEqualTo(Some(UserKey("user-101")))
+    assertThat(restoredUserId).isEqualTo(UserId(202))
   }
 
   @Test
