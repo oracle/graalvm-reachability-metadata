@@ -71,6 +71,48 @@ class Ip4s_core_3Test {
   }
 
   @Test
+  def exposesIpv4ClassfulSpecialAndPrivateRanges(): Unit = {
+    assertEquals("0.0.0.0/1", Ipv4Address.Classes.A.toString)
+    assertTrue(Ipv4Address.Classes.A.contains(ipv4"127.255.255.255"))
+    assertFalse(Ipv4Address.Classes.A.contains(ipv4"128.0.0.0"))
+
+    assertEquals("128.0.0.0/2", Ipv4Address.Classes.B.toString)
+    assertTrue(Ipv4Address.Classes.B.contains(ipv4"191.255.255.255"))
+    assertFalse(Ipv4Address.Classes.B.contains(ipv4"192.0.0.0"))
+
+    assertEquals("192.0.0.0/3", Ipv4Address.Classes.C.toString)
+    assertTrue(Ipv4Address.Classes.C.contains(ipv4"223.255.255.255"))
+    assertFalse(Ipv4Address.Classes.C.contains(ipv4"224.0.0.0"))
+
+    assertEquals("224.0.0.0/4", Ipv4Address.Classes.D.toString)
+    assertTrue(Ipv4Address.Classes.D.contains(Ipv4Address.MulticastRangeStart))
+    assertTrue(Ipv4Address.Classes.D.contains(Ipv4Address.MulticastRangeEnd))
+    assertFalse(Ipv4Address.Classes.D.contains(ipv4"240.0.0.0"))
+
+    assertEquals("240.0.0.0/5", Ipv4Address.Classes.E.toString)
+    assertTrue(Ipv4Address.Classes.E.contains(ipv4"247.255.255.255"))
+    assertFalse(Ipv4Address.Classes.E.contains(ipv4"239.255.255.255"))
+    assertFalse(Ipv4Address.Classes.E.contains(ipv4"248.0.0.0"))
+
+    assertEquals("10.0.0.0/8", Ipv4Address.Classes.Private.A.toString)
+    assertTrue(Ipv4Address.Classes.Private.A.contains(ipv4"10.255.255.255"))
+    assertFalse(Ipv4Address.Classes.Private.A.contains(ipv4"11.0.0.0"))
+    assertEquals("172.16.0.0/12", Ipv4Address.Classes.Private.B.toString)
+    assertTrue(Ipv4Address.Classes.Private.B.contains(ipv4"172.31.255.255"))
+    assertFalse(Ipv4Address.Classes.Private.B.contains(ipv4"172.32.0.0"))
+    assertEquals("192.168.0.0/16", Ipv4Address.Classes.Private.C.toString)
+    assertTrue(Ipv4Address.Classes.Private.C.contains(ipv4"192.168.255.255"))
+    assertFalse(Ipv4Address.Classes.Private.C.contains(ipv4"192.169.0.0"))
+
+    assertEquals("127.0.0.0/8", Ipv4Address.Classes.Loopback.toString)
+    assertTrue(Ipv4Address.Classes.Loopback.contains(ipv4"127.255.255.255"))
+    assertFalse(Ipv4Address.Classes.Loopback.contains(ipv4"128.0.0.0"))
+    assertEquals("169.254.0.0/16", Ipv4Address.Classes.LinkLocal.toString)
+    assertTrue(Ipv4Address.Classes.LinkLocal.contains(ipv4"169.254.255.255"))
+    assertFalse(Ipv4Address.Classes.LinkLocal.contains(ipv4"169.255.0.0"))
+  }
+
+  @Test
   def parsesAndFormatsIpv6Addresses(): Unit = {
     val address: Ipv6Address = Ipv6Address
       .fromString("2001:0db8:0000:0000:0000:ff00:0042:8329")
