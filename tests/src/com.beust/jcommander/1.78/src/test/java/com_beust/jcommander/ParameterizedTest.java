@@ -44,6 +44,16 @@ public class ParameterizedTest {
         assertThat(parameterized.get(options)).isEqualTo("secret-token");
     }
 
+    @Test
+    void booleanMethodBackedParameterUsesIsGetter() {
+        CommandOptions options = new CommandOptions();
+        Parameterized parameterized = parameterNamed(Parameterized.parseArg(options), "setEnabled");
+
+        parameterized.set(options, true);
+
+        assertThat(parameterized.get(options)).isEqualTo(true);
+    }
+
     private static Parameterized parameterNamed(List<Parameterized> parameters, String name) {
         return parameters.stream()
                 .filter(parameterized -> name.equals(parameterized.getName()))
@@ -59,6 +69,8 @@ public class ParameterizedTest {
 
         private String token;
 
+        private boolean enabled;
+
         @Parameter(names = "--level")
         public void setLevel(int level) {
             this.level = level;
@@ -71,6 +83,15 @@ public class ParameterizedTest {
         @Parameter(names = "--token")
         public void setToken(String token) {
             this.token = token;
+        }
+
+        @Parameter(names = "--enabled")
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 }
