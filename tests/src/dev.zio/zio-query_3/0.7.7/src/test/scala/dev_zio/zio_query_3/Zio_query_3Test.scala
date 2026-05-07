@@ -17,11 +17,14 @@ import zio.ZIO
 import zio.query.Cache
 import zio.query.CompletedRequestMap
 import zio.query.DataSource
+import zio.query.DataSourceAspect
 import zio.query.Request
 import zio.query.ZQuery
 
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
+import scala.jdk.CollectionConverters._
 
 @Timeout(10)
 class Zio_query_3Test {
@@ -115,6 +118,31 @@ class Zio_query_3Test {
   }
 
   @Test
+  def dataSourceAspectMaxBatchSizeSplitsLargeBatches(): Unit = {
+    val observedBatches: ConcurrentLinkedQueue[List[Int]] = new ConcurrentLinkedQueue[List[Int]]()
+    val source: DataSource[Any, GetName] = DataSource.fromFunctionBatched("limited-batched-names") {
+      (requests: Chunk[GetName]) =>
+        val ids: List[Int] = requests.map(_.id).toList
+        observedBatches.add(ids)
+        requests.map(request => names(request.id))
+    }
+
+    val result: List[String] = unsafeRun {
+      ZQuery
+        .foreachBatched(List(1, 2, 3, 4, 5)) { (id: Int) =>
+          ZQuery.fromRequest(GetName(id))(source)
+        }
+        .mapDataSources(DataSourceAspect.maxBatchSize(2))
+        .run
+    }.toList
+    val batches: List[List[Int]] = observedBatches.asScala.toList
+
+    assertThat(result).isEqualTo(List("Ada", "Grace", "Linus", "Katherine", "Margaret"))
+    assertThat(batches.flatten.sorted).isEqualTo(List(1, 2, 3, 4, 5))
+    assertThat(batches.map(_.size).sorted).isEqualTo(List(1, 2, 2))
+  }
+
+  @Test
   def zioBackedDataSourceFailuresRemainTypedAndRecoverable(): Unit = {
     val source: DataSource[Any, GetMaybeName] = DataSource.fromFunctionZIO("maybe-names") { (request: GetMaybeName) =>
       names.get(request.id) match {
@@ -205,7 +233,9 @@ object Zio_query_3Test {
   private val names: Map[Int, String] = Map(
     1 -> "Ada",
     2 -> "Grace",
-    3 -> "Linus"
+    3 -> "Linus",
+    4 -> "Katherine",
+    5 -> "Margaret"
   )
 
   private final case class GetName(id: Int) extends Request[Nothing, String]
