@@ -16,17 +16,26 @@ import org.jetbrains.exposed.v1.core.Index
 import org.jetbrains.exposed.v1.core.Join
 import org.jetbrains.exposed.v1.core.QueryBuilder
 import org.jetbrains.exposed.v1.core.Schema
-import org.jetbrains.exposed.v1.core.SqlExpressionBuilder
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.Version
 import org.jetbrains.exposed.v1.core.WindowFrameBound
 import org.jetbrains.exposed.v1.core.alias
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.append
+import org.jetbrains.exposed.v1.core.case
+import org.jetbrains.exposed.v1.core.coalesce
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.intLiteral
 import org.jetbrains.exposed.v1.core.intParam
+import org.jetbrains.exposed.v1.core.less
+import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.core.plus
+import org.jetbrains.exposed.v1.core.rem
+import org.jetbrains.exposed.v1.core.rowNumber
 import org.jetbrains.exposed.v1.core.stringLiteral
 import org.jetbrains.exposed.v1.core.stringParam
+import org.jetbrains.exposed.v1.core.times
 import org.jetbrains.exposed.v1.exceptions.DuplicateColumnException
 import org.junit.jupiter.api.Test
 
@@ -143,39 +152,31 @@ public class ExposedCoreTest {
 
     @Test
     fun expressionDslBuildsComparisonListsAliasesCasesAndWindows(): Unit {
-        val comparison = with(SqlExpressionBuilder) {
-            (intLiteral(1) less intLiteral(3)) and (stringLiteral("kotlin") like "kot%")
-        }
+        val comparison = (intLiteral(1) less intLiteral(3)) and (stringLiteral("kotlin") like "kot%")
         assertThat(comparison.toString()).isEqualTo("(1 < 3) AND ('kotlin' LIKE 'kot%')")
 
-        val inList = with(SqlExpressionBuilder) { intLiteral(2) inList listOf(3, 1, 2) }
+        val inList = intLiteral(2) inList listOf(3, 1, 2)
         assertThat(inList.toString()).isEqualTo("2 IN (3, 1, 2)")
 
-        val arithmetic = with(SqlExpressionBuilder) { ((intLiteral(5) + 4) * intLiteral(2)) % 3 }
+        val arithmetic = ((intLiteral(5) + 4) * intLiteral(2)) % 3
         assertThat(arithmetic.toString()).isEqualTo("(((5 + 4) * 2) % 3)")
 
-        val caseExpression = with(SqlExpressionBuilder) {
-            case()
-                .When(intLiteral(1) eq 1, stringLiteral("one"))
-                .Else(stringLiteral("other"))
-        }
+        val caseExpression = case()
+            .When(intLiteral(1) eq 1, stringLiteral("one"))
+            .Else(stringLiteral("other"))
         assertThat(caseExpression.toString()).isEqualTo("CASE WHEN 1 = 1 THEN 'one' ELSE 'other' END")
 
-        val coalesced = with(SqlExpressionBuilder) {
-            coalesce(stringLiteral("primary"), stringLiteral("fallback"), stringLiteral("last"))
-        }
+        val coalesced = coalesce(stringLiteral("primary"), stringLiteral("fallback"), stringLiteral("last"))
         assertThat(coalesced.toString()).isEqualTo("COALESCE('primary', 'fallback', 'last')")
 
         val aliased = intLiteral(10).alias("ten")
         assertThat(aliased.toString()).isEqualTo("10 ten")
         assertThat(aliased.aliasOnlyExpression().toString()).isEqualTo("ten")
 
-        val window = with(SqlExpressionBuilder) {
-            rowNumber()
-                .over()
-                .partitionBy(stringLiteral("partition"))
-                .rows(WindowFrameBound.unboundedPreceding())
-        }
+        val window = rowNumber()
+            .over()
+            .partitionBy(stringLiteral("partition"))
+            .rows(WindowFrameBound.unboundedPreceding())
         assertThat(window.toString()).isEqualTo("ROW_NUMBER() OVER(PARTITION BY 'partition' ROWS UNBOUNDED PRECEDING)")
     }
 
