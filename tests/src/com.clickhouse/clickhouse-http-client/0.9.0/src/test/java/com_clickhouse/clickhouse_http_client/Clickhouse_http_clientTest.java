@@ -26,6 +26,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -154,6 +155,29 @@ public class Clickhouse_http_clientTest {
                     .contains("INSERT INTO events")
                     .contains("FORMAT CSV")
                     .contains("1,Alice\n2,Bob\n");
+        }
+    }
+
+    @Test
+    void queryCanRedirectResponseBodyToOutputStream() throws Exception {
+        try (MockClickHouseServer server = MockClickHouseServer.start();
+                ClickHouseClient client = newClient(HttpConnectionProvider.APACHE_HTTP_CLIENT)) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            try (ClickHouseResponse response = client.read(server.node("default"))
+                    .option(ClickHouseClientOption.ASYNC, false)
+                    .option(ClickHouseHttpOption.CONNECTION_PROVIDER, HttpConnectionProvider.APACHE_HTTP_CLIENT)
+                    .format(ClickHouseFormat.TabSeparated)
+                    .query("SELECT number FROM system.numbers LIMIT 1")
+                    .output(output)
+                    .executeAndWait()) {
+                assertThat(response.getInputStream().readAllBytes()).isEmpty();
+            }
+
+            RequestRecord request = server.nextRequest();
+            assertThat(request.method()).isEqualTo("POST");
+            assertThat(request.bodyAsString()).contains("SELECT number FROM system.numbers LIMIT 1");
+            assertThat(output.toString(UTF_8)).isEqualTo("answer\n");
         }
     }
 
