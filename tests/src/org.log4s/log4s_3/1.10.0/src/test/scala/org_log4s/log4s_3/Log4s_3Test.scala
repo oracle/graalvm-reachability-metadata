@@ -66,6 +66,11 @@ class Log4s_3Test {
   }
 
   @Test
+  def macroLoggerFactoryUsesSingletonObjectNameWithoutTrailingDollar(): Unit = {
+    assertEquals("org_log4s.log4s_3.MacroObjectLoggerNameProbe", MacroObjectLoggerNameProbe.loggerName)
+  }
+
+  @Test
   def directLoggingMethodsDelegateMessagesAndThrowablesForEveryLevel(): Unit = {
     val (logger, backend) = capturingLogger(Set(Trace, Debug, Info, Warn, Error))
     val traceFailure: RuntimeException = new RuntimeException("trace failure")
@@ -247,6 +252,12 @@ private final class MacroLoggerNameProbe {
     val local = getLogger
     local.name
   }
+}
+
+private object MacroObjectLoggerNameProbe {
+  private val logger = getLogger
+
+  def loggerName: String = logger.name
 }
 
 private final case class LogEvent(level: String, message: String, throwable: Option[Throwable])
