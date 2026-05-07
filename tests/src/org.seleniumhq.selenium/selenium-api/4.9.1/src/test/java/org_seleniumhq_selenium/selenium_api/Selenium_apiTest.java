@@ -52,8 +52,8 @@ public class Selenium_apiTest {
         MutableCapabilities capabilities = new MutableCapabilities();
         capabilities.setCapability("browserName", "firefox");
         capabilities.setCapability("javascriptEnabled", true);
-        capabilities.setCapability("platform", "linux");
-        capabilities.setCapability("unexpectedAlertBehaviour", "accept");
+        capabilities.setCapability("platformName", "linux");
+        capabilities.setCapability("unhandledPromptBehavior", "accept");
         capabilities.setCapability("temporary", "value");
         capabilities.setCapability("temporary", (Object) null);
 
@@ -75,7 +75,7 @@ public class Selenium_apiTest {
         assertThat(merged.getCapability("unhandledPromptBehavior")).isEqualTo("accept");
         assertThat(merged.getCapability("temporary")).isNull();
         assertThat(merged.getCapabilityNames())
-                .contains("browserName", "javascriptEnabled", "platform", "loggingPrefs", "browserVersion", "custom:option")
+                .contains("browserName", "javascriptEnabled", "platformName", "loggingPrefs", "browserVersion", "custom:option")
                 .doesNotContain("temporary");
         assertThat(merged.asMap()).containsEntry("custom:option", 42);
         assertThatThrownBy(() -> merged.asMap().put("newCapability", true))
@@ -176,6 +176,7 @@ public class Selenium_apiTest {
         Dimension size = new Dimension(640, 480);
         Point origin = new Point(10, 20);
         Rectangle rectangle = new Rectangle(origin, size);
+        Rectangle resizedRectangle = new Rectangle(30, 40, 600, 800);
 
         assertThat(size.getWidth()).isEqualTo(640);
         assertThat(size.getHeight()).isEqualTo(480);
@@ -183,14 +184,13 @@ public class Selenium_apiTest {
         assertThat(rectangle.getPoint()).isEqualTo(origin);
         assertThat(rectangle.getDimension()).isEqualTo(size);
 
-        rectangle.setX(30);
-        rectangle.setY(40);
-        rectangle.setWidth(800);
-        rectangle.setHeight(600);
-
-        assertThat(rectangle).isEqualTo(new Rectangle(30, 40, 600, 800));
-        assertThat(rectangle.getPoint()).isEqualTo(new Point(30, 40));
-        assertThat(rectangle.getDimension()).isEqualTo(new Dimension(800, 600));
+        assertThat(resizedRectangle.getX()).isEqualTo(30);
+        assertThat(resizedRectangle.getY()).isEqualTo(40);
+        assertThat(resizedRectangle.getHeight()).isEqualTo(600);
+        assertThat(resizedRectangle.getWidth()).isEqualTo(800);
+        assertThat(resizedRectangle).isEqualTo(new Rectangle(30, 40, 600, 800));
+        assertThat(resizedRectangle.getPoint()).isEqualTo(new Point(30, 40));
+        assertThat(resizedRectangle.getDimension()).isEqualTo(new Dimension(800, 600));
 
         DeviceRotation rotation = new DeviceRotation(1, 2, 3);
         assertThat(rotation.parameters())
