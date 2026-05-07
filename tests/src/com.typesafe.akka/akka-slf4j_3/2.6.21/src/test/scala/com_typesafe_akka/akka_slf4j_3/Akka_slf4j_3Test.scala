@@ -19,6 +19,7 @@ import akka.event.LogMarker
 import akka.event.Logging
 import akka.event.MarkerLoggingAdapter
 import akka.event.slf4j.Logger
+import akka.event.slf4j.SLF4JLogging
 import akka.event.slf4j.Slf4jLogMarker
 import akka.event.slf4j.Slf4jLoggingFilter
 import ch.qos.logback.classic.Level
@@ -44,6 +45,15 @@ class Akka_slf4j_3Test {
     assertThat(classLogger.getName).isEqualTo(classOf[Akka_slf4j_3Test].getName)
     assertThat(stringSourceLogger.getName).isEqualTo("string-source")
     assertThat(rootLogger.getName).isEqualTo(org.slf4j.Logger.ROOT_LOGGER_NAME)
+  }
+
+  @Test
+  def slf4jLoggingTraitProvidesLoggerForConcreteClass(): Unit = {
+    val component: ComponentWithSlf4jLogging = new ComponentWithSlf4jLogging
+    val logger: org.slf4j.Logger = component.logger
+
+    assertThat(logger.getName).isEqualTo(classOf[ComponentWithSlf4jLogging].getName)
+    assertThat(component.logger).isSameAs(logger)
   }
 
   @Test
@@ -250,6 +260,10 @@ class Akka_slf4j_3Test {
       logger.setLevel(previousLevel)
       logger.setAdditive(previousAdditive)
     }
+  }
+
+  private final class ComponentWithSlf4jLogging extends SLF4JLogging {
+    def logger: org.slf4j.Logger = log
   }
 
   private final class RecordingAppender(latch: CountDownLatch) extends AppenderBase[ILoggingEvent] {
