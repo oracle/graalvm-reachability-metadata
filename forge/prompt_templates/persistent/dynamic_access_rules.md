@@ -6,6 +6,7 @@ Rules:
 - Do not broaden the patch into unrelated features.
 - Use upstream test sources only as behavioral examples.
 - Use documentation and source context only as API guidance.
+- Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the call site unreached with an explanation.
 - Do not use reflection directly in the tests unless the public API requires it naturally.
 - Do not compile or run tests yourself. The workflow will do that externally.
 - Follow idiomatic `{test_language_display_name}` coding conventions.

@@ -188,10 +188,48 @@ class MetadataGenerationUtilsTests {
                 .containsEntry("allowed-packages", List.of("graphql"));
     }
 
+    @Test
+    void discoverTestOnlyMetadataPackagesIgnoresDependencyApiStubs() throws IOException {
+        Path testsDirectory = tempDir.resolve("tests/src/io.grpc/grpc-auth/1.79.0");
+        writeSource(
+                testsDirectory.resolve("src/test/java/com/google/auth/oauth2/ServiceAccountCredentials.java"),
+                """
+                package com.google.auth.oauth2;
+
+                public final class ServiceAccountCredentials {
+                }
+                """
+        );
+        writeSource(
+                testsDirectory.resolve("src/test/java/io_grpc/grpc_auth/GrpcAuthTest.java"),
+                """
+                package io_grpc.grpc_auth;
+
+                import org.junit.jupiter.api.Test;
+
+                public class GrpcAuthTest {
+                    @Test
+                    void exercisesAuth() {
+                    }
+                }
+                """
+        );
+
+        assertThat(MetadataGenerationUtils.discoverTestPackages(testsDirectory))
+                .containsExactlyInAnyOrder("com.google.auth.oauth2", "io_grpc.grpc_auth");
+        assertThat(MetadataGenerationUtils.discoverTestOnlyMetadataPackages(testsDirectory))
+                .containsExactly("io_grpc.grpc_auth");
+    }
+
     private Project createProject() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
+    }
+
+    private void writeSource(Path file, String content) throws IOException {
+        Files.createDirectories(file.getParent());
+        Files.writeString(file, content.stripIndent(), StandardCharsets.UTF_8);
     }
 
     private void writeIndex(String group, String artifact, String content) throws IOException {
