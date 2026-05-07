@@ -37,6 +37,7 @@ import io.grpc.util.ForwardingClientStreamTracer;
 import io.grpc.util.ForwardingLoadBalancer;
 import io.grpc.util.ForwardingLoadBalancerHelper;
 import io.grpc.util.ForwardingSubchannel;
+import io.grpc.util.GracefulSwitchLoadBalancer;
 import io.grpc.util.MutableHandlerRegistry;
 import io.grpc.util.OutlierDetectionLoadBalancerProvider;
 import io.grpc.util.TransmitStatusRuntimeExceptionInterceptor;
@@ -358,6 +359,52 @@ public class Grpc_utilTest {
     }
 
     @Test
+    void gracefulSwitchLoadBalancerKeepsCurrentPolicyUntilPendingPolicyIsReady() {
+        EquivalentAddressGroup addressGroup = new EquivalentAddressGroup(new InetSocketAddress("localhost", 10080));
+        try (RecordingHelper helper = new RecordingHelper(new RecordingSubchannel(List.of(addressGroup)))) {
+            GracefulSwitchLoadBalancer loadBalancer = new GracefulSwitchLoadBalancer(helper);
+            SwitchableLoadBalancerFactory firstFactory = new SwitchableLoadBalancerFactory();
+            SwitchableLoadBalancerFactory secondFactory = new SwitchableLoadBalancerFactory();
+
+            loadBalancer.handleResolvedAddresses(LoadBalancer.ResolvedAddresses.newBuilder()
+                    .setAddresses(List.of(addressGroup))
+                    .setAttributes(Attributes.EMPTY)
+                    .setLoadBalancingPolicyConfig(GracefulSwitchLoadBalancer.createLoadBalancingPolicyConfig(
+                            firstFactory,
+                            "first-policy-config"))
+                    .build());
+            SwitchableLoadBalancer firstLoadBalancer = firstFactory.loadBalancer;
+            assertThat(firstLoadBalancer).isNotNull();
+            assertThat(helper.events).containsExactly("updateBalancingState:CONNECTING");
+
+            helper.events.clear();
+            firstLoadBalancer.updateState(ConnectivityState.READY);
+            assertThat(helper.events).containsExactly("updateBalancingState:READY");
+
+            helper.events.clear();
+            loadBalancer.handleResolvedAddresses(LoadBalancer.ResolvedAddresses.newBuilder()
+                    .setAddresses(List.of(addressGroup))
+                    .setAttributes(Attributes.EMPTY)
+                    .setLoadBalancingPolicyConfig(GracefulSwitchLoadBalancer.createLoadBalancingPolicyConfig(
+                            secondFactory,
+                            "second-policy-config"))
+                    .build());
+            SwitchableLoadBalancer secondLoadBalancer = secondFactory.loadBalancer;
+            assertThat(secondLoadBalancer).isNotNull();
+            secondLoadBalancer.updateState(ConnectivityState.CONNECTING);
+            assertThat(helper.events).isEmpty();
+            assertThat(firstLoadBalancer.events).isEmpty();
+
+            secondLoadBalancer.updateState(ConnectivityState.READY);
+            assertThat(helper.events).containsExactly("updateBalancingState:READY");
+            assertThat(firstLoadBalancer.events).containsExactly("shutdown");
+
+            loadBalancer.shutdown();
+            assertThat(secondLoadBalancer.events).containsExactly("shutdown");
+        }
+    }
+
+    @Test
     void outlierDetectionProviderParsesPolicyConfigAndCreatesLoadBalancer() {
         OutlierDetectionLoadBalancerProvider provider = new OutlierDetectionLoadBalancerProvider();
         Map<String, Object> config = new LinkedHashMap<>();
@@ -619,6 +666,39 @@ public class Grpc_utilTest {
         @Override
         public Attributes getConnectedAddressAttributes() {
             return Attributes.EMPTY;
+        }
+    }
+
+    private static final class SwitchableLoadBalancerFactory extends LoadBalancer.Factory {
+        private SwitchableLoadBalancer loadBalancer;
+
+        @Override
+        public LoadBalancer newLoadBalancer(LoadBalancer.Helper helper) {
+            loadBalancer = new SwitchableLoadBalancer(helper);
+            return loadBalancer;
+        }
+    }
+
+    private static final class SwitchableLoadBalancer extends LoadBalancer {
+        private final LoadBalancer.Helper helper;
+        private final List<String> events = new ArrayList<>();
+
+        private SwitchableLoadBalancer(LoadBalancer.Helper helper) {
+            this.helper = helper;
+        }
+
+        private void updateState(ConnectivityState state) {
+            helper.updateBalancingState(state, LoadBalancer.EMPTY_PICKER);
+        }
+
+        @Override
+        public void handleNameResolutionError(Status error) {
+            events.add("error:" + error.getCode());
+        }
+
+        @Override
+        public void shutdown() {
+            events.add("shutdown");
         }
     }
 
