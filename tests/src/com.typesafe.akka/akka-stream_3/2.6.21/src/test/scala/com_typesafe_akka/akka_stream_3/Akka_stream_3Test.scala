@@ -8,11 +8,13 @@ package com_typesafe_akka.akka_stream_3
 
 import akka.NotUsed
 import akka.actor.ActorSystem
-import akka.stream.{ActorAttributes, FlowShape, Materializer, OverflowStrategy, QueueOfferResult, Supervision}
-import akka.stream.scaladsl.{Broadcast, Flow, Framing, GraphDSL, Keep, Sink, Source, Zip}
+import akka.stream.{ActorAttributes, FlowShape, Materializer, OverflowStrategy, QueueOfferResult, RestartSettings, Supervision}
+import akka.stream.scaladsl.{Broadcast, Flow, Framing, GraphDSL, Keep, RestartSource, Sink, Source, Zip}
 import akka.util.ByteString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+
+import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Await
 import scala.concurrent.duration.*
@@ -172,6 +174,32 @@ class Akka_stream_3Test {
       )
 
       assertEquals(10, result)
+    }
+  }
+
+  @Test
+  def restartSourceRetriesFailedSourceFactoryAndEmitsRecoveredElements(): Unit = {
+    withMaterializer("restart-source") { materializer =>
+      val attempts: AtomicInteger = AtomicInteger(0)
+      val restartSettings: RestartSettings = RestartSettings(
+        minBackoff = 10.millis,
+        maxBackoff = 100.millis,
+        randomFactor = 0.0
+      ).withMaxRestarts(1, 1.second)
+
+      val result: Seq[Int] = Await.result(
+        RestartSource
+          .onFailuresWithBackoff(restartSettings) { () =>
+            if attempts.incrementAndGet() == 1 then
+              Source.failed[Int](IllegalStateException("transient source failure"))
+            else Source.single(42)
+          }
+          .runWith(Sink.seq)(materializer),
+        Timeout
+      )
+
+      assertEquals(List(42), result.toList)
+      assertEquals(2, attempts.get())
     }
   }
 
