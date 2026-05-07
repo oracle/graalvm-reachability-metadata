@@ -157,6 +157,25 @@ class Paiges_core_2_13Test {
   }
 
   @Test
+  def combinesStylesWithRightBiasedColorOverridesAndNeutralEmpty(): Unit = {
+    val foregroundOverride: Style = Style.Ansi.Fg.Red ++ Style.Ansi.Fg.Green
+    assertEquals("\u001b[32m", foregroundOverride.start)
+    assertEquals("\u001b[0m", foregroundOverride.end)
+
+    val compound: Style =
+      Style.Empty ++
+        Style.Ansi.Fg.Blue ++
+        Style.Ansi.Bg.BrightWhite ++
+        Style.Ansi.Attr.Underline ++
+        Style.Empty
+    assertEquals("\u001b[34;107;4m", compound.start)
+
+    val overriddenCompound: Style = compound ++ Style.Ansi.Fg.Default ++ Style.Ansi.Bg.Black
+    assertEquals("\u001b[39;40;4m", overriddenCompound.start)
+    assertEquals("\u001b[39;40;4mtext\u001b[0m", Doc.text("text").style(overriddenCompound).render(80))
+  }
+
+  @Test
   def validatesXTermColorBoundsAndSupportsLaxColorHelpers(): Unit = {
     assertEquals("\u001b[38;5;16m", Style.XTerm.Fg.color(0, 0, 0).start)
     assertEquals("\u001b[38;5;231m", Style.XTerm.Fg.color(5, 5, 5).start)
