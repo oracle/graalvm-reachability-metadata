@@ -30,7 +30,7 @@ public class RichLoggerTest {
     void failureStackTraceHighlightsNonTestFramesThroughClassLoaderResources() {
         JUnitFramework framework = new JUnitFramework();
         Runner runner = framework.runner(
-                new String[] { "+l", "-Drich.logger.test.fail=true" },
+                new String[] {"+l", "-Drich.logger.test.fail=true" },
                 new String[0],
                 RichLoggerTest.class.getClassLoader());
         TaskDef taskDef = new TaskDef(
@@ -41,10 +41,10 @@ public class RichLoggerTest {
         RecordingEventHandler eventHandler = new RecordingEventHandler();
         RecordingLogger logger = new RecordingLogger();
 
-        Task[] tasks = runner.tasks(new TaskDef[] { taskDef });
+        Task[] tasks = runner.tasks(new TaskDef[] {taskDef });
         assertThat(tasks).hasSize(1);
 
-        Task[] nestedTasks = tasks[0].execute(eventHandler, new Logger[] { logger });
+        Task[] nestedTasks = tasks[0].execute(eventHandler, new Logger[] {logger });
 
         assertThat(nestedTasks).isEmpty();
         assertThat(eventHandler.statuses()).containsExactly(Status.Failure);

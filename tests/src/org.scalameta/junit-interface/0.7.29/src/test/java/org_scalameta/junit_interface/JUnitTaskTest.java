@@ -32,7 +32,7 @@ public class JUnitTaskTest {
         JUnitFramework framework = new JUnitFramework();
         String includeCategoryArgument = "--include-categories=" + FastCategory.class.getName();
         Runner runner = framework.runner(
-                new String[] { includeCategoryArgument, "-b" },
+                new String[] {includeCategoryArgument, "-b" },
                 new String[0],
                 JUnitTaskTest.class.getClassLoader());
         TaskDef taskDef = new TaskDef(
@@ -42,7 +42,7 @@ public class JUnitTaskTest {
                 new Selector[0]);
         RecordingEventHandler eventHandler = new RecordingEventHandler();
 
-        Task[] tasks = runner.tasks(new TaskDef[] { taskDef });
+        Task[] tasks = runner.tasks(new TaskDef[] {taskDef });
         assertThat(tasks).hasSize(1);
 
         Task[] nestedTasks = tasks[0].execute(eventHandler, new Logger[0]);

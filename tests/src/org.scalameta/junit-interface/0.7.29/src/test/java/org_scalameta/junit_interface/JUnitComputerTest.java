@@ -33,7 +33,7 @@ public class JUnitComputerTest {
 
         Runner suite = computer.getSuite(
                 new UnusedRunnerBuilder(),
-                new Class<?>[] { ExampleSuite.class });
+                new Class<?>[] {ExampleSuite.class });
 
         assertThat(RecordingRunner.constructedFor).isEqualTo(ExampleSuite.class);
         assertThat(RecordingRunner.configuredWith).isSameAs(settings);

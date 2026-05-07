@@ -25,8 +25,8 @@ public class JUnitRunnerTest {
         JUnitFramework framework = new JUnitFramework();
         String listenerArgument = "--run-listener=" + RecordingRunListener.class.getName();
         Runner runner = framework.runner(
-                new String[] { listenerArgument },
-                new String[] { "remote-argument" },
+                new String[] {listenerArgument },
+                new String[] {"remote-argument" },
                 JUnitRunnerTest.class.getClassLoader());
         Fingerprint fingerprint = junitFingerprint(framework.fingerprints());
         TaskDef taskDef = new TaskDef(
@@ -35,7 +35,7 @@ public class JUnitRunnerTest {
                 false,
                 new Selector[0]);
 
-        Task[] tasks = runner.tasks(new TaskDef[] { taskDef });
+        Task[] tasks = runner.tasks(new TaskDef[] {taskDef });
 
         assertThat(RecordingRunListener.constructedCount).isOne();
         assertThat(tasks).hasSize(1);
