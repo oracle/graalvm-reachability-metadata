@@ -11,10 +11,10 @@ import akka.actor.ActorSystem
 import akka.stream.{ActorAttributes, FlowShape, Materializer, OverflowStrategy, QueueOfferResult, RestartSettings, Supervision}
 import akka.stream.scaladsl.{Broadcast, Flow, Framing, GraphDSL, Keep, RestartSource, Sink, Source, Zip}
 import akka.util.ByteString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.{assertEquals, assertTrue}
 import org.junit.jupiter.api.Test
 
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.*
@@ -143,6 +143,27 @@ class Akka_stream_3Test {
       )
 
       assertEquals(Set(List(1, 2, 3), List(4, 5, 6), List(7)), result.map(_.toList).toSet)
+    }
+  }
+
+  @Test
+  def unfoldResourceReadsManagedResourceAndClosesItAfterCompletion(): Unit = {
+    withMaterializer("unfold-resource") { materializer =>
+      val closed: AtomicBoolean = AtomicBoolean(false)
+
+      val result: Seq[Int] = Await.result(
+        Source
+          .unfoldResource[Int, Iterator[Int]](
+            () => Iterator(2, 4, 6),
+            iterator => if iterator.hasNext then Some(iterator.next()) else None,
+            _ => closed.set(true)
+          )
+          .runWith(Sink.seq)(materializer),
+        Timeout
+      )
+
+      assertEquals(List(2, 4, 6), result.toList)
+      assertTrue(closed.get())
     }
   }
 
