@@ -11,6 +11,8 @@ import com.google.protobuf.CodedOutputStream
 import com.google.protobuf.{DescriptorProtos => JavaDescriptorProtos}
 import com.google.protobuf.any.{Any => ProtoAny}
 import com.google.protobuf.descriptor.FieldDescriptorProto
+import com.google.protobuf.descriptor.{FieldOptions => DescriptorFieldOptions}
+import com.google.protobuf.descriptor.{FileOptions => DescriptorFileOptions}
 import com.google.protobuf.duration.Duration
 import com.google.protobuf.field_mask.FieldMask
 import com.google.protobuf.struct.ListValue
@@ -38,6 +40,9 @@ import scalapb.descriptors.PInt
 import scalapb.descriptors.PMessage
 import scalapb.descriptors.PString
 import scalapb.descriptors.ReadsException
+import scalapb.options.{FieldOptions => ScalaPbFieldOptions}
+import scalapb.options.ScalaPbOptions
+import scalapb.options.ScalapbProto
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -275,6 +280,40 @@ class Scalapb_runtime_2_13Test {
     val unrecognizedDescriptor = descriptor.findValueByNumberCreatingIfUnknown(123456)
     assertTrue(unrecognizedDescriptor.isUnrecognized)
     assertEquals(123456, unrecognizedDescriptor.number)
+  }
+
+  @Test
+  def scalaPbCustomOptionsStoreAndReadGeneratedExtensions(): Unit = {
+    val scalaPbOptions = ScalaPbOptions()
+      .withPackageName("example.generated")
+      .withFlatPackage(true)
+      .withLenses(true)
+    val fileOptions = DescriptorFileOptions()
+      .withJavaPackage("example.java")
+      .withExtension(ScalapbProto.options)(Some(scalaPbOptions))
+
+    assertEquals("example.java", fileOptions.getJavaPackage)
+    assertEquals(Some(scalaPbOptions), fileOptions.extension(ScalapbProto.options))
+
+    val updatedOptions = scalaPbOptions.withFlatPackage(false).withObjectName("ExampleProto")
+    val updatedFileOptions = fileOptions.withExtension(ScalapbProto.options)(Some(updatedOptions))
+    assertEquals(Some(updatedOptions), updatedFileOptions.extension(ScalapbProto.options))
+    assertEquals(Some(scalaPbOptions), fileOptions.extension(ScalapbProto.options))
+
+    val clearedFileOptions = updatedFileOptions.withExtension(ScalapbProto.options)(None)
+    assertEquals(None, clearedFileOptions.extension(ScalapbProto.options))
+
+    val scalaPbFieldOptions = ScalaPbFieldOptions()
+      .withScalaName("renamedField")
+      .withNoBox(true)
+      .withRequired(true)
+    val descriptorFieldOptions = DescriptorFieldOptions()
+      .withDeprecated(true)
+      .withExtension(ScalapbProto.field)(Some(scalaPbFieldOptions))
+
+    assertTrue(descriptorFieldOptions.getDeprecated)
+    assertEquals(Some(scalaPbFieldOptions), descriptorFieldOptions.extension(ScalapbProto.field))
+    assertEquals(None, DescriptorFieldOptions().extension(ScalapbProto.field))
   }
 
   @Test
