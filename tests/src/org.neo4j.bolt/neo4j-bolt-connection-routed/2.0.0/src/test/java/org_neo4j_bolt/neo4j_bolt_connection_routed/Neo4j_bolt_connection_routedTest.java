@@ -190,6 +190,61 @@ public class Neo4j_bolt_connection_routedTest {
     }
 
     @Test
+    void flushServiceUnavailableForgetsServerAndReportsRoutedError() throws Exception {
+        BoltServerAddress failingWriter = new BoltServerAddress("writer-runtime-down.example", 7687);
+        BoltServerAddress workingWriter = new BoltServerAddress("writer-runtime-up.example", 7687);
+        RecordingProvider failingProvider = new RecordingProvider(failingWriter);
+        RecordingProvider workingProvider = new RecordingProvider(workingWriter);
+        StubRediscovery rediscovery = new StubRediscovery(new ClusterCompositionLookupResult(new ClusterComposition(
+                Clock.systemUTC().millis() + 60_000,
+                linkedSet(new BoltServerAddress("reader.example", 7687)),
+                linkedSet(failingWriter, workingWriter),
+                linkedSet(new BoltServerAddress("router.example", 7687)),
+                "neo4j")));
+        RoutedBoltConnectionProvider provider = routedProvider(address -> {
+            if (address.equals(failingWriter)) {
+                return failingProvider;
+            }
+            if (address.equals(workingWriter)) {
+                return workingProvider;
+            }
+            throw new IllegalArgumentException("Unexpected address: " + address);
+        }, rediscovery);
+        BoltConnection failedConnection = await(connect(
+                provider,
+                DatabaseNameUtil.database("neo4j"),
+                AccessMode.WRITE,
+                Neo4j_bolt_connection_routedTest::ignore));
+        failingProvider.connections()
+                .get(0)
+                .enqueueFlushFailure(new BoltServiceUnavailableException("connection lost while flushing"));
+        AtomicReference<Throwable> reportedError = new AtomicReference<>();
+
+        await(failedConnection.flush(reportedError::set));
+
+        assertThat(reportedError.get())
+                .isInstanceOf(BoltServiceUnavailableException.class)
+                .hasMessageContaining(failingWriter.toString())
+                .hasCauseInstanceOf(BoltServiceUnavailableException.class);
+        assertThat(rediscovery.lookupCount()).isEqualTo(1);
+
+        await(failedConnection.close());
+        BoltConnection recoveredConnection = await(connect(
+                provider,
+                DatabaseNameUtil.database("neo4j"),
+                AccessMode.WRITE,
+                Neo4j_bolt_connection_routedTest::ignore));
+
+        assertThat(recoveredConnection.serverAddress()).isEqualTo(workingWriter);
+        assertThat(failingProvider.connectAttempts()).isEqualTo(1);
+        assertThat(workingProvider.connectAttempts()).isEqualTo(1);
+        assertThat(rediscovery.lookupCount()).isEqualTo(1);
+
+        await(recoveredConnection.close());
+        await(provider.close());
+    }
+
+    @Test
     void supportsFeatureDetectionUsesResolvedRoutersAndClosesProbeConnections() throws Exception {
         BoltServerAddress unavailableRouter = new BoltServerAddress("router-down.example", 7687);
         BoltServerAddress modernRouter = new BoltServerAddress("router-modern.example", 7687);
@@ -536,6 +591,7 @@ public class Neo4j_bolt_connection_routedTest {
         private final BoltServerAddress address;
         private final BoltProtocolVersion protocolVersion;
         private final AtomicInteger closeAttempts = new AtomicInteger();
+        private final ArrayDeque<Throwable> flushFailures = new ArrayDeque<>();
 
         private RecordingConnection(BoltServerAddress address, BoltProtocolVersion protocolVersion) {
             this.address = address;
@@ -633,7 +689,12 @@ public class Neo4j_bolt_connection_routedTest {
 
         @Override
         public CompletionStage<Void> flush(ResponseHandler handler) {
-            handler.onComplete();
+            Throwable failure = flushFailures.pollFirst();
+            if (failure != null) {
+                handler.onError(failure);
+            } else {
+                handler.onComplete();
+            }
             return CompletableFuture.completedFuture(null);
         }
 
@@ -695,6 +756,10 @@ public class Neo4j_bolt_connection_routedTest {
 
         private CompletionStage<BoltConnection> completedThis() {
             return CompletableFuture.completedFuture(this);
+        }
+
+        private void enqueueFlushFailure(Throwable failure) {
+            flushFailures.addLast(failure);
         }
 
         private int closeAttempts() {
