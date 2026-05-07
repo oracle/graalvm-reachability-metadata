@@ -16,9 +16,6 @@ import io.circe.JsonObject
 import io.circe.KeyDecoder
 import io.circe.KeyEncoder
 import io.circe.Printer
-import io.circe.derivation.ConfiguredCodec
-import io.circe.derivation.ConfiguredEnumCodec
-import io.circe.derivation.Configuration
 import io.circe.syntax._
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.fail
@@ -59,12 +56,49 @@ object AccountId {
 
 final case class Command(action: String, target: Option[String])
 
-given Configuration = Configuration.default.withSnakeCaseMemberNames.withDefaults.withStrictDecoding
+final case class DerivedJob(jobId: String, ownerName: String, maxRetries: Int = 3)
 
-final case class DerivedJob(jobId: String, ownerName: String, maxRetries: Int = 3) derives ConfiguredCodec
+object DerivedJob {
+  private val jsonFields: Set[String] = Set("job_id", "owner_name", "max_retries")
 
-enum TicketState derives ConfiguredEnumCodec {
+  given Encoder.AsObject[DerivedJob] = Encoder.AsObject.instance { job =>
+    JsonObject(
+      "job_id" -> Json.fromString(job.jobId),
+      "owner_name" -> Json.fromString(job.ownerName),
+      "max_retries" -> Json.fromInt(job.maxRetries)
+    )
+  }
+
+  given Decoder[DerivedJob] = Decoder.instance { cursor =>
+    cursor.keys match {
+      case Some(keys) =>
+        val unexpectedFields: List[String] = keys.filterNot(field => jsonFields.contains(field)).toList
+        if unexpectedFields.nonEmpty then
+          Left(DecodingFailure(s"Unexpected fields: ${unexpectedFields.mkString(", ")}", cursor.history))
+        else
+          for {
+            jobId <- cursor.get[String]("job_id")
+            ownerName <- cursor.get[String]("owner_name")
+            maxRetries <- cursor.get[Option[Int]]("max_retries").map(_.getOrElse(3))
+          } yield DerivedJob(jobId, ownerName, maxRetries)
+      case None => Left(DecodingFailure("Expected JSON object", cursor.history))
+    }
+  }
+}
+
+enum TicketState {
   case Open, InProgress, Closed
+}
+
+object TicketState {
+  given Encoder[TicketState] = Encoder.instance(state => Json.fromString(state.toString))
+
+  given Decoder[TicketState] = Decoder.decodeString.emap {
+    case "Open" => Right(TicketState.Open)
+    case "InProgress" => Right(TicketState.InProgress)
+    case "Closed" => Right(TicketState.Closed)
+    case other => Left(s"enum TicketState does not contain case: $other")
+  }
 }
 
 object Command {
@@ -240,7 +274,7 @@ class Circe_core_3Test {
   }
 
   @Test
-  def derivesConfiguredCodecsForProductsWithDefaultsAndStrictDecoding(): Unit = {
+  def encodesAndDecodesProductsWithDefaultsAndStrictDecoding(): Unit = {
     val encoded: Json = DerivedJob("job-1", "Ada", 5).asJson
     assertThat(encoded.noSpacesSortKeys).isEqualTo("""{"job_id":"job-1","max_retries":5,"owner_name":"Ada"}""")
 
@@ -259,7 +293,7 @@ class Circe_core_3Test {
   }
 
   @Test
-  def derivesCodecsForSingletonEnums(): Unit = {
+  def encodesAndDecodesSingletonEnums(): Unit = {
     assertThat(TicketState.Open.asJson).isEqualTo(Json.fromString("Open"))
     assertThat(TicketState.InProgress.asJson).isEqualTo(Json.fromString("InProgress"))
     assertThat(Json.fromString("Closed").as[TicketState]).isEqualTo(Right(TicketState.Closed))
