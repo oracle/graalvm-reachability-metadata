@@ -1,0 +1,982 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e041e-fb67-7d83-9eef-83abaa734810
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.http4s:http4s-server_3:1.0.0-M22
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.0.0-M22].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/index.json
+- Entry selector: "metadata-version" = "1.0.0-M22"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 1.0.0-M22
+- Entry metadata-version: 1.0.0-M22
+- Entry test-version: 1.0.0-M22
+- Entry tested-versions: [1.0.0-M22]
+codex
+I’ll verify the artifact metadata against Maven/GitHub first, then only fill fields in the matching JSON entry that are blank or missing. Since the URL fields need version-specific targets, I’m going to render and check the exact `1.0.0-M22` paths before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.http4s/http4s-server_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0-M22",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.0.0-M22"
+    ],
+    "allowed-packages" : [
+      "org.http4s.server"
+    ]
+  },
+  {
+    "metadata-version" : "0.23.30",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/http4s/http4s",
+    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/jvm/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
+    "description" : "http4s-server_3 provides the core Scala 3 server APIs for http4s, including routes, routing composition, server builders, middleware, WebSocket support, and static content helpers. It is used to build functional HTTP services on the JVM with Cats Effect and FS2, while backend modules provide concrete runtime servers.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.23.30",
+      "0.23.31",
+      "0.23.32",
+      "0.23.33",
+      "0.23.34"
+    ],
+    "allowed-packages" : [
+      "org.http4s.server"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'http4s-server_3|http4s-server' metadata/org.http4s -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 0ms:
+metadata/org.http4s/http4s-server_3/index.json:18:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
+metadata/org.http4s/http4s-server_3/index.json:21:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
+metadata/org.http4s/http4s-server_3/index.json:22:    "description" : "http4s-server_3 provides the core Scala 3 server APIs for http4s, including routes, routing composition, server builders, middleware, WebSocket support, and static content helpers. It is used to build functional HTTP services on the JVM with Cats Effect and FS2, while backend modules provide concrete runtime servers.",
+
+web search: 
+web search: Maven Central org.http4s http4s-server_3 1.0.0-M22 sources javadoc tests
+web search: 
+web search: https://github.com/http4s/http4s/tree/v1.0.0-M22/server
+web search: 
+web search: repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.http4s/http4s-server_3
+codex
+The existing `0.23.30` entry already has the likely pattern, but I’m not going to copy it blindly. I’m checking Maven Central for the `1.0.0-M22` classifiers and GitHub for the exact release tag/test path.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-javadoc.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-tests.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/http4s/http4s/tree/v1.0.0-M22/server/jvm/src/test && curl -fsSI https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/test && curl -fsSI https://github.com/http4s/http4s/tree/v1.0.0-M22/server/shared/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 271ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/http4s/http4s-server_3/1.0.0-M22</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/http4s/http4s-server_3/1.0.0-M22</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar" title="http4s-server_3-1.0.0-M22-javadoc.jar">http4s-server_3-1.0.0-M22-javadoc.jar</a>             2021-05-21 23:21    604012      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.asc" title="http4s-server_3-1.0.0-M22-javadoc.jar.asc">http4s-server_3-1.0.0-M22-javadoc.jar.asc</a>         2021-05-21 23:21       659      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.asc.md5" title="http4s-server_3-1.0.0-M22-javadoc.jar.asc.md5">http4s-server_3-1.0.0-M22-javadoc.jar.asc.md5</a>     2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.asc.sha1" title="http4s-server_3-1.0.0-M22-javadoc.jar.asc.sha1">http4s-server_3-1.0.0-M22-javadoc.jar.asc.sha...</a>  2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.md5" title="http4s-server_3-1.0.0-M22-javadoc.jar.md5">http4s-server_3-1.0.0-M22-javadoc.jar.md5</a>         2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.sha1" title="http4s-server_3-1.0.0-M22-javadoc.jar.sha1">http4s-server_3-1.0.0-M22-javadoc.jar.sha1</a>        2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22-sources.jar" title="http4s-server_3-1.0.0-M22-sources.jar">http4s-server_3-1.0.0-M22-sources.jar</a>             2021-05-21 23:21     88919      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.asc" title="http4s-server_3-1.0.0-M22-sources.jar.asc">http4s-server_3-1.0.0-M22-sources.jar.asc</a>         2021-05-21 23:21       659      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.asc.md5" title="http4s-server_3-1.0.0-M22-sources.jar.asc.md5">http4s-server_3-1.0.0-M22-sources.jar.asc.md5</a>     2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.asc.sha1" title="http4s-server_3-1.0.0-M22-sources.jar.asc.sha1">http4s-server_3-1.0.0-M22-sources.jar.asc.sha...</a>  2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.md5" title="http4s-server_3-1.0.0-M22-sources.jar.md5">http4s-server_3-1.0.0-M22-sources.jar.md5</a>         2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.sha1" title="http4s-server_3-1.0.0-M22-sources.jar.sha1">http4s-server_3-1.0.0-M22-sources.jar.sha1</a>        2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22.jar" title="http4s-server_3-1.0.0-M22.jar">http4s-server_3-1.0.0-M22.jar</a>                     2021-05-21 23:21    732860      
+<a href="http4s-server_3-1.0.0-M22.jar.asc" title="http4s-server_3-1.0.0-M22.jar.asc">http4s-server_3-1.0.0-M22.jar.asc</a>                 2021-05-21 23:21       659      
+<a href="http4s-server_3-1.0.0-M22.jar.asc.md5" title="http4s-server_3-1.0.0-M22.jar.asc.md5">http4s-server_3-1.0.0-M22.jar.asc.md5</a>             2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22.jar.asc.sha1" title="http4s-server_3-1.0.0-M22.jar.asc.sha1">http4s-server_3-1.0.0-M22.jar.asc.sha1</a>            2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22.jar.md5" title="http4s-server_3-1.0.0-M22.jar.md5">http4s-server_3-1.0.0-M22.jar.md5</a>                 2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22.jar.sha1" title="http4s-server_3-1.0.0-M22.jar.sha1">http4s-server_3-1.0.0-M22.jar.sha1</a>                2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22.pom" title="http4s-server_3-1.0.0-M22.pom">http4s-server_3-1.0.0-M22.pom</a>                     2021-05-21 23:21      5244      
+<a href="http4s-server_3-1.0.0-M22.pom.asc" title="http4s-server_3-1.0.0-M22.pom.asc">http4s-server_3-1.0.0-M22.pom.asc</a>                 2021-05-21 23:21       659      
+<a href="http4s-server_3-1.0.0-M22.pom.asc.md5" title="http4s-server_3-1.0.0-M22.pom.asc.md5">http4s-server_3-1.0.0-M22.pom.asc.md5</a>             2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22.pom.asc.sha1" title="http4s-server_3-1.0.0-M22.pom.asc.sha1">http4s-server_3-1.0.0-M22.pom.asc.sha1</a>            2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22.pom.md5" title="http4s-server_3-1.0.0-M22.pom.md5">http4s-server_3-1.0.0-M22.pom.md5</a>                 2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22.pom.sha1" title="http4s-server_3-1.0.0-M22.pom.sha1">http4s-server_3-1.0.0-M22.pom.sha1</a>                2021-05-21 23:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 212ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.http4s</groupId>
+    <artifactId>http4s-server_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Base library for building http4s servers</description>
+    <url>https://http4s.org/</url>
+    <version>1.0.0-M22</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>server</name>
+    <inceptionYear>2014</inceptionYear>
+    <organization>
+        <name>http4s.org</name>
+        <url>https://http4s.org/</url>
+    </organization>
+    <scm>
+        <url>https://github.com/http4s/http4s</url>
+        <connection>git@github.com:http4s/http4s.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>rossabaker</id>
+            <name>Ross A. Baker</name>
+            <url>https://github.com/rossabaker</url>
+            <email>@rossabaker</email>
+        </developer>
+        <developer>
+            <id>aeons</id>
+            <name>Bjørn Madsen</name>
+            <url>https://github.com/aeons</url>
+            <email>bm@aeons.dk</email>
+        </developer>
+        <developer>
+            <id>before</id>
+            <name>André Rouel</name>
+            <url>https://github.com/before</url>
+        </developer>
+        <developer>
+            <id>bfritz</id>
+            <name>Brad Fritz</name>
+            <url>https://github.com/bfritz</url>
+        </developer>
+        <developer>
+            <id>bryce-anderson</id>
+            <name>Bryce L. Anderson</name>
+            <url>https://github.com/bryce-anderson</url>
+            <email>bryce.anderson22@gmail.com</email>
+        </developer>
+        <developer>
+            <id>casualjim</id>
+            <name>Ivan Porto Carrero</name>
+            <url>https://github.com/casualjim</url>
+            <email>ivan@flanders.co.nz</email>
+        </developer>
+        <developer>
+            <id>cencarnacion</id>
+            <name>Carlos Encarnacion</name>
+            <url>https://github.com/cencarnacion</url>
+        </developer>
+        <developer>
+            <id>ChristopherDavenport</id>
+            <name>Christopher Davenport</name>
+            <url>https://github.com/ChristopherDavenport</url>
+            <email>chris@christopherdavenport.tech</email>
+        </developer>
+        <developer>
+            <id>cquiroz</id>
+            <name>Carlos Quiroz</name>
+            <url>https://github.com/cquiroz</url>
+        </developer>
+        <developer>
+            <id>hvesalai</id>
+            <name>Heikki Vesalainen</name>
+            <url>https://github.com/hvesalai</url>
+        </developer>
+        <developer>
+            <id>jcranky</id>
+            <name>Paulo Siqueira</name>
+            <url>https://github.com/jcranky</url>
+        </developer>
+        <developer>
+            <id>jedesah</id>
+            <name>Jean-Rémi Desjardins</name>
+            <url>https://github.com/jedesah</url>
+        </developer>
+        <developer>
+            <id>jmcardon</id>
+            <name>Jose Cardona</name>
+            <url>https://github.com/jmcardon</url>
+        </developer>
+        <developer>
+            <id>julien-truffaut</id>
+            <name>Julien Truffaut</name>
+            <url>https://github.com/julien-truffaut</url>
+        </developer>
+        <developer>
+            <id>kryptt</id>
+            <name>Rodolfo Hansen</name>
+            <url>https://github.com/kryptt</url>
+        </developer>
+        <developer>
+            <id>reactormonk</id>
+            <name>Simon Hafner</name>
+            <url>https://github.com/reactormonk</url>
+        </developer>
+        <developer>
+            <id>refried</id>
+            <name>Arya Irani</name>
+            <url>https://github.com/refried</url>
+        </developer>
+        <developer>
+            <id>rossabaker</id>
+            <name>Ross A. Baker</name>
+            <url>https://github.com/rossabaker</url>
+            <email>ross@rossabaker.com</email>
+        </developer>
+        <developer>
+            <id>shengc</id>
+            <name>Sheng Chen</name>
+            <url>https://github.com/shengc</url>
+        </developer>
+        <developer>
+            <id>SystemFw</id>
+            <name>Fabio Labella</name>
+            <url>https://github.com/SystemFw</url>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://http4s.org/v1.0/api</info.apiURL>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.http4s</groupId>
+            <artifactId>http4s-core_3</artifactId>
+            <version>1.0.0-M22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+    </dependencies>
+</project>
+ exited 22 in 493ms:
+HTTP/2 404 
+date: Thu, 07 May 2026 20:27:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=VgF%2Fqzc5BMMRVF%2Bo93XqjLfGsj%2FrIMDnfP%2FszEY7LBYId%2BQwLZgQvj1DJn5Jjt6nDccw90X7z%2BfHUd10%2FrryMmt0kK6719HMckAtscQwsCffKeXXrg30QLmCnw7XZfepPdJps2Y9mHyX6Oe6pyLNYKhly9gJ9L2u84TiMQyjR4557VMr%2FAhx4iTgvy6%2FcsYMa9C3a%2FVo0CMLxKAmmBtYql9%2BPeCiyWQ7rNs%2FbQ7QPUxwlQeKTL8Z1A3DppYZMZS9ZuIGULNhiqC3tDzRKSgQvQ%3D%3D--zZk%2Fx%2BD1EMV9t5BR--sjDxaSZVAYPJlF%2FDMkZ6Fw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.533493996.1778185629; expires=Fri, 07 May 2027 20:27:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 20:27:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:33C752:84CC622:67E7517:69FCF59D
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 1328ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 20:27:09 GMT
+content-type: application/java-archive
+content-length: 88919
+cf-ray: 9f82f6b54ba6444c-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "f2ac10b1d1c66b448a6b200859f81b84"
+last-modified: Fri, 21 May 2021 23:21:01 GMT
+x-checksum-md5: f2ac10b1d1c66b448a6b200859f81b84
+x-checksum-sha1: 1fce68a2cac5151763626586b01dd62ec7c980ea
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 07 May 2026 20:27:09 GMT
+content-type: application/java-archive
+content-length: 604012
+cf-ray: 9f82f6b89cbab159-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "52f17b94f57cc5c22ef3771008b4a7b2"
+last-modified: Fri, 21 May 2021 23:21:01 GMT
+x-checksum-md5: 52f17b94f57cc5c22ef3771008b4a7b2
+x-checksum-sha1: 749675cd220ba4ee7044290ad9bf364ddbb56614
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 07 May 2026 20:27:10 GMT
+content-type: text/html
+cf-ray: 9f82f6bbabf2be8e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+Maven Central has the published sources and javadoc jars for the exact artifact, and there is no `tests.jar` at the obvious classifier. I’m now checking the repository layout at tag `v1.0.0-M22` because the test directory moved from the pattern used by the newer entry.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/ | rg 'test|sources|javadoc'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 0ms:
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar" title="http4s-server_3-1.0.0-M22-javadoc.jar">http4s-server_3-1.0.0-M22-javadoc.jar</a>             2021-05-21 23:21    604012      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.asc" title="http4s-server_3-1.0.0-M22-javadoc.jar.asc">http4s-server_3-1.0.0-M22-javadoc.jar.asc</a>         2021-05-21 23:21       659      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.asc.md5" title="http4s-server_3-1.0.0-M22-javadoc.jar.asc.md5">http4s-server_3-1.0.0-M22-javadoc.jar.asc.md5</a>     2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.asc.sha1" title="http4s-server_3-1.0.0-M22-javadoc.jar.asc.sha1">http4s-server_3-1.0.0-M22-javadoc.jar.asc.sha...</a>  2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.md5" title="http4s-server_3-1.0.0-M22-javadoc.jar.md5">http4s-server_3-1.0.0-M22-javadoc.jar.md5</a>         2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-javadoc.jar.sha1" title="http4s-server_3-1.0.0-M22-javadoc.jar.sha1">http4s-server_3-1.0.0-M22-javadoc.jar.sha1</a>        2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22-sources.jar" title="http4s-server_3-1.0.0-M22-sources.jar">http4s-server_3-1.0.0-M22-sources.jar</a>             2021-05-21 23:21     88919      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.asc" title="http4s-server_3-1.0.0-M22-sources.jar.asc">http4s-server_3-1.0.0-M22-sources.jar.asc</a>         2021-05-21 23:21       659      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.asc.md5" title="http4s-server_3-1.0.0-M22-sources.jar.asc.md5">http4s-server_3-1.0.0-M22-sources.jar.asc.md5</a>     2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.asc.sha1" title="http4s-server_3-1.0.0-M22-sources.jar.asc.sha1">http4s-server_3-1.0.0-M22-sources.jar.asc.sha...</a>  2021-05-21 23:21        40      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.md5" title="http4s-server_3-1.0.0-M22-sources.jar.md5">http4s-server_3-1.0.0-M22-sources.jar.md5</a>         2021-05-21 23:21        32      
+<a href="http4s-server_3-1.0.0-M22-sources.jar.sha1" title="http4s-server_3-1.0.0-M22-sources.jar.sha1">http4s-server_3-1.0.0-M22-sources.jar.sha1</a>        2021-05-21 23:21        40      
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/http4s/http4s/git/ref/tags/v1.0.0-M22' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/http4s/http4s/contents/server?ref=v1.0.0-M22' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-test-sources.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 229ms:
+{
+  "ref": "refs/tags/v1.0.0-M22",
+  "node_id": "MDM6UmVmMzY5MjE4ODpyZWZzL3RhZ3MvdjEuMC4wLU0yMg==",
+  "url": "https://api.github.com/repos/http4s/http4s/git/refs/tags/v1.0.0-M22",
+  "object": {
+    "sha": "493d5091a891958e24c954c365ac91498106b229",
+    "type": "commit",
+    "url": "https://api.github.com/repos/http4s/http4s/git/commits/493d5091a891958e24c954c365ac91498106b229"
+  }
+}
+
+ succeeded in 223ms:
+[
+  {
+    "name": "src",
+    "path": "server/src",
+    "sha": "218f1f5416bbef880885a3ab8cdc980acbf947f3",
+    "size": 0,
+    "url": "https://api.github.com/repos/http4s/http4s/contents/server/src?ref=v1.0.0-M22",
+    "html_url": "https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src",
+    "git_url": "https://api.github.com/repos/http4s/http4s/git/trees/218f1f5416bbef880885a3ab8cdc980acbf947f3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/http4s/http4s/contents/server/src?ref=v1.0.0-M22",
+      "git": "https://api.github.com/repos/http4s/http4s/git/trees/218f1f5416bbef880885a3ab8cdc980acbf947f3",
+      "html": "https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src"
+    }
+  }
+]
+
+ succeeded in 245ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 07 May 2026 20:27:22 GMT
+content-type: text/html
+cf-ray: 9f82f7087865c126-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/http4s/http4s/contents/server/src?ref=v1.0.0-M22' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/main' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/http4s/http4s/contents/docs?ref=v1.0.0-M22' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 203ms:
+[
+  {
+    "name": "main",
+    "path": "server/src/main",
+    "sha": "32ae13fefa9bbac7a995a0c52d77f5bab52084f7",
+    "size": 0,
+    "url": "https://api.github.com/repos/http4s/http4s/contents/server/src/main?ref=v1.0.0-M22",
+    "html_url": "https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/main",
+    "git_url": "https://api.github.com/repos/http4s/http4s/git/trees/32ae13fefa9bbac7a995a0c52d77f5bab52084f7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/http4s/http4s/contents/server/src/main?ref=v1.0.0-M22",
+      "git": "https://api.github.com/repos/http4s/http4s/git/trees/32ae13fefa9bbac7a995a0c52d77f5bab52084f7",
+      "html": "https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "server/src/test",
+    "sha": "cd96724e5a19ecd9df70820506558840ed852dd3",
+    "size": 0,
+    "url": "https://api.github.com/repos/http4s/http4s/contents/server/src/test?ref=v1.0.0-M22",
+    "html_url": "https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/test",
+    "git_url": "https://api.github.com/repos/http4s/http4s/git/trees/cd96724e5a19ecd9df70820506558840ed852dd3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/http4s/http4s/contents/server/src/test?ref=v1.0.0-M22",
+      "git": "https://api.github.com/repos/http4s/http4s/git/trees/cd96724e5a19ecd9df70820506558840ed852dd3",
+      "html": "https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/test"
+    }
+  }
+]
+
+ succeeded in 242ms:
+[
+  {
+    "name": "src",
+    "path": "docs/src",
+    "sha": "68626fe5a8e1dbaa7bd1e0a68ee907ccf2b20d24",
+    "size": 0,
+    "url": "https://api.github.com/repos/http4s/http4s/contents/docs/src?ref=v1.0.0-M22",
+    "html_url": "https://github.com/http4s/http4s/tree/v1.0.0-M22/docs/src",
+    "git_url": "https://api.github.com/repos/http4s/http4s/git/trees/68626fe5a8e1dbaa7bd1e0a68ee907ccf2b20d24",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/http4s/http4s/contents/docs/src?ref=v1.0.0-M22",
+      "git": "https://api.github.com/repos/http4s/http4s/git/trees/68626fe5a8e1dbaa7bd1e0a68ee907ccf2b20d24",
+      "html": "https://github.com/http4s/http4s/tree/v1.0.0-M22/docs/src"
+    }
+  }
+]
+
+ succeeded in 584ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 20:27:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"10245a24b10079ab54476ce16ecaa926"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=mr19DP%2BK%2FLbze0qSIXcYHKCnZEcvfOO2JBNuWNcJbbMywsT6c5uzxfdopXNuEQrmsM1B7Flo6KP4%2FZUDCv7jy%2BLMNs63phV4hgHt5QJv0TXE216bkewJZdGX5YkFjvAv1EdK2uyfzE9lJ1qCmjU8XhTqoeGnHV2Dpa91rElGdp58r1iwijJ8shI55Q4OclXp4SHQeU00sam81VUr0tBitmWbUcpxyRKDIwd0VIakAWl5D0dxOwiKVfa2njg%2BC0zRgwTMMeOMoMCuuvMF9Z5iYQ%3D%3D--J%2FMe12sXpjsBhZrp--Oa3%2BFDd%2B9JqPXqdMA5kXmQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.534262665.1778185649; expires=Fri, 07 May 2027 20:27:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 20:27:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 512D:3F14FF:80B684C:64A2A3D:69FCF5B1
+
+
+ succeeded in 582ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 20:27:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e51388d6385ce5d0158249abc768c0de"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=K4Ze0KF4RpNaQYG0x%2Bg5Q%2BiAbjinuNioFLmRmyVQMz9nQa54hRFqVh7lF6DrJ89IxgFXGWbTJL6%2B4lqQiFATaeFFBXstpOhs80TjjacPCotjXVssUv%2BGsgeY0FCO%2F%2FqeWT5HnZbYcaEwo8rohTOMv6X4ijGbGE453hdf0hwTGZueuGrWyxliuzjBQKkc9AChp%2B6idDs1CaJonHkjyK4gApVlCeAwQt9ug82WOmw2qfXgtEMg1f1Ce9prHPr9BlNp8glUOcXsOW3pHMEyvexCNw%3D%3D--jq4xpNd%2Ffg4jb%2BRC--Prt%2F8lm%2F5nN30JdKnygqDw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1847694012.1778185649; expires=Fri, 07 May 2027 20:27:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 20:27:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 512E:347D11:83D12EC:67148C6:69FCF5B1
+
+
+codex
+The correct test path for this tag is `server/src/test`, not `server/jvm/src/test`. I’m going to add Maven Central templates for sources and javadoc, the canonical GitHub repository root, the versioned GitHub test path, and a two-sentence description; the existing Scala 3 language field is already correct and will be left as-is.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/index.json
+diff --git a/metadata/org.http4s/http4s-server_3/index.json b/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91deabf240ebd9c6e171d3dacc9fd84c82f..7fdf7594ebaf17e54ef07f76765184b58a33434e
+--- a/metadata/org.http4s/http4s-server_3/index.json
++++ b/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.http4s/http4s-server_3/index.json b/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91deabf240ebd9c6e171d3dacc9fd84c82f..7fdf7594ebaf17e54ef07f76765184b58a33434e
+--- a/metadata/org.http4s/http4s-server_3/index.json
++++ b/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The JSON entry is patched. I’m doing a quick structural check and the repository’s metadata validation for this coordinate so we catch formatting or schema issues before I hand it back.
+exec
+/usr/bin/bash -lc "jq . metadata/org.http4s/http4s-server_3/index.json >/dev/null && sed -n '1,38p' metadata/org.http4s/http4s-server_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0-M22",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/http4s/http4s",
+    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
+    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.0.0-M22"
+    ],
+    "allowed-packages" : [
+      "org.http4s.server"
+    ]
+  },
+  {
+    "metadata-version" : "0.23.30",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/http4s/http4s",
+    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/jvm/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
+    "description" : "http4s-server_3 provides the core Scala 3 server APIs for http4s, including routes, routing composition, server builders, middleware, WebSocket support, and static content helpers. It is used to build functional HTTP services on the JVM with Cats Effect and FS2, while backend modules provide concrete runtime servers.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.23.30",
+      "0.23.31",
+      "0.23.32",
+      "0.23.33",
+      "0.23.34"
+    ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.http4s:http4s-server_3:1.0.0-M22 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-sources.jar >/dev/null && curl -fsSI https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22-javadoc.jar >/dev/null && curl -fsSI https://github.com/http4s/http4s/tree/v1.0.0-M22/server/src/test >/dev/null && curl -fsSI https://github.com/http4s/http4s >/dev/null' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 842ms:
+diff --git a/metadata/org.http4s/http4s-server_3/index.json b/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91deabf240ebd9c6e171d3dacc9fd84c82f..7fdf7594ebaf17e54ef07f76765184b58a33434e
+--- a/metadata/org.http4s/http4s-server_3/index.json
++++ b/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.http4s/http4s-server_3/index.json b/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91deabf240ebd9c6e171d3dacc9fd84c82f..7fdf7594ebaf17e54ef07f76765184b58a33434e
+--- a/metadata/org.http4s/http4s-server_3/index.json
++++ b/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 9341ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for org.http4s:http4s-server_3:1.0.0-M22: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/1.0.0-M22/
+
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.http4s:http4s-server_3:1.0.0-M22: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/1.0.0-M22/
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/build/reports/problems/problems-report.html
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.http4s:http4s-server_3:1.0.0-M22: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/1.0.0-M22/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 8s
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/http4s/http4s-server_3/1.0.0-M22/http4s-server_3-1.0.0-M22.pom
+web search: 
+web search: https://github.com/http4s/http4s
+web search: 
+web search: "http4s-server_3-1.0.0-M22-sources.jar"
+web search: 
+web search: mvnrepository org.http4s http4s-server_3 1.0.0-M22
+web search: 
+web search: https://mvnrepository.com/artifact/org.http4s/http4s-server_3
+web search: 
+web search: https://mvnrepository.com/artifact/org.http4s/http4s-server/versions
+web search: 
+web search: https://mvnrepository.com/artifact/org.http4s/http4s-server_3/1.0.0-M22
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.http4s/http4s-server_3/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 0ms:
+diff --git i/metadata/org.http4s/http4s-server_3/index.json w/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91dea..7fdf7594eb 100644
+--- i/metadata/org.http4s/http4s-server_3/index.json
++++ w/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.http4s/http4s-server_3/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97
+ succeeded in 0ms:
+diff --git a/metadata/org.http4s/http4s-server_3/index.json b/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91deabf240ebd9c6e171d3dacc9fd84c82f..7fdf7594ebaf17e54ef07f76765184b58a33434e
+--- a/metadata/org.http4s/http4s-server_3/index.json
++++ b/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+web search: 
+web search: http4s GitHub repository Cats Effect FS2 server middleware Scala 3
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/index.json:4) for `metadata-version` = `1.0.0-M22`. I added the Maven Central source and javadoc templates, canonical GitHub repository root, versioned GitHub test suite path, and a two-sentence description. The existing Scala 3 `language` field was already correct and left unchanged; Maven Repository lists `1.0.0-M22` for `http4s-server_3`, and http4s docs support the Cats Effect/FS2 and middleware description. ([mvnrepository.com](https://mvnrepository.com/artifact/org.http4s/http4s-server_3?utm_source=openai))
+
+Verification: `jq` passed, rendered URL HEAD checks passed, and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.http4s:http4s-server_3:1.0.0-M22 --stacktrace` failed because `metadata/org.http4s/http4s-server_3/1.0.0-M22/reachability-metadata.json` is missing, which is outside the requested index field update.
+diff --git a/metadata/org.http4s/http4s-server_3/index.json b/metadata/org.http4s/http4s-server_3/index.json
+index 2171d91deabf240ebd9c6e171d3dacc9fd84c82f..7fdf7594ebaf17e54ef07f76765184b58a33434e
+--- a/metadata/org.http4s/http4s-server_3/index.json
++++ b/metadata/org.http4s/http4s-server_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0-M22",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/http4s/http4s",
++    "test-code-url" : "https://github.com/http4s/http4s/tree/v$version$/server/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-javadoc.jar",
++    "description" : "http4s-server_3 provides the core Scala 3 server APIs for building http4s HTTP services, including routes, routing composition, middleware, WebSocket support, and static content helpers. It integrates with Cats Effect and FS2 so applications can describe functional HTTP servers while backend modules provide concrete runtime implementations.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+104,998
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/metadata/org.http4s/http4s-server_3/index.json:4) for `metadata-version` = `1.0.0-M22`. I added the Maven Central source and javadoc templates, canonical GitHub repository root, versioned GitHub test suite path, and a two-sentence description. The existing Scala 3 `language` field was already correct and left unchanged; Maven Repository lists `1.0.0-M22` for `http4s-server_3`, and http4s docs support the Cats Effect/FS2 and middleware description. ([mvnrepository.com](https://mvnrepository.com/artifact/org.http4s/http4s-server_3?utm_source=openai))
+
+Verification: `jq` passed, rendered URL HEAD checks passed, and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.http4s:http4s-server_3:1.0.0-M22 --stacktrace` failed because `metadata/org.http4s/http4s-server_3/1.0.0-M22/reachability-metadata.json` is missing, which is outside the requested index field update.
+Ran agent for org.http4s:http4s-server_3:1.0.0-M22 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/build/agent-url-discovery-logs/org.http4s-http4s-server_3-1.0.0-M22.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6384-ed0a9e97/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 1 executed, 8 up-to-date
