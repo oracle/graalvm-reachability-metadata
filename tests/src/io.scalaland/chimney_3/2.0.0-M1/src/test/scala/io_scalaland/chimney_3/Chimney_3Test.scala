@@ -44,6 +44,8 @@ case class Person(id: Int, name: String, age: Option[Int])
 case class LocalizedPerson(id: Int, imie: String, wiek: Option[Int])
 case class Money(amount: BigDecimal, currency: String)
 case class MoneyDto(value: BigDecimal, code: String)
+case class Registration(name: String)
+case class UserProfile(name: String, active: Boolean = true, role: String = "reader")
 
 enum WireStatus {
   case NewOrder, PaidOrder, CancelledOrder
@@ -154,6 +156,16 @@ class Chimney_3Test {
     val clearedPhone: Account = original.patchUsing(patch.copy(email = None, phone = Some(None), audit = Vector.empty))
     assertEquals("old@example.com", clearedPhone.email)
     assertEquals(None, clearedPhone.phone)
+  }
+
+  @Test
+  def fillsMissingTargetFieldsFromConstructorDefaults(): Unit = {
+    val profile: UserProfile = Registration("Katherine Johnson")
+      .into[UserProfile]
+      .enableDefaultValues
+      .transform
+
+    assertEquals(UserProfile("Katherine Johnson", active = true, role = "reader"), profile)
   }
 
   @Test
