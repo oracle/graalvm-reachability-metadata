@@ -6,6 +6,7 @@
  */
 package dev_profunktor.redis4cats_effects_3
 
+import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.algebra.BitCommandOperation
 import dev.profunktor.redis4cats.codecs.Codecs
 import dev.profunktor.redis4cats.codecs.splits.{SplitEpi, SplitMono, stringIntEpi}
@@ -229,6 +230,26 @@ class Redis4cats_effects_3Test {
     assertNotNull(valueOutput)
     assertNotNull(multiOutput)
     assertNotNull(statusOutput)
+  }
+
+  @Test
+  def redisPoolSettingsExposeDefaultsAndCopyConfiguration(): Unit = {
+    val customSettings: Redis.Pool.Settings = Redis.Pool.Settings(8, 3, 30.seconds)
+
+    assertEquals(8, customSettings.maxTotal)
+    assertEquals(3, customSettings.maxIdle)
+    assertEquals(30.seconds, customSettings.idleTimeAllowedInPool)
+    assertEquals(Redis.Pool.Settings(8, 5, 30.seconds), customSettings.copy(maxIdle = 5))
+
+    val defaults: Redis.Pool.Settings = Redis.Pool.Settings(
+      Redis.Pool.Settings.Defaults.minimumTotal,
+      Redis.Pool.Settings.Defaults.maxIdle,
+      Redis.Pool.Settings.Defaults.idleTimeAllowedInPool
+    )
+
+    assertEquals(Redis.Pool.Settings.Defaults.minimumTotal, defaults.maxTotal)
+    assertEquals(Redis.Pool.Settings.Defaults.maxIdle, defaults.maxIdle)
+    assertEquals(Redis.Pool.Settings.Defaults.idleTimeAllowedInPool, defaults.idleTimeAllowedInPool)
   }
 
   private def render(argument: CompositeArgument): String = {
