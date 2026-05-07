@@ -40,6 +40,8 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -149,6 +151,35 @@ public class Resilience4j_reactorTest {
             .transformDeferred(RateLimiterOperator.of(rateLimiter))
             .block(BLOCK_TIMEOUT))
             .isInstanceOf(RequestNotPermitted.class);
+    }
+
+    @Test
+    void rateLimiterOperatorDelaysSubscriptionUntilPermitIsRefreshed() throws Exception {
+        RateLimiterConfig config = RateLimiterConfig.custom()
+            .limitForPeriod(1)
+            .limitRefreshPeriod(Duration.ofMillis(100))
+            .timeoutDuration(Duration.ofMillis(500))
+            .build();
+        RateLimiter rateLimiter = RateLimiter.of("reactor-waiting-rate-limiter", config);
+        AtomicInteger subscriptions = new AtomicInteger();
+
+        assertThat(rateLimiter.acquirePermission()).isTrue();
+        CompletableFuture<String> future = Mono.fromSupplier(() -> {
+                subscriptions.incrementAndGet();
+                return "after-refresh";
+            })
+            .transformDeferred(RateLimiterOperator.of(rateLimiter))
+            .toFuture();
+
+        try {
+            assertThat(subscriptions).hasValue(0);
+            assertThat(future).isNotDone();
+            assertThat(future.get(BLOCK_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS))
+                .isEqualTo("after-refresh");
+            assertThat(subscriptions).hasValue(1);
+        } finally {
+            future.cancel(true);
+        }
     }
 
     @Test
