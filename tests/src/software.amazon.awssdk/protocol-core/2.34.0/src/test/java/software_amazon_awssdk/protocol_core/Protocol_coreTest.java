@@ -107,6 +107,19 @@ public class Protocol_coreTest {
     }
 
     @Test
+    void numberToInstantConvertsFractionalUnixTimestampsToEpochMilliseconds() {
+        final Map<MarshallLocation, TimestampFormatTrait.Format> defaults = Map.of(
+            MarshallLocation.PAYLOAD, TimestampFormatTrait.Format.UNIX_TIMESTAMP);
+        final SdkField<Instant> payloadField = instantField(MarshallLocation.PAYLOAD);
+        final NumberToInstant numberToInstant = NumberToInstant.create(defaults);
+
+        assertThat(numberToInstant.convert(1099510880.773d, payloadField))
+            .isEqualTo(Instant.ofEpochMilli(1099510880773L));
+        assertThat(numberToInstant.convert(1099510880.771d, payloadField))
+            .isEqualTo(Instant.ofEpochMilli(1099510880771L));
+    }
+
+    @Test
     void timestampConvertersReportUnsupportedLocationsAndInvalidNumericValues() {
         final Map<MarshallLocation, TimestampFormatTrait.Format> defaults = Map.of(
             MarshallLocation.PAYLOAD, TimestampFormatTrait.Format.UNIX_TIMESTAMP);
