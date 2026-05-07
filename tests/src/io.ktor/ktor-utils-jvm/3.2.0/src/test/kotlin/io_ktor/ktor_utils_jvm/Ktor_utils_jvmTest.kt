@@ -15,6 +15,7 @@ import io.ktor.util.StatelessHmacNonceManager
 import io.ktor.util.StringValuesBuilderImpl
 import io.ktor.util.appendIfNameAndValueAbsent
 import io.ktor.util.converters.ConversionService
+import io.ktor.util.combineSafe
 import io.ktor.util.converters.DataConversion
 import io.ktor.util.date.GMTDate
 import io.ktor.util.date.Month
@@ -38,6 +39,7 @@ import io.ktor.util.toMap
 import io.ktor.util.toUpperCasePreservingASCIIRules
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.toByteArray
+import java.io.File
 import java.nio.ByteBuffer
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
@@ -209,6 +211,16 @@ public class Ktor_utils_jvmTest {
         assertThat(service.fromValues(listOf("green", "7"), TypeInfo(ColorCode::class)))
             .isEqualTo(ColorCode("green", 7))
         assertThat(service.toValues(ColorCode("blue", 9))).containsExactly("blue", "9")
+    }
+
+    @Test
+    fun safePathCombinationNormalizesChildPathsAndDropsLeadingParentTraversal(): Unit {
+        val root = File("content-root")
+        val combined = root.combineSafe("static/./images/../logo.png")
+        val traversal = root.combineSafe("../secrets.txt")
+
+        assertThat(combined.path).isEqualTo(File(root, File("static", "logo.png").path).path)
+        assertThat(traversal.path).isEqualTo(File(root, "secrets.txt").path)
     }
 
     @Test
