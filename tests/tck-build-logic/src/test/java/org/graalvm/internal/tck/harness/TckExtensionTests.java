@@ -53,6 +53,34 @@ class TckExtensionTests {
     }
 
     @Test
+    void getMatchingCoordinatesIncludesTestOnlyVersionsWithoutMetadataDirectory() throws IOException {
+        TckExtension extension = createExtension(
+                """
+                [
+                  {
+                    "latest": true,
+                    "allowed-packages": [
+                      "com.example"
+                    ],
+                    "metadata-version": "1.0.0",
+                    "test-version": "0.9.0",
+                    "tested-versions": [
+                      "1.0.0",
+                      "1.0.1"
+                    ]
+                  }
+                ]
+                """,
+                false
+        );
+
+        assertThat(extension.getMatchingCoordinates("com.example:demo"))
+                .containsExactlyInAnyOrder("com.example:demo:1.0.0", "com.example:demo:1.0.1");
+        assertThat(extension.getMatchingCoordinates("com.example:demo:1.0.1"))
+                .containsExactly("com.example:demo:1.0.1");
+    }
+
+    @Test
     void getMatchingCoordinatesStrictRequiresExactVersionDirectory() throws IOException {
         TckExtension extension = createExtension(
                 """
@@ -122,6 +150,34 @@ class TckExtensionTests {
     }
 
     @Test
+    void getMetadataDirReturnsIndexedPathForTestOnlyVersion() throws IOException {
+        TckExtension extension = createExtension(
+                """
+                [
+                  {
+                    "latest": true,
+                    "allowed-packages": [
+                      "com.example"
+                    ],
+                    "metadata-version": "1.0.0",
+                    "test-version": "0.9.0",
+                    "tested-versions": [
+                      "1.0.0",
+                      "1.0.1"
+                    ]
+                  }
+                ]
+                """,
+                false
+        );
+
+        assertThat(extension.getMetadataDir("com.example:demo:1.0.1"))
+                .isEqualTo(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        assertThat(extension.getMetadataFileList(extension.getMetadataDir("com.example:demo:1.0.1")))
+                .isEmpty();
+    }
+
+    @Test
     void testedVersionBatchesSplitsVersionsIntoConfiguredBatchSize() throws IOException {
         List<String> testedVersions = new ArrayList<>();
         for (int i = 1; i <= 65; i++) {
@@ -163,7 +219,14 @@ class TckExtensionTests {
     }
 
     private TckExtension createExtension(String metadataIndexJson) throws IOException {
-        Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        return createExtension(metadataIndexJson, true);
+    }
+
+    private TckExtension createExtension(String metadataIndexJson, boolean createMetadataVersionDir) throws IOException {
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo"));
+        if (createMetadataVersionDir) {
+            Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        }
         Files.writeString(tempDir.resolve("metadata/com.example/demo/index.json"), metadataIndexJson);
         Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/0.9.0"));
         Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));

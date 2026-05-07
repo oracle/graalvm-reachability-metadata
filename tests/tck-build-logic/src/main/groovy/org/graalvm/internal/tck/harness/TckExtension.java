@@ -414,8 +414,16 @@ public abstract class TckExtension {
             List<String> tv = (List<String>) entry.get("tested-versions");
             if (tv != null && tv.contains(version)) {
                 String metaVersion = (String) entry.get("metadata-version");
+                if (metaVersion == null || metaVersion.isBlank()) {
+                    throw new RuntimeException("Index.json for " + groupId + ":" + artifactId
+                            + " is missing metadata-version for tested version " + version);
+                }
                 Path result = artifactDir.resolve(metaVersion);
                 if (Files.isDirectory(result)) {
+                    return result;
+                }
+                Path testDir = resolveIndexedTestDir(groupId, artifactId, entry);
+                if (testDir != null && Files.isDirectory(testDir)) {
                     return result;
                 }
                 throw new RuntimeException("Index.json for " + groupId + ":" + artifactId + " maps version " + version + " to missing dir " + result);
@@ -495,9 +503,8 @@ public abstract class TckExtension {
 
             for (Map<String, ?> entry : index) {
                 List<String> tested = (List<String>) entry.get("tested-versions");
-                String metaVer = (String) entry.get("metadata-version");
 
-                if (tested == null || metaVer == null || !Files.isDirectory(fullDir.resolve(metaVer))) {
+                if (tested == null || !entryHasUsableMetadataOrTests(fullDir, g, a, entry)) {
                     continue;
                 }
 
@@ -562,6 +569,9 @@ public abstract class TckExtension {
      * @return list of json files contained in it
      */
     public List<String> getMetadataFileList(Path directory) throws IOException {
+        if (!Files.isDirectory(directory)) {
+            return List.of();
+        }
         try (Stream<Path> paths = Files.walk(directory)) {
             return paths
                     .filter(Files::isRegularFile)
@@ -569,5 +579,29 @@ public abstract class TckExtension {
                     .filter(name -> name.endsWith(".json"))
                     .collect(Collectors.toList());
         }
+    }
+
+    private boolean entryHasUsableMetadataOrTests(Path artifactDir, String groupId, String artifactId, Map<String, ?> entry) {
+        Object metadataVersionValue = entry.get("metadata-version");
+        if (!(metadataVersionValue instanceof String metadataVersion) || metadataVersion.isBlank()) {
+            return false;
+        }
+        if (Files.isDirectory(artifactDir.resolve(metadataVersion))) {
+            return true;
+        }
+        Path testDir = resolveIndexedTestDir(groupId, artifactId, entry);
+        return testDir != null && Files.isDirectory(testDir);
+    }
+
+    private Path resolveIndexedTestDir(String groupId, String artifactId, Map<String, ?> entry) {
+        Object testVersionValue = entry.get("test-version");
+        if (testVersionValue instanceof String testVersion && !testVersion.isBlank()) {
+            return testRoot().resolve(groupId).resolve(artifactId).resolve(testVersion);
+        }
+        Object metadataVersionValue = entry.get("metadata-version");
+        if (metadataVersionValue instanceof String metadataVersion && !metadataVersion.isBlank()) {
+            return testRoot().resolve(groupId).resolve(artifactId).resolve(metadataVersion);
+        }
+        return null;
     }
 }
