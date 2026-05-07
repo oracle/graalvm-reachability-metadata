@@ -6,12 +6,12 @@
  */
 package jakarta_ws_rs.jakarta_ws_rs_api;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Link;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.Variant.VariantListBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Link;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.Variant.VariantListBuilder;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

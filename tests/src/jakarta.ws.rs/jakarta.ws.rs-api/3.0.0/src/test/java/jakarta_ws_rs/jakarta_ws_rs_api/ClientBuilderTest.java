@@ -6,7 +6,7 @@
  */
 package jakarta_ws_rs.jakarta_ws_rs_api;
 
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,7 +27,7 @@ public class ClientBuilderTest {
             assertThatThrownBy(ClientBuilder::newBuilder)
                     .isInstanceOf(LinkageError.class)
                     .hasMessageContaining("ClassCastException: attempting to cast")
-                    .hasMessageContaining("javax/ws/rs/client/ClientBuilder.class");
+                    .hasMessageContaining("jakarta/ws/rs/client/ClientBuilder.class");
         } finally {
             restoreProviderProperty(previousProvider);
             Thread.currentThread().setContextClassLoader(previousContextClassLoader);

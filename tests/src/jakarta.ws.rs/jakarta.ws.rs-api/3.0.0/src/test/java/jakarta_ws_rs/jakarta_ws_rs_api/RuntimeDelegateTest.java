@@ -6,7 +6,7 @@
  */
 package jakarta_ws_rs.jakarta_ws_rs_api;
 
-import javax.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +28,7 @@ public class RuntimeDelegateTest {
             assertThatThrownBy(RuntimeDelegate::getInstance)
                     .isInstanceOf(LinkageError.class)
                     .hasMessageContaining("ClassCastException: attempting to cast")
-                    .hasMessageContaining("javax/ws/rs/ext/RuntimeDelegate.class");
+                    .hasMessageContaining("jakarta/ws/rs/ext/RuntimeDelegate.class");
         } finally {
             RuntimeDelegate.setInstance(null);
             restoreProviderProperty(previousProvider);

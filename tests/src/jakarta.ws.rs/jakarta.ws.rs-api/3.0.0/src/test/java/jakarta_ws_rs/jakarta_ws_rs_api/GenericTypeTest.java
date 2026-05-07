@@ -8,7 +8,7 @@ package jakarta_ws_rs.jakarta_ws_rs_api;
 
 import java.util.List;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import org.junit.jupiter.api.Test;
 

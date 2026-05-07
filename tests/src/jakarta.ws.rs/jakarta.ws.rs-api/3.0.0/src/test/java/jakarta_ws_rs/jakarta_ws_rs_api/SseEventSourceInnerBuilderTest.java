@@ -6,7 +6,7 @@
  */
 package jakarta_ws_rs.jakarta_ws_rs_api;
 
-import javax.ws.rs.sse.SseEventSource;
+import jakarta.ws.rs.sse.SseEventSource;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +28,7 @@ public class SseEventSourceInnerBuilderTest {
             assertThatThrownBy(() -> SseEventSource.target(null))
                     .isInstanceOf(LinkageError.class)
                     .hasMessageContaining("ClassCastException: attempting to cast")
-                    .hasMessageContaining("javax/ws/rs/sse/SseEventSource$Builder.class");
+                    .hasMessageContaining("jakarta/ws/rs/sse/SseEventSource$Builder.class");
         } finally {
             restoreProviderProperty(previousProvider);
             Thread.currentThread().setContextClassLoader(previousContextClassLoader);
