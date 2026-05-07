@@ -147,6 +147,46 @@ public class Apache_clientTest {
     }
 
     @Test
+    void apacheClientBypassesProxyForConfiguredNonProxyHosts() throws Exception {
+        AtomicInteger originRequests = new AtomicInteger();
+        AtomicInteger proxyRequests = new AtomicInteger();
+        try (TestHttpServer origin = TestHttpServer.create(exchange -> {
+            originRequests.incrementAndGet();
+            assertThat(exchange.getRequestMethod()).isEqualTo("GET");
+            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/direct");
+            writeResponse(exchange, 200, "from-origin");
+        }); TestHttpServer proxy = TestHttpServer.create(exchange -> {
+            proxyRequests.incrementAndGet();
+            writeResponse(exchange, 502, "proxy should not be used");
+        }); SdkHttpClient client = ApacheHttpClient.builder()
+                .connectionTimeout(SHORT_TIMEOUT)
+                .socketTimeout(SHORT_TIMEOUT)
+                .connectionAcquisitionTimeout(SHORT_TIMEOUT)
+                .useIdleConnectionReaper(false)
+                .proxyConfiguration(ProxyConfiguration.builder()
+                        .endpoint(proxy.uri(""))
+                        .nonProxyHosts(Set.of(origin.uri("").getHost()))
+                        .useSystemPropertyValues(false)
+                        .useEnvironmentVariableValues(false)
+                        .build())
+                .build()) {
+            SdkHttpFullRequest request = SdkHttpFullRequest.builder()
+                    .method(SdkHttpMethod.GET)
+                    .uri(origin.uri("/direct"))
+                    .build();
+
+            HttpExecuteResponse response = client.prepareRequest(HttpExecuteRequest.builder()
+                    .request(request)
+                    .build()).call();
+
+            assertThat(response.httpResponse().statusCode()).isEqualTo(200);
+            assertThat(readResponse(response)).isEqualTo("from-origin");
+            assertThat(originRequests).hasValue(1);
+            assertThat(proxyRequests).hasValue(0);
+        }
+    }
+
+    @Test
     void apacheClientUsesCustomDnsResolver() throws Exception {
         AtomicReference<String> resolvedHost = new AtomicReference<>();
         DnsResolver resolver = host -> {
