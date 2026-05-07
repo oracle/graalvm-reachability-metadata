@@ -227,6 +227,27 @@ public class Resilience4j_ratelimiterTest {
 
     @Test
     @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void refreshesPermissionsAndAppliesChangedLimitsOnNextCycle() throws InterruptedException {
+        RateLimiterConfig config = RateLimiterConfig.custom()
+                .limitForPeriod(1)
+                .limitRefreshPeriod(Duration.ofMillis(50))
+                .timeoutDuration(Duration.ZERO)
+                .build();
+        RateLimiter rateLimiter = RateLimiter.of("refresh-cycle", config);
+
+        assertThat(rateLimiter.acquirePermission()).isTrue();
+        assertThat(rateLimiter.acquirePermission()).isFalse();
+
+        rateLimiter.changeLimitForPeriod(2);
+        Thread.sleep(200);
+
+        assertThat(rateLimiter.acquirePermission(2)).isTrue();
+        assertThat(rateLimiter.acquirePermission()).isFalse();
+        assertThat(rateLimiter.getMetrics().getAvailablePermissions()).isZero();
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
     void staticFactoriesAndRequestNotPermittedUseConfiguredStackTraceBehavior() {
         RateLimiter defaults = RateLimiter.ofDefaults("defaults");
         RateLimiter supplied = RateLimiter.of("supplied", () -> zeroTimeoutConfig(1), Map.of("source", "supplier"));
