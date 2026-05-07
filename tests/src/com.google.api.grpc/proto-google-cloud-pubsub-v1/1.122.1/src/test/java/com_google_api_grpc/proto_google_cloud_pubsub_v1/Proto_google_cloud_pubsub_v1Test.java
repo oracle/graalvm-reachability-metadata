@@ -11,18 +11,23 @@ import java.util.List;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
+import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import com.google.pubsub.v1.AcknowledgeRequest;
 import com.google.pubsub.v1.BigQueryConfig;
 import com.google.pubsub.v1.CloudStorageConfig;
 import com.google.pubsub.v1.CommitSchemaRequest;
 import com.google.pubsub.v1.CreateSchemaRequest;
+import com.google.pubsub.v1.CreateSnapshotRequest;
 import com.google.pubsub.v1.DeadLetterPolicy;
 import com.google.pubsub.v1.DeleteSchemaRevisionRequest;
+import com.google.pubsub.v1.DeleteSnapshotRequest;
 import com.google.pubsub.v1.Encoding;
 import com.google.pubsub.v1.ExpirationPolicy;
 import com.google.pubsub.v1.IngestionDataSourceSettings;
 import com.google.pubsub.v1.JavaScriptUDF;
+import com.google.pubsub.v1.ListSnapshotsRequest;
+import com.google.pubsub.v1.ListSnapshotsResponse;
 import com.google.pubsub.v1.MessageStoragePolicy;
 import com.google.pubsub.v1.MessageTransform;
 import com.google.pubsub.v1.ProjectSnapshotName;
@@ -40,12 +45,16 @@ import com.google.pubsub.v1.RollbackSchemaRequest;
 import com.google.pubsub.v1.Schema;
 import com.google.pubsub.v1.SchemaName;
 import com.google.pubsub.v1.SchemaSettings;
+import com.google.pubsub.v1.SeekRequest;
+import com.google.pubsub.v1.SeekResponse;
+import com.google.pubsub.v1.Snapshot;
 import com.google.pubsub.v1.SnapshotName;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
 import com.google.pubsub.v1.TopicNames;
+import com.google.pubsub.v1.UpdateSnapshotRequest;
 import com.google.pubsub.v1.ValidateMessageRequest;
 import com.google.pubsub.v1.ValidateSchemaRequest;
 import org.junit.jupiter.api.Test;
@@ -288,6 +297,85 @@ public class Proto_google_cloud_pubsub_v1Test {
         assertThat(parsedSubscription.getDeadLetterPolicy().getMaxDeliveryAttempts()).isEqualTo(5);
         assertThat(parsedSubscription.getRetryPolicy().getMaximumBackoff()).isEqualTo(duration(600));
         assertThat(parsedSubscription.getFilter()).contains("tenant");
+    }
+
+    @Test
+    void snapshotsCanBeCreatedListedUpdatedDeletedAndUsedAsSeekTargets() throws Exception {
+        Timestamp expireTime = timestamp(1_700_086_400L, 0);
+        CreateSnapshotRequest createRequest = CreateSnapshotRequest.newBuilder()
+                .setName(SNAPSHOT_PATH)
+                .setSubscription(SUBSCRIPTION_PATH)
+                .putLabels("purpose", "replay")
+                .build();
+        Snapshot snapshot = Snapshot.newBuilder()
+                .setName(createRequest.getName())
+                .setTopic(TOPIC_PATH)
+                .setExpireTime(expireTime)
+                .putAllLabels(createRequest.getLabelsMap())
+                .build();
+        ListSnapshotsRequest listRequest = ListSnapshotsRequest.newBuilder()
+                .setProject(PROJECT_PATH)
+                .setPageSize(25)
+                .setPageToken("first-page")
+                .build();
+        ListSnapshotsResponse listResponse = ListSnapshotsResponse.newBuilder()
+                .addSnapshots(snapshot)
+                .setNextPageToken("second-page")
+                .build();
+        Snapshot relabeledSnapshot = snapshot.toBuilder()
+                .putLabels("owner", "analytics")
+                .build();
+        UpdateSnapshotRequest updateRequest = UpdateSnapshotRequest.newBuilder()
+                .setSnapshot(relabeledSnapshot)
+                .setUpdateMask(FieldMask.newBuilder().addPaths("labels"))
+                .build();
+        SeekRequest seekToSnapshot = SeekRequest.newBuilder()
+                .setSubscription(SUBSCRIPTION_PATH)
+                .setSnapshot(SNAPSHOT_PATH)
+                .build();
+        Timestamp rewindTime = timestamp(1_700_000_250L, 0);
+        SeekRequest seekToTime = seekToSnapshot.toBuilder()
+                .clearSnapshot()
+                .setTime(rewindTime)
+                .build();
+        SeekResponse seekResponse = SeekResponse.newBuilder().build();
+        DeleteSnapshotRequest deleteRequest = DeleteSnapshotRequest.newBuilder()
+                .setSnapshot(SNAPSHOT_PATH)
+                .build();
+
+        assertThat(createRequest.getName()).isEqualTo(SNAPSHOT_PATH);
+        assertThat(createRequest.getSubscription()).isEqualTo(SUBSCRIPTION_PATH);
+        assertThat(createRequest.getLabelsMap()).containsEntry("purpose", "replay");
+
+        Snapshot parsedSnapshot = Snapshot.parseFrom(snapshot.toByteString());
+        assertThat(parsedSnapshot.getName()).isEqualTo(SNAPSHOT_PATH);
+        assertThat(parsedSnapshot.getTopic()).isEqualTo(TOPIC_PATH);
+        assertThat(parsedSnapshot.hasExpireTime()).isTrue();
+        assertThat(parsedSnapshot.getExpireTime()).isEqualTo(expireTime);
+        assertThat(parsedSnapshot.getLabelsOrThrow("purpose")).isEqualTo("replay");
+
+        assertThat(listRequest.getProject()).isEqualTo(PROJECT_PATH);
+        assertThat(listRequest.getPageSize()).isEqualTo(25);
+        assertThat(listRequest.getPageToken()).isEqualTo("first-page");
+        assertThat(listResponse.getSnapshotsList()).containsExactly(snapshot);
+        assertThat(listResponse.getNextPageToken()).isEqualTo("second-page");
+
+        assertThat(updateRequest.hasSnapshot()).isTrue();
+        assertThat(updateRequest.getSnapshot().getLabelsMap())
+                .containsEntry("purpose", "replay")
+                .containsEntry("owner", "analytics");
+        assertThat(updateRequest.hasUpdateMask()).isTrue();
+        assertThat(updateRequest.getUpdateMask().getPathsList()).containsExactly("labels");
+
+        assertThat(seekToSnapshot.getSubscription()).isEqualTo(SUBSCRIPTION_PATH);
+        assertThat(seekToSnapshot.getTargetCase()).isEqualTo(SeekRequest.TargetCase.SNAPSHOT);
+        assertThat(seekToSnapshot.getSnapshot()).isEqualTo(SNAPSHOT_PATH);
+        assertThat(seekToTime.getTargetCase()).isEqualTo(SeekRequest.TargetCase.TIME);
+        assertThat(seekToTime.hasTime()).isTrue();
+        assertThat(seekToTime.hasSnapshot()).isFalse();
+        assertThat(seekToTime.getTime()).isEqualTo(rewindTime);
+        assertThat(seekResponse).isEqualTo(SeekResponse.getDefaultInstance());
+        assertThat(deleteRequest.getSnapshot()).isEqualTo(SNAPSHOT_PATH);
     }
 
     @Test
