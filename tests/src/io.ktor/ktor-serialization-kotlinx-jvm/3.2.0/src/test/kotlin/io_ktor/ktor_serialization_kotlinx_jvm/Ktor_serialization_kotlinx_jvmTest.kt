@@ -155,6 +155,29 @@ public class KtorSerializationKotlinxJvmTest {
     }
 
     @Test
+    public fun valueBasedSerializerMarksCollectionElementsNullableWhenNullsArePresent(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val value = listOf("alpha", null, "omega")
+            val format = DescriptorInspectingStringFormat { descriptor ->
+                assertThat(descriptor.serialName).contains("ArrayList")
+                assertThat(descriptor.elementsCount).isGreaterThan(0)
+                assertThat(descriptor.getElementDescriptor(0).isNullable).isTrue()
+            }
+            val converter = KotlinxSerializationConverter(format)
+
+            val outgoingContent = converter.serializeToByteArrayContent(
+                value = value,
+                typeInfo = typeInfo<UnserializableMarker>(),
+                contentType = ContentType.Text.Plain,
+                charset = StandardCharsets.UTF_8
+            )
+
+            assertThat(outgoingContent.bytes().toString(StandardCharsets.UTF_8)).contains("alpha", "null", "omega")
+            assertThat(format.encodedValue).isEqualTo(value)
+        }
+    }
+
+    @Test
     public fun contextualSerializersModuleIsUsedForSerializerLookup(): Unit = runBlocking {
         withTimeout(TEST_TIMEOUT_MILLIS) {
             val module = SerializersModule {
@@ -388,6 +411,24 @@ private class RecordingStringFormat(
         decodeCalls += TextDecodeCall(deserializer.descriptor.serialName, string)
         decodeFailure?.let { throw it }
         return decodedValue as T
+    }
+}
+
+private class DescriptorInspectingStringFormat(
+    private val inspect: (SerialDescriptor) -> Unit,
+) : StringFormat {
+    override val serializersModule: SerializersModule = EmptySerializersModule()
+    var encodedValue: Any? = null
+        private set
+
+    override fun <T> encodeToString(serializer: SerializationStrategy<T>, value: T): String {
+        inspect(serializer.descriptor)
+        encodedValue = value
+        return "inspected:$value"
+    }
+
+    override fun <T> decodeFromString(deserializer: DeserializationStrategy<T>, string: String): T {
+        throw UnsupportedOperationException("DescriptorInspectingStringFormat only supports encoding")
     }
 }
 
