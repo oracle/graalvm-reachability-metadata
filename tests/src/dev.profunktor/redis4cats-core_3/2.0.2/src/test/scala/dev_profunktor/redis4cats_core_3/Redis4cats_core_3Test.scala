@@ -10,11 +10,13 @@ import dev.profunktor.redis4cats.codecs.Codecs
 import dev.profunktor.redis4cats.codecs.splits.{SplitEpi, SplitMono}
 import dev.profunktor.redis4cats.connection.{InvalidRedisURI, RedisURI}
 import dev.profunktor.redis4cats.data.RedisCodec
-import org.junit.jupiter.api.Assertions.{assertEquals, assertNotSame, assertTrue}
+import io.lettuce.core.RedisCredentials
+import org.junit.jupiter.api.Assertions.{assertEquals, assertNotNull, assertNotSame, assertTrue}
 import org.junit.jupiter.api.Test
 
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
+import java.time.Duration
 
 class Redis4cats_core_3Test {
   @Test
@@ -57,7 +59,11 @@ class Redis4cats_core_3Test {
     assertEquals("localhost", validUri.underlying.getHost)
     assertEquals(6380, validUri.underlying.getPort)
     assertEquals(2, validUri.underlying.getDatabase)
-    assertEquals("secret", new String(validUri.underlying.getPassword))
+    val credentials: RedisCredentials =
+      validUri.underlying.getCredentialsProvider.resolveCredentials().block(Duration.ofSeconds(5L))
+    assertNotNull(credentials)
+    assertTrue(credentials.hasPassword)
+    assertEquals("secret", new String(credentials.getPassword))
     assertTrue(validUri.underlying.isSsl)
 
     val invalidUri: String = "ftp://localhost:6379"
