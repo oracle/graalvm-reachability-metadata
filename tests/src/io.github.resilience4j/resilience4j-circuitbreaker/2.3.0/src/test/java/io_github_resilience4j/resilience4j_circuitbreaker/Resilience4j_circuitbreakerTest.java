@@ -296,4 +296,39 @@ public class Resilience4j_circuitbreakerTest {
                 .extracting(CircuitBreaker::getName)
                 .containsExactlyInAnyOrder("strict-service", "fallback-service");
     }
+
+    @Test
+    void registryPublishesLifecycleEventsWhenEntriesAreAddedReplacedAndRemoved() {
+        CircuitBreakerConfig config = CircuitBreakerConfig.custom()
+                .slidingWindowSize(2)
+                .minimumNumberOfCalls(2)
+                .build();
+        CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
+        List<CircuitBreaker> addedCircuitBreakers = new ArrayList<>();
+        List<CircuitBreaker> oldCircuitBreakers = new ArrayList<>();
+        List<CircuitBreaker> newCircuitBreakers = new ArrayList<>();
+        List<CircuitBreaker> removedCircuitBreakers = new ArrayList<>();
+
+        registry.getEventPublisher()
+                .onEntryAdded(event -> addedCircuitBreakers.add(event.getAddedEntry()))
+                .onEntryReplaced(event -> {
+                    oldCircuitBreakers.add(event.getOldEntry());
+                    newCircuitBreakers.add(event.getNewEntry());
+                })
+                .onEntryRemoved(event -> removedCircuitBreakers.add(event.getRemovedEntry()));
+
+        CircuitBreaker original = registry.circuitBreaker("inventory");
+        CircuitBreaker replacement = CircuitBreaker.of("inventory", config);
+
+        assertThat(registry.replace("inventory", replacement))
+                .hasValueSatisfying(value -> assertThat(value).isSameAs(original));
+        assertThat(registry.remove("inventory"))
+                .hasValueSatisfying(value -> assertThat(value).isSameAs(replacement));
+
+        assertThat(registry.find("inventory")).isEmpty();
+        assertThat(addedCircuitBreakers).containsExactly(original);
+        assertThat(oldCircuitBreakers).containsExactly(original);
+        assertThat(newCircuitBreakers).containsExactly(replacement);
+        assertThat(removedCircuitBreakers).containsExactly(replacement);
+    }
 }
