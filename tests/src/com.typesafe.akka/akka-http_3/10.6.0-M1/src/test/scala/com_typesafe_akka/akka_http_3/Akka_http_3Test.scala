@@ -8,6 +8,7 @@ package com_typesafe_akka.akka_http_3
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.coding.Gzip
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.*
 import akka.http.scaladsl.model.HttpHeader.ParsingResult
@@ -19,6 +20,10 @@ import akka.stream.Materializer
 import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import java.nio.charset.StandardCharsets
+import java.util.zip.{GZIPInputStream, GZIPOutputStream}
 
 import scala.concurrent.duration.*
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -125,6 +130,35 @@ class Akka_http_3Test {
   }
 
   @Test
+  def decodesGzipRequestAndEncodesGzipResponse(): Unit = withActorSystem { (system, materializer, executionContext) =>
+    given Materializer = materializer
+    given ExecutionContext = executionContext
+
+    val route: Route = decodeRequest {
+      encodeResponseWith(Gzip) {
+        entity(as[String]) { (body: String) =>
+          complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, body.reverse))
+        }
+      }
+    }
+    val handler: HttpRequest => Future[HttpResponse] = Route.toFunction(Route.seal(route))(system)
+    val compressedRequestBody: ByteString = gzip(ByteString("native gzip body"))
+    val response: HttpResponse = await(handler(HttpRequest(
+      method = HttpMethods.POST,
+      uri = "/compression",
+      headers = List(parsedHeader("Content-Encoding", "gzip"), parsedHeader("Accept-Encoding", "gzip")),
+      entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, compressedRequestBody)
+    )))
+    val strictResponseEntity: HttpEntity.Strict = await(response.entity.toStrict(TestTimeout))
+
+    assertThat(response.status).isEqualTo(StatusCodes.OK)
+    assertThat(response.headers.find(_.is("content-encoding")).map(_.value).getOrElse("missing"))
+      .isEqualTo("gzip")
+    assertThat(strictResponseEntity.contentType).isEqualTo(ContentTypes.`text/plain(UTF-8)`)
+    assertThat(gunzip(strictResponseEntity.data)).isEqualTo("ydob pizg evitan")
+  }
+
+  @Test
   def routesRequestsWithDirectivesAndHandlesRejections(): Unit = withActorSystem { (system, materializer, executionContext) =>
     given Materializer = materializer
     given ExecutionContext = executionContext
@@ -218,6 +252,35 @@ class Akka_http_3Test {
       assertThat(responseBody).isEqualTo("PUT:/round-trip:client-body")
     } finally {
       await(binding.unbind())
+    }
+  }
+
+  private def parsedHeader(name: String, value: String): HttpHeader =
+    HttpHeader.parse(name, value) match {
+      case ParsingResult.Ok(header, errors) if errors.isEmpty => header
+      case ParsingResult.Ok(_, errors) =>
+        throw new AssertionError(s"Expected $name header to parse without warnings, but got: ${errors.mkString(", ")}")
+      case ParsingResult.Error(error) =>
+        throw new AssertionError(s"Expected $name header to parse successfully, but failed with: ${error.summary}")
+    }
+
+  private def gzip(data: ByteString): ByteString = {
+    val output = new ByteArrayOutputStream()
+    val gzipOutput = new GZIPOutputStream(output)
+    try {
+      gzipOutput.write(data.toArray)
+    } finally {
+      gzipOutput.close()
+    }
+    ByteString(output.toByteArray)
+  }
+
+  private def gunzip(data: ByteString): String = {
+    val gzipInput = new GZIPInputStream(new ByteArrayInputStream(data.toArray))
+    try {
+      new String(gzipInput.readAllBytes(), StandardCharsets.UTF_8)
+    } finally {
+      gzipInput.close()
     }
   }
 
