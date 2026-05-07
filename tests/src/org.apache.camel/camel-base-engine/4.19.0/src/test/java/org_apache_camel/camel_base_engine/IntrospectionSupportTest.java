@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.TypeConverter;
 import org.apache.camel.impl.engine.DefaultBeanIntrospection;
 import org.junit.jupiter.api.Test;
 
@@ -105,6 +107,19 @@ public class IntrospectionSupportTest {
         assertThat(bean.getCount()).isZero();
     }
 
+    @Test
+    void convertsValueBeforeInvokingSetter() throws Exception {
+        DefaultBeanIntrospection introspection = new DefaultBeanIntrospection();
+        NumericBean bean = new NumericBean();
+        TypeConverter typeConverter = new StringToIntegerTypeConverter();
+
+        boolean configured = introspection.setProperty(
+                null, typeConverter, bean, "count", "42", null, true, false, false);
+
+        assertThat(configured).isTrue();
+        assertThat(bean.getCount()).isEqualTo(42);
+    }
+
     public static class SampleBean {
         private String name;
         private boolean enabled;
@@ -177,6 +192,54 @@ public class IntrospectionSupportTest {
 
         public void setCount(int count) {
             this.count = count;
+        }
+    }
+
+    public static class StringToIntegerTypeConverter implements TypeConverter {
+        @Override
+        public boolean allowNull() {
+            return false;
+        }
+
+        @Override
+        public <T> T convertTo(Class<T> type, Object value) {
+            return convert(type, value);
+        }
+
+        @Override
+        public <T> T convertTo(Class<T> type, Exchange exchange, Object value) {
+            return convert(type, value);
+        }
+
+        @Override
+        public <T> T mandatoryConvertTo(Class<T> type, Object value) {
+            return convert(type, value);
+        }
+
+        @Override
+        public <T> T mandatoryConvertTo(Class<T> type, Exchange exchange, Object value) {
+            return convert(type, value);
+        }
+
+        @Override
+        public <T> T tryConvertTo(Class<T> type, Object value) {
+            return convert(type, value);
+        }
+
+        @Override
+        public <T> T tryConvertTo(Class<T> type, Exchange exchange, Object value) {
+            return convert(type, value);
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T> T convert(Class<T> type, Object value) {
+            if ((type == int.class || type == Integer.class) && value instanceof String text) {
+                return (T) Integer.valueOf(text);
+            }
+            if (type.isInstance(value)) {
+                return type.cast(value);
+            }
+            return null;
         }
     }
 }
