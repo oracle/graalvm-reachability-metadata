@@ -11,6 +11,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clickhouse.client.ClickHouseClient;
+import com.clickhouse.client.ClickHouseCredentials;
 import com.clickhouse.client.ClickHouseNode;
 import com.clickhouse.client.ClickHouseNodeSelector;
 import com.clickhouse.client.ClickHouseProtocol;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -152,6 +154,33 @@ public class Clickhouse_http_clientTest {
                     .contains("INSERT INTO events")
                     .contains("FORMAT CSV")
                     .contains("1,Alice\n2,Bob\n");
+        }
+    }
+
+    @Test
+    void credentialsAreSentAsBasicAuthenticationHeader() throws Exception {
+        ClickHouseCredentials credentials = ClickHouseCredentials.fromUserAndPassword("analytics_user", "secret-key");
+        try (MockClickHouseServer server = MockClickHouseServer.start();
+                ClickHouseClient client = ClickHouseClient.newInstance(credentials, ClickHouseProtocol.HTTP)) {
+            try (ClickHouseResponse response = client.read(server.node("default"))
+                    .option(ClickHouseClientOption.ASYNC, false)
+                    .option(ClickHouseClientOption.COMPRESS, false)
+                    .option(ClickHouseClientOption.CONNECTION_TIMEOUT, 2_000)
+                    .option(ClickHouseClientOption.SOCKET_TIMEOUT, 5_000)
+                    .option(ClickHouseHttpOption.CONNECTION_PROVIDER, HttpConnectionProvider.APACHE_HTTP_CLIENT)
+                    .format(ClickHouseFormat.TabSeparated)
+                    .query("SELECT currentUser()")
+                    .executeAndWait()) {
+                assertThat(new String(response.getInputStream().readAllBytes(), UTF_8)).isEqualTo("answer\n");
+            }
+
+            RequestRecord request = server.nextRequest();
+            String encodedCredentials = Base64.getEncoder()
+                    .encodeToString("analytics_user:secret-key".getBytes(UTF_8));
+            assertThat(request.method()).isEqualTo("POST");
+            assertThat(request.header("Authorization")).isEqualTo("Basic " + encodedCredentials);
+            assertThat(request.header("X-ClickHouse-User")).isNull();
+            assertThat(request.header("X-ClickHouse-Key")).isNull();
         }
     }
 
