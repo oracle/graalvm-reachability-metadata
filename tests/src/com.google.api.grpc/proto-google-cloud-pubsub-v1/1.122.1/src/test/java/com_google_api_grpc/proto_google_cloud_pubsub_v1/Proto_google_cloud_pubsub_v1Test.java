@@ -49,6 +49,11 @@ import com.google.pubsub.v1.SeekRequest;
 import com.google.pubsub.v1.SeekResponse;
 import com.google.pubsub.v1.Snapshot;
 import com.google.pubsub.v1.SnapshotName;
+import com.google.pubsub.v1.StreamingPullRequest;
+import com.google.pubsub.v1.StreamingPullResponse;
+import com.google.pubsub.v1.StreamingPullResponse.AcknowledgeConfirmation;
+import com.google.pubsub.v1.StreamingPullResponse.ModifyAckDeadlineConfirmation;
+import com.google.pubsub.v1.StreamingPullResponse.SubscriptionProperties;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
@@ -297,6 +302,62 @@ public class Proto_google_cloud_pubsub_v1Test {
         assertThat(parsedSubscription.getDeadLetterPolicy().getMaxDeliveryAttempts()).isEqualTo(5);
         assertThat(parsedSubscription.getRetryPolicy().getMaximumBackoff()).isEqualTo(duration(600));
         assertThat(parsedSubscription.getFilter()).contains("tenant");
+    }
+
+    @Test
+    void streamingPullRequestsAndResponsesCarryLeaseControlsAndExactlyOnceConfirmations() throws Exception {
+        StreamingPullRequest streamingRequest = StreamingPullRequest.newBuilder()
+                .setSubscription(SUBSCRIPTION_PATH)
+                .setStreamAckDeadlineSeconds(20)
+                .setClientId("worker-stream-1")
+                .setMaxOutstandingMessages(100)
+                .setMaxOutstandingBytes(1_048_576)
+                .addAckIds("ack-success")
+                .addModifyDeadlineAckIds("ack-extend")
+                .addModifyDeadlineSeconds(45)
+                .build();
+        StreamingPullResponse streamingResponse = StreamingPullResponse.newBuilder()
+                .setAcknowledgeConfirmation(AcknowledgeConfirmation.newBuilder()
+                        .addAckIds("ack-success")
+                        .addInvalidAckIds("ack-invalid")
+                        .addUnorderedAckIds("ack-out-of-order")
+                        .addTemporaryFailedAckIds("ack-retry"))
+                .setModifyAckDeadlineConfirmation(ModifyAckDeadlineConfirmation.newBuilder()
+                        .addAckIds("ack-extend")
+                        .addInvalidAckIds("ack-expired")
+                        .addTemporaryFailedAckIds("ack-temporary"))
+                .setSubscriptionProperties(SubscriptionProperties.newBuilder()
+                        .setExactlyOnceDeliveryEnabled(true)
+                        .setMessageOrderingEnabled(true))
+                .build();
+
+        StreamingPullRequest parsedRequest = StreamingPullRequest.parseFrom(streamingRequest.toByteArray());
+        assertThat(parsedRequest.getSubscription()).isEqualTo(SUBSCRIPTION_PATH);
+        assertThat(parsedRequest.getStreamAckDeadlineSeconds()).isEqualTo(20);
+        assertThat(parsedRequest.getClientId()).isEqualTo("worker-stream-1");
+        assertThat(parsedRequest.getMaxOutstandingMessages()).isEqualTo(100);
+        assertThat(parsedRequest.getMaxOutstandingBytes()).isEqualTo(1_048_576);
+        assertThat(parsedRequest.getAckIdsList()).containsExactly("ack-success");
+        assertThat(parsedRequest.getModifyDeadlineAckIdsList()).containsExactly("ack-extend");
+        assertThat(parsedRequest.getModifyDeadlineSecondsList()).containsExactly(45);
+
+        StreamingPullResponse parsedResponse = StreamingPullResponse.parseFrom(streamingResponse.toByteString());
+        assertThat(parsedResponse.hasAcknowledgeConfirmation()).isTrue();
+        assertThat(parsedResponse.getAcknowledgeConfirmation().getAckIdsList()).containsExactly("ack-success");
+        assertThat(parsedResponse.getAcknowledgeConfirmation().getInvalidAckIdsList()).containsExactly("ack-invalid");
+        assertThat(parsedResponse.getAcknowledgeConfirmation().getUnorderedAckIdsList())
+                .containsExactly("ack-out-of-order");
+        assertThat(parsedResponse.getAcknowledgeConfirmation().getTemporaryFailedAckIdsList())
+                .containsExactly("ack-retry");
+        assertThat(parsedResponse.hasModifyAckDeadlineConfirmation()).isTrue();
+        assertThat(parsedResponse.getModifyAckDeadlineConfirmation().getAckIdsList()).containsExactly("ack-extend");
+        assertThat(parsedResponse.getModifyAckDeadlineConfirmation().getInvalidAckIdsList())
+                .containsExactly("ack-expired");
+        assertThat(parsedResponse.getModifyAckDeadlineConfirmation().getTemporaryFailedAckIdsList())
+                .containsExactly("ack-temporary");
+        assertThat(parsedResponse.hasSubscriptionProperties()).isTrue();
+        assertThat(parsedResponse.getSubscriptionProperties().getExactlyOnceDeliveryEnabled()).isTrue();
+        assertThat(parsedResponse.getSubscriptionProperties().getMessageOrderingEnabled()).isTrue();
     }
 
     @Test
