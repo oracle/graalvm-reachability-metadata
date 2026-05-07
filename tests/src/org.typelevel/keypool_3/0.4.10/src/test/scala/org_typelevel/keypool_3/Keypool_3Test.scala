@@ -117,6 +117,64 @@ class Keypool_3Test {
   }
 
   @Test
+  def defaultReuseStateCanDiscardOrOptIntoReuse(): Unit = run {
+    for {
+      nextId <- Ref.of[IO, Int](0)
+      created <- Ref.of[IO, Vector[Int]](Vector.empty)
+      destroyed <- Ref.of[IO, Vector[Int]](Vector.empty)
+      _ <- Pool
+        .Builder[IO, PooledValue](
+          Resource.make(newValue(nextId, created))(value => destroyed.update(_ :+ value.id))
+        )
+        .withDefaultReuseState(Reusable.DontReuse)
+        .withMaxTotal(1)
+        .withDurationBetweenEvictionRuns(Duration.Inf)
+        .build
+        .use { pool =>
+          for {
+            firstId <- pool.take.use { managed =>
+              IO {
+                assertFalse(managed.isReused)
+                assertEquals(PooledValue(1), managed.value)
+              }.as(managed.value.id)
+            }
+            afterDefaultDiscard <- pool.state
+            destroyedAfterDefaultDiscard <- destroyed.get
+            secondId <- pool.take.use { managed =>
+              IO {
+                assertFalse(managed.isReused)
+                assertEquals(PooledValue(2), managed.value)
+              } >> managed.canBeReused.set(Reusable.Reuse).as(managed.value.id)
+            }
+            afterExplicitReuse <- pool.state
+            thirdId <- pool.take.use { managed =>
+              IO {
+                assertTrue(managed.isReused)
+                assertEquals(PooledValue(secondId), managed.value)
+              }.as(managed.value.id)
+            }
+            afterReusedDefaultDiscard <- pool.state
+            _ <- IO {
+              assertEquals(1, firstId)
+              assertEquals(0, afterDefaultDiscard.total)
+              assertEquals(Vector(firstId), destroyedAfterDefaultDiscard)
+              assertEquals(2, secondId)
+              assertEquals(1, afterExplicitReuse.total)
+              assertEquals(secondId, thirdId)
+              assertEquals(0, afterReusedDefaultDiscard.total)
+            }
+          } yield ()
+        }
+      createdIds <- created.get
+      destroyedIds <- destroyed.get
+      _ <- IO {
+        assertEquals(Vector(1, 2), createdIds)
+        assertEquals(Vector(1, 2), destroyedIds)
+      }
+    } yield ()
+  }
+
+  @Test
   def keyedPoolMaintainsIndependentIdleResourcesAndPerKeyLimits(): Unit = run {
     for {
       nextId <- Ref.of[IO, Int](0)
