@@ -8,6 +8,8 @@ package org_typelevel.otel4s_core_trace_3
 
 import cats.Id
 import cats.Semigroup
+import cats.arrow.FunctionK
+import cats.effect.kernel.Resource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -17,16 +19,23 @@ import org.junit.jupiter.api.Test
 import org.typelevel.otel4s.Attribute
 import org.typelevel.otel4s.AttributeKey
 import org.typelevel.otel4s.AttributeType
+import org.typelevel.otel4s.context.propagation.TextMapGetter
+import org.typelevel.otel4s.context.propagation.TextMapUpdater
+import org.typelevel.otel4s.trace.Span
+import org.typelevel.otel4s.trace.SpanBuilder
 import org.typelevel.otel4s.trace.SpanContext
 import org.typelevel.otel4s.trace.SpanFinalizer
 import org.typelevel.otel4s.trace.SpanKind
+import org.typelevel.otel4s.trace.SpanOps
 import org.typelevel.otel4s.trace.Status
 import org.typelevel.otel4s.trace.TraceFlags
 import org.typelevel.otel4s.trace.TraceState
 import org.typelevel.otel4s.trace.Tracer
 import org.typelevel.otel4s.trace.TracerProvider
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.duration.FiniteDuration
 
 class Otel4s_core_trace_3Test {
   @Test
@@ -289,5 +298,135 @@ class Otel4s_core_trace_3Test {
 
     val currentOrNoop = tracer.currentSpanOrNoop
     assertEquals(SpanContext.invalid, currentOrNoop.context)
+  }
+
+  @Test
+  def enabledTracerMacrosCreateChildAndRootSpanOpsThroughBuilder(): Unit = {
+    val childTracer = new RecordingTracer
+    val childResult: String = childTracer
+      .span("child-operation", Attribute("component", "macro"))
+      .surround("child-result")
+
+    assertEquals("child-result", childResult)
+    assertEquals(
+      List("spanBuilder:child-operation", "addAttributes", "build", "use"),
+      childTracer.operations.toList
+    )
+    assertEquals(List(Attribute("component", "macro")), childTracer.lastBuilder.attributes.toList)
+
+    val rootTracer = new RecordingTracer
+    val rootResult: String = rootTracer
+      .rootSpan("root-operation", Attribute("root", true))
+      .use(_ => "root-result")
+
+    assertEquals("root-result", rootResult)
+    assertEquals(
+      List("spanBuilder:root-operation", "root", "addAttributes", "build", "use"),
+      rootTracer.operations.toList
+    )
+    assertEquals(List(Attribute("root", true)), rootTracer.lastBuilder.attributes.toList)
+  }
+
+  private final class RecordingTracer extends Tracer[Id] {
+    val operations: ListBuffer[String] = ListBuffer.empty
+    var lastBuilder: RecordingSpanBuilder = _
+
+    val meta: Tracer.Meta[Id] = Tracer.Meta.enabled[Id]
+    val currentSpanContext: Option[SpanContext] = None
+    val currentSpanOrNoop: Span[Id] = new RecordingSpan
+
+    def spanBuilder(name: String): SpanBuilder[Id] = {
+      operations += s"spanBuilder:$name"
+      lastBuilder = new RecordingSpanBuilder(operations)
+      lastBuilder
+    }
+
+    def childScope[A](parent: SpanContext)(fa: Id[A]): Id[A] = fa
+
+    def joinOrRoot[A, C](carrier: C)(fa: Id[A])(implicit
+        getter: TextMapGetter[C]
+    ): Id[A] = fa
+
+    def rootScope[A](fa: Id[A]): Id[A] = fa
+
+    def noopScope[A](fa: Id[A]): Id[A] = fa
+
+    def propagate[C](carrier: C)(implicit updater: TextMapUpdater[C]): Id[C] = carrier
+  }
+
+  private final class RecordingSpanBuilder(operations: ListBuffer[String]) extends SpanBuilder[Id] {
+    val attributes: ListBuffer[Attribute[_]] = ListBuffer.empty
+    private val span: Span[Id] = new RecordingSpan
+
+    def addAttribute[A](attribute: Attribute[A]): SpanBuilder[Id] = {
+      operations += "addAttribute"
+      attributes += attribute
+      this
+    }
+
+    def addAttributes(attributes: Attribute[_]*): SpanBuilder[Id] = {
+      operations += "addAttributes"
+      this.attributes ++= attributes
+      this
+    }
+
+    def addLink(spanContext: SpanContext, attributes: Attribute[_]*): SpanBuilder[Id] = {
+      operations += "addLink"
+      this
+    }
+
+    def withFinalizationStrategy(strategy: SpanFinalizer.Strategy): SpanBuilder[Id] = {
+      operations += "withFinalizationStrategy"
+      this
+    }
+
+    def withSpanKind(spanKind: SpanKind): SpanBuilder[Id] = {
+      operations += "withSpanKind"
+      this
+    }
+
+    def withStartTimestamp(timestamp: FiniteDuration): SpanBuilder[Id] = {
+      operations += "withStartTimestamp"
+      this
+    }
+
+    def root: SpanBuilder[Id] = {
+      operations += "root"
+      this
+    }
+
+    def withParent(parent: SpanContext): SpanBuilder[Id] = {
+      operations += "withParent"
+      this
+    }
+
+    def build: SpanOps[Id] = {
+      operations += "build"
+      new RecordingSpanOps(operations, span)
+    }
+  }
+
+  private final class RecordingSpanOps(operations: ListBuffer[String], span: Span[Id]) extends SpanOps[Id] {
+    def startUnmanaged: Span[Id] = {
+      operations += "startUnmanaged"
+      span
+    }
+
+    def resource: Resource[Id, SpanOps.Res[Id]] =
+      Resource.pure(SpanOps.Res(span, FunctionK.id[Id]))
+
+    def use[A](f: Span[Id] => Id[A]): Id[A] = {
+      operations += "use"
+      f(span)
+    }
+
+    override def use_ : Id[Unit] = {
+      operations += "use_"
+      ()
+    }
+  }
+
+  private final class RecordingSpan extends Span[Id] {
+    val backend: Span.Backend[Id] = Span.Backend.noop[Id]
   }
 }
