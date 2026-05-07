@@ -38,16 +38,29 @@ class Circe_numbers_3Test {
   }
 
   @Test
-  def normalizesLeadingZerosInParsedNumbers(): Unit = {
-    val cases: List[(String, String, Option[Long], Boolean)] = List(
-      ("000123", "123", Some(123L), false),
-      ("-000123", "-123", Some(-123L), false),
-      ("000123.4500", "12345e-2", None, false),
-      ("0000", "0", Some(0L), false),
-      ("-0000", "-0", Some(0L), true)
+  def rejectsLeadingZerosButAcceptsSingleZeroForms(): Unit = {
+    val invalidLeadingZeroInputs: List[String] = List(
+      "000123",
+      "-000123",
+      "000123.4500",
+      "0000",
+      "-0000"
     )
 
-    cases.foreach {
+    invalidLeadingZeroInputs.foreach { (input: String) =>
+      assertThat(BiggerDecimal.parseBiggerDecimal(input)).isEqualTo(None)
+      assertThat(BiggerDecimal.parseBiggerDecimalUnsafe(input)).isNull()
+    }
+
+    val validSingleZeroCases: List[(String, String, Option[Long], Boolean)] = List(
+      ("0", "0", Some(0L), false),
+      ("-0", "-0", Some(0L), true),
+      ("0.000", "0", Some(0L), false),
+      ("-0.000", "-0", Some(0L), true),
+      ("0.1234500", "12345e-5", None, false)
+    )
+
+    validSingleZeroCases.foreach {
       case (input: String, expectedText: String, expectedLong: Option[Long], expectedNegativeZero: Boolean) =>
         val number: BiggerDecimal = parse(input)
 
