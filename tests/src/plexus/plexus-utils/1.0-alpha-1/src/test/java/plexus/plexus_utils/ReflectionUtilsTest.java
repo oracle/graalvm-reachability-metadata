@@ -7,7 +7,6 @@
 package plexus.plexus_utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
@@ -16,31 +15,44 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReflectionUtilsTest {
     @Test
+    void createsUtilityInstance() {
+        ReflectionUtils reflectionUtils = new ReflectionUtils();
+
+        assertThat(reflectionUtils).isNotNull();
+    }
+
+    @Test
     void findsFieldsDeclaredOnSuperclasses() {
         Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("inheritedValue", ChildBean.class);
 
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("inheritedValue");
         assertThat(field.getDeclaringClass()).isEqualTo(ParentBean.class);
+        assertThat(field.getType()).isEqualTo(String.class);
     }
 
     @Test
-    void findsPublicVoidInstanceSetter() {
-        Method setter = ReflectionUtils.getSetter("name", ChildBean.class);
+    void findsPrivateFieldsDeclaredOnConcreteClass() {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("name", ChildBean.class);
 
-        assertThat(setter).isNotNull();
-        assertThat(setter.getName()).isEqualTo("setName");
-        assertThat(setter.getReturnType()).isEqualTo(Void.TYPE);
-        assertThat(setter.getParameterTypes()).containsExactly(String.class);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("name");
+        assertThat(field.getDeclaringClass()).isEqualTo(ChildBean.class);
+        assertThat(field.getType()).isEqualTo(String.class);
+    }
+
+    @Test
+    void returnsNullWhenNoSuperclassDeclaresField() {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("missing", ChildBean.class);
+
+        assertThat(field).isNull();
     }
 
     public static class ParentBean {
-        public String inheritedValue;
+        private String inheritedValue;
     }
 
     public static class ChildBean extends ParentBean {
-        public void setName(String name) {
-            inheritedValue = name;
-        }
+        private String name;
     }
 }
