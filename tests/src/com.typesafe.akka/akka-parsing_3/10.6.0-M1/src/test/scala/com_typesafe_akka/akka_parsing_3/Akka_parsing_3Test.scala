@@ -182,6 +182,19 @@ class Akka_parsing_3Test {
     assertThat(error.position.index).isEqualTo(invalidInput.length)
   }
 
+  @Test
+  def runsSubParsersAndContinuesWithOuterInput(): Unit = {
+    val parsedMetric: MetricReading = new MetricReadingParser(ParserInput("sensor-7:-42ms;status=ok")).Reading.run().get
+
+    assertThat(parsedMetric).isEqualTo(MetricReading("sensor-7", -42, "ms", "ok"))
+
+    val rejected: Failure[MetricReading] =
+      new MetricReadingParser(ParserInput("sensor-7:+ms;status=ok")).Reading.run().asInstanceOf[Failure[MetricReading]]
+    val error: ParseError = rejected.exception.asInstanceOf[ParseError]
+
+    assertThat(error.position.index).isEqualTo("sensor-7:+".length)
+  }
+
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
     new AssignmentParser(ParserInput(input)).InputLine.run()
 }
@@ -193,6 +206,8 @@ final case class HexColor(red: Int, green: Int, blue: Int, alpha: Option[Int])
 final case class IdQuery(resource: String, ids: Seq[Int], verbose: Boolean)
 
 final case class KeyValueRecord(values: Map[String, String])
+
+final case class MetricReading(name: String, value: Int, unit: String, status: String)
 
 final class AssignmentParser(val input: ParserInput) extends Parser {
   def InputLine: Rule1[Assignment] = rule { Spacing ~ AssignmentRule ~ Spacing ~ EOI }
@@ -283,6 +298,23 @@ final class KeyValueRecordParser(val input: ParserInput, expectedFields: Int) ex
   def Value: Rule1[String] = rule { capture(oneOrMore(noneOf(";"))) }
 
   def acceptedFieldCount: Int = acceptedFields
+}
+
+final class MetricReadingParser(val input: ParserInput) extends Parser {
+  def Reading: Rule1[MetricReading] = rule {
+    Name ~ ':' ~ runSubParser((nestedInput: ParserInput) => new MetricValueParser(nestedInput).Value) ~ Unit ~ ";status=" ~
+      Status ~ EOI ~> ((name: String, value: Int, unit: String, status: String) => MetricReading(name, value, unit, status))
+  }
+
+  def Name: Rule1[String] = rule { capture(CharPredicate.Alpha ~ zeroOrMore(CharPredicate.AlphaNum ++ '-')) }
+
+  def Unit: Rule1[String] = rule { capture(oneOrMore(CharPredicate.Alpha)) }
+
+  def Status: Rule1[String] = rule { capture(oneOrMore(CharPredicate.Alpha)) }
+}
+
+final class MetricValueParser(val input: ParserInput) extends Parser {
+  def Value: Rule1[Int] = rule { capture(optional(anyOf("+-")) ~ oneOrMore(CharPredicate.Digit)) ~> ((digits: String) => digits.toInt) }
 }
 
 final class DynamicTokenParser(val input: ParserInput) extends Parser with DynamicRuleHandler[DynamicTokenParser, String :: HNil] {
