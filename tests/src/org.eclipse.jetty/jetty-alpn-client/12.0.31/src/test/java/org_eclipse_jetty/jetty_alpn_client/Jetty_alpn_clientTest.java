@@ -14,14 +14,17 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLHandshakeException;
 
 import org.eclipse.jetty.alpn.client.ALPNClientConnection;
 import org.eclipse.jetty.alpn.client.ALPNClientConnectionFactory;
 import org.eclipse.jetty.io.AbstractConnection;
 import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.ClientConnectionFactory;
+import org.eclipse.jetty.io.ClientConnector;
 import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.EndPoint;
+import org.eclipse.jetty.util.Promise;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -120,9 +123,10 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
-    void endOfInputCompletesNegotiationAndUpgradesToProtocolConnection() throws Exception {
+    void endOfInputFailsConnectionPromiseAndClosesEndPoint() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
-        Map<String, Object> context = new HashMap<>();
+        RecordingPromise connectionPromise = new RecordingPromise();
+        Map<String, Object> context = newContextWithConnectionPromise(connectionPromise);
         TestClientConnectionFactory connectionFactory = new TestClientConnectionFactory();
         ALPNClientConnection connection = newAlpnConnection(endPoint, connectionFactory, context);
         endPoint.setConnection(connection);
@@ -131,11 +135,13 @@ public class Jetty_alpn_clientTest {
         connection.onFillable();
 
         assertThat(connection.getProtocol()).isNull();
-        assertThat(connectionFactory.createdConnections).hasSize(1);
-        assertThat(connectionFactory.seenEndPoints).containsExactly(endPoint);
-        assertThat(connectionFactory.seenContexts).containsExactly(context);
-        assertThat(endPoint.getConnection()).isSameAs(connectionFactory.createdConnections.get(0));
-        assertThat(connectionFactory.createdConnections.get(0).opened).isTrue();
+        assertThat(connectionFactory.createdConnections).isEmpty();
+        assertThat(connectionPromise.failure)
+                .isInstanceOf(SSLHandshakeException.class)
+                .hasMessage("Abruptly closed by peer");
+        assertThat(endPoint.getConnection()).isSameAs(connection);
+        assertThat(endPoint.isOutputShutdown()).isTrue();
+        assertThat(endPoint.isOpen()).isFalse();
     }
 
     @Test
@@ -154,16 +160,21 @@ public class Jetty_alpn_clientTest {
     @Test
     void failedProtocolConnectionCreationClosesEndPoint() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
+        RecordingPromise connectionPromise = new RecordingPromise();
+        Map<String, Object> context = newContextWithConnectionPromise(connectionPromise);
         ClientConnectionFactory failingConnectionFactory = (ignoredEndPoint, ignoredContext) -> {
             throw new IOException("Unable to create protocol connection");
         };
-        ALPNClientConnection connection = newAlpnConnection(endPoint, failingConnectionFactory, new HashMap<>());
+        ALPNClientConnection connection = newAlpnConnection(endPoint, failingConnectionFactory, context);
         endPoint.setConnection(connection);
 
         connection.selected("h2");
         connection.onOpen();
 
         assertThat(connection.getProtocol()).isEqualTo("h2");
+        assertThat(connectionPromise.failure)
+                .isInstanceOf(IOException.class)
+                .hasMessage("Unable to create protocol connection");
         assertThat(endPoint.getConnection()).isSameAs(connection);
         assertThat(endPoint.isOutputShutdown()).isTrue();
         assertThat(endPoint.isOpen()).isFalse();
@@ -206,6 +217,21 @@ public class Jetty_alpn_clientTest {
         SSLEngine sslEngine = SSLContext.getDefault().createSSLEngine("localhost", 443);
         sslEngine.setUseClientMode(true);
         return sslEngine;
+    }
+
+    private static Map<String, Object> newContextWithConnectionPromise(RecordingPromise connectionPromise) {
+        Map<String, Object> context = new HashMap<>();
+        context.put(ClientConnector.CONNECTION_PROMISE_CONTEXT_KEY, connectionPromise);
+        return context;
+    }
+
+    private static final class RecordingPromise implements Promise<Connection> {
+        private Throwable failure;
+
+        @Override
+        public void failed(Throwable failure) {
+            this.failure = failure;
+        }
     }
 
     private static final class TestClientConnectionFactory implements ClientConnectionFactory {
