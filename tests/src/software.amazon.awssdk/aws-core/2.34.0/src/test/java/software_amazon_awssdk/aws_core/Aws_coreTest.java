@@ -30,6 +30,8 @@ import software.amazon.awssdk.awscore.defaultsmode.DefaultsMode;
 import software.amazon.awssdk.awscore.endpoint.AwsClientEndpointProvider;
 import software.amazon.awssdk.awscore.endpoint.DualstackEnabledProvider;
 import software.amazon.awssdk.awscore.endpoint.FipsEnabledProvider;
+import software.amazon.awssdk.awscore.endpoints.AccountIdEndpointMode;
+import software.amazon.awssdk.awscore.endpoints.AccountIdEndpointModeResolver;
 import software.amazon.awssdk.awscore.endpoints.authscheme.EndpointAuthScheme;
 import software.amazon.awssdk.awscore.endpoints.authscheme.SigV4AuthScheme;
 import software.amazon.awssdk.awscore.endpoints.authscheme.SigV4aAuthScheme;
@@ -398,6 +400,46 @@ public class Aws_coreTest {
             restoreProperty(dualstackProperty, previousDualstack);
             restoreProperty(fipsProperty, previousFips);
             restoreProperty(authSchemeProperty, previousAuthScheme);
+        }
+    }
+
+    @Test
+    void accountIdEndpointModeResolverReadsSystemProfileAndDefaultModes() {
+        String property = SdkSystemSetting.AWS_ACCOUNT_ID_ENDPOINT_MODE.property();
+        String previous = System.getProperty(property);
+        ProfileFile profileFile = ProfileFile.builder()
+                .type(ProfileFile.Type.CONFIGURATION)
+                .content("""
+                        [profile native-test]
+                        account_id_endpoint_mode = disabled
+
+                        [profile without-account-id-mode]
+                        region = us-west-2
+                        """)
+                .build();
+
+        System.setProperty(property, "required");
+        try {
+            assertThat(AccountIdEndpointModeResolver.create()
+                    .profileFile(() -> profileFile)
+                    .profileName("native-test")
+                    .defaultMode(AccountIdEndpointMode.PREFERRED)
+                    .resolve()).isEqualTo(AccountIdEndpointMode.REQUIRED);
+
+            System.clearProperty(property);
+
+            assertThat(AccountIdEndpointModeResolver.create()
+                    .profileFile(() -> profileFile)
+                    .profileName("native-test")
+                    .defaultMode(AccountIdEndpointMode.PREFERRED)
+                    .resolve()).isEqualTo(AccountIdEndpointMode.DISABLED);
+            assertThat(AccountIdEndpointModeResolver.create()
+                    .profileFile(() -> profileFile)
+                    .profileName("without-account-id-mode")
+                    .defaultMode(AccountIdEndpointMode.REQUIRED)
+                    .resolve()).isEqualTo(AccountIdEndpointMode.REQUIRED);
+        } finally {
+            restoreProperty(property, previous);
         }
     }
 
