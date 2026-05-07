@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 
-import javax.el.ImportHandler;
+import jakarta.el.ImportHandler;
 
 import org.junit.jupiter.api.Test;
 

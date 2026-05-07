@@ -8,21 +8,25 @@ package jakarta_el.jakarta_el_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Properties;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class FactoryFinderTest {
-    private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
+    private static final String EXPRESSION_FACTORY_PROPERTY = "jakarta.el.ExpressionFactory";
 
     private ClassLoader originalContextClassLoader;
     private String originalExpressionFactoryProperty;
@@ -44,13 +48,13 @@ public class FactoryFinderTest {
     }
 
     @Test
-    void looksUpServiceWithNullContextClassLoaderAndUsesPropertiesConstructor() {
+    void looksUpSystemPropertyWithNullContextClassLoaderAndPropertiesConstructor() {
         Thread.currentThread().setContextClassLoader(null);
-        System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
+        System.setProperty(EXPRESSION_FACTORY_PROPERTY, ServiceExpressionFactory.class.getName());
         assertThat(Thread.currentThread().getContextClassLoader()).isNull();
 
         Properties properties = new Properties();
-        properties.setProperty("javax.el.cacheSize", "32");
+        properties.setProperty("jakarta.el.cacheSize", "32");
 
         ExpressionFactory expressionFactory = ExpressionFactory.newInstance(properties);
 
@@ -58,7 +62,45 @@ public class FactoryFinderTest {
         ServiceExpressionFactory serviceExpressionFactory = (ServiceExpressionFactory) expressionFactory;
         assertThat(serviceExpressionFactory.getConstructorMode()).isEqualTo("properties");
         assertThat(serviceExpressionFactory.getProperties()).isSameAs(properties);
-        assertThat(serviceExpressionFactory.getProperties()).containsEntry("javax.el.cacheSize", "32");
+    }
+
+    @Test
+    void looksUpSystemPropertyWithContextClassLoaderAndDefaultConstructor() {
+        ClassLoader parentClassLoader = FactoryFinderTest.class.getClassLoader();
+        ClassLoader serviceHidingClassLoader = new ServiceHidingClassLoader(parentClassLoader);
+        Thread.currentThread().setContextClassLoader(serviceHidingClassLoader);
+        System.setProperty(EXPRESSION_FACTORY_PROPERTY, ServiceExpressionFactory.class.getName());
+
+        ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
+
+        assertThat(expressionFactory).isInstanceOf(ServiceExpressionFactory.class);
+        ServiceExpressionFactory serviceExpressionFactory = (ServiceExpressionFactory) expressionFactory;
+        assertThat(serviceExpressionFactory.getConstructorMode()).isEqualTo("default");
+        assertThat(serviceExpressionFactory.getProperties()).isNull();
+    }
+
+    private static final class ServiceHidingClassLoader extends ClassLoader {
+        private static final String SERVICE_RESOURCE = "META-INF/services/" + ExpressionFactory.class.getName();
+
+        ServiceHidingClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public URL getResource(String name) {
+            if (SERVICE_RESOURCE.equals(name)) {
+                return null;
+            }
+            return super.getResource(name);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (SERVICE_RESOURCE.equals(name)) {
+                return Collections.emptyEnumeration();
+            }
+            return super.getResources(name);
+        }
     }
 
     public static final class ServiceExpressionFactory extends ExpressionFactory {

@@ -15,6 +15,16 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+String expressionFactoryClassName = "jakarta_el.jakarta_el_api.FactoryFinderTest\$ServiceExpressionFactory"
+
+tasks.withType(Test).configureEach {
+    systemProperty "jakarta.el.ExpressionFactory", expressionFactoryClassName
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djakarta.el.ExpressionFactory=${expressionFactoryClassName}")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"

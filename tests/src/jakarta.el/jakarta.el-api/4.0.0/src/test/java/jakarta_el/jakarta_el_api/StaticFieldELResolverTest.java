@@ -8,12 +8,12 @@ package jakarta_el.jakarta_el_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.el.ELClass;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.StaticFieldELResolver;
-import javax.el.VariableMapper;
+import jakarta.el.ELClass;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.StaticFieldELResolver;
+import jakarta.el.VariableMapper;
 
 import org.junit.jupiter.api.Test;
 
