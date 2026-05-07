@@ -232,6 +232,60 @@ public class Neo4j_bolt_connection_routedTest {
     }
 
     @Test
+    void verifyConnectivityUsesSystemDatabaseWhenMultiDbIsSupported() throws Exception {
+        BoltServerAddress router = new BoltServerAddress("router.example", 7687);
+        RecordingProvider routerProvider = new RecordingProvider(router, new BoltProtocolVersion(4, 0));
+        StubRediscovery rediscovery = new StubRediscovery(new ClusterCompositionLookupResult(new ClusterComposition(
+                Clock.systemUTC().millis() + 60_000,
+                linkedSet(router),
+                linkedSet(router),
+                linkedSet(router),
+                "system")), List.of(router));
+        RoutedBoltConnectionProvider provider = routedProvider(address -> routerProvider, rediscovery);
+
+        await(provider.verifyConnectivity(null, null, null, null, 0, SECURITY_PLAN, null));
+
+        assertThat(rediscovery.resolveCount()).isEqualTo(1);
+        assertThat(rediscovery.lookupCount()).isEqualTo(1);
+        assertThat(rediscovery.lookupDatabases())
+                .singleElement()
+                .satisfies(database -> assertThat(database.databaseName()).hasValue("system"));
+        assertThat(routerProvider.connectAttempts()).isEqualTo(1);
+        assertThat(routerProvider.connections())
+                .singleElement()
+                .satisfies(connection -> assertThat(connection.closeAttempts()).isEqualTo(1));
+
+        await(provider.close());
+    }
+
+    @Test
+    void verifyConnectivityUsesDefaultDatabaseWhenMultiDbIsNotSupported() throws Exception {
+        BoltServerAddress router = new BoltServerAddress("legacy-router.example", 7687);
+        RecordingProvider routerProvider = new RecordingProvider(router, new BoltProtocolVersion(3, 5));
+        StubRediscovery rediscovery = new StubRediscovery(new ClusterCompositionLookupResult(new ClusterComposition(
+                Clock.systemUTC().millis() + 60_000,
+                linkedSet(router),
+                linkedSet(router),
+                linkedSet(router),
+                null)), List.of(router));
+        RoutedBoltConnectionProvider provider = routedProvider(address -> routerProvider, rediscovery);
+
+        await(provider.verifyConnectivity(null, null, null, null, 0, SECURITY_PLAN, null));
+
+        assertThat(rediscovery.resolveCount()).isEqualTo(1);
+        assertThat(rediscovery.lookupCount()).isEqualTo(1);
+        assertThat(rediscovery.lookupDatabases())
+                .singleElement()
+                .satisfies(database -> assertThat(database.databaseName()).isEmpty());
+        assertThat(routerProvider.connectAttempts()).isEqualTo(1);
+        assertThat(routerProvider.connections())
+                .singleElement()
+                .satisfies(connection -> assertThat(connection.closeAttempts()).isEqualTo(1));
+
+        await(provider.close());
+    }
+
+    @Test
     void closedProviderRejectsNewConnections() throws Exception {
         BoltServerAddress writer = new BoltServerAddress("writer.example", 7687);
         RecordingProvider writerProvider = new RecordingProvider(writer);
@@ -328,6 +382,7 @@ public class Neo4j_bolt_connection_routedTest {
     private static final class StubRediscovery implements Rediscovery {
         private final ClusterCompositionLookupResult lookupResult;
         private final List<BoltServerAddress> resolvedAddresses;
+        private final List<DatabaseName> lookupDatabases = new ArrayList<>();
         private final AtomicInteger lookupCount = new AtomicInteger();
         private final AtomicInteger resolveCount = new AtomicInteger();
 
@@ -351,6 +406,7 @@ public class Neo4j_bolt_connection_routedTest {
                 Supplier<CompletionStage<AuthToken>> authTokenStageSupplier,
                 BoltProtocolVersion minVersion) {
             lookupCount.incrementAndGet();
+            lookupDatabases.add(routingTable.database());
             return CompletableFuture.completedFuture(lookupResult);
         }
 
@@ -362,6 +418,10 @@ public class Neo4j_bolt_connection_routedTest {
 
         private int lookupCount() {
             return lookupCount.get();
+        }
+
+        private List<DatabaseName> lookupDatabases() {
+            return lookupDatabases;
         }
 
         private int resolveCount() {
