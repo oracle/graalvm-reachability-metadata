@@ -136,4 +136,24 @@ class Case_insensitive_3Test {
       case _ => throw new AssertionError("Expected zero-length capture between adjacent chunks")
     }
   }
+
+  @Test
+  def globMatchesRuntimeLiteralPartsAndReturnsCapturedSegments(): Unit = {
+    val literalParts: List[String] = List("route=", "; method=", "; status=", "; end")
+    val request: CIString = CIString("ROUTE=/Api/Items; METHOD=GET; STATUS=Accepted; END")
+    val captures: Option[Seq[CIString]] = glob(literalParts, request)
+
+    captures match {
+      case Some(Seq(route, method, status)) =>
+        assertEquals(CIString("/api/items"), route)
+        assertEquals("/Api/Items", route.toString)
+        assertEquals(CIString("get"), method)
+        assertEquals("GET", method.toString)
+        assertEquals(CIString("accepted"), status)
+        assertEquals("Accepted", status.toString)
+      case other => throw new AssertionError(s"Expected route, method, and status captures, but got $other")
+    }
+
+    assertEquals(None, glob(literalParts, CIString("route=/api/items; method=GET; status=Accepted; end; trailing=true")))
+  }
 }
