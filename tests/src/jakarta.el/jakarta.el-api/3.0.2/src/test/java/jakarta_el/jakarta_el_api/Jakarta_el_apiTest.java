@@ -8,7 +8,7 @@ package jakarta_el.jakarta_el_api;
 
 import org.junit.jupiter.api.Test;
 
-class Jakarta_el_apiTest {
+public class Jakarta_el_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
