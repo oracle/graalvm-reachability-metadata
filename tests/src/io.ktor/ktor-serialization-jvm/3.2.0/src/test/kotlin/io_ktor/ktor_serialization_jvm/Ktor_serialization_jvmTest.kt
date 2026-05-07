@@ -79,6 +79,20 @@ public class KtorSerializationJvmTest {
     }
 
     @Test
+    public fun configurationRegisterWithoutLambdaUsesDefaultConfiguration(): Unit {
+        val configuration = RecordingConfiguration()
+        val converter = ConfigurableContentConverter()
+        val customType = ContentType("application", "x-ktor-default-message")
+
+        configuration.register(customType, converter)
+
+        val registration = configuration.singleRegistration()
+        assertThat(registration.contentType).isEqualTo(customType)
+        assertThat(registration.converter).isSameAs(converter)
+        assertThat(converter.prefix).isEqualTo("unset")
+    }
+
+    @Test
     public fun contentConverterSerializesTextContentWithRequestedContentTypeAndCharset(): Unit = runSuspendTest {
         val converter = MessageContentConverter()
         val contentType = ContentType("application", "x-message")
