@@ -1,0 +1,216 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.typesafe.akka:akka-http_3:10.6.0-M1
+Command: `/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 8 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :compileScala NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava NO-SOURCE
+> Task :compileTestScala UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/src/com.typesafe.akka/akka-http_3/10.6.0-M1/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/src/com.typesafe.akka/akka-http_3/10.6.0-M1/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+com_typesafe_akka.akka_http_3.Akka_http_3Test > marshalsAndUnmarshalsMultipartFormData() FAILED
+
+com_typesafe_akka.akka_http_3.Akka_http_3Test > routesRequestsWithDirectivesAndHandlesRejections() FAILED
+
+com_typesafe_akka.akka_http_3.Akka_http_3Test > modelParsesUrisHeadersAndBuildsRequests() SUCCESSFUL
+
+com_typesafe_akka.akka_http_3.Akka_http_3Test > marshalsUnmarshalsEntitiesAndFormData() FAILED
+
+com_typesafe_akka.akka_http_3.Akka_http_3Test > localServerAndClientRoundTripStrictEntities() FAILED
+
+com_typesafe_akka.akka_http_3.Akka_http_3Test > decodesGzipRequestAndEncodesGzipResponse() FAILED
+
+
+Failures (5):
+  JUnit Jupiter:Akka_http_3Test:marshalsAndUnmarshalsMultipartFormData()
+    MethodSource [className = 'com_typesafe_akka.akka_http_3.Akka_http_3Test', methodName = 'marshalsAndUnmarshalsMultipartFormData', methodParameterTypes = '']
+    => java.lang.IllegalArgumentException: Cannot instantiate router [akka.routing.ConsistentHashingPool], defined in [/IO-DNS/inet-address], make sure it extends [interface akka.routing.RouterConfig] and has constructor with [com.typesafe.config.Config] and optional [akka.actor.DynamicAccess] parameter
+       akka.actor.Deployer.akka$actor$Deployer$$_$throwCannotInstantiateRouter$1(Deployer.scala:291)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:308)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:298)
+       scala.util.Failure.recover(Try.scala:242)
+       akka.actor.Deployer.createRouterConfig(Deployer.scala:308)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: akka.routing.ConsistentHashingPool
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/src/com.typesafe.akka/akka-http_3/10.6.0-M1/build/native/nativeTestCompile/com.typesafe.akka.akka-http_3_tests-tests)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+       java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+       java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+       akka.actor.ReflectiveDynamicAccess.getClassFor$$anonfun$1(ReflectiveDynamicAccess.scala:29)
+       scala.util.Try$.apply(Try.scala:217)
+       [...]
+  JUnit Jupiter:Akka_http_3Test:routesRequestsWithDirectivesAndHandlesRejections()
+    MethodSource [className = 'com_typesafe_akka.akka_http_3.Akka_http_3Test', methodName = 'routesRequestsWithDirectivesAndHandlesRejections', methodParameterTypes = '']
+    => java.lang.IllegalArgumentException: Cannot instantiate router [akka.routing.ConsistentHashingPool], defined in [/IO-DNS/inet-address], make sure it extends [interface akka.routing.RouterConfig] and has constructor with [com.typesafe.config.Config] and optional [akka.actor.DynamicAccess] parameter
+       akka.actor.Deployer.akka$actor$Deployer$$_$throwCannotInstantiateRouter$1(Deployer.scala:291)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:308)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:298)
+       scala.util.Failure.recover(Try.scala:242)
+       akka.actor.Deployer.createRouterConfig(Deployer.scala:308)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: akka.routing.ConsistentHashingPool
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+       java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+       java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+       akka.actor.ReflectiveDynamicAccess.getClassFor$$anonfun$1(ReflectiveDynamicAccess.scala:29)
+       scala.util.Try$.apply(Try.scala:217)
+       [...]
+  JUnit Jupiter:Akka_http_3Test:marshalsUnmarshalsEntitiesAndFormData()
+    MethodSource [className = 'com_typesafe_akka.akka_http_3.Akka_http_3Test', methodName = 'marshalsUnmarshalsEntitiesAndFormData', methodParameterTypes = '']
+    => java.lang.IllegalArgumentException: Cannot instantiate router [akka.routing.ConsistentHashingPool], defined in [/IO-DNS/inet-address], make sure it extends [interface akka.routing.RouterConfig] and has constructor with [com.typesafe.config.Config] and optional [akka.actor.DynamicAccess] parameter
+       akka.actor.Deployer.akka$actor$Deployer$$_$throwCannotInstantiateRouter$1(Deployer.scala:291)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:308)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:298)
+       scala.util.Failure.recover(Try.scala:242)
+       akka.actor.Deployer.createRouterConfig(Deployer.scala:308)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: akka.routing.ConsistentHashingPool
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+       java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+       java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+       akka.actor.ReflectiveDynamicAccess.getClassFor$$anonfun$1(ReflectiveDynamicAccess.scala:29)
+       scala.util.Try$.apply(Try.scala:217)
+       [...]
+  JUnit Jupiter:Akka_http_3Test:localServerAndClientRoundTripStrictEntities()
+    MethodSource [className = 'com_typesafe_akka.akka_http_3.Akka_http_3Test', methodName = 'localServerAndClientRoundTripStrictEntities', methodParameterTypes = '']
+    => java.lang.IllegalArgumentException: Cannot instantiate router [akka.routing.ConsistentHashingPool], defined in [/IO-DNS/inet-address], make sure it extends [interface akka.routing.RouterConfig] and has constructor with [com.typesafe.config.Config] and optional [akka.actor.DynamicAccess] parameter
+       akka.actor.Deployer.akka$actor$Deployer$$_$throwCannotInstantiateRouter$1(Deployer.scala:291)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:308)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:298)
+       scala.util.Failure.recover(Try.scala:242)
+       akka.actor.Deployer.createRouterConfig(Deployer.scala:308)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: akka.routing.ConsistentHashingPool
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+       java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+       java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+       akka.actor.ReflectiveDynamicAccess.getClassFor$$anonfun$1(ReflectiveDynamicAccess.scala:29)
+       scala.util.Try$.apply(Try.scala:217)
+       [...]
+  JUnit Jupiter:Akka_http_3Test:decodesGzipRequestAndEncodesGzipResponse()
+    MethodSource [className = 'com_typesafe_akka.akka_http_3.Akka_http_3Test', methodName = 'decodesGzipRequestAndEncodesGzipResponse', methodParameterTypes = '']
+    => java.lang.IllegalArgumentException: Cannot instantiate router [akka.routing.ConsistentHashingPool], defined in [/IO-DNS/inet-address], make sure it extends [interface akka.routing.RouterConfig] and has constructor with [com.typesafe.config.Config] and optional [akka.actor.DynamicAccess] parameter
+       akka.actor.Deployer.akka$actor$Deployer$$_$throwCannotInstantiateRouter$1(Deployer.scala:291)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:308)
+       akka.actor.Deployer$$anon$2.applyOrElse(Deployer.scala:298)
+       scala.util.Failure.recover(Try.scala:242)
+       akka.actor.Deployer.createRouterConfig(Deployer.scala:308)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: akka.routing.ConsistentHashingPool
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+       java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+       java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+       akka.actor.ReflectiveDynamicAccess.getClassFor$$anonfun$1(ReflectiveDynamicAccess.scala:29)
+       scala.util.Try$.apply(Try.scala:217)
+       [...]
+
+Test run finished after 142 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         6 tests found           ]
+[         0 tests skipped         ]
+[         6 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         5 tests failed          ]
+
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/src/com.typesafe.akka/akka-http_3/10.6.0-M1/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/src/com.typesafe.akka/akka-http_3/10.6.0-M1/build/native/nativeTestCompile/com.typesafe.akka.akka-http_3_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+BUILD FAILED in 29s
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+17 actionable tasks: 2 executed, 15 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.typesafe.akka:akka-http_3:10.6.0-M1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 32s
+9 actionable tasks: 1 executed, 8 up-to-date

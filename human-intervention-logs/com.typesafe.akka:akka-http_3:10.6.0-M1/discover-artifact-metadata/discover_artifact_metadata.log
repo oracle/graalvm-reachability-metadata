@@ -1,0 +1,819 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e02cf-666c-7cf0-83de-769c29c5e568
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.akka:akka-http_3:10.6.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "10.6.0-M1" when "$version$" is replaced with "10.6.0-M1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+- Set "coordinates" to "com.typesafe.akka:akka-http_3:10.6.0-M1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "10.6.0-M1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata patterns first, then verify the Akka HTTP artifact/tag and Maven source availability before editing the JSON.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+
+exec
+/usr/bin/bash -lc "rg 'akka-http|source-code-url|documentation-url|test-code-url|language|not-for-native-image' -n build/discovered-artifact-metadata metadata tests | head -200" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 3ms:
+build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json:2:  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.groovy.template:23:        languageVersion = JavaLanguageVersion.of(21)
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala3.template:24:        languageVersion = JavaLanguageVersion.of(21)
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala2.template:24:        languageVersion = JavaLanguageVersion.of(21)
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:326:                latestLanguage = entry.language();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:342:                null, // source-code-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:344:                null, // test-code-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:345:                null, // documentation-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:347:                latestLanguage, // language
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:352:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:465:                entry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:488:                entry.language(),
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:210:                        entry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:615:                        entry.language(),
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/LibraryLanguage.java:12: * Structured language marker for language-specific libraries.
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:37:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:38:        LibraryLanguage language,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:27:        LibraryLanguage language,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:155:    private void writeTestScaffold(Path coordinatesTestRoot, Coordinates coordinates, List<String> packageRoots, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:156:        ScaffoldFlavor scaffoldFlavor = ScaffoldFlavor.fromLanguage(language);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:187:        // src/test/<language>/
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:206:    private void writeCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:208:        entries.add(createIndexEntry(coordinates, packageRoots, discoveredMetadata, language, true));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:212:    private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:221:        MetadataVersionsIndexEntry newEntry = createIndexEntry(coordinates, packageRoots, discoveredMetadata, language, false);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:244:                oldEntry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:319:        if (discoveredMetadata != null && discoveredMetadata.language() != null) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:320:            return discoveredMetadata.language();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:324:                .filter(entry -> entry.language() != null)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:326:                .map(MetadataVersionsIndexEntry::language)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:330:    private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:342:                language,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:381:        static ScaffoldFlavor fromLanguage(LibraryLanguage language) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:382:            if (language == null) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:385:            if (language.isKotlin()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:388:            if (language.isGroovy()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:391:            if (language.isScala2()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:394:            if (language.isScala3()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:397:            if (language.isScala()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:398:                throw new IllegalStateException("Unsupported Scala version for scaffold generation: " + language.version());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:400:            throw new IllegalStateException("Unsupported language for scaffold generation: " + language.name());
+metadata/org.slf4j/slf4j-ext/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/$version$/slf4j-ext-$version$-sources.jar",
+metadata/org.slf4j/slf4j-ext/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v$version$/slf4j-ext/src/test",
+metadata/org.slf4j/slf4j-ext/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:9:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:29:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:7:    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+metadata/org.scalacheck/scalacheck_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:36:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:37:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/org.crac/crac/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-sources.jar",
+metadata/org.crac/crac/index.json:7:    "test-code-url" : "N/A",
+metadata/org.crac/crac/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:55:            "source-code-url",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:56:            "test-code-url",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:57:            "documentation-url"
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:40: * and optional language-specific metadata in metadata index files.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:280:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:285:                If the library is not language-specific, leave the "language" field absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:298:                - Set the "language" field only when the library is language-specific.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - source-code-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - test-code-url: %s
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+{
+  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
+}
+
+codex
+The local patterns prefer Maven Central for published source and Javadoc jars, and use GitHub only when test sources are not published. I’m checking the POM and artifact classifiers now so the URLs we write actually resolve for `10.6.0-M1`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.akka</groupId>
+    <artifactId>akka-http_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Akka Http: Modern, fast, asynchronous, streaming-first HTTP server and client.</description>
+    <url>https://akka.io</url>
+    <version>10.6.0-M1</version>
+    <licenses>
+        <license>
+            <name>BUSL-1.1</name>
+            <url>https://raw.githubusercontent.com/akka/akka-http/v10.6.0-M1/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>akka-http</name>
+    <inceptionYear>2014</inceptionYear>
+    <organization>
+        <name>Lightbend</name>
+        <url>https://www.lightbend.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/akka/akka-http</url>
+        <connection>git@github.com:akka/akka-http.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>contributors</id>
+            <name>Contributors</name>
+            <url>https://github.com/akka/akka-http/graphs/contributors</url>
+            <email>info@lightbend.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://doc.akka.io/api/akka-http/10.6.0-M1/</info.apiURL>
+        <info.releaseNotesUrl>https://github.com/akka/akka-http/releases/tag/v10.6.0-M1</info.releaseNotesUrl>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-core_3</artifactId>
+            <version>10.6.0-M1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_3</artifactId>
+            <version>2.9.0-M2</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-sources.jar \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-tests.jar \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-test-sources.jar; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code} %{content_type}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 348ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/akka/akka-http_3/10.6.0-M1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/akka/akka-http_3/10.6.0-M1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="akka-http_3-10.6.0-M1-javadoc.jar" title="akka-http_3-10.6.0-M1-javadoc.jar">akka-http_3-10.6.0-M1-javadoc.jar</a>                 2023-09-28 08:08   7910312      
+<a href="akka-http_3-10.6.0-M1-javadoc.jar.asc" title="akka-http_3-10.6.0-M1-javadoc.jar.asc">akka-http_3-10.6.0-M1-javadoc.jar.asc</a>             2023-09-28 08:08       228      
+<a href="akka-http_3-10.6.0-M1-javadoc.jar.asc.md5" title="akka-http_3-10.6.0-M1-javadoc.jar.asc.md5">akka-http_3-10.6.0-M1-javadoc.jar.asc.md5</a>         2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1-javadoc.jar.asc.sha1" title="akka-http_3-10.6.0-M1-javadoc.jar.asc.sha1">akka-http_3-10.6.0-M1-javadoc.jar.asc.sha1</a>        2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1-javadoc.jar.md5" title="akka-http_3-10.6.0-M1-javadoc.jar.md5">akka-http_3-10.6.0-M1-javadoc.jar.md5</a>             2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1-javadoc.jar.sha1" title="akka-http_3-10.6.0-M1-javadoc.jar.sha1">akka-http_3-10.6.0-M1-javadoc.jar.sha1</a>            2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1-sources.jar" title="akka-http_3-10.6.0-M1-sources.jar">akka-http_3-10.6.0-M1-sources.jar</a>                 2023-09-28 08:08    220232      
+<a href="akka-http_3-10.6.0-M1-sources.jar.asc" title="akka-http_3-10.6.0-M1-sources.jar.asc">akka-http_3-10.6.0-M1-sources.jar.asc</a>             2023-09-28 08:08       228      
+<a href="akka-http_3-10.6.0-M1-sources.jar.asc.md5" title="akka-http_3-10.6.0-M1-sources.jar.asc.md5">akka-http_3-10.6.0-M1-sources.jar.asc.md5</a>         2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1-sources.jar.asc.sha1" title="akka-http_3-10.6.0-M1-sources.jar.asc.sha1">akka-http_3-10.6.0-M1-sources.jar.asc.sha1</a>        2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1-sources.jar.md5" title="akka-http_3-10.6.0-M1-sources.jar.md5">akka-http_3-10.6.0-M1-sources.jar.md5</a>             2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1-sources.jar.sha1" title="akka-http_3-10.6.0-M1-sources.jar.sha1">akka-http_3-10.6.0-M1-sources.jar.sha1</a>            2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1.buildinfo" title="akka-http_3-10.6.0-M1.buildinfo">akka-http_3-10.6.0-M1.buildinfo</a>                   2023-09-28 08:08       742      
+<a href="akka-http_3-10.6.0-M1.buildinfo.asc" title="akka-http_3-10.6.0-M1.buildinfo.asc">akka-http_3-10.6.0-M1.buildinfo.asc</a>               2023-09-28 08:08       228      
+<a href="akka-http_3-10.6.0-M1.buildinfo.asc.md5" title="akka-http_3-10.6.0-M1.buildinfo.asc.md5">akka-http_3-10.6.0-M1.buildinfo.asc.md5</a>           2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1.buildinfo.asc.sha1" title="akka-http_3-10.6.0-M1.buildinfo.asc.sha1">akka-http_3-10.6.0-M1.buildinfo.asc.sha1</a>          2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1.buildinfo.md5" title="akka-http_3-10.6.0-M1.buildinfo.md5">akka-http_3-10.6.0-M1.buildinfo.md5</a>               2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1.buildinfo.sha1" title="akka-http_3-10.6.0-M1.buildinfo.sha1">akka-http_3-10.6.0-M1.buildinfo.sha1</a>              2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1.jar" title="akka-http_3-10.6.0-M1.jar">akka-http_3-10.6.0-M1.jar</a>                         2023-09-28 08:08   2452697      
+<a href="akka-http_3-10.6.0-M1.jar.asc" title="akka-http_3-10.6.0-M1.jar.asc">akka-http_3-10.6.0-M1.jar.asc</a>                     2023-09-28 08:08       228      
+<a href="akka-http_3-10.6.0-M1.jar.asc.md5" title="akka-http_3-10.6.0-M1.jar.asc.md5">akka-http_3-10.6.0-M1.jar.asc.md5</a>                 2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1.jar.asc.sha1" title="akka-http_3-10.6.0-M1.jar.asc.sha1">akka-http_3-10.6.0-M1.jar.asc.sha1</a>                2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1.jar.md5" title="akka-http_3-10.6.0-M1.jar.md5">akka-http_3-10.6.0-M1.jar.md5</a>                     2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1.jar.sha1" title="akka-http_3-10.6.0-M1.jar.sha1">akka-http_3-10.6.0-M1.jar.sha1</a>                    2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1.pom" title="akka-http_3-10.6.0-M1.pom">akka-http_3-10.6.0-M1.pom</a>                         2023-09-28 08:08      2264      
+<a href="akka-http_3-10.6.0-M1.pom.asc" title="akka-http_3-10.6.0-M1.pom.asc">akka-http_3-10.6.0-M1.pom.asc</a>                     2023-09-28 08:08       228      
+<a href="akka-http_3-10.6.0-M1.pom.asc.md5" title="akka-http_3-10.6.0-M1.pom.asc.md5">akka-http_3-10.6.0-M1.pom.asc.md5</a>                 2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1.pom.asc.sha1" title="akka-http_3-10.6.0-M1.pom.asc.sha1">akka-http_3-10.6.0-M1.pom.asc.sha1</a>                2023-09-28 08:08        40      
+<a href="akka-http_3-10.6.0-M1.pom.md5" title="akka-http_3-10.6.0-M1.pom.md5">akka-http_3-10.6.0-M1.pom.md5</a>                     2023-09-28 08:08        32      
+<a href="akka-http_3-10.6.0-M1.pom.sha1" title="akka-http_3-10.6.0-M1.pom.sha1">akka-http_3-10.6.0-M1.pom.sha1</a>                    2023-09-28 08:08        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1672ms:
+200 application/java-archive
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-javadoc.jar -> 200 application/java-archive
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-tests.jar -> curl: (22) The requested URL returned error: 404
+404 text/html
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-test-sources.jar -> 404 text/html
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/akka/akka-http/git/trees/v10.6.0-M1?recursive=1 | rg '\"path\": \"(akka-http|docs|src|.*test).*\"' | head -120" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1.buildinfo | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http/src/test \\
+  https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http-tests/src/test \\
+  https://github.com/akka/akka-http/tree/v10.6.0-M1/docs/src/main/paradox \\
+  https://github.com/akka/akka-http/tree/v10.6.0-M1/docs; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 405ms:
+buildinfo.version=0.1-SNAPSHOT
+name=akka-http
+group-id=com.typesafe.akka
+artifact-id=akka-http_3
+version=10.6.0-M1
+java.version=11.0.17
+os.name=Linux
+build-tool=sbt
+sbt.version=1.9.4
+scala.version=3.3.1
+scala.binary-version=3
+date=1695888394996
+outputs.0.filename=akka-http_3-10.6.0-M1.pom
+outputs.0.length=2264
+outputs.0.checksums.sha512=962f94080fdd4c22f0ad2438f0daeb25d91af6d5e005ebbc02f647bf1bee5750e34bd751065e841fbb76f643680f32a457a24baf48c76a807e6636ddbfc3d10d
+outputs.1.filename=akka-http_3-10.6.0-M1.jar
+outputs.1.length=2452697
+outputs.1.checksums.sha512=5b8d0790daec952f04347110acfb9df95fc603b6fc2dfa6dd355de30c592fb26f5953a1327164536b45c3351739ad87695671805a30f6cd94430d38402886de0
+source.scm.uri=git@github.com:akka/akka-http.git
+ succeeded in 463ms:
+      "path": ".github/workflows/publish-test-reports.yml",
+      "path": ".github/workflows/validate-and-test.yml",
+      "path": "akka-http-bench-jmh",
+      "path": "akka-http-bench-jmh/README.md",
+      "path": "akka-http-bench-jmh/src",
+      "path": "akka-http-bench-jmh/src/main",
+      "path": "akka-http-bench-jmh/src/main/scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/BenchRunner.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/CommonBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/ConnectionPoolBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/HeaderParserBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/HttpEntityBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/ServerProcessingBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/StreamServerProcessingBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/http2",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/http2/H2ClientServerBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/http2/H2RequestResponseBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/http2/H2ServerProcessingBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/ws",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/engine/ws/MaskingBench.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/model",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/model/parser",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/impl/model/parser/UriParserBenchmark.scala",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/scaladsl",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/scaladsl/unmarshalling",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/scaladsl/unmarshalling/sse",
+      "path": "akka-http-bench-jmh/src/main/scala/akka/http/scaladsl/unmarshalling/sse/LineParserBenchmark.scala",
+      "path": "akka-http-caching",
+      "path": "akka-http-caching/src",
+      "path": "akka-http-caching/src/main",
+      "path": "akka-http-caching/src/main/java",
+      "path": "akka-http-caching/src/main/java/akka",
+      "path": "akka-http-caching/src/main/java/akka/http",
+      "path": "akka-http-caching/src/main/java/akka/http/caching",
+      "path": "akka-http-caching/src/main/java/akka/http/caching/javadsl",
+      "path": "akka-http-caching/src/main/java/akka/http/caching/javadsl/Cache.java",
+      "path": "akka-http-caching/src/main/mima-filters",
+      "path": "akka-http-caching/src/main/mima-filters/10.0.11.backwards.excludes",
+      "path": "akka-http-caching/src/main/mima-filters/10.1.5.backwards.excludes",
+      "path": "akka-http-caching/src/main/mima-filters/10.1.7.backwards.excludes",
+      "path": "akka-http-caching/src/main/mima-filters/10.1.8.backwards.excludes",
+      "path": "akka-http-caching/src/main/resources",
+      "path": "akka-http-caching/src/main/resources/reference.conf",
+      "path": "akka-http-caching/src/main/scala",
+      "path": "akka-http-caching/src/main/scala/akka",
+      "path": "akka-http-caching/src/main/scala/akka/http",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/CacheJavaMapping.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/LfuCache.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/impl",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/impl/settings",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/impl/settings/CachingSettingsImpl.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/impl/settings/LfuCachingSettingsImpl.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/javadsl",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/javadsl/CachingSettings.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/javadsl/LfuCacheSettings.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/scaladsl",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/scaladsl/Cache.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/scaladsl/CachingSettings.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/caching/scaladsl/LfuCacheSettings.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/javadsl",
+      "path": "akka-http-caching/src/main/scala/akka/http/javadsl/server",
+      "path": "akka-http-caching/src/main/scala/akka/http/javadsl/server/directives",
+      "path": "akka-http-caching/src/main/scala/akka/http/javadsl/server/directives/CachingDirectives.scala",
+      "path": "akka-http-caching/src/main/scala/akka/http/scaladsl",
+      "path": "akka-http-caching/src/main/scala/akka/http/scaladsl/server",
+      "path": "akka-http-caching/src/main/scala/akka/http/scaladsl/server/directives",
+      "path": "akka-http-caching/src/main/scala/akka/http/scaladsl/server/directives/CachingDirectives.scala",
+      "path": "akka-http-caching/src/test",
+      "path": "akka-http-caching/src/test/scala",
+      "path": "akka-http-caching/src/test/scala/akka",
+      "path": "akka-http-caching/src/test/scala/akka/http",
+      "path": "akka-http-caching/src/test/scala/akka/http/caching",
+      "path": "akka-http-caching/src/test/scala/akka/http/caching/ExpiringLfuCacheSpec.scala",
+      "path": "akka-http-caching/src/test/scala/akka/http/scaladsl",
+      "path": "akka-http-caching/src/test/scala/akka/http/scaladsl/server",
+      "path": "akka-http-caching/src/test/scala/akka/http/scaladsl/server/directives",
+      "path": "akka-http-caching/src/test/scala/akka/http/scaladsl/server/directives/CachingDirectivesSpec.scala",
+      "path": "akka-http-compatibility-tests",
+      "path": "akka-http-compatibility-tests/README.md",
+      "path": "akka-http-compatibility-tests/src",
+      "path": "akka-http-compatibility-tests/src/main",
+      "path": "akka-http-compatibility-tests/src/main/scala",
+      "path": "akka-http-compatibility-tests/src/main/scala/akka",
+      "path": "akka-http-compatibility-tests/src/main/scala/akka/http",
+      "path": "akka-http-compatibility-tests/src/main/scala/akka/http/scaladsl",
+      "path": "akka-http-compatibility-tests/src/main/scala/akka/http/scaladsl/server",
+      "path": "akka-http-compatibility-tests/src/main/scala/akka/http/scaladsl/server/directives",
+      "path": "akka-http-compatibility-tests/src/main/scala/akka/http/scaladsl/server/directives/CompatFormField.scala",
+      "path": "akka-http-compatibility-tests/src/test",
+      "path": "akka-http-compatibility-tests/src/test/scala",
+      "path": "akka-http-compatibility-tests/src/test/scala/akka",
+      "path": "akka-http-compatibility-tests/src/test/scala/akka/http",
+      "path": "akka-http-compatibility-tests/src/test/scala/akka/http/scaladsl",
+      "path": "akka-http-compatibility-tests/src/test/scala/akka/http/scaladsl/server",
+      "path": "akka-http-compatibility-tests/src/test/scala/akka/http/scaladsl/server/directives",
+      "path": "akka-http-compatibility-tests/src/test/scala/akka/http/scaladsl/server/directives/CompatFormFieldSpec.scala",
+      "path": "akka-http-core",
+      "path": "akka-http-core/RunWebSocketAutobahnTestSuite.md",
+      "path": "akka-http-core/src",
+      "path": "akka-http-core/src/main",
+      "path": "akka-http-core/src/main/java",
+      "path": "akka-http-core/src/main/java/akka",
+      "path": "akka-http-core/src/main/java/akka/http",
+      "path": "akka-http-core/src/main/java/akka/http/impl",
+      "path": "akka-http-core/src/main/java/akka/http/impl/util",
+      "path": "akka-http-core/src/main/java/akka/http/impl/util/Util.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/TimeoutAccess.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model/AttributeKey.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model/AttributeKeys.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model/Authority.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model/BodyPartEntity.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model/ContentRange.java",
+      "path": "akka-http-core/src/main/java/akka/http/javadsl/model/ContentTypeRange.java",
+curl: (23) Failure writing output to destination
+
+ succeeded in 2701ms:
+curl: (22) The requested URL returned error: 404
+404 https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http/src/test
+https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http-tests/src/test -> 200 https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http-tests/src/test
+https://github.com/akka/akka-http/tree/v10.6.0-M1/docs/src/main/paradox -> 200 https://github.com/akka/akka-http/tree/v10.6.0-M1/docs/src/main/paradox
+https://github.com/akka/akka-http/tree/v10.6.0-M1/docs -> 200 https://github.com/akka/akka-http/tree/v10.6.0-M1/docs
+
+web search: 
+web search: https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http-tests/src/test
+web search: 
+web search: repo.maven.apache.org com.typesafe.akka akka-http_3 10.6.0-M1 pom sources javadoc
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com/artifact/com.typesafe.akka/akka-http_3 10.6.0-M1
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.scalacheck/scalacheck_2.13/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.18.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/scalacheck",
+    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+    "description" : "ScalaCheck is a Scala property-based testing library for generating test data and checking properties over many randomized cases. It can be used standalone or with Scala test frameworks to exercise Scala and Java code and shrink failing examples.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.18.1"
+    ],
+    "allowed-packages" : [
+      "org.scalacheck"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,35p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,30p' metadata/com.github.ajalt.mordant/mordant-jvm/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published mordant-jvm JAR contains only META-INF/MANIFEST.MF and a Kotlin module file and no JVM class files; implementation classes are provided by its JVM dependencies.",
+    "replacement": "com.github.ajalt.mordant:mordant-core-jvm:3.0.2 plus com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2, com.github.ajalt.mordant:mordant-jvm-ffm-jvm:3.0.2, and com.github.ajalt.mordant:mordant-jvm-graal-ffi-jvm:3.0.2"
+  }
+]
+
+codex
+I found no published test/test-sources classifier for this artifact, so the test URL needs to use the versioned GitHub test module. The POM and build info also confirm this is a Scala 3 JVM JAR, so I’m adding the Scala language marker and leaving the Native Image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+index a05b20cc8e3fe6e8d856f1cc26690397828c5232..66e199938bc0f59e497b909d0eb35460332c8cec
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
++  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/akka/akka-http",
++  "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-javadoc.jar",
++  "description" : "Akka HTTP provides a streaming HTTP server and client toolkit for Scala and Java applications built on Akka Streams. It includes routing, marshalling, unmarshalling, connection handling, and HTTP model APIs for building asynchronous network services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+index a05b20cc8e3fe6e8d856f1cc26690397828c5232..66e199938bc0f59e497b909d0eb35460332c8cec
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
++  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/akka/akka-http",
++  "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-javadoc.jar",
++  "description" : "Akka HTTP provides a streaming HTTP server and client toolkit for Scala and Java applications built on Akka Streams. It includes routing, marshalling, unmarshalling, connection handling, and HTTP model APIs for building asynchronous network services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.akka:akka-http_3:10.6.0-M1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-sources.jar",
+  "repository-url": "https://github.com/akka/akka-http",
+  "test-code-url": "https://github.com/akka/akka-http/tree/v$version$/akka-http-tests/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-javadoc.jar",
+  "description": "Akka HTTP provides a streaming HTTP server and client toolkit for Scala and Java applications built on Akka Streams. It includes routing, marshalling, unmarshalling, connection handling, and HTTP model APIs for building asynchronous network services.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-sources.jar \\
+  https://github.com/akka/akka-http/tree/v10.6.0-M1/akka-http-tests/src/test \\
+  https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1.jar -o "$tmp" && jar tf "$tmp" | rg '"'\\.class"'$'"' | head -5; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 459ms:
+akka/http/impl/settings/RoutingSettingsImpl$.class
+akka/http/impl/settings/RoutingSettingsImpl.class
+akka/http/impl/settings/ServerSentEventSettingsImpl$.class
+akka/http/impl/settings/ServerSentEventSettingsImpl.class
+akka/http/javadsl/coding/Coder.class
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+index a05b20cc8e3fe6e8d856f1cc26690397828c5232..66e199938bc0f59e497b909d0eb35460332c8cec
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
++  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/akka/akka-http",
++  "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-javadoc.jar",
++  "description" : "Akka HTTP provides a streaming HTTP server and client toolkit for Scala and Java applications built on Akka Streams. It includes routing, marshalling, unmarshalling, connection handling, and HTTP model APIs for building asynchronous network services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 706ms:
+200
+https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/10.6.0-M1/akka-http_3-10.6.0-M1-javadoc.jar -> 200
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+index a05b20cc8e3fe6e8d856f1cc26690397828c5232..66e199938bc0f59e497b909d0eb35460332c8cec
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
++  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/akka/akka-http",
++  "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-javadoc.jar",
++  "description" : "Akka HTTP provides a streaming HTTP server and client toolkit for Scala and Java applications built on Akka Streams. It includes routing, marshalling, unmarshalling, connection handling, and HTTP model APIs for building asynchronous network services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+Updated [com.typesafe.akka-akka-http_3-10.6.0-M1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json).
+
+Set Maven Central source/Javadoc URLs, GitHub repository and versioned test URL, a two-sentence description, and Scala 3 language metadata. I also verified the substituted source, test, and documentation URLs return `200`, and confirmed the artifact JAR contains JVM `.class` files, so I did not add `not-for-native-image`.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+index a05b20cc8e3fe6e8d856f1cc26690397828c5232..66e199938bc0f59e497b909d0eb35460332c8cec
+--- a/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1"
++  "coordinates" : "com.typesafe.akka:akka-http_3:10.6.0-M1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-sources.jar",
++  "repository-url" : "https://github.com/akka/akka-http",
++  "test-code-url" : "https://github.com/akka/akka-http/tree/v$version$/akka-http-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-http_3/$version$/akka-http_3-$version$-javadoc.jar",
++  "description" : "Akka HTTP provides a streaming HTTP server and client toolkit for Scala and Java applications built on Akka Streams. It includes routing, marshalling, unmarshalling, connection handling, and HTTP model APIs for building asynchronous network services.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+54,952
+Updated [com.typesafe.akka-akka-http_3-10.6.0-M1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/discovered-artifact-metadata/com.typesafe.akka-akka-http_3-10.6.0-M1.json).
+
+Set Maven Central source/Javadoc URLs, GitHub repository and versioned test URL, a two-sentence description, and Scala 3 language metadata. I also verified the substituted source, test, and documentation URLs return `200`, and confirmed the artifact JAR contains JVM `.class` files, so I did not add `not-for-native-image`.
+Ran agent for com.typesafe.akka:akka-http_3:10.6.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/agent-artifact-discovery-logs/com.typesafe.akka-akka-http_3-10.6.0-M1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4868-4b112c2c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 9s
+9 actionable tasks: 9 executed
