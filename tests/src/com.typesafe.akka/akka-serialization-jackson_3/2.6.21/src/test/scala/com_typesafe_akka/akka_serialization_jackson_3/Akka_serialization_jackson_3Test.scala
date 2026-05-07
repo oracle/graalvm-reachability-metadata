@@ -134,6 +134,23 @@ class Akka_serialization_jackson_3Test {
     }
   }
 
+  @Test
+  def jsonSerializerRestoresScalaCaseObjectSingletonsFromManifest(): Unit = {
+    withActorSystem { system =>
+      val serialization = SerializationExtension(system)
+      val payload = SingletonNotification
+
+      val serializer = serialization.findSerializerFor(payload)
+      val manifest: String = Serializers.manifestFor(serializer, payload)
+      val bytes: Array[Byte] = serialization.serialize(payload).get
+      val restored = serialization.deserialize(bytes, serializer.identifier, manifest).get
+
+      assertThat(manifest).isEqualTo(SingletonNotificationClassName)
+      assertThat(bytes).isNotEmpty
+      assertThat(restored).isSameAs(payload)
+    }
+  }
+
   private def withActorSystem(test: ActorSystem => Unit): Unit = {
     val systemName: String = s"akka-jackson-test-${System.nanoTime()}"
     val system: ActorSystem = ActorSystem(systemName, TestConfig)
@@ -154,6 +171,7 @@ object Akka_serialization_jackson_3Test {
   val CborPayloadClassName = s"$PackageName.CborPayload"
   val ActorRefPayloadClassName = s"$PackageName.ActorRefPayload"
   val MigratingMessageClassName = s"$PackageName.MigratingMessage"
+  val SingletonNotificationClassName = SingletonNotification.getClass.getName
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
 
   val TestConfig: Config = ConfigFactory
@@ -163,6 +181,7 @@ object Akka_serialization_jackson_3Test {
         "$CborPayloadClassName" = jackson-cbor
         "$ActorRefPayloadClassName" = jackson-json
         "$MigratingMessageClassName" = jackson-json
+        "$SingletonNotificationClassName" = jackson-json
       }
       akka.serialization.jackson {
         allowed-class-prefix = ["$PackageName."]
@@ -202,6 +221,8 @@ final case class CborPayload(id: String, count: Int, enabled: Boolean)
 final case class ActorRefPayload(name: String, recipient: ActorRef)
 
 final case class MigratingMessage(newName: String)
+
+case object SingletonNotification
 
 class RenameOldNameMigration extends JacksonMigration {
   override def currentVersion: Int = 2
