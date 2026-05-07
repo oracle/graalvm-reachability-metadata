@@ -213,6 +213,23 @@ class SqlFormatterTest {
   }
 
   @Test
+  def formatsCreateTableDdlWithLongColumnList(): Unit = {
+    val result: String = SqlFormatter.format(
+      "CREATE TABLE inventory_items (id INT PRIMARY KEY, sku VARCHAR(40) NOT NULL, " +
+        "quantity INT NOT NULL, warehouse_id INT NOT NULL);"
+    )
+
+    assertThat(result).isEqualTo(
+      """|CREATE TABLE inventory_items (
+         |  id INT PRIMARY KEY,
+         |  sku VARCHAR(40) NOT NULL,
+         |  quantity INT NOT NULL,
+         |  warehouse_id INT NOT NULL
+         |);""".stripMargin
+    )
+  }
+
+  @Test
   def formatsSetOperationsBetweenSelectStatements(): Unit = {
     val result: String = SqlFormatter.format(
       "SELECT user_id, display_name FROM active_users " +
