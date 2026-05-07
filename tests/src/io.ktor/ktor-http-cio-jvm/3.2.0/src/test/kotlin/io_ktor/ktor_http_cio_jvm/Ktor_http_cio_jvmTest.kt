@@ -293,6 +293,33 @@ public class Ktor_http_cio_jvmTest {
     }
 
     @Test
+    fun exposesParsedHeadersThroughIndexedAndOffsetAccessors(): Unit = runBlocking {
+        withTimeout(10_000) {
+            val headers = parseHeaders(
+                ByteReadChannel(
+                    "Alpha: one\r\n" +
+                        "Beta: two\r\n" +
+                        "Alpha: three\r\n" +
+                        "\r\n"
+                )
+            )
+            try {
+                val indexedPairs: List<String> = (0 until headers.size)
+                    .map { "${headers.nameAt(it)}: ${headers.valueAt(it)}" }
+                val offsets: List<Int> = headers.offsets().toList()
+                val offsetPairs: List<String> = offsets
+                    .map { "${headers.nameAtOffset(it)}: ${headers.valueAtOffset(it)}" }
+
+                assertThat(offsets).hasSize(headers.size)
+                assertThat(indexedPairs).containsExactlyInAnyOrder("Alpha: one", "Beta: two", "Alpha: three")
+                assertThat(offsetPairs).containsExactlyElementsOf(indexedPairs)
+            } finally {
+                headers.release()
+            }
+        }
+    }
+
+    @Test
     fun parsesBodyDelimitedByConnectionClose(): Unit = runBlocking {
         withTimeout(10_000) {
             val output = ByteChannel(autoFlush = true)
