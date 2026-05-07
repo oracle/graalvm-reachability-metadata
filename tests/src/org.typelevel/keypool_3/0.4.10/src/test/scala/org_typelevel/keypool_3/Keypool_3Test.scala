@@ -301,6 +301,46 @@ class Keypool_3Test {
   }
 
   @Test
+  def lifoFairnessServesMostRecentWaiterFirst(): Unit = run {
+    for {
+      holderEntered <- Deferred[IO, Unit]
+      releaseHolder <- Deferred[IO, Unit]
+      firstAcquired <- Deferred[IO, Unit]
+      secondAcquired <- Deferred[IO, Unit]
+      acquisitionOrder <- Ref.of[IO, Vector[String]](Vector.empty)
+      _ <- Pool
+        .Builder[IO, PooledValue](Resource.pure(PooledValue(1)))
+        .withMaxTotal(1)
+        .withFairness(Fairness.Lifo)
+        .withDurationBetweenEvictionRuns(Duration.Inf)
+        .build
+        .use { pool =>
+          def waiter(name: String, acquired: Deferred[IO, Unit]): IO[Unit] =
+            pool.take.use(_ => acquisitionOrder.update(_ :+ name) >> acquired.complete(()).void)
+
+          for {
+            holder <- pool.take.use(_ => holderEntered.complete(()) >> releaseHolder.get).start
+            _ <- holderEntered.get
+            first <- waiter("first", firstAcquired).start
+            firstWhileHeld <- firstAcquired.get.timeout(100.millis).attempt
+            second <- waiter("second", secondAcquired).start
+            secondWhileHeld <- secondAcquired.get.timeout(100.millis).attempt
+            _ <- IO {
+              assertTrue(firstWhileHeld.isLeft)
+              assertTrue(secondWhileHeld.isLeft)
+            }
+            _ <- releaseHolder.complete(())
+            _ <- first.join.timeout(1.second)
+            _ <- second.join.timeout(1.second)
+            _ <- holder.join.timeout(1.second)
+            observedOrder <- acquisitionOrder.get
+            _ <- IO(assertEquals(Vector("second", "first"), observedOrder))
+          } yield ()
+        }
+    } yield ()
+  }
+
+  @Test
   def reaperEvictsIdleResourcesAndReportsDestroyFailures(): Unit = run {
     for {
       reported <- Ref.of[IO, Vector[String]](Vector.empty)
