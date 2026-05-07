@@ -25,6 +25,11 @@ java {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
