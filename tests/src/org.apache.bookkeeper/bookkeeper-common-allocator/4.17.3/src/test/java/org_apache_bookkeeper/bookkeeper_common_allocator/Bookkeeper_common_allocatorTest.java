@@ -105,6 +105,34 @@ public class Bookkeeper_common_allocatorTest {
     }
 
     @Test
+    void pooledDirectPolicyUsesPooledAllocatorForExplicitHeapBuffers() {
+        CountingAllocator pooledAllocator = new CountingAllocator(true);
+        CountingAllocator unpooledAllocator = new CountingAllocator(false);
+        ByteBufAllocatorWithOomHandler allocator = ByteBufAllocatorBuilder.create()
+                .poolingPolicy(PoolingPolicy.PooledDirect)
+                .poolingConcurrency(1)
+                .pooledAllocator(pooledAllocator)
+                .unpooledAllocator(unpooledAllocator)
+                .build();
+
+        ByteBuf buffer = allocator.heapBuffer(8, 32);
+        try {
+            assertThat(buffer.isDirect()).isFalse();
+            assertThat(buffer.capacity()).isGreaterThanOrEqualTo(8);
+            assertThat(buffer.maxCapacity()).isEqualTo(32);
+            assertThat(pooledAllocator.heapAllocations()).isEqualTo(1);
+            assertThat(pooledAllocator.directAllocations()).isZero();
+            assertThat(unpooledAllocator.heapAllocations()).isZero();
+            assertThat(unpooledAllocator.directAllocations()).isZero();
+
+            buffer.writeLong(123L);
+            assertThat(buffer.readLong()).isEqualTo(123L);
+        } finally {
+            buffer.release();
+        }
+    }
+
+    @Test
     void builderUsesSuppliedAllocatorsForSelectedPoolingPolicy() {
         CountingAllocator pooledAllocator = new CountingAllocator(true);
         CountingAllocator unpooledAllocator = new CountingAllocator(false);
