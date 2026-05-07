@@ -39,6 +39,7 @@ import org.http4s.server.middleware.ResponseTiming
 import org.http4s.server.middleware.StaticHeaders
 import org.http4s.server.middleware.TranslateUri
 import org.http4s.server.middleware.UrlFormLifter
+import org.http4s.server.middleware.VirtualHost
 import org.http4s.server.middleware.authentication.BasicAuth
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -258,6 +259,58 @@ class Http4s_server_3Test {
   }
 
   @Test
+  def virtualHostDispatchesByHostHeaderAndReportsHostErrors(): Unit = {
+    val adminApp: HttpApp[IO] = hostApp("admin")
+    val wildcardApp: HttpApp[IO] = hostApp("wildcard")
+    val regexApp: HttpApp[IO] = hostApp("regex")
+    val virtualHostApp: HttpApp[IO] = VirtualHost(
+      VirtualHost.exact(adminApp, "admin.example.com", Some(8443)),
+      VirtualHost.wildcard(wildcardApp, "*.example.com"),
+      VirtualHost.regex(regexApp, "api[0-9]+\\.service\\.test"),
+    )
+
+    val exactByUriPort: Response[IO] = run(
+      virtualHostApp(
+        Request[IO](Method.GET, uri"http://admin.example.com:8443/dashboard")
+          .putHeaders(Header.Raw(ci"Host", "ADMIN.EXAMPLE.COM"))
+      )
+    )
+    assertEquals(Status.Ok, exactByUriPort.status)
+    assertEquals("admin:/dashboard", bodyText(exactByUriPort))
+
+    val wildcard: Response[IO] = run(
+      virtualHostApp(
+        Request[IO](Method.GET, uri"/tenant")
+          .putHeaders(Header.Raw(ci"Host", "shop.example.com"))
+      )
+    )
+    assertEquals(Status.Ok, wildcard.status)
+    assertEquals("wildcard:/tenant", bodyText(wildcard))
+
+    val regex: Response[IO] = run(
+      virtualHostApp(
+        Request[IO](Method.GET, uri"/status")
+          .putHeaders(Header.Raw(ci"Host", "api42.service.test"))
+      )
+    )
+    assertEquals(Status.Ok, regex.status)
+    assertEquals("regex:/status", bodyText(regex))
+
+    val unknown: Response[IO] = run(
+      virtualHostApp(
+        Request[IO](Method.GET, uri"/missing")
+          .putHeaders(Header.Raw(ci"Host", "unknown.example.net"))
+      )
+    )
+    assertEquals(Status.NotFound, unknown.status)
+    assertTrue(bodyText(unknown).contains("unknown.example.net"))
+
+    val missingHost: Response[IO] = run(virtualHostApp(Request[IO](Method.GET, uri"/missing-host")))
+    assertEquals(Status.BadRequest, missingHost.status)
+    assertEquals("Host header required.", bodyText(missingHost))
+  }
+
+  @Test
   def basicAuthChallengeAcceptsValidCredentialsAndRejectsMissingOrInvalidCredentials(): Unit = {
     val challenge = BasicAuth.challenge[IO, String](
       "test-realm",
@@ -291,6 +344,10 @@ object Http4s_server_3Test {
 
   private def pathInfoRoute(label: String): HttpRoutes[IO] = Kleisli { request =>
     OptionT.liftF(Response[IO](Status.Ok).withEntity(s"$label:${request.pathInfo.renderString}").pure[IO])
+  }
+
+  private def hostApp(label: String): HttpApp[IO] = HttpApp[IO] { request =>
+    Response[IO](Status.Ok).withEntity(s"$label:${request.pathInfo.renderString}").pure[IO]
   }
 
   private def runRoutes(routes: HttpRoutes[IO], request: Request[IO]): Response[IO] =
