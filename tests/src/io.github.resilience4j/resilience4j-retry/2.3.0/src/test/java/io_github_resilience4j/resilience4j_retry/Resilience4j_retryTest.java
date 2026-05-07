@@ -88,6 +88,51 @@ public class Resilience4j_retryTest {
     }
 
     @Test
+    void intervalBiFunctionReceivesExceptionAndResultOutcomes() {
+        List<String> intervalOutcomes = new ArrayList<>();
+        RetryConfig config = RetryConfig.<String>custom()
+            .maxAttempts(4)
+            .retryExceptions(TransientServiceException.class)
+            .retryOnResult("retry"::equals)
+            .intervalBiFunction((attempt, either) -> {
+                if (either.isLeft()) {
+                    intervalOutcomes.add(attempt + ":exception:" + either.getLeft().getMessage());
+                } else {
+                    intervalOutcomes.add(attempt + ":result:" + either.get());
+                }
+                return 0L;
+            })
+            .build();
+        Retry retry = Retry.of("dynamic-intervals", config);
+        List<RetryEvent.Type> eventTypes = new ArrayList<>();
+        retry.getEventPublisher()
+            .onRetry(event -> eventTypes.add(event.getEventType()))
+            .onSuccess(event -> eventTypes.add(event.getEventType()));
+
+        AtomicInteger calls = new AtomicInteger();
+        String result = retry.executeSupplier(() -> {
+            int attempt = calls.incrementAndGet();
+            if (attempt == 1) {
+                throw new TransientServiceException("first failure");
+            }
+            if (attempt == 2) {
+                return "retry";
+            }
+            return "ready";
+        });
+
+        assertThat(result).isEqualTo("ready");
+        assertThat(calls).hasValue(3);
+        assertThat(intervalOutcomes).containsExactly("1:exception:first failure", "2:result:retry");
+        assertThat(eventTypes).containsExactly(
+            RetryEvent.Type.RETRY,
+            RetryEvent.Type.RETRY,
+            RetryEvent.Type.SUCCESS);
+        assertThat(retry.getMetrics().getNumberOfSuccessfulCallsWithRetryAttempt()).isEqualTo(1);
+        assertThat(retry.getMetrics().getNumberOfTotalCalls()).isEqualTo(3);
+    }
+
+    @Test
     void retriesUnsatisfactoryResultsAndConsumesThemBeforeNextAttempt() {
         List<String> consumedResults = new ArrayList<>();
         List<Integer> intervalAttempts = new ArrayList<>();
