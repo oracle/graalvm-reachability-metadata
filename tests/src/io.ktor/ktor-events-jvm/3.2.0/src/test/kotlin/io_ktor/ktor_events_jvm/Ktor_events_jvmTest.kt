@@ -9,6 +9,12 @@ package io_ktor.ktor_events_jvm
 import io.ktor.events.EventDefinition
 import io.ktor.events.Events
 import io.ktor.events.raiseCatching
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.catchThrowable
@@ -63,6 +69,40 @@ public class KtorEventsJvmTest {
             "second:one",
             "second:two"
         )
+    }
+
+    @Test
+    fun concurrentSubscriptionsToTheSameEventDefinitionAreAllRegistered() {
+        val events: Events = Events()
+        val definition: EventDefinition<String> = EventDefinition()
+        val observed: ConcurrentLinkedQueue<String> = ConcurrentLinkedQueue()
+        val handlerCount = 16
+        val startLatch: CountDownLatch = CountDownLatch(1)
+        val executor: ExecutorService = Executors.newFixedThreadPool(handlerCount)
+
+        try {
+            val futures: List<Future<*>> = (0 until handlerCount).map { handlerIndex: Int ->
+                executor.submit {
+                    assertThat(startLatch.await(5, TimeUnit.SECONDS)).isTrue()
+                    events.subscribe(definition) { value: String ->
+                        observed += "$handlerIndex:$value"
+                    }
+                    Unit
+                }
+            }
+
+            startLatch.countDown()
+            futures.forEach { future: Future<*> -> future.get(5, TimeUnit.SECONDS) }
+
+            events.raise(definition, "payload")
+
+            assertThat(observed).containsExactlyInAnyOrderElementsOf(
+                (0 until handlerCount).map { handlerIndex: Int -> "$handlerIndex:payload" }
+            )
+        } finally {
+            executor.shutdownNow()
+            assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue()
+        }
     }
 
     @Test
