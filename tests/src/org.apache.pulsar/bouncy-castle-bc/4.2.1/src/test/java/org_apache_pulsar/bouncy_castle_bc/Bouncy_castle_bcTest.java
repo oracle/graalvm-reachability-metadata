@@ -9,11 +9,15 @@ package org_apache_pulsar.bouncy_castle_bc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.Security;
@@ -23,6 +27,7 @@ import java.util.HexFormat;
 import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.pulsar.bcloader.BouncyCastleLoader;
@@ -155,6 +160,34 @@ public class Bouncy_castle_bcTest {
         assertThat(bobSecret).isEqualTo(aliceSecret);
         assertThat(aliceAgreement.getProvider()).isSameAs(provider);
         assertThat(bobAgreement.getProvider()).isSameAs(provider);
+    }
+
+    @Test
+    void bcfksKeyStoreStoresAndLoadsSecretKeyWithBouncyCastleProvider() throws Exception {
+        Provider provider = new BouncyCastleLoader().getProvider();
+        char[] password = "keystore-password".toCharArray();
+        SecretKey secretKey = new SecretKeySpec(
+                "0123456789abcdef".getBytes(StandardCharsets.UTF_8), "AES");
+
+        KeyStore keyStore = KeyStore.getInstance("BCFKS", provider);
+        keyStore.load(null, password);
+        KeyStore.ProtectionParameter protection = new KeyStore.PasswordProtection(password);
+        keyStore.setEntry("pulsar-secret", new KeyStore.SecretKeyEntry(secretKey), protection);
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        keyStore.store(output, password);
+
+        KeyStore reloadedKeyStore = KeyStore.getInstance("BCFKS", provider);
+        reloadedKeyStore.load(new ByteArrayInputStream(output.toByteArray()), password);
+        Key reloadedKey = reloadedKeyStore.getKey("pulsar-secret", password);
+
+        assertThat(output.toByteArray()).isNotEmpty();
+        assertThat(reloadedKeyStore.containsAlias("pulsar-secret")).isTrue();
+        assertThat(reloadedKey).isInstanceOf(SecretKey.class);
+        assertThat(reloadedKey.getAlgorithm()).isEqualTo("AES");
+        assertThat(reloadedKey.getEncoded()).isEqualTo(secretKey.getEncoded());
+        assertThat(keyStore.getProvider()).isSameAs(provider);
+        assertThat(reloadedKeyStore.getProvider()).isSameAs(provider);
     }
 
     @Test
