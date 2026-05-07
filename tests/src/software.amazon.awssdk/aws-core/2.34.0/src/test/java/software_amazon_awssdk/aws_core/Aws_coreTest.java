@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
@@ -39,12 +40,15 @@ import software.amazon.awssdk.awscore.exception.AwsErrorDetails;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.awscore.presigner.PresignRequest;
 import software.amazon.awssdk.awscore.presigner.PresignedRequest;
+import software.amazon.awssdk.awscore.retry.conditions.RetryOnErrorCodeCondition;
 import software.amazon.awssdk.awscore.util.AwsHeader;
 import software.amazon.awssdk.awscore.util.AwsHostNameUtils;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.core.SdkField;
 import software.amazon.awssdk.core.SdkRequestOverrideConfiguration;
 import software.amazon.awssdk.core.SdkSystemSetting;
+import software.amazon.awssdk.core.exception.SdkClientException;
+import software.amazon.awssdk.core.retry.RetryPolicyContext;
 import software.amazon.awssdk.http.SdkHttpFullRequest;
 import software.amazon.awssdk.http.SdkHttpMethod;
 import software.amazon.awssdk.http.SdkHttpResponse;
@@ -242,6 +246,21 @@ public class Aws_coreTest {
 
         assertThat(exception.isClockSkewException()).isTrue();
         assertThat(exception.isThrottlingException()).isFalse();
+    }
+
+    @Test
+    void retryOnErrorCodeConditionMatchesConfiguredAwsServiceErrorCodesOnly() {
+        RetryOnErrorCodeCondition condition = RetryOnErrorCodeCondition.create(
+                "RequestTimeout", "ProvisionedThroughputExceededException");
+
+        assertThat(condition.shouldRetry(retryPolicyContextForAwsError("RequestTimeout", 400))).isTrue();
+        assertThat(condition.shouldRetry(retryPolicyContextForAwsError("ValidationException", 400))).isFalse();
+        assertThat(condition.shouldRetry(RetryPolicyContext.builder()
+                .exception(SdkClientException.create("connection failed before an AWS response was received"))
+                .build())).isFalse();
+
+        RetryOnErrorCodeCondition setBackedCondition = RetryOnErrorCodeCondition.create(Set.of("InternalError"));
+        assertThat(setBackedCondition.shouldRetry(retryPolicyContextForAwsError("InternalError", 500))).isTrue();
     }
 
     @Test
@@ -536,6 +555,26 @@ public class Aws_coreTest {
                 .build())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("signedHeaders");
+    }
+
+    private static RetryPolicyContext retryPolicyContextForAwsError(String errorCode, int statusCode) {
+        AwsErrorDetails errorDetails = AwsErrorDetails.builder()
+                .serviceName("TestService")
+                .errorCode(errorCode)
+                .errorMessage("service error")
+                .sdkHttpResponse(SdkHttpResponse.builder().statusCode(statusCode).build())
+                .build();
+        AwsServiceException exception = AwsServiceException.builder()
+                .awsErrorDetails(errorDetails)
+                .statusCode(statusCode)
+                .requestId("retry-condition-request")
+                .build();
+
+        return RetryPolicyContext.builder()
+                .exception(exception)
+                .httpStatusCode(statusCode)
+                .retriesAttempted(1)
+                .build();
     }
 
     private static void restoreProperty(String propertyName, String previousValue) {
