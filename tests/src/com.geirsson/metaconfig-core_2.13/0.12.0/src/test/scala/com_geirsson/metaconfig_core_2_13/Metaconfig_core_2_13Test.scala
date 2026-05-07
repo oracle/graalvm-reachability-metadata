@@ -17,6 +17,7 @@ import java.nio.file.Paths
 import metaconfig.Conf
 import metaconfig.ConfCodec
 import metaconfig.ConfDecoder
+import metaconfig.ConfDynamic
 import metaconfig.ConfEncoder
 import metaconfig.ConfError
 import metaconfig.Configured
@@ -83,6 +84,36 @@ class Metaconfig_core_2_13Test {
     assertThat(hocon).contains("alpha.first = 1")
     assertThat(hocon).contains("enabled = true")
     assertThat(hocon).contains("items = [")
+  }
+
+  @Test
+  def dynamicConfNavigationReadsNestedFieldsAndReportsMissingSelections(): Unit = {
+    val conf: Conf = Conf.Obj(
+      "database" -> Conf.Obj(
+        "host" -> Conf.fromString("localhost"),
+        "pool" -> Conf.Obj("size" -> Conf.fromInt(8))
+      ),
+      "features" -> Conf.Obj("http2" -> Conf.fromBoolean(true))
+    )
+
+    val dynamic: ConfDynamic = conf.dynamic
+    val host: Configured[String] = dynamic.selectDynamic("database").selectDynamic("host").as[String]
+    val poolSize: Configured[Int] =
+      dynamic.selectDynamic("database").selectDynamic("pool").selectDynamic("size").as[Int]
+    val http2: Configured[Boolean] = dynamic.selectDynamic("features").selectDynamic("http2").as[Boolean]
+
+    assertThat(host.get).isEqualTo("localhost")
+    assertThat(poolSize.get).isEqualTo(8)
+    assertThat(http2.get).isTrue()
+
+    val selected: Configured[Conf] = dynamic.selectDynamic("database").selectDynamic("pool").asConf
+    assertThat(selected.isOk).isTrue()
+    assertThat(selected.get).isEqualTo(Conf.Obj("size" -> Conf.fromInt(8)))
+
+    val missing: Configured[String] = dynamic.selectDynamic("database").selectDynamic("missing").as[String]
+    assertThat(missing.isNotOk).isTrue()
+    val Left(error) = missing.toEither
+    assertThat(error.isMissingField).isTrue()
   }
 
   @Test
