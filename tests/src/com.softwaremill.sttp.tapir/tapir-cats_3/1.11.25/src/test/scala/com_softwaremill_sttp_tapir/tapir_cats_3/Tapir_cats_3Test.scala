@@ -6,6 +6,7 @@
  */
 package com_softwaremill_sttp_tapir.tapir_cats_3
 
+import cats.Functor
 import cats.InvariantMonoidal
 import cats.InvariantSemigroupal
 import cats.data.Chain
@@ -152,6 +153,23 @@ class Tapir_cats_3Test {
 
     assertNotNull(unitOutput)
     assertNotNull(composedEndpoint)
+  }
+
+  @Test
+  def exampleFunctorMapsEndpointExamplesAndPreservesMetadata(): Unit = {
+    val functor: Functor[EndpointIO.Example] = instances.exampleFunctor
+    val example: EndpointIO.Example[String] = EndpointIO.Example
+      .of("41")
+      .name("status")
+      .summary("successful response")
+      .description("An example response body")
+
+    val mapped: EndpointIO.Example[Int] = functor.map(example)(_.toInt + 1)
+
+    assertEquals(42, mapped.value)
+    assertEquals(example.name, mapped.name)
+    assertEquals(example.summary, mapped.summary)
+    assertEquals(example.description, mapped.description)
   }
 
   @Test
