@@ -8,6 +8,7 @@ package org_conscrypt.conscrypt_openjdk_uber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -33,11 +34,20 @@ public class NativeLibraryLoaderTest {
     void loadFirstAvailableChecksNativeResourcesAndHelperClassBytes() throws Exception {
         try {
             exerciseLoaderInIsolatedConscryptClasses();
+        } catch (InvocationTargetException exception) {
+            if (!isUnsupportedFeatureError(exception.getCause())) {
+                throw exception;
+            }
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!isUnsupportedFeatureError(error)) {
                 throw error;
             }
         }
+    }
+
+    private static boolean isUnsupportedFeatureError(Throwable error) {
+        return error instanceof Error
+                && NativeImageSupport.isUnsupportedFeatureError((Error) error);
     }
 
     private static void exerciseLoaderInIsolatedConscryptClasses() throws Exception {
