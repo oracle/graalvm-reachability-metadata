@@ -7,7 +7,9 @@
 package org_http4s.http4s_ember_core_3
 
 import fs2.Pure
+import org.http4s.Method
 import org.http4s.Request
+import org.http4s.Uri
 import org.http4s.ember.core.EmberException
 import org.http4s.ember.core.h2.H2Keys
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -126,6 +128,36 @@ class Http4s_ember_core_3Test {
     assertEquals(
       initialRequest.attributes.lookup(H2Keys.PushPromiseInitialStreamIdentifier),
       updatedRequest.attributes.lookup(H2Keys.PushPromiseInitialStreamIdentifier),
+    )
+  }
+
+  @Test
+  def h2AttributesSurviveRequestMetadataTransformations(): Unit = {
+    val promisedRequest: Request[Pure] = Request[Pure](
+      method = Method.GET,
+      uri = Uri.unsafeFromString("/assets/app.js"),
+    ).withAttribute(H2Keys.StreamIdentifier, 21)
+    val initialRequest: Request[Pure] = Request[Pure](
+      method = Method.GET,
+      uri = Uri.unsafeFromString("/start"),
+    ).withAttribute(H2Keys.StreamIdentifier, 15)
+      .withAttribute(H2Keys.PushPromiseInitialStreamIdentifier, 1)
+      .withAttribute(H2Keys.PushPromises, List(promisedRequest))
+
+    val updatedRequest: Request[Pure] = initialRequest
+      .withMethod(Method.POST)
+      .withUri(Uri.unsafeFromString("/submitted?ok=true"))
+
+    assertEquals(Method.POST, updatedRequest.method)
+    assertEquals(Uri.unsafeFromString("/submitted?ok=true"), updatedRequest.uri)
+    assertEquals(Some(15), updatedRequest.attributes.lookup(H2Keys.StreamIdentifier))
+    assertEquals(Some(1), updatedRequest.attributes.lookup(H2Keys.PushPromiseInitialStreamIdentifier))
+    assertEquals(Some(List(promisedRequest)), updatedRequest.attributes.lookup(H2Keys.PushPromises))
+    assertEquals(
+      Some(List(Some(21))),
+      updatedRequest.attributes.lookup(H2Keys.PushPromises).map(
+        _.map(_.attributes.lookup(H2Keys.StreamIdentifier))
+      ),
     )
   }
 }
