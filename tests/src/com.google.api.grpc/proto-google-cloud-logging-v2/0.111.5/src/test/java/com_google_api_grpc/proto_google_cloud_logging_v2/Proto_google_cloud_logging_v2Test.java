@@ -23,21 +23,36 @@ import com.google.logging.v2.CmekSettingsName;
 import com.google.logging.v2.CopyLogEntriesMetadata;
 import com.google.logging.v2.CopyLogEntriesRequest;
 import com.google.logging.v2.CreateBucketRequest;
+import com.google.logging.v2.CreateExclusionRequest;
 import com.google.logging.v2.CreateLinkRequest;
 import com.google.logging.v2.CreateLogMetricRequest;
+import com.google.logging.v2.CreateSinkRequest;
+import com.google.logging.v2.CreateViewRequest;
+import com.google.logging.v2.DeleteExclusionRequest;
 import com.google.logging.v2.DeleteLinkRequest;
 import com.google.logging.v2.DeleteLogMetricRequest;
+import com.google.logging.v2.DeleteSinkRequest;
+import com.google.logging.v2.DeleteViewRequest;
+import com.google.logging.v2.GetExclusionRequest;
 import com.google.logging.v2.GetLogMetricRequest;
+import com.google.logging.v2.GetSinkRequest;
+import com.google.logging.v2.GetViewRequest;
 import com.google.logging.v2.IndexConfig;
 import com.google.logging.v2.IndexType;
 import com.google.logging.v2.LifecycleState;
 import com.google.logging.v2.Link;
 import com.google.logging.v2.LinkMetadata;
 import com.google.logging.v2.LinkName;
+import com.google.logging.v2.ListExclusionsRequest;
+import com.google.logging.v2.ListExclusionsResponse;
 import com.google.logging.v2.ListLogEntriesRequest;
 import com.google.logging.v2.ListLogEntriesResponse;
 import com.google.logging.v2.ListLogMetricsRequest;
 import com.google.logging.v2.ListLogMetricsResponse;
+import com.google.logging.v2.ListSinksRequest;
+import com.google.logging.v2.ListSinksResponse;
+import com.google.logging.v2.ListViewsRequest;
+import com.google.logging.v2.ListViewsResponse;
 import com.google.logging.v2.LocationMetadata;
 import com.google.logging.v2.LogBucket;
 import com.google.logging.v2.LogBucketName;
@@ -66,8 +81,11 @@ import com.google.logging.v2.TailLogEntriesRequest;
 import com.google.logging.v2.TailLogEntriesResponse;
 import com.google.logging.v2.UpdateBucketRequest;
 import com.google.logging.v2.UpdateCmekSettingsRequest;
+import com.google.logging.v2.UpdateExclusionRequest;
 import com.google.logging.v2.UpdateLogMetricRequest;
 import com.google.logging.v2.UpdateSettingsRequest;
+import com.google.logging.v2.UpdateSinkRequest;
+import com.google.logging.v2.UpdateViewRequest;
 import com.google.logging.v2.WriteLogEntriesPartialErrors;
 import com.google.logging.v2.WriteLogEntriesRequest;
 import com.google.logging.v2.WriteLogEntriesResponse;
@@ -394,6 +412,128 @@ public class Proto_google_cloud_logging_v2Test {
         assertThat(updateRequest.getMetric().getDisabled()).isTrue();
         assertThat(updateRequest.getMetric().getLabelExtractorsMap()).containsEntry("severity", "EXTRACT(severity)");
         assertThat(deleteRequest.getMetricName()).isEqualTo(metricName);
+    }
+
+    @Test
+    void loggingConfigServiceRequestsManageSinksExclusionsAndViews() {
+        String parent = ProjectName.format(PROJECT_ID);
+        String bucketParent = LogBucketName.format(PROJECT_ID, LOCATION, BUCKET_ID);
+        LogSink sink = LogSink.newBuilder()
+                .setName(LogSinkName.format(PROJECT_ID, "audit-sink"))
+                .setDestination("storage.googleapis.com/native-image-audit-logs")
+                .setFilter("logName:activity")
+                .setDescription("Audit log export")
+                .build();
+        LogSink updatedSink = sink.toBuilder()
+                .setFilter("severity>=NOTICE")
+                .setDescription("Updated audit log export")
+                .build();
+        LogExclusion exclusion = LogExclusion.newBuilder()
+                .setName(LogExclusionName.format(PROJECT_ID, "drop-health-checks"))
+                .setFilter("httpRequest.requestUrl:\"/health\"")
+                .setDescription("Ignore health checks")
+                .build();
+        LogExclusion updatedExclusion = exclusion.toBuilder().setDisabled(true).build();
+        LogView view = LogView.newBuilder()
+                .setName(LogViewName.format(PROJECT_ID, LOCATION, BUCKET_ID, "application"))
+                .setFilter("resource.type=\"gce_instance\"")
+                .setDescription("Application entries")
+                .build();
+        LogView updatedView = view.toBuilder().setFilter("severity>=INFO").build();
+
+        CreateSinkRequest createSinkRequest = CreateSinkRequest.newBuilder()
+                .setParent(parent)
+                .setSink(sink)
+                .setUniqueWriterIdentity(true)
+                .build();
+        ListSinksRequest listSinksRequest = ListSinksRequest.newBuilder()
+                .setParent(parent)
+                .setPageSize(1)
+                .setPageToken("sink-page")
+                .build();
+        ListSinksResponse listSinksResponse = ListSinksResponse.newBuilder()
+                .addSinks(sink)
+                .addSinks(updatedSink)
+                .setNextPageToken("next-sink-page")
+                .build();
+        GetSinkRequest getSinkRequest = GetSinkRequest.newBuilder().setSinkName(sink.getName()).build();
+        UpdateSinkRequest updateSinkRequest = UpdateSinkRequest.newBuilder()
+                .setSinkName(sink.getName())
+                .setSink(updatedSink)
+                .setUpdateMask(fieldMask("filter", "description"))
+                .build();
+        DeleteSinkRequest deleteSinkRequest = DeleteSinkRequest.newBuilder().setSinkName(sink.getName()).build();
+
+        CreateExclusionRequest createExclusionRequest = CreateExclusionRequest.newBuilder()
+                .setParent(parent)
+                .setExclusion(exclusion)
+                .build();
+        ListExclusionsRequest listExclusionsRequest = ListExclusionsRequest.newBuilder()
+                .setParent(parent)
+                .setPageSize(1)
+                .setPageToken("exclusion-page")
+                .build();
+        ListExclusionsResponse listExclusionsResponse = ListExclusionsResponse.newBuilder()
+                .addExclusions(exclusion)
+                .addExclusions(updatedExclusion)
+                .setNextPageToken("next-exclusion-page")
+                .build();
+        GetExclusionRequest getExclusionRequest = GetExclusionRequest.newBuilder().setName(exclusion.getName()).build();
+        UpdateExclusionRequest updateExclusionRequest = UpdateExclusionRequest.newBuilder()
+                .setName(exclusion.getName())
+                .setExclusion(updatedExclusion)
+                .setUpdateMask(fieldMask("disabled"))
+                .build();
+        DeleteExclusionRequest deleteExclusionRequest = DeleteExclusionRequest.newBuilder()
+                .setName(exclusion.getName())
+                .build();
+
+        CreateViewRequest createViewRequest = CreateViewRequest.newBuilder()
+                .setParent(bucketParent)
+                .setViewId("application")
+                .setView(view)
+                .build();
+        ListViewsRequest listViewsRequest = ListViewsRequest.newBuilder()
+                .setParent(bucketParent)
+                .setPageSize(1)
+                .setPageToken("view-page")
+                .build();
+        ListViewsResponse listViewsResponse = ListViewsResponse.newBuilder()
+                .addViews(view)
+                .addViews(updatedView)
+                .setNextPageToken("next-view-page")
+                .build();
+        GetViewRequest getViewRequest = GetViewRequest.newBuilder().setName(view.getName()).build();
+        UpdateViewRequest updateViewRequest = UpdateViewRequest.newBuilder()
+                .setName(view.getName())
+                .setView(updatedView)
+                .setUpdateMask(fieldMask("filter"))
+                .build();
+        DeleteViewRequest deleteViewRequest = DeleteViewRequest.newBuilder().setName(view.getName()).build();
+
+        assertThat(createSinkRequest.getUniqueWriterIdentity()).isTrue();
+        assertThat(listSinksRequest.getPageToken()).isEqualTo("sink-page");
+        assertThat(listSinksResponse.getSinksList()).containsExactly(sink, updatedSink);
+        assertThat(listSinksResponse.getNextPageToken()).isEqualTo("next-sink-page");
+        assertThat(getSinkRequest.getSinkName()).isEqualTo(sink.getName());
+        assertThat(updateSinkRequest.getUpdateMask().getPathsList()).containsExactly("filter", "description");
+        assertThat(deleteSinkRequest.getSinkName()).isEqualTo(sink.getName());
+
+        assertThat(createExclusionRequest.getExclusion()).isEqualTo(exclusion);
+        assertThat(listExclusionsRequest.getPageSize()).isEqualTo(1);
+        assertThat(listExclusionsResponse.getNextPageToken()).isEqualTo("next-exclusion-page");
+        assertThat(getExclusionRequest.getName()).isEqualTo(exclusion.getName());
+        assertThat(updateExclusionRequest.getExclusion().getDisabled()).isTrue();
+        assertThat(updateExclusionRequest.getUpdateMask().getPathsList()).containsExactly("disabled");
+        assertThat(deleteExclusionRequest.getName()).isEqualTo(exclusion.getName());
+
+        assertThat(createViewRequest.getParent()).isEqualTo(bucketParent);
+        assertThat(createViewRequest.getViewId()).isEqualTo("application");
+        assertThat(listViewsRequest.getPageToken()).isEqualTo("view-page");
+        assertThat(listViewsResponse.getViewsList()).containsExactly(view, updatedView);
+        assertThat(getViewRequest.getName()).isEqualTo(view.getName());
+        assertThat(updateViewRequest.getView().getFilter()).isEqualTo("severity>=INFO");
+        assertThat(deleteViewRequest.getName()).isEqualTo(view.getName());
     }
 
     @Test
