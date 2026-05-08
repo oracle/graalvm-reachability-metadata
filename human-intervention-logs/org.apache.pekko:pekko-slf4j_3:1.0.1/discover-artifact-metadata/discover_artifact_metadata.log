@@ -1,0 +1,1098 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e05d6-0815-79d2-bf74-50d8ef6ff283
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-slf4j_3:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.1" when "$version$" is replaced with "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+- Set "coordinates" to "org.apache.pekko:pekko-slf4j_3:1.0.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing discovered metadata format first, then verify Pekko’s artifact coordinates and published source/test/doc locations before writing the JSON.
+exec
+/usr/bin/bash -lc "rg '\"language\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata -g '*.json' | head -60" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+
+web search: 
+web search: Maven Central org.apache.pekko pekko-slf4j_3 1.0.1 sources tests jar
+codex
+The target file is only a stub, so I’m checking both Maven Central and the upstream repository. This artifact suffix `_3` is already a strong signal that it is the Scala 3 JVM cross-build, but I’ll still verify the published JAR shape before setting the language field.
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+./metadata/org.example/library/index.json:    "repository-url": "N/A",
+./metadata/com.ongres.stringprep/stringprep/index.json:    "repository-url" : "https://github.com/ongres/stringprep",
+./metadata/com.ongres.stringprep/saslprep/index.json:    "repository-url" : "https://github.com/ongres/stringprep",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-databind",
+./metadata/com.android.databinding/baseLibrary/index.json:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+./metadata/com.android.databinding/baseLibrary/index.json:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+./metadata/com.github.jnr/jnr-x86asm/index.json:    "repository-url" : "https://github.com/jnr/jnr-x86asm",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "repository-url" : "https://github.com/JetBrains/kotlin",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "repository-url" : "https://github.com/JetBrains/kotlin",
+./metadata/com.itextpdf/kernel/index.json:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/forms/index.json:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/layout/index.json:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/svg/index.json:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/io/index.json:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/org.apache.hadoop/hadoop-annotations/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+./metadata/org.yaml/snakeyaml/index.json:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+./metadata/org.yaml/snakeyaml/index.json:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+./metadata/io.vertx/vertx-core/index.json:    "repository-url" : "https://github.com/eclipse-vertx/vert.x",
+./metadata/io.vertx/vertx-core/index.json:    "repository-url" : "https://github.com/eclipse-vertx/vert.x",
+./metadata/io.lettuce/lettuce-core/index.json:    "repository-url" : "https://github.com/redis/lettuce",
+./metadata/com.querydsl/querydsl-core/index.json:    "repository-url" : "https://github.com/querydsl/querydsl",
+./metadata/com.querydsl/querydsl-jpa/index.json:    "repository-url" : "https://github.com/querydsl/querydsl",
+./metadata/com.spotify/completable-futures/index.json:    "repository-url" : "https://github.com/spotify/completable-futures",
+./metadata/org.apache.xbean/xbean-reflect/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+./metadata/com.squareup.moshi/moshi-adapters/index.json:    "repository-url" : "https://github.com/square/moshi",
+./metadata/com.squareup.moshi/moshi-kotlin/index.json:    "repository-url" : "https://github.com/square/moshi",
+./metadata/javax.validation/validation-api/index.json:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/com.github.fd4s/fs2-kafka_3/index.json:    "repository-url" : "https://github.com/typelevel/fs2-kafka",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "repository-url" : "https://github.com/apache/artemis",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "repository-url" : "https://github.com/apache/artemis",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "repository-url" : "https://github.com/apache/artemis",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "repository-url" : "https://github.com/apache/artemis",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/1.0.1/pekko-slf4j_3-1.0.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-slf4j_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>1.0.1</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>pekko-slf4j</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/incubator-pekko</url>
+        <connection>scm:git:https://github.com/apache/incubator-pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/incubator-pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/incubator-pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/1.0.1</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor_3</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-testkit_3</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/1.0.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 394ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-slf4j_3/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-slf4j_3/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-slf4j_3-1.0.1-javadoc.jar" title="pekko-slf4j_3-1.0.1-javadoc.jar">pekko-slf4j_3-1.0.1-javadoc.jar</a>                   2023-07-24 23:11   2732100      
+<a href="pekko-slf4j_3-1.0.1-javadoc.jar.asc" title="pekko-slf4j_3-1.0.1-javadoc.jar.asc">pekko-slf4j_3-1.0.1-javadoc.jar.asc</a>               2023-07-24 23:11       488      
+<a href="pekko-slf4j_3-1.0.1-javadoc.jar.asc.md5" title="pekko-slf4j_3-1.0.1-javadoc.jar.asc.md5">pekko-slf4j_3-1.0.1-javadoc.jar.asc.md5</a>           2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1-javadoc.jar.asc.sha1" title="pekko-slf4j_3-1.0.1-javadoc.jar.asc.sha1">pekko-slf4j_3-1.0.1-javadoc.jar.asc.sha1</a>          2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1-javadoc.jar.md5" title="pekko-slf4j_3-1.0.1-javadoc.jar.md5">pekko-slf4j_3-1.0.1-javadoc.jar.md5</a>               2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1-javadoc.jar.sha1" title="pekko-slf4j_3-1.0.1-javadoc.jar.sha1">pekko-slf4j_3-1.0.1-javadoc.jar.sha1</a>              2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1-sources.jar" title="pekko-slf4j_3-1.0.1-sources.jar">pekko-slf4j_3-1.0.1-sources.jar</a>                   2023-07-24 23:11      8197      
+<a href="pekko-slf4j_3-1.0.1-sources.jar.asc" title="pekko-slf4j_3-1.0.1-sources.jar.asc">pekko-slf4j_3-1.0.1-sources.jar.asc</a>               2023-07-24 23:11       488      
+<a href="pekko-slf4j_3-1.0.1-sources.jar.asc.md5" title="pekko-slf4j_3-1.0.1-sources.jar.asc.md5">pekko-slf4j_3-1.0.1-sources.jar.asc.md5</a>           2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1-sources.jar.asc.sha1" title="pekko-slf4j_3-1.0.1-sources.jar.asc.sha1">pekko-slf4j_3-1.0.1-sources.jar.asc.sha1</a>          2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1-sources.jar.md5" title="pekko-slf4j_3-1.0.1-sources.jar.md5">pekko-slf4j_3-1.0.1-sources.jar.md5</a>               2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1-sources.jar.sha1" title="pekko-slf4j_3-1.0.1-sources.jar.sha1">pekko-slf4j_3-1.0.1-sources.jar.sha1</a>              2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1.buildinfo" title="pekko-slf4j_3-1.0.1.buildinfo">pekko-slf4j_3-1.0.1.buildinfo</a>                     2023-07-24 23:11       754      
+<a href="pekko-slf4j_3-1.0.1.buildinfo.asc" title="pekko-slf4j_3-1.0.1.buildinfo.asc">pekko-slf4j_3-1.0.1.buildinfo.asc</a>                 2023-07-24 23:11       488      
+<a href="pekko-slf4j_3-1.0.1.buildinfo.asc.md5" title="pekko-slf4j_3-1.0.1.buildinfo.asc.md5">pekko-slf4j_3-1.0.1.buildinfo.asc.md5</a>             2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1.buildinfo.asc.sha1" title="pekko-slf4j_3-1.0.1.buildinfo.asc.sha1">pekko-slf4j_3-1.0.1.buildinfo.asc.sha1</a>            2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1.buildinfo.md5" title="pekko-slf4j_3-1.0.1.buildinfo.md5">pekko-slf4j_3-1.0.1.buildinfo.md5</a>                 2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1.buildinfo.sha1" title="pekko-slf4j_3-1.0.1.buildinfo.sha1">pekko-slf4j_3-1.0.1.buildinfo.sha1</a>                2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1.jar" title="pekko-slf4j_3-1.0.1.jar">pekko-slf4j_3-1.0.1.jar</a>                           2023-07-24 23:11     31828      
+<a href="pekko-slf4j_3-1.0.1.jar.asc" title="pekko-slf4j_3-1.0.1.jar.asc">pekko-slf4j_3-1.0.1.jar.asc</a>                       2023-07-24 23:11       488      
+<a href="pekko-slf4j_3-1.0.1.jar.asc.md5" title="pekko-slf4j_3-1.0.1.jar.asc.md5">pekko-slf4j_3-1.0.1.jar.asc.md5</a>                   2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1.jar.asc.sha1" title="pekko-slf4j_3-1.0.1.jar.asc.sha1">pekko-slf4j_3-1.0.1.jar.asc.sha1</a>                  2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1.jar.md5" title="pekko-slf4j_3-1.0.1.jar.md5">pekko-slf4j_3-1.0.1.jar.md5</a>                       2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1.jar.sha1" title="pekko-slf4j_3-1.0.1.jar.sha1">pekko-slf4j_3-1.0.1.jar.sha1</a>                      2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1.pom" title="pekko-slf4j_3-1.0.1.pom">pekko-slf4j_3-1.0.1.pom</a>                           2023-07-24 23:11      2795      
+<a href="pekko-slf4j_3-1.0.1.pom.asc" title="pekko-slf4j_3-1.0.1.pom.asc">pekko-slf4j_3-1.0.1.pom.asc</a>                       2023-07-24 23:11       488      
+<a href="pekko-slf4j_3-1.0.1.pom.asc.md5" title="pekko-slf4j_3-1.0.1.pom.asc.md5">pekko-slf4j_3-1.0.1.pom.asc.md5</a>                   2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1.pom.asc.sha1" title="pekko-slf4j_3-1.0.1.pom.asc.sha1">pekko-slf4j_3-1.0.1.pom.asc.sha1</a>                  2023-07-24 23:11        40      
+<a href="pekko-slf4j_3-1.0.1.pom.md5" title="pekko-slf4j_3-1.0.1.pom.md5">pekko-slf4j_3-1.0.1.pom.md5</a>                       2023-07-24 23:11        32      
+<a href="pekko-slf4j_3-1.0.1.pom.sha1" title="pekko-slf4j_3-1.0.1.pom.sha1">pekko-slf4j_3-1.0.1.pom.sha1</a>                      2023-07-24 23:11        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/incubator-pekko/tags?per_page=100 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/incubator-pekko/tree/v1.0.1 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/incubator-pekko/tree/1.0.1 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 509ms:
+[
+  {
+    "name": "v2.0.0-M1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v2.0.0-M1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v2.0.0-M1",
+    "commit": {
+      "sha": "9ed4003fa2838b50fac3dbf5e26eb12f3d738b80",
+      "url": "https://api.github.com/repos/apache/pekko/commits/9ed4003fa2838b50fac3dbf5e26eb12f3d738b80"
+    },
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjIuMC4wLU0x"
+  },
+  {
+    "name": "v2.0.0-M1-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v2.0.0-M1-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v2.0.0-M1-RC1",
+    "commit": {
+      "sha": "9ed4003fa2838b50fac3dbf5e26eb12f3d738b80",
+      "url": "https://api.github.com/repos/apache/pekko/commits/9ed4003fa2838b50fac3dbf5e26eb12f3d738b80"
+    },
+    "node_id": "REF_kwDOIV69lrdyZWZzL3RhZ3MvdjIuMC4wLU0xLVJDMQ"
+  },
+  {
+    "name": "v2.0.0-M0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v2.0.0-M0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v2.0.0-M0",
+    "commit": {
+      "sha": "50fe0a8a392169183772d6ae9d6e8f25766e25e0",
+      "url": "https://api.github.com/repos/apache/pekko/commits/50fe0a8a392169183772d6ae9d6e8f25766e25e0"
+    },
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjIuMC4wLU0w"
+  },
+  {
+    "name": "v1.6.0-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.6.0-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.6.0-RC1",
+    "commit": {
+      "sha": "1e705905c9120d5dc16485727774030847650ff7",
+      "url": "https://api.github.com/repos/apache/pekko/commits/1e705905c9120d5dc16485727774030847650ff7"
+    },
+    "node_id": "REF_kwDOIV69lrRyZWZzL3RhZ3MvdjEuNi4wLVJDMQ"
+  },
+  {
+    "name": "v1.6.0-M0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.6.0-M0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.6.0-M0",
+    "commit": {
+      "sha": "a1c929c0b489c3fd0dd2b9dfaa65245ab9361bde",
+      "url": "https://api.github.com/repos/apache/pekko/commits/a1c929c0b489c3fd0dd2b9dfaa65245ab9361bde"
+    },
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjEuNi4wLU0w"
+  },
+  {
+    "name": "v1.5.0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.5.0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.5.0",
+    "commit": {
+      "sha": "8ec2e2eca69ae85d6c4632778aff6bed516979d8",
+      "url": "https://api.github.com/repos/apache/pekko/commits/8ec2e2eca69ae85d6c4632778aff6bed516979d8"
+    },
+    "node_id": "REF_kwDOIV69lrByZWZzL3RhZ3MvdjEuNS4w"
+  },
+  {
+    "name": "v1.5.0-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.5.0-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.5.0-RC1",
+    "commit": {
+      "sha": "8ec2e2eca69ae85d6c4632778aff6bed516979d8",
+      "url": "https://api.github.com/repos/apache/pekko/commits/8ec2e2eca69ae85d6c4632778aff6bed516979d8"
+    },
+    "node_id": "REF_kwDOIV69lrRyZWZzL3RhZ3MvdjEuNS4wLVJDMQ"
+  },
+  {
+    "name": "v1.5.0-M0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.5.0-M0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.5.0-M0",
+    "commit": {
+      "sha": "07b19b07d699b1dd089fc0095e542ff8c38afdc0",
+      "url": "https://api.github.com/repos/apache/pekko/commits/07b19b07d699b1dd089fc0095e542ff8c38afdc0"
+    },
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjEuNS4wLU0w"
+  },
+  {
+    "name": "v1.4.0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.4.0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.4.0",
+    "commit": {
+      "sha": "2884b12f06df09a38040add82e78361dcb5c51c2",
+      "url": "https://api.github.com/repos/apache/pekko/commits/2884b12f06df09a38040add82e78361dcb5c51c2"
+    },
+    "node_id": "REF_kwDOIV69lrByZWZzL3RhZ3MvdjEuNC4w"
+  },
+  {
+    "name": "v1.4.0-RC2",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.4.0-RC2",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.4.0-RC2",
+    "commit": {
+      "sha": "2884b12f06df09a38040add82e78361dcb5c51c2",
+      "url": "https://api.github.com/repos/apache/pekko/commits/2884b12f06df09a38040add82e78361dcb5c51c2"
+    },
+    "node_id": "REF_kwDOIV69lrRyZWZzL3RhZ3MvdjEuNC4wLVJDMg"
+  },
+  {
+    "name": "v1.4.0-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.4.0-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.4.0-RC1",
+    "commit": {
+      "sha": "1fcfc9d9942818d70262e9e5b48a730c4bc05709",
+      "url": "https://api.github.com/repos/apache/pekko/commits/1fcfc9d9942818d70262e9e5b48a730c4bc05709"
+    },
+    "node_id": "REF_kwDOIV69lrRyZWZzL3RhZ3MvdjEuNC4wLVJDMQ"
+  },
+  {
+    "name": "v1.4.0-M0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.4.0-M0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.4.0-M0",
+    "commit": {
+      "sha": "886ea10c3fdd3c05f01afe15b2a328a9887f0b60",
+      "url": "https://api.github.com/repos/apache/pekko/commits/886ea10c3fdd3c05f01afe15b2a328a9887f0b60"
+    },
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjEuNC4wLU0w"
+  },
+  {
+    "name": "v1.3.0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.3.0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.3.0",
+    "commit": {
+      "sha": "594e0572e135ff01733ee85d0e3ae0c38ebd2c3b",
+      "url": "https://api.github.com/repos/apache/pekko/commits/594e0572e135ff01733ee85d0e3ae0c38ebd2c3b"
+    },
+    "node_id": "REF_kwDOIV69lrByZWZzL3RhZ3MvdjEuMy4w"
+  },
+  {
+    "name": "v1.3.0-RC1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.3.0-RC1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.3.0-RC1",
+    "commit": {
+      "sha": "594e0572e135ff01733ee85d0e3ae0c38ebd2c3b",
+      "url": "https://api.github.com/repos/apache/pekko/commits/594e0572e135ff01733ee85d0e3ae0c38ebd2c3b"
+    },
+    "node_id": "REF_kwDOIV69lrRyZWZzL3RhZ3MvdjEuMy4wLVJDMQ"
+  },
+  {
+    "name": "v1.3.0-M0",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.3.0-M0",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.3.0-M0",
+    "commit": {
+      "sha": "2aa46afb1c45f17fc1291213e55dde1ba61c9e26",
+      "url": "https://api.github.com/repos/apache/pekko/commits/2aa46afb1c45f17fc1291213e55dde1ba61c9e26"
+    },
+    "node_id": "REF_kwDOIV69lrNyZWZzL3RhZ3MvdjEuMy4wLU0w"
+  },
+  {
+    "name": "v1.2.1",
+    "zipball_url": "https://api.github.com/repos/apache/pekko/zipball/refs/tags/v1.2.1",
+    "tarball_url": "https://api.github.com/repos/apache/pekko/tarball/refs/tags/v1.2.1",
+    "commit": {
+      "sha": "2545f88078c4a3e9ab574f0606d7305ed84dc4df",
+      "url": "https://api.github.com/repos/apache/pekko/commits/2545f88078c4a3e9ab574f0606d7305ed84dc4df"
+    },
+    "node_id": "REF_kwDOIV69lrByZWZzL3RhZ3MvdjEuMi4x"
+
+ succeeded in 512ms:
+HTTP/2 301 
+date: Fri, 08 May 2026 04:26:39 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/apache/pekko/tree/1.0.1
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=uKFEVgssRVPSRZq9MOfW3tQOIJMBX87Qnm1T3ijIPgIHUOgW21442q45fodOq4oyVf3RxRXyiGac3RMmYwRN14spcNHgsb8oaHNHjyH4VSYUnJcUbRhxh%2BiZ4VHBFuWiWct1TlZCm1z0gF5SY3QmB%2BNgogVGK%2BGNv8qELTNyZGv6FvlrnIjBTOaBjCw7Xi84VMsHmH%2FeZ4mUKioLW%2BS2kNuE2FOozdrb%2F%2BD5pMIJ%2BmlADklTIDllO6DHJ0w224QGXLg78JHPzV0uvRPbZDonaQ%3D%3D--dOPyQQQ787VYmYBS--VHwVIlKznungh82JnTFBQw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1648923148.1778214399; expires=Sat, 08 May 2027 04:26:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:26:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 51A3:168B:69DCA54:52603B8:69FD65FE
+
+HTTP/2 404 
+
+ succeeded in 1216ms:
+HTTP/2 301 
+date: Fri, 08 May 2026 04:26:39 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/apache/pekko/tree/v1.0.1
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=BskBPTkhlh4KGfy%2FlbrKli4iZnEyCCHptO12pkXFQ9zUknGsUC5eHCZJAWOmkp7%2BydLqr9XOlXPyIsN9urvm9OnIi0NHD9gCd7SjX4ikn2Nmt0JqJMrs5PW6FFgnl6l7A%2BfoOR%2BVgRHXQtXlqYl%2FlZzf24Yq%2Btw%2BE4SIRe%2FZ2G5%2BiXIUX13nm0IiimOWwplVmtStYAmGh9QL0P38QpRbBBCknSRcLQtIc5saIr8OQQV6yOXWAuWApV1wC%2BUj2A7omayLSjIsA372o3EKnN02zg%3D%3D--8CFUSHVZ9gpAdE90--LRC8hhOPj0krdiDbCiC6Fg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1599960232.1778214398; expires=Sat, 08 May 2027 04:26:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:26:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:3F7D1B:C164D23:988DDA7:69FD65FE
+
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko/git/trees/v1.0.1?recursive=1 | rg 'slf4j|Slf4j|SLF4J' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/1.0.1/pekko-slf4j_3-1.0.1.buildinfo | sed -n '1,180p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/1.0.1/pekko-slf4j_3-1.0.1.jar -o /tmp/pekko-slf4j.jar && jar tf /tmp/pekko-slf4j.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 183ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/DISCLAIMER
+META-INF/LICENSE
+META-INF/NOTICE
+org/
+org/apache/
+org/apache/pekko/
+org/apache/pekko/event/
+org/apache/pekko/event/slf4j/
+org/apache/pekko/event/slf4j/Logger$.class
+org/apache/pekko/event/slf4j/Logger.class
+org/apache/pekko/event/slf4j/Logger.tasty
+org/apache/pekko/event/slf4j/SLF4JLogging.class
+org/apache/pekko/event/slf4j/SLF4JLogging.tasty
+org/apache/pekko/event/slf4j/Slf4jLogMarker$.class
+org/apache/pekko/event/slf4j/Slf4jLogMarker.class
+org/apache/pekko/event/slf4j/Slf4jLogMarker.tasty
+org/apache/pekko/event/slf4j/Slf4jLogger$$anon$1.class
+org/apache/pekko/event/slf4j/Slf4jLogger.class
+org/apache/pekko/event/slf4j/Slf4jLogger.tasty
+org/apache/pekko/event/slf4j/Slf4jLoggingFilter.class
+org/apache/pekko/event/slf4j/Slf4jLoggingFilter.tasty
+
+ succeeded in 372ms:
+buildinfo.version=0.1-SNAPSHOT
+name=pekko-slf4j
+group-id=org.apache.pekko
+artifact-id=pekko-slf4j_3
+version=1.0.1
+java.version=11.0.19
+os.name=Mac OS X
+build-tool=sbt
+sbt.version=1.9.2
+scala.version=3.3.0
+scala.binary-version=3
+date=1690229949329
+outputs.0.filename=pekko-slf4j_3-1.0.1.pom
+outputs.0.length=2795
+outputs.0.checksums.sha512=58a35d152ffd44f07b3a6dfa402a2bbffd513b17f5c16fe55375014a841e827abafd02857e69fa8792b5ca99bc48774b4c64ddec8d1ff59098e97ef287529044
+outputs.1.filename=pekko-slf4j_3-1.0.1.jar
+outputs.1.length=31828
+outputs.1.checksums.sha512=a6ad9cfd4310deaf395dd9d3a9ba2e55f808a222362262e52ced11178168dcf6b9c6dbc112ead7157462ea19b24a022716fe59b4a396b331e4cdb31e057e1cb6
+source.scm.uri=scm:git:git@github.com:apache/incubator-pekko.git
+ succeeded in 557ms:
+      "path": "slf4j",
+      "path": "slf4j/src",
+      "path": "slf4j/src/main",
+      "path": "slf4j/src/main/scala",
+      "path": "slf4j/src/main/scala/org",
+      "path": "slf4j/src/main/scala/org/apache",
+      "path": "slf4j/src/main/scala/org/apache/pekko",
+      "path": "slf4j/src/main/scala/org/apache/pekko/event",
+      "path": "slf4j/src/main/scala/org/apache/pekko/event/slf4j",
+      "path": "slf4j/src/main/scala/org/apache/pekko/event/slf4j/Slf4jLogger.scala",
+      "path": "slf4j/src/test",
+      "path": "slf4j/src/test/resources",
+      "path": "slf4j/src/test/resources/logback-test.xml",
+      "path": "slf4j/src/test/scala",
+      "path": "slf4j/src/test/scala/org",
+      "path": "slf4j/src/test/scala/org/apache",
+      "path": "slf4j/src/test/scala/org/apache/pekko",
+      "path": "slf4j/src/test/scala/org/apache/pekko/event",
+      "path": "slf4j/src/test/scala/org/apache/pekko/event/slf4j",
+      "path": "slf4j/src/test/scala/org/apache/pekko/event/slf4j/Slf4jLoggerSpec.scala",
+      "path": "slf4j/src/test/scala/org/apache/pekko/event/slf4j/Slf4jLoggingFilterSpec.scala",
+
+exec
+/usr/bin/bash -lc "rg 'repo.maven.apache.org.*sources.jar|javadoc.jar|tree/.+\\"'$version'"\\"'$|blob/.+'"\\"'$version'"\\"'$'"' metadata build -g '*.json' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/net.postgis/postgis-geometry/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/com.ibm.async/asyncutil/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-sources.jar",
+metadata/com.ibm.async/asyncutil/index.json:    "test-code-url" : "https://github.com/IBM/java-async-util/tree/v$version$/asyncutil/src/test",
+metadata/com.ibm.async/asyncutil/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/android-extensions/android-extensions-compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+metadata/com.querydsl/querydsl-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-core/$version$/querydsl-core-$version$-sources.jar",
+metadata/com.querydsl/querydsl-core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-core/$version$/querydsl-core-$version$-test-sources.jar",
+metadata/com.querydsl/querydsl-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-core/$version$/querydsl-core-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test/junit/src/test/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://pekko.apache.org/api/pekko/1.0.1/ | sed -n '1,24p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/pekko/tree/v1.0.1/slf4j/src/test | sed -n '1,24p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 107ms:
+HTTP/2 200 
+server: Apache
+x-frame-options: SAMEORIGIN
+last-modified: Tue, 21 Oct 2025 15:25:40 GMT
+etag: "1655-641acd00cad8d"
+content-type: text/html
+via: 1.1 www.apache.org, 1.1 varnish, 1.1 varnish
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin
+accept-ranges: bytes
+age: 0
+date: Fri, 08 May 2026 04:26:58 GMT
+x-served-by: cache-hel1410034-HEL, cache-fra-eddf8230041-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778214419.783261,VS0,VE41
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 5717
+
+
+ succeeded in 508ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:26:59 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0cb0e4fc1ec5f49df3e90bd66ba998ff"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=CNuhlaSSIU15KUCKrD7iufjXy2CFZ6KsVJVvtgZ0PF2WeA2SwT79eu%2FCz17A8EAf1o8fB1zjewAfL6DhaTZk2y5H%2BTZ97gNI%2FplD5SPfpUXUC2eKlLmAuner2ARG%2Fl7TOVmqR14j6AT%2BIsTWNxngZJjaemsMYq63NJov5Ob8gMFcV39FPPFQZD9Ok5dypmIlCXb6P5zjA4jE%2BOhDyW9JbFnRNveFKmc2rNaiIVtpuswNrWZ8LZWi7xdM9VacikztD7lQcBofXUKk7jU6BaxgFw%3D%3D--zoU8dYFx0x48R6yL--y%2FpAVf47t27qlSqyKDgl7A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1611139727.1778214418; expires=Sat, 08 May 2027 04:26:58 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:26:58 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5197:19CD72:BAE4AA6:93A48AD:69FD6612
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/com.comcast/ip4s-core_3/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/Comcast/ip4s",
+    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+    "description" : "ip4s-core_3 provides immutable Scala 3 data types for IP addresses, hosts, ports, socket addresses, CIDR blocks, multicast addresses, and related network values. It emphasizes referentially transparent parsing and validation so applications can model network endpoints without implicit DNS lookups or mutable Java networking objects.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.5.0"
+    ],
+    "allowed-packages" : [
+      "com.comcast.ip4s"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/com.typesafe.slick/slick_2.13/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.6.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/slick/slick",
+    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+    "description" : "Slick is a Scala database access library that provides strongly typed, composable APIs for working with relational databases. It lets applications express queries in Scala, generate SQL for multiple database engines, and use asynchronous or reactive-streaming database actions.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.6.1"
+    ],
+    "allowed-packages" : [
+      "scala.reflect",
+      "slick"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' metadata -g 'index.json' | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:    "language" : {
+metadata/com.github.ghostdogpr/caliban_3/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "language" : {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:    "language" : {
+metadata/org.playframework/play-server_3/index.json:    "language": {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:    "language" : {
+metadata/io.circe/circe-jawn_3/index.json:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:    "language" : {
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org/apache/pekko/pekko-slf4j_3/1.0.1 pekko-slf4j_3-1.0.1-sources.jar
+web search: 
+web search: "org.apache.pekko:pekko-slf4j_3" "1.0.1" "sources.jar"
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/pekko/pekko-slf4j_3/1.1.2/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: Central Repository org/apache/pekko/pekko-slf4j_3/1.0.1
+web search: 
+web search: 
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-slf4j
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-slf4j_3/1.0.2
+codex
+The artifact is a normal JVM JAR with class files and Scala 3 TASTy metadata, so it remains applicable for Native Image metadata. I found Maven-published source and javadoc jars, but no Maven test-sources artifact, so I’m using the tagged upstream `slf4j/src/test` directory for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+I’ve written the metadata and am doing a quick validation pass now: JSON syntax plus HTTP checks for the substituted source, test, and documentation URLs.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.pekko:pekko-slf4j_3:1.0.1",
+  "repository-url": "https://github.com/apache/pekko",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
+  "description": "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/1.0.1/pekko-slf4j_3-1.0.1-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/pekko/tree/v1.0.1/slf4j/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/1.0.1/pekko-slf4j_3-1.0.1-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 356ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:27:43 GMT
+content-type: application/java-archive
+content-length: 8197
+cf-ray: 9f85b6ac2b17bc54-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "0e85eb647bb601cd42243cef6bd486a5"
+last-modified: Mon, 24 Jul 2023 23:11:09 GMT
+x-checksum-md5: 0e85eb647bb601cd42243cef6bd486a5
+x-checksum-sha1: d9b55e9682f4a62098d5c0242aaf4d413574c712
+server: cloudflare
+
+ succeeded in 347ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:27:43 GMT
+content-type: application/java-archive
+content-length: 2732100
+cf-ray: 9f85b6ac48d1265f-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "94196c61a1b13ea783809b886a3da4bd"
+last-modified: Mon, 24 Jul 2023 23:11:09 GMT
+x-checksum-md5: 94196c61a1b13ea783809b886a3da4bd
+x-checksum-sha1: f0fcfa0def1fee93bf4122fc4ae5fb75207de6cf
+server: cloudflare
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 550ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:27:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2ca777104cefb4cfdd3206a15d7eb88e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.apache.pekko/pekko-slf4j_3/1.0.1 org.apache.pekko pekko-slf4j_3 1.0.1
+exec
+/usr/bin/bash -lc "nl -ba build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
+     3	  "repository-url" : "https://github.com/apache/pekko",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
+     7	  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "3"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Apache Pekko Slf4j 1.0.1 org.apache.pekko pekko-slf4j_3
+codex
+Updated [org.apache.pekko-pekko-slf4j_3-1.0.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json:1).
+
+Set the Maven source and javadoc jar URLs, the tagged upstream test URL, the canonical Pekko repository URL, and `language` as Scala 3. I left `not-for-native-image` absent because the artifact is a JVM JAR with class files. Verified JSON syntax plus HTTP 200 responses for the substituted source, test, and documentation URLs.
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+index 0899ebd97d3662234572e04e7b31d4798edc2223..2335c89eee1c496374b60ad8c6bfdd51ee74d1b1
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-slf4j_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/slf4j/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-slf4j_3/$version$/pekko-slf4j_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Slf4j integrates Pekko's event logging with the SLF4J logging facade for Scala and Java applications. It provides the SLF4J logger and logging filter implementations used to route Pekko actor-system log events to an application-provided SLF4J backend such as Logback.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+123,607
+Updated [org.apache.pekko-pekko-slf4j_3-1.0.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/build/discovered-artifact-metadata/org.apache.pekko-pekko-slf4j_3-1.0.1.json:1).
+
+Set the Maven source and javadoc jar URLs, the tagged upstream test URL, the canonical Pekko repository URL, and `language` as Scala 3. I left `not-for-native-image` absent because the artifact is a JVM JAR with class files. Verified JSON syntax plus HTTP 200 responses for the substituted source, test, and documentation URLs.
+Ran agent for org.apache.pekko:pekko-slf4j_3:1.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/build/agent-artifact-discovery-logs/org.apache.pekko-pekko-slf4j_3-1.0.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3873-26f64f94/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 59s
+9 actionable tasks: 9 executed
