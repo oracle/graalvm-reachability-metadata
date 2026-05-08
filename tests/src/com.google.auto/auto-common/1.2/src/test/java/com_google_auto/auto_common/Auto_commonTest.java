@@ -128,6 +128,37 @@ public class Auto_commonTest {
     }
 
     @Test
+    void annotationValuesReadEscapedLiteralsSpecialNumbersAndNestedArrays() throws IOException {
+        compile("test.Subject", """
+                package test;
+
+                @interface Nested {
+                    String value();
+                }
+
+                @interface Literal {
+                    byte singleByte() default 7;
+                    byte[] bytes() default {1, -2};
+                    short singleShort() default 300;
+                    short[] shorts() default {4, 5};
+                    float finiteFloat() default 1.25f;
+                    float nanFloat() default 0.0f / 0.0f;
+                    float positiveInfinityFloat() default 1.0f / 0.0f;
+                    float negativeInfinityFloat() default -1.0f / 0.0f;
+                    double nanDouble() default 0.0 / 0.0;
+                    double positiveInfinityDouble() default 1.0 / 0.0;
+                    double negativeInfinityDouble() default -1.0 / 0.0;
+                    String escapedString() default "line\\nquote\\\"backslash\\\\tab\\t";
+                    char escapedChar() default '\\n';
+                    Nested[] nestedArray() default {@Nested("one"), @Nested("two")};
+                }
+
+                @Literal
+                final class Subject {}
+                """, new AnnotationValueLiteralProcessor());
+    }
+
+    @Test
     void elementUtilitiesTraversePackagesMembersOverridesAndVisibility() throws IOException {
         compile("test.Child", """
                 package test;
@@ -416,6 +447,9 @@ public class Auto_commonTest {
         if (processor instanceof AnnotationModelProcessor) {
             return "annotation";
         }
+        if (processor instanceof AnnotationValueLiteralProcessor) {
+            return "annotation-values";
+        }
         if (processor instanceof ElementModelProcessor) {
             return "element";
         }
@@ -437,6 +471,7 @@ public class Auto_commonTest {
     private static AbstractProcessor processorForKind(String processorKind) {
         return switch (processorKind) {
             case "annotation" -> new AnnotationModelProcessor();
+            case "annotation-values" -> new AnnotationValueLiteralProcessor();
             case "element" -> new ElementModelProcessor();
             case "type" -> new TypeModelProcessor();
             case "generated" -> new GeneratedAnnotationProcessor();
@@ -580,6 +615,65 @@ public class Auto_commonTest {
             assertThat(AnnotationMirrors.getAnnotatedAnnotations(subject, "java.lang.annotation.Documented"))
                     .hasSize(1);
             assertThat(AnnotationMirrors.getAnnotatedAnnotations(subject, DocumentedForLookup.class)).isEmpty();
+        }
+    }
+
+    private static final class AnnotationValueLiteralProcessor extends InspectingProcessor {
+        @Override
+        protected void inspect(Elements elements, Types types) {
+            TypeElement subject = elements.getTypeElement("test.Subject");
+            AnnotationMirror literal = MoreElements.getAnnotationMirror(subject, "test.Literal").get();
+
+            AnnotationValue singleByte = AnnotationMirrors.getAnnotationValue(literal, "singleByte");
+            assertThat(AnnotationValues.getByte(singleByte)).isEqualTo((byte) 7);
+            assertThat(AnnotationValues.toString(singleByte)).isEqualTo("(byte) 7");
+            AnnotationValue bytes = AnnotationMirrors.getAnnotationValue(literal, "bytes");
+            assertThat(AnnotationValues.getBytes(bytes)).containsExactly((byte) 1, (byte) -2);
+            assertThat(AnnotationValues.toString(bytes)).isEqualTo("{(byte) 1, (byte) -2}");
+
+            AnnotationValue singleShort = AnnotationMirrors.getAnnotationValue(literal, "singleShort");
+            assertThat(AnnotationValues.getShort(singleShort)).isEqualTo((short) 300);
+            assertThat(AnnotationValues.toString(singleShort)).isEqualTo("(short) 300");
+            assertThat(AnnotationValues.getShorts(AnnotationMirrors.getAnnotationValue(literal, "shorts")))
+                    .containsExactly((short) 4, (short) 5);
+
+            assertThat(AnnotationValues.getFloat(AnnotationMirrors.getAnnotationValue(literal, "finiteFloat")))
+                    .isEqualTo(1.25F);
+            assertThat(AnnotationValues.toString(AnnotationMirrors.getAnnotationValue(literal, "finiteFloat")))
+                    .isEqualTo("1.25F");
+            assertThat(AnnotationValues.getFloat(AnnotationMirrors.getAnnotationValue(literal, "nanFloat")))
+                    .isNaN();
+            assertThat(AnnotationValues.toString(AnnotationMirrors.getAnnotationValue(literal, "nanFloat")))
+                    .isEqualTo("Float.NaN");
+            assertThat(AnnotationValues.toString(
+                    AnnotationMirrors.getAnnotationValue(literal, "positiveInfinityFloat")))
+                    .isEqualTo("Float.POSITIVE_INFINITY");
+            assertThat(AnnotationValues.toString(
+                    AnnotationMirrors.getAnnotationValue(literal, "negativeInfinityFloat")))
+                    .isEqualTo("Float.NEGATIVE_INFINITY");
+
+            assertThat(AnnotationValues.getDouble(AnnotationMirrors.getAnnotationValue(literal, "nanDouble")))
+                    .isNaN();
+            assertThat(AnnotationValues.toString(AnnotationMirrors.getAnnotationValue(literal, "nanDouble")))
+                    .isEqualTo("Double.NaN");
+            assertThat(AnnotationValues.toString(
+                    AnnotationMirrors.getAnnotationValue(literal, "positiveInfinityDouble")))
+                    .isEqualTo("Double.POSITIVE_INFINITY");
+            assertThat(AnnotationValues.toString(
+                    AnnotationMirrors.getAnnotationValue(literal, "negativeInfinityDouble")))
+                    .isEqualTo("Double.NEGATIVE_INFINITY");
+
+            assertThat(AnnotationValues.toString(AnnotationMirrors.getAnnotationValue(literal, "escapedString")))
+                    .isEqualTo("\"line\\nquote\\\"backslash\\\\tab\\t\"");
+            assertThat(AnnotationValues.toString(AnnotationMirrors.getAnnotationValue(literal, "escapedChar")))
+                    .isEqualTo("'\\n'");
+
+            AnnotationValue nestedArray = AnnotationMirrors.getAnnotationValue(literal, "nestedArray");
+            assertThat(AnnotationValues.getAnnotationMirrors(nestedArray).stream()
+                    .map(nested -> AnnotationValues.getString(AnnotationMirrors.getAnnotationValue(nested, "value"))))
+                    .containsExactly("one", "two");
+            assertThat(AnnotationValues.toString(nestedArray))
+                    .isEqualTo("{@test.Nested(\"one\"), @test.Nested(\"two\")}");
         }
     }
 
