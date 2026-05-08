@@ -400,6 +400,116 @@ public class Maven_api_metadataTest {
     }
 
     @Test
+    void copyBuildersCanClearPreviouslySetValues() {
+        Plugin originalPlugin = Plugin.newBuilder()
+                .name("Maven Dependency Plugin")
+                .prefix("dependency")
+                .artifactId("maven-dependency-plugin")
+                .build();
+        Plugin clearedPlugin = Plugin.newBuilder(originalPlugin, true)
+                .name(null)
+                .prefix(null)
+                .artifactId(null)
+                .build();
+
+        assertThat(originalPlugin.getName()).isEqualTo("Maven Dependency Plugin");
+        assertThat(clearedPlugin.getName()).isNull();
+        assertThat(clearedPlugin.getPrefix()).isNull();
+        assertThat(clearedPlugin.getArtifactId()).isNull();
+
+        Snapshot originalSnapshot = Snapshot.newBuilder()
+                .timestamp("20240508.120000")
+                .buildNumber(3)
+                .localCopy(true)
+                .build();
+        Snapshot clearedSnapshot = Snapshot.newBuilder(originalSnapshot, true)
+                .timestamp(null)
+                .buildNumber(0)
+                .localCopy(false)
+                .build();
+
+        assertThat(originalSnapshot.getTimestamp()).isEqualTo("20240508.120000");
+        assertThat(clearedSnapshot.getTimestamp()).isNull();
+        assertThat(clearedSnapshot.getBuildNumber()).isZero();
+        assertThat(clearedSnapshot.isLocalCopy()).isFalse();
+
+        SnapshotVersion originalSnapshotVersion = SnapshotVersion.newBuilder()
+                .classifier("sources")
+                .extension("jar")
+                .version("1.0-20240508.120000-3")
+                .updated("20240508120000")
+                .build();
+        SnapshotVersion clearedSnapshotVersion = SnapshotVersion.newBuilder(originalSnapshotVersion, true)
+                .classifier(null)
+                .extension(null)
+                .version(null)
+                .updated(null)
+                .build();
+
+        assertThat(originalSnapshotVersion.getExtension()).isEqualTo("jar");
+        assertThat(clearedSnapshotVersion.getClassifier()).isNull();
+        assertThat(clearedSnapshotVersion.getExtension()).isNull();
+        assertThat(clearedSnapshotVersion.getVersion()).isNull();
+        assertThat(clearedSnapshotVersion.getUpdated()).isNull();
+
+        Versioning originalVersioning = Versioning.newBuilder()
+                .latest("1.0")
+                .release("1.0")
+                .versions(List.of("1.0"))
+                .lastUpdated("20240508120000")
+                .snapshot(originalSnapshot)
+                .snapshotVersions(List.of(originalSnapshotVersion))
+                .build();
+        Versioning clearedVersioning = Versioning.newBuilder(originalVersioning, true)
+                .latest(null)
+                .release(null)
+                .versions(null)
+                .lastUpdated(null)
+                .snapshot(null)
+                .snapshotVersions(null)
+                .build();
+
+        assertThat(originalVersioning.getVersions()).containsExactly("1.0");
+        assertThat(clearedVersioning.getLatest()).isNull();
+        assertThat(clearedVersioning.getRelease()).isNull();
+        assertThat(clearedVersioning.getVersions()).isEmpty();
+        assertThat(clearedVersioning.getLastUpdated()).isNull();
+        assertThat(clearedVersioning.getSnapshot()).isNull();
+        assertThat(clearedVersioning.getSnapshotVersions()).isEmpty();
+
+        Metadata originalMetadata = Metadata.newBuilder()
+                .namespaceUri("https://maven.apache.org/METADATA/1.1.0")
+                .modelEncoding("UTF-16")
+                .modelVersion("1.1.0")
+                .groupId("org.example")
+                .artifactId("demo")
+                .version("1.0")
+                .versioning(originalVersioning)
+                .plugins(List.of(originalPlugin))
+                .build();
+        Metadata clearedMetadata = Metadata.newBuilder(originalMetadata, true)
+                .namespaceUri(null)
+                .modelEncoding(null)
+                .modelVersion(null)
+                .groupId(null)
+                .artifactId(null)
+                .version(null)
+                .versioning(null)
+                .plugins(null)
+                .build();
+
+        assertThat(originalMetadata.getArtifactId()).isEqualTo("demo");
+        assertThat(clearedMetadata.getNamespaceUri()).isNull();
+        assertThat(clearedMetadata.getModelEncoding()).isEqualTo("UTF-8");
+        assertThat(clearedMetadata.getModelVersion()).isNull();
+        assertThat(clearedMetadata.getGroupId()).isNull();
+        assertThat(clearedMetadata.getArtifactId()).isNull();
+        assertThat(clearedMetadata.getVersion()).isNull();
+        assertThat(clearedMetadata.getVersioning()).isNull();
+        assertThat(clearedMetadata.getPlugins()).isEmpty();
+    }
+
+    @Test
     void snapshotVersionUsesValueEquality() {
         SnapshotVersion first = SnapshotVersion.newBuilder()
                 .classifier("sources")
