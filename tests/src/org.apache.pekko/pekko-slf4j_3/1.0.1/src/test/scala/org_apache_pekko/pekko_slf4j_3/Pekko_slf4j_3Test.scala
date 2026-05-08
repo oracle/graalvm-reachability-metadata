@@ -6,19 +6,26 @@
  */
 package org_apache_pekko.pekko_slf4j_3
 
+import java.time.Duration
+import java.util.concurrent.TimeUnit
+
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import org.apache.pekko.actor.ActorRef
 import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Props
 import org.apache.pekko.event.DummyClassForStringSources
 import org.apache.pekko.event.LogMarker
 import org.apache.pekko.event.Logging
 import org.apache.pekko.event.slf4j.Logger
 import org.apache.pekko.event.slf4j.SLF4JLogging
+import org.apache.pekko.event.slf4j.Slf4jLogger
 import org.apache.pekko.event.slf4j.Slf4jLogMarker
 import org.apache.pekko.event.slf4j.Slf4jLoggingFilter
+import org.apache.pekko.pattern.Patterns
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.slf4j.Marker
@@ -96,6 +103,19 @@ class Pekko_slf4j_3Test {
       assertThat(filter.isInfoEnabled(sourceClass, sourceName, wrappedMarker)).isEqualTo(slf4jLogger.isInfoEnabled(slf4jMarker))
       assertThat(filter.isDebugEnabled(sourceClass, sourceName, plainMarker))
         .isEqualTo(slf4jLogger.isDebugEnabled(MarkerFactory.getMarker(plainMarkerName)))
+    }
+  }
+
+  @Test
+  def slf4jLoggerRepliesToPekkoLoggerInitializationProtocol(): Unit = {
+    withActorSystem("PekkoSlf4jLoggerInitializationTest", baseConfig) { system =>
+      val loggerActor: ActorRef = system.actorOf(Props(classOf[Slf4jLogger]), "initializing-slf4j-logger")
+      val initialized: AnyRef = Patterns
+        .ask(loggerActor, Logging.InitializeLogger(system.eventStream), Duration.ofSeconds(3))
+        .toCompletableFuture
+        .get(3, TimeUnit.SECONDS)
+
+      assertThat(initialized).isEqualTo(Logging.LoggerInitialized)
     }
   }
 
