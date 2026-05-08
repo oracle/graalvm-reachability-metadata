@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationReportRequest;
@@ -27,6 +29,8 @@ import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetDelegationTokenRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetDelegationTokenResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetQueueInfoRequest;
@@ -37,6 +41,8 @@ import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainerRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainersRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainersResponse;
@@ -523,6 +529,28 @@ public class Hadoop_yarn_apiTest {
         assertThat(stopContainersRequest.getContainerIds()).containsExactly(containerId);
         assertThat(stopContainersResponse.getSuccessfullyStoppedContainers()).containsExactly(containerId);
         assertThat(stopContainersResponse.getFailedRequests()).containsEntry(containerId, failure);
+    }
+
+    @Test
+    void createsDelegationTokenProtocolRecords() {
+        Token delegationToken = Token.newInstance(
+                bytes(21, 22, 23),
+                "RM_DELEGATION_TOKEN",
+                bytes(24, 25),
+                "resource-manager");
+        GetDelegationTokenRequest getRequest = GetDelegationTokenRequest.newInstance("history-server");
+        GetDelegationTokenResponse getResponse = GetDelegationTokenResponse.newInstance(delegationToken);
+        RenewDelegationTokenRequest renewRequest = RenewDelegationTokenRequest.newInstance(delegationToken);
+        RenewDelegationTokenResponse renewResponse = RenewDelegationTokenResponse.newInstance(123456789L);
+        CancelDelegationTokenRequest cancelRequest = CancelDelegationTokenRequest.newInstance(delegationToken);
+        CancelDelegationTokenResponse cancelResponse = CancelDelegationTokenResponse.newInstance();
+
+        assertThat(getRequest.getRenewer()).isEqualTo("history-server");
+        assertThat(getResponse.getRMDelegationToken()).isEqualTo(delegationToken);
+        assertThat(renewRequest.getDelegationToken()).isEqualTo(delegationToken);
+        assertThat(renewResponse.getNextExpirationTime()).isEqualTo(123456789L);
+        assertThat(cancelRequest.getDelegationToken()).isEqualTo(delegationToken);
+        assertThat(cancelResponse).isNotNull();
     }
 
     @Test
