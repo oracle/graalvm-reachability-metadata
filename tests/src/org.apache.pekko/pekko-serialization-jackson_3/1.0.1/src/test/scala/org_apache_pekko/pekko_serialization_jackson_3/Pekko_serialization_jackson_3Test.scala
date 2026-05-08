@@ -14,12 +14,15 @@ import java.util.Optional
 import java.util.UUID
 
 import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.actor.Address
 import org.apache.pekko.serialization.SerializationExtension
 import org.apache.pekko.serialization.SerializerWithStringManifest
+import org.apache.pekko.serialization.jackson.JacksonMigration
 import org.apache.pekko.serialization.jackson.JacksonObjectMapperProvider
 import org.junit.jupiter.api.Test
 
@@ -52,6 +55,22 @@ final case class ManifestlessEvent(id: String, value: Int)
 
 final case class NumberBox(count: Int)
 
+final case class VersionedProfile(id: String, displayName: String, active: Boolean)
+
+class VersionedProfileMigration extends JacksonMigration {
+  override def currentVersion: Int = 2
+
+  override def transform(fromVersion: Int, json: JsonNode): JsonNode = {
+    if (fromVersion <= 1) {
+      val profile: ObjectNode = json.asInstanceOf[ObjectNode]
+      val name: JsonNode = profile.remove("name")
+      profile.put("displayName", name.asText())
+      profile.put("active", true)
+    }
+    json
+  }
+}
+
 class Pekko_serialization_jackson_3Test {
   private val BaseConfig: String = """
     pekko.loglevel = "WARNING"
@@ -65,6 +84,7 @@ class Pekko_serialization_jackson_3Test {
       "org_apache_pekko.pekko_serialization_jackson_3.LongCborPayload" = jackson-cbor
       "org_apache_pekko.pekko_serialization_jackson_3.ManifestlessEvent" = jackson-json
       "org_apache_pekko.pekko_serialization_jackson_3.NumberBox" = jackson-json
+      "org_apache_pekko.pekko_serialization_jackson_3.VersionedProfile" = jackson-json
     }
     """
 
@@ -158,6 +178,26 @@ class Pekko_serialization_jackson_3Test {
 
     assertThat(manifest).isEmpty
     assertThat(restored).isEqualTo(event)
+  }
+
+  @Test
+  def jsonSerializerMigratesOlderPayloadsBeforeDeserialization(): Unit = withActorSystem(
+    "migration",
+    BaseConfig + """
+      pekko.serialization.jackson.migrations {
+        "org_apache_pekko.pekko_serialization_jackson_3.VersionedProfile" = "org_apache_pekko.pekko_serialization_jackson_3.VersionedProfileMigration"
+      }
+      """
+  ) { system =>
+    val currentProfile: VersionedProfile = VersionedProfile("profile-1", "Ada", active = true)
+    val serializer: SerializerWithStringManifest = jacksonSerializerFor(system, currentProfile)
+    val currentManifest: String = serializer.manifest(currentProfile)
+    val oldPayload: Array[Byte] = """{"id":"profile-1","name":"Ada"}""".getBytes(StandardCharsets.UTF_8)
+    val oldManifest: String = currentManifest.replace("#2", "#1")
+    val restored: VersionedProfile = serializer.fromBinary(oldPayload, oldManifest).asInstanceOf[VersionedProfile]
+
+    assertThat(currentManifest).endsWith("#2")
+    assertThat(restored).isEqualTo(currentProfile)
   }
 
   @Test
