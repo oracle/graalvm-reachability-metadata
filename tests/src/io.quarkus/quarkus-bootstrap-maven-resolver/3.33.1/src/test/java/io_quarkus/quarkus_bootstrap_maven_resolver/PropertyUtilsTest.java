@@ -53,7 +53,7 @@ public class PropertyUtilsTest {
         Map<String, String> values = new LinkedHashMap<>();
         values.put("contains space", "leading and trailing ");
         values.put("path:with=separators", "C:\\temp\\demo");
-        values.put("unicode", "snowman ☃");
+        values.put("unicode", "snowman \u2603");
 
         Path propertiesFile = tempDir.resolve("escaped.properties");
         PropertyUtils.store(values, propertiesFile);
@@ -65,7 +65,7 @@ public class PropertyUtilsTest {
 
         assertEquals("leading and trailing ", loaded.getProperty("contains space"));
         assertEquals("C:\\temp\\demo", loaded.getProperty("path:with=separators"));
-        assertEquals("snowman ☃", loaded.getProperty("unicode"));
+        assertEquals("snowman \u2603", loaded.getProperty("unicode"));
     }
 
     @Test
