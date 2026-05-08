@@ -8,7 +8,7 @@ package org_glassfish_jersey_media.jersey_media_json_jackson;
 
 import org.junit.jupiter.api.Test;
 
-class Jersey_media_json_jacksonTest {
+public class Jersey_media_json_jacksonTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
