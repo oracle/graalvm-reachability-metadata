@@ -42,6 +42,12 @@ import org.openqa.selenium.devtools.v85.runtime.Runtime;
 import org.openqa.selenium.devtools.v85.runtime.model.ExecutionContextId;
 import org.openqa.selenium.devtools.v85.runtime.model.RemoteObject;
 import org.openqa.selenium.devtools.v85.runtime.model.TimeDelta;
+import org.openqa.selenium.devtools.v85.webauthn.WebAuthn;
+import org.openqa.selenium.devtools.v85.webauthn.model.AuthenticatorId;
+import org.openqa.selenium.devtools.v85.webauthn.model.AuthenticatorProtocol;
+import org.openqa.selenium.devtools.v85.webauthn.model.AuthenticatorTransport;
+import org.openqa.selenium.devtools.v85.webauthn.model.Credential;
+import org.openqa.selenium.devtools.v85.webauthn.model.VirtualAuthenticatorOptions;
 import org.openqa.selenium.json.Json;
 
 import java.util.LinkedHashMap;
@@ -290,6 +296,78 @@ public class Selenium_devtools_v85Test {
         assertThat(version.getRevision()).isEqualTo("revision-id");
         assertThat(version.getUserAgent()).isEqualTo("Mozilla/5.0");
         assertThat(version.getJsVersion()).isEqualTo("8.5");
+    }
+
+    @Test
+    void webAuthnDomainConfiguresVirtualAuthenticatorsAndCredentials() {
+        VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions(
+                AuthenticatorProtocol.CTAP2,
+                AuthenticatorTransport.INTERNAL,
+                Optional.of(true),
+                Optional.of(true),
+                Optional.of(false),
+                Optional.of(true));
+        Command<AuthenticatorId> addAuthenticator = WebAuthn.addVirtualAuthenticator(options);
+
+        assertThat(addAuthenticator.getMethod()).isEqualTo("WebAuthn.addVirtualAuthenticator");
+        assertThat(addAuthenticator.getParams()).containsEntry("options", options);
+        assertThat(json.toJson(addAuthenticator.getParams()))
+                .contains("\"protocol\"")
+                .contains("\"ctap2\"")
+                .contains("\"transport\"")
+                .contains("\"internal\"")
+                .contains("\"hasResidentKey\"")
+                .contains("true")
+                .contains("\"automaticPresenceSimulation\"")
+                .contains("false");
+
+        AuthenticatorId authenticatorId = new AuthenticatorId("authenticator-1");
+        Credential credential = new Credential(
+                "credential-id",
+                true,
+                Optional.of("example.test"),
+                "private-key",
+                Optional.of("user-handle"),
+                3);
+        Command<Void> addCredential = WebAuthn.addCredential(authenticatorId, credential);
+
+        assertThat(addCredential.getMethod()).isEqualTo("WebAuthn.addCredential");
+        assertThat(addCredential.getParams())
+                .containsEntry("authenticatorId", authenticatorId)
+                .containsEntry("credential", credential);
+        assertThat(json.toJson(addCredential.getParams()))
+                .contains("\"authenticatorId\"")
+                .contains("\"authenticator-1\"")
+                .contains("\"credentialId\"")
+                .contains("\"credential-id\"")
+                .contains("\"rpId\"")
+                .contains("\"example.test\"")
+                .contains("\"signCount\"")
+                .contains("3");
+
+        Command<Credential> getCredential = WebAuthn.getCredential(authenticatorId, "credential-id");
+        assertThat(getCredential.getMethod()).isEqualTo("WebAuthn.getCredential");
+        assertThat(getCredential.getParams())
+                .containsEntry("authenticatorId", authenticatorId)
+                .containsEntry("credentialId", "credential-id");
+
+        Credential restoredCredential = json.toType("""
+                {
+                  "credentialId": "credential-id",
+                  "isResidentCredential": true,
+                  "rpId": "example.test",
+                  "privateKey": "private-key",
+                  "userHandle": "user-handle",
+                  "signCount": 3
+                }
+                """, Credential.class);
+
+        assertThat(restoredCredential.getCredentialId()).isEqualTo("credential-id");
+        assertThat(restoredCredential.getIsResidentCredential()).isTrue();
+        assertThat(restoredCredential.getRpId()).contains("example.test");
+        assertThat(restoredCredential.getPrivateKey()).isEqualTo("private-key");
+        assertThat(restoredCredential.getUserHandle()).contains("user-handle");
+        assertThat(restoredCredential.getSignCount()).isEqualTo(3);
     }
 
     @Test
