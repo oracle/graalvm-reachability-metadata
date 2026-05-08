@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Format
 import play.api.libs.json.JsArray
 import play.api.libs.json.JsError
@@ -63,6 +64,19 @@ object PlayJsonBooking {
   }
 
   implicit val format: Format[PlayJsonBooking] = Format(reads, writes)
+}
+
+final case class PlayJsonLineItem(sku: String, quantity: Int, warehouse: String)
+
+object PlayJsonLineItem {
+  implicit val format: OFormat[PlayJsonLineItem] = (
+    (__ \ "line" \ "sku").format[String] and
+      (__ \ "line" \ "quantity").format[Int] and
+      (__ \ "fulfillment" \ "warehouse").format[String]
+  )(
+    (sku: String, quantity: Int, warehouse: String) => PlayJsonLineItem(sku, quantity, warehouse),
+    (lineItem: PlayJsonLineItem) => (lineItem.sku, lineItem.quantity, lineItem.warehouse)
+  )
 }
 
 class Play_json_3Test {
@@ -186,6 +200,25 @@ class Play_json_3Test {
     assertEquals(4, (encoded \ "seats").as[Int])
     assertEquals("AB-123:4", (encoded \ "summary").as[String])
     assertEquals(Seq(PlayJsonBooking("AB-123", 4), PlayJsonBooking("CD-456", 2)), bookings)
+  }
+
+  @Test
+  def mapsNestedJsonShapeWithFunctionalFormatCombinators(): Unit = {
+    val document: JsValue = Json.obj(
+      "line" -> Json.obj("sku" -> "BK-42", "quantity" -> 3),
+      "fulfillment" -> Json.obj("warehouse" -> "east")
+    )
+    val decoded: JsResult[PlayJsonLineItem] = Json.fromJson[PlayJsonLineItem](document)
+    val encoded: JsValue = Json.toJson(PlayJsonLineItem("PN-1", 12, "west"))
+
+    assertEquals(JsSuccess(PlayJsonLineItem("BK-42", 3, "east")), decoded)
+    assertEquals(
+      Json.obj(
+        "line" -> Json.obj("sku" -> "PN-1", "quantity" -> 12),
+        "fulfillment" -> Json.obj("warehouse" -> "west")
+      ),
+      encoded
+    )
   }
 
   @Test
