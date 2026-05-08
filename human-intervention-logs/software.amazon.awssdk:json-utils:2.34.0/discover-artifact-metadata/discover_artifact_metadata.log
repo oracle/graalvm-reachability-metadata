@@ -1,0 +1,757 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e04b6-3775-7940-ad9c-0d7b063e1b5f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:json-utils:2.34.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.34.0" when "$version$" is replaced with "2.34.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+- Set "coordinates" to "software.amazon.awssdk:json-utils:2.34.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.34.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream AWS SDK repository, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+{
+  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'software\\.amazon\\.awssdk.*json|awssdk' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\".*aws|json-utils|software\\.amazon\\.awssdk' metadata build/discovered-artifact-metadata -g '*.json' | head -100" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json:2:  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
+metadata/library-and-framework-list.json:2674:    "artifact": "software.amazon.awssdk:*",
+metadata/software.amazon.awssdk/http-client-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-client-spi/index.json:164:      "software.amazon.awssdk.http",
+metadata/software.amazon.awssdk/http-client-spi/index.json:165:      "software.amazon.awssdk.internal.http"
+metadata/software.amazon.awssdk/identity-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/identity-spi/index.json:74:      "software.amazon.awssdk.identity.spi"
+metadata/software.amazon.awssdk/annotations/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/annotations/index.json:36:      "software.amazon.awssdk.annotations"
+metadata/software.amazon.awssdk/checksums-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums-spi/index.json:164:      "software.amazon.awssdk.checksums.spi"
+metadata/software.amazon.awssdk/http-auth/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth/index.json:104:      "software.amazon.awssdk.http.auth"
+metadata/software.amazon.awssdk/retries-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries-spi/index.json:164:      "software.amazon.awssdk.retries.api"
+metadata/software.amazon.awssdk/http-auth-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:104:      "software.amazon.awssdk.http.auth.spi"
+metadata/software.amazon.awssdk/utils-lite/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/utils-lite/index.json:164:      "software.amazon.awssdk.utilslite"
+metadata/software.amazon.awssdk/retries/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries/index.json:164:      "software.amazon.awssdk.retries"
+metadata/software.amazon.awssdk/endpoints-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:164:      "software.amazon.awssdk.endpoints"
+metadata/software.amazon.awssdk/utils/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.utils.ReflectionMethodInvoker"
+metadata/software.amazon.awssdk/checksums/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums/index.json:115:      "software.amazon.awssdk.checksums"
+metadata/software.amazon.awssdk/utils/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/utils/index.json:164:      "software.amazon.awssdk.utils"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:11:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:23:        "typeReached": "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:25:      "type": "software.amazon.awssdk.crt.checksums.CRC32C"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:31:      "type": "software.amazon.awssdk.crt.checksums.CRC32C",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:41:        "typeReached": "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:43:      "type": "software.amazon.awssdk.crt.checksums.CRC64NVME"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:47:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:49:      "type": "software.amazon.awssdk.crt.checksums.CRC64NVME",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:59:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:61:      "type": "software.amazon.awssdk.crt.checksums.CRC32C",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:71:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:73:      "type": "software.amazon.awssdk.crt.checksums.CRC64NVME",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:83:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:85:      "type": "software.amazon.awssdk.checksums.internal.SdkCrc32CChecksum",
+metadata/software.amazon.awssdk/profiles/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/profiles/index.json:134:      "software.amazon.awssdk.profiles"
+metadata/software.amazon.awssdk/metrics-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/metrics-spi/index.json:134:      "software.amazon.awssdk.metrics"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:17:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:43:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:49:        "typeReached": "software.amazon.awssdk.services.s3.auth.scheme.internal.DefaultS3AuthSchemeProvider"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:55:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:61:        "typeReached": "software.amazon.awssdk.services.s3.S3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:67:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3ClientBuilder"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:73:        "typeReached": "software.amazon.awssdk.services.s3.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:79:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3BaseClientBuilder"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SignerUtils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:17:        "typeReached": "software.amazon.awssdk.protocols.query.unmarshall.XmlDomParser"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.core.util.SdkUserAgent"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:35:        "typeReached": "software.amazon.awssdk.core.util.SdkUserAgent"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:41:        "typeReached": "software.amazon.awssdk.utils.Md5Utils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:53:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.DigestAlgorithm$DigestThreadLocal"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:65:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SignerUtils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:79:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SigningAlgorithm$MacThreadLocal"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:85:        "typeReached": "software.amazon.awssdk.services.s3.auth.scheme.internal.DefaultS3AuthSchemeProvider"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:91:        "typeReached": "software.amazon.awssdk.protocols.query.unmarshall.XmlDomParser"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:97:        "typeReached": "software.amazon.awssdk.utils.Logger"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:103:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:109:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:104:      "software.amazon.awssdk.services.s3"
+metadata/software.amazon.awssdk/s3/index.json:110:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:325:      "software.amazon.awssdk"
+metadata/software.amazon.eventstream/eventstream/index.json:6:    "repository-url" : "https://github.com/awslabs/aws-eventstream-java",
+
+codex
+The local metadata already uses `https://github.com/aws/aws-sdk-java-v2` for other AWS SDK v2 modules. I’m checking the exact module path and whether Maven publishes source/test artifacts for `json-utils` before choosing the URLs.
+web search: 
+web search: Maven Central software.amazon.awssdk json-utils 2.34.0 sources jar
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*repo\\.maven|\"test-code-url\".*repo\\.maven|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-javadoc.jar",
+metadata/io.circe/circe-parser_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-sources.jar",
+metadata/io.circe/circe-parser_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:131:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/$version$/docs/index.md",
+metadata/io.circe/circe-numbers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+metadata/io.circe/circe-numbers_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/com.typesafe.play/play_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_2.13/$version$/twirl-api_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_2.13/$version$/twirl-api_2.13-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/software.amazon.awssdk/utils/index.json && sed -n '1,60p' metadata/software.amazon.awssdk/checksums/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/utils/$version$/utils-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/utils/$version$/utils-$version$-javadoc.jar",
+    "description" : "AWS SDK for Java Utilities provides common helper APIs used throughout AWS SDK for Java v2. It includes utilities for validation, strings, dates, collections, asynchronous publishers and subscribers, caching, HTTP handling, and URI construction.",
+    "tested-versions" : [
+      "2.34.0",
+      "2.34.1",
+      "2.34.2",
+      "2.34.3",
+      "2.34.4",
+      "2.34.5",
+      "2.34.6",
+      "2.34.7",
+      "2.34.8",
+      "2.34.9",
+      "2.35.0",
+      "2.35.1",
+      "2.35.2",
+      "2.35.3",
+      "2.35.4",
+      "2.35.5",
+      "2.35.6",
+      "2.35.7",
+      "2.35.8",
+      "2.35.9",
+      "2.35.10",
+      "2.35.11",
+      "2.36.0",
+      "2.36.1",
+      "2.36.2",
+      "2.36.3",
+      "2.37.0",
+      "2.37.1",
+      "2.37.2",
+      "2.37.3",
+      "2.37.4",
+      "2.37.5",
+      "2.38.0",
+      "2.38.1",
+      "2.38.2",
+      "2.38.3",
+      "2.38.4",
+      "2.38.5",
+      "2.38.6",
+      "2.38.7",
+      "2.38.8",
+      "2.38.9",
+      "2.39.0",
+      "2.39.1",
+      "2.39.2",
+      "2.39.3",
+      "2.39.4",
+      "2.39.5",
+      "2.39.6",
+      "2.40.0",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/checksums/$version$/checksums-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/checksums/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/checksums/$version$/checksums-$version$-javadoc.jar",
+    "description" : "The AWS SDK for Java v2 checksums module provides checksum implementations and helpers used by SDK components. It supplies CRC and digest-based checksum support, including SDK checksum abstractions and internal implementations for AWS request and response checksum handling.",
+    "tested-versions" : [
+      "2.34.0",
+      "2.34.1",
+      "2.34.2",
+      "2.34.3",
+      "2.34.4",
+      "2.34.5",
+      "2.34.6",
+      "2.34.7",
+      "2.34.8",
+      "2.34.9",
+      "2.35.0",
+      "2.35.1",
+      "2.35.2",
+      "2.35.3",
+      "2.35.4",
+      "2.35.5",
+      "2.35.6",
+      "2.35.7",
+      "2.35.8",
+      "2.35.9",
+      "2.35.10",
+      "2.35.11",
+      "2.36.0",
+      "2.36.1",
+      "2.36.2",
+      "2.36.3",
+      "2.37.0",
+      "2.37.1",
+      "2.37.2",
+      "2.37.3",
+      "2.37.4",
+      "2.37.5",
+      "2.38.0",
+      "2.38.1",
+      "2.38.2",
+      "2.38.3",
+      "2.38.4",
+      "2.38.5",
+      "2.38.6",
+      "2.38.7",
+      "2.38.8",
+      "2.38.9",
+      "2.39.0",
+      "2.39.1",
+      "2.39.2",
+      "2.39.3",
+      "2.39.4",
+      "2.39.5",
+      "2.39.6",
+      "2.40.0",
+
+exec
+/usr/bin/bash -lc 'find ~/.m2/repository/software/amazon/awssdk/json-utils -maxdepth 3 -type f 2>/dev/null | sort | head -50' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+web search: 
+web search: 
+web search: 
+web search: Maven Central software.amazon.awssdk json-utils 2.34.0 sources jar
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/2.34.0/json-utils-2.34.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ You may not use this file except in compliance with the License.
+  ~ A copy of the License is located at
+  ~
+  ~  http://aws.amazon.com/apache2.0
+  ~
+  ~ or in the "license" file accompanying this file. This file is distributed
+  ~ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  ~ express or implied. See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>core</artifactId>
+        <groupId>software.amazon.awssdk</groupId>
+        <version>2.34.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>json-utils</artifactId>
+    <name>AWS Java SDK :: Core :: Protocols :: Json Utils</name>
+    <url>https://aws.amazon.com/sdkforjava</url>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom-internal</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>utils</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>third-party-jackson-core</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>software.amazon.awssdk.protocols.jsoncore</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/2.34.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+exec
+/usr/bin/bash -lc "curl -sL https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/2.34.0?recursive=1 | rg 'json-utils/(src/(main|test)|pom.xml)|json-utils' | head -100" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 349ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/awssdk/json-utils/2.34.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/awssdk/json-utils/2.34.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="json-utils-2.34.0-javadoc.jar" title="json-utils-2.34.0-javadoc.jar">json-utils-2.34.0-javadoc.jar</a>                     2025-09-19 21:47    419166      
+<a href="json-utils-2.34.0-javadoc.jar.asc" title="json-utils-2.34.0-javadoc.jar.asc">json-utils-2.34.0-javadoc.jar.asc</a>                 2025-09-19 21:47       833      
+<a href="json-utils-2.34.0-javadoc.jar.md5" title="json-utils-2.34.0-javadoc.jar.md5">json-utils-2.34.0-javadoc.jar.md5</a>                 2025-09-19 21:47        32      
+<a href="json-utils-2.34.0-javadoc.jar.sha1" title="json-utils-2.34.0-javadoc.jar.sha1">json-utils-2.34.0-javadoc.jar.sha1</a>                2025-09-19 21:47        40      
+<a href="json-utils-2.34.0-sources.jar" title="json-utils-2.34.0-sources.jar">json-utils-2.34.0-sources.jar</a>                     2025-09-19 21:47     24576      
+<a href="json-utils-2.34.0-sources.jar.asc" title="json-utils-2.34.0-sources.jar.asc">json-utils-2.34.0-sources.jar.asc</a>                 2025-09-19 21:47       833      
+<a href="json-utils-2.34.0-sources.jar.md5" title="json-utils-2.34.0-sources.jar.md5">json-utils-2.34.0-sources.jar.md5</a>                 2025-09-19 21:47        32      
+<a href="json-utils-2.34.0-sources.jar.sha1" title="json-utils-2.34.0-sources.jar.sha1">json-utils-2.34.0-sources.jar.sha1</a>                2025-09-19 21:47        40      
+<a href="json-utils-2.34.0.jar" title="json-utils-2.34.0.jar">json-utils-2.34.0.jar</a>                             2025-09-19 21:47     33301      
+<a href="json-utils-2.34.0.jar.asc" title="json-utils-2.34.0.jar.asc">json-utils-2.34.0.jar.asc</a>                         2025-09-19 21:47       833      
+<a href="json-utils-2.34.0.jar.md5" title="json-utils-2.34.0.jar.md5">json-utils-2.34.0.jar.md5</a>                         2025-09-19 21:47        32      
+<a href="json-utils-2.34.0.jar.sha1" title="json-utils-2.34.0.jar.sha1">json-utils-2.34.0.jar.sha1</a>                        2025-09-19 21:47        40      
+<a href="json-utils-2.34.0.pom" title="json-utils-2.34.0.pom">json-utils-2.34.0.pom</a>                             2025-09-19 21:47      3488      
+<a href="json-utils-2.34.0.pom.asc" title="json-utils-2.34.0.pom.asc">json-utils-2.34.0.pom.asc</a>                         2025-09-19 21:47       833      
+<a href="json-utils-2.34.0.pom.md5" title="json-utils-2.34.0.pom.md5">json-utils-2.34.0.pom.md5</a>                         2025-09-19 21:47        32      
+<a href="json-utils-2.34.0.pom.sha1" title="json-utils-2.34.0.pom.sha1">json-utils-2.34.0.pom.sha1</a>                        2025-09-19 21:47        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 4124ms:
+      "path": "core/json-utils",
+      "path": "core/json-utils/pom.xml",
+      "path": "core/json-utils/src",
+      "path": "core/json-utils/src/main",
+      "path": "core/json-utils/src/main/java",
+      "path": "core/json-utils/src/main/java/software",
+      "path": "core/json-utils/src/main/java/software/amazon",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/JsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/JsonNodeParser.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/JsonNodeVisitor.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/JsonValueNodeFactory.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/JsonWriter.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/ArrayJsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/BooleanJsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/EmbeddedObjectJsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/NullJsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/NumberJsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/ObjectJsonNode.java",
+      "path": "core/json-utils/src/main/java/software/amazon/awssdk/protocols/jsoncore/internal/StringJsonNode.java",
+      "path": "core/json-utils/src/test",
+      "path": "core/json-utils/src/test/java",
+      "path": "core/json-utils/src/test/java/software",
+      "path": "core/json-utils/src/test/java/software/amazon",
+      "path": "core/json-utils/src/test/java/software/amazon/awssdk",
+      "path": "core/json-utils/src/test/java/software/amazon/awssdk/protocols",
+      "path": "core/json-utils/src/test/java/software/amazon/awssdk/protocols/jsoncore",
+      "path": "core/json-utils/src/test/java/software/amazon/awssdk/protocols/jsoncore/JsonNodeTest.java",
+
+codex
+Maven Central publishes the normal jar, sources jar, and javadoc jar for `2.34.0`, but no tests or test-sources artifact, so I’ll use Maven for source/docs and the tagged GitHub test directory for tests. The artifact is a JVM jar with Java sources, so I’m leaving language-specific and not-for-native-image fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+index 9f62f12b60a1a76ff9d9a953989af4b55e303fc6..72864a07018018f876a3937dc42de9351c2458a8
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
++  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+ }
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+index 9f62f12b60a1a76ff9d9a953989af4b55e303fc6..72864a07018018f876a3937dc42de9351c2458a8
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
++  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+ }
+
+codex
+I’ve written the metadata and am doing a quick validation pass: JSON parsing plus checking that the templated URLs resolve for `2.34.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+{
+  "coordinates": "software.amazon.awssdk:json-utils:2.34.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
+  "repository-url": "https://github.com/aws/aws-sdk-java-v2",
+  "test-code-url": "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
+  "description": "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+}
+
+exec
+/usr/bin/bash -lc "curl -sI https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/2.34.0/json-utils-2.34.0-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:12:42 GMT
+content-type: application/java-archive
+content-length: 24576
+cf-ray: 9f83e9377fe5bc5a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 471350
+
+exec
+/usr/bin/bash -lc "curl -sI https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/2.34.0/json-utils-2.34.0-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+exec
+/usr/bin/bash -lc "curl -sI https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/core/json-utils/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 380ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:12:42 GMT
+content-type: application/java-archive
+content-length: 419166
+cf-ray: 9f83e93789332680-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "566e837ecd191766668837495c573b13"
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+index 9f62f12b60a1a76ff9d9a953989af4b55e303fc6..72864a07018018f876a3937dc42de9351c2458a8
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
++  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+ }
+
+ succeeded in 671ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:12:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"579f571fa3dbb6b7edfb8f133c9f63e3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+index 9f62f12b60a1a76ff9d9a953989af4b55e303fc6..72864a07018018f876a3937dc42de9351c2458a8
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
++  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json && ls -l build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+index 9f62f12b60a1a76ff9d9a953989af4b55e303fc6..72864a07018018f876a3937dc42de9351c2458a8
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
++  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+ }
+
+ succeeded in 150ms:
+-rw-rw-r-- 1 vjovanov vjovanov 798 May  8 01:12 build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/2.34.0/json-utils-2.34.0-sources.jar
+web search: 
+web search: "software/amazon/awssdk/json-utils/2.34.0" "json-utils-2.34.0-sources.jar"
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2
+codex
+Updated [software.amazon.awssdk-json-utils-2.34.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json).
+
+Set Maven Central source/javadoc URLs, the AWS SDK Java v2 repository root, and the tagged GitHub test path. I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM Java artifact with normal class files. JSON parsing passed, and the rendered source, javadoc, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+index 9f62f12b60a1a76ff9d9a953989af4b55e303fc6..72864a07018018f876a3937dc42de9351c2458a8
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0"
++  "coordinates" : "software.amazon.awssdk:json-utils:2.34.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-sources.jar",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/json-utils/$version$/json-utils-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 Json Utils provides the SDK's JSON tree model, parser, visitor, and writer APIs used by protocol components. It supports SDK internals that need to parse, represent, traverse, and emit JSON payloads without exposing a service-specific client API."
+ }
+
+tokens used
+67,123
+Updated [software.amazon.awssdk-json-utils-2.34.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/build/discovered-artifact-metadata/software.amazon.awssdk-json-utils-2.34.0.json).
+
+Set Maven Central source/javadoc URLs, the AWS SDK Java v2 repository root, and the tagged GitHub test path. I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM Java artifact with normal class files. JSON parsing passed, and the rendered source, javadoc, and test URLs returned HTTP 200.
+Ran agent for software.amazon.awssdk:json-utils:2.34.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/build/agent-artifact-discovery-logs/software.amazon.awssdk-json-utils-2.34.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4529-e1450b64/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 9 executed
