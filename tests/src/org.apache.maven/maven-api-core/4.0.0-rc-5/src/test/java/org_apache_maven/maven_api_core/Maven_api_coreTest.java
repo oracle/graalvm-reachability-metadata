@@ -38,6 +38,7 @@ import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.cache.CacheMetadata;
 import org.apache.maven.api.cache.CacheRetention;
 import org.apache.maven.api.cache.RequestResult;
+import org.apache.maven.api.feature.Features;
 import org.apache.maven.api.model.Build;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Plugin;
@@ -221,6 +222,25 @@ public class Maven_api_coreTest {
         assertThat(copy.getTopDirectory()).isEqualTo(tempDirectory);
         assertThat(copy.getUserProperties()).containsEntry("copied", "true");
         assertThatIllegalStateException().isThrownBy(copy::getRootDirectory);
+    }
+
+    @Test
+    void featureFlagsInterpretMapsAndDefaults() {
+        Map<String, Object> defaults = Map.of();
+        assertThat(Features.mavenMaven3Personality(defaults)).isFalse();
+        assertThat(Features.consumerPom(defaults)).isTrue();
+        assertThat(Features.consumerPomFlatten(defaults)).isFalse();
+
+        Map<String, Object> maven3Mode = Map.of("maven.maven3Personality", "true");
+        assertThat(Features.mavenMaven3Personality(maven3Mode)).isTrue();
+        assertThat(Features.consumerPom(maven3Mode)).isFalse();
+
+        Map<String, Object> explicitFeatureSelection = Map.of(
+                "maven.maven3Personality", true,
+                "maven.consumer.pom", true,
+                "maven.consumer.pom.flatten", "true");
+        assertThat(Features.consumerPom(explicitFeatureSelection)).isTrue();
+        assertThat(Features.consumerPomFlatten(explicitFeatureSelection)).isTrue();
     }
 
     @Test
