@@ -105,6 +105,23 @@ class Twirl_api_3Test {
   }
 
   @Test
+  def rendersScalaXmlNodeSequencesAsRawTemplateContent(): Unit = {
+    val template: BaseScalaTemplate[Html, Format[Html]] = new BaseScalaTemplate[Html, Format[Html]](HtmlFormat)
+    val node: scala.xml.Elem = new scala.xml.Elem(
+      null,
+      "span",
+      scala.xml.Null,
+      scala.xml.TopScope,
+      false,
+      new scala.xml.Text("Tom & Jerry")
+    )
+    val nodes: scala.xml.NodeSeq = node
+
+    assertEquals("<span>Tom &amp; Jerry</span>", template._display_(nodes).body)
+    assertEquals("", template._display_(scala.xml.NodeSeq.Empty).body)
+  }
+
+  @Test
   def stringInterpolatorsEscapeArgumentsAndKeepAppendableValuesRaw(): Unit = {
     val person: String = "<Ada & Bob>"
     val trustedHtml: Html = HtmlFormat.raw("<em>trusted</em>")
