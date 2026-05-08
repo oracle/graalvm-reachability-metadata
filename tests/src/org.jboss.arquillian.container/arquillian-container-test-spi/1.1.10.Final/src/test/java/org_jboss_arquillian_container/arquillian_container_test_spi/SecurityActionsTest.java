@@ -48,8 +48,8 @@ public class SecurityActionsTest {
     void newInstanceUsesProvidedClassLoaderAndConstructorArguments() throws Exception {
         Object instance = invokeNewInstance(
                 StringBuilder.class.getName(),
-                new Class<?>[] { String.class },
-                new Object[] { "arquillian" },
+                new Class<?>[] {String.class},
+                new Object[] {"arquillian"},
                 CharSequence.class,
                 StringBuilder.class.getClassLoader());
 
@@ -80,7 +80,7 @@ public class SecurityActionsTest {
         method.setAccessible(true);
         return method.invoke(
                 null,
-                new Object[] { className, argumentTypes, arguments, expectedType, classLoader });
+                new Object[] {className, argumentTypes, arguments, expectedType, classLoader});
     }
 
     private static Class<?> securityActionsClass() throws ClassNotFoundException {
