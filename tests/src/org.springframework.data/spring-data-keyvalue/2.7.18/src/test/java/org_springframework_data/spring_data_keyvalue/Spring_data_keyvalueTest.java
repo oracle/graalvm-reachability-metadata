@@ -30,6 +30,7 @@ import org.springframework.data.keyvalue.core.IdentifierGenerator;
 import org.springframework.data.keyvalue.core.KeyValueTemplate;
 import org.springframework.data.keyvalue.core.SpelCriteria;
 import org.springframework.data.keyvalue.core.event.KeyValueEvent;
+import org.springframework.data.keyvalue.core.mapping.KeyValuePersistentEntity;
 import org.springframework.data.keyvalue.core.mapping.context.KeyValueMappingContext;
 import org.springframework.data.keyvalue.core.query.KeyValueQuery;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
@@ -121,6 +122,31 @@ public class Spring_data_keyvalueTest {
             assertThat(template.findById(grace.getId(), Person.class)).hasValueSatisfying(person -> {
                 assertThat(person).isSameAs(grace);
                 assertThat(person.getFirstName()).isEqualTo("Grace");
+            });
+        } finally {
+            template.destroy();
+        }
+    }
+
+    @Test
+    void keyValueTemplateUsesFallbackKeyspaceResolverForUnannotatedEntities() throws Exception {
+        Map<String, Map<Object, Object>> backingStore = new ConcurrentHashMap<>();
+        KeyValueMappingContext<?, ?> mappingContext = new KeyValueMappingContext<>();
+        mappingContext.setFallbackKeySpaceResolver(type -> "books");
+        KeyValueTemplate template = new KeyValueTemplate(new MapKeyValueAdapter(backingStore), mappingContext);
+
+        try {
+            KeyValuePersistentEntity<?, ?> bookEntity = mappingContext.getRequiredPersistentEntity(Book.class);
+            assertThat(bookEntity.getKeySpace()).isEqualTo("books");
+
+            Book dune = new Book("b1", "Dune", "Frank Herbert");
+            assertThat(template.insert(dune)).isSameAs(dune);
+
+            assertThat(backingStore).containsOnlyKeys("books");
+            assertThat(backingStore.get("books")).containsEntry("b1", dune);
+            assertThat(template.findById("b1", Book.class)).hasValueSatisfying(book -> {
+                assertThat(book).isSameAs(dune);
+                assertThat(book.getTitle()).isEqualTo("Dune");
             });
         } finally {
             template.destroy();
@@ -279,6 +305,46 @@ public class Spring_data_keyvalueTest {
         List<Person> findByAgeBetween(int lowerBound, int upperBound, Sort sort);
 
         boolean existsByLastName(String lastName);
+    }
+
+    public static class Book {
+        @Id
+        private String id;
+        private String title;
+        private String author;
+
+        public Book() {
+        }
+
+        Book(String id, String title, String author) {
+            this.id = id;
+            this.title = title;
+            this.author = author;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getAuthor() {
+            return author;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
     }
 
     @KeySpace("people")
