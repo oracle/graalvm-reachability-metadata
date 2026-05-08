@@ -27,7 +27,6 @@ import java.util.jar.JarOutputStream;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -76,8 +75,8 @@ public class EclipseCdtFormatterStepTest {
                 assertTrue(formatted.contains("int main() {"), formatted);
                 assertTrue(formatted.contains("return 0;"), formatted);
             }
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         }
     }
 
@@ -101,10 +100,8 @@ public class EclipseCdtFormatterStepTest {
                 """);
     }
 
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
+    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Throwable throwable) {
+        NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
     }
 
     private static final class LocalP2Server implements AutoCloseable {

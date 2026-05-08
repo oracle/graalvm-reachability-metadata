@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -74,8 +73,8 @@ public class EclipseWtpFormatterStepTest {
 
             assertTrue(formatted.contains("color"), formatted);
             assertTrue(formatted.contains("red"), formatted);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         }
     }
 
@@ -90,8 +89,8 @@ public class EclipseWtpFormatterStepTest {
 
             assertTrue(formatted.contains("<root"), formatted);
             assertTrue(formatted.contains("child"), formatted);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         }
     }
 
@@ -101,10 +100,8 @@ public class EclipseWtpFormatterStepTest {
         return builder.build();
     }
 
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
+    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Throwable throwable) {
+        NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
     }
 
     private static final class StubFormatterProvisioner implements Provisioner {
