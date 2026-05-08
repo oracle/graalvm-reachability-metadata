@@ -38,7 +38,11 @@ import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.cache.CacheMetadata;
 import org.apache.maven.api.cache.CacheRetention;
 import org.apache.maven.api.cache.RequestResult;
+import org.apache.maven.api.model.Build;
+import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Plugin;
+import org.apache.maven.api.model.PluginContainer;
+import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.model.Repository;
 import org.apache.maven.api.services.ArtifactCoordinatesFactoryRequest;
 import org.apache.maven.api.services.ArtifactDeployerRequest;
@@ -323,6 +327,45 @@ public class Maven_api_coreTest {
     }
 
     @Test
+    void projectsExposeModelDerivedDefaultsAndBuildOutputDirectories() {
+        Build build = Build.newBuilder()
+                .directory("target")
+                .outputDirectory("target/classes")
+                .testOutputDirectory("target/test-classes")
+                .build();
+        Model model = Model.newBuilder()
+                .groupId("org.example")
+                .artifactId("demo")
+                .version("1.0")
+                .packaging("jar")
+                .build(build)
+                .build();
+        SimpleJavaType type = new SimpleJavaType(Type.JAR);
+        SimplePackaging packaging = new SimplePackaging("jar", type, Map.of());
+        SimpleProducedArtifact pomArtifact = artifact("demo", "pom");
+        SimpleProducedArtifact mainArtifact = artifact("demo", "jar");
+        SimpleProject project = new SimpleProject(
+                "org.example",
+                "demo",
+                "1.0",
+                packaging,
+                List.of(pomArtifact, mainArtifact),
+                model,
+                tempDirectory,
+                tempDirectory);
+
+        assertThat(project.getId()).isEqualTo("org.example:demo:jar:1.0");
+        assertThat(project.getLanguage()).isEqualTo(Language.JAVA_FAMILY);
+        assertThat(project.getPomArtifact()).isSameAs(pomArtifact);
+        assertThat(project.getMainArtifact()).contains(mainArtifact);
+        assertThat(project.getBuild()).isSameAs(build);
+        assertThat(project.getOutputDirectory(ProjectScope.MAIN))
+                .isEqualTo(tempDirectory.resolve("target/classes"));
+        assertThat(project.getOutputDirectory(ProjectScope.TEST))
+                .isEqualTo(tempDirectory.resolve("target/test-classes"));
+    }
+
+    @Test
     void lifecycleDefaultMethodsFlattenNestedPhases() {
         SimplePhase compile = new SimplePhase("compile", List.of());
         SimplePhase test = new SimplePhase("test", List.of());
@@ -601,10 +644,14 @@ public class Maven_api_coreTest {
     }
 
     private static SimpleProducedArtifact producedArtifact(String artifactId) {
+        return artifact(artifactId, "jar");
+    }
+
+    private static SimpleProducedArtifact artifact(String artifactId, String extension) {
         SimpleVersion version = new SimpleVersion("1.0");
         SimpleArtifactCoordinates coordinates = new SimpleArtifactCoordinates(
-                "org.example", artifactId, "", new SimpleVersionConstraint(version), "jar");
-        return new SimpleProducedArtifact("org.example", artifactId, version, version, "", "jar", false, coordinates);
+                "org.example", artifactId, "", new SimpleVersionConstraint(version), extension);
+        return new SimpleProducedArtifact("org.example", artifactId, version, version, "", extension, false, coordinates);
     }
 
     private record SimpleVersion(String value) implements Version {
@@ -838,6 +885,36 @@ public class Maven_api_coreTest {
         }
     }
 
+    private record SimpleJavaType(String id) implements Type {
+        @Override
+        public String getExtension() {
+            return "jar";
+        }
+
+        @Override
+        public String getClassifier() {
+            return "";
+        }
+
+        @Override
+        public Language getLanguage() {
+            return Language.JAVA_FAMILY;
+        }
+
+        @Override
+        public boolean isIncludesDependencies() {
+            return false;
+        }
+
+        @Override
+        public Set<PathType> getPathTypes() {
+            return Set.of(JavaPathType.CLASSES);
+        }
+    }
+
+    private record SimplePackaging(String id, Type type, Map<String, PluginContainer> plugins) implements Packaging {
+    }
+
     private record SimpleExclusion(String groupId, String artifactId) implements Exclusion {
         @Override
         public String getGroupId() {
@@ -975,6 +1052,106 @@ public class Maven_api_coreTest {
         @Override
         public REQ getRequest() {
             return request;
+        }
+    }
+
+    private record SimpleProject(
+            String groupId,
+            String artifactId,
+            String version,
+            Packaging packaging,
+            List<ProducedArtifact> artifacts,
+            Model model,
+            Path basedir,
+            Path rootDirectory) implements Project {
+        @Override
+        public String getGroupId() {
+            return groupId;
+        }
+
+        @Override
+        public String getArtifactId() {
+            return artifactId;
+        }
+
+        @Override
+        public String getVersion() {
+            return version;
+        }
+
+        @Override
+        public Packaging getPackaging() {
+            return packaging;
+        }
+
+        @Override
+        public List<ProducedArtifact> getArtifacts() {
+            return artifacts;
+        }
+
+        @Override
+        public Model getModel() {
+            return model;
+        }
+
+        @Override
+        public Path getPomPath() {
+            return basedir.resolve("pom.xml");
+        }
+
+        @Override
+        public Path getBasedir() {
+            return basedir;
+        }
+
+        @Override
+        public List<DependencyCoordinates> getDependencies() {
+            return List.of();
+        }
+
+        @Override
+        public List<DependencyCoordinates> getManagedDependencies() {
+            return List.of();
+        }
+
+        @Override
+        public boolean isTopProject() {
+            return true;
+        }
+
+        @Override
+        public boolean isRootProject() {
+            return true;
+        }
+
+        @Override
+        public Path getRootDirectory() {
+            return rootDirectory;
+        }
+
+        @Override
+        public Optional<Project> getParent() {
+            return Optional.empty();
+        }
+
+        @Override
+        public List<Profile> getDeclaredProfiles() {
+            return List.of();
+        }
+
+        @Override
+        public List<Profile> getEffectiveProfiles() {
+            return List.of();
+        }
+
+        @Override
+        public List<Profile> getDeclaredActiveProfiles() {
+            return List.of();
+        }
+
+        @Override
+        public List<Profile> getEffectiveActiveProfiles() {
+            return List.of();
         }
     }
 
