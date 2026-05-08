@@ -176,6 +176,16 @@ object Akka_serialization_jackson_3Test {
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
+      akka.loggers = ["akka.event.Logging$$DefaultLogger"]
+      akka.logging-filter = "akka.event.DefaultLoggingFilter"
+      akka.loggers-dispatcher = "akka.actor.default-dispatcher"
+      akka.logger-startup-timeout = 5s
+      akka.loglevel = "INFO"
+      akka.stdout-loglevel = "WARNING"
+      akka.version = "2.6.21"
+      akka.library-extensions = ["akka.serialization.SerializationExtension$$"]
+      akka.actor.provider = "local"
+
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
@@ -203,7 +213,10 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
+    .withFallback(ConfigFactory.parseResources("akka-serialization-jackson-reference.conf"))
+    .withFallback(ConfigFactory.parseResources("akka-actor-reference.conf"))
     .withFallback(ConfigFactory.load())
+    .resolve()
 }
 
 final case class MapperEnvelope(
