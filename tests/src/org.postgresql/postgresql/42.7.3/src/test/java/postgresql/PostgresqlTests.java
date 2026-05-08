@@ -6,7 +6,6 @@
  */
 package postgresql;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -44,24 +43,25 @@ public class PostgresqlTests {
 
     private static final String DATABASE = "test";
 
-    private static final String JDBC_URL = "jdbc:postgresql://localhost/" + DATABASE;
+    private static String containerId;
 
-    private static Process process;
+    private static int databasePort;
 
     private static Connection openConnection() throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", USERNAME);
         props.setProperty("password", PASSWORD);
-        return DriverManager.getConnection(JDBC_URL, props);
+        return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:" + databasePort + "/" + DATABASE, props);
     }
 
     @BeforeAll
-    static void beforeAll() throws IOException {
+    static void beforeAll() throws Exception {
         System.out.println("Starting PostgreSQL ...");
-        process = new ProcessBuilder(
-                "docker", "run", "--rm", "-p", "5432:5432", "-e", "POSTGRES_DB=" + DATABASE, "-e", "POSTGRES_USER=" + USERNAME,
-                "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:18-alpine").redirectOutput(new File("postgres-stdout.txt"))
-                .redirectError(new File("postgres-stderr.txt")).start();
+        containerId = commandOutput(
+                "docker", "run", "--rm", "-d", "-p", "127.0.0.1::5432", "-e", "POSTGRES_DB=" + DATABASE, "-e", "POSTGRES_USER=" + USERNAME,
+                "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:18-alpine");
+        databasePort = Integer.parseInt(commandOutput("docker", "inspect", "--format",
+                "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}", containerId));
 
         // Wait until connection can be established
         Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
@@ -72,10 +72,10 @@ public class PostgresqlTests {
     }
 
     @AfterAll
-    static void tearDown() {
-        if (process != null && process.isAlive()) {
+    static void tearDown() throws Exception {
+        if (containerId != null) {
             System.out.println("Shutting down PostgreSQL");
-            process.destroy();
+            commandOutput("docker", "rm", "-f", containerId);
         }
     }
 
@@ -208,5 +208,17 @@ public class PostgresqlTests {
                 }
             }
         }
+    }
+
+    private static String commandOutput(String... command) throws IOException, InterruptedException {
+        Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
+        byte[] output = process.getInputStream().readAllBytes();
+        int exitCode = process.waitFor();
+        String text = new String(output, StandardCharsets.UTF_8).trim();
+        if (exitCode != 0) {
+            throw new IllegalStateException(
+                    "Command failed with exit code " + exitCode + ": " + String.join(" ", command) + "\n" + text);
+        }
+        return text;
     }
 }
