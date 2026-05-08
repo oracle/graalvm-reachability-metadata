@@ -54,6 +54,7 @@ public class Jandex_gizmo2Test {
     private static final ClassDesc LIST_DESC = ClassDesc.of("java.util.List");
     private static final ClassDesc MAP_DESC = ClassDesc.of("java.util.Map");
     private static final ClassDesc NUMBER_DESC = ClassDesc.of("java.lang.Number");
+    private static final ClassDesc IO_EXCEPTION_DESC = ClassDesc.of("java.io.IOException");
 
     @Test
     void convertsDotNamesAndJandexTypesToClassDescriptors() {
@@ -128,6 +129,33 @@ public class Jandex_gizmo2Test {
 
         TypeArgument unbounded = Jandex2Gizmo.typeArgumentOf(WildcardType.UNBOUNDED);
         assertThat(unbounded.toString()).contains("?");
+    }
+
+    @Test
+    void convertsGenericThrowsClausesAndMethodTypeParameters() throws IOException {
+        Index index = sampleIndex();
+        ClassInfo sample = requireClass(index, "io_smallrye.jandex_gizmo2.JandexGizmoSample");
+        MethodInfo risky = sample.firstMethod("risky");
+
+        GenericType.OfThrows throwsType = Jandex2Gizmo.genericTypeOfThrows(risky.exceptions().get(0), index);
+        assertThat(throwsType.desc()).isEqualTo(IO_EXCEPTION_DESC);
+        assertThat(throwsType.toString()).contains("E");
+        assertThat(throwsType.hasVisibleAnnotations()).isTrue();
+
+        Map<String, byte[]> generatedClasses = new LinkedHashMap<>();
+        Gizmo.create(generatedClasses::put).class_("io.smallrye.generated.CopiedThrowsMetadata", cc -> {
+            cc.abstract_();
+            cc.abstractMethod("copiedRisky", mc -> {
+                Jandex2Gizmo.copyModifiers(risky, mc);
+                Jandex2Gizmo.copyTypeParameters(risky, mc);
+                mc.parameter("value", Jandex2Gizmo.genericTypeOf(risky.parameterType(0), index));
+                mc.returning(Jandex2Gizmo.genericTypeOf(risky.returnType(), index));
+                mc.throws_(throwsType);
+            });
+        });
+
+        assertThat(generatedClasses).hasSize(1);
+        assertThat(generatedClasses.values()).allSatisfy(Jandex_gizmo2Test::assertClassFile);
     }
 
     @Test
@@ -297,6 +325,10 @@ class JandexGizmoSample<T extends Number & Comparable<T>> {
     }
 
     public <U extends CharSequence> U generic(U value) {
+        return value;
+    }
+
+    public <E extends IOException> String risky(String value) throws @RuntimeMarker(7) E {
         return value;
     }
 }
