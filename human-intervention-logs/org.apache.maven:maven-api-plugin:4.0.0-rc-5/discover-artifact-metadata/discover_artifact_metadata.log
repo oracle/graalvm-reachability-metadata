@@ -1,0 +1,2909 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0779-73e1-7ae0-8b2a-460e94643267
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-api-plugin:4.0.0-rc-5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.0-rc-5" when "$version$" is replaced with "4.0.0-rc-5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+- Set "coordinates" to "org.apache.maven:maven-api-plugin:4.0.0-rc-5".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.0-rc-5".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s Maven Central metadata and upstream tag layout first, then update the JSON in place using the repository’s existing formatting.
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "language" : {
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-i18n/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:    "repository-url" : "https://github.com/google/re2j",
+metadata/com.google.re2j/re2j/index.json:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/documentation-website/Writerside/topics/JSON-And-JSONB-types.topic",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "language" : {
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-databind",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:    "repository-url" : "https://github.com/square/moshi",
+metadata/com.squareup.moshi/moshi-adapters/index.json:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+metadata/com.squareup.moshi/moshi-adapters/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:    "language" : {
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | head -20 && if [ -f build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json ]; then sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json; fi" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+{
+  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
+}
+
+web search: 
+web search: org.apache.maven maven-api-plugin 4.0.0-rc-5 Maven Central
+web search: 
+web search: https://github.com/apache/maven/tree/maven-4.0.0-rc-5
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5 maven-api-plugin-4.0.0-rc-5-sources.jar
+codex
+The existing file is just the coordinate stub. Maven Central and the POM point this artifact at the Apache Maven monorepo with tag `maven-4.0.0-rc-5`, so I’m checking which source/test/doc artifacts exist before choosing the most specific URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-api</artifactId>
+    <version>4.0.0-rc-5</version>
+  </parent>
+
+  <artifactId>maven-api-plugin</artifactId>
+
+  <name>Maven 4 API :: Plugin</name>
+  <description>Maven 4 API - Immutable Plugin model.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-api-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-api-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>modello-plugin</id>
+            <goals>
+              <goal>velocity</goal>
+              <goal>xdoc</goal>
+              <goal>xsd</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <velocityBasedir>${project.basedir}/../../src/mdo</velocityBasedir>
+              <version>2.0.0</version>
+              <models>
+                <model>src/main/mdo/plugin.mdo</model>
+              </models>
+              <templates>
+                <template>model.vm</template>
+              </templates>
+              <params>
+                <param>packageModelV4=org.apache.maven.api.plugin.descriptor</param>
+              </params>
+            </configuration>
+          </execution>
+          <execution>
+            <id>modello-lifecycle</id>
+            <goals>
+              <goal>velocity</goal>
+              <goal>xdoc</goal>
+              <goal>xsd</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <velocityBasedir>${project.basedir}/../../src/mdo</velocityBasedir>
+              <version>2.0.0</version>
+              <models>
+                <model>src/main/mdo/lifecycle.mdo</model>
+              </models>
+              <templates>
+                <template>model.vm</template>
+              </templates>
+              <params>
+                <param>packageModelV4=org.apache.maven.api.plugin.descriptor.lifecycle</param>
+              </params>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/package-info.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-test-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/apache/maven/maven-4.0.0-rc-5/api/maven-api-plugin/pom.xml' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 243ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven-api-plugin/4.0.0-rc-5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven-api-plugin/4.0.0-rc-5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.json" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.json">maven-api-plugin-4.0.0-rc-5-cyclonedx.json</a>        2025-11-07 23:00     10227      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.json.asc" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.json.asc">maven-api-plugin-4.0.0-rc-5-cyclonedx.json.as...</a>  2025-11-07 23:00       228      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.json.md5" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.json.md5">maven-api-plugin-4.0.0-rc-5-cyclonedx.json.md...</a>  2025-11-07 23:00        32      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.json.sha1" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.json.sha1">maven-api-plugin-4.0.0-rc-5-cyclonedx.json.sh...</a>  2025-11-07 23:00        40      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml">maven-api-plugin-4.0.0-rc-5-cyclonedx.xml</a>         2025-11-07 23:00      9416      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.asc" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.asc">maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.asc</a>     2025-11-07 23:00       228      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.md5" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.md5">maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.md5</a>     2025-11-07 23:00        32      
+<a href="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.sha1" title="maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.sha1">maven-api-plugin-4.0.0-rc-5-cyclonedx.xml.sha...</a>  2025-11-07 23:00        40      
+<a href="maven-api-plugin-4.0.0-rc-5-javadoc.jar" title="maven-api-plugin-4.0.0-rc-5-javadoc.jar">maven-api-plugin-4.0.0-rc-5-javadoc.jar</a>           2025-11-07 23:00    250267      
+<a href="maven-api-plugin-4.0.0-rc-5-javadoc.jar.asc" title="maven-api-plugin-4.0.0-rc-5-javadoc.jar.asc">maven-api-plugin-4.0.0-rc-5-javadoc.jar.asc</a>       2025-11-07 23:00       228      
+<a href="maven-api-plugin-4.0.0-rc-5-javadoc.jar.md5" title="maven-api-plugin-4.0.0-rc-5-javadoc.jar.md5">maven-api-plugin-4.0.0-rc-5-javadoc.jar.md5</a>       2025-11-07 23:00        32      
+<a href="maven-api-plugin-4.0.0-rc-5-javadoc.jar.sha1" title="maven-api-plugin-4.0.0-rc-5-javadoc.jar.sha1">maven-api-plugin-4.0.0-rc-5-javadoc.jar.sha1</a>      2025-11-07 23:00        40      
+<a href="maven-api-plugin-4.0.0-rc-5-sources.jar" title="maven-api-plugin-4.0.0-rc-5-sources.jar">maven-api-plugin-4.0.0-rc-5-sources.jar</a>           2025-11-07 23:00     40987      
+<a href="maven-api-plugin-4.0.0-rc-5-sources.jar.asc" title="maven-api-plugin-4.0.0-rc-5-sources.jar.asc">maven-api-plugin-4.0.0-rc-5-sources.jar.asc</a>       2025-11-07 23:00       228      
+<a href="maven-api-plugin-4.0.0-rc-5-sources.jar.md5" title="maven-api-plugin-4.0.0-rc-5-sources.jar.md5">maven-api-plugin-4.0.0-rc-5-sources.jar.md5</a>       2025-11-07 23:00        32      
+<a href="maven-api-plugin-4.0.0-rc-5-sources.jar.sha1" title="maven-api-plugin-4.0.0-rc-5-sources.jar.sha1">maven-api-plugin-4.0.0-rc-5-sources.jar.sha1</a>      2025-11-07 23:00        40      
+<a href="maven-api-plugin-4.0.0-rc-5.jar" title="maven-api-plugin-4.0.0-rc-5.jar">maven-api-plugin-4.0.0-rc-5.jar</a>                   2025-11-07 23:00     82102      
+<a href="maven-api-plugin-4.0.0-rc-5.jar.asc" title="maven-api-plugin-4.0.0-rc-5.jar.asc">maven-api-plugin-4.0.0-rc-5.jar.asc</a>               2025-11-07 23:00       228      
+<a href="maven-api-plugin-4.0.0-rc-5.jar.md5" title="maven-api-plugin-4.0.0-rc-5.jar.md5">maven-api-plugin-4.0.0-rc-5.jar.md5</a>               2025-11-07 23:00        32      
+<a href="maven-api-plugin-4.0.0-rc-5.jar.sha1" title="maven-api-plugin-4.0.0-rc-5.jar.sha1">maven-api-plugin-4.0.0-rc-5.jar.sha1</a>              2025-11-07 23:00        40      
+<a href="maven-api-plugin-4.0.0-rc-5.pom" title="maven-api-plugin-4.0.0-rc-5.pom">maven-api-plugin-4.0.0-rc-5.pom</a>                   2025-11-07 23:00      3864      
+<a href="maven-api-plugin-4.0.0-rc-5.pom.asc" title="maven-api-plugin-4.0.0-rc-5.pom.asc">maven-api-plugin-4.0.0-rc-5.pom.asc</a>               2025-11-07 23:00       228      
+<a href="maven-api-plugin-4.0.0-rc-5.pom.md5" title="maven-api-plugin-4.0.0-rc-5.pom.md5">maven-api-plugin-4.0.0-rc-5.pom.md5</a>               2025-11-07 23:00        32      
+<a href="maven-api-plugin-4.0.0-rc-5.pom.sha1" title="maven-api-plugin-4.0.0-rc-5.pom.sha1">maven-api-plugin-4.0.0-rc-5.pom.sha1</a>              2025-11-07 23:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 195ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-api</artifactId>
+    <version>4.0.0-rc-5</version>
+  </parent>
+
+  <artifactId>maven-api-plugin</artifactId>
+
+  <name>Maven 4 API :: Plugin</name>
+  <description>Maven 4 API - Immutable Plugin model.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-api-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-api-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>modello-plugin</id>
+            <goals>
+              <goal>velocity</goal>
+              <goal>xdoc</goal>
+              <goal>xsd</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <velocityBasedir>${project.basedir}/../../src/mdo</velocityBasedir>
+              <version>2.0.0</version>
+              <models>
+                <model>src/main/mdo/plugin.mdo</model>
+              </models>
+              <templates>
+                <template>model.vm</template>
+              </templates>
+              <params>
+                <param>packageModelV4=org.apache.maven.api.plugin.descriptor</param>
+              </params>
+            </configuration>
+          </execution>
+          <execution>
+            <id>modello-lifecycle</id>
+            <goals>
+              <goal>velocity</goal>
+              <goal>xdoc</goal>
+              <goal>xsd</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <velocityBasedir>${project.basedir}/../../src/mdo</velocityBasedir>
+              <version>2.0.0</version>
+              <models>
+                <model>src/main/mdo/lifecycle.mdo</model>
+              </models>
+              <templates>
+                <template>model.vm</template>
+              </templates>
+              <params>
+                <param>packageModelV4=org.apache.maven.api.plugin.descriptor.lifecycle</param>
+              </params>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/package-info.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+ exited 22 in 317ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 08 May 2026 12:04:53 GMT
+content-type: text/html
+cf-ray: 9f88545a5927504e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-api/4.0.0-rc-5/maven-api-4.0.0-rc-5.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>4.0.0-rc-5</version>
+  </parent>
+
+  <artifactId>maven-api</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven 4 API</name>
+  <description>A new immutable API for Maven 4 to better manage what plugins and extensions can influence.</description>
+
+  <modules>
+    <module>maven-api-annotations</module>
+    <module>maven-api-di</module>
+    <module>maven-api-xml</module>
+    <module>maven-api-model</module>
+    <module>maven-api-plugin</module>
+    <module>maven-api-settings</module>
+    <module>maven-api-toolchain</module>
+    <module>maven-api-metadata</module>
+    <module>maven-api-core</module>
+    <module>maven-api-spi</module>
+    <module>maven-api-cli</module>
+  </modules>
+
+  <properties>
+    <project.directory>api</project.directory>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <tags>
+                <tag>
+                  <name>provisional</name>
+                  <placement>tf</placement>
+                  <head>Provisional:</head>
+                </tag>
+              </tags>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <id>aggregate</id>
+                <reports>
+                  <report>aggregate</report>
+                </reports>
+                <inherited>false</inherited>
+              </reportSet>
+            </reportSets>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <reportSets>
+              <reportSet>
+                <id>aggregate</id>
+                <reports>
+                  <report>aggregate</report>
+                </reports>
+                <inherited>false</inherited>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/4.0.0-rc-5/maven-4.0.0-rc-5.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>45</version>
+    <relativePath />
+  </parent>
+
+  <artifactId>maven</artifactId>
+  <version>4.0.0-rc-5</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Maven</name>
+  <description>Maven is a software build management and
+    comprehension tool. Based on the concept of a project object model:
+    builds, dependency management, documentation creation, site
+    publication, and distribution publication are all controlled from
+    the declarative file. Maven can be extended by plugins to utilise a
+    number of other development tools for reporting or the build
+    process.</description>
+  <url>https://maven.apache.org/ref/${project.version}/</url>
+  <inceptionYear>2001</inceptionYear>
+
+  <contributors>
+    <contributor>
+      <name>Stuart McCulloch</name>
+    </contributor>
+    <contributor>
+      <name>Christian Schulte (MNG-2199)</name>
+    </contributor>
+    <contributor>
+      <name>Christopher Tubbs (MNG-4226)</name>
+    </contributor>
+    <contributor>
+      <name>Konstantin Perikov (MNG-4565)</name>
+    </contributor>
+    <contributor>
+      <name>Sébastian Le Merdy (MNG-5613)</name>
+    </contributor>
+    <contributor>
+      <name>Mark Ingram (MNG-5639)</name>
+    </contributor>
+    <contributor>
+      <name>Phil Pratt-Szeliga (MNG-5645)</name>
+    </contributor>
+    <contributor>
+      <name>Florencia Tarditti (PR 41)</name>
+    </contributor>
+    <contributor>
+      <name>Anton Tanasenko</name>
+    </contributor>
+    <contributor>
+      <name>Joseph Walton (MNG-5297)</name>
+    </contributor>
+    <contributor>
+      <name>Fabiano Cipriano de Oliveira (MNG-6261)</name>
+    </contributor>
+    <contributor>
+      <name>Mike Mol (MNG-6665)</name>
+    </contributor>
+    <contributor>
+      <name>Martin Kanters</name>
+      <organization>JPoint</organization>
+    </contributor>
+    <contributor>
+      <name>Maarten Mulders</name>
+      <organization>Info Support</organization>
+    </contributor>
+    <contributor>
+      <name>Luc Klaassen (MNG-6065)</name>
+    </contributor>
+    <contributor>
+      <name>Wouter Aarts (MNG-6065)</name>
+    </contributor>
+    <contributor>
+      <name>Arturo Bernal</name>
+    </contributor>
+  </contributors>
+
+  <modules>
+    <module>api</module>
+    <module>impl</module>
+    <module>compat</module>
+    <module>apache-maven</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/maven.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven.git</developerConnection>
+    <tag>maven-4.0.0-rc-5</tag>
+    <url>https://github.com/apache/maven/tree/${project.scm.tag}</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/maven/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven/</url>
+  </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scm:svn:https://svn.apache.org/repos/asf/maven/website/components/${maven.site.path}</url>
+    </site>
+    <downloadUrl>https://maven.apache.org/download.html</downloadUrl>
+  </distributionManagement>
+
+  <properties>
+    <javaVersion>17</javaVersion>
+    <maven.compiler.source>${javaVersion}</maven.compiler.source>
+    <maven.compiler.target>${javaVersion}</maven.compiler.target>
+    <maven.compiler.release>${javaVersion}</maven.compiler.release>
+    <maven.compiler.proc>full</maven.compiler.proc>
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+    <maven.baseline>3.9.8</maven.baseline>
+    <!-- Control the name of the distribution and information output by mvn -->
+    <distributionId>apache-maven</distributionId>
+    <distributionShortName>Maven</distributionShortName>
+    <distributionName>Apache Maven</distributionName>
+    <maven.site.path>ref/4-LATEST</maven.site.path>
+    <project.build.outputTimestamp>2025-11-07T22:46:10Z</project.build.outputTimestamp>
+    <!-- various versions -->
+    <assertjVersion>3.27.6</assertjVersion>
+    <asmVersion>9.9</asmVersion>
+    <byteBuddyVersion>1.17.8</byteBuddyVersion>
+    <classWorldsVersion>2.9.0</classWorldsVersion>
+    <commonsCliVersion>1.10.0</commonsCliVersion>
+    <guiceVersion>5.1.0</guiceVersion>
+    <guavaVersion>33.5.0-jre</guavaVersion>
+    <guavafailureaccessVersion>1.0.1</guavafailureaccessVersion>
+    <hamcrestVersion>3.0</hamcrestVersion>
+    <jakartaInjectApiVersion>2.0.1</jakartaInjectApiVersion>
+    <javaxAnnotationApiVersion>1.3.2</javaxAnnotationApiVersion>
+    <jlineVersion>3.30.6</jlineVersion>
+    <jmhVersion>1.37</jmhVersion>
+    <junitVersion>5.13.4</junitVersion>
+    <jxpathVersion>1.4.0</jxpathVersion>
+    <logbackClassicVersion>1.5.20</logbackClassicVersion>
+    <mockitoVersion>5.20.0</mockitoVersion>
+    <plexusInteractivityVersion>1.4</plexusInteractivityVersion>
+    <plexusInterpolationVersion>1.28</plexusInterpolationVersion>
+    <plexusTestingVersion>2.0.1</plexusTestingVersion>
+    <plexusXmlVersion>4.1.0</plexusXmlVersion>
+    <resolverVersion>2.0.13</resolverVersion>
+    <securityDispatcherVersion>4.1.0</securityDispatcherVersion>
+    <sisuVersion>0.9.0.M4</sisuVersion>
+    <slf4jVersion>2.0.17</slf4jVersion>
+    <stax2ApiVersion>4.2.2</stax2ApiVersion>
+    <wagonVersion>3.5.3</wagonVersion>
+    <woodstoxVersion>7.1.1</woodstoxVersion>
+    <xmlunitVersion>2.11.0</xmlunitVersion>
+    <jacocoArgLine />
+
+    <version.spotless-maven-plugin>3.0.0</version.spotless-maven-plugin>
+    <version.palantirJavaFormat>2.80.0</version.palantirJavaFormat>
+
+    <!-- Set as system property in surefire/failsafe to propagate to tests and IT Verifier -->
+    <toolboxVersion>0.14.1</toolboxVersion>
+  </properties>
+
+  <!--bootstrap-start-comment-->
+  <dependencyManagement>
+    <!--bootstrap-end-comment-->
+    <dependencies>
+      <!--  Maven Modules -->
+      <!--bootstrap-start-comment-->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-builder-support</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-jline</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-logging</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-embedder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-cli</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-settings</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-spi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-toolchain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-xml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-di</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-metadata</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-cli</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-di</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-support</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-resolver-provider</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-toolchain-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-toolchain-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-xml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--bootstrap-end-comment-->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-xml</artifactId>
+        <version>${plexusXmlVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guiceVersion}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guavaVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.guava</groupId>
+            <artifactId>listenablefuture</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.j2objc</groupId>
+            <artifactId>j2objc-annotations</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>${sisuVersion}</version>
+        <exclusions>
+          <!-- Detach them: We want to handle Sisu inject and plexus explicitly -->
+          <!-- Once have this, once have that on classpath -->
+          <!-- Finally, we may want to use some with classifier -->
+          <exclusion>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.inject</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-xml-impl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${javaxAnnotationApiVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.inject</artifactId>
+        <version>${sisuVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asmVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>${classWorldsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>${plexusInterpolationVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interactivity-api</artifactId>
+        <version>${plexusInteractivityVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-reader</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-style</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-builtins</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-console</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-console-ui</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-terminal</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-terminal-ffm</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-terminal-jni</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-native</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jansi-core</artifactId>
+        <version>${jlineVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4jVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4jVersion}</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logbackClassicVersion}</version>
+        <optional>true</optional>
+      </dependency>
+      <!--  Wagon -->
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>${wagonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-file</artifactId>
+        <version>${wagonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http</artifactId>
+        <version>${wagonVersion}</version>
+      </dependency>
+      <!--  Repository -->
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-api</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-spi</artifactId>
+        <version>${resolverVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-impl</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-util</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-named-locks</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-connector-basic</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-file</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-apache</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-jdk</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-wagon</artifactId>
+        <version>${resolverVersion}</version>
+      </dependency>
+      <!--  Commons -->
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${commonsCliVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-jxpath</groupId>
+        <artifactId>commons-jxpath</artifactId>
+        <version>${jxpathVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
+        <version>${securityDispatcherVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.woodstox</groupId>
+        <artifactId>woodstox-core</artifactId>
+        <version>${woodstoxVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>stax2-api</artifactId>
+        <version>${stax2ApiVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj</artifactId>
+        <version>${xmlunitVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${xmlunitVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-matchers</artifactId>
+        <version>${xmlunitVersion}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>${hamcrestVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertjVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-testing</artifactId>
+        <version>${plexusTestingVersion}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junitVersion}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${mockitoVersion}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${byteBuddyVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.jimfs</groupId>
+        <artifactId>jimfs</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom2</artifactId>
+        <version>2.0.6.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${jmhVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${jmhVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>eu.maveniverse.maven.mimir</groupId>
+        <artifactId>testing</artifactId>
+        <version>0.10.4</version>
+      </dependency>
+    </dependencies>
+    <!--bootstrap-start-comment-->
+  </dependencyManagement>
+  <!--bootstrap-end-comment-->
+  <!--
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  -->
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" />
+            <argLine>-Xmx256m @{jacocoArgLine}</argLine>
+            <systemPropertyVariables combine.children="append">
+              <version.toolbox>${toolboxVersion}</version.toolbox>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" />
+            <argLine>-Xmx256m @{jacocoArgLine}</argLine>
+            <systemPropertyVariables combine.children="append">
+              <version.toolbox>${toolboxVersion}</version.toolbox>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <!-- enforce backwards compatibility -->
+        <plugin>
+          <groupId>com.github.siom79.japicmp</groupId>
+          <artifactId>japicmp-maven-plugin</artifactId>
+          <version>0.24.2</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>cmp</goal>
+              </goals>
+              <phase>verify</phase>
+              <configuration>
+                <parameter>
+                  <!-- baseline is 3.8.6 for Maven 4 -->
+                  <oldVersionPattern>${maven.baseline}</oldVersionPattern>
+                  <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+                  <onlyBinaryIncompatible>true</onlyBinaryIncompatible>
+                  <!-- don't include subpackages -->
+                  <includeExclusively>true</includeExclusively>
+                </parameter>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.6.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <configuration>
+            <deployAtEnd>true</deployAtEnd>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <configuration>
+            <!-- Include generated sources in the sources JAR -->
+            <excludeResources>false</excludeResources>
+            <includePom>true</includePom>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.14</version>
+          <configuration>
+            <excludes>
+              <exclude>**/org/apache/maven/it/**</exclude>
+              <exclude>**/org/apache/maven/its/**</exclude>
+              <exclude>**/org/apache/maven/coreit/**</exclude>
+              <exclude>**/org/apache/maven/plugin/coreit/**</exclude>
+              <exclude>**/org/apache/maven/wagon/providers/coreit/**</exclude>
+              <exclude>**/org/apache/maven/coreits/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>7.18.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.sisu</groupId>
+          <artifactId>sisu-maven-plugin</artifactId>
+          <version>${sisuVersion}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm</artifactId>
+              <version>${asmVersion}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>io.github.olamy.maven.plugins</groupId>
+        <artifactId>jacoco-aggregator-maven-plugin</artifactId>
+        <version>1.0.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-doap-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <asfExtOptions>
+            <charter>The mission of the Apache Maven project is to create and maintain software
+            libraries that provide a widely-used project build tool, targeting mainly Java
+            development. Apache Maven promotes the use of dependencies via a
+            standardized coordinates system, binary plugins, and a standard build
+            lifecycle.</charter>
+          </asfExtOptions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-check</id>
+            <inherited>false</inherited>
+            <configuration>
+              <excludes>
+                <exclude>Jenkinsfile</exclude>
+                <exclude>**/.gitattributes</exclude>
+                <exclude>src/test/resources*/**</exclude>
+                <exclude>src/test/projects/**</exclude>
+                <exclude>src/test/remote-repo/**</exclude>
+                <exclude>its/**</exclude>
+                <exclude>**/*.odg</exclude>
+                <exclude>**/*.svg</exclude>
+                <exclude>.asf.yaml</exclude>
+                <exclude>.mvn/**</exclude>
+                <exclude>.jbang/**</exclude>
+                <!--
+                  ! Excluded the license files itself cause they do not have have a license of themselves.
+                -->
+                <exclude>src/main/appended-resources/licenses/EPL-1.0.txt</exclude>
+                <exclude>src/main/appended-resources/licenses/unrecognized-aopalliance-1.0.txt</exclude>
+                <exclude>src/main/appended-resources/licenses/unrecognized-javax.annotation-api-1.3.2.txt</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ensure-no-guice-with-asm</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <!-- we use com.google.inject:classes:guice -->
+                    <exclude>com.google.inject:guice:*</exclude>
+                  </excludes>
+                  <includes>
+                    <include>com.google.inject:guice:*:jar:*:classes</include>
+                  </includes>
+                  <message>use guice without asm shaded in.</message>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ensure-no-sonatype-cipher-and-sec-dispatcher</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>org.sonatype.plexus:plexus-sec-dispatcher</exclude>
+                    <exclude>org.sonatype.plexus:plexus-cipher</exclude>
+                  </excludes>
+                  <message>ensure no more org.sonatype.plexus:plexus-cipher and org.sonatype.plexus:plexus-sec-dispatcher.</message>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-bytecode-version</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[17,)</version>
+                </requireJavaVersion>
+                <enforceBytecodeVersion>
+                  <maxJdkVersion>${maven.compiler.release}</maxJdkVersion>
+                  <ignoredScopes>
+                    <ignoredScope>test</ignoredScope>
+                  </ignoredScopes>
+                  <excludes>
+                    <exclude>org.jline:jline-terminal-ffm</exclude>
+                  </excludes>
+                </enforceBytecodeVersion>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>prepare-for-mockito-agent</id>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>mockito</id>
+      <activation>
+        <property>
+          <name>org.mockito:mockito-core:jar</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>-Xmx256m -javaagent:${org.mockito:mockito-core:jar}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>graph</id>
+      <activation>
+        <os>
+          <family>!windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.fusesource.mvnplugins</groupId>
+            <artifactId>maven-graph-plugin</artifactId>
+            <version>1.45</version>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>graph</id>
+                <goals>
+                  <goal>reactor</goal>
+                </goals>
+                <phase>pre-site</phase>
+                <configuration>
+                  <hideVersion>true</hideVersion>
+                  <hideGroupId>true</hideGroupId>
+                  <hideScopes>test</hideScopes>
+                  <hideTransitive>true</hideTransitive>
+                  <keepDot>true</keepDot>
+                  <target>${project.build.directory}/graph/reactor-graph.dot</target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>dev.jbang</groupId>
+            <artifactId>jbang-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>graph</id>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <phase>pre-site</phase>
+                <configuration>
+                  <script>${project.basedir}/src/graph/ReactorGraph.java</script>
+                  <jbangargs>
+                    <arg>--verbose</arg>
+                  </jbangargs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <phase>pre-site</phase>
+                <configuration>
+                  <target>
+                    <!-- directory should be created by org.eclipse.aether.tools.CollectConfiguration -->
+                    <!-- TODO: remove with next version of resolver-tools -->
+                    <mkdir dir="${project.build.directory}/generated-site/markdown" />
+                    <mkdir dir="${project.build.directory}/generated-site/resources" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.6.2</version>
+            <inherited>false</inherited>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-tools</artifactId>
+                <version>${resolverVersion}</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>render-configuration-page</id>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <phase>pre-site</phase>
+                <configuration>
+                  <additionalClasspathElements>
+                    <additionalClasspathElement>${project.basedir}/src/configuration-templates</additionalClasspathElement>
+                  </additionalClasspathElements>
+                  <includePluginDependencies>true</includePluginDependencies>
+                  <mainClass>org.eclipse.aether.tools.CollectConfiguration</mainClass>
+                  <arguments>
+                    <argument>--mode=maven</argument>
+                    <!--
+                    TODO: templates are loaded from classpath, in "normal" JAR project local template would override docgen one,
+                    but in this case the packaging=pom all I could do is use additionalClasspathElement that APPENDS classpath,
+                    hence template is renamed to maven-configuration.md.vm, to avoid conflict (and picking up resolver template)
+                    -->
+                    <argument>--templates=maven-configuration.md</argument>
+                    <argument>${project.basedir}</argument>
+                    <argument>${project.build.directory}/generated-site/markdown</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>render-configuration-properties</id>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <phase>pre-site</phase>
+                <configuration>
+                  <additionalClasspathElements>
+                    <additionalClasspathElement>${project.basedir}/src/configuration-templates</additionalClasspathElement>
+                  </additionalClasspathElements>
+                  <includePluginDependencies>true</includePluginDependencies>
+                  <mainClass>org.eclipse.aether.tools.CollectConfiguration</mainClass>
+                  <arguments>
+                    <argument>--mode=maven</argument>
+                    <!--
+                    TODO: add feature to resolver-tools to allow multiple output directory for different templates
+                    to avoid double execution
+                    -->
+                    <argument>--templates=configuration.properties,configuration.yaml</argument>
+                    <argument>${project.basedir}</argument>
+                    <argument>${project.build.directory}/generated-site/resources</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>source-release-assembly</id>
+                <configuration>
+                  <!-- we have a dedicated distribution module -->
+                  <skipAssembly>true</skipAssembly>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <tags>
+                <tag>
+                  <name>provisional</name>
+                  <placement>tf</placement>
+                  <head>Provisional:</head>
+                </tag>
+              </tags>
+              <groups>
+                <group>
+                  <title>Maven 4 API - Core</title>
+                  <packages>org.apache.maven.api*</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - Plugin</title>
+                  <packages>org.apache.maven.api.plugin.descriptor*</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - Model</title>
+                  <packages>org.apache.maven.api.model</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - Settings</title>
+                  <packages>org.apache.maven.api.settings</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - Toolchain</title>
+                  <packages>org.apache.maven.api.toolchain</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - Meta</title>
+                  <packages>org.apache.maven.api.annotations</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - DI</title>
+                  <packages>org.apache.maven.api.di</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - Metadata</title>
+                  <packages>org.apache.maven.api.metadata</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - SPI</title>
+                  <packages>org.apache.maven.api.spi</packages>
+                </group>
+                <group>
+                  <title>Maven 4 API - XML</title>
+                  <packages>org.apache.maven.api.xml</packages>
+                </group>
+              </groups>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <id>aggregate</id>
+                <reports>
+                  <report>aggregate</report>
+                </reports>
+                <inherited>false</inherited>
+              </reportSet>
+            </reportSets>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <reportSets>
+              <reportSet>
+                <id>aggregate</id>
+                <reports>
+                  <report>aggregate</report>
+                </reports>
+                <inherited>false</inherited>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>run-its</id>
+      <modules>
+        <module>its</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>ci</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <reportsDirectory>${project.build.directory}/test-results-surefire</reportsDirectory>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <argLine>-Xmx1G @{jacocoArgLine}</argLine>
+              <reportsDirectory>${project.build.directory}/test-results-surefire</reportsDirectory>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <phase>initialize</phase>
+                <configuration>
+                  <propertyName>jacocoArgLine</propertyName>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jacoco-site</id>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <phase>package</phase>
+                <configuration>
+                  <includes>
+                    <include>**/org/apache/maven/**</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 12:05:00 GMT
+content-type: application/java-archive
+content-length: 250267
+cf-ray: 9f88548389b6039b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 91696
+etag: "af265e20ae15289f46f6f558ea208faf"
+last-modified: Fri, 07 Nov 2025 23:00:02 GMT
+x-checksum-md5: af265e20ae15289f46f6f558ea208faf
+x-checksum-sha1: eb3c2804a9ab84b755c142543922629515cd77a5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test/java && curl -fsSL -I https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 1281ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 12:05:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"899c40180834f41cd9807ad795beb7d9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=pHdxUml5gKTJz9ubWul9JGPigydv%2FBE7ILY2wMi3NSlYX9JoZecgZvtrLnV%2BE8QMbUt7317K2Ou71Ss8nSDb935hwmi00jWUpr8HQFTgyK1uSQElbp%2BgEKvYu3wfyCitnrtuPxKPYIIRs8TLfNYVETlnCaMEqHbtE7%2Frw6foYUfaE230HZ5bvcSn9Py43k8Qr3U0q8A9UCCqSOWrVX6AwrkSFbhCTSGEqWacymG5E5q6DqvonRlr%2Bs7WNrwcARhL11Co4kK4GjPZEZkS4YBE9w%3D%3D--JLr1nLNqnRIb30Gc--eLnZISe7pPzOKrYrvgX0vA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.241967979.1778241900; expires=Sat, 08 May 2027 12:05:00 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 12:05:00 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5139:1728FB:116CB284:DAFB5BF:69FDD16C
+
+HTTP/2 200 
+date: Fri, 08 May 2026 12:05:01 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dc77a94158f0fe28c5d5af37d6157dd9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Qr1ZjYZkv9P57faGTtnaOjTuhwciHnpnQVZ2sdMRvHNCFYGnmFtcSeunAk0DS%2BLWKALAgVgAsgPrYuvTQNuSe1jAaNDfZsYwfi3rYebQAegKqfLElmSvF%2BkySB030U94wGxLWNdxeG9oRGpZB8Fr02x0%2BKm8YHWisaljzS0OE2SsouodV5sS%2FUmn5JbjrNDRDSqWeUVXE02tShOnGtQxzDgwDiTxG6i7SvRC3A7ZpP5sHDiEli3kCVBO%2FdOQOuZD3%2B9EvJCSfkAepU%2BpwqBvUQ%3D%3D--k6Xvrny4nsKYNLzW--RQz4amkpHTAV8BckgiTBgQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.478998346.1778241900; expires=Sat, 08 May 2027 12:05:00 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 12:05:00 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:16AC:7ECA91F:63DD93B:69FDD16C
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 188ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "api/maven-api-plugin/pom.xml",
+    "sha": "e685e0b87a3b08cbfebbdd6d56599ead01294d3d",
+    "size": 3864,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/pom.xml?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/blob/maven-4.0.0-rc-5/api/maven-api-plugin/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/maven/git/blobs/e685e0b87a3b08cbfebbdd6d56599ead01294d3d",
+    "download_url": "https://raw.githubusercontent.com/apache/maven/maven-4.0.0-rc-5/api/maven-api-plugin/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/pom.xml?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/blobs/e685e0b87a3b08cbfebbdd6d56599ead01294d3d",
+      "html": "https://github.com/apache/maven/blob/maven-4.0.0-rc-5/api/maven-api-plugin/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "api/maven-api-plugin/src",
+    "sha": "ede1a99f4ac7c61cfdeb22d902019865e23f2a14",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/ede1a99f4ac7c61cfdeb22d902019865e23f2a14",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/ede1a99f4ac7c61cfdeb22d902019865e23f2a14",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src"
+    }
+  }
+]
+
+ succeeded in 190ms:
+[
+  {
+    "name": "java",
+    "path": "api/maven-api-plugin/src/test/java",
+    "sha": "eb0670c1cb72c724af394a7bbdb0103a81aadf5e",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test/java?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/eb0670c1cb72c724af394a7bbdb0103a81aadf5e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test/java?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/eb0670c1cb72c724af394a7bbdb0103a81aadf5e",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test/java"
+    }
+  }
+]
+
+ succeeded in 163ms:
+[
+  {
+    "name": "java",
+    "path": "api/maven-api-plugin/src/main/java",
+    "sha": "a3f52d67af20ba191ff6c4687eb8e4b721d5b435",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main/java?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/main/java",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/a3f52d67af20ba191ff6c4687eb8e4b721d5b435",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main/java?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/a3f52d67af20ba191ff6c4687eb8e4b721d5b435",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/main/java"
+    }
+  },
+  {
+    "name": "mdo",
+    "path": "api/maven-api-plugin/src/main/mdo",
+    "sha": "6b0b5996edbf949a0fc25dc8113e3c7ef8179bc0",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main/mdo?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/main/mdo",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/6b0b5996edbf949a0fc25dc8113e3c7ef8179bc0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main/mdo?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/6b0b5996edbf949a0fc25dc8113e3c7ef8179bc0",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/main/mdo"
+    }
+  }
+]
+
+ succeeded in 220ms:
+[
+  {
+    "name": "main",
+    "path": "api/maven-api-plugin/src/main",
+    "sha": "6386c21532cbb788d24ab269c64f7a902ff15d4a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/main",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/6386c21532cbb788d24ab269c64f7a902ff15d4a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/main?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/6386c21532cbb788d24ab269c64f7a902ff15d4a",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/main"
+    }
+  },
+  {
+    "name": "site",
+    "path": "api/maven-api-plugin/src/site",
+    "sha": "f808d1ebcf03951e88d73464e6efc7a165818718",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/site",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/f808d1ebcf03951e88d73464e6efc7a165818718",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/f808d1ebcf03951e88d73464e6efc7a165818718",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/site"
+    }
+  },
+  {
+    "name": "test",
+    "path": "api/maven-api-plugin/src/test",
+    "sha": "e862955c717011183c376af1619f402cb95f99b8",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/e862955c717011183c376af1619f402cb95f99b8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/e862955c717011183c376af1619f402cb95f99b8",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5.jar -o /tmp/maven-api-plugin-4.0.0-rc-5.jar && jar tf /tmp/maven-api-plugin-4.0.0-rc-5.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/api/
+org/apache/maven/api/plugin/
+org/apache/maven/api/plugin/descriptor/
+org/apache/maven/api/plugin/descriptor/lifecycle/
+META-INF/maven/
+META-INF/maven/org.apache.maven/
+META-INF/maven/org.apache.maven/maven-api-plugin/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+org/apache/maven/api/plugin/descriptor/Dependency$Builder.class
+org/apache/maven/api/plugin/descriptor/Dependency.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$2$1$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$2$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$2.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$AbstractImmutableList$Itr.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$AbstractImmutableList$SubList.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$AbstractImmutableList.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$AbstractImmutableMap.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$AbstractImmutableSet.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$List1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$List2.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$ListN.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$Map1$1$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$Map1$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$Map1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$MapN$1$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$MapN$1.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$MapN.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections$ROProperties.class
+org/apache/maven/api/plugin/descriptor/ImmutableCollections.class
+org/apache/maven/api/plugin/descriptor/MojoDescriptor$Builder.class
+org/apache/maven/api/plugin/descriptor/MojoDescriptor.class
+org/apache/maven/api/plugin/descriptor/Parameter$Builder.class
+org/apache/maven/api/plugin/descriptor/Parameter.class
+org/apache/maven/api/plugin/descriptor/PluginDescriptor$Builder.class
+org/apache/maven/api/plugin/descriptor/PluginDescriptor.class
+org/apache/maven/api/plugin/descriptor/Requirement$Builder.class
+org/apache/maven/api/plugin/descriptor/Requirement.class
+org/apache/maven/api/plugin/descriptor/Resolution$Builder.class
+org/apache/maven/api/plugin/descriptor/Resolution.class
+org/apache/maven/api/plugin/descriptor/lifecycle/Execution$Builder.class
+org/apache/maven/api/plugin/descriptor/lifecycle/Execution.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$2$1$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$2$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$2.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$AbstractImmutableList$Itr.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$AbstractImmutableList$SubList.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$AbstractImmutableList.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$AbstractImmutableMap.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$AbstractImmutableSet.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$List1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$List2.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$ListN.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$Map1$1$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$Map1$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$Map1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$MapN$1$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$MapN$1.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$MapN.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections$ROProperties.class
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections.class
+org/apache/maven/api/plugin/descriptor/lifecycle/Lifecycle$Builder.class
+org/apache/maven/api/plugin/descriptor/lifecycle/Lifecycle.class
+org/apache/maven/api/plugin/descriptor/lifecycle/LifecycleConfiguration$Builder.class
+org/apache/maven/api/plugin/descriptor/lifecycle/LifecycleConfiguration.class
+org/apache/maven/api/plugin/descriptor/lifecycle/Phase$Builder.class
+org/apache/maven/api/plugin/descriptor/lifecycle/Phase.class
+META-INF/maven/org.apache.maven/maven-api-plugin/pom.xml
+META-INF/maven/org.apache.maven/maven-api-plugin/pom.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-sources.jar -o /tmp/maven-api-plugin-4.0.0-rc-5-sources.jar && jar tf /tmp/maven-api-plugin-4.0.0-rc-5-sources.jar | sed -n '1,100p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/api/
+org/apache/maven/api/plugin/
+org/apache/maven/api/plugin/annotations/
+org/apache/maven/api/plugin/descriptor/
+org/apache/maven/api/plugin/descriptor/lifecycle/
+META-INF/maven/
+META-INF/maven/org.apache.maven/
+META-INF/maven/org.apache.maven/maven-api-plugin/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+pom.xml
+org/apache/maven/api/plugin/annotations/package-info.java
+org/apache/maven/api/plugin/descriptor/lifecycle/package-info.java
+org/apache/maven/api/plugin/descriptor/package-info.java
+org/apache/maven/api/plugin/descriptor/Dependency.java
+org/apache/maven/api/plugin/descriptor/ImmutableCollections.java
+org/apache/maven/api/plugin/descriptor/MojoDescriptor.java
+org/apache/maven/api/plugin/descriptor/Parameter.java
+org/apache/maven/api/plugin/descriptor/PluginDescriptor.java
+org/apache/maven/api/plugin/descriptor/Requirement.java
+org/apache/maven/api/plugin/descriptor/Resolution.java
+org/apache/maven/api/plugin/descriptor/lifecycle/Execution.java
+org/apache/maven/api/plugin/descriptor/lifecycle/ImmutableCollections.java
+org/apache/maven/api/plugin/descriptor/lifecycle/Lifecycle.java
+org/apache/maven/api/plugin/descriptor/lifecycle/LifecycleConfiguration.java
+org/apache/maven/api/plugin/descriptor/lifecycle/Phase.java
+META-INF/maven/org.apache.maven/maven-api-plugin/pom.xml
+META-INF/maven/org.apache.maven/maven-api-plugin/pom.properties
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test/java?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 177ms:
+[
+  {
+    "name": "apt",
+    "path": "api/maven-api-plugin/src/site/apt",
+    "sha": "be5eb582fe9e54980cadd6569bd537b8bcc74a65",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/apt?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/apt",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/be5eb582fe9e54980cadd6569bd537b8bcc74a65",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/apt?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/be5eb582fe9e54980cadd6569bd537b8bcc74a65",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/apt"
+    }
+  },
+  {
+    "name": "site.xml",
+    "path": "api/maven-api-plugin/src/site/site.xml",
+    "sha": "6a599fce2b80c938ac935e2bb8a1ba36263ace5a",
+    "size": 1375,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/site.xml?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/blob/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/site.xml",
+    "git_url": "https://api.github.com/repos/apache/maven/git/blobs/6a599fce2b80c938ac935e2bb8a1ba36263ace5a",
+    "download_url": "https://raw.githubusercontent.com/apache/maven/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/site.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/site.xml?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/blobs/6a599fce2b80c938ac935e2bb8a1ba36263ace5a",
+      "html": "https://github.com/apache/maven/blob/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/site.xml"
+    }
+  }
+]
+
+ succeeded in 178ms:
+[
+  {
+    "name": "org",
+    "path": "api/maven-api-plugin/src/test/java/org",
+    "sha": "d4e5660006f04964941456b2c3ab9d604dda2428",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test/java/org?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test/java/org",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/d4e5660006f04964941456b2c3ab9d604dda2428",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/test/java/org?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/d4e5660006f04964941456b2c3ab9d604dda2428",
+      "html": "https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test/java/org"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://maven.apache.org/ref/4.0.0-rc-5/api/maven-api-plugin/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Sat, 08 Nov 2025 00:34:14 GMT
+etag: "231b-6430a752cd49f"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Fri, 08 May 2026 12:05:31 GMT
+x-served-by: cache-hel1410028-HEL, cache-fra-eddf8230041-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778241932.617133,VS0,VE31
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8987
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://maven.apache.org/ref/4.0.0-rc-5/apidocs/org/apache/maven/api/plugin/descriptor/package-summary.html' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://maven.apache.org/ref/4.0.0-rc-5/maven-api-plugin/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Sat, 08 Nov 2025 00:34:14 GMT
+etag: "254d-6430a752cd49f"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Fri, 08 May 2026 12:05:31 GMT
+x-served-by: cache-hel1410028-HEL, cache-fra-eddf8230154-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778241932.622228,VS0,VE30
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 9549
+
+
+ exited 22 in 0ms:
+HTTP/2 404 
+server: Apache
+last-modified: Tue, 05 May 2026 22:03:06 GMT
+etag: "21e5-65119363b5100;6437a860281fb
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Fri, 08 May 2026 12:05:31 GMT
+x-served-by: cache-hel1410027-HEL, cache-fra-eddf8230159-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778241932.622160,VS0,VE29
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8677
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://javadoc.io/doc/org.apache.maven/maven-api-plugin/4.0.0-rc-5/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 530ms:
+HTTP/2 301 
+date: Fri, 08 May 2026 12:05:31 GMT
+content-length: 0
+location: /doc/org.apache.maven/maven-api-plugin/4.0.0-rc-5
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=UUDAFVoOT6%2BtSXACT8RA0kkO9UdzhyG0DCZw3S2WpW5SJDh1%2FeX7n5y%2FrGXJ2fWbm%2Bu7GtY0dc%2BY56Hy8zUKJX3NI%2FvBlxvkiu4inSiqQC1WGj7%2FRW2dVw1gi9w3DRXO%2FIJ%2FgbBn0Adh"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f8855489d653b5d-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Fri, 08 May 2026 12:05:31 GMT
+content-length: 0
+location: /doc/org.apache.maven/maven-api-plugin/4.0.0-rc-5/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Af1QU92E%2B8z4WL5YtuujO7Vtu3aweSyQa8S%2BuD0aRMqUaO5U%2BGxViiXHZ1ftkSZsAdEujVlIeIvasa1hVTPGBUfOfselLajTwtQ4gf8MaB%2F33KMJtgSxj6YxjtfNFyImR3tNUfxlfQxb"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f8855498de63b5d-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 08 May 2026 12:05:32 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.apache.maven/maven-api-plugin/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Hh2W9xItZLQesem1vKbCwkbQqGuYMUA3Wj%2F1l86QdqCrNt6V9YtSQm08tMrzT6UAuw0n0JFm%2BmIRn%2FaWER2oO97t2M1Eu%2BTKg49AX2NJzTNSMTimIzhzhN1D3QBwZEFf8vZt1aJ%2FoUGo"}]}
+server: cloudflare
+cf-ray: 9f88554a5ea43b5d-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/ref/4.0.0-rc-5/api/maven-api-plugin/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+<!DOCTYPE html>
+
+
+<!--
+ | Generated by Apache Maven Doxia Site Renderer 2.0.0 from src/site/apt/index.apt at 2025-11-07
+ | Rendered using Apache Maven Fluido Skin 2.1.0
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content="Apache Maven Doxia Site Renderer 2.0.0" />
+    <meta name="author" content="Guillaume Nodet" />
+    <meta name="date" content="2023-11-15" />
+    <title>Introduction – Maven 4 API :: Plugin</title>
+    <link rel="stylesheet" href="./css/apache-maven-fluido-2.1.0.min.css" />
+    <link rel="stylesheet" href="./css/site.css" />
+    <link rel="stylesheet" href="./css/print.css" media="print" />
+    <script src="./js/apache-maven-fluido-2.1.0.min.js"></script>
+    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['disableCookies']);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function() {
+            var u="https://analytics.apache.org/";
+            _paq.push(['setTrackerUrl', u+'/matomo.php']);
+            _paq.push(['setSiteId', '3']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'/matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+  </head>
+  <body>
+    <div class="container-fluid container-fluid-top">
+      <header>
+        <div id="banner">
+          <div class="pull-left"><div id="bannerLeft"><h1><a href="../../../../"><img src="../../../../images/apache-maven-project.png" alt="Apache Maven" /></a></h1></div></div>
+          <div class="pull-right"><div id="bannerRight"><h1><a href="../../../../"><img src="../../../../images/maven-logo-black-on-white.png" /></a></h1></div></div>
+          <div class="clear"><hr/></div>
+        </div>
+
+        <div id="breadcrumbs">
+          <ul class="breadcrumb">
+      <li><a href="https://www.apache.org/">Apache</a><span class="divider">/</span></li>
+      <li><a href="../../../../index.html">Maven</a><span class="divider">/</span></li>
+      <li><a href="../../../">Ref</a><span class="divider">/</span></li>
+      <li><a href="../../">Maven 4.0.0-rc-5</a><span class="divider">/</span></li>
+      <li><a href="../index.html">Maven 4 API</a><span class="divider">/</span></li>
+      <li><a href="index.html">Maven 4 API :: Plugin</a><span class="divider">/</span></li>
+    <li class="active">Introduction <a href="https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/apt/index.apt"><img src="./images/accessories-text-editor.png" alt="Edit" /></a></li>
+        <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2025-11-07</li>
+          <li id="projectVersion" class="pull-right">Version: 4.0.0-rc-5</li>
+          </ul>
+        </div>
+      </header>
+      <div class="row-fluid">
+        <header id="leftColumn" class="span2">
+          <nav class="well sidebar-nav">
+  <ul class="nav nav-list">
+   <li class="nav-header">Overview</li>
+    <li class="active"><a>Introduction</a></li>
+    <li><a href="apidocs/index.html">Javadocs</a></li>
+    <li><a href="xref/index.html">Source Xref</a></li>
+   <li class="nav-header">Parent Project</li>
+    <li><a href="../index.html">Maven 4 API</a></li>
+   <li class="nav-header">Descriptors Reference</li>
+    <li><a href="../../api/maven-api-model/maven.html">POM</a></li>
+    <li><a href="../../api/maven-api-settings/settings.html">Settings</a></li>
+    <li><a href="../../api/maven-api-toolchain/toolchains.html">Toolchains</a></li>
+    <li><a href="../../api/maven-api-cli/core-extensions.html">Core Extensions</a></li>
+    <li><a href="../../api/maven-api-metadata/repository-metadata.html">Repository Metadata</a></li>
+    <li><a href="../../api/maven-api-plugin/plugin.html">Plugin Descriptor</a></li>
+    <li><a href="../../api/maven-api-plugin/lifecycle.html">Lifecycle Descriptor</a></li>
+   <li class="nav-header">Reference</li>
+    <li><a href="../../maven-core/lifecycles.html">Lifecycles</a></li>
+    <li><a href="../../maven-core/default-bindings.html">Plugin Bindings to Default Lifecycle</a></li>
+    <li><a href="../../maven-core/artifact-handlers.html">Artifact Handlers</a></li>
+    <li><a href="../../maven-embedder/cli.html">CLI options</a></li>
+    <li><a href="../../maven-model-builder/super-pom.html">Super POM</a></li>
+   <li class="nav-header">Development</li>
+    <li><a href="../../../../developers/index.html">Maven Developer Centre</a></li>
+    <li><a href="../../../../core-its/index.html">Maven Core ITs</a></li>
+   <li class="nav-header">Project Documentation</li>
+    <li><a href="project-info.html"><span class="icon-chevron-down"></span>Project Information</a>
+     <ul class="nav nav-list">
+      <li class="active"><a>About</a></li>
+      <li><a href="summary.html">Summary</a></li>
+      <li><a href="dependency-info.html">Maven Coordinates</a></li>
+      <li><a href="team.html">Team</a></li>
+      <li><a href="scm.html">Source Code Management</a></li>
+      <li><a href="issue-management.html">Issue Management</a></li>
+      <li><a href="mailing-lists.html">Mailing Lists</a></li>
+      <li><a href="dependency-management.html">Dependency Management</a></li>
+      <li><a href="dependencies.html">Dependencies</a></li>
+      <li><a href="dependency-convergence.html">Dependency Convergence</a></li>
+      <li><a href="ci-management.html">CI Management</a></li>
+      <li><a href="plugin-management.html">Plugin Management</a></li>
+      <li><a href="plugins.html">Plugins</a></li>
+      <li><a href="distribution-management.html">Distribution Management</a></li>
+     </ul></li>
+    <li><a href="project-reports.html"><span class="icon-chevron-right"></span>Project Reports</a></li>
+   <li class="nav-header">Maven Projects</li>
+    <li><a href="../../../current">Maven</a></li>
+    <li><a href="../../../../archetypes/index.html">Archetypes</a></li>
+    <li><a href="../../../../extensions/index.html">Extensions</a></li>
+    <li><a href="../../../../pom/index.html">Parent POMs</a></li>
+    <li><a href="../../../../plugins/index.html">Plugins</a></li>
+    <li><a href="../../../../skins/index.html">Skins</a></li>
+    <li><a><span class="icon-chevron-down"></span>Components</a>
+     <ul class="nav nav-list">
+      <li><a href="../../../../archetype/index.html">Archetype</a></li>
+      <li><a href="../../../../resolver/index.html">Artifact Resolver</a></li>
+      <li><a href="../../../../doxia/index.html">Doxia</a></li>
+      <li><a href="../../../../maven-indexer/index.html">Indexer</a></li>
+      <li><a href="../../../../jxr/index.html">JXR</a></li>
+      <li><a href="../../../../plugin-testing/index.html">Plugin Testing</a></li>
+      <li><a href="../../../../plugin-tools/index.html">Plugin Tools</a></li>
+      <li><a href="../../../../apache-resource-bundles/index.html">Resource Bundles</a></li>
+      <li><a href="../../../../scm/index.html">SCM</a></li>
+      <li><a href="../../../../shared/index.html">Shared Components</a></li>
+      <li><a href="../../../../surefire/index.html">Surefire</a></li>
+      <li><a href="../../../../wagon/index.html">Wagon</a></li>
+     </ul></li>
+   <li class="nav-header">ASF</li>
+    <li><a href="https://www.apache.org/foundation/how-it-works.html">How Apache Works</a></li>
+    <li><a href="https://www.apache.org/foundation/">Foundation</a></li>
+    <li><a href="https://privacy.apache.org/policies/privacy-policy-public.html">Data Privacy</a></li>
+    <li><a href="https://www.apache.org/foundation/sponsorship.html">Sponsoring Apache</a></li>
+    <li><a href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+  </ul>
+          </nav>
+          <div class="well sidebar-nav">
+            <div id="poweredBy">
+              <div class="clear"></div>
+              <div class="clear"></div>
+<a href="https://maven.apache.org/" class="builtBy" target="_blank"><img class="builtBy" alt="Built by Maven" src="./images/logos/maven-feather.png" /></a>
+            </div>
+          </div>
+        </header>
+        <main id="bodyColumn" class="span10">
+<section><a id="Maven_4_API_-_Plugin_Descriptor_Model"></a>
+<h1>Maven 4 API - Plugin Descriptor Model</h1>
+<p>This is the immutable model for Maven Plugin Descriptor in <code>org.apache.maven.api.plugin.descriptor</code> package.</p>
+<p>The following are generated from this model:</p>
+<ul>
+<li><a href="./apidocs/index.html">Java sources</a> with <code>Builder</code> inner classes for immutable instances creation.</li></ul></section>        </main>
+      </div>
+    </div>
+    <hr/>
+    <footer>
+      <div class="container-fluid">
+        <div class="row-fluid">
+            <p>©      2001–2025
+<a href="https://www.apache.org/">The Apache Software Foundation</a>
+</p>
+        </div>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/apt?ref=maven-4.0.0-rc-5' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-javadoc.jar -o /tmp/maven-api-plugin-4.0.0-rc-5-javadoc.jar && jar tf /tmp/maven-api-plugin-4.0.0-rc-5-javadoc.jar | sed -n '1,100p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 132ms:
+META-INF/
+META-INF/MANIFEST.MF
+legal/
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/api/
+org/apache/maven/api/plugin/
+org/apache/maven/api/plugin/annotations/
+org/apache/maven/api/plugin/descriptor/
+org/apache/maven/api/plugin/descriptor/class-use/
+org/apache/maven/api/plugin/descriptor/lifecycle/
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/
+resources/
+script-dir/
+allclasses-index.html
+allpackages-index.html
+copy.svg
+element-list
+help-doc.html
+index-all.html
+index.html
+legal/COPYRIGHT
+legal/LICENSE
+legal/jquery.md
+legal/jqueryUI.md
+link.svg
+member-search-index.js
+module-search-index.js
+org/apache/maven/api/plugin/annotations/package-summary.html
+org/apache/maven/api/plugin/annotations/package-tree.html
+org/apache/maven/api/plugin/annotations/package-use.html
+org/apache/maven/api/plugin/descriptor/Dependency.Builder.html
+org/apache/maven/api/plugin/descriptor/Dependency.html
+org/apache/maven/api/plugin/descriptor/MojoDescriptor.Builder.html
+org/apache/maven/api/plugin/descriptor/MojoDescriptor.html
+org/apache/maven/api/plugin/descriptor/Parameter.Builder.html
+org/apache/maven/api/plugin/descriptor/Parameter.html
+org/apache/maven/api/plugin/descriptor/PluginDescriptor.Builder.html
+org/apache/maven/api/plugin/descriptor/PluginDescriptor.html
+org/apache/maven/api/plugin/descriptor/Requirement.Builder.html
+org/apache/maven/api/plugin/descriptor/Requirement.html
+org/apache/maven/api/plugin/descriptor/Resolution.Builder.html
+org/apache/maven/api/plugin/descriptor/Resolution.html
+org/apache/maven/api/plugin/descriptor/class-use/Dependency.Builder.html
+org/apache/maven/api/plugin/descriptor/class-use/Dependency.html
+org/apache/maven/api/plugin/descriptor/class-use/MojoDescriptor.Builder.html
+org/apache/maven/api/plugin/descriptor/class-use/MojoDescriptor.html
+org/apache/maven/api/plugin/descriptor/class-use/Parameter.Builder.html
+org/apache/maven/api/plugin/descriptor/class-use/Parameter.html
+org/apache/maven/api/plugin/descriptor/class-use/PluginDescriptor.Builder.html
+org/apache/maven/api/plugin/descriptor/class-use/PluginDescriptor.html
+org/apache/maven/api/plugin/descriptor/class-use/Requirement.Builder.html
+org/apache/maven/api/plugin/descriptor/class-use/Requirement.html
+org/apache/maven/api/plugin/descriptor/class-use/Resolution.Builder.html
+org/apache/maven/api/plugin/descriptor/class-use/Resolution.html
+org/apache/maven/api/plugin/descriptor/lifecycle/Execution.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/Execution.html
+org/apache/maven/api/plugin/descriptor/lifecycle/Lifecycle.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/Lifecycle.html
+org/apache/maven/api/plugin/descriptor/lifecycle/LifecycleConfiguration.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/LifecycleConfiguration.html
+org/apache/maven/api/plugin/descriptor/lifecycle/Phase.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/Phase.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/Execution.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/Execution.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/Lifecycle.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/Lifecycle.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/LifecycleConfiguration.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/LifecycleConfiguration.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/Phase.Builder.html
+org/apache/maven/api/plugin/descriptor/lifecycle/class-use/Phase.html
+org/apache/maven/api/plugin/descriptor/lifecycle/package-summary.html
+org/apache/maven/api/plugin/descriptor/lifecycle/package-tree.html
+org/apache/maven/api/plugin/descriptor/lifecycle/package-use.html
+org/apache/maven/api/plugin/descriptor/package-summary.html
+org/apache/maven/api/plugin/descriptor/package-tree.html
+org/apache/maven/api/plugin/descriptor/package-use.html
+overview-summary.html
+overview-tree.html
+package-search-index.js
+resources/glass.png
+resources/x.png
+script-dir/jquery-3.7.1.min.js
+script-dir/jquery-ui.min.css
+script-dir/jquery-ui.min.js
+script.js
+search-page.js
+search.html
+search.js
+serialized-form.html
+stylesheet.css
+tag-search-index.js
+type-search-index.js
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+
+ succeeded in 188ms:
+[
+  {
+    "name": "index.apt",
+    "path": "api/maven-api-plugin/src/site/apt/index.apt",
+    "sha": "f229c29d8a8eba90563bc662f5124d7f26e58449",
+    "size": 1185,
+    "url": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/apt/index.apt?ref=maven-4.0.0-rc-5",
+    "html_url": "https://github.com/apache/maven/blob/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/apt/index.apt",
+    "git_url": "https://api.github.com/repos/apache/maven/git/blobs/f229c29d8a8eba90563bc662f5124d7f26e58449",
+    "download_url": "https://raw.githubusercontent.com/apache/maven/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/apt/index.apt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/api/maven-api-plugin/src/site/apt/index.apt?ref=maven-4.0.0-rc-5",
+      "git": "https://api.github.com/repos/apache/maven/git/blobs/f229c29d8a8eba90563bc662f5124d7f26e58449",
+      "html": "https://github.com/apache/maven/blob/maven-4.0.0-rc-5/api/maven-api-plugin/src/site/apt/index.apt"
+    }
+  }
+]
+
+codex
+The artifact has a normal JVM JAR with `.class` files, plus published source and Javadoc artifacts on Maven Central. There is no Maven-published test-source artifact, but the tagged Apache Maven repository has `api/maven-api-plugin/src/test/java`, so I’ll use that for the test suite URL.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
+}
+
+codex
+I’m updating the JSON now with Maven Central source/Javadoc URLs, the tagged GitHub test path, and no language or Native Image exclusion fields because this is a Java JVM artifact with class files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+index d5b66abe547ad2394fb3a8a160917baa53546240..05df52be3ab76b053ec8cf01714d68f69e745fa2
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
++  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
++  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
++  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+index d5b66abe547ad2394fb3a8a160917baa53546240..05df52be3ab76b053ec8cf01714d68f69e745fa2
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
++  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
++  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
++  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
+  "repository-url": "https://github.com/apache/maven",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
+  "documentation-url": "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
+  "description": "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/4.0.0-rc-5/maven-api-plugin-4.0.0-rc-5-sources.jar && curl -fsSL -I https://github.com/apache/maven/tree/maven-4.0.0-rc-5/api/maven-api-plugin/src/test/java && curl -fsSL -I https://maven.apache.org/ref/4.0.0-rc-5/api/maven-api-plugin/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+index d5b66abe547ad2394fb3a8a160917baa53546240..05df52be3ab76b053ec8cf01714d68f69e745fa2
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
++  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
++  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
++  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+ }
+
+ succeeded in 685ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 12:06:01 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"219cccf99dbdfe358fba7a4e407623f3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2FS2hB3Hb3bEl3JxHskT1xKclqeedMytGAs2CkLv0iDMRUUf1gbpRTs8pP1mILoD7tIYwpvdlmhiZA1oGX0QjZmw338SYkQlEpdMEipag8GHwJnVECm7xZgpwM0kS6dYP9HQzPHZBFG7EVuCvq6jklkOILsWdDaFicG%2BjrXgnWloldT5HllVrL0fvUwee7iQgWOHk7abyMTE0MYOOOxdV4Lx7qz5oxmgVep7wYJe3l77jdh8PcWhkYa2rxrUFJSDUNVkjBfE63qHcpC4LJ9Is5w%3D%3D--2SuWqnnys2WtvTLl--7x6QOvQ%2Bmq%2F6rx2Nchsw8g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1291293658.1778241961; expires=Sat, 08 May 2027 12:06:01 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 12:06:01 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5150:170C:8900F1B:6BE7B3A:69FDD1A9
+
+HTTP/2 200 
+server: Apache
+last-modified: Sat, 08 Nov 2025 00:34:14 GMT
+etag: "231b-6430a752cd49f"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+date: Fri, 08 May 2026 12:06:01 GMT
+age: 30
+x-served-by: cache-hel1410028-HEL, cache-fra-eddf8230072-FRA
+x-cache: MISS, HIT
+x-cache-hits: 0, 1
+x-timer: S1778241962.847500,VS0,VE3
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8987
+
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+index d5b66abe547ad2394fb3a8a160917baa53546240..05df52be3ab76b053ec8cf01714d68f69e745fa2
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
++  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
++  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
++  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+ }
+
+ succeeded in 234ms:
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
+     3	  "repository-url" : "https://github.com/apache/maven",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
+     6	  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
+     7	  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+index d5b66abe547ad2394fb3a8a160917baa53546240..05df52be3ab76b053ec8cf01714d68f69e745fa2
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
++  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
++  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
++  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+ }
+
+web search: 
+web search: https://maven.apache.org/ref/4.0.0-rc-5/api/maven-api-plugin/
+web search: 
+web search: Maven Central org.apache.maven maven-api-plugin 4.0.0-rc-5 sources javadoc jar
+web search: 
+web search: central.sonatype.com artifact org.apache.maven maven-api-plugin 4.0.0-rc-5
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.maven/maven
+codex
+Updated [org.apache.maven-maven-api-plugin-4.0.0-rc-5.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json:1).
+
+I set the Apache Maven repo root, Maven Central source JAR, tagged GitHub test URL, Maven versioned documentation URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a normal JVM JAR with class files.
+
+Verified JSON validity with `jq` and checked the rendered source, test, and documentation URLs for `4.0.0-rc-5`.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+index d5b66abe547ad2394fb3a8a160917baa53546240..05df52be3ab76b053ec8cf01714d68f69e745fa2
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5"
++  "coordinates" : "org.apache.maven:maven-api-plugin:4.0.0-rc-5",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-plugin/$version$/maven-api-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/api/maven-api-plugin/src/test/java",
++  "documentation-url" : "https://maven.apache.org/ref/$version$/api/maven-api-plugin/",
++  "description" : "Maven API Plugin provides the Maven 4 immutable model for plugin descriptors and lifecycle descriptors. It exposes Java classes used to describe Maven plugin goals, parameters, dependencies, requirements, and lifecycle configuration."
+ }
+
+tokens used
+140,451
+Updated [org.apache.maven-maven-api-plugin-4.0.0-rc-5.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/build/discovered-artifact-metadata/org.apache.maven-maven-api-plugin-4.0.0-rc-5.json:1).
+
+I set the Apache Maven repo root, Maven Central source JAR, tagged GitHub test URL, Maven versioned documentation URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a normal JVM JAR with class files.
+
+Verified JSON validity with `jq` and checked the rendered source, test, and documentation URLs for `4.0.0-rc-5`.
+Ran agent for org.apache.maven:maven-api-plugin:4.0.0-rc-5 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/build/agent-artifact-discovery-logs/org.apache.maven-maven-api-plugin-4.0.0-rc-5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3760-8c54a4f2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 10s
+9 actionable tasks: 9 executed
