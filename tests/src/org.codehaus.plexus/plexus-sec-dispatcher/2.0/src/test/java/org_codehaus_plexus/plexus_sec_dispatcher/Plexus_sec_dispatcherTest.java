@@ -92,6 +92,34 @@ public class Plexus_sec_dispatcherTest {
     }
 
     @Test
+    void dispatcherUsesSystemPropertyConfigurationLocationOverride() throws Exception {
+        DefaultPlexusCipher cipher = new DefaultPlexusCipher();
+        String configuredMasterPassword = "configured-master-password";
+        String overrideMasterPassword = "override-master-password";
+        Path configuredFile = temporaryDirectory.resolve("configured-settings-security.xml");
+        Path overrideFile = temporaryDirectory.resolve("override-settings-security.xml");
+        writeSettingsSecurity(configuredFile, settingsSecurity(cipher.encryptAndDecorate(
+                configuredMasterPassword, "settings.security")));
+        writeSettingsSecurity(overrideFile, settingsSecurity(cipher.encryptAndDecorate(
+                overrideMasterPassword, "settings.security")));
+        DefaultSecDispatcher dispatcher = new DefaultSecDispatcher(cipher, new HashMap<>(), configuredFile.toString());
+        String previousLocation = System.getProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION);
+
+        try {
+            System.setProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, overrideFile.toString());
+
+            assertThat(dispatcher.decrypt(cipher.encryptAndDecorate("server-password", overrideMasterPassword)))
+                    .isEqualTo("server-password");
+        } finally {
+            if (previousLocation == null) {
+                System.clearProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION);
+            } else {
+                System.setProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, previousLocation);
+            }
+        }
+    }
+
+    @Test
     void secUtilReadsFilesFollowsRelocationAndExtractsNamedConfiguration() throws Exception {
         Path relocatedFile = temporaryDirectory.resolve("relocated-settings-security.xml");
         SettingsSecurity relocated = settingsSecurity("relocated-master");
