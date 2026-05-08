@@ -37,7 +37,7 @@ public class Quarkus_hibernate_validator_spiTest {
 
     @Test
     void additionalConstrainedClassFromGeneratedBytesExposesGeneratedMetadata() {
-        byte[] generatedClassBytes = new byte[] { 0x01, 0x23, 0x45 };
+        byte[] generatedClassBytes = new byte[] {0x01, 0x23, 0x45 };
 
         AdditionalConstrainedClassBuildItem item = AdditionalConstrainedClassBuildItem.of(
                 "com.example.GeneratedConstrainedBean", generatedClassBytes);
@@ -52,7 +52,7 @@ public class Quarkus_hibernate_validator_spiTest {
     void additionalConstrainedClassesCanBeCollectedAsMultipleBuildItems() throws Exception {
         AdditionalConstrainedClassBuildItem beanItem = AdditionalConstrainedClassBuildItem.of(SampleConstrainedBean.class);
         AdditionalConstrainedClassBuildItem generatedItem = AdditionalConstrainedClassBuildItem.of(
-                "com.example.GeneratedConstrainedBean", new byte[] { 0x11, 0x22 });
+                "com.example.GeneratedConstrainedBean", new byte[] {0x11, 0x22 });
         BuildChain chain = BuildChain.builder()
                 .addBuildStep(context -> {
                     context.produce(beanItem);
