@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.OFormat
 import play.api.libs.json.Reads
 import play.api.libs.json.Writes
+import play.api.libs.json.__
 
 final case class PlayJsonAddress(street: String, city: String, postalCode: String)
 
@@ -203,5 +204,23 @@ class Play_json_3Test {
     assertEquals(None, (json \ "explicitNull").asOpt[String])
     assertEquals(None, (json \ "absent").asOpt[String])
     assertEquals(Map("key" -> JsString("value")), (json \ "object").as[Map[String, JsValue]])
+  }
+
+  @Test
+  def transformsJsonBranchesWithPathCombinators(): Unit = {
+    val source: JsObject = Json.obj(
+      "customer" -> Json.obj("id" -> "c-123", "name" -> "Ada"),
+      "obsolete" -> Json.obj("remove" -> true),
+      "audit" -> Json.obj("createdBy" -> "test")
+    )
+
+    val picked: JsObject = source.transform((__ \ "customer" \ "id").json.pickBranch).get
+    val pruned: JsObject = source.transform((__ \ "obsolete").json.prune).get
+    val inserted: JsObject = source.transform((__ \ "customer" \ "status").json.put(JsString("active"))).get
+
+    assertEquals(Json.obj("customer" -> Json.obj("id" -> "c-123")), picked)
+    assertFalse((pruned \ "obsolete").isDefined)
+    assertEquals("Ada", (pruned \ "customer" \ "name").as[String])
+    assertEquals(Json.obj("customer" -> Json.obj("status" -> "active")), inserted)
   }
 }
