@@ -38,6 +38,7 @@ import org.apache.pulsar.client.api.ProducerAccessMode;
 import org.apache.pulsar.client.api.ProducerCryptoFailureAction;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.PulsarClientException.InvalidConfigurationException;
 import org.apache.pulsar.client.api.PulsarClientSharedResources;
 import org.apache.pulsar.client.api.Range;
 import org.apache.pulsar.client.api.RegexSubscriptionMode;
@@ -53,6 +54,7 @@ import org.apache.pulsar.client.api.schema.GenericSchema;
 import org.apache.pulsar.client.api.schema.RecordSchemaBuilder;
 import org.apache.pulsar.client.api.schema.SchemaBuilder;
 import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.api.transaction.TxnID;
 import org.apache.pulsar.common.schema.KeyValue;
 import org.apache.pulsar.common.schema.KeyValueEncodingType;
 import org.apache.pulsar.common.schema.SchemaInfo;
@@ -374,6 +376,40 @@ public class Pulsar_clientTest {
                     .createAsync());
         }
         assertThat(serviceUrlProvider.getCloseCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void transactionsExposeValueObjectsAndRequireExplicitClientEnablement() throws Exception {
+        final TxnID transactionId = new TxnID(7L, 11L);
+        final TxnID sameTransactionId = new TxnID(7L, 11L);
+        final TxnID differentTransactionId = new TxnID(7L, 12L);
+        assertThat(transactionId.getMostSigBits()).isEqualTo(7L);
+        assertThat(transactionId.getLeastSigBits()).isEqualTo(11L);
+        assertThat(transactionId).isEqualTo(sameTransactionId);
+        assertThat(transactionId).hasSameHashCodeAs(sameTransactionId);
+        assertThat(transactionId).isNotEqualTo(differentTransactionId);
+
+        try (PulsarClient client = PulsarClient.builder()
+                .serviceUrl(UNAVAILABLE_SERVICE_URL)
+                .operationTimeout(1, TimeUnit.SECONDS)
+                .lookupTimeout(1, TimeUnit.SECONDS)
+                .connectionTimeout(1, TimeUnit.SECONDS)
+                .startingBackoffInterval(1, TimeUnit.MILLISECONDS)
+                .maxBackoffInterval(10, TimeUnit.MILLISECONDS)
+                .ioThreads(1)
+                .listenerThreads(1)
+                .enableTransaction(false)
+                .build()) {
+            final CompletableFuture<?> transaction = client.newTransaction()
+                    .withTransactionTimeout(500, TimeUnit.MILLISECONDS)
+                    .build();
+
+            final ExecutionException exception = assertThrows(
+                    ExecutionException.class, () -> transaction.get(1, TimeUnit.SECONDS));
+            assertThat(exception.getCause())
+                    .isInstanceOf(InvalidConfigurationException.class)
+                    .hasMessageContaining("Transactions are not enabled");
+        }
     }
 
     private static void assertCompletesWithPulsarClientException(CompletableFuture<?> future) {
