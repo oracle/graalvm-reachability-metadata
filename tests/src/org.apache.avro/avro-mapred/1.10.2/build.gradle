@@ -12,6 +12,8 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.apache.avro:avro-mapred:$libraryVersion"
+    testImplementation 'org.apache.hadoop:hadoop-common:3.2.1'
+    testImplementation 'org.apache.hadoop:hadoop-mapreduce-client-core:3.2.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
@@ -23,5 +25,11 @@ graalvmNative {
                 userCodeFilterPath = "user-code-filter.json"
             }
         }
+    }
+}
+
+tasks.named("test") {
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        jvmArgs += ["-Djava.security.manager=allow"]
     }
 }
