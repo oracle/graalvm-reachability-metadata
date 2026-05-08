@@ -221,6 +221,31 @@ public class Selenium_ie_driverTest {
     }
 
     @Test
+    void defaultServiceUsesExecutableConfiguredThroughSystemProperty(@TempDir Path tempDirectory) throws Exception {
+        Path executable = Files.createFile(tempDirectory.resolve("IEDriverServer"));
+        assertThat(executable.toFile().setExecutable(true)).isTrue();
+
+        String propertyName = InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY;
+        String previousValue = System.getProperty(propertyName);
+        try {
+            System.setProperty(propertyName, executable.toString());
+
+            InternetExplorerDriverService service = InternetExplorerDriverService.createDefaultService();
+
+            assertThat(service.getUrl().getProtocol()).isEqualTo("http");
+            assertThat(service.getUrl().getHost()).isEqualTo("localhost");
+            assertThat(service.getUrl().getPort()).isPositive();
+            assertThat(service.isRunning()).isFalse();
+        } finally {
+            if (previousValue == null) {
+                System.clearProperty(propertyName);
+            } else {
+                System.setProperty(propertyName, previousValue);
+            }
+        }
+    }
+
+    @Test
     void driverInfoAdvertisesCanonicalInternetExplorerCapabilities() {
         InternetExplorerDriverInfo info = new InternetExplorerDriverInfo();
         MutableCapabilities unsupported = new MutableCapabilities();
