@@ -74,6 +74,22 @@ public class Selenium_safari_driverTest {
     }
 
     @Test
+    void safariOptionsAllowTechnologyPreviewCapabilityToBeSetDirectly() {
+        SafariOptions options = new SafariOptions();
+
+        options.setCapability("technologyPreview", true);
+        assertThat(options.getUseTechnologyPreview()).isTrue();
+        assertThat(options.getBrowserName()).isEqualTo("Safari Technology Preview");
+        assertThat(safariOptionsMap(options)).containsEntry("technologyPreview", true);
+        assertThat(options.asMap()).doesNotContainKey("technologyPreview");
+
+        options.setCapability("technologyPreview", Boolean.FALSE);
+        assertThat(options.getUseTechnologyPreview()).isFalse();
+        assertThat(options.getBrowserName()).isEqualTo("safari");
+        assertThat(safariOptionsMap(options)).containsEntry("technologyPreview", false);
+    }
+
+    @Test
     void safariOptionsCanBeCreatedFromCapabilitiesAndNestedSafariOptionsMap() {
         SafariOptions original = new SafariOptions().setUseTechnologyPreview(true);
         assertThat(SafariOptions.fromCapabilities(original)).isSameAs(original);
