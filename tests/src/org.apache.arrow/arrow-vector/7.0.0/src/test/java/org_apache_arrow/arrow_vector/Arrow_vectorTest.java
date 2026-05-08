@@ -47,6 +47,7 @@ import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.Schema;
 import org.apache.arrow.vector.util.Text;
 import org.apache.arrow.vector.util.TransferPair;
+import org.apache.arrow.vector.util.VectorSchemaRootAppender;
 import org.apache.arrow.vector.validate.ValidateVectorDataVisitor;
 import org.apache.arrow.vector.validate.ValidateVectorVisitor;
 import org.junit.jupiter.api.Test;
@@ -271,6 +272,43 @@ public class Arrow_vectorTest {
     }
 
     @Test
+    void vectorSchemaRootAppenderCombinesBatchesWithNullsAndVariableWidthValues() {
+        try (BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+                VectorSchemaRoot targetRoot = createBatchRoot(
+                        allocator,
+                        new Integer[] {101, null},
+                        new String[] {"initial", "missing-id"});
+                VectorSchemaRoot firstAppendRoot = createBatchRoot(
+                        allocator,
+                        new Integer[] {201, 202, null},
+                        new String[] {"first", null, "first-null-id"});
+                VectorSchemaRoot secondAppendRoot = createBatchRoot(
+                        allocator,
+                        new Integer[] {301},
+                        new String[] {"second"})) {
+            VectorSchemaRootAppender.append(targetRoot, firstAppendRoot, secondAppendRoot);
+
+            assertThat(targetRoot.getRowCount()).isEqualTo(6);
+            assertThat(targetRoot.getSchema()).isEqualTo(firstAppendRoot.getSchema());
+            assertThat(targetRoot.getVector("id").getValueCount()).isEqualTo(6);
+            assertThat(targetRoot.getVector("label").getValueCount()).isEqualTo(6);
+
+            assertThat(targetRoot.getVector("id").getObject(0)).isEqualTo(101);
+            assertThat(targetRoot.getVector("label").getObject(0).toString()).isEqualTo("initial");
+            assertThat(targetRoot.getVector("id").getObject(1)).isNull();
+            assertThat(targetRoot.getVector("label").getObject(1).toString()).isEqualTo("missing-id");
+            assertThat(targetRoot.getVector("id").getObject(2)).isEqualTo(201);
+            assertThat(targetRoot.getVector("label").getObject(2).toString()).isEqualTo("first");
+            assertThat(targetRoot.getVector("id").getObject(3)).isEqualTo(202);
+            assertThat(targetRoot.getVector("label").getObject(3)).isNull();
+            assertThat(targetRoot.getVector("id").getObject(4)).isNull();
+            assertThat(targetRoot.getVector("label").getObject(4).toString()).isEqualTo("first-null-id");
+            assertThat(targetRoot.getVector("id").getObject(5)).isEqualTo(301);
+            assertThat(targetRoot.getVector("label").getObject(5).toString()).isEqualTo("second");
+        }
+    }
+
+    @Test
     void complexListStructAndFixedSizeListVectorsExposeNestedObjectsAndValidate() {
         try (BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
                 ListVector numbers = ListVector.empty("numbers", allocator);
@@ -297,6 +335,33 @@ public class Arrow_vectorTest {
             person.accept(new ValidateVectorVisitor(), null);
             coordinates.accept(new ValidateVectorVisitor(), null);
         }
+    }
+
+    private static VectorSchemaRoot createBatchRoot(BufferAllocator allocator, Integer[] ids, String[] labels) {
+        IntVector idVector = new IntVector("id", allocator);
+        VarCharVector labelVector = new VarCharVector("label", allocator);
+        idVector.allocateNew(ids.length);
+        labelVector.allocateNew();
+
+        for (int index = 0; index < ids.length; index++) {
+            if (ids[index] == null) {
+                idVector.setNull(index);
+            } else {
+                idVector.setSafe(index, ids[index]);
+            }
+
+            if (labels[index] == null) {
+                labelVector.setNull(index);
+            } else {
+                labelVector.setSafe(index, new Text(labels[index]));
+            }
+        }
+
+        idVector.setValueCount(ids.length);
+        labelVector.setValueCount(labels.length);
+        VectorSchemaRoot root = VectorSchemaRoot.of(idVector, labelVector);
+        root.setRowCount(ids.length);
+        return root;
     }
 
     private static void writeIntegerLists(ListVector numbers) {
