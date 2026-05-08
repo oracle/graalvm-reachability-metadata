@@ -20,6 +20,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.TreeSet;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.graalvm.internal.tck.NativeImageSupport;
@@ -186,6 +189,27 @@ public class Smallrye_configTest {
     }
 
     @Test
+    void registersAndReleasesConfigThroughMicroProfileProviderResolver() {
+        ClassLoader classLoader = new IsolatedClassLoader(Smallrye_configTest.class.getClassLoader());
+        SmallRyeConfig config = config(Map.of("provider.message", "registered-value")).build();
+        ConfigProviderResolver resolver = ConfigProviderResolver.instance();
+
+        resolver.registerConfig(config, classLoader);
+        try {
+            Config resolvedConfig = ConfigProvider.getConfig(classLoader);
+
+            assertThat(resolvedConfig).isSameAs(config);
+            assertThat(resolvedConfig.getValue("provider.message", String.class)).isEqualTo("registered-value");
+        } finally {
+            resolver.releaseConfig(config);
+        }
+
+        assertThatThrownBy(() -> ConfigProvider.getConfig(classLoader).getValue("provider.message", String.class))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("provider.message");
+    }
+
+    @Test
     void appliesRelocationAndFallbackInterceptorsWithoutChangingSourcePrecedence() {
         Map<String, String> lowPriority = Map.of(
                 "legacy.timeout", "15",
@@ -234,6 +258,12 @@ public class Smallrye_configTest {
             generated.put("generated.endpoint", "https://" + service + "." + region + ".example.test");
             generated.put("generated.bootstrap-names", String.join(",", bootstrapNames));
             return List.of(new PropertiesConfigSource(generated, "derived-factory-source", 200));
+        }
+    }
+
+    public static final class IsolatedClassLoader extends ClassLoader {
+        private IsolatedClassLoader(ClassLoader parent) {
+            super(parent);
         }
     }
 
