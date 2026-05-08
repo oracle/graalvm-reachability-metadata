@@ -271,6 +271,51 @@ public class Maven_api_pluginTest {
     }
 
     @Test
+    void completeCopyBuildersCanClearOptionalScalarsAndCollections() {
+        Parameter parameter = Parameter.newBuilder()
+                .name("outputDirectory")
+                .type("java.io.File")
+                .description("Directory that receives generated sources")
+                .expression("${project.build.directory}")
+                .defaultValue("target")
+                .required(true)
+                .build();
+        Parameter clearedParameter = Parameter.newBuilder(parameter, true)
+                .description(null)
+                .expression(null)
+                .defaultValue(null)
+                .build();
+
+        assertThat(clearedParameter).isNotSameAs(parameter);
+        assertThat(clearedParameter.getName()).isEqualTo("outputDirectory");
+        assertThat(clearedParameter.getType()).isEqualTo("java.io.File");
+        assertThat(clearedParameter.isRequired()).isTrue();
+        assertThat(clearedParameter.getDescription()).isNull();
+        assertThat(clearedParameter.getExpression()).isNull();
+        assertThat(clearedParameter.getDefaultValue()).isNull();
+        assertThat(parameter.getDescription()).isEqualTo("Directory that receives generated sources");
+        assertThat(parameter.getExpression()).isEqualTo("${project.build.directory}");
+        assertThat(parameter.getDefaultValue()).isEqualTo("target");
+
+        XmlNode configuration = XmlNode.newInstance(
+                "configuration", null, Map.of(), List.of(), "test-input-location");
+        Execution execution = Execution.newBuilder()
+                .configuration(configuration)
+                .goals(List.of("compile", "test"))
+                .build();
+        Execution clearedExecution = Execution.newBuilder(execution, true)
+                .configuration(null)
+                .goals(null)
+                .build();
+
+        assertThat(clearedExecution).isNotSameAs(execution);
+        assertThat(clearedExecution.getConfiguration()).isNull();
+        assertThat(clearedExecution.getGoals()).isEmpty();
+        assertThat(execution.getConfiguration().inputLocation()).isEqualTo("test-input-location");
+        assertThat(execution.getGoals()).containsExactly("compile", "test");
+    }
+
+    @Test
     void sparseBuildersPreserveBaseValuesWhenPartiallyUpdatingModels() {
         MojoDescriptor mojo = MojoDescriptor.newBuilder()
                 .goal("verify")
