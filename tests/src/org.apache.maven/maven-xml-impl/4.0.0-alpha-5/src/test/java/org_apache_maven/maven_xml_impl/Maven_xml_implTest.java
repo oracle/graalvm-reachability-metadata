@@ -270,6 +270,32 @@ public class Maven_xml_implTest {
     }
 
     @Test
+    void wrapsXmlNodeTreesAsMutableXpp3DomAdapters() throws Exception {
+        XmlNode original = XmlNodeBuilder.build(new StringReader("""
+                <configuration>
+                  <settings>
+                    <enabled>false</enabled>
+                  </settings>
+                </configuration>
+                """));
+        Xpp3Dom adapter = new Xpp3Dom(original);
+
+        assertThat(adapter.getDom()).isSameAs(original);
+        assertThat(adapter.getChild("settings").getChild("enabled").getValue()).isEqualTo("false");
+
+        Xpp3Dom enabled = adapter.getChild("settings").getChild("enabled");
+        enabled.setValue("true");
+        enabled.setAttribute("source", "adapter");
+
+        XmlNode updated = adapter.getDom();
+        assertThat(updated).isNotSameAs(original);
+        assertThat(updated.getChild("settings").getChild("enabled").getValue()).isEqualTo("true");
+        assertThat(updated.getChild("settings").getChild("enabled").getAttribute("source")).isEqualTo("adapter");
+        assertThat(original.getChild("settings").getChild("enabled").getValue()).isEqualTo("false");
+        assertThat(original.getChild("settings").getChild("enabled").getAttribute("source")).isNull();
+    }
+
+    @Test
     void rejectsMalformedXmlWithParserException() {
         assertThatThrownBy(() -> XmlNodeBuilder.build(new StringReader("<configuration><missing-end>")))
                 .isInstanceOf(Exception.class);
