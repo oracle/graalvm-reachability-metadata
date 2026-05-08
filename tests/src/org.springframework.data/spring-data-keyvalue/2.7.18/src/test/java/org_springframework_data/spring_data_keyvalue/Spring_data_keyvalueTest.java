@@ -26,14 +26,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.keyvalue.annotation.KeySpace;
+import org.springframework.data.keyvalue.core.IdentifierGenerator;
 import org.springframework.data.keyvalue.core.KeyValueTemplate;
 import org.springframework.data.keyvalue.core.SpelCriteria;
 import org.springframework.data.keyvalue.core.event.KeyValueEvent;
+import org.springframework.data.keyvalue.core.mapping.context.KeyValueMappingContext;
 import org.springframework.data.keyvalue.core.query.KeyValueQuery;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
 import org.springframework.data.keyvalue.repository.support.KeyValueRepositoryFactory;
 import org.springframework.data.map.MapKeyValueAdapter;
 import org.springframework.data.util.CloseableIterator;
+import org.springframework.data.util.TypeInformation;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 public class Spring_data_keyvalueTest {
@@ -83,6 +86,42 @@ public class Spring_data_keyvalueTest {
 
             template.delete(Person.class);
             assertThat(template.count(Person.class)).isZero();
+        } finally {
+            template.destroy();
+        }
+    }
+
+    @Test
+    void keyValueTemplateGeneratesIdentifiersForEntitiesWithoutIds() throws Exception {
+        IdentifierGenerator identifierGenerator = new IdentifierGenerator() {
+            private int nextId = 1;
+
+            @Override
+            public <T> T generateIdentifierOfType(TypeInformation<T> identifierType) {
+                assertThat(identifierType.getType()).isEqualTo(String.class);
+                return identifierType.getType().cast("generated-person-" + nextId++);
+            }
+        };
+        KeyValueTemplate template = new KeyValueTemplate(new MapKeyValueAdapter(), new KeyValueMappingContext<>(),
+                identifierGenerator);
+
+        try {
+            Person ada = new Person(null, "Ada", "Lovelace", 36, true);
+            Person grace = new Person(null, "Grace", "Hopper", 85, true);
+
+            assertThat(template.insert(ada)).isSameAs(ada);
+            assertThat(template.insert(grace)).isSameAs(grace);
+
+            assertThat(ada.getId()).isEqualTo("generated-person-1");
+            assertThat(grace.getId()).isEqualTo("generated-person-2");
+            assertThat(template.findById(ada.getId(), Person.class)).hasValueSatisfying(person -> {
+                assertThat(person).isSameAs(ada);
+                assertThat(person.getFirstName()).isEqualTo("Ada");
+            });
+            assertThat(template.findById(grace.getId(), Person.class)).hasValueSatisfying(person -> {
+                assertThat(person).isSameAs(grace);
+                assertThat(person.getFirstName()).isEqualTo("Grace");
+            });
         } finally {
             template.destroy();
         }
