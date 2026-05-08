@@ -8,7 +8,7 @@ package io_smallrye_config.smallrye_config_core;
 
 import org.junit.jupiter.api.Test;
 
-class Smallrye_config_coreTest {
+public class Smallrye_config_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
