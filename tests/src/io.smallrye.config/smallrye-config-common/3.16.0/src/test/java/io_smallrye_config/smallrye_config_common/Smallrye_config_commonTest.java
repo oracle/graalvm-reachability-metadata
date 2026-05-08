@@ -195,6 +195,13 @@ public class Smallrye_config_commonTest {
     }
 
     @Test
+    void stringUtilSkewersWildcardPropertyPaths() {
+        assertThat(StringUtil.skewer("foo.barBaz[*]")).isEqualTo("foo.bar-baz[*]");
+        assertThat(StringUtil.skewer("serviceRoutes[*].targetURL")).isEqualTo("service-routes[*].target-url");
+        assertThat(StringUtil.skewer("serviceRoutes[*].targetURL", '_')).isEqualTo("service_routes[*].target_url");
+    }
+
+    @Test
     void abstractConvertersExposeAndUseTheirDelegates() {
         Converter<String> trimmingDelegate = value -> value == null ? null : value.trim();
         IntegerConverter integerConverter = new IntegerConverter(trimmingDelegate);
