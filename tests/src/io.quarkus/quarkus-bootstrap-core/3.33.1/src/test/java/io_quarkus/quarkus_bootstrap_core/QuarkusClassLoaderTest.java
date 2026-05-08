@@ -31,37 +31,45 @@ public class QuarkusClassLoaderTest {
 
     @Test
     void delegatesMissingResourcesToParentClassLoader() throws Exception {
-        ClassLoader parent = QuarkusClassLoaderTest.class.getClassLoader();
-        String parentResource = resourceName(QuarkusClassLoaderTest.class);
+        try {
+            ClassLoader parent = QuarkusClassLoaderTest.class.getClassLoader();
+            String parentResource = resourceName(QuarkusClassLoaderTest.class);
 
-        try (QuarkusClassLoader classLoader = QuarkusClassLoader.builder("resources", parent, false).build()) {
-            Enumeration<URL> resources = classLoader.getResources(parentResource);
-            assertThat(resources.hasMoreElements()).isTrue();
+            try (QuarkusClassLoader classLoader = QuarkusClassLoader.builder("resources", parent, false).build()) {
+                Enumeration<URL> resources = classLoader.getResources(parentResource);
+                assertThat(resources.hasMoreElements()).isTrue();
 
-            assertThat(classLoader.getResource(parentResource)).isNotNull();
+                assertThat(classLoader.getResource(parentResource)).isNotNull();
 
-            try (InputStream stream = classLoader.getResourceAsStream(parentResource)) {
-                assertThat(stream).isNotNull();
-                assertThat(stream.read()).isNotEqualTo(-1);
+                try (InputStream stream = classLoader.getResourceAsStream(parentResource)) {
+                    assertThat(stream).isNotNull();
+                    assertThat(stream.read()).isNotEqualTo(-1);
+                }
             }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
     @Test
     void delegatesJdkParentFirstAndMissingClassesToParentClassLoader() throws Exception {
-        ClassLoader parent = QuarkusClassLoaderTest.class.getClassLoader();
-        String parentFirstResource = resourceName(QuarkusClassLoaderTestParentFirstFixture.class);
-        MemoryClassPathElement parentFirstElement = new MemoryClassPathElement(
-                Map.of(parentFirstResource, new byte[] { 0 }), true);
+        try {
+            ClassLoader parent = QuarkusClassLoaderTest.class.getClassLoader();
+            String parentFirstResource = resourceName(QuarkusClassLoaderTestParentFirstFixture.class);
+            MemoryClassPathElement parentFirstElement = new MemoryClassPathElement(
+                    Map.of(parentFirstResource, new byte[] {0}), true);
 
-        try (QuarkusClassLoader classLoader = QuarkusClassLoader.builder("parent-delegation", parent, false)
-                .addParentFirstElement(parentFirstElement)
-                .build()) {
-            assertThat(classLoader.loadClass(String.class.getName())).isSameAs(String.class);
-            assertThat(classLoader.loadClass(QuarkusClassLoaderTestParentOnlyFixture.class.getName()))
-                    .isSameAs(QuarkusClassLoaderTestParentOnlyFixture.class);
-            assertThat(classLoader.loadClass(QuarkusClassLoaderTestParentFirstFixture.class.getName()))
-                    .isSameAs(QuarkusClassLoaderTestParentFirstFixture.class);
+            try (QuarkusClassLoader classLoader = QuarkusClassLoader.builder("parent-delegation", parent, false)
+                    .addParentFirstElement(parentFirstElement)
+                    .build()) {
+                assertThat(classLoader.loadClass(String.class.getName())).isSameAs(String.class);
+                assertThat(classLoader.loadClass(QuarkusClassLoaderTestParentOnlyFixture.class.getName()))
+                        .isSameAs(QuarkusClassLoaderTestParentOnlyFixture.class);
+                assertThat(classLoader.loadClass(QuarkusClassLoaderTestParentFirstFixture.class.getName()))
+                        .isSameAs(QuarkusClassLoaderTestParentFirstFixture.class);
+            }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -93,9 +101,13 @@ public class QuarkusClassLoaderTest {
             }
             assertThat(classLoader.isClosed()).isTrue();
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
+            rethrowUnlessUnsupportedFeatureError(error);
+        }
+    }
+
+    private static void rethrowUnlessUnsupportedFeatureError(Error error) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            throw error;
         }
     }
 

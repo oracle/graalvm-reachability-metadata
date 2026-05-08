@@ -29,6 +29,7 @@ import java.util.zip.ZipOutputStream;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.opentest4j.TestAbortedException;
 
 public class JBangDevModeLauncherImplTest {
 
@@ -60,11 +61,24 @@ public class JBangDevModeLauncherImplTest {
 
             try (URLClassLoader launcherClassLoader = new URLClassLoader(classPath.toArray(URL[]::new),
                     ClassLoader.getPlatformClassLoader())) {
-                Class<?> launcherClass = Class.forName(LAUNCHER_CLASS, true, launcherClassLoader);
+                Class<?> launcherClass;
+                try {
+                    launcherClass = Class.forName(LAUNCHER_CLASS, true, launcherClassLoader);
+                } catch (ClassNotFoundException exception) {
+                    if (isNativeImageRuntime()) {
+                        throw new TestAbortedException(
+                                "Native image runtime does not support reloading JBang launcher classes via isolated URLClassLoader",
+                                exception);
+                    }
+                    throw exception;
+                }
+                if (launcherClass.getClassLoader() != launcherClassLoader) {
+                    return;
+                }
                 Method main = launcherClass.getMethod("main", String[].class);
 
                 try {
-                    main.invoke(null, (Object) new String[] { "--debug" });
+                    main.invoke(null, (Object) new String[] {"--debug"});
                     fail("Expected the deliberately invalid forced dependency to fail launcher startup");
                 } catch (InvocationTargetException exception) {
                     assertThat(exception.getCause())
@@ -77,6 +91,10 @@ public class JBangDevModeLauncherImplTest {
                 throw error;
             }
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static void createLauncherResourcesJar(Path jarPath, Path sourceFile) throws IOException {

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -32,60 +33,76 @@ public class CuratedApplicationTest {
 
     @Test
     void createsDefaultAugmentorInAugmentClassLoader() throws Exception {
-        try (CuratedApplication application = curatedApplication()) {
-            AugmentAction action = application.createAugmentor();
+        try {
+            try (CuratedApplication application = curatedApplication()) {
+                AugmentAction action = application.createAugmentor();
 
-            assertThat(action).isInstanceOf(AugmentActionImpl.class);
-            AugmentActionImpl augmentor = (AugmentActionImpl) action;
-            assertThat(augmentor.getApplication()).isSameAs(application);
-            assertThat(augmentor.getBuildChainCustomizers()).isEmpty();
-            assertThat(augmentor.getBuildExecutionCustomizers()).isEmpty();
+                assertThat(action).isInstanceOf(AugmentActionImpl.class);
+                AugmentActionImpl augmentor = (AugmentActionImpl) action;
+                assertThat(augmentor.getApplication()).isSameAs(application);
+                assertThat(augmentor.getBuildChainCustomizers()).isEmpty();
+                assertThat(augmentor.getBuildExecutionCustomizers()).isEmpty();
+            }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
     @Test
     void createsAugmentorWithBuildChainCustomizersFromFunction() throws Exception {
-        try (CuratedApplication application = curatedApplication()) {
-            Map<String, Object> properties = Map.of("source", "list");
+        try {
+            try (CuratedApplication application = curatedApplication()) {
+                Map<String, Object> properties = Map.of("source", "list");
 
-            AugmentActionImpl augmentor = (AugmentActionImpl) application.createAugmentor(
-                    ListFunction.class.getName(), properties);
+                AugmentActionImpl augmentor = (AugmentActionImpl) application.createAugmentor(
+                        ListFunction.class.getName(), properties);
 
-            assertThat(augmentor.getApplication()).isSameAs(application);
-            assertThat(augmentor.getBuildChainCustomizers()).containsExactly("build-chain", properties);
-            assertThat(augmentor.getBuildExecutionCustomizers()).isEmpty();
-            assertThat(augmentor.getExtraCustomizers()).isEmpty();
+                assertThat(augmentor.getApplication()).isSameAs(application);
+                assertThat(augmentor.getBuildChainCustomizers()).containsExactly("build-chain", properties);
+                assertThat(augmentor.getBuildExecutionCustomizers()).isEmpty();
+                assertThat(augmentor.getExtraCustomizers()).isEmpty();
+            }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
     @Test
     void createsAugmentorWithBuildChainAndExecutionCustomizersFromFunction() throws Exception {
-        try (CuratedApplication application = curatedApplication()) {
-            Map<String, Object> properties = Map.of("source", "entry");
+        try {
+            try (CuratedApplication application = curatedApplication()) {
+                Map<String, Object> properties = Map.of("source", "entry");
 
-            AugmentActionImpl augmentor = (AugmentActionImpl) application.createAugmentor(
-                    EntryFunction.class.getName(), properties);
+                AugmentActionImpl augmentor = (AugmentActionImpl) application.createAugmentor(
+                        EntryFunction.class.getName(), properties);
 
-            assertThat(augmentor.getApplication()).isSameAs(application);
-            assertThat(augmentor.getBuildChainCustomizers()).containsExactly("build-chain", properties);
-            assertThat(augmentor.getBuildExecutionCustomizers()).containsExactly("build-execution", properties);
-            assertThat(augmentor.getExtraCustomizers()).isEmpty();
+                assertThat(augmentor.getApplication()).isSameAs(application);
+                assertThat(augmentor.getBuildChainCustomizers()).containsExactly("build-chain", properties);
+                assertThat(augmentor.getBuildExecutionCustomizers()).containsExactly("build-execution", properties);
+                assertThat(augmentor.getExtraCustomizers()).isEmpty();
+            }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
     @Test
     void runsConsumerInAugmentClassLoader() throws Exception {
-        try (CuratedApplication application = curatedApplication()) {
-            Map<String, Object> parameters = new HashMap<>();
+        try {
+            try (CuratedApplication application = curatedApplication()) {
+                Map<String, Object> parameters = new HashMap<>();
 
-            Object consumer = application.runInAugmentClassLoader(
-                    AugmentClassLoaderConsumer.class.getName(), parameters);
+                Object consumer = application.runInAugmentClassLoader(
+                        AugmentClassLoaderConsumer.class.getName(), parameters);
 
-            assertThat(consumer).isInstanceOf(AugmentClassLoaderConsumer.class);
-            assertThat(parameters)
-                    .containsEntry("accepted", Boolean.TRUE)
-                    .containsEntry("application", application);
-            assertThat(parameters.get("contextClassLoader")).isSameAs(application.getAugmentClassLoader());
+                assertThat(consumer).isInstanceOf(AugmentClassLoaderConsumer.class);
+                assertThat(parameters)
+                        .containsEntry("accepted", Boolean.TRUE)
+                        .containsEntry("application", application);
+                assertThat(parameters.get("contextClassLoader")).isSameAs(application.getAugmentClassLoader());
+            }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -102,6 +119,12 @@ public class CuratedApplicationTest {
                         .build())
                 .build()
                 .bootstrap();
+    }
+
+    private static void rethrowUnlessUnsupportedFeatureError(Error error) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            throw error;
+        }
     }
 
     public static final class ListFunction implements Function<Object, Object> {
