@@ -155,6 +155,38 @@ public class Selenium_chromium_driverTest {
     }
 
     @Test
+    public void shouldMergeAdditionalChromiumOptionsWithoutDuplicatingExistingValues() {
+        TestChromiumOptions baseOptions = new TestChromiumOptions();
+        baseOptions.addArguments("--disable-gpu", "--user-data-dir=/tmp/profile");
+        baseOptions.addEncodedExtensions("base-extension");
+        baseOptions.setExperimentalOption("prefs", Map.of("download.prompt_for_download", false));
+
+        TestChromiumOptions additionalOptions = new TestChromiumOptions();
+        additionalOptions.setAcceptInsecureCerts(true);
+        additionalOptions.setBinary("/opt/chromium/merged");
+        additionalOptions.addArguments("--disable-gpu", "--window-size=800,600",
+            "--remote-allow-origins=https://merged.example.test");
+        additionalOptions.addEncodedExtensions("base-extension", "additional-extension");
+        additionalOptions.setExperimentalOption("prefs",
+            Map.of("profile.default_content_setting_values.notifications", 2));
+        additionalOptions.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
+
+        Capabilities mergedOptions = baseOptions.merge(additionalOptions);
+        Map<String, Object> chromiumOptions = chromiumOptions(mergedOptions);
+
+        assertThat(mergedOptions.getCapability("acceptInsecureCerts")).isEqualTo(true);
+        assertThat(chromiumOptions)
+            .containsEntry("binary", "/opt/chromium/merged")
+            .containsEntry("prefs", Map.of("profile.default_content_setting_values.notifications", 2))
+            .containsEntry("excludeSwitches", List.of("enable-automation"));
+        assertThat(optionList(chromiumOptions, "args"))
+            .containsExactly("--disable-gpu", "--window-size=800,600",
+                "--remote-allow-origins=https://merged.example.test");
+        assertThat(optionList(chromiumOptions, "extensions"))
+            .containsExactly("base-extension", "additional-extension");
+    }
+
+    @Test
     public void shouldRejectInvalidChromiumOptionsInputs() throws IOException {
         ChromiumOptions<?> options = new ChromiumOptions<>("browserName", "chrome", "goog:chromeOptions");
         Path directory = Files.createDirectory(temporaryDirectory.resolve("not-a-file"));
@@ -364,7 +396,7 @@ public class Selenium_chromium_driverTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, Object> chromiumOptions(ChromiumOptions<?> options) {
+    private static Map<String, Object> chromiumOptions(Capabilities options) {
         return (Map<String, Object>) options.getCapability("goog:chromeOptions");
     }
 
@@ -389,6 +421,12 @@ public class Selenium_chromium_driverTest {
     private static void assertSinkCommand(RecordingExecuteMethod executeMethod, String expectedCommand) {
         assertThat(executeMethod.lastCommand).isEqualTo(expectedCommand);
         assertThat(executeMethod.lastParameters).containsEntry("sinkName", "Living Room");
+    }
+
+    public static class TestChromiumOptions extends ChromiumOptions<TestChromiumOptions> {
+        public TestChromiumOptions() {
+            super("browserName", "chrome", "goog:chromeOptions");
+        }
     }
 
     private static class RecordingExecuteMethod implements ExecuteMethod {
