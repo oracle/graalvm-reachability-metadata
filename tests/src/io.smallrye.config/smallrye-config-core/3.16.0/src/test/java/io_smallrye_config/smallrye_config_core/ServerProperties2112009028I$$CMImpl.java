@@ -14,7 +14,7 @@ import io.smallrye.config.ConfigMappingClassMapper;
 import io.smallrye.config.ConfigMappingContext;
 import io.smallrye.config.SmallRyeConfig;
 
-public final class ServerProperties2112009028I$$CMImpl
+@SuppressWarnings("checkstyle:TypeName") public final class ServerProperties2112009028I$$CMImpl
         implements ServerProperties2112009028I, ConfigMappingClassMapper {
     private final ConfigMappingGeneratorTest.ServerProperties mapped;
 
