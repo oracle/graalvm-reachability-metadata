@@ -7,11 +7,9 @@
 package org_glassfish_jaxb.jaxb_jxc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.sun.tools.jxc.ap.InlineAnnotationReaderImpl;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +39,7 @@ public class InlineAnnotationReaderImplTest {
     @Test
     void getClassValueReadsMirroredTypeFromAnnotationMethod() {
         TypeMirror adapterType = new SimpleTypeMirror("example.Adapter");
-        XmlJavaTypeAdapter annotation = new MirroredXmlJavaTypeAdapter(adapterType);
+        SingleClassValueAnnotation annotation = new MirroredSingleClassValueAnnotation(adapterType);
 
         TypeMirror value = InlineAnnotationReaderImpl.theInstance.getClassValue(annotation, "value");
 
@@ -52,11 +50,27 @@ public class InlineAnnotationReaderImplTest {
     void getClassArrayValueReadsMirroredTypesFromAnnotationMethod() {
         TypeMirror firstType = new SimpleTypeMirror("example.FirstType");
         TypeMirror secondType = new SimpleTypeMirror("example.SecondType");
-        XmlSeeAlso annotation = new MirroredXmlSeeAlso(List.of(firstType, secondType));
+        ClassArrayValueAnnotation annotation = new MirroredClassArrayValueAnnotation(List.of(firstType, secondType));
 
         TypeMirror[] values = InlineAnnotationReaderImpl.theInstance.getClassArrayValue(annotation, "value");
 
         assertThat(values).containsExactly(firstType, secondType);
+    }
+
+    @Test
+    void getClassValueCoversSuccessfulReflectiveInvocation() {
+        SingleClassValueAnnotation annotation = new ReturningSingleClassValueAnnotation(String.class);
+
+        assertThatThrownBy(() -> InlineAnnotationReaderImpl.theInstance.getClassValue(annotation, "value"))
+                .isInstanceOfAny(AssertionError.class, IllegalStateException.class);
+    }
+
+    @Test
+    void getClassArrayValueCoversSuccessfulReflectiveInvocation() {
+        ClassArrayValueAnnotation annotation = new ReturningClassArrayValueAnnotation(String.class, Integer.class);
+
+        assertThatThrownBy(() -> InlineAnnotationReaderImpl.theInstance.getClassArrayValue(annotation, "value"))
+                .isInstanceOfAny(AssertionError.class, IllegalStateException.class);
     }
 
     @Test
@@ -68,33 +82,36 @@ public class InlineAnnotationReaderImplTest {
         assertThat(annotations).isEmpty();
     }
 
-    private static final class MirroredXmlJavaTypeAdapter implements XmlJavaTypeAdapter {
+    public @interface SingleClassValueAnnotation {
+        Class<?> value();
+    }
+
+    public @interface ClassArrayValueAnnotation {
+        Class<?>[] value();
+    }
+
+    private static final class MirroredSingleClassValueAnnotation implements SingleClassValueAnnotation {
         private final TypeMirror adapterType;
 
-        private MirroredXmlJavaTypeAdapter(TypeMirror adapterType) {
+        private MirroredSingleClassValueAnnotation(TypeMirror adapterType) {
             this.adapterType = adapterType;
         }
 
         @Override
-        public Class<? extends XmlAdapter> value() {
+        public Class<?> value() {
             throw new MirroredTypeException(adapterType);
         }
 
         @Override
-        public Class<?> type() {
-            return Object.class;
-        }
-
-        @Override
         public Class<? extends Annotation> annotationType() {
-            return XmlJavaTypeAdapter.class;
+            return SingleClassValueAnnotation.class;
         }
     }
 
-    private static final class MirroredXmlSeeAlso implements XmlSeeAlso {
+    private static final class MirroredClassArrayValueAnnotation implements ClassArrayValueAnnotation {
         private final List<? extends TypeMirror> types;
 
-        private MirroredXmlSeeAlso(List<? extends TypeMirror> types) {
+        private MirroredClassArrayValueAnnotation(List<? extends TypeMirror> types) {
             this.types = List.copyOf(types);
         }
 
@@ -105,7 +122,43 @@ public class InlineAnnotationReaderImplTest {
 
         @Override
         public Class<? extends Annotation> annotationType() {
-            return XmlSeeAlso.class;
+            return ClassArrayValueAnnotation.class;
+        }
+    }
+
+    private static final class ReturningSingleClassValueAnnotation implements SingleClassValueAnnotation {
+        private final Class<?> type;
+
+        private ReturningSingleClassValueAnnotation(Class<?> type) {
+            this.type = type;
+        }
+
+        @Override
+        public Class<?> value() {
+            return type;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return SingleClassValueAnnotation.class;
+        }
+    }
+
+    private static final class ReturningClassArrayValueAnnotation implements ClassArrayValueAnnotation {
+        private final Class<?>[] types;
+
+        private ReturningClassArrayValueAnnotation(Class<?>... types) {
+            this.types = types.clone();
+        }
+
+        @Override
+        public Class<?>[] value() {
+            return types.clone();
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return ClassArrayValueAnnotation.class;
         }
     }
 
