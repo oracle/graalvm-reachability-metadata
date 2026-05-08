@@ -121,7 +121,7 @@ public class Maven_supportTest {
         MavenStaxReader entityAwareReader = new MavenStaxReader();
         Model withDefaultEntities = entityAwareReader.read(new StringReader(xml), false, null);
         assertThat(withDefaultEntities.getDescription())
-                .isEqualTo("Copyright © Maven contributors — ready");
+                .isEqualTo("Copyright \u00a9 Maven contributors \u2014 ready");
 
         MavenStaxReader literalEntityReader = new MavenStaxReader();
         literalEntityReader.setAddDefaultEntities(false);
