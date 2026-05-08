@@ -16,6 +16,8 @@ import java.util.function.BiPredicate;
 import org.jboss.jandex.DotName;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.builder.BuildChain;
+import io.quarkus.builder.BuildResult;
 import io.quarkus.builder.item.MultiBuildItem;
 import io.quarkus.builder.item.SimpleBuildItem;
 import io.quarkus.hibernate.validator.spi.AdditionalConstrainedClassBuildItem;
@@ -44,6 +46,26 @@ public class Quarkus_hibernate_validator_spiTest {
         assertThat(item.getClazz()).isNull();
         assertThat(item.getName()).isEqualTo("com.example.GeneratedConstrainedBean");
         assertThat(item.getBytes()).isSameAs(generatedClassBytes).containsExactly(0x01, 0x23, 0x45);
+    }
+
+    @Test
+    void additionalConstrainedClassesCanBeCollectedAsMultipleBuildItems() throws Exception {
+        AdditionalConstrainedClassBuildItem beanItem = AdditionalConstrainedClassBuildItem.of(SampleConstrainedBean.class);
+        AdditionalConstrainedClassBuildItem generatedItem = AdditionalConstrainedClassBuildItem.of(
+                "com.example.GeneratedConstrainedBean", new byte[] { 0x11, 0x22 });
+        BuildChain chain = BuildChain.builder()
+                .addBuildStep(context -> {
+                    context.produce(beanItem);
+                    context.produce(generatedItem);
+                })
+                .produces(AdditionalConstrainedClassBuildItem.class)
+                .build()
+                .addFinal(AdditionalConstrainedClassBuildItem.class)
+                .build();
+        BuildResult result = chain.createExecutionBuilder("validation-build-items").execute();
+
+        assertThat(result.consumeMulti(AdditionalConstrainedClassBuildItem.class))
+                .containsExactlyInAnyOrder(beanItem, generatedItem);
     }
 
     @Test
