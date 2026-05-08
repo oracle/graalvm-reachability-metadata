@@ -14,18 +14,24 @@ import dev.equo.ide.IdeHookWelcome;
 import dev.equo.ide.IdeLockFile;
 import dev.equo.ide.WorkspaceInit;
 import dev.equo.solstice.Capability;
+import dev.equo.solstice.NestedJars;
 import dev.equo.solstice.SolsticeManifest;
 import dev.equo.solstice.p2.ConsoleTable;
 import dev.equo.solstice.p2.P2Model;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import org.junit.jupiter.api.Test;
@@ -65,6 +71,39 @@ public class SolsticeTest {
         assertThat(manifest.getHeadersOriginal())
                 .containsEntry(Constants.BUNDLE_VERSION, "1.2.3")
                 .containsKey(Constants.EXPORT_PACKAGE);
+    }
+
+    @Test
+    void nestedJarsCanBeDiscoveredAndExtractedFromBundleClasspath() throws IOException {
+        Path hostBundle = tempDir.resolve("bundle-with-nested.jar");
+        byte[] nestedOne = "nested-one-content".getBytes(StandardCharsets.UTF_8);
+        byte[] nestedTwo = "nested-two-content".getBytes(StandardCharsets.UTF_8);
+        Manifest manifest = new Manifest();
+        Attributes attributes = manifest.getMainAttributes();
+        attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        attributes.putValue(Constants.BUNDLE_CLASSPATH, "., lib/nested-one.jar, lib/nested-two.jar");
+
+        try (OutputStream output = Files.newOutputStream(hostBundle);
+                JarOutputStream jar = new JarOutputStream(output, manifest)) {
+            writeJarEntry(jar, "lib/nested-one.jar", nestedOne);
+            writeJarEntry(jar, "lib/nested-two.jar", nestedTwo);
+        }
+
+        Path extractionDir = tempDir.resolve("extracted-nested-jars");
+        List<Map.Entry<URL, File>> extracted = NestedJars.inFiles(List.of(hostBundle.toFile()))
+                .extractAllNestedJars(extractionDir.toFile());
+
+        assertThat(extracted).hasSize(2);
+        assertThat(extracted.stream().map(entry -> entry.getKey().toExternalForm()))
+                .containsExactly(
+                        "jar:" + hostBundle.toUri().toURL().toExternalForm() + "!/lib/nested-one.jar",
+                        "jar:" + hostBundle.toUri().toURL().toExternalForm() + "!/lib/nested-two.jar");
+        assertThat(extracted.stream().map(entry -> entry.getValue().getName()))
+                .allSatisfy(filename -> assertThat(filename)
+                        .startsWith("bundle-with-nested.jar__nested-")
+                        .endsWith(".jar"));
+        assertThat(Files.readAllBytes(extracted.get(0).getValue().toPath())).isEqualTo(nestedOne);
+        assertThat(Files.readAllBytes(extracted.get(1).getValue().toPath())).isEqualTo(nestedTwo);
     }
 
     @Test
@@ -231,6 +270,12 @@ public class SolsticeTest {
             // The manifest is enough for SolsticeManifest.parseJar.
         }
         return jar;
+    }
+
+    private void writeJarEntry(JarOutputStream jar, String name, byte[] content) throws IOException {
+        jar.putNextEntry(new JarEntry(name));
+        jar.write(content);
+        jar.closeEntry();
     }
 
     private Properties loadProperties(Path path) throws IOException {
