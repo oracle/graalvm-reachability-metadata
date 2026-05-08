@@ -18,6 +18,7 @@ import org.apache.pekko.stream.QueueOfferResult
 import org.apache.pekko.stream.SystemMaterializer
 import org.apache.pekko.stream.UniqueKillSwitch
 import org.apache.pekko.stream.scaladsl.Broadcast
+import org.apache.pekko.stream.scaladsl.Compression
 import org.apache.pekko.stream.scaladsl.FileIO
 import org.apache.pekko.stream.scaladsl.Flow
 import org.apache.pekko.stream.scaladsl.Framing
@@ -152,6 +153,18 @@ class Pekko_stream_3Test {
     } finally {
       Files.deleteIfExists(file)
     }
+  }
+
+  @Test
+  def compressesAndDecompressesByteStringStream(): Unit = withActorSystem("compression") { system =>
+    val materializer = SystemMaterializer(system).materializer
+    val payload: ByteString = ByteString("alpha\nbeta\ngamma\n")
+    val streamResult: Future[ByteString] = Source(List(payload))
+      .via(Compression.gzip)
+      .via(Compression.gunzip())
+      .runFold(ByteString.empty)(_ ++ _)(materializer)
+
+    assertThat(await(streamResult)).isEqualTo(payload)
   }
 
   @Test
