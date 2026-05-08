@@ -193,6 +193,30 @@ public class Snappy_javaTest {
     }
 
     @Test
+    void flushMakesWrittenStreamDataReadableBeforeClose() throws Exception {
+        byte[] firstChunk = "first flushed snappy chunk".getBytes(StandardCharsets.UTF_8);
+        byte[] secondChunk = " and data written after flush".getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream compressedBytes = new ByteArrayOutputStream();
+        SnappyOutputStream output = new SnappyOutputStream(compressedBytes, 16);
+
+        try {
+            output.write(firstChunk);
+            output.flush();
+
+            assertThat(readSnappyBytesOneByteAtATime(compressedBytes.toByteArray())).isEqualTo(firstChunk);
+
+            output.write(secondChunk);
+        } finally {
+            output.close();
+        }
+
+        ByteArrayOutputStream expected = new ByteArrayOutputStream();
+        expected.write(firstChunk);
+        expected.write(secondChunk);
+        assertThat(readSnappyBytesOneByteAtATime(compressedBytes.toByteArray())).isEqualTo(expected.toByteArray());
+    }
+
+    @Test
     void codecHeaderRoundTripsAndExposesCurrentVersion() throws Exception {
         SnappyCodec codec = SnappyCodec.currentHeader();
         ByteArrayOutputStream headerBytes = new ByteArrayOutputStream();
@@ -229,6 +253,17 @@ public class Snappy_javaTest {
         Snappy.arrayCopy(source, 1, 3, destination, 2);
 
         assertThat(destination).containsExactly((byte) -1, (byte) -1, (byte) 20, (byte) 30, (byte) 40, (byte) -1);
+    }
+
+    private static byte[] readSnappyBytesOneByteAtATime(byte[] compressedBytes) throws Exception {
+        ByteArrayOutputStream restored = new ByteArrayOutputStream();
+        try (SnappyInputStream input = new SnappyInputStream(new ByteArrayInputStream(compressedBytes))) {
+            int value;
+            while ((value = input.read()) != -1) {
+                restored.write(value);
+            }
+        }
+        return restored.toByteArray();
     }
 
     private static byte[] createSampleBytes() {
