@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLHandshakeException;
 
 import org.eclipse.jetty.alpn.client.ALPNClientConnection;
 import org.eclipse.jetty.alpn.client.ALPNClientConnectionFactory;
@@ -57,13 +56,15 @@ public class Jetty_alpn_clientTest {
     @Test
     void selectedProtocolIsRecordedWithoutImmediatelyReplacingTheConnection() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
+        Map<String, Object> context = new HashMap<>();
         TestClientConnectionFactory connectionFactory = new TestClientConnectionFactory();
-        ALPNClientConnection connection = newAlpnConnection(endPoint, connectionFactory, new HashMap<>());
+        ALPNClientConnection connection = newAlpnConnection(endPoint, connectionFactory, context);
         endPoint.setConnection(connection);
 
         connection.selected("h2");
 
         assertThat(connection.getProtocol()).isEqualTo("h2");
+        assertThat(context).containsEntry(ClientConnector.APPLICATION_PROTOCOL_CONTEXT_KEY, "h2");
         assertThat(endPoint.getConnection()).isSameAs(connection);
         assertThat(connectionFactory.createdConnections).isEmpty();
     }
@@ -81,6 +82,7 @@ public class Jetty_alpn_clientTest {
         connection.onOpen();
 
         assertThat(connection.getProtocol()).isEqualTo("http/1.1");
+        assertThat(context).containsEntry(ClientConnector.APPLICATION_PROTOCOL_CONTEXT_KEY, "http/1.1");
         assertThat(connectionFactory.createdConnections).hasSize(1);
         assertThat(connectionFactory.seenEndPoints).containsExactly(endPoint);
         assertThat(connectionFactory.seenContexts).containsExactly(context);
@@ -100,6 +102,7 @@ public class Jetty_alpn_clientTest {
         connection.onFillable();
 
         assertThat(connection.getProtocol()).isEqualTo("h2");
+        assertThat(context).containsEntry(ClientConnector.APPLICATION_PROTOCOL_CONTEXT_KEY, "h2");
         assertThat(connectionFactory.createdConnections).hasSize(1);
         assertThat(connectionFactory.seenEndPoints).containsExactly(endPoint);
         assertThat(connectionFactory.seenContexts).containsExactly(context);
@@ -123,7 +126,7 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
-    void endOfInputFailsConnectionPromiseAndClosesEndPoint() throws Exception {
+    void endOfInputBeforeNegotiationUpgradesEndPointToProtocolConnection() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
         RecordingPromise connectionPromise = new RecordingPromise();
         Map<String, Object> context = newContextWithConnectionPromise(connectionPromise);
@@ -135,13 +138,12 @@ public class Jetty_alpn_clientTest {
         connection.onFillable();
 
         assertThat(connection.getProtocol()).isNull();
-        assertThat(connectionFactory.createdConnections).isEmpty();
-        assertThat(connectionPromise.failure)
-                .isInstanceOf(SSLHandshakeException.class)
-                .hasMessage("Abruptly closed by peer");
-        assertThat(endPoint.getConnection()).isSameAs(connection);
-        assertThat(endPoint.isOutputShutdown()).isTrue();
-        assertThat(endPoint.isOpen()).isFalse();
+        assertThat(connectionFactory.createdConnections).hasSize(1);
+        assertThat(connectionFactory.seenEndPoints).containsExactly(endPoint);
+        assertThat(connectionFactory.seenContexts).containsExactly(context);
+        assertThat(connectionPromise.failure).isNull();
+        assertThat(endPoint.getConnection()).isSameAs(connectionFactory.createdConnections.get(0));
+        assertThat(connectionFactory.createdConnections.get(0).opened).isTrue();
     }
 
     @Test
@@ -158,7 +160,7 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
-    void failedProtocolConnectionCreationClosesEndPoint() throws Exception {
+    void failedProtocolConnectionCreationClosesEndPointWithoutFailingConnectionPromise() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
         RecordingPromise connectionPromise = new RecordingPromise();
         Map<String, Object> context = newContextWithConnectionPromise(connectionPromise);
@@ -172,9 +174,8 @@ public class Jetty_alpn_clientTest {
         connection.onOpen();
 
         assertThat(connection.getProtocol()).isEqualTo("h2");
-        assertThat(connectionPromise.failure)
-                .isInstanceOf(IOException.class)
-                .hasMessage("Unable to create protocol connection");
+        assertThat(context).containsEntry(ClientConnector.APPLICATION_PROTOCOL_CONTEXT_KEY, "h2");
+        assertThat(connectionPromise.failure).isNull();
         assertThat(endPoint.getConnection()).isSameAs(connection);
         assertThat(endPoint.isOutputShutdown()).isTrue();
         assertThat(endPoint.isOpen()).isFalse();
