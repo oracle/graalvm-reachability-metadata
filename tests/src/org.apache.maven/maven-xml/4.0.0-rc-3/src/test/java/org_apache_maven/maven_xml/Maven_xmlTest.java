@@ -192,6 +192,28 @@ public class Maven_xmlTest {
         assertThat(dev.getChildren()).extracting(XmlNode::getName).containsExactly("url");
     }
 
+    @Test
+    void mergeRemovesDominantChildrenMarkedWithRemoveCombinationMode() {
+        XmlNode dominant = node(
+                "configuration",
+                null,
+                node("inherited", null,
+                        linkedMap(XmlNode.SELF_COMBINATION_MODE_ATTRIBUTE, XmlNode.SELF_COMBINATION_REMOVE)),
+                node("local", "kept"));
+        XmlNode recessive = node(
+                "configuration",
+                null,
+                node("inherited", "from-parent"),
+                node("parentOnly", "added"));
+
+        XmlNode merged = XmlNode.merge(dominant, recessive);
+
+        assertThat(merged.getChildren()).extracting(XmlNode::getName).containsExactly("local", "parentOnly");
+        assertThat(merged.getChild("inherited")).isNull();
+        assertThat(merged.getChild("local").getValue()).isEqualTo("kept");
+        assertThat(merged.getChild("parentOnly").getValue()).isEqualTo("added");
+    }
+
     private static XmlNode parseXml(String xml) throws Exception {
         XMLInputFactory factory = XMLInputFactory.newDefaultFactory();
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
