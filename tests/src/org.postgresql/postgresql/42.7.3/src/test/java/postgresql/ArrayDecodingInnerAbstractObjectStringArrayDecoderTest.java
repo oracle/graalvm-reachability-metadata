@@ -6,19 +6,13 @@
  */
 package postgresql;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Duration;
-import java.util.Properties;
-
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,28 +30,17 @@ public class ArrayDecodingInnerAbstractObjectStringArrayDecoderTest {
 
     private static final String DATABASE = "test";
 
-    private static String containerId;
-
-    private static int databasePort;
+    private static PostgresqlTestContainer container;
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        containerId = commandOutput("docker", "run", "--rm", "-d", "-p", "127.0.0.1::5432", "-e", "POSTGRES_DB=" + DATABASE,
-                "-e", "POSTGRES_USER=" + USERNAME, "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:18-alpine");
-        databasePort = Integer.parseInt(commandOutput("docker", "inspect", "--format",
-                "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}", containerId));
-
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
-            try (Connection connection = openConnection()) {
-                return connection.isValid(1);
-            }
-        });
+        container = PostgresqlTestContainer.start(DATABASE, USERNAME, PASSWORD);
     }
 
     @AfterAll
     static void tearDown() throws Exception {
-        if (containerId != null) {
-            commandOutput("docker", "rm", "-f", containerId);
+        if (container != null) {
+            container.close();
         }
     }
 
@@ -104,22 +87,6 @@ public class ArrayDecodingInnerAbstractObjectStringArrayDecoderTest {
     }
 
     private static Connection openConnection() throws SQLException {
-        Properties properties = new Properties();
-        properties.setProperty("user", USERNAME);
-        properties.setProperty("password", PASSWORD);
-        return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:" + databasePort + "/" + DATABASE + "?preferQueryMode=simple",
-                properties);
-    }
-
-    private static String commandOutput(String... command) throws IOException, InterruptedException {
-        Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
-        byte[] output = process.getInputStream().readAllBytes();
-        int exitCode = process.waitFor();
-        String text = new String(output, StandardCharsets.UTF_8).trim();
-        if (exitCode != 0) {
-            throw new IllegalStateException(
-                    "Command failed with exit code " + exitCode + ": " + String.join(" ", command) + "\n" + text);
-        }
-        return text;
+        return DriverManager.getConnection(container.jdbcUrl() + "?preferQueryMode=simple", container.connectionProperties());
     }
 }

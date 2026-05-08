@@ -6,8 +6,6 @@
  */
 package postgresql;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Date;
@@ -16,17 +14,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
-import java.util.Properties;
 import java.util.UUID;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,38 +39,24 @@ public class PostgresqlTests {
 
     private static final String DATABASE = "test";
 
-    private static final String JDBC_URL = "jdbc:postgresql://localhost/" + DATABASE;
-
-    private static Process process;
+    private static PostgresqlTestContainer container;
 
     private static Connection openConnection() throws SQLException {
-        Properties props = new Properties();
-        props.setProperty("user", USERNAME);
-        props.setProperty("password", PASSWORD);
-        return DriverManager.getConnection(JDBC_URL, props);
+        return DriverManager.getConnection(container.jdbcUrl(), container.connectionProperties());
     }
 
     @BeforeAll
-    static void beforeAll() throws IOException {
+    static void beforeAll() throws Exception {
         System.out.println("Starting PostgreSQL ...");
-        process = new ProcessBuilder(
-                "docker", "run", "--rm", "-p", "5432:5432", "-e", "POSTGRES_DB=" + DATABASE, "-e", "POSTGRES_USER=" + USERNAME,
-                "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:18-alpine").redirectOutput(new File("postgres-stdout.txt"))
-                .redirectError(new File("postgres-stderr.txt")).start();
-
-        // Wait until connection can be established
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
-            openConnection().close();
-            return true;
-        });
+        container = PostgresqlTestContainer.start(DATABASE, USERNAME, PASSWORD);
         System.out.println("PostgreSQL started");
     }
 
     @AfterAll
-    static void tearDown() {
-        if (process != null && process.isAlive()) {
+    static void tearDown() throws Exception {
+        if (container != null) {
             System.out.println("Shutting down PostgreSQL");
-            process.destroy();
+            container.close();
         }
     }
 
