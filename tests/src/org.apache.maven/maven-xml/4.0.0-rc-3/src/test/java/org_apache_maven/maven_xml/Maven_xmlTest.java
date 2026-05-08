@@ -119,6 +119,35 @@ public class Maven_xmlTest {
     }
 
     @Test
+    void mergeMatchesRepeatedChildrenUsingConfiguredKeyElements() {
+        XmlNode dominant = node(
+                "dependencies",
+                null,
+                dependency("org.example", "application", node("version", "2.0"), node("scope", "runtime")),
+                dependency("org.example", "local-only", node("version", "1.0")));
+        XmlNode recessive = node(
+                "dependencies",
+                null,
+                linkedMap(XmlNode.KEYS_COMBINATION_MODE_ATTRIBUTE, "groupId,artifactId"),
+                dependency("org.example", "application", node("version", "1.0"), node("optional", "true")));
+
+        XmlNode merged = XmlNode.merge(dominant, recessive);
+
+        assertThat(merged.getChildren()).extracting(XmlNode::getName)
+                .containsExactly("dependency", "dependency");
+
+        XmlNode application = dependencyWithCoordinates(merged, "org.example", "application");
+        assertThat(application.getChildren()).extracting(XmlNode::getName)
+                .containsExactly("groupId", "artifactId", "version", "scope", "optional");
+        assertThat(application.getChild("version").getValue()).isEqualTo("2.0");
+        assertThat(application.getChild("scope").getValue()).isEqualTo("runtime");
+        assertThat(application.getChild("optional").getValue()).isEqualTo("true");
+
+        XmlNode localOnly = dependencyWithCoordinates(merged, "org.example", "local-only");
+        assertThat(localOnly.getChild("version").getValue()).isEqualTo("1.0");
+    }
+
+    @Test
     void mergeCombinesAttributesAndChildrenWhileKeepingDominantValues() {
         XmlNode dominant = node(
                 "configuration",
@@ -229,6 +258,14 @@ public class Maven_xmlTest {
         return node("server", null, linkedMap(XmlNode.ID_COMBINATION_MODE_ATTRIBUTE, id), children);
     }
 
+    private static XmlNodeImpl dependency(String groupId, String artifactId, XmlNode... children) {
+        List<XmlNode> dependencyChildren = new ArrayList<>();
+        dependencyChildren.add(node("groupId", groupId));
+        dependencyChildren.add(node("artifactId", artifactId));
+        dependencyChildren.addAll(Arrays.asList(children));
+        return new XmlNodeImpl("dependency", null, Collections.emptyMap(), dependencyChildren, null);
+    }
+
     private static XmlNodeImpl node(String name, String value, XmlNode... children) {
         return node(name, value, Collections.emptyMap(), children);
     }
@@ -251,5 +288,14 @@ public class Maven_xmlTest {
                 .filter(child -> value.equals(child.getAttribute(attribute)))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Missing child " + name + " with " + attribute + "=" + value));
+    }
+
+    private static XmlNode dependencyWithCoordinates(XmlNode parent, String groupId, String artifactId) {
+        return parent.getChildren().stream()
+                .filter(child -> "dependency".equals(child.getName()))
+                .filter(child -> groupId.equals(child.getChild("groupId").getValue()))
+                .filter(child -> artifactId.equals(child.getChild("artifactId").getValue()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Missing dependency " + groupId + ":" + artifactId));
     }
 }
