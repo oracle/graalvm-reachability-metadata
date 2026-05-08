@@ -6,7 +6,10 @@
  */
 package org_springframework.spring_oxm;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -16,10 +19,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,6 +34,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
@@ -50,6 +58,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.oxm.mime.MimeContainer;
 import org.springframework.oxm.support.MarshallingSource;
 import org.springframework.oxm.support.SaxResourceUtils;
 
@@ -228,6 +237,33 @@ public class Spring_oxmTest {
         }
     }
 
+    @Test
+    void jaxbMarshallerRoundTripsMtomAttachmentThroughMimeContainer() throws Exception {
+        Jaxb2Marshaller marshaller = newBinaryDocumentMarshaller();
+        byte[] payload = "portable binary payload".getBytes(StandardCharsets.UTF_8);
+        BinaryDocument document = new BinaryDocument("diagram.bin",
+                new DataHandler(new ByteArrayDataSource("diagram.bin", "application/octet-stream", payload)));
+        RecordingMimeContainer mimeContainer = new RecordingMimeContainer();
+        StringWriter writer = new StringWriter();
+
+        marshaller.marshal(document, new StreamResult(writer), mimeContainer);
+
+        String xml = writer.toString();
+        assertThat(xml)
+                .contains("binaryDocument")
+                .contains("name=\"diagram.bin\"")
+                .contains("xop:Include")
+                .contains("cid:");
+        assertThat(mimeContainer.getAttachmentCount()).isEqualTo(1);
+
+        BinaryDocument restored = (BinaryDocument) marshaller.unmarshal(new StreamSource(new StringReader(xml)),
+                mimeContainer);
+
+        assertThat(restored.getName()).isEqualTo("diagram.bin");
+        assertThat(readBytes(restored.getContent())).isEqualTo(payload);
+        assertThat(restored.getContent().getContentType()).isEqualTo("application/octet-stream");
+    }
+
     private static Jaxb2Marshaller newInvoiceMarshaller() throws Exception {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(Invoice.class, LineItem.class, MoneyValue.class);
@@ -247,6 +283,14 @@ public class Spring_oxmTest {
         return marshaller;
     }
 
+    private static Jaxb2Marshaller newBinaryDocumentMarshaller() throws Exception {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setClassesToBeBound(BinaryDocument.class);
+        marshaller.setMtomEnabled(true);
+        marshaller.afterPropertiesSet();
+        return marshaller;
+    }
+
     private static String marshalToString(Jaxb2Marshaller marshaller, Object value) {
         StringWriter writer = new StringWriter();
         marshaller.marshal(value, new StreamResult(writer));
@@ -256,6 +300,12 @@ public class Spring_oxmTest {
     private static Invoice sampleInvoice() {
         return new Invoice("INV-7", "Ada Lovelace", new Money("EUR", new BigDecimal("42.50")),
                 Arrays.asList(new LineItem("SPR-OXM", 2), new LineItem("JAXB", 3)));
+    }
+
+    private static byte[] readBytes(DataHandler dataHandler) throws IOException {
+        try (InputStream inputStream = dataHandler.getInputStream()) {
+            return inputStream.readAllBytes();
+        }
     }
 
     @XmlRootElement(name = "invoice")
@@ -389,6 +439,101 @@ public class Spring_oxmTest {
         @Override
         public MoneyValue marshal(Money value) {
             return new MoneyValue(value.getCurrency(), value.getAmount());
+        }
+    }
+
+    @XmlRootElement(name = "binaryDocument")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class BinaryDocument {
+        @XmlAttribute(required = true)
+        private String name;
+
+        @XmlElement(required = true)
+        @XmlMimeType("application/octet-stream")
+        private DataHandler content;
+
+        public BinaryDocument() {
+        }
+
+        BinaryDocument(String name, DataHandler content) {
+            this.name = name;
+            this.content = content;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public DataHandler getContent() {
+            return content;
+        }
+    }
+
+    private static final class ByteArrayDataSource implements DataSource {
+        private final String name;
+        private final String contentType;
+        private final byte[] content;
+
+        ByteArrayDataSource(String name, String contentType, byte[] content) {
+            this.name = name;
+            this.contentType = contentType;
+            this.content = Arrays.copyOf(content, content.length);
+        }
+
+        @Override
+        public InputStream getInputStream() {
+            return new ByteArrayInputStream(content);
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            throw new IOException("This data source is read-only");
+        }
+
+        @Override
+        public String getContentType() {
+            return contentType;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+    private static final class RecordingMimeContainer implements MimeContainer {
+        private final Map<String, DataHandler> attachments = new LinkedHashMap<>();
+
+        @Override
+        public boolean isXopPackage() {
+            return true;
+        }
+
+        @Override
+        public DataHandler getAttachment(String contentId) {
+            return attachments.get(normalizeContentId(contentId));
+        }
+
+        @Override
+        public String addAttachment(DataHandler dataHandler) {
+            String contentId = "attachment-" + attachments.size();
+            attachments.put(contentId, dataHandler);
+            return "cid:" + contentId;
+        }
+
+        int getAttachmentCount() {
+            return attachments.size();
+        }
+
+        private static String normalizeContentId(String contentId) {
+            String normalized = contentId;
+            if (normalized.startsWith("cid:")) {
+                normalized = normalized.substring("cid:".length());
+            }
+            if (normalized.startsWith("<") && normalized.endsWith(">")) {
+                normalized = normalized.substring(1, normalized.length() - 1);
+            }
+            return normalized;
         }
     }
 
