@@ -46,6 +46,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Create a PR that adds a not-for-native-image marker index.",
     )
     parser.add_argument("--coordinates", required=True, help="Coordinates in group:artifact:version form")
+    parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
     parser.add_argument("--reachability-metadata-path", help="Path to the reachability-metadata checkout")
     parser.add_argument(
         "--metrics-repo-path",
@@ -92,6 +93,7 @@ def create_pull_request(
         coordinates: str,
         repo_path: str,
         local_ci_verification: LocalCIVerificationResult | None = None,
+        issue_number: int | None = None,
 ) -> None:
     """Create the marker PR."""
     if shutil.which("gh") is None:
@@ -109,7 +111,7 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    issue_no = find_issue_for_coordinates(coordinates, REPO)
+    issue_no = issue_number if issue_number is not None else find_issue_for_coordinates(coordinates, REPO)
     title = f"[GenAI] Mark {group}:{artifact} as not for Native Image"
     body = f"""
 ## What does this PR do?
@@ -155,7 +157,7 @@ def main(argv=None) -> None:
     )
     ensure_gh_authenticated()
     branch, local_ci_verification = push_marker_branch(args.coordinates, repo_path, metrics_repo_path)
-    create_pull_request(branch, args.coordinates, repo_path, local_ci_verification)
+    create_pull_request(branch, args.coordinates, repo_path, local_ci_verification, args.issue_number)
 
 
 if __name__ == "__main__":

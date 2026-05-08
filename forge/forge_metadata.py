@@ -4231,7 +4231,6 @@ def build_large_library_pr_args(
     if large_library_state is None:
         return []
     args = [
-        "--issue-number", str(claimed_issue.issue["number"]),
         "--large-library-part", str(large_library_state.part),
         "--series-id", large_library_state.series_id,
         "--large-library-state-path", large_library_state_path or "",
@@ -4272,6 +4271,8 @@ def finalize_successful_issue(
         ensure_large_library_labels_exist_if_needed(claimed_issue)
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
+    issue_number = claimed_issue.issue["number"]
+    issue_number_args = ["--issue-number", str(issue_number)]
     large_library_pr_args = build_large_library_pr_args(
         claimed_issue,
         large_library_state,
@@ -4284,6 +4285,7 @@ def finalize_successful_issue(
             run_make_pr_not_for_native_image(
                 [
                     "--coordinates", claimed_issue.issue_coordinates,
+                    *issue_number_args,
                     "--reachability-metadata-path", claimed_issue.worktree_path,
                     "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 ]
@@ -4292,6 +4294,7 @@ def finalize_successful_issue(
         run_make_pr_new_library_support(
             [
                 "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *large_library_pr_args,
@@ -4304,6 +4307,7 @@ def finalize_successful_issue(
             [
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
+                "--issue-number", str(issue_number),
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -4315,6 +4319,7 @@ def finalize_successful_issue(
             [
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
+                "--issue-number", str(issue_number),
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -4326,6 +4331,7 @@ def finalize_successful_issue(
             [
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
+                "--issue-number", str(issue_number),
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -4336,6 +4342,7 @@ def finalize_successful_issue(
         run_make_pr_improve_coverage(
             [
                 "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *large_library_pr_args,
