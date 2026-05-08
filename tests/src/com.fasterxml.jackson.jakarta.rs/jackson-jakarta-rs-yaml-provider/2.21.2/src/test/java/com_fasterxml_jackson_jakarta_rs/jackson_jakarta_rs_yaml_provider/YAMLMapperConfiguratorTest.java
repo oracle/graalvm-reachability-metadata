@@ -21,7 +21,7 @@ public class YAMLMapperConfiguratorTest {
     void defaultMapperResolvesJakartaXmlBindAnnotationIntrospector() throws Exception {
         YAMLMapperConfigurator configurator = new YAMLMapperConfigurator(
                 null,
-                new Annotations[] { Annotations.JAKARTA_XML_BIND });
+                new Annotations[] {Annotations.JAKARTA_XML_BIND });
 
         YAMLMapper mapper = configurator.getDefaultMapper();
 
