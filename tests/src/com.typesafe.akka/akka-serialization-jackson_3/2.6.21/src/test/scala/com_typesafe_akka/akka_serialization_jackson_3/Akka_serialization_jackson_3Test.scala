@@ -173,6 +173,11 @@ object Akka_serialization_jackson_3Test {
   val MigratingMessageClassName = s"$PackageName.MigratingMessage"
   val SingletonNotificationClassName = SingletonNotification.getClass.getName
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
+  private val DefaultConfig: Config = ConfigFactory
+    .parseResources("akka-serialization-jackson-reference.conf")
+    .withFallback(ConfigFactory.parseResources("akka-actor-reference.conf"))
+    .withFallback(ConfigFactory.parseResources("version.conf"))
+    .resolve()
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
@@ -203,7 +208,8 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
-    .withFallback(ConfigFactory.load())
+    .withFallback(DefaultConfig)
+    .resolve()
 }
 
 final case class MapperEnvelope(
