@@ -86,6 +86,60 @@ public class Camel_core_engineTest {
     }
 
     @Test
+    void contentBasedRouterSendsMessagesToMatchingBranch() throws Exception {
+        DefaultCamelContext context = new DefaultCamelContext();
+        try {
+            context.addComponent("memory", new InMemoryComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    from("memory:orders")
+                            .routeId("priority-router")
+                            .choice()
+                            .when(header("priority").isEqualTo("gold"))
+                            .setHeader("tier", constant("premium"))
+                            .to("memory:premium")
+                            .otherwise()
+                            .setHeader("tier", constant("standard"))
+                            .to("memory:standard")
+                            .end();
+                }
+            });
+
+            context.start();
+
+            ProducerTemplate template = context.createProducerTemplate();
+            try {
+                template.start();
+                template.sendBodyAndHeader("memory:orders", "order-1", "priority", "gold");
+                template.sendBodyAndHeader("memory:orders", "order-2", "priority", "silver");
+
+                InMemoryEndpoint premium = (InMemoryEndpoint) context.getEndpoint("memory:premium");
+                assertThat(premium.receivedMessages())
+                        .singleElement()
+                        .satisfies(message -> {
+                            assertThat(message.body()).isEqualTo("order-1");
+                            assertThat(message.headers()).containsEntry("priority", "gold");
+                            assertThat(message.headers()).containsEntry("tier", "premium");
+                        });
+
+                InMemoryEndpoint standard = (InMemoryEndpoint) context.getEndpoint("memory:standard");
+                assertThat(standard.receivedMessages())
+                        .singleElement()
+                        .satisfies(message -> {
+                            assertThat(message.body()).isEqualTo("order-2");
+                            assertThat(message.headers()).containsEntry("priority", "silver");
+                            assertThat(message.headers()).containsEntry("tier", "standard");
+                        });
+            } finally {
+                template.stop();
+            }
+        } finally {
+            context.close();
+        }
+    }
+
+    @Test
     void routeTemplatesMaterializeRunnableRoutesBeforeStartup() throws Exception {
         DefaultCamelContext context = new DefaultCamelContext();
         try {
