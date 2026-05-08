@@ -463,4 +463,38 @@ public class Jackson_dataformat_cborTest {
         assertThat(Arrays.copyOf(encoded, 3)).containsExactly((byte) 0xD9, (byte) 0xD9, (byte) 0xF7);
         assertThat(decoded.path("answer").asInt()).isEqualTo(42);
     }
+
+    @Test
+    void parserReadsIndefiniteLengthTextAndBinaryChunksAsSingleValues() throws Exception {
+        byte[] chunkedDocument = new byte[] {
+                (byte) 0xA2,
+                (byte) 0x63, (byte) 'm', (byte) 's', (byte) 'g',
+                (byte) 0x7F,
+                (byte) 0x65, (byte) 'h', (byte) 'e', (byte) 'l', (byte) 'l', (byte) 'o',
+                (byte) 0x61, (byte) ' ',
+                (byte) 0x65, (byte) 'w', (byte) 'o', (byte) 'r', (byte) 'l', (byte) 'd',
+                (byte) 0xFF,
+                (byte) 0x65, (byte) 'b', (byte) 'y', (byte) 't', (byte) 'e', (byte) 's',
+                (byte) 0x5F,
+                (byte) 0x43, (byte) 0x01, (byte) 0x02, (byte) 0x03,
+                (byte) 0x42, (byte) 0x04, (byte) 0x05,
+                (byte) 0xFF
+        };
+
+        try (JsonParser parser = new CBORFactory().createParser(chunkedDocument)) {
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+
+            assertThat(parser.nextName()).isEqualTo("msg");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getString()).isEqualTo("hello world");
+
+            assertThat(parser.nextName()).isEqualTo("bytes");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_EMBEDDED_OBJECT);
+            assertThat(parser.getBinaryValue()).containsExactly((byte) 0x01, (byte) 0x02, (byte) 0x03,
+                    (byte) 0x04, (byte) 0x05);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+            assertThat(parser.nextToken()).isNull();
+        }
+    }
 }
