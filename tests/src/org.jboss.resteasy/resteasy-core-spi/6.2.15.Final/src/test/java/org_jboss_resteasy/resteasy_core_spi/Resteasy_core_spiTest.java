@@ -8,7 +8,7 @@ package org_jboss_resteasy.resteasy_core_spi;
 
 import org.junit.jupiter.api.Test;
 
-class Resteasy_core_spiTest {
+public class Resteasy_core_spiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
