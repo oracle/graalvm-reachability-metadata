@@ -33,6 +33,8 @@ import org.apache.maven.api.settings.Server;
 import org.apache.maven.api.settings.Settings;
 import org.apache.maven.api.toolchain.PersistedToolchains;
 import org.apache.maven.api.toolchain.ToolchainModel;
+import org.apache.maven.api.xml.XmlNode;
+import org.apache.maven.api.xml.XmlService;
 import org.apache.maven.metadata.v4.MetadataStaxReader;
 import org.apache.maven.metadata.v4.MetadataStaxWriter;
 import org.apache.maven.model.v4.MavenMerger;
@@ -507,6 +509,59 @@ public class Maven_supportTest {
     }
 
     @Test
+    void readsWritesAndMergesGenericXmlNodes() throws Exception {
+        String xml = """
+                <configuration xmlns="urn:example:configuration">
+                  <options combine.keys="id">
+                    <option>
+                      <id>release</id>
+                      <value>17</value>
+                    </option>
+                  </options>
+                  <message xml:space="preserve">  keep surrounding spaces  </message>
+                </configuration>
+                """;
+
+        XmlNode configuration = XmlService.read(
+                new StringReader(xml),
+                xmlStreamReader -> xmlStreamReader.getLocation().getLineNumber());
+
+        assertThat(configuration.name()).isEqualTo("configuration");
+        assertThat(configuration.namespaceUri()).isEqualTo("urn:example:configuration");
+        assertThat(configuration.attribute("xmlns")).isEqualTo("urn:example:configuration");
+        assertThat(configuration.inputLocation()).isEqualTo(1);
+        assertThat(configuration.child("message").value()).isEqualTo("  keep surrounding spaces  ");
+
+        XmlNode source = XmlNode.newBuilder()
+                .name("configuration")
+                .attributes(Map.of("profile", "native"))
+                .children(List.of(XmlNode.newBuilder()
+                        .name("options")
+                        .attributes(Map.of("combine.keys", "id"))
+                        .children(List.of(optionNode("release", "21")))
+                        .build()))
+                .build();
+
+        XmlNode merged = XmlService.merge(configuration, source);
+        assertThat(merged.attribute("profile")).isEqualTo("native");
+        assertThat(merged.child("options").children()).hasSize(1);
+        assertThat(merged.child("options").children().get(0).child("id").value()).isEqualTo("release");
+        assertThat(merged.child("options").children().get(0).child("value").value()).isEqualTo("17");
+
+        XmlNode generated = XmlNode.newBuilder()
+                .name("configuration")
+                .attributes(Map.of("name", "generated"))
+                .children(List.of(optionNode("debug", "true")))
+                .build();
+        StringWriter writer = new StringWriter();
+        XmlService.write(generated, writer);
+        XmlNode reparsed = XmlService.read(new StringReader(writer.toString()));
+        assertThat(reparsed.attribute("name")).isEqualTo("generated");
+        assertThat(reparsed.children()).hasSize(1);
+        assertThat(reparsed.child("option").child("id").value()).isEqualTo("debug");
+    }
+
+    @Test
     void reportsMalformedDocumentRoots() {
         assertThatThrownBy(() -> new MetadataStaxReader().read(new StringReader("<notMetadata/>")))
                 .isInstanceOf(XMLStreamException.class)
@@ -517,5 +572,14 @@ public class Maven_supportTest {
         assertThatThrownBy(() -> new LifecycleStaxReader().read(new StringReader("<notLifecycles/>")))
                 .isInstanceOf(XMLStreamException.class)
                 .hasMessageContaining("Expected root element 'lifecycles'");
+    }
+
+    private static XmlNode optionNode(String id, String value) {
+        return XmlNode.newBuilder()
+                .name("option")
+                .children(List.of(
+                        XmlNode.newInstance("id", id),
+                        XmlNode.newInstance("value", value)))
+                .build();
     }
 }
