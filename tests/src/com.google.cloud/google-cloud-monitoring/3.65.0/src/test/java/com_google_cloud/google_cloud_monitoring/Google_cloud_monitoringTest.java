@@ -11,12 +11,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.api.Metric;
 import com.google.api.MetricDescriptor;
 import com.google.api.MonitoredResource;
+import com.google.api.MonitoredResourceDescriptor;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.grpc.GrpcCallContext;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedListDescriptor;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.monitoring.v3.AlertPolicyServiceClient;
 import com.google.cloud.monitoring.v3.AlertPolicyServiceSettings;
@@ -68,6 +72,12 @@ import com.google.monitoring.v3.GetServiceRequest;
 import com.google.monitoring.v3.GetSnoozeRequest;
 import com.google.monitoring.v3.GetUptimeCheckConfigRequest;
 import com.google.monitoring.v3.Group;
+import com.google.monitoring.v3.ListMetricDescriptorsRequest;
+import com.google.monitoring.v3.ListMetricDescriptorsResponse;
+import com.google.monitoring.v3.ListMonitoredResourceDescriptorsRequest;
+import com.google.monitoring.v3.ListMonitoredResourceDescriptorsResponse;
+import com.google.monitoring.v3.ListTimeSeriesRequest;
+import com.google.monitoring.v3.ListTimeSeriesResponse;
 import com.google.monitoring.v3.ListUptimeCheckIpsRequest;
 import com.google.monitoring.v3.ListUptimeCheckIpsResponse;
 import com.google.monitoring.v3.NotificationChannel;
@@ -96,6 +106,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 public class Google_cloud_monitoringTest {
@@ -204,6 +216,37 @@ public class Google_cloud_monitoringTest {
         }
 
         assertThat(stub.closed).isTrue();
+    }
+
+    @Test
+    void metricServiceClientIteratesPagedMetricListResponses() {
+        FakeMetricServiceStub stub = new FakeMetricServiceStub();
+        MetricDescriptor descriptor = metricDescriptor();
+        MonitoredResourceDescriptor resourceDescriptor = monitoredResourceDescriptor();
+        TimeSeries timeSeries = timeSeries();
+        TimeInterval interval = TimeInterval.newBuilder()
+                .setStartTime(Timestamp.newBuilder().setSeconds(10).build())
+                .setEndTime(Timestamp.newBuilder().setSeconds(20).build())
+                .build();
+        String filter = "metric.type = \"" + METRIC_TYPE + "\"";
+
+        try (MetricServiceClient client = MetricServiceClient.create(stub)) {
+            assertThat(client.listMetricDescriptors(PROJECT_NAME).iterateAll()).containsExactly(descriptor);
+            assertThat(stub.listMetricDescriptors.getLastRequest().getName()).isEqualTo(PROJECT_NAME);
+
+            assertThat(client.listMonitoredResourceDescriptors(ProjectName.of(PROJECT_ID)).iterateAll())
+                    .containsExactly(resourceDescriptor);
+            assertThat(stub.listMonitoredResourceDescriptors.getLastRequest().getName()).isEqualTo(PROJECT_NAME);
+
+            assertThat(client.listTimeSeries(PROJECT_NAME, filter, interval, ListTimeSeriesRequest.TimeSeriesView.FULL)
+                            .iterateAll())
+                    .containsExactly(timeSeries);
+            ListTimeSeriesRequest listTimeSeriesRequest = stub.listTimeSeries.getLastRequest();
+            assertThat(listTimeSeriesRequest.getName()).isEqualTo(PROJECT_NAME);
+            assertThat(listTimeSeriesRequest.getFilter()).isEqualTo(filter);
+            assertThat(listTimeSeriesRequest.getInterval()).isEqualTo(interval);
+            assertThat(listTimeSeriesRequest.getView()).isEqualTo(ListTimeSeriesRequest.TimeSeriesView.FULL);
+        }
     }
 
     @Test
@@ -390,6 +433,14 @@ public class Google_cloud_monitoringTest {
                 .build();
     }
 
+    private static MonitoredResourceDescriptor monitoredResourceDescriptor() {
+        return MonitoredResourceDescriptor.newBuilder()
+                .setName(PROJECT_NAME + "/monitoredResourceDescriptors/global")
+                .setType("global")
+                .setDisplayName("Global")
+                .build();
+    }
+
     private static TimeSeries timeSeries() {
         TimeInterval interval = TimeInterval.newBuilder()
                 .setStartTime(Timestamp.newBuilder().setSeconds(1).build())
@@ -408,6 +459,38 @@ public class Google_cloud_monitoringTest {
                 .build();
     }
 
+    private static PagedListDescriptor<ListMonitoredResourceDescriptorsRequest,
+                    ListMonitoredResourceDescriptorsResponse,
+                    MonitoredResourceDescriptor>
+            monitoredResourceDescriptorsPageDescriptor() {
+        return new SimplePagedListDescriptor<>(
+                (request, token) -> request.toBuilder().setPageToken(token).build(),
+                (request, pageSize) -> request.toBuilder().setPageSize(pageSize).build(),
+                ListMonitoredResourceDescriptorsRequest::getPageSize,
+                ListMonitoredResourceDescriptorsResponse::getNextPageToken,
+                ListMonitoredResourceDescriptorsResponse::getResourceDescriptorsList);
+    }
+
+    private static PagedListDescriptor<ListMetricDescriptorsRequest, ListMetricDescriptorsResponse, MetricDescriptor>
+            metricDescriptorsPageDescriptor() {
+        return new SimplePagedListDescriptor<>(
+                (request, token) -> request.toBuilder().setPageToken(token).build(),
+                (request, pageSize) -> request.toBuilder().setPageSize(pageSize).build(),
+                ListMetricDescriptorsRequest::getPageSize,
+                ListMetricDescriptorsResponse::getNextPageToken,
+                ListMetricDescriptorsResponse::getMetricDescriptorsList);
+    }
+
+    private static PagedListDescriptor<ListTimeSeriesRequest, ListTimeSeriesResponse, TimeSeries>
+            timeSeriesPageDescriptor() {
+        return new SimplePagedListDescriptor<>(
+                (request, token) -> request.toBuilder().setPageToken(token).build(),
+                (request, pageSize) -> request.toBuilder().setPageSize(pageSize).build(),
+                ListTimeSeriesRequest::getPageSize,
+                ListTimeSeriesResponse::getNextPageToken,
+                ListTimeSeriesResponse::getTimeSeriesList);
+    }
+
     private static final class CapturingUnaryCallable<RequestT, ResponseT> extends UnaryCallable<RequestT, ResponseT> {
         private final ResponseT response;
         private RequestT lastRequest;
@@ -424,6 +507,93 @@ public class Google_cloud_monitoringTest {
 
         private RequestT getLastRequest() {
             return lastRequest;
+        }
+    }
+
+    @FunctionalInterface
+    private interface PagedResponseFactory<RequestT, ResponseT, ResourceT, PagedResponseT> {
+        ApiFuture<PagedResponseT> create(
+                PageContext<RequestT, ResponseT, ResourceT> pageContext, ApiFuture<ResponseT> responseFuture);
+    }
+
+    private static final class CapturingPagedCallable<RequestT, ResponseT, ResourceT, PagedResponseT>
+            extends UnaryCallable<RequestT, PagedResponseT> {
+        private final CapturingUnaryCallable<RequestT, ResponseT> responseCallable;
+        private final PagedListDescriptor<RequestT, ResponseT, ResourceT> pageDescriptor;
+        private final PagedResponseFactory<RequestT, ResponseT, ResourceT, PagedResponseT> responseFactory;
+
+        private CapturingPagedCallable(
+                ResponseT response,
+                PagedListDescriptor<RequestT, ResponseT, ResourceT> pageDescriptor,
+                PagedResponseFactory<RequestT, ResponseT, ResourceT, PagedResponseT> responseFactory) {
+            this.responseCallable = new CapturingUnaryCallable<>(response);
+            this.pageDescriptor = pageDescriptor;
+            this.responseFactory = responseFactory;
+        }
+
+        @Override
+        public ApiFuture<PagedResponseT> futureCall(RequestT request, ApiCallContext context) {
+            ApiCallContext callContext = context == null ? GrpcCallContext.createDefault() : context;
+            ApiFuture<ResponseT> responseFuture = responseCallable.futureCall(request, callContext);
+            PageContext<RequestT, ResponseT, ResourceT> pageContext =
+                    PageContext.create(responseCallable, pageDescriptor, request, callContext);
+            return responseFactory.create(pageContext, responseFuture);
+        }
+
+        private RequestT getLastRequest() {
+            return responseCallable.getLastRequest();
+        }
+    }
+
+    private static final class SimplePagedListDescriptor<RequestT, ResponseT, ResourceT>
+            implements PagedListDescriptor<RequestT, ResponseT, ResourceT> {
+        private final BiFunction<RequestT, String, RequestT> tokenInjector;
+        private final BiFunction<RequestT, Integer, RequestT> pageSizeInjector;
+        private final Function<RequestT, Integer> pageSizeExtractor;
+        private final Function<ResponseT, String> nextTokenExtractor;
+        private final Function<ResponseT, Iterable<ResourceT>> resourcesExtractor;
+
+        private SimplePagedListDescriptor(
+                BiFunction<RequestT, String, RequestT> tokenInjector,
+                BiFunction<RequestT, Integer, RequestT> pageSizeInjector,
+                Function<RequestT, Integer> pageSizeExtractor,
+                Function<ResponseT, String> nextTokenExtractor,
+                Function<ResponseT, Iterable<ResourceT>> resourcesExtractor) {
+            this.tokenInjector = tokenInjector;
+            this.pageSizeInjector = pageSizeInjector;
+            this.pageSizeExtractor = pageSizeExtractor;
+            this.nextTokenExtractor = nextTokenExtractor;
+            this.resourcesExtractor = resourcesExtractor;
+        }
+
+        @Override
+        public String emptyToken() {
+            return "";
+        }
+
+        @Override
+        public RequestT injectToken(RequestT request, String token) {
+            return tokenInjector.apply(request, token);
+        }
+
+        @Override
+        public RequestT injectPageSize(RequestT request, int pageSize) {
+            return pageSizeInjector.apply(request, pageSize);
+        }
+
+        @Override
+        public Integer extractPageSize(RequestT request) {
+            return pageSizeExtractor.apply(request);
+        }
+
+        @Override
+        public String extractNextToken(ResponseT response) {
+            return nextTokenExtractor.apply(response);
+        }
+
+        @Override
+        public Iterable<ResourceT> extractResources(ResponseT response) {
+            return resourcesExtractor.apply(response);
         }
     }
 
@@ -453,17 +623,56 @@ public class Google_cloud_monitoringTest {
     }
 
     private static final class FakeMetricServiceStub extends MetricServiceStub implements ImmediateBackgroundResource {
+        private final CapturingPagedCallable<ListMonitoredResourceDescriptorsRequest,
+                        ListMonitoredResourceDescriptorsResponse,
+                        MonitoredResourceDescriptor,
+                        MetricServiceClient.ListMonitoredResourceDescriptorsPagedResponse> listMonitoredResourceDescriptors =
+                new CapturingPagedCallable<>(
+                        ListMonitoredResourceDescriptorsResponse.newBuilder()
+                                .addResourceDescriptors(monitoredResourceDescriptor())
+                                .build(),
+                        monitoredResourceDescriptorsPageDescriptor(),
+                        MetricServiceClient.ListMonitoredResourceDescriptorsPagedResponse::createAsync);
+        private final CapturingPagedCallable<ListMetricDescriptorsRequest,
+                        ListMetricDescriptorsResponse,
+                        MetricDescriptor,
+                        MetricServiceClient.ListMetricDescriptorsPagedResponse> listMetricDescriptors =
+                new CapturingPagedCallable<>(
+                        ListMetricDescriptorsResponse.newBuilder().addMetricDescriptors(metricDescriptor()).build(),
+                        metricDescriptorsPageDescriptor(),
+                        MetricServiceClient.ListMetricDescriptorsPagedResponse::createAsync);
         private final CapturingUnaryCallable<GetMetricDescriptorRequest, MetricDescriptor> getMetricDescriptor =
                 new CapturingUnaryCallable<>(metricDescriptor());
         private final CapturingUnaryCallable<CreateMetricDescriptorRequest, MetricDescriptor> createMetricDescriptor =
                 new CapturingUnaryCallable<>(metricDescriptor());
         private final CapturingUnaryCallable<DeleteMetricDescriptorRequest, Empty> deleteMetricDescriptor =
                 new CapturingUnaryCallable<>(Empty.getDefaultInstance());
+        private final CapturingPagedCallable<ListTimeSeriesRequest,
+                        ListTimeSeriesResponse,
+                        TimeSeries,
+                        MetricServiceClient.ListTimeSeriesPagedResponse> listTimeSeries =
+                new CapturingPagedCallable<>(
+                        ListTimeSeriesResponse.newBuilder().addTimeSeries(timeSeries()).build(),
+                        timeSeriesPageDescriptor(),
+                        MetricServiceClient.ListTimeSeriesPagedResponse::createAsync);
         private final CapturingUnaryCallable<CreateTimeSeriesRequest, Empty> createTimeSeries =
                 new CapturingUnaryCallable<>(Empty.getDefaultInstance());
         private final CapturingUnaryCallable<CreateTimeSeriesRequest, Empty> createServiceTimeSeries =
                 new CapturingUnaryCallable<>(Empty.getDefaultInstance());
         private boolean closed;
+
+        @Override
+        public UnaryCallable<ListMonitoredResourceDescriptorsRequest,
+                        MetricServiceClient.ListMonitoredResourceDescriptorsPagedResponse>
+                listMonitoredResourceDescriptorsPagedCallable() {
+            return listMonitoredResourceDescriptors;
+        }
+
+        @Override
+        public UnaryCallable<ListMetricDescriptorsRequest, MetricServiceClient.ListMetricDescriptorsPagedResponse>
+                listMetricDescriptorsPagedCallable() {
+            return listMetricDescriptors;
+        }
 
         @Override
         public UnaryCallable<GetMetricDescriptorRequest, MetricDescriptor> getMetricDescriptorCallable() {
@@ -478,6 +687,12 @@ public class Google_cloud_monitoringTest {
         @Override
         public UnaryCallable<DeleteMetricDescriptorRequest, Empty> deleteMetricDescriptorCallable() {
             return deleteMetricDescriptor;
+        }
+
+        @Override
+        public UnaryCallable<ListTimeSeriesRequest, MetricServiceClient.ListTimeSeriesPagedResponse>
+                listTimeSeriesPagedCallable() {
+            return listTimeSeries;
         }
 
         @Override
