@@ -214,6 +214,23 @@ public class Auto_commonTest {
     }
 
     @Test
+    void basicAnnotationProcessorRevisitsDeferredElementsInLaterRounds() throws IOException {
+        DeferringBasicProcessor processor = new DeferringBasicProcessor();
+        compile("test.Subject", """
+                package test;
+
+                import java.lang.annotation.ElementType;
+                import java.lang.annotation.Target;
+
+                @Target(ElementType.TYPE)
+                @interface Deferred {}
+
+                @Deferred
+                final class Subject {}
+                """, processor);
+    }
+
+    @Test
     void immutableCollectorsProduceExpectedGuavaCollectionTypes() {
         ImmutableList<String> list = Arrays.stream(new String[] {"alpha", "beta"})
                 .collect(MoreStreams.toImmutableList());
@@ -411,6 +428,9 @@ public class Auto_commonTest {
         if (processor instanceof TrackingBasicProcessor) {
             return "basic";
         }
+        if (processor instanceof DeferringBasicProcessor) {
+            return "deferring-basic";
+        }
         throw new AssertionError("Unknown processor: " + processor.getClass().getName());
     }
 
@@ -421,6 +441,7 @@ public class Auto_commonTest {
             case "type" -> new TypeModelProcessor();
             case "generated" -> new GeneratedAnnotationProcessor();
             case "basic" -> new TrackingBasicProcessor();
+            case "deferring-basic" -> new DeferringBasicProcessor();
             default -> throw new AssertionError("Unknown processor kind: " + processorKind);
         };
     }
@@ -757,6 +778,89 @@ public class Auto_commonTest {
             } else {
                 normalRoundCount++;
             }
+        }
+    }
+
+    private static final class DeferringBasicProcessor extends BasicAnnotationProcessor {
+        private final List<String> processedTypes = new ArrayList<>();
+        private boolean generatedSource;
+        private boolean deferredSubjectOnce;
+        private int postProcessCount;
+
+        @Override
+        public SourceVersion getSupportedSourceVersion() {
+            return SourceVersion.latestSupported();
+        }
+
+        @Override
+        protected Iterable<? extends Step> steps() {
+            return List.of(new Step() {
+                @Override
+                public Set<String> annotations() {
+                    return Set.of("test.Deferred");
+                }
+
+                @Override
+                public Set<? extends Element> process(ImmutableSetMultimap<String, Element> elementsByAnnotation) {
+                    ImmutableSet<Element> elements = elementsByAnnotation.get("test.Deferred");
+                    assertThat(elements).isNotEmpty();
+                    if (!generatedSource) {
+                        generateAnnotatedSource();
+                        generatedSource = true;
+                    }
+                    if (!deferredSubjectOnce) {
+                        Element subject = elements.stream()
+                                .filter(element -> qualifiedNameOf(element).equals("test.Subject"))
+                                .findFirst()
+                                .orElseThrow(() -> new AssertionError("Missing deferred subject"));
+                        deferredSubjectOnce = true;
+                        return Set.of(subject);
+                    }
+                    elements.stream()
+                            .map(DeferringBasicProcessor::qualifiedNameOf)
+                            .forEach(processedTypes::add);
+                    return Set.of();
+                }
+            });
+        }
+
+        @Override
+        protected void postProcess() {
+            postProcessCount++;
+        }
+
+        @Override
+        protected void postRound(RoundEnvironment roundEnv) {
+            super.postRound(roundEnv);
+            if (roundEnv.processingOver()) {
+                assertThat(generatedSource).isTrue();
+                assertThat(deferredSubjectOnce).isTrue();
+                assertThat(postProcessCount).isGreaterThanOrEqualTo(2);
+                assertThat(processedTypes).containsExactlyInAnyOrder("test.Subject", "test.Generated");
+            }
+        }
+
+        private void generateAnnotatedSource() {
+            try {
+                JavaFileObject generated = processingEnv.getFiler().createSourceFile("test.Generated");
+                try (var writer = generated.openWriter()) {
+                    writer.write("""
+                            package test;
+
+                            @Deferred
+                            final class Generated {}
+                            """);
+                }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        private static String qualifiedNameOf(Element element) {
+            if (element instanceof TypeElement) {
+                return ((TypeElement) element).getQualifiedName().toString();
+            }
+            return element.getSimpleName().toString();
         }
     }
 
