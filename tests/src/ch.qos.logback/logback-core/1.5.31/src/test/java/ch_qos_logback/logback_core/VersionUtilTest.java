@@ -22,21 +22,37 @@ public class VersionUtilTest {
     private static final String TEST_DEPENDENCY_VERSION = "4.5.6-test";
 
     @Test
-    void readsArtifactVersionFromClassRelativeProperties() {
-        String version = VersionUtil.getArtifactVersionBySelfDeclaredProperties(
-                VersionUtilTest.class,
-                TEST_MODULE_NAME
+    void reportsVersionMismatchWithWarning() {
+        ContextBase context = new ContextBase();
+
+        VersionUtil.checkForVersionEquality(
+                context,
+                TEST_MODULE_VERSION,
+                TEST_DEPENDENCY_VERSION,
+                TEST_MODULE_NAME,
+                TEST_DEPENDENCY_NAME
         );
 
-        assertThat(version).isEqualTo(TEST_MODULE_VERSION);
+        List<Status> statuses = context.getStatusManager().getCopyOfStatusList();
+        assertThat(statuses).extracting(Status::getMessage).containsExactly(
+                "Found " + TEST_MODULE_NAME + " version " + TEST_MODULE_VERSION,
+                "Found " + TEST_DEPENDENCY_NAME + " version " + TEST_DEPENDENCY_VERSION,
+                "Versions of " + TEST_DEPENDENCY_NAME + " and " + TEST_MODULE_VERSION
+                        + " are different or unknown."
+        );
+        assertThat(statuses).extracting(Status::getLevel).containsExactly(
+                Status.INFO,
+                Status.INFO,
+                Status.WARN
+        );
     }
 
     @Test
-    void comparesExpectedDependencyVersionFromClassLoaderProperties() {
+    void comparesExpectedDependencyVersion() {
         ContextBase context = new ContextBase();
+        TestVersionUtil versionUtil = new TestVersionUtil(context);
 
-        VersionUtil.compareExpectedAndFoundVersion(
-                context,
+        versionUtil.compareExpectedAndFoundVersion(
                 TEST_DEPENDENCY_VERSION,
                 VersionUtilTest.class,
                 TEST_MODULE_VERSION,
@@ -50,5 +66,21 @@ public class VersionUtilTest {
                 "Found " + TEST_MODULE_NAME + " version " + TEST_MODULE_VERSION
         );
         assertThat(statuses).extracting(Status::getLevel).containsOnly(Status.INFO);
+    }
+
+    private static final class TestVersionUtil extends VersionUtil {
+
+        private TestVersionUtil(ContextBase context) {
+            super(context);
+        }
+
+        @Override
+        protected String getExpectedVersionOfDependencyByProperties(Class<?> dependerClass,
+                String propertiesFileName, String dependencyNameAsKey) {
+            assertThat(dependerClass).isEqualTo(VersionUtilTest.class);
+            assertThat(propertiesFileName).isEqualTo(TEST_MODULE_NAME + "-dependencies.properties");
+            assertThat(dependencyNameAsKey).isEqualTo(TEST_DEPENDENCY_NAME);
+            return TEST_DEPENDENCY_VERSION;
+        }
     }
 }
