@@ -92,9 +92,9 @@ class Twirl_api_3Test {
     val template: BaseScalaTemplate[Html, Format[Html]] = new BaseScalaTemplate[Html, Format[Html]](HtmlFormat)
     val htmlClassTag: ClassTag[Html] = summon[ClassTag[Html]]
 
-    assertSame(HtmlFormat, template.format)
+    assertSame(HtmlFormat, template.`$twirl__format`)
     assertEquals(1, template.productArity)
-    assertEquals("format", template.productElementName(0))
+    assertEquals("$twirl__format", template.productElementName(0))
     assertSame(HtmlFormat, template.productElement(0))
     assertThrows(classOf[IndexOutOfBoundsException], () => template.productElement(1))
 
