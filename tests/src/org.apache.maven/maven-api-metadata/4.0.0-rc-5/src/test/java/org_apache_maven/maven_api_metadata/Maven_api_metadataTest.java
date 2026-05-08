@@ -331,6 +331,75 @@ public class Maven_api_metadataTest {
     }
 
     @Test
+    void collectionWithMethodsDefensivelyCopyInputsAndExposeImmutableLists() {
+        Plugin cleanPlugin = Plugin.newBuilder()
+                .name("Maven Clean Plugin")
+                .prefix("clean")
+                .artifactId("maven-clean-plugin")
+                .build();
+        Plugin sitePlugin = Plugin.newBuilder()
+                .name("Maven Site Plugin")
+                .prefix("site")
+                .artifactId("maven-site-plugin")
+                .build();
+        Plugin deployPlugin = Plugin.newBuilder()
+                .name("Maven Deploy Plugin")
+                .prefix("deploy")
+                .artifactId("maven-deploy-plugin")
+                .build();
+        Metadata metadata = Metadata.newBuilder()
+                .plugins(List.of(cleanPlugin))
+                .build();
+        List<Plugin> replacementPlugins = new ArrayList<>(List.of(sitePlugin));
+
+        Metadata updatedMetadata = metadata.withPlugins(replacementPlugins);
+        replacementPlugins.add(deployPlugin);
+
+        assertThat(metadata.getPlugins()).containsExactly(cleanPlugin);
+        assertThat(updatedMetadata.getPlugins()).containsExactly(sitePlugin);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> updatedMetadata.getPlugins().add(deployPlugin));
+
+        SnapshotVersion jarSnapshot = SnapshotVersion.newBuilder()
+                .extension("jar")
+                .version("1.0-20240508.120000-1")
+                .updated("20240508120000")
+                .build();
+        SnapshotVersion pomSnapshot = SnapshotVersion.newBuilder()
+                .extension("pom")
+                .version("1.0-20240508.120000-1")
+                .updated("20240508120000")
+                .build();
+        SnapshotVersion sourcesSnapshot = SnapshotVersion.newBuilder()
+                .classifier("sources")
+                .extension("jar")
+                .version("1.0-20240508.120000-1")
+                .updated("20240508120000")
+                .build();
+        Versioning versioning = Versioning.newBuilder()
+                .versions(List.of("1.0"))
+                .snapshotVersions(List.of(jarSnapshot))
+                .build();
+        List<String> replacementVersions = new ArrayList<>(List.of("1.1"));
+        List<SnapshotVersion> replacementSnapshotVersions = new ArrayList<>(List.of(pomSnapshot));
+
+        Versioning updatedVersioning = versioning
+                .withVersions(replacementVersions)
+                .withSnapshotVersions(replacementSnapshotVersions);
+        replacementVersions.add("1.2");
+        replacementSnapshotVersions.add(sourcesSnapshot);
+
+        assertThat(versioning.getVersions()).containsExactly("1.0");
+        assertThat(versioning.getSnapshotVersions()).containsExactly(jarSnapshot);
+        assertThat(updatedVersioning.getVersions()).containsExactly("1.1");
+        assertThat(updatedVersioning.getSnapshotVersions()).containsExactly(pomSnapshot);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> updatedVersioning.getVersions().add("2.0"));
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> updatedVersioning.getSnapshotVersions().add(sourcesSnapshot));
+    }
+
+    @Test
     void snapshotVersionUsesValueEquality() {
         SnapshotVersion first = SnapshotVersion.newBuilder()
                 .classifier("sources")
