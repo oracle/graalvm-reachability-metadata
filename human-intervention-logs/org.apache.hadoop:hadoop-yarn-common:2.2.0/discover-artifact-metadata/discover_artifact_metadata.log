@@ -1,0 +1,1158 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0998-5649-7b22-a185-9577754b9ffb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.hadoop:hadoop-yarn-common:2.2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.2.0" when "$version$" is replaced with "2.2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+- Set "coordinates" to "org.apache.hadoop:hadoop-yarn-common:2.2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s published Maven contents and the project’s URL patterns, then update the JSON in place with the version token preserved.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.hadoop|hadoop-yarn-common' | head -50" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|hadoop' metadata build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json:2:  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:7:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-sources.jar",
+
+web search: 
+web search: Maven Central org.apache.hadoop hadoop-yarn-common 2.2.0 sources javadoc tests
+web search: 
+web search: https://hadoop.apache.org/release/2.2.0.html
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0 hadoop-yarn-common-2.2.0-sources.jar
+codex
+The existing file only has coordinates. I found the Hadoop 2.2.0 release page and the tagged GitHub tree; next I’m checking the Maven Central directory directly because this repo prefers Maven-hosted source, tests, and javadocs when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0/hadoop-yarn-common-2.2.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>hadoop-yarn</artifactId>
+    <groupId>org.apache.hadoop</groupId>
+    <version>2.2.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.hadoop</groupId>
+  <artifactId>hadoop-yarn-common</artifactId>
+  <version>2.2.0</version>
+  <name>hadoop-yarn-common</name>
+
+  <properties>
+    <!-- Needed for generating FindBugs warnings using parent pom -->
+    <yarn.basedir>${project.parent.basedir}</yarn.basedir>
+  </properties>
+
+  <dependencies>
+  <dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+   </dependency>
+   
+  <dependency>
+    <groupId>org.apache.hadoop</groupId>
+    <artifactId>hadoop-yarn-api</artifactId>
+  </dependency>
+  </dependencies>
+
+  <build>
+    <!--
+    Include all files in src/main/resources.  By default, do not apply property
+    substitution (filtering=false), but do apply property substitution to
+    yarn-version-info.properties (filtering=true).  This will substitute the
+    version information correctly, but prevent Maven from altering other files
+    like yarn-default.xml.
+    -->
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <excludes>
+          <exclude>yarn-version-info.properties</exclude>
+        </excludes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>yarn-version-info.properties</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+     <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>src/main/resources/webapps/mapreduce/.keep</exclude>
+            <exclude>src/main/resources/webapps/jobhistory/.keep</exclude>
+            <exclude>src/main/resources/webapps/yarn/.keep</exclude>
+            <exclude>src/main/resources/webapps/cluster/.keep</exclude>
+            <exclude>src/main/resources/webapps/test/.keep</exclude>
+            <exclude>src/main/resources/webapps/proxy/.keep</exclude>
+            <exclude>src/main/resources/webapps/node/.keep</exclude>
+            <exclude>src/main/resources/webapps/static/dt-1.9.4/css/jui-dt.css</exclude>
+            <exclude>src/main/resources/webapps/static/dt-1.9.4/css/demo_table.css</exclude>
+            <exclude>src/main/resources/webapps/static/jquery/themes-1.9.1/base/jquery-ui.css</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-maven-plugins</artifactId>
+        <executions>
+          <execution>
+            <id>version-info</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>version-info</goal>
+            </goals>
+            <configuration>
+              <source>
+                <directory>${basedir}/src/main</directory>
+                <includes>
+                  <include>java/**/*.java</include>
+                  <include>proto/**/*.proto</include>
+                </includes>
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+     
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy file="src/main/resources/yarn-default.xml" todir="src/site/resources"/>
+                <copy file="src/main/xsl/configuration.xsl" todir="src/site/resources"/>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0/hadoop-yarn-common-2.2.0-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0/hadoop-yarn-common-2.2.0-test-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0/hadoop-yarn-common-2.2.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 269ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/hadoop/hadoop-yarn-common/2.2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/hadoop/hadoop-yarn-common/2.2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hadoop-yarn-common-2.2.0-javadoc.jar" title="hadoop-yarn-common-2.2.0-javadoc.jar">hadoop-yarn-common-2.2.0-javadoc.jar</a>              2013-10-07 06:35   6749818      
+<a href="hadoop-yarn-common-2.2.0-javadoc.jar.asc" title="hadoop-yarn-common-2.2.0-javadoc.jar.asc">hadoop-yarn-common-2.2.0-javadoc.jar.asc</a>          2013-10-07 06:35       836      
+<a href="hadoop-yarn-common-2.2.0-javadoc.jar.asc.md5" title="hadoop-yarn-common-2.2.0-javadoc.jar.asc.md5">hadoop-yarn-common-2.2.0-javadoc.jar.asc.md5</a>      2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-javadoc.jar.asc.sha1" title="hadoop-yarn-common-2.2.0-javadoc.jar.asc.sha1">hadoop-yarn-common-2.2.0-javadoc.jar.asc.sha1</a>     2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-javadoc.jar.md5" title="hadoop-yarn-common-2.2.0-javadoc.jar.md5">hadoop-yarn-common-2.2.0-javadoc.jar.md5</a>          2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-javadoc.jar.sha1" title="hadoop-yarn-common-2.2.0-javadoc.jar.sha1">hadoop-yarn-common-2.2.0-javadoc.jar.sha1</a>         2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-sources.jar" title="hadoop-yarn-common-2.2.0-sources.jar">hadoop-yarn-common-2.2.0-sources.jar</a>              2013-10-07 06:35    634761      
+<a href="hadoop-yarn-common-2.2.0-sources.jar.asc" title="hadoop-yarn-common-2.2.0-sources.jar.asc">hadoop-yarn-common-2.2.0-sources.jar.asc</a>          2013-10-07 06:35       836      
+<a href="hadoop-yarn-common-2.2.0-sources.jar.asc.md5" title="hadoop-yarn-common-2.2.0-sources.jar.asc.md5">hadoop-yarn-common-2.2.0-sources.jar.asc.md5</a>      2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-sources.jar.asc.sha1" title="hadoop-yarn-common-2.2.0-sources.jar.asc.sha1">hadoop-yarn-common-2.2.0-sources.jar.asc.sha1</a>     2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-sources.jar.md5" title="hadoop-yarn-common-2.2.0-sources.jar.md5">hadoop-yarn-common-2.2.0-sources.jar.md5</a>          2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-sources.jar.sha1" title="hadoop-yarn-common-2.2.0-sources.jar.sha1">hadoop-yarn-common-2.2.0-sources.jar.sha1</a>         2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-test-sources.jar" title="hadoop-yarn-common-2.2.0-test-sources.jar">hadoop-yarn-common-2.2.0-test-sources.jar</a>         2013-10-07 06:35     79719      
+<a href="hadoop-yarn-common-2.2.0-test-sources.jar.asc" title="hadoop-yarn-common-2.2.0-test-sources.jar.asc">hadoop-yarn-common-2.2.0-test-sources.jar.asc</a>     2013-10-07 06:35       836      
+<a href="hadoop-yarn-common-2.2.0-test-sources.jar.asc.md5" title="hadoop-yarn-common-2.2.0-test-sources.jar.asc.md5">hadoop-yarn-common-2.2.0-test-sources.jar.asc...</a>  2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-test-sources.jar.asc.sha1" title="hadoop-yarn-common-2.2.0-test-sources.jar.asc.sha1">hadoop-yarn-common-2.2.0-test-sources.jar.asc...</a>  2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-test-sources.jar.md5" title="hadoop-yarn-common-2.2.0-test-sources.jar.md5">hadoop-yarn-common-2.2.0-test-sources.jar.md5</a>     2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-test-sources.jar.sha1" title="hadoop-yarn-common-2.2.0-test-sources.jar.sha1">hadoop-yarn-common-2.2.0-test-sources.jar.sha...</a>  2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-tests.jar" title="hadoop-yarn-common-2.2.0-tests.jar">hadoop-yarn-common-2.2.0-tests.jar</a>                2013-10-07 06:35    146241      
+<a href="hadoop-yarn-common-2.2.0-tests.jar.asc" title="hadoop-yarn-common-2.2.0-tests.jar.asc">hadoop-yarn-common-2.2.0-tests.jar.asc</a>            2013-10-07 06:35       836      
+<a href="hadoop-yarn-common-2.2.0-tests.jar.asc.md5" title="hadoop-yarn-common-2.2.0-tests.jar.asc.md5">hadoop-yarn-common-2.2.0-tests.jar.asc.md5</a>        2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-tests.jar.asc.sha1" title="hadoop-yarn-common-2.2.0-tests.jar.asc.sha1">hadoop-yarn-common-2.2.0-tests.jar.asc.sha1</a>       2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0-tests.jar.md5" title="hadoop-yarn-common-2.2.0-tests.jar.md5">hadoop-yarn-common-2.2.0-tests.jar.md5</a>            2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0-tests.jar.sha1" title="hadoop-yarn-common-2.2.0-tests.jar.sha1">hadoop-yarn-common-2.2.0-tests.jar.sha1</a>           2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0.jar" title="hadoop-yarn-common-2.2.0.jar">hadoop-yarn-common-2.2.0.jar</a>                      2013-10-07 06:35   1301627      
+<a href="hadoop-yarn-common-2.2.0.jar.asc" title="hadoop-yarn-common-2.2.0.jar.asc">hadoop-yarn-common-2.2.0.jar.asc</a>                  2013-10-07 06:35       836      
+<a href="hadoop-yarn-common-2.2.0.jar.asc.md5" title="hadoop-yarn-common-2.2.0.jar.asc.md5">hadoop-yarn-common-2.2.0.jar.asc.md5</a>              2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0.jar.asc.sha1" title="hadoop-yarn-common-2.2.0.jar.asc.sha1">hadoop-yarn-common-2.2.0.jar.asc.sha1</a>             2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0.jar.md5" title="hadoop-yarn-common-2.2.0.jar.md5">hadoop-yarn-common-2.2.0.jar.md5</a>                  2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0.jar.sha1" title="hadoop-yarn-common-2.2.0.jar.sha1">hadoop-yarn-common-2.2.0.jar.sha1</a>                 2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0.pom" title="hadoop-yarn-common-2.2.0.pom">hadoop-yarn-common-2.2.0.pom</a>                      2013-10-07 06:35      5032      
+<a href="hadoop-yarn-common-2.2.0.pom.asc" title="hadoop-yarn-common-2.2.0.pom.asc">hadoop-yarn-common-2.2.0.pom.asc</a>                  2013-10-07 06:35       836      
+<a href="hadoop-yarn-common-2.2.0.pom.asc.md5" title="hadoop-yarn-common-2.2.0.pom.asc.md5">hadoop-yarn-common-2.2.0.pom.asc.md5</a>              2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0.pom.asc.sha1" title="hadoop-yarn-common-2.2.0.pom.asc.sha1">hadoop-yarn-common-2.2.0.pom.asc.sha1</a>             2013-10-07 06:35        40      
+<a href="hadoop-yarn-common-2.2.0.pom.md5" title="hadoop-yarn-common-2.2.0.pom.md5">hadoop-yarn-common-2.2.0.pom.md5</a>                  2013-10-07 06:35        32      
+<a href="hadoop-yarn-common-2.2.0.pom.sha1" title="hadoop-yarn-common-2.2.0.pom.sha1">hadoop-yarn-common-2.2.0.pom.sha1</a>                 2013-10-07 06:35        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1463ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 21:57:42 GMT
+content-type: application/java-archive
+content-length: 634761
+cf-ray: 9f8bb8bc89a5bb0c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "9edfda3e2c904ab2ec300a1d1e589340"
+last-modified: Mon, 07 Oct 2013 06:35:16 GMT
+x-checksum-md5: 9edfda3e2c904ab2ec300a1d1e589340
+x-checksum-sha1: 3d1fe69566c347cb7692ebbc0d64a2df3cb6f18e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 08 May 2026 21:57:43 GMT
+content-type: application/java-archive
+content-length: 79719
+cf-ray: 9f8bb8be7e36039c-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "84fe30b2c17ade6b80313572d75e1f32"
+last-modified: Mon, 07 Oct 2013 06:35:16 GMT
+x-checksum-md5: 84fe30b2c17ade6b80313572d75e1f32
+x-checksum-sha1: 78851404c36ea06e35968ec46cd5cb6cf246a27b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 08 May 2026 21:57:43 GMT
+content-type: application/java-archive
+content-length: 6749818
+cf-ray: 9f8bb8c219bda285-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3f0d8944debc5266235fb3d49cd88c6e"
+last-modified: Mon, 07 Oct 2013 06:35:16 GMT
+x-checksum-md5: 3f0d8944debc5266235fb3d49cd88c6e
+x-checksum-sha1: ece43f000f852f26f85cd492f89fdc4418a781d6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn/2.2.0/hadoop-yarn-2.2.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-main/2.2.0/hadoop-main-2.2.0.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>|<name>|<description>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0/hadoop-yarn-common-2.2.0.jar -o /tmp/hadoop-yarn-common-2.2.0.jar && jar tf /tmp/hadoop-yarn-common-2.2.0.jar | sed -n '1,40p' && jar tf /tmp/hadoop-yarn-common-2.2.0.jar | rg '\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 125ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.hadoop</groupId>
+    <artifactId>hadoop-project</artifactId>
+    <version>2.2.0</version>
+    <relativePath>../../hadoop-project</relativePath>
+  </parent>
+  <groupId>org.apache.hadoop</groupId>
+  <artifactId>hadoop-yarn</artifactId>
+  <version>2.2.0</version>
+  <packaging>pom</packaging>
+  <name>hadoop-yarn</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <test.logs>true</test.logs>
+    <test.timeout>600000</test.timeout>
+    <yarn.basedir>${basedir}</yarn.basedir>
+    <hadoop.common.build.dir>${basedir}/../../../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-el</groupId>
+          <artifactId>commons-el</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>tomcat</groupId>
+          <artifactId>jasper-runtime</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>tomcat</groupId>
+          <artifactId>jasper-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>jsp-2.1-jetty</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+     <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey.jersey-test-framework</groupId>
+      <artifactId>jersey-test-framework-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey.jersey-test-framework</groupId>
+      <artifactId>jersey-test-framework-grizzly2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey.contribs</groupId>
+      <artifactId>jersey-guice</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+         <configuration>
+          <findbugsXmlOutput>true</findbugsXmlOutput>
+          <xmlOutput>true</xmlOutput>
+          <excludeFilterFile>${yarn.basedir}/dev-support/findbugs-exclude.xml</excludeFilterFile>
+          <effort>Max</effort>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>conf/slaves</exclude>
+            <exclude>conf/container-executor.cfg</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <properties>
+            <property>
+              <name>listener</name>
+              <value>org.apache.hadoop.test.TimedOutTestsListener</value>
+            </property>
+          </properties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <!-- avoid warning about recursion -->
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <modules>
+    <module>hadoop-yarn-api</module>
+    <module>hadoop-yarn-common</module>
+    <module>hadoop-yarn-server</module>
+    <module>hadoop-yarn-applications</module>
+    <module>hadoop-yarn-site</module>
+    <module>hadoop-yarn-client</module>
+  </modules>
+</project>
+
+ succeeded in 122ms:
+20-  <artifactId>hadoop-main</artifactId>
+21-  <version>2.2.0</version>
+22:  <description>Apache Hadoop Main</description>
+23:  <name>Apache Hadoop Main</name>
+24-  <packaging>pom</packaging>
+25-
+--
+38-    <repository>
+39-      <id>${distMgmtStagingId}</id>
+40:      <name>${distMgmtStagingName}</name>
+41:      <url>${distMgmtStagingUrl}</url>
+42-    </repository>
+43-    <snapshotRepository>
+44-      <id>${distMgmtSnapshotsId}</id>
+45:      <name>${distMgmtSnapshotsName}</name>
+46:      <url>${distMgmtSnapshotsUrl}</url>
+47-    </snapshotRepository>
+48-    <site>
+49-      <id>apache.website</id>
+50:      <url>scpexe://people.apache.org/www/hadoop.apache.org/docs/r${project.version}</url>
+51-    </site>
+52-  </distributionManagement>
+--
+55-    <repository>
+56-      <id>${distMgmtSnapshotsId}</id>
+57:      <name>${distMgmtSnapshotsName}</name>
+58:      <url>${distMgmtSnapshotsUrl}</url>
+59-    </repository>
+60-    <repository>
+61-      <id>repository.jboss.org</id>
+62:      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+63-      <snapshots>
+64-        <enabled>false</enabled>
+--
+69-  <licenses>
+70-    <license>
+71:      <name>The Apache Software License, Version 2.0</name>
+72:      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+73-    </license>
+74-  </licenses>
+75-
+76-  <organization>
+77:    <name>Apache Software Foundation</name>
+78:    <url>http://www.apache.org</url>
+79-  </organization>
+80-
+--
+410-        <activeByDefault>false</activeByDefault>
+411-        <property>
+412:          <name>clover</name>
+413-        </property>
+414-      </activation>
+
+ succeeded in 557ms:
+META-INF/
+META-INF/MANIFEST.MF
+webapps/
+webapps/proxy/
+webapps/cluster/
+webapps/node/
+webapps/jobhistory/
+webapps/yarn/
+webapps/mapreduce/
+webapps/test/
+webapps/static/
+webapps/static/jt/
+webapps/static/jquery/
+webapps/static/jquery/themes-1.9.1/
+webapps/static/jquery/themes-1.9.1/base/
+webapps/static/jquery/themes-1.9.1/base/images/
+webapps/static/dt-1.9.4/
+webapps/static/dt-1.9.4/images/
+webapps/static/dt-1.9.4/css/
+webapps/static/dt-1.9.4/js/
+org/
+org/apache/
+org/apache/hadoop/
+org/apache/hadoop/yarn/
+org/apache/hadoop/yarn/factory/
+org/apache/hadoop/yarn/factory/providers/
+org/apache/hadoop/yarn/state/
+org/apache/hadoop/yarn/webapp/
+org/apache/hadoop/yarn/webapp/hamlet/
+org/apache/hadoop/yarn/webapp/view/
+org/apache/hadoop/yarn/webapp/example/
+org/apache/hadoop/yarn/webapp/util/
+org/apache/hadoop/yarn/webapp/log/
+org/apache/hadoop/yarn/client/
+org/apache/hadoop/yarn/security/
+org/apache/hadoop/yarn/security/admin/
+org/apache/hadoop/yarn/security/client/
+org/apache/hadoop/yarn/logaggregation/
+org/apache/hadoop/yarn/util/
+org/apache/hadoop/yarn/util/resource/
+org/apache/hadoop/yarn/factory/providers/RpcFactoryProvider.class
+org/apache/hadoop/yarn/factory/providers/package-info.class
+org/apache/hadoop/yarn/state/Graph.class
+org/apache/hadoop/yarn/state/StateMachineFactory$SingleInternalArc.class
+org/apache/hadoop/yarn/state/StateMachineFactory$ApplicableSingleOrMultipleTransition.class
+org/apache/hadoop/yarn/state/SingleArcTransition.class
+org/apache/hadoop/yarn/state/StateMachineFactory$TransitionsListNode.class
+org/apache/hadoop/yarn/state/StateMachineFactory$ApplicableTransition.class
+org/apache/hadoop/yarn/state/StateMachineFactory.class
+org/apache/hadoop/yarn/state/MultipleArcTransition.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-project/2.2.0/hadoop-project-2.2.0.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>|<name>|<description>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-project-dist/2.2.0/hadoop-project-dist-2.2.0.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>|<name>|<description>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+27-  <artifactId>hadoop-project-dist</artifactId>
+28-  <version>2.2.0</version>
+29:  <description>Apache Hadoop Project Dist POM</description>
+30:  <name>Apache Hadoop Project Dist POM</name>
+31-  <packaging>pom</packaging>
+32-
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-project/2.2.0/hadoop-project-2.2.0.pom | sed -n '1,170p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 108ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.hadoop</groupId>
+    <artifactId>hadoop-main</artifactId>
+    <version>2.2.0</version>
+  </parent>
+  <groupId>org.apache.hadoop</groupId>
+  <artifactId>hadoop-project</artifactId>
+  <version>2.2.0</version>
+  <description>Apache Hadoop Project POM</description>
+  <name>Apache Hadoop Project POM</name>
+  <packaging>pom</packaging>
+
+  <properties>
+    <failIfNoTests>false</failIfNoTests>
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+
+    <test.exclude>_</test.exclude>
+    <test.exclude.pattern>_</test.exclude.pattern>
+
+    <!-- number of threads/forks to use when running tests in parallel, see parallel-tests profile -->
+    <testsThreadCount>4</testsThreadCount>
+
+    <!-- platform encoding override -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- These 2 versions are defined here becuase they are used -->
+    <!-- JDIFF generation from embedded ant in the antrun plugin -->
+    <jdiff.version>1.0.9</jdiff.version>
+
+    <hadoop.assemblies.version>${project.version}</hadoop.assemblies.version>
+
+    <commons-daemon.version>1.0.13</commons-daemon.version>
+
+    <test.build.dir>${project.build.directory}/test-dir</test.build.dir>
+    <test.build.data>${test.build.dir}</test.build.data>
+
+    <!-- Used for building path to native library loaded by tests.  Projects -->
+    <!-- at different nesting levels in the source tree may need to override. -->
+    <hadoop.common.build.dir>${basedir}/../../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
+    <java.security.egd>file:///dev/urandom</java.security.egd>
+
+    <!-- avro version -->
+    <avro.version>1.7.4</avro.version>
+
+    <!-- jersey version -->
+    <jersey.version>1.9</jersey.version>
+
+    <!-- ProtocolBuffer version, used to verify the protoc version and -->
+    <!-- define the protobuf JAR version                               -->
+    <protobuf.version>2.5.0</protobuf.version>
+    <protoc.path>${env.HADOOP_PROTOC_PATH}</protoc.path>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jdiff</groupId>
+        <artifactId>jdiff</artifactId>
+        <version>${jdiff.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-assemblies</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-auth</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-nfs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-hdfs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-hdfs</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-mapreduce-client-app</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-mapreduce-client-app</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-mapreduce-client-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-yarn-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-yarn-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-mapreduce-client-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-mapreduce-client-shuffle</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+
+ succeeded in 138ms:
+26-  <artifactId>hadoop-project</artifactId>
+27-  <version>2.2.0</version>
+28:  <description>Apache Hadoop Project POM</description>
+29:  <name>Apache Hadoop Project POM</name>
+30-  <packaging>pom</packaging>
+31-
+
+exec
+/usr/bin/bash -lc "rg -n 'test-sources\\.jar' metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+metadata/io.vertx/vertx-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-test-sources.jar",
+metadata/com.querydsl/querydsl-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-core/$version$/querydsl-core-$version$-test-sources.jar",
+metadata/com.querydsl/querydsl-jpa/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-jpa/$version$/querydsl-jpa-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-math3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math3/$version$/commons-math3-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/$version$/commons-logging-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:20:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:35:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:52:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:66:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:44:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:72:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:87:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/$version$/kafka-clients-$version$-test-sources.jar",
+metadata/org.apache.kafka/kafka-streams/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/$version$/kafka-streams-$version$-test-sources.jar",
+
+web search: 
+web search: https://github.com/apache/hadoop/tree/release-2.2.0/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common
+web search: 
+web search: Maven Central hadoop-yarn-common 2.2.0 javadoc jar sources test-sources
+web search: 
+web search: Apache Hadoop YARN common hadoop-yarn-common description
+web search: 
+web search: Apache Hadoop source repository github apache/hadoop
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-yarn-common/2.2.0
+codex
+Maven Central has sources, test sources, compiled test jar, and javadocs for this exact artifact/version, so I’m going to use those for the three artifact-specific URLs. The jar contains JVM `.class` files, so I’ll leave the Native Image exclusion fields absent, and Hadoop is Java/JVM rather than Kotlin/Groovy/Scala-specific, so no `language` field is needed.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+index db0357ccd36b44f764a7c66e023790475c284d8d..ea138b3163320fde2f4a58fec27fa750e90ce779
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
++  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
++  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+index db0357ccd36b44f764a7c66e023790475c284d8d..ea138b3163320fde2f4a58fec27fa750e90ce779
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
++  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
++  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.hadoop:hadoop-yarn-common:2.2.0",
+  "repository-url": "https://github.com/apache/hadoop",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
+  "description": "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+index db0357ccd36b44f764a7c66e023790475c284d8d..ea138b3163320fde2f4a58fec27fa750e90ce779
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
++  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
++  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json && sed -n '1,120p' build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+index db0357ccd36b44f764a7c66e023790475c284d8d..ea138b3163320fde2f4a58fec27fa750e90ce779
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
++  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
++  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+ }
+
+ succeeded in 1208ms:
+{
+  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
+  "repository-url" : "https://github.com/apache/hadoop",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
+  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+index db0357ccd36b44f764a7c66e023790475c284d8d..ea138b3163320fde2f4a58fec27fa750e90ce779
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
++  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
++  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+ }
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/2.2.0 hadoop-yarn-common-2.2.0-sources.jar
+web search: 
+web search: 
+web search: 
+web search: "org/apache/hadoop/hadoop-yarn-common/2.2.0" "test-sources"
+web search: 
+web search: https://github.com/apache/hadoop
+codex
+Updated [org.apache.hadoop-hadoop-yarn-common-2.2.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json:1) with the repository, Maven-hosted source/test/javadoc URLs, and a two-sentence description. The artifact is listed as Apache Hadoop YARN Common, and Apache’s 2.2.0 release docs describe YARN as Hadoop’s resource management system. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-yarn-common/2.2.0?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; the published jar contains JVM `.class` files. Validation: `jq .` succeeded.
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+index db0357ccd36b44f764a7c66e023790475c284d8d..ea138b3163320fde2f4a58fec27fa750e90ce779
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0"
++  "coordinates" : "org.apache.hadoop:hadoop-yarn-common:2.2.0",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-common/$version$/hadoop-yarn-common-$version$-javadoc.jar",
++  "description" : "Apache Hadoop YARN Common provides shared Java classes, utilities, configuration resources, and web application support used by Hadoop YARN components. It supports the YARN resource-management layer that allocates cluster resources and helps run distributed Hadoop workloads."
+ }
+
+tokens used
+85,799
+Updated [org.apache.hadoop-hadoop-yarn-common-2.2.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-yarn-common-2.2.0.json:1) with the repository, Maven-hosted source/test/javadoc URLs, and a two-sentence description. The artifact is listed as Apache Hadoop YARN Common, and Apache’s 2.2.0 release docs describe YARN as Hadoop’s resource management system. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-yarn-common/2.2.0?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; the published jar contains JVM `.class` files. Validation: `jq .` succeeded.
+Ran agent for org.apache.hadoop:hadoop-yarn-common:2.2.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/build/agent-artifact-discovery-logs/org.apache.hadoop-hadoop-yarn-common-2.2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2958-d012a3a5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 30s
+9 actionable tasks: 9 executed
