@@ -83,6 +83,7 @@ public class PostgresqlTests {
     void commitAndRollback() throws Exception {
         try (Connection conn = openConnection()) {
             conn.setAutoCommit(false);
+            conn.prepareStatement("DROP TABLE IF EXISTS foo").execute();
             conn.prepareStatement("CREATE TABLE foo (id INT GENERATED ALWAYS AS IDENTITY, name VARCHAR)").execute();
             conn.commit();
         }

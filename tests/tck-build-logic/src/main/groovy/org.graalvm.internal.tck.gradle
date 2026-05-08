@@ -492,6 +492,7 @@ tasks.withType(Test).configureEach {
 tasks.named('test') {
     useJUnitPlatform()
     dependsOn tasks.named("checkTestTimeoutAnnotations")
+    doNotTrackState("The GraalVM native plugin registers transient junit-platform unique-id files under build/test-results/.../testlist.")
 }
 
 tasks.named("nativeTest", NativeRunTask).configure { NativeRunTask task ->
