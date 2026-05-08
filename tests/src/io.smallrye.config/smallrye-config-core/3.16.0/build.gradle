@@ -4,6 +4,8 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+
 plugins {
     id "org.graalvm.internal.tck"
 }
@@ -27,7 +29,9 @@ graalvmNative {
 }
 
 tasks.named("test") {
-    if ((JavaVersion.current().majorVersion as int) < 24) {
-        jvmArgs += ["-Djava.security.manager=allow"]
-    }
+    // SecuritySupport has a privileged SecurityManager branch that is permanently disabled on JDK 24+.
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    })
+    jvmArgs += ["-Djava.security.manager=allow"]
 }
