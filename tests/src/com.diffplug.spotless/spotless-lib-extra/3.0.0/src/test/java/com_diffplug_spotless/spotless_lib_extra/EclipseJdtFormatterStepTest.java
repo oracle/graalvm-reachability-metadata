@@ -39,18 +39,20 @@ public class EclipseJdtFormatterStepTest {
     private static final String JDT_FORMATTER_CLASS = "com/diffplug/spotless/extra/glue/jdt/"
             + "EclipseJdtFormatterStepImpl.class";
     private static final String STUB_JDT_FORMATTER_CLASS = """
-            yv66vgAAADQAGgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClW
+            yv66vgAAADQAHAoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClW
             CAAIAQAuY2xhc3MgRGVtb3t2b2lkIHJ1bigpe1N5c3RlbS5vdXQucHJpbnRsbigxKTt9fQgACgEA
-            RGNsYXNzIERlbW8gewogICAgdm9pZCBydW4oKSB7CiAgICAgICAgU3lzdGVtLm91dC5wcmludGxu
-            KDEpOwogICAgfQp9CgAMAA0HAA4MAA8AEAEAEGphdmEvbGFuZy9TdHJpbmcBAAdyZXBsYWNlAQBE
-            KExqYXZhL2xhbmcvQ2hhclNlcXVlbmNlO0xqYXZhL2xhbmcvQ2hhclNlcXVlbmNlOylMamF2YS9s
-            YW5nL1N0cmluZzsHABIBAEBjb20vZGlmZnBsdWcvc3BvdGxlc3MvZXh0cmEvZ2x1ZS9qZHQvRWNs
-            aXBzZUpkdEZvcm1hdHRlclN0ZXBJbXBsAQAZKExqYXZhL3V0aWwvUHJvcGVydGllczspVgEABENv
-            ZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZmb3JtYXQBADQoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEv
-            aW8vRmlsZTspTGphdmEvbGFuZy9TdHJpbmc7AQAKU291cmNlRmlsZQEAIEVjbGlwc2VKZHRGb3Jt
-            YXR0ZXJTdGVwSW1wbC5qYXZhACEAEQACAAAAAAACAAEABQATAAEAFAAAACEAAQACAAAABSq3AAGx
-            AAAAAQAVAAAACgACAAAABwAEAAgAAQAWABcAAQAUAAAAIQADAAMAAAAJKxIHEgm2AAuwAAAAAQAV
-            AAAABgABAAAACwABABgAAAACABk=
+            RWNsYXNzIERlbW8gewogICAgdm9pZCBydW4oKSB7CiAgICAgICAgU3lzdGVtLm91dC5wcmludGxu
+            KDEpOwogICAgfQp9CgoADAANBwAODAAPABABABBqYXZhL2xhbmcvU3RyaW5nAQAHcmVwbGFjZQEA
+            RChMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTtMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspTGphdmEv
+            bGFuZy9TdHJpbmc7BwASAQBAY29tL2RpZmZwbHVnL3Nwb3RsZXNzL2V4dHJhL2dsdWUvamR0L0Vj
+            bGlwc2VKZHRGb3JtYXR0ZXJTdGVwSW1wbAEAKChMamF2YS91dGlsL1Byb3BlcnRpZXM7TGphdmEv
+            dXRpbC9NYXA7KVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAJU2lnbmF0dXJlAQBOKExqYXZh
+            L3V0aWwvUHJvcGVydGllcztMamF2YS91dGlsL01hcDxMamF2YS9sYW5nL1N0cmluZztMamF2YS9s
+            YW5nL1N0cmluZzs+OylWAQAGZm9ybWF0AQA0KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2lvL0Zp
+            bGU7KUxqYXZhL2xhbmcvU3RyaW5nOwEAClNvdXJjZUZpbGUBACBFY2xpcHNlSmR0Rm9ybWF0dGVy
+            U3RlcEltcGwuamF2YQAhABEAAgAAAAAAAgABAAUAEwACABQAAAAdAAEAAwAAAAUqtwABsQAAAAEA
+            FQAAAAYAAQAAAAgAFgAAAAIAFwABABgAGQABABQAAAAhAAMAAwAAAAkrEgcSCbYAC7AAAAABABUA
+            AAAGAAEAAAALAAEAGgAAAAIAGw==
             """;
     private static final String ECLIPSE_DOWNLOADS = "https://download.eclipse.org/";
 
