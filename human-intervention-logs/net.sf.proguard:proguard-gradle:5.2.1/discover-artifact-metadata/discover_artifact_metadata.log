@@ -1,0 +1,1070 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0832-4898-77f3-b767-05ceb04d217e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.proguard:proguard-gradle:5.2.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.2.1" when "$version$" is replaced with "5.2.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+- Set "coordinates" to "net.sf.proguard:proguard-gradle:5.2.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.2.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/project sources first, then patch only the requested JSON file.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'net.sf.proguard-proguard-gradle-5.2.1.json|proguard'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+exec
+/usr/bin/bash -lc "rg '\"not-for-native-image\"|\"source-code-url\"|\"documentation-url\"|\"language\"' -n build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
+}
+
+ succeeded in 0ms:
+codex
+The target file only has coordinates right now, so this is a straight metadata fill. I’m checking authoritative artifact pages and the tagged project layout before choosing URLs.
+web search: 
+web search: net.sf.proguard proguard-gradle 5.2.1 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.sf.proguard</groupId>
+        <artifactId>proguard-parent</artifactId>
+        <version>5.2.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>proguard-gradle</artifactId>
+    <name>[${project.groupId}] ${project.artifactId}</name>
+
+    <build>
+        <sourceDirectory>../../../src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>proguard/gradle/**</include>
+                    </includes>
+                </configuration>
+            </plugin>   
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>proguard/gradle/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <subpackages>proguard.gradle</subpackages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>proguard-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-core</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-base-services</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-base-services-groovy</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.3.6</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>gradle</id>
+            <url>http://repo.gradle.org/gradle/libs-releases-local/</url>
+        </repository>
+    </repositories>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1-sources.jar -o /tmp/proguard-gradle-5.2.1-sources.jar && jar tf /tmp/proguard-gradle-5.2.1-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1.jar -o /tmp/proguard-gradle-5.2.1.jar && jar tf /tmp/proguard-gradle-5.2.1.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 124ms:
+META-INF/
+META-INF/MANIFEST.MF
+proguard/
+proguard/gradle/
+proguard/gradle/ProGuardTask.java
+
+ succeeded in 118ms:
+META-INF/
+META-INF/MANIFEST.MF
+proguard/
+proguard/gradle/
+proguard/gradle/ProGuardTask.class
+META-INF/maven/
+META-INF/maven/net.sf.proguard/
+META-INF/maven/net.sf.proguard/proguard-gradle/
+META-INF/maven/net.sf.proguard/proguard-gradle/pom.xml
+META-INF/maven/net.sf.proguard/proguard-gradle/pom.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sf/proguard/proguard-gradle/5.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sf/proguard/proguard-gradle/5.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="proguard-gradle-5.2.1-javadoc.jar" title="proguard-gradle-5.2.1-javadoc.jar">proguard-gradle-5.2.1-javadoc.jar</a>                 2015-03-22 21:45     43326      
+<a href="proguard-gradle-5.2.1-javadoc.jar.asc" title="proguard-gradle-5.2.1-javadoc.jar.asc">proguard-gradle-5.2.1-javadoc.jar.asc</a>             2015-03-22 21:45       473      
+<a href="proguard-gradle-5.2.1-javadoc.jar.asc.md5" title="proguard-gradle-5.2.1-javadoc.jar.asc.md5">proguard-gradle-5.2.1-javadoc.jar.asc.md5</a>         2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1-javadoc.jar.asc.sha1" title="proguard-gradle-5.2.1-javadoc.jar.asc.sha1">proguard-gradle-5.2.1-javadoc.jar.asc.sha1</a>        2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1-javadoc.jar.md5" title="proguard-gradle-5.2.1-javadoc.jar.md5">proguard-gradle-5.2.1-javadoc.jar.md5</a>             2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1-javadoc.jar.sha1" title="proguard-gradle-5.2.1-javadoc.jar.sha1">proguard-gradle-5.2.1-javadoc.jar.sha1</a>            2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1-sources.jar" title="proguard-gradle-5.2.1-sources.jar">proguard-gradle-5.2.1-sources.jar</a>                 2015-03-22 21:45      7776      
+<a href="proguard-gradle-5.2.1-sources.jar.asc" title="proguard-gradle-5.2.1-sources.jar.asc">proguard-gradle-5.2.1-sources.jar.asc</a>             2015-03-22 21:45       473      
+<a href="proguard-gradle-5.2.1-sources.jar.asc.md5" title="proguard-gradle-5.2.1-sources.jar.asc.md5">proguard-gradle-5.2.1-sources.jar.asc.md5</a>         2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1-sources.jar.asc.sha1" title="proguard-gradle-5.2.1-sources.jar.asc.sha1">proguard-gradle-5.2.1-sources.jar.asc.sha1</a>        2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1-sources.jar.md5" title="proguard-gradle-5.2.1-sources.jar.md5">proguard-gradle-5.2.1-sources.jar.md5</a>             2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1-sources.jar.sha1" title="proguard-gradle-5.2.1-sources.jar.sha1">proguard-gradle-5.2.1-sources.jar.sha1</a>            2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1.jar" title="proguard-gradle-5.2.1.jar">proguard-gradle-5.2.1.jar</a>                         2015-03-22 21:45     12070      
+<a href="proguard-gradle-5.2.1.jar.asc" title="proguard-gradle-5.2.1.jar.asc">proguard-gradle-5.2.1.jar.asc</a>                     2015-03-22 21:45       473      
+<a href="proguard-gradle-5.2.1.jar.asc.md5" title="proguard-gradle-5.2.1.jar.asc.md5">proguard-gradle-5.2.1.jar.asc.md5</a>                 2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1.jar.asc.sha1" title="proguard-gradle-5.2.1.jar.asc.sha1">proguard-gradle-5.2.1.jar.asc.sha1</a>                2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1.jar.md5" title="proguard-gradle-5.2.1.jar.md5">proguard-gradle-5.2.1.jar.md5</a>                     2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1.jar.sha1" title="proguard-gradle-5.2.1.jar.sha1">proguard-gradle-5.2.1.jar.sha1</a>                    2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1.pom" title="proguard-gradle-5.2.1.pom">proguard-gradle-5.2.1.pom</a>                         2015-03-22 21:45      3192      
+<a href="proguard-gradle-5.2.1.pom.asc" title="proguard-gradle-5.2.1.pom.asc">proguard-gradle-5.2.1.pom.asc</a>                     2015-03-22 21:45       473      
+<a href="proguard-gradle-5.2.1.pom.asc.md5" title="proguard-gradle-5.2.1.pom.asc.md5">proguard-gradle-5.2.1.pom.asc.md5</a>                 2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1.pom.asc.sha1" title="proguard-gradle-5.2.1.pom.asc.sha1">proguard-gradle-5.2.1.pom.asc.sha1</a>                2015-03-22 21:45        40      
+<a href="proguard-gradle-5.2.1.pom.md5" title="proguard-gradle-5.2.1.pom.md5">proguard-gradle-5.2.1.pom.md5</a>                     2015-03-22 21:45        32      
+<a href="proguard-gradle-5.2.1.pom.sha1" title="proguard-gradle-5.2.1.pom.sha1">proguard-gradle-5.2.1.pom.sha1</a>                    2015-03-22 21:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/proguard/proguard-parent/5.2.1/proguard-parent-5.2.1.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.sf.proguard</groupId>
+    <artifactId>proguard-parent</artifactId>
+    <version>5.2.1</version>
+    <packaging>pom</packaging>
+    <name>[${project.groupId}] ${project.artifactId}</name>
+    <description>ProGuard is a free Java class file shrinker, optimizer, obfuscator, and preverifier.</description>
+    <url>http://proguard.sourceforge.net/</url>
+
+    <prerequisites>
+        <maven>3</maven>
+    </prerequisites>
+
+    <developers>
+        <developer>
+            <id>lafortune</id>
+            <name>Eric Lafortune</name>
+            <url>http://www.lafortune.eu/</url>
+            <organization>GuardSquare</organization>
+            <organizationUrl>http://www.guardsquare.com/</organizationUrl>
+            <roles>
+                <role>Project Administrator</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, Version 2</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>SourceForge.net Tracker</system>
+        <url>http://sourceforge.net/p/proguard/bugs/</url>
+    </issueManagement>
+
+    <scm>
+        <url>http://hg.code.sf.net/p/proguard/code</url>
+        <connection>scm:hg:http://hg.code.sf.net/p/proguard/code</connection>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <links>
+                        <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
+                    </links>
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- To keep our project layout simple, we're not following the
+         'one Maven way'. Now Maven is inflicting even more redundant
+         redundancy on us. We're stubborn though. -->
+
+    <modules>
+        <module>base</module>
+        <module>gui</module>
+        <module>ant</module>
+        <module>gradle</module>
+        <module>retrace</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>__wtk_plugin_build__</id>
+            <activation>
+                <file>
+                    <exists>${wtk.home}/wtklib/kenv.zip</exists>
+                </file>
+            </activation>
+            <modules>
+                <module>wtk</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1-javadoc.jar -o /tmp/proguard-gradle-5.2.1-javadoc.jar && jar tf /tmp/proguard-gradle-5.2.1-javadoc.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 370ms:
+META-INF/
+META-INF/MANIFEST.MF
+proguard/
+proguard/gradle/
+proguard/gradle/class-use/
+resources/
+index.html
+allclasses-noframe.html
+help-doc.html
+package-list
+proguard/gradle/package-tree.html
+proguard/gradle/package-summary.html
+proguard/gradle/package-frame.html
+proguard/gradle/package-use.html
+proguard/gradle/ProGuardTask.html
+proguard/gradle/class-use/ProGuardTask.html
+resources/titlebar.gif
+resources/inherit.gif
+resources/titlebar_end.gif
+resources/tab.gif
+resources/background.gif
+allclasses-frame.html
+deprecated-list.html
+constant-values.html
+overview-tree.html
+index-all.html
+stylesheet.css
+
+web search: 
+web search: site:sourceforge.net/p/proguard/code proguard5.2.1 tree
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/default/tree/
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/proguard5.2.1/tree/
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/proguard5.2.1/tree/src
+exec
+/usr/bin/bash -lc "rg 'javadoc.jar|sources.jar|sourceforge.net/p/.*/code/ci/\\"'$version'"\\"'$|test-code-url'"' -n . --glob '*.json' --glob '"'!build/**'"' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+./metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+./metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+./metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+./metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+./metadata/io.getquill/quill-engine_3/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+./metadata/io.getquill/quill-util_3/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.getquill/quill-util_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+./metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+./metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+./metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/net.javacrumbs.json-unit/json-unit-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-sources.jar",
+./metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+./metadata/net.javacrumbs.json-unit/json-unit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+./metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+./metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+./metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+./metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+./metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -n . --glob '*.json' --glob '"'!build/**'"' | head -30" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:24:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:42:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:29:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:44:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/io.getquill/quill-engine_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+./metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+./metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+
+exec
+/usr/bin/bash -lc "find . -path '*artifact-metadata*' -name '*.json' | head -40" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+
+web search: 
+web search: ProGuard 5.2.1 sourceforge repository tests Gradle ProGuardTask
+web search: 
+web search: 
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/default/tree/
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/proguard5.2.1/tree/
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/proguard5.2.1/tree/src
+web search: 
+web search: https://sourceforge.net/p/proguard/code/ci/proguard5.2.1/tree/src/proguard
+exec
+/usr/bin/bash -lc "rg 'sourceforge.net/p/.*/code|hg.code.sf.net|sourceforge.net/projects' -n metadata build/discovered-artifact-metadata --glob '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+metadata/findbugs/annotations/index.json:5:    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/nekohtml/xercesMinimal/index.json:5:    "source-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/",
+metadata/nekohtml/xercesMinimal/index.json:6:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+metadata/nekohtml/xercesMinimal/index.json:7:    "test-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/test/",
+metadata/nekohtml/xercesMinimal/index.json:8:    "documentation-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/doc/index.html",
+metadata/werken-xpath/werken-xpath/index.json:6:    "repository-url" : "https://sourceforge.net/p/werken-xpath/code/",
+metadata/org.jboss.netty/netty/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/org.jboss.netty/netty/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/net.sf.kxml/kxml2/index.json:6:    "repository-url" : "https://sourceforge.net/p/kxml/code/",
+metadata/net.sf.kxml/kxml2/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/kxml/files/kxml2/$version$/kxml2-src-$version$.zip/download",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/$version$/backport-util-concurrent-$version$-src.tar.gz/download",
+metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/$version$/aopalliance.zip/download",
+
+exec
+/usr/bin/bash -lc "rg 'proguard' -n metadata build/discovered-artifact-metadata --glob '*.json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json:2:  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
+metadata/net.sf.proguard/proguard-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-sources.jar",
+metadata/net.sf.proguard/proguard-base/index.json:6:    "repository-url" : "https://github.com/Guardsquare/proguard",
+metadata/net.sf.proguard/proguard-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-javadoc.jar",
+metadata/net.sf.proguard/proguard-base/index.json:30:      "proguard"
+metadata/net.sf.proguard/proguard-base/5.2.1/reachability-metadata.json:5:        "typeReached": "proguard.util.ArrayUtil"
+metadata/net.sf.proguard/proguard-base/5.2.1/reachability-metadata.json:11:        "typeReached": "proguard.util.ArrayUtil"
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/net.sf.proguard/proguard-base/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.2.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-sources.jar",
+    "repository-url" : "https://github.com/Guardsquare/proguard",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-javadoc.jar",
+    "description" : "ProGuard Base provides the core ProGuard engine for shrinking, optimizing, obfuscating, and pre-verifying Java bytecode. It includes the command-line processing logic and class-file manipulation APIs used to analyze and transform Java applications and libraries.",
+    "tested-versions" : [
+      "6.1.0beta1",
+      "6.1.0beta2",
+      "6.3.0beta1",
+      "5.2.1",
+      "5.3",
+      "5.3.1",
+      "5.3.2",
+      "5.3.3",
+      "6.0",
+      "6.0.1",
+      "6.0.2",
+      "6.0.3",
+      "6.1.0",
+      "6.1.1",
+      "6.2.0",
+      "6.2.1",
+      "6.2.2"
+    ],
+    "allowed-packages" : [
+      "proguard"
+    ]
+  }
+]
+
+web search: 
+web search: Guardsquare proguard 5.2.1 GitHub tag
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org net sf proguard proguard-gradle 5.2.1 sources javadoc jar
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/Guardsquare/proguard.git | rg '5\\.2\\.1|v5\\.2|proguard5'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/Guardsquare/proguard.git | head -40' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1-sources.jar -o /tmp/proguard-gradle-source-check.jar && curl -fsSL https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1-javadoc.jar -o /tmp/proguard-gradle-javadoc-check.jar && echo OK' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 417ms:
+0070891e9991f108cc95daffdae04d4d9d4ceecc	refs/tags/proguard5.0
+8e469e84e9da76f6a7af49d9f56b2931e5a267ca	refs/tags/proguard5.1
+369ea646f6fe74b4c0f23f4362befb27e3defa61	refs/tags/proguard5.2
+122df2b12daaee66b125674ee501e21add1008f9	refs/tags/proguard5.2.1
+264af63f5290774cfefb8b3dbdaa1b1231a44a35	refs/tags/proguard5.3
+75e1375a466e7f891e6fd08df7ea45c9216c7892	refs/tags/proguard5.3.1
+b91da6368743992d616f26e7627438839bd6a9ad	refs/tags/proguard5.3.2
+9d4660e53c742fbeebf241a03e9295138c91c623	refs/tags/proguard5.3.3
+
+ succeeded in 343ms:
+OK
+
+ succeeded in 436ms:
+ddcb041b080a373247e7866f6e8cb0b2d7423b3b	refs/heads/349-verifyerror-with-compose-multiplatform-project
+eef1dace2ccd68bc00dc4b5aad9da572c3db44f9	refs/heads/beta
+b464127a348d98ece430237f0f97ca1b2576a34a	refs/heads/master
+0ff5df070c39617145fb6c717e5bf78ae731ca4c	refs/heads/permitted-subclasses-attribute
+a9d5833d24f58be05db64bb3c676c014971e8c17	refs/heads/prop
+e5cf8ddde5f604cf009eb1dcb9d756f39d55c5af	refs/heads/record-attribute
+03a6dc8b51673e0a380d13e10e4023b7cea403da	refs/heads/sealed-fix
+869ce156b1e9a731612aca142e712a0564da3847	refs/heads/sync
+d2170bad636bebc46c138b25098bab875e9b01cf	refs/heads/test-fix
+420a4f598f44598393104af4780796629abe958c	refs/heads/update-manual
+
+codex
+Maven Central has both a sources jar and a javadoc jar for this artifact; the published artifact is a normal JVM jar with `.class` files. I’m checking the tagged upstream repository only to confirm whether a version-matched test suite exists.
+exec
+/usr/bin/bash -lc "rm -rf /tmp/proguard-5.2.1-check && git clone --depth 1 --branch proguard5.2.1 --filter=blob:none https://github.com/Guardsquare/proguard.git /tmp/proguard-5.2.1-check && find /tmp/proguard-5.2.1-check -maxdepth 3 -type d | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 1764ms:
+Note: switching to '122df2b12daaee66b125674ee501e21add1008f9'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Updating files:   0% (2/829)
+Updating files:   1% (9/829)
+Updating files:   2% (17/829)
+Updating files:   3% (25/829)
+Updating files:   4% (34/829)
+Updating files:   5% (42/829)
+Updating files:   6% (50/829)
+Updating files:   7% (59/829)
+Updating files:   8% (67/829)
+Updating files:   9% (75/829)
+Updating files:  10% (83/829)
+Updating files:  11% (92/829)
+Updating files:  12% (100/829)
+Updating files:  13% (108/829)
+Updating files:  14% (117/829)
+Updating files:  15% (125/829)
+Updating files:  16% (133/829)
+Updating files:  17% (141/829)
+Updating files:  18% (150/829)
+Updating files:  19% (158/829)
+Updating files:  20% (166/829)
+Updating files:  21% (175/829)
+Updating files:  22% (183/829)
+Updating files:  23% (191/829)
+Updating files:  24% (199/829)
+Updating files:  25% (208/829)
+Updating files:  26% (216/829)
+Updating files:  27% (224/829)
+Updating files:  28% (233/829)
+Updating files:  29% (241/829)
+Updating files:  30% (249/829)
+Updating files:  31% (257/829)
+Updating files:  32% (266/829)
+Updating files:  33% (274/829)
+Updating files:  34% (282/829)
+Updating files:  35% (291/829)
+Updating files:  36% (299/829)
+Updating files:  37% (307/829)
+Updating files:  38% (316/829)
+Updating files:  39% (324/829)
+Updating files:  40% (332/829)
+Updating files:  41% (340/829)
+Updating files:  42% (349/829)
+Updating files:  43% (357/829)
+Updating files:  44% (365/829)
+Updating files:  45% (374/829)
+Updating files:  46% (382/829)
+Updating files:  47% (390/829)
+Updating files:  48% (398/829)
+Updating files:  49% (407/829)
+Updating files:  50% (415/829)
+Updating files:  51% (423/829)
+Updating files:  52% (432/829)
+Updating files:  53% (440/829)
+Updating files:  54% (448/829)
+Updating files:  55% (456/829)
+Updating files:  56% (465/829)
+Updating files:  57% (473/829)
+Updating files:  58% (481/829)
+Updating files:  59% (490/829)
+Updating files:  60% (498/829)
+Updating files:  61% (506/829)
+Updating files:  62% (514/829)
+Updating files:  63% (523/829)
+Updating files:  64% (531/829)
+Updating files:  65% (539/829)
+Updating files:  66% (548/829)
+Updating files:  67% (556/829)
+Updating files:  68% (564/829)
+Updating files:  69% (573/829)
+Updating files:  70% (581/829)
+Updating files:  71% (589/829)
+Updating files:  72% (597/829)
+Updating files:  73% (606/829)
+Updating files:  74% (614/829)
+Updating files:  75% (622/829)
+Updating files:  76% (631/829)
+Updating files:  77% (639/829)
+Updating files:  78% (647/829)
+Updating files:  79% (655/829)
+Updating files:  80% (664/829)
+Updating files:  81% (672/829)
+Updating files:  82% (680/829)
+Updating files:  83% (689/829)
+Updating files:  84% (697/829)
+Updating files:  85% (705/829)
+Updating files:  86% (713/829)
+Updating files:  87% (722/829)
+Updating files:  88% (730/829)
+Updating files:  89% (738/829)
+Updating files:  90% (747/829)
+Updating files:  91% (755/829)
+Updating files:  92% (763/829)
+Updating files:  93% (771/829)
+Updating files:  94% (780/829)
+Updating files:  95% (788/829)
+Updating files:  96% (796/829)
+Updating files:  97% (805/829)
+Updating files:  98% (813/829)
+Updating files:  99% (821/829)
+Updating files: 100% (829/829)
+Updating files: 100% (829/829), done.
+/tmp/proguard-5.2.1-check
+/tmp/proguard-5.2.1-check/bin
+/tmp/proguard-5.2.1-check/docs
+/tmp/proguard-5.2.1-check/docs/manual
+/tmp/proguard-5.2.1-check/docs/manual/retrace
+/tmp/proguard-5.2.1-check/src
+/tmp/proguard-5.2.1-check/src/proguard
+/tmp/proguard-5.2.1-check/src/proguard/wtk
+/tmp/proguard-5.2.1-check/src/proguard/util
+/tmp/proguard-5.2.1-check/src/proguard/optimize
+/tmp/proguard-5.2.1-check/src/proguard/evaluation
+/tmp/proguard-5.2.1-check/src/proguard/gui
+/tmp/proguard-5.2.1-check/src/proguard/obfuscate
+/tmp/proguard-5.2.1-check/src/proguard/ant
+/tmp/proguard-5.2.1-check/src/proguard/classfile
+/tmp/proguard-5.2.1-check/src/proguard/io
+/tmp/proguard-5.2.1-check/src/proguard/gradle
+/tmp/proguard-5.2.1-check/src/proguard/retrace
+/tmp/proguard-5.2.1-check/src/proguard/preverify
+/tmp/proguard-5.2.1-check/src/proguard/shrink
+/tmp/proguard-5.2.1-check/.git
+/tmp/proguard-5.2.1-check/.git/refs
+/tmp/proguard-5.2.1-check/.git/refs/tags
+/tmp/proguard-5.2.1-check/.git/refs/heads
+/tmp/proguard-5.2.1-check/.git/logs
+/tmp/proguard-5.2.1-check/.git/hooks
+/tmp/proguard-5.2.1-check/.git/objects
+/tmp/proguard-5.2.1-check/.git/objects/pack
+/tmp/proguard-5.2.1-check/.git/objects/info
+/tmp/proguard-5.2.1-check/.git/branches
+/tmp/proguard-5.2.1-check/.git/info
+/tmp/proguard-5.2.1-check/buildscripts
+/tmp/proguard-5.2.1-check/buildscripts/maven
+/tmp/proguard-5.2.1-check/buildscripts/maven/wtk
+/tmp/proguard-5.2.1-check/buildscripts/maven/gui
+/tmp/proguard-5.2.1-check/buildscripts/maven/ant
+/tmp/proguard-5.2.1-check/buildscripts/maven/gradle
+/tmp/proguard-5.2.1-check/buildscripts/maven/retrace
+/tmp/proguard-5.2.1-check/buildscripts/maven/base
+/tmp/proguard-5.2.1-check/examples
+/tmp/proguard-5.2.1-check/examples/annotations
+/tmp/proguard-5.2.1-check/examples/annotations/lib
+/tmp/proguard-5.2.1-check/examples/annotations/src
+/tmp/proguard-5.2.1-check/examples/annotations/examples
+/tmp/proguard-5.2.1-check/examples/dictionaries
+/tmp/proguard-5.2.1-check/examples/ant
+/tmp/proguard-5.2.1-check/examples/gradle
+
+codex
+The tagged repository has no checked-in test directory for this version, and Maven Central does not publish a tests jar for `proguard-gradle`. I’m going to set `test-code-url` to `N/A` and use Maven Central for sources and javadocs, matching the repo’s existing ProGuard metadata style.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+diff --git a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+index 857644ca371e234524759ce18f0353e02f70bab8..6381b3d7367d068910035ca6091ac5ac3346d978
+--- a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
++++ b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
++  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
++  "repository-url" : "https://github.com/Guardsquare/proguard",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
++  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+index 857644ca371e234524759ce18f0353e02f70bab8..6381b3d7367d068910035ca6091ac5ac3346d978
+--- a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
++++ b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
++  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
++  "repository-url" : "https://github.com/Guardsquare/proguard",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
++  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+{
+  "coordinates": "net.sf.proguard:proguard-gradle:5.2.1",
+  "repository-url": "https://github.com/Guardsquare/proguard",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
+  "description": "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 15:28:16 GMT
+content-type: application/java-archive
+content-length: 7776
+cf-ray: 9f897e45bb29bc5c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 587753
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/proguard-gradle-5.2.1-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 15:28:16 GMT
+content-type: application/java-archive
+content-length: 43326
+cf-ray: 9f897e45ccd90d25-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 24
+
+diff --git a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+index 857644ca371e234524759ce18f0353e02f70bab8..6381b3d7367d068910035ca6091ac5ac3346d978
+--- a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
++++ b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
++  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
++  "repository-url" : "https://github.com/Guardsquare/proguard",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
++  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+index 857644ca371e234524759ce18f0353e02f70bab8..6381b3d7367d068910035ca6091ac5ac3346d978
+--- a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
++++ b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
++  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
++  "repository-url" : "https://github.com/Guardsquare/proguard",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
++  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
+  "repository-url" : "https://github.com/Guardsquare/proguard",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
+  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728
+diff --git a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+index 857644ca371e234524759ce18f0353e02f70bab8..6381b3d7367d068910035ca6091ac5ac3346d978
+--- a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
++++ b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
++  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
++  "repository-url" : "https://github.com/Guardsquare/proguard",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
++  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+ }
+
+ succeeded in 377ms:
+web search: 
+web search: Maven Central Repository net sf proguard proguard-gradle 5.2.1 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/net.sf.proguard/proguard-gradle
+web search: 
+web search: https://github.com/Guardsquare/proguard
+codex
+Updated [net.sf.proguard-proguard-gradle-5.2.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json:1).
+
+I used Maven Central sources/javadocs, set `test-code-url` to `N/A`, left `language` absent, and did not set `not-for-native-image` because the artifact is a JVM jar with class files. Maven Central publishes the `5.2.1` jar, sources jar, and javadoc jar, and the upstream repository is `Guardsquare/proguard`. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/?utm_source=openai))
+
+Verification: `jq` parsed the JSON successfully, and both substituted Maven source/javadoc URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+index 857644ca371e234524759ce18f0353e02f70bab8..6381b3d7367d068910035ca6091ac5ac3346d978
+--- a/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
++++ b/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1"
++  "coordinates" : "net.sf.proguard:proguard-gradle:5.2.1",
++  "repository-url" : "https://github.com/Guardsquare/proguard",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-gradle/$version$/proguard-gradle-$version$-javadoc.jar",
++  "description" : "ProGuard Gradle provides a Gradle task wrapper around ProGuard, enabling Gradle builds to shrink, optimize, obfuscate, and preverify Java bytecode. It integrates the ProGuard engine with Gradle so build scripts can configure and run ProGuard as part of a JVM build."
+ }
+
+tokens used
+181,055
+Updated [net.sf.proguard-proguard-gradle-5.2.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/build/discovered-artifact-metadata/net.sf.proguard-proguard-gradle-5.2.1.json:1).
+
+I used Maven Central sources/javadocs, set `test-code-url` to `N/A`, left `language` absent, and did not set `not-for-native-image` because the artifact is a JVM jar with class files. Maven Central publishes the `5.2.1` jar, sources jar, and javadoc jar, and the upstream repository is `Guardsquare/proguard`. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/proguard/proguard-gradle/5.2.1/?utm_source=openai))
+
+Verification: `jq` parsed the JSON successfully, and both substituted Maven source/javadoc URLs returned HTTP 200.
+Ran agent for net.sf.proguard:proguard-gradle:5.2.1 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/build/agent-artifact-discovery-logs/net.sf.proguard-proguard-gradle-5.2.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3695-c3c61728/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 24s
+9 actionable tasks: 9 executed
