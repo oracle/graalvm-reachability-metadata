@@ -9,6 +9,11 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File nativeImageTemporaryDirectory = new File(
+        "/dev/shm",
+        "jetty-ee10-webapp-native-image-tmp-${Integer.toHexString(project.projectDir.absolutePath.hashCode())}"
+)
+nativeImageTemporaryDirectory.mkdirs()
 
 dependencies {
     testImplementation "org.eclipse.jetty.ee10:jetty-ee10-webapp:$libraryVersion"
@@ -16,6 +21,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            environmentVariables.put("TMPDIR", nativeImageTemporaryDirectory.absolutePath)
+            jvmArgs.add("-Djava.io.tmpdir=${nativeImageTemporaryDirectory.absolutePath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

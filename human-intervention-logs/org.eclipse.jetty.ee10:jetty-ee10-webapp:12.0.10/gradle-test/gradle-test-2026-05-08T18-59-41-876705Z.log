@@ -1,0 +1,156 @@
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1353367
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.eclipse.jetty.ee10:jetty-ee10-webapp:12.0.10
+Command: `/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3632-2040f5c4/gradlew nativeTest`
+Executing test...
+-------
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1353645
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+
+   1354157
+> Task :test FAILED
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+
+Jetty_ee10_webappTest > configurationCollectionSortsAndInvokesLifecycleCallbacksInDependencyOrder() FAILED
+    java.lang.UnsupportedOperationException
+        at java.base/java.util.Collections$UnmodifiableCollection$1.remove(Collections.java:1082)
+        at java.base/java.util.AbstractCollection.remove(AbstractCollection.java:285)
+        at org_eclipse_jetty_ee10.jetty_ee10_webapp.Jetty_ee10_webappTest.configurationCollectionSortsAndInvokesLifecycleCallbacksInDependencyOrder(Jetty_ee10_webappTest.java:235)
+
+Jetty_ee10_webappTest > webAndFragmentDescriptorsExposeVersionOrderingAndDistributableMetadata() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      ["alpha-fragment", "others"]
+    to contain exactly (and in same order):
+      ["alpha-fragment", "@@-OTHER-@@"]
+    but some elements were not found:
+      ["@@-OTHER-@@"]
+    and others were not expected:
+      ["others"]
+        at org_eclipse_jetty_ee10.jetty_ee10_webapp.Jetty_ee10_webappTest.webAndFragmentDescriptorsExposeVersionOrderingAndDistributableMetadata(Jetty_ee10_webappTest.java:128)
+
+Jetty_ee10_webappTest > webAppContextClassMatchersResourceAliasesAndDescriptorSettingsAreMutable() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: "/WEB-INF/override.xml"
+     but was: null
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//org_eclipse_jetty_ee10.jetty_ee10_webapp.Jetty_ee10_webappTest.webAppContextClassMatchersResourceAliasesAndDescriptorSettingsAreMutable(Jetty_ee10_webappTest.java:268)
+
+Jetty_ee10_webappTest > webAppContextStartsWithParsedDescriptorAndProgrammaticServlet() FAILED
+    jakarta.servlet.UnavailableException: Class loading error for holder org.eclipse.jetty.ee10.servlet.listener.IntrospectorCleaner@47c00b5f{src=DESCRIPTOR:jar:file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/metadata-forge-gradle/2231a09077983359/caches/modules-2/files-2.1/org.eclipse.jetty.ee10/jetty-ee10-webapp/12.0.10/8eab75fc65cb5d9d0058894ab37fb21e6c9415be/jetty-ee10-webapp-12.0.10.jar!/org/eclipse/jetty/ee10/webapp/webdefault-ee10.xml}
+        at app//org.eclipse.jetty.ee10.servlet.BaseHolder.doStart(BaseHolder.java:103)
+        at app//org.eclipse.jetty.ee10.servlet.ListenerHolder.doStart(ListenerHolder.java:70)
+        at app//org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+        at app//org.eclipse.jetty.ee10.servlet.ServletContextHandler.startContext(ServletContextHandler.java:1311)
+        at app//org.eclipse.jetty.ee10.webapp.WebAppContext.startWebapp(WebAppContext.java:1342)
+        at app//org.eclipse.jetty.ee10.webapp.WebAppContext.startContext(WebAppContext.java:1300)
+        at app//org.eclipse.jetty.ee10.servlet.ServletContextHandler.lambda$doStart$0(ServletContextHandler.java:1047)
+        at app//org.eclipse.jetty.server.handler.ContextHandler$ScopedContext.call(ContextHandler.java:1237)
+        at app//org.eclipse.jetty.ee10.servlet.ServletContextHandler.doStart(ServletContextHandler.java:1044)
+        at app//org.eclipse.jetty.ee10.webapp.WebAppContext.doStart(WebAppContext.java:499)
+        at app//org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+        at app//org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+        at app//org.eclipse.jetty.server.Server.start(Server.java:624)
+        at app//org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:120)
+        at app//org.eclipse.jetty.server.Handler$Abstract.doStart(Handler.java:491)
+        at app//org.eclipse.jetty.server.Server.doStart(Server.java:565)
+        at app//org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+        at app//org_eclipse_jetty_ee10.jetty_ee10_webapp.Jetty_ee10_webappTest.webAppContextStartsWithParsedDescriptorAndProgrammaticServlet(Jetty_ee10_webappTest.java:92)
+
+Jetty_ee10_webappTest > metadataTracksDescriptorOriginsOverridesResourcesAndAbsoluteFragmentOrdering() FAILED
+    java.lang.IllegalStateException: Duplicate <other> element in absolute ordering
+        at org.eclipse.jetty.ee10.webapp.AbsoluteOrdering.addOthers(AbsoluteOrdering.java:84)
+        at org.eclipse.jetty.ee10.webapp.MetaData.setWebDescriptor(MetaData.java:239)
+        at org_eclipse_jetty_ee10.jetty_ee10_webapp.Jetty_ee10_webappTest.metadataTracksDescriptorOriginsOverridesResourcesAndAbsoluteFragmentOrdering(Jetty_ee10_webappTest.java:173)
+
+5 tests completed, 5 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3632-2040f5c4/tests/src/org.eclipse.jetty.ee10/jetty-ee10-webapp/12.0.10/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3632-2040f5c4/tests/src/org.eclipse.jetty.ee10/jetty-ee10-webapp/12.0.10/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3632-2040f5c4/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.eclipse.jetty.ee10:jetty-ee10-webapp:12.0.10 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
