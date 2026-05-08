@@ -15,6 +15,8 @@ import com.datastax.oss.driver.api.core.config.DefaultDriverOption;
 import com.datastax.oss.driver.api.core.config.DriverConfig;
 import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
 import com.datastax.oss.driver.api.core.config.DriverExecutionProfile;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
+import com.datastax.oss.driver.api.core.cql.DefaultBatchType;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.data.CqlDuration;
 import com.datastax.oss.driver.api.core.data.TupleValue;
@@ -104,6 +106,36 @@ public class Java_driver_coreTest {
         assertThat(copy.getPageSize()).isEqualTo(16);
         assertThat(copy.isIdempotent()).isFalse();
         assertThat(copy.isTracing()).isFalse();
+    }
+
+    @Test
+    void batchStatementsGroupChildStatementsAndExposeBatchSpecificOperations() {
+        SimpleStatement insertProduct = SimpleStatement.newInstance(
+                "INSERT INTO products (sku, quantity) VALUES (?, ?)", "coffee", 10);
+        SimpleStatement updateProduct = SimpleStatement.newInstance(
+                "UPDATE products SET quantity = ? WHERE sku = ?", 12, "coffee");
+
+        BatchStatement batch = BatchStatement.builder(DefaultBatchType.UNLOGGED)
+                .setKeyspace("inventory")
+                .addStatement(insertProduct)
+                .addStatement(updateProduct)
+                .build();
+
+        assertThat(batch.getBatchType()).isEqualTo(DefaultBatchType.UNLOGGED);
+        assertThat(batch.getKeyspace()).isEqualTo(CqlIdentifier.fromInternal("inventory"));
+        assertThat(batch.size()).isEqualTo(2);
+        assertThat(batch).containsExactly(insertProduct, updateProduct);
+
+        BatchStatement loggedBatch = batch.setBatchType(DefaultBatchType.LOGGED);
+        BatchStatement emptyBatch = batch.clear();
+
+        assertThat(batch.getBatchType()).isEqualTo(DefaultBatchType.UNLOGGED);
+        assertThat(batch.size()).isEqualTo(2);
+        assertThat(loggedBatch.getBatchType()).isEqualTo(DefaultBatchType.LOGGED);
+        assertThat(loggedBatch).containsExactly(insertProduct, updateProduct);
+        assertThat(emptyBatch.getBatchType()).isEqualTo(DefaultBatchType.UNLOGGED);
+        assertThat(emptyBatch.size()).isZero();
+        assertThat(emptyBatch).isEmpty();
     }
 
     @Test
