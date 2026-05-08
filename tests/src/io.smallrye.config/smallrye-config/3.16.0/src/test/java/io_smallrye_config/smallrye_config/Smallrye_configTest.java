@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -141,6 +142,10 @@ public class Smallrye_configTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
+        } catch (UndeclaredThrowableException exception) {
+            if (!isUnsupportedFeatureError(exception)) {
+                throw exception;
+            }
         }
     }
 
@@ -162,6 +167,11 @@ public class Smallrye_configTest {
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
+            }
+            return;
+        } catch (UndeclaredThrowableException exception) {
+            if (!isUnsupportedFeatureError(exception)) {
+                throw exception;
             }
             return;
         }
@@ -240,6 +250,17 @@ public class Smallrye_configTest {
         return new SmallRyeConfigBuilder()
                 .withSources(new PropertiesConfigSource(properties, "in-memory-test-source", 100))
                 .addDefaultInterceptors();
+    }
+
+    private static boolean isUnsupportedFeatureError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     public static final class DerivedEndpointConfigSourceFactory implements ConfigSourceFactory {
