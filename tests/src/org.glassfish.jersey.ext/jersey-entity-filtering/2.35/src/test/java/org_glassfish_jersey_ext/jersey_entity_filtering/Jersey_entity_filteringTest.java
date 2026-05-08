@@ -162,6 +162,15 @@ public class Jersey_entity_filteringTest {
         assertThat(denyAll.annotationType()).isEqualTo(DenyAll.class);
     }
 
+    @Test
+    void filteringHelperDiscoversGetterAndSetterPropertiesAcrossClassHierarchy() {
+        Map<String, ?> getterProperties = FilteringHelper.getPropertyMethods(Address.class, true);
+        Map<String, ?> setterProperties = FilteringHelper.getPropertyMethods(Address.class, false);
+
+        assertThat(getterProperties.keySet()).contains("city", "country");
+        assertThat(setterProperties.keySet()).contains("city", "country");
+    }
+
     private static final class ExposedSelectableEntityProcessor extends SelectableEntityProcessor {
         private EntityProcessor.Result processField(String fieldName, Class<?> fieldClass, EntityGraph graph) {
             Annotation[] noAnnotations = FilteringHelper.EMPTY_ANNOTATIONS;
@@ -440,7 +449,27 @@ public class Jersey_entity_filteringTest {
         private Address address;
     }
 
-    private static final class Address {
+    private static class BaseAddress {
+        private String country;
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
+    }
+
+    private static final class Address extends BaseAddress {
         private String city;
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
     }
 }
