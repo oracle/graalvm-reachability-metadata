@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.Version;
+import tools.jackson.databind.BeanProperty;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.MapperFeature;
@@ -56,6 +57,7 @@ import tools.jackson.jaxrs.cfg.ObjectReaderModifier;
 import tools.jackson.jaxrs.cfg.ObjectWriterInjector;
 import tools.jackson.jaxrs.cfg.ObjectWriterModifier;
 import tools.jackson.jaxrs.util.ClassKey;
+import tools.jackson.jaxrs.util.EndpointAsBeanProperty;
 
 public class Jackson_jaxrs_baseTest {
     private static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
@@ -371,6 +373,35 @@ public class Jackson_jaxrs_baseTest {
     }
 
     @Test
+    void endpointBeanPropertyExposesEndpointNameTypeAndAnnotations() {
+        JsonMapper mapper = new JsonMapper();
+        JavaType stringType = mapper.constructType(String.class);
+        JavaType integerType = mapper.constructType(Integer.class);
+        NamedAnnotationLiteral annotation = new NamedAnnotationLiteral("endpoint");
+        EndpointAsBeanProperty property = new EndpointAsBeanProperty(
+                EndpointAsBeanProperty.ENDPOINT_NAME,
+                stringType,
+                new Annotation[] {annotation});
+
+        assertThat(property.getName()).isEqualTo("JAX-RS/endpoint");
+        assertThat(property.getType()).isEqualTo(stringType);
+        assertThat(property.getAnnotation(NamedAnnotation.class)).isSameAs(annotation);
+        assertThat(property.getAnnotation(JsonView.class)).isNull();
+        assertThat(property.withType(stringType)).isSameAs(property);
+
+        BeanProperty.Std changedType = property.withType(integerType);
+        assertThat(changedType).isNotSameAs(property);
+        assertThat(changedType.getName()).isEqualTo(property.getName());
+        assertThat(changedType.getType()).isEqualTo(integerType);
+
+        EndpointAsBeanProperty withoutAnnotations = new EndpointAsBeanProperty(
+                EndpointAsBeanProperty.ENDPOINT_NAME,
+                stringType,
+                null);
+        assertThat(withoutAnnotations.getAnnotation(NamedAnnotation.class)).isNull();
+    }
+
+    @Test
     void injectorAccessorsUseThreadLocalState() {
         ObjectWriterModifier writerModifier = new ObjectWriterModifier() {
             @Override
@@ -578,7 +609,7 @@ public class Jackson_jaxrs_baseTest {
         }
     }
 
-    private static final class NamedAnnotationLiteral implements Annotation {
+    private static final class NamedAnnotationLiteral implements NamedAnnotation {
         private final String name;
 
         private NamedAnnotationLiteral(String name) {
