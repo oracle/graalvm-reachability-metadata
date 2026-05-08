@@ -6,11 +6,24 @@
  */
 package net_sf_proguard.proguard_gradle;
 
+import org.gradle.api.tasks.TaskInstantiationException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import proguard.gradle.ProGuardTask;
 
-class Proguard_gradleTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+public class Proguard_gradleTest {
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    @Timeout(60)
+    void proGuardTaskRejectsDirectInstantiationOutsideGradleDsl() {
+        assertThatThrownBy(ProGuardTask::new)
+                .isInstanceOf(TaskInstantiationException.class)
+                .satisfies(exception -> assertThat(exception)
+                        .hasMessageContaining(ProGuardTask.class.getName())
+                        .hasMessageContaining("instantiated directly")
+                        .hasMessageContaining("DSL"));
     }
 }
