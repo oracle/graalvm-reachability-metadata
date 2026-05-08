@@ -147,6 +147,18 @@ public class Maven_api_spiTest {
     }
 
     @Test
+    void modelTransformerCanRejectInvalidModelsWithCheckedFailure() {
+        IOException cause = new IOException("unsupported packaging metadata");
+        ModelTransformer transformer = new RejectingModelTransformer("war", cause);
+        Model input = sampleModel().packaging("war").build();
+
+        assertThatExceptionOfType(ModelTransformerException.class)
+                .isThrownBy(() -> transformer.transformEffectiveModel(input))
+                .withMessage("Unsupported packaging: war")
+                .withCause(cause);
+    }
+
+    @Test
     void modelTransformerExceptionConstructorsPreserveCauseAndMessage() {
         IOException cause = new IOException("write failed");
 
@@ -401,6 +413,24 @@ public class Maven_api_spiTest {
         @Override
         public Model transformEffectiveModel(Model model) {
             return model.withPackaging("jar");
+        }
+    }
+
+    private static final class RejectingModelTransformer implements ModelTransformer {
+        private final String rejectedPackaging;
+        private final Throwable cause;
+
+        private RejectingModelTransformer(String rejectedPackaging, Throwable cause) {
+            this.rejectedPackaging = rejectedPackaging;
+            this.cause = cause;
+        }
+
+        @Override
+        public Model transformEffectiveModel(Model model) throws ModelTransformerException {
+            if (rejectedPackaging.equals(model.getPackaging())) {
+                throw new ModelTransformerException("Unsupported packaging: " + model.getPackaging(), cause);
+            }
+            return model;
         }
     }
 
