@@ -170,6 +170,30 @@ public class Auto_serviceTest {
     }
 
     @Test
+    void preservesExistingServiceDescriptorEntriesWhenAddingNewProvider() {
+        CompilationResult result = compileWithExistingServiceEntries(
+                List.of("java.lang.Runnable"),
+                Map.of("java.lang.Runnable", List.of("test.AlreadyRegisteredRunnable")),
+                new Source("test.GeneratedRunnableService", """
+                        package test;
+
+                        import com.google.auto.service.AutoService;
+
+                        @AutoService(Runnable.class)
+                        final class GeneratedRunnableService implements Runnable {
+                            @Override
+                            public void run() {
+                            }
+                        }
+                        """));
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        assertThat(result.serviceEntries("java.lang.Runnable")).containsExactly(
+                "test.AlreadyRegisteredRunnable",
+                "test.GeneratedRunnableService");
+    }
+
+    @Test
     void reportsErrorWhenAnnotatedProviderDoesNotImplementServiceType() {
         CompilationResult result = compile(
                 List.of("java.util.concurrent.Callable"),
@@ -216,29 +240,38 @@ public class Auto_serviceTest {
     }
 
     private static CompilationResult compile(List<String> requestedServiceTypes, Source... sources) {
+        return compileWithExistingServiceEntries(requestedServiceTypes, Map.of(), sources);
+    }
+
+    private static CompilationResult compileWithExistingServiceEntries(
+            List<String> requestedServiceTypes, Map<String, List<String>> existingServiceEntries, Source... sources) {
         if (System.getProperty("java.home") == null) {
-            return compileInExternalJvm(requestedServiceTypes, sources);
+            return compileInExternalJvm(requestedServiceTypes, existingServiceEntries, sources);
         }
         ensureJavaHomeProperty();
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) {
-            return compileInExternalJvm(requestedServiceTypes, sources);
+            return compileInExternalJvm(requestedServiceTypes, existingServiceEntries, sources);
         }
 
-        CompilationResult result = compileInProcess(compiler, requestedServiceTypes, sources);
+        CompilationResult result = compileInProcess(compiler, requestedServiceTypes, existingServiceEntries, sources);
         if (needsExternalCompiler(result)) {
-            return compileInExternalJvm(requestedServiceTypes, sources);
+            return compileInExternalJvm(requestedServiceTypes, existingServiceEntries, sources);
         }
         return result;
     }
 
     private static CompilationResult compileInProcess(
-            JavaCompiler compiler, List<String> requestedServiceTypes, Source... sources) {
+            JavaCompiler compiler,
+            List<String> requestedServiceTypes,
+            Map<String, List<String>> existingServiceEntries,
+            Source... sources) {
         try {
             Path tempDirectory = Files.createTempDirectory("auto-service-test");
             Path classOutput = tempDirectory.resolve("classes");
             Files.createDirectories(classOutput);
+            writeExistingServiceFiles(classOutput, existingServiceEntries);
 
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
             List<String> options = new ArrayList<>();
@@ -274,11 +307,21 @@ public class Auto_serviceTest {
         return result.diagnosticText().contains("Unable to find package java.lang in platform classes");
     }
 
-    private static CompilationResult compileInExternalJvm(List<String> requestedServiceTypes, Source... sources) {
+    private static CompilationResult compileInExternalJvm(
+            List<String> requestedServiceTypes, Map<String, List<String>> existingServiceEntries, Source... sources) {
         try {
             Path tempDirectory = Files.createTempDirectory("auto-service-test-external");
             Path outputFile = tempDirectory.resolve("result.properties");
             Path logFile = tempDirectory.resolve("compiler.log");
+
+            Map<String, Path> existingServiceEntryFiles = new HashMap<>();
+            int existingFileIndex = 0;
+            for (Map.Entry<String, List<String>> serviceEntry : existingServiceEntries.entrySet()) {
+                Path existingServiceEntryFile = tempDirectory.resolve(
+                        "existing-service-entries-" + existingFileIndex++);
+                Files.write(existingServiceEntryFile, serviceEntry.getValue(), StandardCharsets.UTF_8);
+                existingServiceEntryFiles.put(serviceEntry.getKey(), existingServiceEntryFile);
+            }
 
             List<Path> sourceFiles = new ArrayList<>();
             for (int index = 0; index < sources.length; index++) {
@@ -299,6 +342,11 @@ public class Auto_serviceTest {
             command.add(outputFile.toString());
             command.add(Integer.toString(requestedServiceTypes.size()));
             command.addAll(requestedServiceTypes);
+            command.add(Integer.toString(existingServiceEntryFiles.size()));
+            for (Map.Entry<String, Path> serviceEntry : existingServiceEntryFiles.entrySet()) {
+                command.add(serviceEntry.getKey());
+                command.add(serviceEntry.getValue().toString());
+            }
             command.add(Integer.toString(sources.length));
             for (int index = 0; index < sources.length; index++) {
                 command.add(sources[index].className());
@@ -347,6 +395,14 @@ public class Auto_serviceTest {
         for (int index = 0; index < serviceCount; index++) {
             requestedServiceTypes.add(args[position++]);
         }
+        int existingServiceFileCount = Integer.parseInt(args[position++]);
+        Map<String, List<String>> existingServiceEntries = new HashMap<>();
+        for (int index = 0; index < existingServiceFileCount; index++) {
+            String serviceType = args[position++];
+            Path existingServiceEntryFile = Path.of(args[position++]);
+            existingServiceEntries.put(
+                    serviceType, Files.readAllLines(existingServiceEntryFile, StandardCharsets.UTF_8));
+        }
         int sourceCount = Integer.parseInt(args[position++]);
         List<Source> sources = new ArrayList<>();
         for (int index = 0; index < sourceCount; index++) {
@@ -360,7 +416,8 @@ public class Auto_serviceTest {
         if (compiler == null) {
             result = new CompilationResult(false, "System Java compiler is not available", Map.of());
         } else {
-            result = compileInProcess(compiler, requestedServiceTypes, sources.toArray(Source[]::new));
+            result = compileInProcess(
+                    compiler, requestedServiceTypes, existingServiceEntries, sources.toArray(Source[]::new));
         }
 
         Properties properties = propertiesFromCompilationResult(result, requestedServiceTypes);
@@ -435,6 +492,15 @@ public class Auto_serviceTest {
             String javaHome = System.getenv("JAVA_HOME");
             assertThat(javaHome).as("JAVA_HOME").isNotBlank();
             System.setProperty("java.home", javaHome);
+        }
+    }
+
+    private static void writeExistingServiceFiles(Path classOutput, Map<String, List<String>> existingServiceEntries)
+            throws IOException {
+        for (Map.Entry<String, List<String>> serviceEntry : existingServiceEntries.entrySet()) {
+            Path serviceFile = classOutput.resolve(SERVICE_FILE_PREFIX + serviceEntry.getKey());
+            Files.createDirectories(serviceFile.getParent());
+            Files.write(serviceFile, serviceEntry.getValue(), StandardCharsets.UTF_8);
         }
     }
 
