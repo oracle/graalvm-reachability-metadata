@@ -7,8 +7,8 @@
 package org_playframework.play_streams_3
 
 import org.apache.pekko.actor.{Actor, ActorRef, ActorSystem, Props, Status}
-import org.apache.pekko.stream.{Materializer, OverflowStrategy, SystemMaterializer}
-import org.apache.pekko.stream.scaladsl.{Flow, Sink, Source}
+import org.apache.pekko.stream.{Materializer, OverflowStrategy, SourceShape, SystemMaterializer}
+import org.apache.pekko.stream.scaladsl.{Flow, GraphDSL, Sink, Source}
 import org.apache.pekko.util.ByteString
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -153,6 +153,36 @@ class Play_streams_3Test {
       List(1, 2, 3),
       await(Source(List(1, 2, 3)).via(PekkoStreams.ignoreAfterCancellation[Int]).runWith(Sink.seq)).toList
     )
+  }
+
+  @Test
+  def pekkoStreamsOnlyFirstCanFinishMergeWaitsForPrimaryInput(): Unit = withActorSystem { (system, materializer) =>
+    given Materializer = materializer
+    given ExecutionContext = system.dispatcher
+
+    val primaryElement = scala.concurrent.Promise[String]()
+    val secondaryCompleted = scala.concurrent.Promise[Unit]()
+    val mergedSource: Source[String, ?] = Source.fromGraph(GraphDSL.create() { implicit builder =>
+      import GraphDSL.Implicits.*
+
+      val merge = builder.add(PekkoStreams.onlyFirstCanFinishMerge[String](2))
+      Source.future(primaryElement.future) ~> merge.in(0)
+      Source
+        .single("secondary")
+        .watchTermination() { (_, completion) =>
+          completion.foreach(_ => secondaryCompleted.success(()))
+        } ~> merge.in(1)
+      SourceShape(merge.out)
+    })
+
+    val result: Future[Seq[String]] = mergedSource.runWith(Sink.seq)
+    await(secondaryCompleted.future)
+    assertFalse(result.isCompleted)
+
+    primaryElement.success("primary")
+    val resultValues: Seq[String] = await(result)
+    assertEquals(2, resultValues.size)
+    assertEquals(Set("primary", "secondary"), resultValues.toSet)
   }
 
   @Test
