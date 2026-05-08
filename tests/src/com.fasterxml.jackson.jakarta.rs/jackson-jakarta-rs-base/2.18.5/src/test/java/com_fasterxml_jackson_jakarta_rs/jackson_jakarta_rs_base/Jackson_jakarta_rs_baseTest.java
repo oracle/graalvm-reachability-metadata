@@ -201,6 +201,35 @@ public class Jackson_jakarta_rs_baseTest {
     }
 
     @Test
+    void defaultViewsApplyWhenEndpointHasNoViewAnnotation() throws Exception {
+        ObjectMapper mapper = JsonMapper.builder()
+                .disable(MapperFeature.DEFAULT_VIEW_INCLUSION)
+                .build();
+        TestProvider provider = new TestProvider(mapper);
+        assertThat(provider.setDefaultReadView(PublicView.class)).isSameAs(provider);
+        assertThat(provider.setDefaultWriteView(PublicView.class)).isSameAs(provider);
+
+        CloseTrackingOutputStream output = new CloseTrackingOutputStream();
+        provider.writeTo(new User("shown", "hidden"), User.class, User.class, NO_ANNOTATIONS, JSON,
+                new MultivaluedHashMap<>(), output);
+
+        String json = output.toString(StandardCharsets.UTF_8);
+        assertThat(json).contains("\"visible\":\"shown\"");
+        assertThat(json).doesNotContain("secret", "hidden");
+
+        byte[] input = """
+                {"visible":"incoming","secret":"ignored"}
+                """.getBytes(StandardCharsets.UTF_8);
+        Object result = provider.readFrom(objectClass(User.class), User.class, NO_ANNOTATIONS, JSON,
+                new MultivaluedHashMap<>(), new ByteArrayInputStream(input));
+
+        assertThat(result).isInstanceOfSatisfying(User.class, user -> {
+            assertThat(user.visible).isEqualTo("incoming");
+            assertThat(user.secret).isNull();
+        });
+    }
+
+    @Test
     void readFromHandlesEmptyInputAccordingToFeatureConfiguration() throws Exception {
         TestProvider provider = new TestProvider(new ObjectMapper());
 
