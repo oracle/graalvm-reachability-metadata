@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.ext.MessageBodyReader;
@@ -77,6 +78,26 @@ public class Jackson_jaxrs_json_providerTest {
         assertThat(json).isEqualTo(
                 "{\"name\":\"graalvm\",\"features\":[\"jax-rs\",\"json\"],\"metadata\":{\"native\":true}}");
         assertThat(readValue).isEqualTo(payload);
+    }
+
+    @Test
+    void providerUsesGenericTypeForCollectionElements() throws Exception {
+        JacksonJsonProvider provider = new JacksonJsonProvider();
+        GenericType<List<GenericPayload>> payloadListType = new GenericType<>() {
+        };
+        List<GenericPayload> payloads = List.of(new GenericPayload("alpha"), new GenericPayload("beta"));
+
+        String json = writeGeneric(provider, payloads, List.class, payloadListType.getType(),
+                MediaType.APPLICATION_JSON_TYPE);
+        List<?> readValue = read(provider, json, List.class, payloadListType.getType(),
+                MediaType.APPLICATION_JSON_TYPE);
+
+        assertThat(json).isEqualTo("[{\"name\":\"alpha\"},{\"name\":\"beta\"}]");
+        assertThat(readValue)
+                .hasSize(2)
+                .allSatisfy(item -> assertThat(item).isInstanceOf(GenericPayload.class))
+                .extracting(item -> ((GenericPayload) item).name)
+                .containsExactly("alpha", "beta");
     }
 
     @Test
@@ -170,6 +191,13 @@ public class Jackson_jaxrs_json_providerTest {
         return output.toString(StandardCharsets.UTF_8);
     }
 
+    private static String writeGeneric(JacksonJsonProvider provider, Object value, Class<?> rawType, Type genericType,
+            MediaType mediaType) throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        provider.writeTo(value, rawType, genericType, NO_ANNOTATIONS, mediaType, new MultivaluedHashMap<>(), output);
+        return output.toString(StandardCharsets.UTF_8);
+    }
+
     private static <T> T read(JacksonJsonProvider provider, String json, Class<T> rawType, Type genericType,
             MediaType mediaType) throws Exception {
         Object value = provider.readFrom(asObjectClass(rawType), genericType, NO_ANNOTATIONS, mediaType,
@@ -211,6 +239,17 @@ public class Jackson_jaxrs_json_providerTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return JSONP.class;
+        }
+    }
+
+    public static final class GenericPayload {
+        public String name;
+
+        public GenericPayload() {
+        }
+
+        public GenericPayload(String name) {
+            this.name = name;
         }
     }
 
