@@ -43,6 +43,7 @@ import org.eclipse.aether.RepositoryCache;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.RequestTrace;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactProperties;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectStepData;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -178,6 +179,38 @@ public class Maven_resolver_providerTest {
         assertThat(result.getProperties()).containsEntry("license.0.name", "Apache-2.0");
         assertThat(result.getArtifact().getProperty("downloadUrl", null))
                 .isEqualTo("https://downloads.example.test/root-1.0.0.jar");
+    }
+
+    @Test
+    void artifactDescriptorDelegatePreservesSystemDependencyLocalPathAndArtifactType() {
+        ArtifactDescriptorRequest request = new ArtifactDescriptorRequest();
+        request.setArtifact(new DefaultArtifact("org.example", "system-root", "jar", "1.0.0"));
+        ArtifactDescriptorResult result = new ArtifactDescriptorResult(request);
+        result.setArtifact(request.getArtifact());
+        Path localJar = temporaryDirectory.resolve("local-tests.jar").toAbsolutePath();
+
+        org.apache.maven.model.Dependency systemDependency = new org.apache.maven.model.Dependency();
+        systemDependency.setGroupId("org.example");
+        systemDependency.setArtifactId("system-tests");
+        systemDependency.setVersion("1.0.0");
+        systemDependency.setType("test-jar");
+        systemDependency.setScope("system");
+        systemDependency.setSystemPath(localJar.toString());
+        Model model = new Model();
+        model.addDependency(systemDependency);
+
+        new ArtifactDescriptorReaderDelegate().populateResult(MavenRepositorySystemUtils.newSession(), result, model);
+
+        assertThat(result.getDependencies()).singleElement().satisfies(dependency -> {
+            assertThat(dependency.getScope()).isEqualTo("system");
+            assertThat(dependency.getArtifact().getGroupId()).isEqualTo("org.example");
+            assertThat(dependency.getArtifact().getArtifactId()).isEqualTo("system-tests");
+            assertThat(dependency.getArtifact().getVersion()).isEqualTo("1.0.0");
+            assertThat(dependency.getArtifact().getClassifier()).isEqualTo("tests");
+            assertThat(dependency.getArtifact().getExtension()).isEqualTo("jar");
+            assertThat(dependency.getArtifact().getProperty(ArtifactProperties.LOCAL_PATH, null))
+                    .isEqualTo(localJar.toString());
+        });
     }
 
     @Test
