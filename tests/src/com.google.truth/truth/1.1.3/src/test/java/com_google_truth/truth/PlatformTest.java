@@ -18,11 +18,15 @@ public class PlatformTest {
     @Test
     public void stringEqualityFailureCreatesComparisonFailureWithInferredDescription() {
         String actual = "native image actual value";
+        AssertionError error = null;
 
-        AssertionError error = assertThrows(
-                AssertionError.class,
-                () -> assertThat(actual).isEqualTo("expected value"));
+        try {
+            assertThat(actual).isEqualTo("expected value");
+        } catch (AssertionError caught) {
+            error = caught;
+        }
 
+        assertNotNull(error);
         assertTrue(error instanceof ComparisonFailure);
         assertTrue(error.getMessage().contains("expected value"));
         assertTrue(error.getMessage().contains("native image actual value"));
