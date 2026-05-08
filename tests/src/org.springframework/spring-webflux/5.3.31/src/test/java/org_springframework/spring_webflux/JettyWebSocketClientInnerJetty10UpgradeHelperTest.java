@@ -19,8 +19,7 @@ public class JettyWebSocketClientInnerJetty10UpgradeHelperTest {
         try {
             assertThat(client.getJettyClient()).isNotNull();
             assertThat(client.isRunning()).isFalse();
-        }
-        finally {
+        } finally {
             client.stop();
         }
     }
