@@ -9,7 +9,7 @@ package io_vertx.vertx_core;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.impl.CodecManager;
 import io.vertx.core.eventbus.impl.codecs.ClusterSerializableCodec;
-import io.vertx.core.shareddata.impl.ClusterSerializable;
+import io.vertx.core.shareddata.ClusterSerializable;
 import io.vertx.core.spi.cluster.RegistrationInfo;
 import org.junit.jupiter.api.Test;
 
