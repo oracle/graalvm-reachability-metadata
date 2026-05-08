@@ -180,6 +180,31 @@ public class Quarkus_builderTest {
     }
 
     @Test
+    void acceptsMultipleInitialMultiBuildItemsForEachExecution() throws Exception {
+        BuildChainBuilder builder = BuildChain.builder();
+        builder.addInitial(InitialFeatureItem.class);
+        builder.addBuildStep(new NamedStep("initial-feature-summary", context -> {
+            List<InitialFeatureItem> featureItems = context.consumeMulti(InitialFeatureItem.class);
+            context.produce(new InitialFeatureSummaryItem(featureItems.stream()
+                    .map(InitialFeatureItem::name)
+                    .toList()));
+        })).consumes(InitialFeatureItem.class).produces(InitialFeatureSummaryItem.class).build();
+        builder.addFinal(InitialFeatureSummaryItem.class);
+
+        BuildResult result = builder.build()
+                .createExecutionBuilder("initial-multi-build")
+                .produce(new InitialFeatureItem("security"))
+                .produce(InitialFeatureItem.class, new InitialFeatureItem("observability"))
+                .execute();
+
+        assertThat(result.consume(InitialFeatureSummaryItem.class).names())
+                .containsExactly("security", "observability");
+        assertThat(result.consumeMulti(InitialFeatureItem.class))
+                .extracting(InitialFeatureItem::name)
+                .containsExactly("security", "observability");
+    }
+
+    @Test
     void supportsOptionalConsumesOverridableProducersAndFlagSets() throws Exception {
         BuildChainBuilder builder = BuildChain.builder();
         AtomicBoolean overridableRan = new AtomicBoolean(false);
@@ -479,6 +504,30 @@ public class Quarkus_builderTest {
     }
 
     private static final class MissingRequiredItem extends SimpleBuildItem {
+    }
+
+    private static final class InitialFeatureItem extends MultiBuildItem {
+        private final String name;
+
+        private InitialFeatureItem(String name) {
+            this.name = name;
+        }
+
+        private String name() {
+            return name;
+        }
+    }
+
+    private static final class InitialFeatureSummaryItem extends SimpleBuildItem {
+        private final List<String> names;
+
+        private InitialFeatureSummaryItem(List<String> names) {
+            this.names = List.copyOf(names);
+        }
+
+        private List<String> names() {
+            return names;
+        }
     }
 
     private static final class OptionalOutputItem extends SimpleBuildItem {
