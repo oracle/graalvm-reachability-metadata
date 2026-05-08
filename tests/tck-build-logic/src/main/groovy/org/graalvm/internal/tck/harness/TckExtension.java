@@ -418,6 +418,13 @@ public abstract class TckExtension {
                 if (Files.isDirectory(result)) {
                     return result;
                 }
+                String testVersion = resolveTestVersion(entry);
+                if (testVersion != null) {
+                    Path indexedTestDir = testRoot().resolve(groupId).resolve(artifactId).resolve(testVersion);
+                    if (Files.isDirectory(indexedTestDir)) {
+                        return result;
+                    }
+                }
                 throw new RuntimeException("Index.json for " + groupId + ":" + artifactId + " maps version " + version + " to missing dir " + result);
             }
         }
@@ -497,7 +504,15 @@ public abstract class TckExtension {
                 List<String> tested = (List<String>) entry.get("tested-versions");
                 String metaVer = (String) entry.get("metadata-version");
 
-                if (tested == null || metaVer == null || !Files.isDirectory(fullDir.resolve(metaVer))) {
+                if (tested == null || metaVer == null) {
+                    continue;
+                }
+
+                boolean hasMetadataDir = Files.isDirectory(fullDir.resolve(metaVer));
+                String testVersion = resolveTestVersion(entry);
+                boolean hasIndexedTestDir = testVersion != null &&
+                        Files.isDirectory(testRoot().resolve(g).resolve(a).resolve(testVersion));
+                if (!hasMetadataDir && !hasIndexedTestDir) {
                     continue;
                 }
 
@@ -554,6 +569,18 @@ public abstract class TckExtension {
             }
         }
         return indices;
+    }
+
+    private static String resolveTestVersion(Map<String, ?> entry) {
+        Object testVersion = entry.get("test-version");
+        if (testVersion != null && !testVersion.toString().isBlank()) {
+            return testVersion.toString();
+        }
+        Object metadataVersion = entry.get("metadata-version");
+        if (metadataVersion != null && !metadataVersion.toString().isBlank()) {
+            return metadataVersion.toString();
+        }
+        return null;
     }
 
     /**

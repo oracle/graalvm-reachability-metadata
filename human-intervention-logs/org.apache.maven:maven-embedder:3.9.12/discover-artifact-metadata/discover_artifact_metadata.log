@@ -1,0 +1,965 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0682-6688-7ee1-99a3-9aa25cb9bb04
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-embedder:3.9.12
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.9.12" when "$version$" is replaced with "3.9.12".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+- Set "coordinates" to "org.apache.maven:maven-embedder:3.9.12".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.9.12".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central and Apache Maven’s source repository, then patch the JSON file in place with version-tokenized URLs.
+web search: 
+web search: org.apache.maven maven-embedder 3.9.12 Maven Central sources tests jar
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+-rw-rw-r-- 1 vjovanov vjovanov 63 May  8 09:34 build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'maven-embedder|apache.maven' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json:2:  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0-beta-2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.CommandExecutor$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0-beta-2/reachability-metadata.json:11:        "typeReached": "org.apache.maven.wagon.CommandExecutor$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0-beta-2/reachability-metadata.json:13:      "type": "org.apache.maven.wagon.CommandExecutor"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0-beta-2/reachability-metadata.json:17:        "typeReached": "org.apache.maven.wagon.Wagon$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0-beta-2/reachability-metadata.json:19:      "type": "org.apache.maven.wagon.Wagon"
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-provider-api/src/test",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:14:      "org.apache.maven.wagon"
+metadata/org.apache.maven.surefire/surefire-logger-api/2.22.2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.surefire.log.api.ConsoleLoggerDecorator"
+metadata/org.apache.maven.surefire/surefire-logger-api/2.22.2/reachability-metadata.json:7:      "type": "org.apache.maven.plugin.surefire.log.api.PrintStreamLogger",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-sources.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:30:      "org.apache.maven.plugin.surefire.log.api"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:5:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:46:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:58:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:64:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:70:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:76:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:82:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:88:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:90:      "type" : "org.apache.maven.surefire.SpecificTestClassFilter",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:102:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:104:      "type" : "org.apache.maven.surefire.report.SimpleReportEntry",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:122:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:124:      "type" : "org.apache.maven.surefire.testset.TestArtifactInfo",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:137:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:139:      "type" : "org.apache.maven.surefire.booter.SurefireReflector$ClassLoaderProxy",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:144:            "org.apache.maven.surefire.booter.SurefireReflector",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:152:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:154:      "type" : "org.apache.maven.plugin.surefire.log.api.ConsoleLoggerDecorator",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:166:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:168:      "type" : "org.apache.maven.surefire.booter.DirectoryScannerParametersAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:172:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:174:      "type" : "org.apache.maven.surefire.booter.ProviderPropertiesAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:178:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:180:      "type" : "org.apache.maven.surefire.booter.ReporterConfigurationAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:184:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:186:      "type" : "org.apache.maven.surefire.booter.Shutdown"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:190:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:192:      "type" : "org.apache.maven.surefire.booter.ShutdownAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:196:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:198:      "type" : "org.apache.maven.surefire.booter.SurefireClassLoadersAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:202:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:204:      "type" : "org.apache.maven.surefire.booter.TestArtifactInfoAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:208:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:210:      "type" : "org.apache.maven.surefire.booter.TestRequestAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:214:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:216:      "type" : "org.apache.maven.surefire.booter.MainCliOptionsAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:220:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:222:      "type" : "org.apache.maven.surefire.cli.CommandLineOption"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:226:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:228:      "type" : "org.apache.maven.surefire.providerapi.ProviderParameters"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:232:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:234:      "type" : "org.apache.maven.surefire.report.ReporterConfiguration"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:238:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:240:      "type" : "org.apache.maven.surefire.report.ReporterFactory"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:244:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:246:      "type" : "org.apache.maven.surefire.suite.RunResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:250:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:252:      "type" : "org.apache.maven.surefire.testset.DirectoryScannerParameters"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:256:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:258:      "type" : "org.apache.maven.surefire.testset.RunOrderParameters"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:262:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:264:      "type" : "org.apache.maven.surefire.testset.TestListResolver"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:268:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:270:      "type" : "org.apache.maven.surefire.testset.TestRequest"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:274:        "typeReached" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:280:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.DirectoryScanner"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:286:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:292:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:298:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:300:      "type" : "org.apache.maven.plugin.surefire.log.api.ConsoleLoggerDecorator"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:304:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:306:      "type" : "org.apache.maven.surefire.SpecificTestClassFilter"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:310:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:312:      "type" : "org.apache.maven.surefire.report.SimpleReportEntry"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:316:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:318:      "type" : "org.apache.maven.surefire.testset.TestArtifactInfo"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:322:        "typeReached" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:324:      "type" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:328:        "typeReached" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:330:      "type" : "org.apache.maven.surefire.util.TestsToRun"
+metadata/org.apache.maven.surefire/surefire-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/$version$/surefire-api-$version$-sources.jar",
+metadata/org.apache.maven.surefire/surefire-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/org.apache.maven.surefire/surefire-api/index.json:7:    "test-code-url" : "https://github.com/apache/maven-surefire/tree/surefire-$version$/surefire-api/src/test",
+metadata/org.apache.maven.surefire/surefire-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/$version$/surefire-api-$version$-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-api/index.json:14:      "org.apache.maven.plugin.surefire.runorder",
+metadata/org.apache.maven.surefire/surefire-api/index.json:15:      "org.apache.maven.surefire"
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-apache/$version$/maven-resolver-transport-apache-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-apache/$version$/maven-resolver-transport-apache-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-api-di/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-di/index.json:14:      "org.apache.maven.api.di",
+metadata/org.apache.maven/maven-api-di/index.json:15:      "org.apache.maven.di.tool"
+metadata/org.apache.maven/maven-plugin-api/2.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.Mojo$1"
+metadata/org.apache.maven/maven-plugin-api/2.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.plugin.Mojo$1"
+metadata/org.apache.maven/maven-plugin-api/2.0/reachability-metadata.json:13:      "type": "org.apache.maven.plugin.Mojo"
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:37:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:21:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-file/$version$/maven-resolver-transport-file-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-transport-file/src/test/java",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-file/$version$/maven-resolver-transport-file-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:14:      "org.apache.maven.model"
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:20:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:41:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:42:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-connector-basic/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.artifact.deployer.ArtifactDeployer$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:11:        "typeReached": "org.apache.maven.artifact.deployer.ArtifactDeployer$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:13:      "type": "org.apache.maven.artifact.deployer.ArtifactDeployer"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:17:        "typeReached": "org.apache.maven.artifact.factory.ArtifactFactory$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:19:      "type": "org.apache.maven.artifact.factory.ArtifactFactory"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:23:        "typeReached": "org.apache.maven.artifact.handler.ArtifactHandler$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:25:      "type": "org.apache.maven.artifact.handler.ArtifactHandler"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:29:        "typeReached": "org.apache.maven.artifact.handler.manager.ArtifactHandlerManager$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:31:      "type": "org.apache.maven.artifact.handler.manager.ArtifactHandlerManager"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:35:        "typeReached": "org.apache.maven.artifact.installer.ArtifactInstaller$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:37:      "type": "org.apache.maven.artifact.installer.ArtifactInstaller"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:41:        "typeReached": "org.apache.maven.artifact.metadata.ArtifactMetadataSource$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:43:      "type": "org.apache.maven.artifact.metadata.ArtifactMetadataSource"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:47:        "typeReached": "org.apache.maven.artifact.repository.ArtifactRepositoryFactory$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:49:      "type": "org.apache.maven.artifact.repository.ArtifactRepositoryFactory"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:53:        "typeReached": "org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:55:      "type": "org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:59:        "typeReached": "org.apache.maven.artifact.resolver.ArtifactResolver$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:61:      "type": "org.apache.maven.artifact.resolver.ArtifactResolver"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:65:        "typeReached": "org.apache.maven.artifact.resolver.ResolutionListener$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:67:      "type": "org.apache.maven.artifact.resolver.ResolutionListener"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:71:        "typeReached": "org.apache.maven.artifact.resolver.conflict.ConflictResolver$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:73:      "type": "org.apache.maven.artifact.resolver.conflict.ConflictResolver"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:77:        "typeReached": "org.apache.maven.artifact.transform.ArtifactTransformation$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:79:      "type": "org.apache.maven.artifact.transform.ArtifactTransformation"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:83:        "typeReached": "org.apache.maven.artifact.transform.ArtifactTransformationManager$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:85:      "type": "org.apache.maven.artifact.transform.ArtifactTransformationManager"
+metadata/org.apache.maven/maven-artifact/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/index.json:22:      "org.apache.maven.artifact"
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:36:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:37:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-monitor/index.json:22:      "org.apache.maven.monitor.event"
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-api-meta/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:24:      "org.apache.maven.api.annotations"
+metadata/org.apache.maven/maven-plugin-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:44:      "org.apache.maven.plugin"
+
+web search: 
+web search: 
+web search: 
+web search: org.apache.maven:maven-embedder:3.9.12 repo.maven.apache.org
+codex
+The local file is only a stub. I found Maven’s own 3.9.12 reference page and Maven Central listings; next I’m checking which Central artifacts actually exist so the source/test/doc URLs don’t point at guessed files.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/3.9.12/maven-embedder-3.9.12.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>3.9.12</version>
+  </parent>
+
+  <artifactId>maven-embedder</artifactId>
+
+  <name>Maven Embedder</name>
+  <description>Maven embeddable component, with CLI and logging support.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-builder-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-shared-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <classifier>classes</classifier>
+      <exclusions>
+        <!-- MNG-7068 Active dependency management for Google Guice / Google Guava. Excludes of Guava are managed in parent POM -->
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+    <!-- This is required for classpath scanning of annotated components -->
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-classworlds</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-sec-dispatcher</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-cipher</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- CLI -->
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <excludes combine.children="append">
+              <exclude>src/main/resources/META-INF/MANIFEST.MF</exclude>
+              <exclude>src/test/*-projects/**</exclude>
+              <exclude>src/test/*-project/**</exclude>
+              <exclude>src/test/plugin-version-references/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <configuration>
+          <version>1.1.0</version>
+          <models>
+            <model>src/main/mdo/core-extensions.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.9.12/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven/3.9.12</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven/3.9.12</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-3.9.12-cyclonedx.json" title="maven-3.9.12-cyclonedx.json">maven-3.9.12-cyclonedx.json</a>                       2025-12-13 09:17    155053      
+<a href="maven-3.9.12-cyclonedx.json.asc" title="maven-3.9.12-cyclonedx.json.asc">maven-3.9.12-cyclonedx.json.asc</a>                   2025-12-13 09:17       866      
+<a href="maven-3.9.12-cyclonedx.json.md5" title="maven-3.9.12-cyclonedx.json.md5">maven-3.9.12-cyclonedx.json.md5</a>                   2025-12-13 09:17        32      
+<a href="maven-3.9.12-cyclonedx.json.sha1" title="maven-3.9.12-cyclonedx.json.sha1">maven-3.9.12-cyclonedx.json.sha1</a>                  2025-12-13 09:17        40      
+<a href="maven-3.9.12-cyclonedx.xml" title="maven-3.9.12-cyclonedx.xml">maven-3.9.12-cyclonedx.xml</a>                        2025-12-13 09:17    146475      
+<a href="maven-3.9.12-cyclonedx.xml.asc" title="maven-3.9.12-cyclonedx.xml.asc">maven-3.9.12-cyclonedx.xml.asc</a>                    2025-12-13 09:17       866      
+<a href="maven-3.9.12-cyclonedx.xml.md5" title="maven-3.9.12-cyclonedx.xml.md5">maven-3.9.12-cyclonedx.xml.md5</a>                    2025-12-13 09:17        32      
+<a href="maven-3.9.12-cyclonedx.xml.sha1" title="maven-3.9.12-cyclonedx.xml.sha1">maven-3.9.12-cyclonedx.xml.sha1</a>                   2025-12-13 09:17        40      
+<a href="maven-3.9.12.pom" title="maven-3.9.12.pom">maven-3.9.12.pom</a>                                  2025-12-13 09:17     29359      
+<a href="maven-3.9.12.pom.asc" title="maven-3.9.12.pom.asc">maven-3.9.12.pom.asc</a>                              2025-12-13 09:17       866      
+<a href="maven-3.9.12.pom.md5" title="maven-3.9.12.pom.md5">maven-3.9.12.pom.md5</a>                              2025-12-13 09:17        32      
+<a href="maven-3.9.12.pom.sha1" title="maven-3.9.12.pom.sha1">maven-3.9.12.pom.sha1</a>                             2025-12-13 09:17        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.12/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/apache-maven/3.9.12</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/apache-maven/3.9.12</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="apache-maven-3.9.12-bin.tar.gz" title="apache-maven-3.9.12-bin.tar.gz">apache-maven-3.9.12-bin.tar.gz</a>                    2025-12-13 09:19   9233336      
+<a href="apache-maven-3.9.12-bin.tar.gz.asc" title="apache-maven-3.9.12-bin.tar.gz.asc">apache-maven-3.9.12-bin.tar.gz.asc</a>                2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12-bin.tar.gz.md5" title="apache-maven-3.9.12-bin.tar.gz.md5">apache-maven-3.9.12-bin.tar.gz.md5</a>                2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12-bin.tar.gz.sha1" title="apache-maven-3.9.12-bin.tar.gz.sha1">apache-maven-3.9.12-bin.tar.gz.sha1</a>               2025-12-13 09:19        40      
+<a href="apache-maven-3.9.12-bin.tar.gz.sha512" title="apache-maven-3.9.12-bin.tar.gz.sha512">apache-maven-3.9.12-bin.tar.gz.sha512</a>             2025-12-13 09:19       128      
+<a href="apache-maven-3.9.12-bin.zip" title="apache-maven-3.9.12-bin.zip">apache-maven-3.9.12-bin.zip</a>                       2025-12-13 09:19   9347376      
+<a href="apache-maven-3.9.12-bin.zip.asc" title="apache-maven-3.9.12-bin.zip.asc">apache-maven-3.9.12-bin.zip.asc</a>                   2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12-bin.zip.md5" title="apache-maven-3.9.12-bin.zip.md5">apache-maven-3.9.12-bin.zip.md5</a>                   2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12-bin.zip.sha1" title="apache-maven-3.9.12-bin.zip.sha1">apache-maven-3.9.12-bin.zip.sha1</a>                  2025-12-13 09:19        40      
+<a href="apache-maven-3.9.12-bin.zip.sha512" title="apache-maven-3.9.12-bin.zip.sha512">apache-maven-3.9.12-bin.zip.sha512</a>                2025-12-13 09:19       128      
+<a href="apache-maven-3.9.12-cyclonedx.json" title="apache-maven-3.9.12-cyclonedx.json">apache-maven-3.9.12-cyclonedx.json</a>                2025-12-13 09:19    161282      
+<a href="apache-maven-3.9.12-cyclonedx.json.asc" title="apache-maven-3.9.12-cyclonedx.json.asc">apache-maven-3.9.12-cyclonedx.json.asc</a>            2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12-cyclonedx.json.md5" title="apache-maven-3.9.12-cyclonedx.json.md5">apache-maven-3.9.12-cyclonedx.json.md5</a>            2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12-cyclonedx.json.sha1" title="apache-maven-3.9.12-cyclonedx.json.sha1">apache-maven-3.9.12-cyclonedx.json.sha1</a>           2025-12-13 09:19        40      
+<a href="apache-maven-3.9.12-cyclonedx.xml" title="apache-maven-3.9.12-cyclonedx.xml">apache-maven-3.9.12-cyclonedx.xml</a>                 2025-12-13 09:19    149253      
+<a href="apache-maven-3.9.12-cyclonedx.xml.asc" title="apache-maven-3.9.12-cyclonedx.xml.asc">apache-maven-3.9.12-cyclonedx.xml.asc</a>             2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12-cyclonedx.xml.md5" title="apache-maven-3.9.12-cyclonedx.xml.md5">apache-maven-3.9.12-cyclonedx.xml.md5</a>             2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12-cyclonedx.xml.sha1" title="apache-maven-3.9.12-cyclonedx.xml.sha1">apache-maven-3.9.12-cyclonedx.xml.sha1</a>            2025-12-13 09:19        40      
+<a href="apache-maven-3.9.12-src.tar.gz" title="apache-maven-3.9.12-src.tar.gz">apache-maven-3.9.12-src.tar.gz</a>                    2025-12-13 09:19   2732751      
+<a href="apache-maven-3.9.12-src.tar.gz.asc" title="apache-maven-3.9.12-src.tar.gz.asc">apache-maven-3.9.12-src.tar.gz.asc</a>                2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12-src.tar.gz.md5" title="apache-maven-3.9.12-src.tar.gz.md5">apache-maven-3.9.12-src.tar.gz.md5</a>                2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12-src.tar.gz.sha1" title="apache-maven-3.9.12-src.tar.gz.sha1">apache-maven-3.9.12-src.tar.gz.sha1</a>               2025-12-13 09:19        40      
+<a href="apache-maven-3.9.12-src.tar.gz.sha512" title="apache-maven-3.9.12-src.tar.gz.sha512">apache-maven-3.9.12-src.tar.gz.sha512</a>             2025-12-13 09:19       128      
+<a href="apache-maven-3.9.12-src.zip" title="apache-maven-3.9.12-src.zip">apache-maven-3.9.12-src.zip</a>                       2025-12-13 09:19   4647922      
+<a href="apache-maven-3.9.12-src.zip.asc" title="apache-maven-3.9.12-src.zip.asc">apache-maven-3.9.12-src.zip.asc</a>                   2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12-src.zip.md5" title="apache-maven-3.9.12-src.zip.md5">apache-maven-3.9.12-src.zip.md5</a>                   2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12-src.zip.sha1" title="apache-maven-3.9.12-src.zip.sha1">apache-maven-3.9.12-src.zip.sha1</a>                  2025-12-13 09:19        40      
+<a href="apache-maven-3.9.12-src.zip.sha512" title="apache-maven-3.9.12-src.zip.sha512">apache-maven-3.9.12-src.zip.sha512</a>                2025-12-13 09:19       128      
+<a href="apache-maven-3.9.12.pom" title="apache-maven-3.9.12.pom">apache-maven-3.9.12.pom</a>                           2025-12-13 09:19      9617      
+<a href="apache-maven-3.9.12.pom.asc" title="apache-maven-3.9.12.pom.asc">apache-maven-3.9.12.pom.asc</a>                       2025-12-13 09:19       866      
+<a href="apache-maven-3.9.12.pom.md5" title="apache-maven-3.9.12.pom.md5">apache-maven-3.9.12.pom.md5</a>                       2025-12-13 09:19        32      
+<a href="apache-maven-3.9.12.pom.sha1" title="apache-maven-3.9.12.pom.sha1">apache-maven-3.9.12.pom.sha1</a>                      2025-12-13 09:19        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/3.9.12/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 281ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven-embedder/3.9.12</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven-embedder/3.9.12</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-embedder-3.9.12-cyclonedx.json" title="maven-embedder-3.9.12-cyclonedx.json">maven-embedder-3.9.12-cyclonedx.json</a>              2025-12-13 09:18    113447      
+<a href="maven-embedder-3.9.12-cyclonedx.json.asc" title="maven-embedder-3.9.12-cyclonedx.json.asc">maven-embedder-3.9.12-cyclonedx.json.asc</a>          2025-12-13 09:18       866      
+<a href="maven-embedder-3.9.12-cyclonedx.json.md5" title="maven-embedder-3.9.12-cyclonedx.json.md5">maven-embedder-3.9.12-cyclonedx.json.md5</a>          2025-12-13 09:18        32      
+<a href="maven-embedder-3.9.12-cyclonedx.json.sha1" title="maven-embedder-3.9.12-cyclonedx.json.sha1">maven-embedder-3.9.12-cyclonedx.json.sha1</a>         2025-12-13 09:18        40      
+<a href="maven-embedder-3.9.12-cyclonedx.xml" title="maven-embedder-3.9.12-cyclonedx.xml">maven-embedder-3.9.12-cyclonedx.xml</a>               2025-12-13 09:18    104464      
+<a href="maven-embedder-3.9.12-cyclonedx.xml.asc" title="maven-embedder-3.9.12-cyclonedx.xml.asc">maven-embedder-3.9.12-cyclonedx.xml.asc</a>           2025-12-13 09:18       866      
+<a href="maven-embedder-3.9.12-cyclonedx.xml.md5" title="maven-embedder-3.9.12-cyclonedx.xml.md5">maven-embedder-3.9.12-cyclonedx.xml.md5</a>           2025-12-13 09:18        32      
+<a href="maven-embedder-3.9.12-cyclonedx.xml.sha1" title="maven-embedder-3.9.12-cyclonedx.xml.sha1">maven-embedder-3.9.12-cyclonedx.xml.sha1</a>          2025-12-13 09:18        40      
+<a href="maven-embedder-3.9.12-javadoc.jar" title="maven-embedder-3.9.12-javadoc.jar">maven-embedder-3.9.12-javadoc.jar</a>                 2025-12-13 09:18    342393      
+<a href="maven-embedder-3.9.12-javadoc.jar.asc" title="maven-embedder-3.9.12-javadoc.jar.asc">maven-embedder-3.9.12-javadoc.jar.asc</a>             2025-12-13 09:18       866      
+<a href="maven-embedder-3.9.12-javadoc.jar.md5" title="maven-embedder-3.9.12-javadoc.jar.md5">maven-embedder-3.9.12-javadoc.jar.md5</a>             2025-12-13 09:18        32      
+<a href="maven-embedder-3.9.12-javadoc.jar.sha1" title="maven-embedder-3.9.12-javadoc.jar.sha1">maven-embedder-3.9.12-javadoc.jar.sha1</a>            2025-12-13 09:18        40      
+<a href="maven-embedder-3.9.12-sources.jar" title="maven-embedder-3.9.12-sources.jar">maven-embedder-3.9.12-sources.jar</a>                 2025-12-13 09:18     80505      
+<a href="maven-embedder-3.9.12-sources.jar.asc" title="maven-embedder-3.9.12-sources.jar.asc">maven-embedder-3.9.12-sources.jar.asc</a>             2025-12-13 09:18       866      
+<a href="maven-embedder-3.9.12-sources.jar.md5" title="maven-embedder-3.9.12-sources.jar.md5">maven-embedder-3.9.12-sources.jar.md5</a>             2025-12-13 09:18        32      
+<a href="maven-embedder-3.9.12-sources.jar.sha1" title="maven-embedder-3.9.12-sources.jar.sha1">maven-embedder-3.9.12-sources.jar.sha1</a>            2025-12-13 09:18        40      
+<a href="maven-embedder-3.9.12.jar" title="maven-embedder-3.9.12.jar">maven-embedder-3.9.12.jar</a>                         2025-12-13 09:18    117398      
+<a href="maven-embedder-3.9.12.jar.asc" title="maven-embedder-3.9.12.jar.asc">maven-embedder-3.9.12.jar.asc</a>                     2025-12-13 09:18       866      
+<a href="maven-embedder-3.9.12.jar.md5" title="maven-embedder-3.9.12.jar.md5">maven-embedder-3.9.12.jar.md5</a>                     2025-12-13 09:18        32      
+<a href="maven-embedder-3.9.12.jar.sha1" title="maven-embedder-3.9.12.jar.sha1">maven-embedder-3.9.12.jar.sha1</a>                    2025-12-13 09:18        40      
+<a href="maven-embedder-3.9.12.pom" title="maven-embedder-3.9.12.pom">maven-embedder-3.9.12.pom</a>                         2025-12-13 09:18      6510      
+<a href="maven-embedder-3.9.12.pom.asc" title="maven-embedder-3.9.12.pom.asc">maven-embedder-3.9.12.pom.asc</a>                     2025-12-13 09:18       866      
+<a href="maven-embedder-3.9.12.pom.md5" title="maven-embedder-3.9.12.pom.md5">maven-embedder-3.9.12.pom.md5</a>                     2025-12-13 09:18        32      
+<a href="maven-embedder-3.9.12.pom.sha1" title="maven-embedder-3.9.12.pom.sha1">maven-embedder-3.9.12.pom.sha1</a>                    2025-12-13 09:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Central publishes the artifact JAR, sources JAR, and javadoc JAR for `maven-embedder`; it does not publish a `test-sources` JAR for that artifact. Apache does publish the full `apache-maven-$version$-src.zip` source distribution on Central, so I’m using that as the test-suite URL because it includes the module tests and satisfies the Maven-preferred rule.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/3.9.12/maven-embedder-3.9.12.jar | bsdtar -tf - | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+org/apache/maven/cli/CLIManager.class
+org/apache/maven/cli/CLIReportingUtils.class
+org/apache/maven/cli/CleanArgument.class
+org/apache/maven/cli/CliRequest.class
+org/apache/maven/cli/MavenCli$1.class
+org/apache/maven/cli/MavenCli$2.class
+org/apache/maven/cli/MavenCli$3.class
+org/apache/maven/cli/MavenCli$4.class
+org/apache/maven/cli/MavenCli$ExitException.class
+org/apache/maven/cli/MavenCli$IllegalUseOfUndefinedProperty.class
+org/apache/maven/cli/MavenCli.class
+org/apache/maven/cli/ResolveFile.class
+org/apache/maven/cli/configuration/ConfigurationProcessor.class
+org/apache/maven/cli/configuration/SettingsXmlConfigurationProcessor.class
+org/apache/maven/cli/event/DefaultEventSpyContext.class
+org/apache/maven/cli/event/ExecutionEventLogger.class
+org/apache/maven/cli/internal/BootstrapCoreExtensionManager.class
+org/apache/maven/cli/internal/ExtensionResolutionException.class
+org/apache/maven/cli/internal/extension/model/CoreExtension.class
+org/apache/maven/cli/internal/extension/model/CoreExtensions.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.12/apache-maven-3.9.12-src.zip | bsdtar -tf - | rg '"'^apache-maven-3'"\\.9\\.12/maven-embedder/src/test/' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.9.12/maven-3.9.12.pom | sed -n '/<scm>/,/<\\/scm>/p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+  <scm>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/maven.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven.git</developerConnection>
+    <tag>maven-3.9.12</tag>
+    <url>https://github.com/apache/maven/tree/${project.scm.tag}</url>
+  </scm>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/apache/maven/tree/maven-3.9.12/maven-embedder/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 591ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 07:35:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9e35e95784a762a47f78c6dd528171c7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kJ0b1KkKbdoV%2FNPv1R9m%2BaaMj9btSLb60j02A0YMTkFig6m6NN1ZJI%2FA9qvlL7%2BVt3hdkG%2Fqym0w4dKcN42crql73qGUbGp2I5er5xQsxy%2BbrMVLF6xWSuLKO5zUuq0w4y1eGvbMvZS3xZbPfaJrD99SZlHTXPmiN%2FujvZRLmzxJKkUDIs85SKLmJlfhqYUoVYDzvJ3uwY6kud3LNMuNBRApytazxYjusamy9P9gTkxCEk4TqdvnrHGnvRc%2Bydiux7ET1VRPPD88MEXwL2emEg%3D%3D--dE1aP3rzOdJ0QbU%2B--gjKysHyAm2YaY0bTFIN9Pg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1778458373.1778225705; expires=Sat, 08 May 2027 07:35:05 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 07:35:05 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 512A:347D11:DC8791A:ACFDE40:69FD9229
+
+
+ succeeded in 919ms:
+apache-maven-3.9.12/maven-embedder/src/test/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/main/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/main/java/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/main/java/org/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/main/java/org/apache/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/main/java/org/apache/maven/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/test/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/test/java/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/test/java/org/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/test/java/org/apache/
+apache-maven-3.9.12/maven-embedder/src/test/embedder-test-project/src/test/java/org/apache/maven/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/aggregate-mojo-failure/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/aggregate-mojo-failure/plugin/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/aggregate-mojo-failure/plugin/src/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/aggregate-mojo-failure/plugin/src/main/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/aggregate-mojo-failure/plugin/src/main/java/
+apache-maven-3.9.12/maven-embedder/src/test/error-reporting-projects/aggregate-mojo-failure/plugin/src/main/java/org/
+
+codex
+I’ve confirmed the Maven POM declares SCM tag `maven-3.9.12` under `apache/maven`, and the artifact JAR contains JVM `.class` files. I’m going to patch only the discovered metadata JSON now, leaving language and `not-for-native-image` fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+index 5e7f4fe4c14f0596dec74604c2340be508e436d3..19d4c06013bb44975b3491e7becd2697629ffb3e
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
++  "coordinates" : "org.apache.maven:maven-embedder:3.9.12",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
++  "description" : "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+index 5e7f4fe4c14f0596dec74604c2340be508e436d3..19d4c06013bb44975b3491e7becd2697629ffb3e
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
++  "coordinates" : "org.apache.maven:maven-embedder:3.9.12",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
++  "description" : "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+ }
+
+codex
+The JSON is patched. I’ll do a quick validity check and verify the tokenized URLs resolve when `$version$` is replaced with `3.9.12`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven:maven-embedder:3.9.12",
+  "repository-url": "https://github.com/apache/maven",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
+  "description": "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/3.9.12/maven-embedder-3.9.12-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 07:35:21 GMT
+content-type: application/java-archive
+content-length: 342393
+cf-ray: 9f86c98619e82680-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 505737
+etag: "346c2e75d20d952a1de34b8fe135d2c5"
+last-modified: Sat, 13 Dec 2025 09:18:52 GMT
+x-checksum-md5: 346c2e75d20d952a1de34b8fe135d2c5
+x-checksum-sha1: 2237d7954df1e35b66e7c9c7cf8f2e3f6969da54
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.12/apache-maven-3.9.12-src.zip' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 07:35:21 GMT
+content-type: application/zip
+content-length: 4647922
+cf-ray: 9f86c9860e997dd2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 15
+etag: "12a547eaac01aa0da37163923592dd01"
+last-modified: Sat, 13 Dec 2025 09:19:08 GMT
+x-checksum-md5: 12a547eaac01aa0da37163923592dd01
+x-checksum-sha1: 58141d59ec3077656556cba4df97b709843854bb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/3.9.12/maven-embedder-3.9.12-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 07:35:21 GMT
+content-type: application/java-archive
+content-length: 80505
+cf-ray: 9f86c9861ad475ff-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2427385
+etag: "e171a3310336b27c6d9f4af074a23afb"
+last-modified: Sat, 13 Dec 2025 09:18:52 GMT
+x-checksum-md5: e171a3310336b27c6d9f4af074a23afb
+x-checksum-sha1: f0840b0136965574d09cd752515ecbda003a8f49
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+index 5e7f4fe4c14f0596dec74604c2340be508e436d3..19d4c06013bb44975b3491e7becd2697629ffb3e
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
++  "coordinates" : "org.apache.maven:maven-embedder:3.9.12",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
++  "description" : "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+ }
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.12/
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/3.9.12/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/
+web search: 
+web search: Maven Central org.apache.maven maven-embedder 3.9.12 sources javadoc
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven:maven-embedder:3.9.12",
+  "repository-url" : "https://github.com/apache/maven",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
+  "description" : "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+index 5e7f4fe4c14f0596dec74604c2340be508e436d3..19d4c06013bb44975b3491e7becd2697629ffb3e
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
++  "coordinates" : "org.apache.maven:maven-embedder:3.9.12",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
++  "description" : "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+ }
+
+web search: 
+web search: Apache Maven 3.9.12 maven-embedder Maven Embedder Central Repository sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.12/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/
+codex
+Updated [org.apache.maven-maven-embedder-3.9.12.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json) with repository, source, test suite, documentation, and two-sentence description.
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because `maven-embedder` is a JVM `jar` artifact. Maven Central has the `maven-embedder` artifact/version and Apache’s 3.9.12 distribution source ZIP, and Apache’s docs identify `maven-embedder:jar:3.9.12` as a compile dependency with the Maven Embedder description. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the resolved source, test ZIP, and javadoc URLs all return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+index 5e7f4fe4c14f0596dec74604c2340be508e436d3..19d4c06013bb44975b3491e7becd2697629ffb3e
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-embedder:3.9.12"
++  "coordinates" : "org.apache.maven:maven-embedder:3.9.12",
++  "repository-url" : "https://github.com/apache/maven",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/$version$/maven-embedder-$version$-javadoc.jar",
++  "description" : "Maven Embedder provides APIs and support classes for embedding Apache Maven in another JVM application. It wires Maven core, settings, project building, CLI handling, and logging so applications can execute Maven behavior programmatically."
+ }
+
+tokens used
+107,031
+Updated [org.apache.maven-maven-embedder-3.9.12.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/build/discovered-artifact-metadata/org.apache.maven-maven-embedder-3.9.12.json) with repository, source, test suite, documentation, and two-sentence description.
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because `maven-embedder` is a JVM `jar` artifact. Maven Central has the `maven-embedder` artifact/version and Apache’s 3.9.12 distribution source ZIP, and Apache’s docs identify `maven-embedder:jar:3.9.12` as a compile dependency with the Maven Embedder description. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/maven-embedder/?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the resolved source, test ZIP, and javadoc URLs all return HTTP 200.
+Ran agent for org.apache.maven:maven-embedder:3.9.12 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/build/agent-artifact-discovery-logs/org.apache.maven-maven-embedder-3.9.12.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3812-bc8dd5c1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 19s
+9 actionable tasks: 9 executed
