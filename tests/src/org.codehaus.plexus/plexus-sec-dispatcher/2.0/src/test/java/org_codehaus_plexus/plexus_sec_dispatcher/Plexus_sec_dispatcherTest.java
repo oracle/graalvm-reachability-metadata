@@ -116,6 +116,25 @@ public class Plexus_sec_dispatcherTest {
     }
 
     @Test
+    void secUtilReadsSettingsSecurityFromFileUrlLocation() throws Exception {
+        Path configurationFile = temporaryDirectory.resolve("url-settings-security.xml");
+        SettingsSecurity expected = settingsSecurity("url-master");
+        expected.addConfiguration(config("url-config", property("location", "file-url")));
+        writeSettingsSecurity(configurationFile, expected);
+
+        SettingsSecurity actual = SecUtil.read(configurationFile.toUri().toString(), false);
+
+        assertThat(actual.getMaster()).isEqualTo("url-master");
+        assertThat(actual.getConfigurations()).hasSize(1);
+        Config actualConfig = actual.getConfigurations().get(0);
+        assertThat(actualConfig.getName()).isEqualTo("url-config");
+        assertThat(actualConfig.getProperties()).hasSize(1);
+        ConfigProperty actualProperty = actualConfig.getProperties().get(0);
+        assertThat(actualProperty.getName()).isEqualTo("location");
+        assertThat(actualProperty.getValue()).isEqualTo("file-url");
+    }
+
+    @Test
     void xpp3WriterAndReaderRoundTripSettingsSecurityFromStreams() throws Exception {
         SettingsSecurity expected = settingsSecurity("master<&>value");
         expected.setRelocation("file:///tmp/other-settings-security.xml");
