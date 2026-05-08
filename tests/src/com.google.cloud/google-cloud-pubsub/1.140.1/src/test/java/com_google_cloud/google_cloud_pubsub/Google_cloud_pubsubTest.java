@@ -13,6 +13,7 @@ import com.google.api.core.ApiFutures;
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -24,6 +25,7 @@ import com.google.cloud.pubsub.v1.MessageReceiverWithAckResponse;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.pubsub.v1.SchemaServiceClient;
 import com.google.cloud.pubsub.v1.SchemaServiceSettings;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
@@ -47,6 +49,7 @@ import com.google.pubsub.v1.MessageTransform;
 import com.google.pubsub.v1.ModifyAckDeadlineRequest;
 import com.google.pubsub.v1.ModifyPushConfigRequest;
 import com.google.pubsub.v1.ProjectName;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PullRequest;
 import com.google.pubsub.v1.PullResponse;
@@ -70,8 +73,11 @@ import com.google.pubsub.v1.UpdateTopicRequest;
 import com.google.pubsub.v1.ValidateMessageRequest;
 import com.google.pubsub.v1.ValidateSchemaRequest;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -420,6 +426,47 @@ public class Google_cloud_pubsubTest {
         } finally {
             publisher.shutdown();
             publisher.awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
+    void subscriberBuilderRetainsSubscriptionFlowControlAndDeliveryAttemptConfiguration() throws Exception {
+        ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
+        FlowControlSettings flowControlSettings = FlowControlSettings.newBuilder()
+                .setMaxOutstandingElementCount(25L)
+                .setMaxOutstandingRequestBytes(4_096L)
+                .build();
+        MessageReceiver receiver = (message, consumer) -> consumer.ack();
+        ScheduledExecutorService systemExecutor = Executors.newSingleThreadScheduledExecutor();
+        Subscriber subscriber = null;
+        try {
+            subscriber = Subscriber.newBuilder(subscriptionName, receiver)
+                    .setCredentialsProvider(NoCredentialsProvider.create())
+                    .setEndpoint(LOCAL_ENDPOINT)
+                    .setSystemExecutorProvider(FixedExecutorProvider.create(systemExecutor))
+                    .setFlowControlSettings(flowControlSettings)
+                    .setParallelPullCount(1)
+                    .setMaxAckExtensionPeriodDuration(Duration.ofSeconds(30))
+                    .setMinDurationPerAckExtensionDuration(Duration.ofSeconds(5))
+                    .setMaxDurationPerAckExtensionDuration(Duration.ofSeconds(10))
+                    .build();
+            PubsubMessage messageWithDeliveryAttempt = PubsubMessage.newBuilder()
+                    .putAttributes("googclient_deliveryattempt", "4")
+                    .build();
+
+            assertThat(subscriber.getSubscriptionNameString()).isEqualTo(subscriptionName.toString());
+            assertThat(subscriber.getFlowControlSettings().getMaxOutstandingElementCount()).isEqualTo(25L);
+            assertThat(subscriber.getFlowControlSettings().getMaxOutstandingRequestBytes()).isEqualTo(4_096L);
+            assertThat(Subscriber.Builder.getDefaultFlowControlSettings().getMaxOutstandingElementCount()).isPositive();
+            assertThat(Subscriber.getDeliveryAttempt(messageWithDeliveryAttempt)).isEqualTo(4);
+            assertThat(Subscriber.getDeliveryAttempt(PubsubMessage.getDefaultInstance())).isNull();
+        } finally {
+            if (subscriber != null) {
+                subscriber.stopAsync();
+                subscriber.awaitTerminated(5, TimeUnit.SECONDS);
+            }
+            systemExecutor.shutdownNow();
+            systemExecutor.awaitTermination(5, TimeUnit.SECONDS);
         }
     }
 
