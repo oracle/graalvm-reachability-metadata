@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.AddHasCasting;
 import org.openqa.selenium.chromium.AddHasCdp;
@@ -121,6 +123,35 @@ public class Selenium_chromium_driverTest {
                 "--remote-allow-origins=https://example.test");
         assertThat(optionList(chromiumOptions, "extensions"))
             .containsExactly(Base64.getEncoder().encodeToString(extensionBytes), "already-encoded");
+    }
+
+    @Test
+    public void shouldExposeStandardWebDriverCapabilitiesOnChromiumOptions() {
+        ChromiumOptions<?> options = new ChromiumOptions<>("browserName", "chrome", "goog:chromeOptions");
+
+        options.setBrowserVersion("stable");
+        options.setPlatformName("test-platform");
+        options.setAcceptInsecureCerts(true);
+        options.setStrictFileInteractability(true);
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+        options.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS);
+        options.setImplicitWaitTimeout(Duration.ofMillis(250));
+        options.setPageLoadTimeout(Duration.ofSeconds(2));
+        options.setScriptTimeout(Duration.ofSeconds(1));
+
+        assertThat(options.getCapability("browserVersion")).isEqualTo("stable");
+        assertThat(options.getCapability("platformName")).isEqualTo("test-platform");
+        assertThat(options.getCapability("acceptInsecureCerts")).isEqualTo(true);
+        assertThat(options.getCapability("strictFileInteractability")).isEqualTo(true);
+        assertThat(options.getCapability("pageLoadStrategy")).isEqualTo(PageLoadStrategy.EAGER);
+        assertThat(options.getCapability("unhandledPromptBehavior")).isEqualTo(UnexpectedAlertBehaviour.DISMISS);
+        assertThat(options.getCapabilityNames())
+            .contains("browserName", "browserVersion", "platformName", "goog:chromeOptions");
+        assertThat(options.asMap()).containsKeys("browserName", "goog:chromeOptions", "timeouts");
+        assertThat(timeoutMap(options))
+            .containsEntry("implicit", 250L)
+            .containsEntry("pageLoad", 2000L)
+            .containsEntry("script", 1000L);
     }
 
     @Test
@@ -340,6 +371,11 @@ public class Selenium_chromium_driverTest {
     @SuppressWarnings("unchecked")
     private static List<Object> optionList(Map<String, Object> options, String key) {
         return (List<Object>) options.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Number> timeoutMap(ChromiumOptions<?> options) {
+        return (Map<String, Number>) options.getCapability("timeouts");
     }
 
     private static Capabilities chromeCapabilities() {
