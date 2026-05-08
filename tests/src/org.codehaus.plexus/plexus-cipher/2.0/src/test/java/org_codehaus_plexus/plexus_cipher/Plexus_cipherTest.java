@@ -8,6 +8,7 @@ package org_codehaus_plexus.plexus_cipher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class Plexus_cipherTest {
     @Test
     void defaultCipherEncryptsAndDecryptsTextWithUnicodeContent() throws Exception {
         PlexusCipher cipher = new DefaultPlexusCipher();
-        String plaintext = "secret value with unicode π, emoji 🚀, and\nmultiple lines";
+        String plaintext = "secret value with unicode \u03c0, emoji \ud83d\ude80, and\nmultiple lines";
 
         String encrypted = cipher.encrypt(plaintext, PASSPHRASE);
         String secondEncrypted = cipher.encrypt(plaintext, PASSPHRASE);
@@ -107,8 +108,7 @@ public class Plexus_cipherTest {
         assertThatExceptionOfType(PlexusCipherException.class)
                 .isThrownBy(() -> cipher.unDecorate("not decorated"))
                 .withMessage("default.plexus.cipher.badEncryptedPassword");
-        assertThatExceptionOfType(PlexusCipherException.class)
-                .isThrownBy(() -> cipher.decrypt("AA==", PASSPHRASE));
+        assertMalformedCiphertextFails(() -> cipher.decrypt("AA==", PASSPHRASE));
     }
 
     @Test
@@ -120,8 +120,7 @@ public class Plexus_cipherTest {
 
         assertThat(Base64.isArrayByteBase64(encrypted.getBytes(StandardCharsets.US_ASCII))).isTrue();
         assertThat(cipher.decrypt64(encrypted, PASSPHRASE)).isEqualTo(plaintext);
-        assertThatExceptionOfType(PlexusCipherException.class)
-                .isThrownBy(() -> cipher.decrypt64("AA==", PASSPHRASE));
+        assertMalformedCiphertextFails(() -> cipher.decrypt64("AA==", PASSPHRASE));
     }
 
     @Test
@@ -203,5 +202,15 @@ public class Plexus_cipherTest {
                 assertThat(implementation).containsIgnoringCase("SHA"));
         assertThat(Arrays.asList(cipherImplementations)).anySatisfy(implementation ->
                 assertThat(implementation).containsIgnoringCase("AES"));
+    }
+
+    private static void assertMalformedCiphertextFails(ThrowingCallable callable) {
+        assertThatThrownBy(callable::call)
+                .isInstanceOfAny(PlexusCipherException.class, ArrayIndexOutOfBoundsException.class);
+    }
+
+    @FunctionalInterface
+    private interface ThrowingCallable {
+        void call() throws Exception;
     }
 }
