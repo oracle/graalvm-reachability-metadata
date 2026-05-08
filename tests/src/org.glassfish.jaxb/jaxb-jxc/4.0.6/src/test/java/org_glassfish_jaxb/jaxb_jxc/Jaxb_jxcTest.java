@@ -8,7 +8,7 @@ package org_glassfish_jaxb.jaxb_jxc;
 
 import org.junit.jupiter.api.Test;
 
-class Jaxb_jxcTest {
+public class Jaxb_jxcTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
