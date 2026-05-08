@@ -178,8 +178,8 @@ public class Jackson_jakarta_rs_baseTest {
                 new JsonViewAnnotation(PublicView.class),
                 new JsonRootNameAnnotation("user"),
                 new JacksonFeaturesAnnotation(
-                        new DeserializationFeature[] { DeserializationFeature.UNWRAP_ROOT_VALUE },
-                        new DeserializationFeature[] { DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES },
+                        new DeserializationFeature[] {DeserializationFeature.UNWRAP_ROOT_VALUE },
+                        new DeserializationFeature[] {DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES },
                         new SerializationFeature[0],
                         new SerializationFeature[0])
         };
@@ -309,7 +309,7 @@ public class Jackson_jakarta_rs_baseTest {
 
         Annotation first = new JsonRootNameAnnotation("first");
         Annotation second = new JsonRootNameAnnotation("second");
-        Annotation[] annotations = new Annotation[] { first };
+        Annotation[] annotations = new Annotation[] {first };
         AnnotationBundleKey mutableKey = new AnnotationBundleKey(annotations, User.class);
         AnnotationBundleKey immutableKey = mutableKey.immutableKey();
         assertThat(immutableKey).isEqualTo(mutableKey);
@@ -320,9 +320,10 @@ public class Jackson_jakarta_rs_baseTest {
         ObjectMapper mapper = new ObjectMapper();
         JavaType userType = mapper.constructType(User.class);
         EndpointAsBeanProperty property = new EndpointAsBeanProperty(
-                EndpointAsBeanProperty.ENDPOINT_NAME, userType, new Annotation[] { first });
+                EndpointAsBeanProperty.ENDPOINT_NAME, userType, new Annotation[] {first });
         assertThat(property.getName()).isEqualTo("Jakarta-RS/endpoint");
-        assertThat(property.getAnnotation(JsonRootName.class).value()).isEqualTo("first");
+        assertThat(property
+                .getAnnotation(JsonRootName.class).value()).isEqualTo("first");
         assertThat(property.withType(userType)).isSameAs(property);
         assertThat(property.withType(mapper.constructType(String.class))).isNotSameAs(property);
     }
@@ -343,7 +344,7 @@ public class Jackson_jakarta_rs_baseTest {
 
         configurator.setAnnotationsToUse(new Annotations[0]);
         assertThat(configuredMapper.writeValueAsString(new RenamedValue("test"))).contains("value");
-        configurator.setAnnotationsToUse(new Annotations[] { Annotations.JACKSON });
+        configurator.setAnnotationsToUse(new Annotations[] {Annotations.JACKSON });
         assertThat(configuredMapper.writeValueAsString(new AnotherRenamedValue("test"))).contains("renamed");
     }
 
@@ -476,7 +477,7 @@ public class Jackson_jakarta_rs_baseTest {
     private static final class TestMapperConfigurator extends MapperConfiguratorBase<TestMapperConfigurator,
             ObjectMapper> {
         private TestMapperConfigurator(ObjectMapper mapper) {
-            super(mapper, new Annotations[] { Annotations.JACKSON });
+            super(mapper, new Annotations[] {Annotations.JACKSON });
         }
 
         @Override
