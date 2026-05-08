@@ -84,6 +84,10 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.api.exporter.StreamExporter;
 import org.jboss.shrinkwrap.api.formatter.Formatter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.shrinkwrap.descriptor.api.DescriptorExportException;
 import org.junit.jupiter.api.Test;
@@ -468,6 +472,29 @@ public class Arquillian_container_spiTest {
                 "undeploy-descriptor:web.xml",
                 "stop",
                 "kill");
+    }
+
+    @Test
+    void validateUtilityRecognizesArchiveTypesFromStandardFileExtensions() {
+        RecordingArchive javaArchive = new RecordingArchive("library.jar");
+        RecordingArchive webArchive = new RecordingArchive("orders.war");
+        RecordingArchive enterpriseArchive = new RecordingArchive("suite.ear");
+        RecordingArchive resourceAdapterArchive = new RecordingArchive("connector.rar");
+        RecordingArchive unknownArchive = new RecordingArchive("notes.txt");
+
+        assertThat(Validate.getArchiveExpression(JavaArchive.class)).isEqualTo(".jar");
+        assertThat(Validate.getArchiveExpression(WebArchive.class)).isEqualTo(".war");
+        assertThat(Validate.getArchiveExpression(EnterpriseArchive.class)).isEqualTo(".ear");
+        assertThat(Validate.getArchiveExpression(ResourceAdapterArchive.class)).isEqualTo(".rar");
+        assertThat(Validate.getArchiveExpression(RecordingArchive.class)).isNull();
+
+        assertThat(Validate.isArchiveOfType(JavaArchive.class, javaArchive)).isTrue();
+        assertThat(Validate.isArchiveOfType(WebArchive.class, webArchive)).isTrue();
+        assertThat(Validate.isArchiveOfType(EnterpriseArchive.class, enterpriseArchive)).isTrue();
+        assertThat(Validate.isArchiveOfType(ResourceAdapterArchive.class, resourceAdapterArchive)).isTrue();
+        assertThat(Validate.isArchiveOfType(JavaArchive.class, webArchive)).isFalse();
+        assertThat(Validate.isArchiveOfType(WebArchive.class, unknownArchive)).isFalse();
+        assertThat(Validate.isArchiveOfType(RecordingArchive.class, javaArchive)).isFalse();
     }
 
     @Test
