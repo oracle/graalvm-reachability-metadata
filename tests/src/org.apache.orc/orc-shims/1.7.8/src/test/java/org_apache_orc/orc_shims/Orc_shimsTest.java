@@ -10,6 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Arrays;
@@ -17,11 +21,16 @@ import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.PositionedReadable;
+import org.apache.hadoop.fs.Seekable;
 import org.apache.orc.EncryptionAlgorithm;
 import org.apache.orc.impl.HadoopShims;
+import org.apache.orc.impl.HadoopShims.ByteBufferPoolShim;
 import org.apache.orc.impl.HadoopShims.DirectCompressionType;
 import org.apache.orc.impl.HadoopShims.KeyMetadata;
 import org.apache.orc.impl.HadoopShims.KeyProviderKind;
+import org.apache.orc.impl.HadoopShims.ZeroCopyReaderShim;
 import org.apache.orc.impl.HadoopShimsCurrent;
 import org.apache.orc.impl.HadoopShimsPre2_6;
 import org.apache.orc.impl.HadoopShimsPre2_7;
@@ -108,6 +117,29 @@ public class Orc_shimsTest {
     }
 
     @Test
+    void zeroCopyReaderUsesFallbackByteBufferPoolForSeekableStreams() throws Exception {
+        byte[] payload = "zero-copy fallback bytes".getBytes(StandardCharsets.UTF_8);
+        SeekableByteArrayInputStream input = new SeekableByteArrayInputStream(payload);
+        TrackingByteBufferPool pool = new TrackingByteBufferPool();
+
+        try (ZeroCopyReaderShim reader = new HadoopShimsPre2_6()
+                .getZeroCopyReader(new FSDataInputStream(input), pool)) {
+            ByteBuffer buffer = reader.readBuffer("zero-copy".length(), false);
+            byte[] readBytes = new byte[buffer.remaining()];
+            buffer.get(readBytes);
+
+            assertThat(readBytes).containsExactly("zero-copy".getBytes(StandardCharsets.UTF_8));
+            assertThat(pool.requestedDirect).isFalse();
+            assertThat(pool.requestedLength).isEqualTo("zero-copy".length());
+
+            reader.releaseBuffer(buffer);
+            assertThat(pool.returnedBuffer).isSameAs(buffer);
+        }
+
+        assertThat(input.closed).isTrue();
+    }
+
+    @Test
     void shimsExposeCompressionTypesAndEndBlockSupport() throws Exception {
         assertThat(DirectCompressionType.values())
                 .containsExactly(
@@ -154,6 +186,97 @@ public class Orc_shimsTest {
 
     private static void assertShimCompressionSupport(HadoopShims shim) {
         assertThat(shim.getDirectDecompressor(DirectCompressionType.NONE)).isNull();
+    }
+
+    private static final class TrackingByteBufferPool implements ByteBufferPoolShim {
+        private boolean requestedDirect;
+        private int requestedLength;
+        private ByteBuffer returnedBuffer;
+
+        @Override
+        public ByteBuffer getBuffer(boolean direct, int length) {
+            requestedDirect = direct;
+            requestedLength = length;
+            return direct ? ByteBuffer.allocateDirect(length) : ByteBuffer.allocate(length);
+        }
+
+        @Override
+        public void putBuffer(ByteBuffer buffer) {
+            returnedBuffer = buffer;
+        }
+    }
+
+    private static final class SeekableByteArrayInputStream extends InputStream
+            implements Seekable, PositionedReadable {
+        private final byte[] bytes;
+        private int position;
+        private boolean closed;
+
+        private SeekableByteArrayInputStream(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        @Override
+        public int read() {
+            if (position >= bytes.length) {
+                return -1;
+            }
+            return bytes[position++] & 0xff;
+        }
+
+        @Override
+        public int read(byte[] buffer, int offset, int length) {
+            if (position >= bytes.length) {
+                return -1;
+            }
+            int bytesToRead = Math.min(length, bytes.length - position);
+            System.arraycopy(bytes, position, buffer, offset, bytesToRead);
+            position += bytesToRead;
+            return bytesToRead;
+        }
+
+        @Override
+        public void seek(long newPosition) {
+            position = Math.toIntExact(newPosition);
+        }
+
+        @Override
+        public long getPos() {
+            return position;
+        }
+
+        @Override
+        public boolean seekToNewSource(long targetPos) {
+            return false;
+        }
+
+        @Override
+        public int read(long requestedPosition, byte[] buffer, int offset, int length) {
+            if (requestedPosition >= bytes.length) {
+                return -1;
+            }
+            int bytesToRead = Math.min(length, bytes.length - Math.toIntExact(requestedPosition));
+            System.arraycopy(bytes, Math.toIntExact(requestedPosition), buffer, offset, bytesToRead);
+            return bytesToRead;
+        }
+
+        @Override
+        public void readFully(long requestedPosition, byte[] buffer, int offset, int length) throws IOException {
+            int bytesRead = read(requestedPosition, buffer, offset, length);
+            if (bytesRead < length) {
+                throw new EOFException();
+            }
+        }
+
+        @Override
+        public void readFully(long requestedPosition, byte[] buffer) throws IOException {
+            readFully(requestedPosition, buffer, 0, buffer.length);
+        }
+
+        @Override
+        public void close() {
+            closed = true;
+        }
     }
 
     private static byte[] repeatByte(int size, byte value) {
