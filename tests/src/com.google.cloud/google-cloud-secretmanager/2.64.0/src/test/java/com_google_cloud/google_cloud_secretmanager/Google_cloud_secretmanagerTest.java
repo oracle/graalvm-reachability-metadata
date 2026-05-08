@@ -29,6 +29,7 @@ import com.google.cloud.secretmanager.v1.ListSecretsResponse;
 import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
+import com.google.cloud.secretmanager.v1.Rotation;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -36,12 +37,14 @@ import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.cloud.secretmanager.v1.Topic;
 import com.google.cloud.secretmanager.v1.UpdateSecretRequest;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.GetIamPolicyRequest;
 import com.google.iam.v1.Policy;
@@ -138,6 +141,39 @@ public class Google_cloud_secretmanagerTest {
                 .containsEntry("tier", "backend");
         assertThat(payload.getData().toStringUtf8()).isEqualTo("hunter2");
         assertThat(payload.getDataCrc32C()).isEqualTo(1_234_567L);
+    }
+
+    @Test
+    @Timeout(value = 10)
+    void secretSchedulingPoliciesPreserveExpirationRotationAndNotificationTopics() {
+        Timestamp expireTime = Timestamp.newBuilder().setSeconds(1_700_000_000L).build();
+        Timestamp nextRotationTime = Timestamp.newBuilder().setSeconds(1_700_086_400L).build();
+        Rotation rotation = Rotation.newBuilder()
+                .setNextRotationTime(nextRotationTime)
+                .setRotationPeriod(Duration.newBuilder().setSeconds(86_400L))
+                .build();
+        Topic notificationTopic = Topic.newBuilder()
+                .setName("projects/native-secret-project/topics/secret-rotation")
+                .build();
+        Secret expiringSecret = Secret.newBuilder()
+                .setName(SECRET_NAME)
+                .addTopics(notificationTopic)
+                .setExpireTime(expireTime)
+                .setRotation(rotation)
+                .build();
+        Secret ttlSecret = expiringSecret.toBuilder()
+                .clearExpireTime()
+                .setTtl(Duration.newBuilder().setSeconds(3_600L))
+                .build();
+
+        assertThat(expiringSecret.getTopicsList()).extracting(Topic::getName)
+                .containsExactly("projects/native-secret-project/topics/secret-rotation");
+        assertThat(expiringSecret.getExpirationCase()).isEqualTo(Secret.ExpirationCase.EXPIRE_TIME);
+        assertThat(expiringSecret.getExpireTime()).isEqualTo(expireTime);
+        assertThat(expiringSecret.getRotation().getNextRotationTime()).isEqualTo(nextRotationTime);
+        assertThat(expiringSecret.getRotation().getRotationPeriod().getSeconds()).isEqualTo(86_400L);
+        assertThat(ttlSecret.getExpirationCase()).isEqualTo(Secret.ExpirationCase.TTL);
+        assertThat(ttlSecret.getTtl().getSeconds()).isEqualTo(3_600L);
     }
 
     @Test
