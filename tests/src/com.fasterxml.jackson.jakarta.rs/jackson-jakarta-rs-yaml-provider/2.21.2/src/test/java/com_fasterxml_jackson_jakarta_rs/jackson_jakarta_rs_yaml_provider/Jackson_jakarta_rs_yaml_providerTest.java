@@ -8,7 +8,7 @@ package com_fasterxml_jackson_jakarta_rs.jackson_jakarta_rs_yaml_provider;
 
 import org.junit.jupiter.api.Test;
 
-class Jackson_jakarta_rs_yaml_providerTest {
+public class Jackson_jakarta_rs_yaml_providerTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
