@@ -7,9 +7,8 @@
 package org_apache_tika.tika_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.nio.charset.UnsupportedCharsetException;
+import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,9 +23,9 @@ public class CharsetUtilsTest {
     }
 
     @Test
-    public void forNameAttemptsOptionalIcuCharsetLookupBeforeJdkFallback() {
-        assertThatThrownBy(() -> CharsetUtils.forName("x-tika-not-a-real-charset"))
-                .isInstanceOf(UnsupportedCharsetException.class)
-                .hasMessageContaining("x-tika-not-a-real-charset");
+    public void forNameUsesOptionalIcuCharsetProviderForNonCommonCharset() {
+        Charset charset = CharsetUtils.forName("ibm-1047");
+
+        assertThat(charset.name()).contains("1047");
     }
 }
