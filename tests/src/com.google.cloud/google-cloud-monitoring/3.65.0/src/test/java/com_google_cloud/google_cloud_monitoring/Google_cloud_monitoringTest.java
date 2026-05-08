@@ -72,6 +72,10 @@ import com.google.monitoring.v3.GetServiceRequest;
 import com.google.monitoring.v3.GetSnoozeRequest;
 import com.google.monitoring.v3.GetUptimeCheckConfigRequest;
 import com.google.monitoring.v3.Group;
+import com.google.monitoring.v3.ListGroupMembersRequest;
+import com.google.monitoring.v3.ListGroupMembersResponse;
+import com.google.monitoring.v3.ListGroupsRequest;
+import com.google.monitoring.v3.ListGroupsResponse;
 import com.google.monitoring.v3.ListMetricDescriptorsRequest;
 import com.google.monitoring.v3.ListMetricDescriptorsResponse;
 import com.google.monitoring.v3.ListMonitoredResourceDescriptorsRequest;
@@ -331,6 +335,43 @@ public class Google_cloud_monitoringTest {
     }
 
     @Test
+    void groupServiceClientIteratesPagedGroupsAndMembers() {
+        Group group = Group.newBuilder().setName(GROUP_NAME).setDisplayName("frontend").build();
+        MonitoredResource member = groupMember();
+        TimeInterval interval = TimeInterval.newBuilder()
+                .setStartTime(Timestamp.newBuilder().setSeconds(100).build())
+                .setEndTime(Timestamp.newBuilder().setSeconds(200).build())
+                .build();
+        ListGroupsRequest groupsRequest = ListGroupsRequest.newBuilder()
+                .setName(PROJECT_NAME)
+                .setChildrenOfGroup(GROUP_NAME)
+                .setPageSize(2)
+                .build();
+        ListGroupMembersRequest membersRequest = ListGroupMembersRequest.newBuilder()
+                .setName(GROUP_NAME)
+                .setFilter("resource.type = \"global\"")
+                .setInterval(interval)
+                .setPageSize(1)
+                .build();
+
+        FakeGroupServiceStub stub = new FakeGroupServiceStub(group);
+        try (GroupServiceClient client = GroupServiceClient.create(stub)) {
+            assertThat(client.listGroups(groupsRequest).iterateAll()).containsExactly(group);
+            ListGroupsRequest capturedGroupsRequest = stub.listGroups.getLastRequest();
+            assertThat(capturedGroupsRequest.getName()).isEqualTo(PROJECT_NAME);
+            assertThat(capturedGroupsRequest.getChildrenOfGroup()).isEqualTo(GROUP_NAME);
+            assertThat(capturedGroupsRequest.getPageSize()).isEqualTo(2);
+
+            assertThat(client.listGroupMembers(membersRequest).iterateAll()).containsExactly(member);
+            ListGroupMembersRequest capturedMembersRequest = stub.listGroupMembers.getLastRequest();
+            assertThat(capturedMembersRequest.getName()).isEqualTo(GROUP_NAME);
+            assertThat(capturedMembersRequest.getFilter()).isEqualTo("resource.type = \"global\"");
+            assertThat(capturedMembersRequest.getInterval()).isEqualTo(interval);
+            assertThat(capturedMembersRequest.getPageSize()).isEqualTo(1);
+        }
+    }
+
+    @Test
     void uptimeSnoozeServiceMonitoringAndQueryClientsBuildRequests() {
         FieldMask displayNameMask = FieldMask.newBuilder().addPaths("display_name").build();
         UptimeCheckConfig uptimeCheckConfig = UptimeCheckConfig.newBuilder()
@@ -457,6 +498,32 @@ public class Google_cloud_monitoringTest {
                 .setUnit("ms")
                 .setDescription(interval.toString())
                 .build();
+    }
+
+    private static MonitoredResource groupMember() {
+        return MonitoredResource.newBuilder()
+                .setType("global")
+                .putLabels("project_id", PROJECT_ID)
+                .build();
+    }
+
+    private static PagedListDescriptor<ListGroupsRequest, ListGroupsResponse, Group> groupsPageDescriptor() {
+        return new SimplePagedListDescriptor<>(
+                (request, token) -> request.toBuilder().setPageToken(token).build(),
+                (request, pageSize) -> request.toBuilder().setPageSize(pageSize).build(),
+                ListGroupsRequest::getPageSize,
+                ListGroupsResponse::getNextPageToken,
+                ListGroupsResponse::getGroupList);
+    }
+
+    private static PagedListDescriptor<ListGroupMembersRequest, ListGroupMembersResponse, MonitoredResource>
+            groupMembersPageDescriptor() {
+        return new SimplePagedListDescriptor<>(
+                (request, token) -> request.toBuilder().setPageToken(token).build(),
+                (request, pageSize) -> request.toBuilder().setPageSize(pageSize).build(),
+                ListGroupMembersRequest::getPageSize,
+                ListGroupMembersResponse::getNextPageToken,
+                ListGroupMembersResponse::getMembersList);
     }
 
     private static PagedListDescriptor<ListMonitoredResourceDescriptorsRequest,
@@ -750,16 +817,37 @@ public class Google_cloud_monitoringTest {
     }
 
     private static final class FakeGroupServiceStub extends GroupServiceStub implements ImmediateBackgroundResource {
+        private final CapturingPagedCallable<ListGroupsRequest,
+                        ListGroupsResponse,
+                        Group,
+                        GroupServiceClient.ListGroupsPagedResponse> listGroups;
         private final CapturingUnaryCallable<GetGroupRequest, Group> getGroup;
         private final CapturingUnaryCallable<CreateGroupRequest, Group> createGroup;
         private final CapturingUnaryCallable<UpdateGroupRequest, Group> updateGroup;
         private final CapturingUnaryCallable<DeleteGroupRequest, Empty> deleteGroup =
                 new CapturingUnaryCallable<>(Empty.getDefaultInstance());
+        private final CapturingPagedCallable<ListGroupMembersRequest,
+                        ListGroupMembersResponse,
+                        MonitoredResource,
+                        GroupServiceClient.ListGroupMembersPagedResponse> listGroupMembers =
+                new CapturingPagedCallable<>(
+                        ListGroupMembersResponse.newBuilder().addMembers(groupMember()).build(),
+                        groupMembersPageDescriptor(),
+                        GroupServiceClient.ListGroupMembersPagedResponse::createAsync);
 
         private FakeGroupServiceStub(Group group) {
+            listGroups = new CapturingPagedCallable<>(
+                    ListGroupsResponse.newBuilder().addGroup(group).build(),
+                    groupsPageDescriptor(),
+                    GroupServiceClient.ListGroupsPagedResponse::createAsync);
             getGroup = new CapturingUnaryCallable<>(group);
             createGroup = new CapturingUnaryCallable<>(group);
             updateGroup = new CapturingUnaryCallable<>(group);
+        }
+
+        @Override
+        public UnaryCallable<ListGroupsRequest, GroupServiceClient.ListGroupsPagedResponse> listGroupsPagedCallable() {
+            return listGroups;
         }
 
         @Override
@@ -780,6 +868,12 @@ public class Google_cloud_monitoringTest {
         @Override
         public UnaryCallable<DeleteGroupRequest, Empty> deleteGroupCallable() {
             return deleteGroup;
+        }
+
+        @Override
+        public UnaryCallable<ListGroupMembersRequest, GroupServiceClient.ListGroupMembersPagedResponse>
+                listGroupMembersPagedCallable() {
+            return listGroupMembers;
         }
 
         @Override
