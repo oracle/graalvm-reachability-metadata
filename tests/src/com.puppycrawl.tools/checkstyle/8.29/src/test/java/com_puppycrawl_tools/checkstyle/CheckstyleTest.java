@@ -8,7 +8,7 @@ package com_puppycrawl_tools.checkstyle;
 
 import org.junit.jupiter.api.Test;
 
-class CheckstyleTest {
+public class CheckstyleTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
