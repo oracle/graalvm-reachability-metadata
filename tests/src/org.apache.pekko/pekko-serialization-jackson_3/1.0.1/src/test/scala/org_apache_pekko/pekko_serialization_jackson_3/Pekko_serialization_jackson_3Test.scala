@@ -18,8 +18,11 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorRef
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.actor.Address
+import org.apache.pekko.actor.Props
 import org.apache.pekko.serialization.SerializationExtension
 import org.apache.pekko.serialization.SerializerWithStringManifest
 import org.apache.pekko.serialization.jackson.JacksonMigration
@@ -55,7 +58,13 @@ final case class ManifestlessEvent(id: String, value: Int)
 
 final case class NumberBox(count: Int)
 
+final case class ActorRoute(id: String, recipient: ActorRef, replyTo: ActorRef)
+
 final case class VersionedProfile(id: String, displayName: String, active: Boolean)
+
+class NoopActor extends Actor {
+  override def receive: Receive = { case _ => () }
+}
 
 class VersionedProfileMigration extends JacksonMigration {
   override def currentVersion: Int = 2
@@ -178,6 +187,29 @@ class Pekko_serialization_jackson_3Test {
 
     assertThat(manifest).isEmpty
     assertThat(restored).isEqualTo(event)
+  }
+
+  @Test
+  def jsonSerializerRoundTripsClassicActorReferences(): Unit = withActorSystem(
+    "actor-ref",
+    BaseConfig + """
+      pekko.actor.serialization-bindings {
+        "org_apache_pekko.pekko_serialization_jackson_3.ActorRoute" = jackson-json
+      }
+      """
+  ) { system =>
+    val recipient: ActorRef = system.actorOf(Props(new NoopActor), "recipient")
+    val replyTo: ActorRef = system.actorOf(Props(new NoopActor), "reply-to")
+    val route: ActorRoute = ActorRoute("route-1", recipient, replyTo)
+    val serialization = SerializationExtension(system)
+    val serializer: SerializerWithStringManifest = jacksonSerializerFor(system, route)
+    val manifest: String = serializer.manifest(route)
+    val bytes: Array[Byte] = serialization.serialize(route).get
+    val restored: ActorRoute = serialization.deserialize(bytes, serializer.identifier, manifest).get.asInstanceOf[ActorRoute]
+
+    assertThat(restored.id).isEqualTo(route.id)
+    assertThat(restored.recipient).isEqualTo(recipient)
+    assertThat(restored.replyTo).isEqualTo(replyTo)
   }
 
   @Test
