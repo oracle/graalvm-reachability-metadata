@@ -1,0 +1,1178 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e06c8-f703-7da0-8c6f-52ebc166d59b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.10.Final" when "$version$" is replaced with "1.1.10.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+- Set "coordinates" to "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.10.Final".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact lineage and tag layout first, then update only the requested JSON file. I’m also checking nearby discovered metadata entries so the URL format matches the repository’s conventions.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+{
+  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.jboss\\.arquillian|arquillian-config-api|arquillian-config\" build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json:2:  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.container:arquillian-container-test-api:$libraryVersion"
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.container.arquillian-container-test-api_tests'
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:31:import org.jboss.arquillian.container.test.api.Config;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:32:import org.jboss.arquillian.container.test.api.ContainerController;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:33:import org.jboss.arquillian.container.test.api.Deployer;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:34:import org.jboss.arquillian.container.test.api.Deployment;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:35:import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:36:import org.jboss.arquillian.container.test.api.OverProtocol;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:37:import org.jboss.arquillian.container.test.api.RunAsClient;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:38:import org.jboss.arquillian.container.test.api.ShouldThrowException;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:39:import org.jboss.arquillian.container.test.api.TargetsContainer;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:40:import org.jboss.arquillian.container.test.api.Testable;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.container:arquillian-container-test-api:1.1.10.Final
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.container.test.api.**"
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.container:arquillian-container-test-api:$libraryVersion"
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.container.arquillian-container-test-api_tests'
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:31:import org.jboss.arquillian.container.test.api.Config;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:32:import org.jboss.arquillian.container.test.api.ContainerController;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:33:import org.jboss.arquillian.container.test.api.Deployer;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:34:import org.jboss.arquillian.container.test.api.Deployment;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:35:import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:36:import org.jboss.arquillian.container.test.api.OverProtocol;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:37:import org.jboss.arquillian.container.test.api.RunAsClient;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:38:import org.jboss.arquillian.container.test.api.ShouldThrowException;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:39:import org.jboss.arquillian.container.test.api.TargetsContainer;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java:40:import org.jboss.arquillian.container.test.api.Testable;
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.container:arquillian-container-test-api:1.1.11.Final
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.container.test.api.**"
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:39:      "org.jboss.arquillian.test.api"
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.core:arquillian-core-api:$libraryVersion"
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.core.arquillian-core-api_tests'
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:22:import org.jboss.arquillian.core.api.Event;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:23:import org.jboss.arquillian.core.api.Injector;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:24:import org.jboss.arquillian.core.api.Instance;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:25:import org.jboss.arquillian.core.api.InstanceProducer;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:26:import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:27:import org.jboss.arquillian.core.api.annotation.Inject;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:28:import org.jboss.arquillian.core.api.annotation.Observes;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:29:import org.jboss.arquillian.core.api.annotation.Scope;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:30:import org.jboss.arquillian.core.api.event.ManagerStarted;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:31:import org.jboss.arquillian.core.api.event.ManagerStopping;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:32:import org.jboss.arquillian.core.api.threading.ContextSnapshot;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java:33:import org.jboss.arquillian.core.api.threading.ExecutorService;
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.core:arquillian-core-api:1.1.10.Final
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.core.api.**"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.core:arquillian-core-impl-base:$libraryVersion"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.core.arquillian-core-impl-base_tests'
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.core.impl.ObserverImpl"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:20:        "typeReached" : "org.jboss.arquillian.core.impl.EventPointImpl"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:31:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:37:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$3"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:51:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$3"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:65:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:81:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:97:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:107:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:113:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:119:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:125:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:131:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:143:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:155:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:167:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:173:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:179:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:185:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$3"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:191:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:205:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:219:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:229:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$5"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:245:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$5"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:261:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$5"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:273:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:279:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:11:import org.jboss.arquillian.core.api.Event;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:12:import org.jboss.arquillian.core.api.Instance;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:13:import org.jboss.arquillian.core.api.InstanceProducer;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:14:import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:15:import org.jboss.arquillian.core.api.annotation.Inject;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:16:import org.jboss.arquillian.core.api.annotation.Observes;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:17:import org.jboss.arquillian.core.impl.ExtensionImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:18:import org.jboss.arquillian.core.spi.Extension;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java:13:import org.jboss.arquillian.core.api.Event;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java:14:import org.jboss.arquillian.core.impl.EventPointImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java:15:import org.jboss.arquillian.core.spi.EventPoint;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:13:import org.jboss.arquillian.core.api.Instance;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:14:import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:15:import org.jboss.arquillian.core.impl.InjectionPointImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:16:import org.jboss.arquillian.core.spi.InjectionPoint;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/JavaSPIExtensionLoaderTest.java:15:import org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader;
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.test:arquillian-test-api:$libraryVersion"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:14:import org.jboss.arquillian.core.api.annotation.Observes;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:15:import org.jboss.arquillian.core.impl.ObserverImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:16:import org.jboss.arquillian.core.spi.Manager;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:17:import org.jboss.arquillian.core.spi.NonManagedObserver;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:18:import org.jboss.arquillian.core.spi.ObserverMethod;
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.test.arquillian-test-api_tests'
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java:13:import org.jboss.arquillian.core.impl.context.ApplicationContextImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java:14:import org.jboss.arquillian.core.spi.context.ApplicationContext;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java:18:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous4Test.java:23:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous3Test.java:16:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous5Test.java:22:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java:13:import org.jboss.arquillian.core.impl.context.ApplicationContextImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java:14:import org.jboss.arquillian.core.spi.context.ApplicationContext;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java:18:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous2Test.java:16:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous4Test.java:22:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_test/arquillian_test_api/Arquillian_test_apiTest.java:29:import org.jboss.arquillian.test.api.ArquillianResource;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous3Test.java:16:import org.jboss.arquillian.core.api.annotation.Inject;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous3Test.java:20:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.test:arquillian-test-api:1.1.10.Final
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.core:arquillian-core-impl-base:1.3.0.Final
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.test.api.**"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.core.impl.**"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.core:arquillian-core-impl-base:$libraryVersion"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.core.arquillian-core-impl-base_tests'
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.core.impl.ObserverImpl"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:20:        "typeReached" : "org.jboss.arquillian.core.impl.EventPointImpl"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:31:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:37:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$3"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:51:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$3"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:65:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:81:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:97:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:107:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:113:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:119:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:125:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:137:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:149:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:161:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:167:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:173:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$2"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:179:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$3"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:185:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:199:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:213:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$4"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:223:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$5"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:239:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$5"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:255:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions$5"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:267:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader"
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:11:import org.jboss.arquillian.core.api.Event;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:12:import org.jboss.arquillian.core.api.Instance;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:13:import org.jboss.arquillian.core.api.InstanceProducer;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:14:import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:15:import org.jboss.arquillian.core.api.annotation.Inject;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:16:import org.jboss.arquillian.core.api.annotation.Observes;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:17:import org.jboss.arquillian.core.impl.ExtensionImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java:18:import org.jboss.arquillian.core.spi.Extension;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java:13:import org.jboss.arquillian.core.api.Event;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java:14:import org.jboss.arquillian.core.impl.EventPointImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java:15:import org.jboss.arquillian.core.spi.EventPoint;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:13:import org.jboss.arquillian.core.api.Instance;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:14:import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:15:import org.jboss.arquillian.core.impl.InjectionPointImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java:16:import org.jboss.arquillian.core.spi.InjectionPoint;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/JavaSPIExtensionLoaderTest.java:13:import org.jboss.arquillian.core.impl.loadable.JavaSPIExtensionLoader;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:14:import org.jboss.arquillian.core.api.annotation.Observes;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:15:import org.jboss.arquillian.core.impl.ObserverImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:16:import org.jboss.arquillian.core.spi.Manager;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:17:import org.jboss.arquillian.core.spi.NonManagedObserver;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java:18:import org.jboss.arquillian.core.spi.ObserverMethod;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java:13:import org.jboss.arquillian.core.impl.context.ApplicationContextImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java:14:import org.jboss.arquillian.core.spi.context.ApplicationContext;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java:18:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous4Test.java:23:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous3Test.java:16:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous5Test.java:22:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.loadable.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java:13:import org.jboss.arquillian.core.impl.context.ApplicationContextImpl;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java:14:import org.jboss.arquillian.core.spi.context.ApplicationContext;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java:18:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous2Test.java:16:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous4Test.java:22:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous3Test.java:16:import org.jboss.arquillian.core.api.annotation.Inject;
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous3Test.java:20:    private static final String SECURITY_ACTIONS_CLASS_NAME = "org.jboss.arquillian.core.impl.SecurityActions";
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.core:arquillian-core-impl-base:1.1.10.Final
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.core.impl.**"
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/build.gradle:14:    testImplementation "org.jboss.arquillian.core:arquillian-core-spi:$libraryVersion"
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/build.gradle:15:    testImplementation "org.jboss.arquillian.core:arquillian-core-impl-base:$libraryVersion"
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/settings.gradle:20:rootProject.name = 'org.jboss.arquillian.core.arquillian-core-spi_tests'
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/LoadableExtensionInnerValidateTest.java:9:import org.jboss.arquillian.core.spi.LoadableExtension;
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/LoadableExtensionInnerValidateTest.java:24:        boolean exists = LoadableExtension.Validate.classExists("org.jboss.arquillian.core.spi.DoesNotExist");
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsTest.java:9:import org.jboss.arquillian.core.spi.Manager;
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsTest.java:10:import org.jboss.arquillian.core.spi.ManagerBuilder;
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsTest.java:20:    private static final String MANAGER_IMPL_CLASS_NAME = "org.jboss.arquillian.core.impl.ManagerImpl";
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsTest.java:36:        Method newInstance = Class.forName("org.jboss.arquillian.core.spi.SecurityActions").getDeclaredMethod(
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsAnonymous2Test.java:30:        Class<?> securityActions = Class.forName("org.jboss.arquillian.core.spi.SecurityActions");
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsAnonymous4Test.java:32:        Class<?> securityActions = Class.forName("org.jboss.arquillian.core.spi.SecurityActions");
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsAnonymous3Test.java:33:        Class<?> securityActions = Class.forName("org.jboss.arquillian.core.spi.SecurityActions");
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/gradle.properties:4:library.coordinates = org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/gradle.properties:6:metadata.dir = org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.arquillian.core.spi.**"
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.container.test.api.Testable"
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:38:      "org.jboss.arquillian.container.test.api",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:53:      "org.jboss.arquillian.container.test.api",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.container.test.api.Testable"
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:39:      "org.jboss.arquillian.core.api"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:7:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:17:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:19:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:7:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:17:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:19:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:31:      "org.jboss.arquillian.core.impl"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:52:      "org.jboss.arquillian.core.impl"
+metadata/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/reachability-metadata.json:5:        "typeReached" : "org.jboss.arquillian.core.spi.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/reachability-metadata.json:7:      "type" : "org.jboss.arquillian.core.impl.ManagerImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:39:      "org.jboss.arquillian.core.spi"
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'arquillian|discovered-artifact-metadata' | head -100" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/build.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/settings.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/build.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/settings.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/gradle.properties
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/gradle.properties
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_container/arquillian_container_test_api/Arquillian_container_test_apiTest.java
+metadata/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json
+stats/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/stats.json
+stats/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/execution-metrics.json
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/build.gradle
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/settings.gradle
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/src/test/java/org_jboss_arquillian_test/arquillian_test_api/Arquillian_test_apiTest.java
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/gradle.properties
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/settings.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_api/Arquillian_core_apiTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/gradle.properties
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/settings.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/services/org_jboss_arquillian_core.arquillian_core_impl_base.JavaSpiTestService
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/exclusions
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/JavaSPIExtensionLoaderTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous4Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous3Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous5Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous2Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous4Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous3Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/gradle.properties
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/settings.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/services/org_jboss_arquillian_core.arquillian_core_impl_base.JavaSpiTestService
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/settings.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/LoadableExtensionInnerValidateTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsAnonymous2Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsAnonymous4Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_spi/SecurityActionsAnonymous3Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/gradle.properties
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/user-code-filter.json
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/gradle.properties
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ReflectionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/EventPointImplTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/InjectionPointImplTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/JavaSPIExtensionLoaderTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/ObserverImplTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous4Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous3Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/LoadableSecurityActionsAnonymous5Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsTest.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous2Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous4Test.java
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/src/test/java/org_jboss_arquillian_core/arquillian_core_impl_base/SecurityActionsAnonymous3Test.java
+stats/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/stats.json
+stats/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/execution-metrics.json
+stats/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/stats.json
+stats/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/execution-metrics.json
+metadata/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json
+metadata/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json
+stats/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/stats.json
+stats/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/execution-metrics.json
+stats/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/stats.json
+stats/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/execution-metrics.json
+stats/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/stats.json
+stats/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/execution-metrics.json
+stats/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/stats.json
+stats/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/execution-metrics.json
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/reachability-metadata.json
+
+web search: 
+web search: org.jboss.arquillian.config arquillian-config-api 1.1.10.Final pom scm source
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.arquillian.config/arquillian-config-api
+web search: 
+web search: https://arquillian.org/
+web search: 
+web search: site:github.com/arquillian arquillian-config-api 1.1.10.Final
+web search: 
+web search: 
+codex
+The current file only has the coordinates. The artifact is part of Arquillian Core; next I’m checking Maven Central for attached source/test artifacts before falling back to tag-specific GitHub paths.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.jboss.arquillian.core/arquillian-core-api/index.json && sed -n '1,120p' metadata/org.jboss.arquillian.test/arquillian-test-api/index.json && sed -n '1,120p' metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-javadoc.jar",
+    "description" : "Arquillian Core API provides the core public contracts used by the Arquillian test platform. It defines APIs for injection, event observation, lifecycle events, and execution context management across Arquillian components.",
+    "tested-versions" : [
+      "1.1.10.Final",
+      "1.1.11.Final",
+      "1.1.12.Final",
+      "1.1.13.Final",
+      "1.1.14.Final",
+      "1.1.15.Final",
+      "1.2.0.Final",
+      "1.2.1.Final",
+      "1.3.0.Final",
+      "1.4.0.Final",
+      "1.4.1.Final",
+      "1.5.0.Final",
+      "1.6.0.Final",
+      "1.7.0.Final",
+      "1.7.1.Final",
+      "1.7.2.Final",
+      "1.8.0.Final",
+      "1.8.1.Final",
+      "1.9.0.Final",
+      "1.9.1.Final",
+      "1.9.2.Final",
+      "1.9.3.Final",
+      "1.9.4.Final",
+      "1.9.5.Final",
+      "1.10.0.Final",
+      "1.10.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.core.api"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/test/arquillian-test-api/$version$/arquillian-test-api-$version$-tests.jar",
+    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+    "description" : "Arquillian Test API provides the public annotation used by Arquillian tests to request runtime-managed test resources. It is a small Java API module that integrates Arquillian test code with the Arquillian Core resource injection model.",
+    "tested-versions" : [
+      "1.1.10.Final",
+      "1.1.11.Final",
+      "1.1.12.Final",
+      "1.1.13.Final",
+      "1.1.14.Final",
+      "1.1.15.Final",
+      "1.2.0.Final",
+      "1.2.1.Final",
+      "1.3.0.Final",
+      "1.4.0.Final",
+      "1.4.1.Final",
+      "1.5.0.Final",
+      "1.6.0.Final",
+      "1.7.0.Final",
+      "1.7.1.Final",
+      "1.7.2.Final",
+      "1.8.0.Final",
+      "1.8.1.Final",
+      "1.9.0.Final",
+      "1.9.1.Final",
+      "1.9.2.Final",
+      "1.9.3.Final",
+      "1.9.4.Final",
+      "1.9.5.Final",
+      "1.10.0.Final",
+      "1.10.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.test.api"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.11.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+    "description" : "Arquillian Container Test API provides annotations and helper APIs used to declare deployments, target containers, run modes, and protocols for Arquillian-managed integration tests. It lets tests coordinate container startup, deployment, and client-vs-container execution through contracts such as Deployment, RunAsClient, TargetsContainer, Deployer, and ContainerController.",
+    "tested-versions" : [
+      "1.1.11.Final",
+      "1.1.12.Final",
+      "1.1.13.Final",
+      "1.1.14.Final",
+      "1.1.15.Final",
+      "1.2.0.Final",
+      "1.2.1.Final",
+      "1.3.0.Final",
+      "1.4.0.Final",
+      "1.4.1.Final",
+      "1.5.0.Final",
+      "1.6.0.Final",
+      "1.7.0.Final",
+      "1.7.1.Final",
+      "1.7.2.Final",
+      "1.8.0.Final",
+      "1.8.1.Final",
+      "1.9.0.Final",
+      "1.9.1.Final",
+      "1.9.2.Final",
+      "1.9.3.Final",
+      "1.9.4.Final",
+      "1.9.5.Final",
+      "1.10.0.Final",
+      "1.10.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.container.test.api",
+      "org.jboss.shrinkwrap.api"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+    "description" : "Arquillian Container Test API provides annotations and helper APIs used to declare deployments, target containers, run modes, and protocols for Arquillian-managed integration tests. It lets tests coordinate container startup, deployment, and client-vs-container execution through contracts such as Deployment, RunAsClient, TargetsContainer, Deployer, and ContainerController.",
+    "tested-versions" : [
+      "1.1.10.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.container.test.api",
+      "org.jboss.shrinkwrap.api"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final/arquillian-config-api-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-build</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../../build/pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.arquillian.config</groupId>
+    <artifactId>arquillian-config-api</artifactId>
+    <name>Arquillian Config API</name>
+    <description>API for the Config Module.</description>
+
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Versioning -->
+
+    </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <!-- org.jboss.arquillian -->
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-api-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 227ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="arquillian-config-api-1.1.10.Final-javadoc.jar" title="arquillian-config-api-1.1.10.Final-javadoc.jar">arquillian-config-api-1.1.10.Final-javadoc.ja...</a>  2015-10-19 12:54    130232      
+<a href="arquillian-config-api-1.1.10.Final-javadoc.jar.md5" title="arquillian-config-api-1.1.10.Final-javadoc.jar.md5">arquillian-config-api-1.1.10.Final-javadoc.ja...</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-api-1.1.10.Final-javadoc.jar.sha1" title="arquillian-config-api-1.1.10.Final-javadoc.jar.sha1">arquillian-config-api-1.1.10.Final-javadoc.ja...</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-api-1.1.10.Final-sources.jar" title="arquillian-config-api-1.1.10.Final-sources.jar">arquillian-config-api-1.1.10.Final-sources.ja...</a>  2015-10-19 12:54      8933      
+<a href="arquillian-config-api-1.1.10.Final-sources.jar.md5" title="arquillian-config-api-1.1.10.Final-sources.jar.md5">arquillian-config-api-1.1.10.Final-sources.ja...</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-api-1.1.10.Final-sources.jar.sha1" title="arquillian-config-api-1.1.10.Final-sources.jar.sha1">arquillian-config-api-1.1.10.Final-sources.ja...</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-api-1.1.10.Final-tests.jar" title="arquillian-config-api-1.1.10.Final-tests.jar">arquillian-config-api-1.1.10.Final-tests.jar</a>      2015-10-19 12:54      2453      
+<a href="arquillian-config-api-1.1.10.Final-tests.jar.md5" title="arquillian-config-api-1.1.10.Final-tests.jar.md5">arquillian-config-api-1.1.10.Final-tests.jar....</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-api-1.1.10.Final-tests.jar.sha1" title="arquillian-config-api-1.1.10.Final-tests.jar.sha1">arquillian-config-api-1.1.10.Final-tests.jar....</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-api-1.1.10.Final.jar" title="arquillian-config-api-1.1.10.Final.jar">arquillian-config-api-1.1.10.Final.jar</a>            2015-10-19 12:54      7294      
+<a href="arquillian-config-api-1.1.10.Final.jar.md5" title="arquillian-config-api-1.1.10.Final.jar.md5">arquillian-config-api-1.1.10.Final.jar.md5</a>        2015-10-19 12:54        32      
+<a href="arquillian-config-api-1.1.10.Final.jar.sha1" title="arquillian-config-api-1.1.10.Final.jar.sha1">arquillian-config-api-1.1.10.Final.jar.sha1</a>       2015-10-19 12:54        40      
+<a href="arquillian-config-api-1.1.10.Final.pom" title="arquillian-config-api-1.1.10.Final.pom">arquillian-config-api-1.1.10.Final.pom</a>            2015-10-19 12:54      1329      
+<a href="arquillian-config-api-1.1.10.Final.pom.md5" title="arquillian-config-api-1.1.10.Final.pom.md5">arquillian-config-api-1.1.10.Final.pom.md5</a>        2015-10-19 12:54        32      
+<a href="arquillian-config-api-1.1.10.Final.pom.sha1" title="arquillian-config-api-1.1.10.Final.pom.sha1">arquillian-config-api-1.1.10.Final.pom.sha1</a>       2015-10-19 12:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central has the source, javadoc, and tests jars for `1.1.10.Final`, so I’ll use those artifact URLs for the three versioned fields. I’m checking the parent POM and class contents now to confirm the repository root and that this is a normal JVM jar.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-build/1.1.10.Final/arquillian-build-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-parent</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>arquillian-build</artifactId>
+    <name>Arquillian Build</name>
+    <description>Arquillian Build Configuration</description>
+    <packaging>pom</packaging>
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Arquillian Core common Deps, Test related -->
+        <version.javax.inject_javax.inject>1</version.javax.inject_javax.inject>
+        <version.junit_junit>4.12</version.junit_junit>
+        <version.mockito_all>1.8.3</version.mockito_all>
+        <version.testng_testng>5.14.6</version.testng_testng>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${version.javax.inject_javax.inject}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+                <artifactId>shrinkwrap-descriptors-bom</artifactId>
+                <version>${version.shrinkwrap_descriptors}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit_junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${version.testng_testng}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito_all}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>signature-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java15</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final/arquillian-config-api-1.1.10.Final.jar -o /tmp/arquillian-config-api-1.1.10.Final.jar && jar tf /tmp/arquillian-config-api-1.1.10.Final.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final/arquillian-config-api-1.1.10.Final-sources.jar -o /tmp/arquillian-config-api-1.1.10.Final-sources.jar && jar tf /tmp/arquillian-config-api-1.1.10.Final-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 188ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/api/
+org/jboss/arquillian/config/descriptor/api/ArquillianDescriptor.java
+org/jboss/arquillian/config/descriptor/api/ContainerDef.java
+org/jboss/arquillian/config/descriptor/api/Multiline.java
+org/jboss/arquillian/config/descriptor/api/ExtensionDef.java
+org/jboss/arquillian/config/descriptor/api/EngineDef.java
+org/jboss/arquillian/config/descriptor/api/DefaultProtocolDef.java
+org/jboss/arquillian/config/descriptor/api/ProtocolDef.java
+org/jboss/arquillian/config/descriptor/api/GroupDef.java
+META-INF/INDEX.LIST
+
+ succeeded in 200ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/api/
+org/jboss/arquillian/config/descriptor/api/ProtocolDef.class
+org/jboss/arquillian/config/descriptor/api/ExtensionDef.class
+org/jboss/arquillian/config/descriptor/api/ContainerDef.class
+org/jboss/arquillian/config/descriptor/api/ArquillianDescriptor.class
+org/jboss/arquillian/config/descriptor/api/GroupDef.class
+org/jboss/arquillian/config/descriptor/api/DefaultProtocolDef.class
+org/jboss/arquillian/config/descriptor/api/Multiline.class
+org/jboss/arquillian/config/descriptor/api/EngineDef.class
+META-INF/maven/
+META-INF/maven/org.jboss.arquillian.config/
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-api/
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-api/pom.xml
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-api/pom.properties
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-parent/1.1.10.Final/arquillian-parent-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>14</version>
+        <relativePath />
+    </parent>
+
+    <!-- Model Information -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Information -->
+    <groupId>org.jboss.arquillian</groupId>
+    <artifactId>arquillian-parent</artifactId>
+    <version>1.1.10.Final</version>
+    <packaging>pom</packaging>
+    <name>Arquillian Aggregator</name>
+    <url>http://arquillian.org</url>
+    <description>Arquillian Aggregator</description>
+
+    <properties>
+
+        <!-- jboss-parent override -->
+        <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
+
+
+        <!-- External Deps -->
+        <version.shrinkwrap_shrinkwrap>1.2.2</version.shrinkwrap_shrinkwrap>
+        <version.shrinkwrap_descriptors>2.0.0-alpha-8</version.shrinkwrap_descriptors>
+
+    </properties>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.jboss.com/jira/browse/ARQ</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://git@github.com:arquillian/arquillian-core.git</connection>
+        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-core.git</developerConnection>
+        <url>git://github.com/arquillian/arquillian-core.git</url>
+      <tag>1.1.10.Final</tag>
+  </scm>
+
+    <modules>
+        <module>build</module>
+        <module>core</module>
+        <module>config</module>
+        <module>test</module>
+        <module>container</module>
+
+        <module>junit</module>
+        <module>testng</module>
+
+        <module>testenrichers</module>
+        <module>protocols</module>
+
+        <module>bom</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <useFile>true</useFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <pushChanges>false</pushChanges>
+                            <localCheckout>true</localCheckout>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclet>org.jboss.apiviz.APIviz</doclet>
+                            <docletArtifact>
+                                <groupId>org.jboss.apiviz</groupId>
+                                <artifactId>apiviz</artifactId>
+                                <version>1.3.2.GA</version>
+                            </docletArtifact>
+                            <useStandardDocletOptions>true</useStandardDocletOptions>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <breakiterator>true</breakiterator>
+                            <version>true</version>
+                            <author>true</author>
+                            <keywords>true</keywords>
+                            <additionalparam>-sourceclasspath
+                                ${project.build.outputDirectory}</additionalparam>
+                            <stylesheetfile>${project.parent.parent.basedir}/javadoc/stylesheet.css</stylesheetfile>
+                            <javadocDirectory>${project.parent.parent.basedir}/javadoc</javadocDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final/arquillian-config-api-1.1.10.Final-tests.jar -o /tmp/arquillian-config-api-1.1.10.Final-tests.jar && jar tf /tmp/arquillian-config-api-1.1.10.Final-tests.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/1.1.10.Final/arquillian-config-api-1.1.10.Final-javadoc.jar -o /tmp/arquillian-config-api-1.1.10.Final-javadoc.jar && jar tf /tmp/arquillian-config-api-1.1.10.Final-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 544ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/org.jboss.arquillian.config/
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-api/
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-api/pom.xml
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-api/pom.properties
+META-INF/INDEX.LIST
+
+ succeeded in 516ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/api/
+org/jboss/arquillian/config/descriptor/api/class-use/
+allclasses-noframe.html
+deprecated-list.html
+help-doc.html
+overview-tree.html
+allclasses-frame.html
+package-list
+stylesheet.css
+org/jboss/arquillian/config/descriptor/api/Multiline.html
+org/jboss/arquillian/config/descriptor/api/ExtensionDef.html
+org/jboss/arquillian/config/descriptor/api/EngineDef.png
+org/jboss/arquillian/config/descriptor/api/package-summary.png
+org/jboss/arquillian/config/descriptor/api/GroupDef.html
+org/jboss/arquillian/config/descriptor/api/ProtocolDef.html
+org/jboss/arquillian/config/descriptor/api/DefaultProtocolDef.png
+org/jboss/arquillian/config/descriptor/api/EngineDef.html
+org/jboss/arquillian/config/descriptor/api/package-frame.html
+org/jboss/arquillian/config/descriptor/api/ContainerDef.png
+org/jboss/arquillian/config/descriptor/api/ExtensionDef.png
+org/jboss/arquillian/config/descriptor/api/Multiline.png
+org/jboss/arquillian/config/descriptor/api/ProtocolDef.png
+org/jboss/arquillian/config/descriptor/api/package-summary.html
+org/jboss/arquillian/config/descriptor/api/package-use.html
+org/jboss/arquillian/config/descriptor/api/ArquillianDescriptor.png
+org/jboss/arquillian/config/descriptor/api/package-tree.html
+org/jboss/arquillian/config/descriptor/api/class-use/Multiline.html
+org/jboss/arquillian/config/descriptor/api/class-use/ExtensionDef.html
+org/jboss/arquillian/config/descriptor/api/class-use/GroupDef.html
+org/jboss/arquillian/config/descriptor/api/class-use/ProtocolDef.html
+org/jboss/arquillian/config/descriptor/api/class-use/EngineDef.html
+org/jboss/arquillian/config/descriptor/api/class-use/ArquillianDescriptor.html
+org/jboss/arquillian/config/descriptor/api/class-use/DefaultProtocolDef.html
+org/jboss/arquillian/config/descriptor/api/class-use/ContainerDef.html
+org/jboss/arquillian/config/descriptor/api/ArquillianDescriptor.html
+org/jboss/arquillian/config/descriptor/api/DefaultProtocolDef.html
+org/jboss/arquillian/config/descriptor/api/ContainerDef.html
+org/jboss/arquillian/config/descriptor/api/GroupDef.png
+index.html
+index-all.html
+script.js
+constant-values.html
+META-INF/INDEX.LIST
+
+codex
+The jar contains JVM `.class` files under `org.jboss.arquillian.config.descriptor.api`, so it should remain a Native Image metadata candidate. I’m going to write the Maven-hosted source/tests/javadoc URLs and omit the language and not-for-native-image fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+index 91af2f23b5f1b5839aa7ada65c86bd08115ffc9b..5ffc9a5874d7196bd084470c3ef2a281649d7222
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-javadoc.jar",
++  "description" : "Arquillian Config API defines the public descriptor model used to represent Arquillian XML configuration for engines, containers, groups, protocols, extensions, and defaults. It is consumed by Arquillian components and extensions to read or construct configuration metadata without depending on a specific parser implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+index 91af2f23b5f1b5839aa7ada65c86bd08115ffc9b..5ffc9a5874d7196bd084470c3ef2a281649d7222
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-javadoc.jar",
++  "description" : "Arquillian Config API defines the public descriptor model used to represent Arquillian XML configuration for engines, containers, groups, protocols, extensions, and defaults. It is consumed by Arquillian components and extensions to read or construct configuration metadata without depending on a specific parser implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final",
+  "repository-url": "https://github.com/arquillian/arquillian-core",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-javadoc.jar",
+  "description": "Arquillian Config API defines the public descriptor model used to represent Arquillian XML configuration for engines, containers, groups, protocols, extensions, and defaults. It is consumed by Arquillian components and extensions to read or construct configuration metadata without depending on a specific parser implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+index 91af2f23b5f1b5839aa7ada65c86bd08115ffc9b..5ffc9a5874d7196bd084470c3ef2a281649d7222
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-javadoc.jar",
++  "description" : "Arquillian Config API defines the public descriptor model used to represent Arquillian XML configuration for engines, containers, groups, protocols, extensions, and defaults. It is consumed by Arquillian components and extensions to read or construct configuration metadata without depending on a specific parser implementation."
+ }
+
+codex
+The JSON parses cleanly. The file appears to be in a generated/discovered area, so I’m checking status to make sure the edit is present even if Git isn’t tracking that path.
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json && git ls-files --error-unmatch build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json >/dev/null 2>&1; echo tracked:$?' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+index 91af2f23b5f1b5839aa7ada65c86bd08115ffc9b..5ffc9a5874d7196bd084470c3ef2a281649d7222
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-javadoc.jar",
++  "description" : "Arquillian Config API defines the public descriptor model used to represent Arquillian XML configuration for engines, containers, groups, protocols, extensions, and defaults. It is consumed by Arquillian components and extensions to read or construct configuration metadata without depending on a specific parser implementation."
+ }
+
+ succeeded in 406ms:
+tracked:1
+
+web search: 
+web search: https://github.com/arquillian/arquillian-core/tree/1.1.10.Final
+web search: 
+web search: repo1.maven.org org.jboss.arquillian.config arquillian-config-api 1.1.10.Final sources tests javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.arquillian.config/arquillian-config-api
+codex
+Updated [org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json).
+
+I set the repository root to `arquillian/arquillian-core`, used Maven-hosted sources/tests/javadoc URLs with `$version$`, and added a two-sentence description. Maven Central identifies this as the Arquillian Config API, and the `1.1.10.Final` GitHub tag exists in the Arquillian Core repository. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.arquillian.config/arquillian-config-api))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact jar contains JVM `.class` files. Validation: `jq` parsed the updated JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+index 91af2f23b5f1b5839aa7ada65c86bd08115ffc9b..5ffc9a5874d7196bd084470c3ef2a281649d7222
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-api/$version$/arquillian-config-api-$version$-javadoc.jar",
++  "description" : "Arquillian Config API defines the public descriptor model used to represent Arquillian XML configuration for engines, containers, groups, protocols, extensions, and defaults. It is consumed by Arquillian components and extensions to read or construct configuration metadata without depending on a specific parser implementation."
+ }
+
+tokens used
+105,990
+Updated [org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.json).
+
+I set the repository root to `arquillian/arquillian-core`, used Maven-hosted sources/tests/javadoc URLs with `$version$`, and added a two-sentence description. Maven Central identifies this as the Arquillian Config API, and the `1.1.10.Final` GitHub tag exists in the Arquillian Core repository. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.arquillian.config/arquillian-config-api))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact jar contains JVM `.class` files. Validation: `jq` parsed the updated JSON successfully.
+Ran agent for org.jboss.arquillian.config:arquillian-config-api:1.1.10.Final (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/build/agent-artifact-discovery-logs/org.jboss.arquillian.config-arquillian-config-api-1.1.10.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3773-a9c17bd9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 17s
+9 actionable tasks: 9 executed
