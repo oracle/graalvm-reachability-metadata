@@ -1,0 +1,1540 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0577-b5f9-7400-bbf2-dad68d1dca4a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.fluentlenium:fluentlenium-core:6.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "6.0.0" when "$version$" is replaced with "6.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+- Set "coordinates" to "io.fluentlenium:fluentlenium-core:6.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "6.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub evidence first, then patch the JSON in place and validate it parses.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+{
+  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "fluentlenium-core|io.fluentlenium" .' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central io.fluentlenium fluentlenium-core 6.0.0 pom scm url
+codex
+The artifact exists under the current `io.fluentlenium` group, and Maven Central exposes the parent POM with the GitHub SCM root. I’m checking the repository tags and whether Maven hosts source/test artifacts so the metadata points at versioned, renderable URLs.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:31:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:46:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-kotlin/src/test",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+metadata/org.w3c.css/sac/index.json:7:    "test-code-url" : "N/A",
+metadata/org.w3c.css/sac/index.json:8:    "documentation-url" : "https://www.w3.org/Style/CSS/SAC/doc/",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-sources.jar",
+metadata/com.twitter/hpack/index.json:7:    "test-code-url" : "https://github.com/twitter/hpack/tree/hpack-parent-$version$/hpack/src/test",
+metadata/com.twitter/hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/joda-time/joda-time/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/joda-time/joda-time/$version$/joda-time-$version$-sources.jar",
+metadata/joda-time/joda-time/index.json:7:    "test-code-url" : "https://github.com/JodaOrg/joda-time/tree/v$version$/src/test/java",
+metadata/joda-time/joda-time/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/joda-time/joda-time/$version$/joda-time-$version$-javadoc.jar",
+metadata/org.apache.lucene/lucene-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/org.apache.lucene/lucene-core/index.json:7:    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/fluentlenium/fluentlenium-core/6.0.0/fluentlenium-core-6.0.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.fluentlenium</groupId>
+    <artifactId>fluentlenium-parent</artifactId>
+    <version>6.0.0</version>
+  </parent>
+  <groupId>io.fluentlenium</groupId>
+  <artifactId>fluentlenium-core</artifactId>
+  <version>6.0.0</version>
+  <name>FluentLenium Core</name>
+  <description>Core of FluentLenium</description>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  <properties>
+    <maven.version.rules>file:///${project.basedir}/../maven-version-rules.xml</maven.version.rules>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-remote-driver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.atteo.classindex</groupId>
+      <artifactId>classindex</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-net</groupId>
+          <artifactId>commons-net</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-text</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.appium</groupId>
+      <artifactId>java-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-firefox-driver</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-ie-driver</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-edge-driver</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-safari-driver</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>htmlunit-driver</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.stephenc.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessors>
+            <annotationProcessor>org.atteo.classindex.processor.ClassIndexProcessor</annotationProcessor>
+          </annotationProcessors>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.config.file>${project.basedir}/src/test/resources/logging.properties</java.util.logging.config.file>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/fluentlenium/fluentlenium-core/6.0.0/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 213ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/fluentlenium/fluentlenium-core/6.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/fluentlenium/fluentlenium-core/6.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="fluentlenium-core-6.0.0-javadoc.jar" title="fluentlenium-core-6.0.0-javadoc.jar">fluentlenium-core-6.0.0-javadoc.jar</a>               2023-05-03 06:29   2220230      
+<a href="fluentlenium-core-6.0.0-javadoc.jar.asc" title="fluentlenium-core-6.0.0-javadoc.jar.asc">fluentlenium-core-6.0.0-javadoc.jar.asc</a>           2023-05-03 06:29       659      
+<a href="fluentlenium-core-6.0.0-javadoc.jar.md5" title="fluentlenium-core-6.0.0-javadoc.jar.md5">fluentlenium-core-6.0.0-javadoc.jar.md5</a>           2023-05-03 06:29        32      
+<a href="fluentlenium-core-6.0.0-javadoc.jar.sha1" title="fluentlenium-core-6.0.0-javadoc.jar.sha1">fluentlenium-core-6.0.0-javadoc.jar.sha1</a>          2023-05-03 06:29        40      
+<a href="fluentlenium-core-6.0.0-sources.jar" title="fluentlenium-core-6.0.0-sources.jar">fluentlenium-core-6.0.0-sources.jar</a>               2023-05-03 06:29    315051      
+<a href="fluentlenium-core-6.0.0-sources.jar.asc" title="fluentlenium-core-6.0.0-sources.jar.asc">fluentlenium-core-6.0.0-sources.jar.asc</a>           2023-05-03 06:29       659      
+<a href="fluentlenium-core-6.0.0-sources.jar.md5" title="fluentlenium-core-6.0.0-sources.jar.md5">fluentlenium-core-6.0.0-sources.jar.md5</a>           2023-05-03 06:29        32      
+<a href="fluentlenium-core-6.0.0-sources.jar.sha1" title="fluentlenium-core-6.0.0-sources.jar.sha1">fluentlenium-core-6.0.0-sources.jar.sha1</a>          2023-05-03 06:29        40      
+<a href="fluentlenium-core-6.0.0.jar" title="fluentlenium-core-6.0.0.jar">fluentlenium-core-6.0.0.jar</a>                       2023-05-03 06:29    485698      
+<a href="fluentlenium-core-6.0.0.jar.asc" title="fluentlenium-core-6.0.0.jar.asc">fluentlenium-core-6.0.0.jar.asc</a>                   2023-05-03 06:29       659      
+<a href="fluentlenium-core-6.0.0.jar.md5" title="fluentlenium-core-6.0.0.jar.md5">fluentlenium-core-6.0.0.jar.md5</a>                   2023-05-03 06:29        32      
+<a href="fluentlenium-core-6.0.0.jar.sha1" title="fluentlenium-core-6.0.0.jar.sha1">fluentlenium-core-6.0.0.jar.sha1</a>                  2023-05-03 06:29        40      
+<a href="fluentlenium-core-6.0.0.pom" title="fluentlenium-core-6.0.0.pom">fluentlenium-core-6.0.0.pom</a>                       2023-05-03 06:29      6334      
+<a href="fluentlenium-core-6.0.0.pom.asc" title="fluentlenium-core-6.0.0.pom.asc">fluentlenium-core-6.0.0.pom.asc</a>                   2023-05-03 06:29       659      
+<a href="fluentlenium-core-6.0.0.pom.md5" title="fluentlenium-core-6.0.0.pom.md5">fluentlenium-core-6.0.0.pom.md5</a>                   2023-05-03 06:29        32      
+<a href="fluentlenium-core-6.0.0.pom.sha1" title="fluentlenium-core-6.0.0.pom.sha1">fluentlenium-core-6.0.0.pom.sha1</a>                  2023-05-03 06:29        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: site:github.com/FluentLenium/FluentLenium 6.0.0 fluentlenium-core
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/fluentlenium/fluentlenium-parent/6.0.0/fluentlenium-parent-6.0.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>9</version>
+  </parent>
+  <groupId>io.fluentlenium</groupId>
+  <artifactId>fluentlenium-parent</artifactId>
+  <version>6.0.0</version>
+  <packaging>pom</packaging>
+  <name>FluentLenium</name>
+  <description>FluentLenium makes the writing of acceptance testing more easy and in a fluent way using the power of
+        css selectors. Build upon Selenium WebDriver.
+
+        goTo("http://www.bing.com");
+        $("#sb_form_q").fill().with("FluentLenium");
+        $("#sb_form_go").submit();
+        assertThat(title()).contains("FluentLenium");</description>
+  <url>https://github.com/FluentLenium/FluentLenium</url>
+  <organization>
+    <name>FluentLenium</name>
+    <url>https://github.com/FluentLenium</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>Mlemee</id>
+      <name>Mathilde Lemee</name>
+      <email>mathilde.lemee@gmail.com</email>
+      <url>https://github.com/MathildeLemee</url>
+      <organization>AConsulting</organization>
+      <organizationUrl>http://www.java-freelance.fr</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Toilal</id>
+      <name>Rémi Alvergnat</name>
+      <email>remi.alvergnat@pragmasphere.com</email>
+      <url>https://github.com/Toilal</url>
+      <organization>Pragmasphere</organization>
+      <organizationUrl>http://www.pragmasphere.com</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Filip</id>
+      <name>Filip Cynarski</name>
+      <email>filip@cynarski.eu</email>
+      <url>https://github.com/filipcynarski</url>
+      <organization>Ocado Technology</organization>
+      <organizationUrl>http://www.ocadotechnology.com/</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Adrian</id>
+      <name>Adrian Koryl</name>
+      <email>adrian.koryl@gmail.com</email>
+      <url>https://github.com/koryl</url>
+      <organization>Edge One Solutions</organization>
+      <organizationUrl>http://www.edge1s.com/</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Slawek</id>
+      <name>Slawomir Radzyminski</name>
+      <email>slawomir.radzyminski@gmail.com</email>
+      <url>https://github.com/slawekradzyminski</url>
+      <organization>Ocado Technology</organization>
+      <organizationUrl>http://www.ocadotechnology.com/</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <modules>
+    <module>fluentlenium-core</module>
+    <module>fluentlenium-assertj</module>
+    <module>fluentlenium-junit</module>
+    <module>fluentlenium-junit-jupiter</module>
+    <module>fluentlenium-testng</module>
+    <module>fluentlenium-spring-testng</module>
+    <module>fluentlenium-cucumber</module>
+    <module>fluentlenium-spock</module>
+    <module>fluentlenium-integration-tests</module>
+    <module>fluentlenium-kotest</module>
+    <module>fluentlenium-kotest-assertions</module>
+    <module>fluentlenium-coverage-report</module>
+  </modules>
+  <scm>
+    <connection>scm:git:git@github.com:FluentLenium/FluentLenium.git</connection>
+    <developerConnection>scm:git:git@github.com:FluentLenium/FluentLenium.git</developerConnection>
+    <tag>v6.0.0</tag>
+    <url>https://github.com/FluentLenium/FluentLenium</url>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <properties>
+    <seleniumDevtools.artifactId>selenium-devtools-v111</seleniumDevtools.artifactId>
+    <selenium.version>4.9.0</selenium.version>
+    <testng.version>7.7.1</testng.version>
+    <slf4j.version>2.0.7</slf4j.version>
+    <maven.version.rules>file:///${project.basedir}/maven-version-rules.xml</maven.version.rules>
+    <junit5.version>5.9.3</junit5.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.version>6.0.8</spring.version>
+    <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+    <fluentlenium.capabilities.default>{"goog:chromeOptions": {"args": ["headless=new","no-sandbox", "disable-gpu",
+            "disable-dev-shm-usage"]}}</fluentlenium.capabilities.default>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>9.5</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>31.1-jre</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.15</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>4.1.91.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit5.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>4.0.11</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.fluentlenium</groupId>
+        <artifactId>fluentlenium-testing-private</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-support</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-api</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-remote-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-chrome-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-firefox-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-ie-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-safari-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-edge-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>htmlunit-driver</artifactId>
+        <version>${selenium.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sourceforge.htmlunit</groupId>
+        <artifactId>htmlunit</artifactId>
+        <version>2.70.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.appium</groupId>
+        <artifactId>java-client</artifactId>
+        <version>8.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.11.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.12.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>1.10.0</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit5.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-launcher</artifactId>
+        <version>1.9.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.stephenc.jcip</groupId>
+        <artifactId>jcip-annotations</artifactId>
+        <version>1.0-1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.24.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>1.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>5.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>1.14.4</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.atteo.classindex</groupId>
+        <artifactId>classindex</artifactId>
+        <version>3.13</version>
+      </dependency>
+      <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-core</artifactId>
+        <version>2.3-groovy-4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-junit4</artifactId>
+        <version>2.3-groovy-4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>4.0.11</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.14</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>3.9.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.bonigarcia</groupId>
+        <artifactId>webdrivermanager</artifactId>
+        <version>5.3.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>${seleniumDevtools.artifactId}</artifactId>
+        <version>${selenium.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.7</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>1.4.7</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>3.3</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.11.0</version>
+          <configuration>
+            <release>11</release>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.5.0</version>
+          <configuration>
+            <additionalparam>-Xdoclint:none</additionalparam>
+            <additionalOptions>-Xdoclint:none</additionalOptions>
+            <additionalJOption>-Xdoclint:none</additionalJOption>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.12.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0</version>
+          <configuration>
+            <excludes>
+              <exclude>**/integration/**/*</exclude>
+              <exclude>**/ignore/**/*</exclude>
+              <exclude>**/*$*</exclude>
+              <exclude>**/IgnoreTest*.java</exclude>
+              <exclude>**/*IgnoreTest.java</exclude>
+              <exclude>**/*IgnoreTestCase.java</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.0.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <includes>
+              <include>**/integration/**/*</include>
+            </includes>
+            <excludes>
+              <exclude>**/ignore/**/*</exclude>
+              <exclude>**/shareddriver/**/*</exclude>
+              <exclude>**/*$*</exclude>
+              <exclude>**/IgnoreTest*.java</exclude>
+              <exclude>**/*IgnoreTest.java</exclude>
+              <exclude>**/*IgnoreTestCase.java</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.github.gantsign.maven</groupId>
+          <artifactId>ktlint-maven-plugin</artifactId>
+          <version>1.16.0</version>
+          <executions>
+            <execution>
+              <id>format-and-check</id>
+              <goals>
+                <goal>format</goal>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.9.0</version>
+                </requireMavenVersion>
+                <banDuplicatePomDependencyVersions />
+                <dependencyConvergence />
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <descriptors>src/main/assembly/dep.xml</descriptors>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.4.1</version>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>4.3.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <jacocoReports>
+            <jacocoReport>${project.basedir}/fluentlenium-coverage-report/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+          </jacocoReports>
+          <sourceEncoding>UTF-8</sourceEncoding>
+          <sourceDirectories>
+            <sourceDirectory>${basedir}/fluentlenium-core/src/main/java</sourceDirectory>
+            <sourceDirectory>${basedir}/fluentlenium-assertj/src/main/java</sourceDirectory>
+            <sourceDirectory>${basedir}/fluentlenium-cucumber/src/main/java</sourceDirectory>
+            <sourceDirectory>${basedir}/fluentlenium-junit/src/main/java</sourceDirectory>
+            <sourceDirectory>${basedir}/fluentlenium-junit-jupiter/src/main/java</sourceDirectory>
+            <sourceDirectory>${basedir}/fluentlenium-testng/src/main/java</sourceDirectory>
+            <sourceDirectory>${basedir}/fluentlenium-spock/src/main/groovy</sourceDirectory>
+          </sourceDirectories>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.9</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>**com.steadystate*</exclude>
+            <exclude>**com/gargoylesoftware*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>java11</id>
+      <activation>
+        <jdk>11</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>aggregate</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>aggregate</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <release>${java.version}</release>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <java.version>11</java.version>
+        <spring.version>5.3.23</spring.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>java17</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <release>${java.version}</release>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <java.version>17</java.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>examples</id>
+      <modules>
+        <module>examples/appium</module>
+        <module>examples/cucumber</module>
+        <module>examples/hooks</module>
+        <module>examples/performance</module>
+        <module>examples/quickstart-chrome</module>
+        <module>examples/quickstart-microsoft-browsers</module>
+        <module>examples/quickstart-safari</module>
+        <module>examples/spock</module>
+        <module>examples/spring</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>framework-integration-tests</id>
+      <modules>
+        <module>fluentlenium-junit/src/it/junit</module>
+        <module>fluentlenium-junit-jupiter/src/it/junit-jupiter</module>
+        <module>fluentlenium-testng/src/it/testng</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.2.2</version>
+            <executions>
+              <execution>
+                <id>checkstyle-validate</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.3.4</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>dev-config/checkstyle/fluentlenium_checks.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <encoding>${project.build.sourceEncoding}</encoding>
+              <failOnViolation>true</failOnViolation>
+              <failsOnError>true</failsOnError>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+              <logViolationsToConsole>true</logViolationsToConsole>
+              <violationSeverity>error</violationSeverity>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.20.0</version>
+            <executions>
+              <execution>
+                <id>pmd-validate</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <failOnViolation>true</failOnViolation>
+              <failurePriority>2</failurePriority>
+              <rulesets>
+                <ruleset>dev-config/pmd/fluentlenium_pmd.xml</ruleset>
+              </rulesets>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.5.0</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>ci</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>${maven.multiModuleProjectDirectory}/cleanup-browser.sh</executable>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/FluentLenium/FluentLenium/tree/v6.0.0/fluentlenium-core/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/FluentLenium/FluentLenium/tree/fluentlenium-parent-6.0.0/fluentlenium-core/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/FluentLenium/FluentLenium/tree/6.0.0/fluentlenium-core/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ exited 22 in 391ms:
+HTTP/2 404 
+date: Fri, 08 May 2026 02:43:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=GWPF%2Flofy2HUtlQgpT%2F2OCtP3gUx0fAvbuH7FfcrHGkW%2FWjtpof8e9VGePgae8%2BeC91K2DOWiw%2B%2Fwp%2FzrBC9%2B0oMzp7lE1c6zKJtrMz9bct5hdwP4ytKG9CtQ3%2FpyHx%2FetelPIhDW6F6WDypr%2BShpHPx67K2N5yL%2B6ENs3TSsrYXJuT7yV0uPhAdEHWrDCWx9zTyqkwJeK5rRKYulqS2EuRtdhMVBSmCaO6pqyTQZ6sHVg1PL%2B1S%2FuRWKabdjcKzz5RUPCaCBtTEXcnMASquwg%3D%3D--g%2B8NBbVGUziPYVKa--a%2Fw5h%2FJdwiKxhcB%2FZWiCGQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1369170073.1778208217; expires=Sat, 08 May 2027 02:43:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 02:43:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511C:329031:B717172:906D43B:69FD4DD9
+
+
+ exited 22 in 476ms:
+HTTP/2 404 
+date: Fri, 08 May 2026 02:43:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=B2uRPX7SUI%2FrvvyNdEfhbDDEzV84W7hQ2g8aLLIK1Zt3MaO7ExLJKDKY4FgqxnbXczijcwTk7pidOqJ6YOfdEv5rzs3aFoxiam%2BM79F%2FeO0MBNzhGiR2geQQRDu%2BcjWFcpHwPMtAK6WbyMY5wMVff04QLSxQmeyK23Z2iH%2BOuQDuA9lIY5v2Estjo%2B2TBtTpkig8ND8Go1fmpEgk1I%2FaReE4%2FKRgvbvCkPbKp%2ByOktFpJJPRTIpYeraA3kE0jef%2FDsKAx34EisvGjPw9fDoH%2BQ%3D%3D--%2F4lzG1j3aw1D7aaH--cwOZ%2Fc7WkF0kMOmgu4aJnQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1071939058.1778208217; expires=Sat, 08 May 2027 02:43:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 02:43:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511B:1F2E04:B68FECC:9047801:69FD4DD9
+
+
+ succeeded in 784ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:43:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1b817ddbf77ee8b0b649aa1c3c75e22e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=eSLTH9gE4NY0Qc%2Fr%2F58Fs0XZkt5oCqFItiXOk9LLld6Qvg7iecEC5Y7PwEq7m4wnKflAB4SMudAEwnHCeM4s0GuvRvHoNNQzrkp7tUGX%2BCN2HZwguRJl0C1ADGP1zQyUdaw0wEMfT1X6hBog%2FDtBQrL6S2B7DFB2xWkSfLrHDtoFbVY3kzLHxb6yE6%2BCWqbXkqiW3s%2Bq5nck2%2BpOGnRy8vOhQ2DE2gPlOYLd8VW838vKZkAB5O1K2UVz4jf0t87IAvHRgJlpPtIo%2FECWCLR6ww%3D%3D--N7h1csG7FG7gc3Xe--x6CbxC7ZmxwCYvJkJ6mopQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1602115555.1778208217; expires=Sat, 08 May 2027 02:43:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 02:43:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511D:33C752:B4A7995:8E8919F:69FD4DD9
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/6.0.0/fluentlenium-core-6.0.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:43:48 GMT
+content-type: application/java-archive
+content-length: 315051
+cf-ray: 9f851e735ed9a43d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 325127
+etag: "211312ae66097704fc18df7fdb3ee6f6"
+last-modified: Wed, 03 May 2023 06:29:57 GMT
+x-checksum-md5: 211312ae66097704fc18df7fdb3ee6f6
+x-checksum-sha1: ad96376d07c3d0c56f629b55e2fbaff47247327d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/6.0.0/fluentlenium-core-6.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/6.0.0/fluentlenium-core-6.0.0.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:43:48 GMT
+content-type: application/java-archive
+content-length: 485698
+cf-ray: 9f851e742fd3bac5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 185365
+etag: "85ff7f529c4049fe12e1cf06bea6bce1"
+last-modified: Wed, 03 May 2023 06:29:54 GMT
+x-checksum-md5: 85ff7f529c4049fe12e1cf06bea6bce1
+x-checksum-sha1: 10d4604e02af56ce49d05937b2b5fcc63d0764b5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/FluentLenium/FluentLenium/tree/v6.0.0/fluentlenium-core/src/main/java' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 160ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:43:48 GMT
+content-type: application/java-archive
+content-length: 2220230
+cf-ray: 9f851e73a9d80395-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "fdebb0267da558ad2411995798c17287"
+last-modified: Wed, 03 May 2023 06:29:58 GMT
+x-checksum-md5: fdebb0267da558ad2411995798c17287
+x-checksum-sha1: c90ec03c84dc1913da212e74b5c406c61fe220fb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 731ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:43:49 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ae8c26468e4baaa7909911448d4b5bdd"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=njd1p0XFqjim0082eaPHmuUcH1rogVMQJcb3vFMvStBLHS9f53MGeg8qlg9dG7WoVLR8LAhqfHQjfC%2BjdgXeJg2WvHLE0PSZ8P%2BbdXuU%2F6G8fWwBnjkSd588TgIjUoFhXWC3w40mhZ1VK8bZRlasJGFuuaOS6o4vVwd%2B%2FNAKfPEhC3JjBU1UPxu3%2BdZAXqoR%2BVy1wcxjpDaC9VjIswaBTWXrMdb30q5auEZk0SA31877ykNqUJ%2B3LIrJ8oA6AkbVTfTcCzpC%2F37HEZVHoSpRZQ%3D%3D--uhrrMVkioI5TN%2BPH--8WPphzqxCbFDmUVdORso3Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1989046838.1778208228; expires=Sat, 08 May 2027 02:43:48 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 02:43:48 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5117:329031:B71C28C:90716CE:69FD4DE4
+
+
+codex
+I found Maven-hosted sources and javadocs, so those are the best fit for `source-code-url` and `documentation-url`. The GitHub SCM tag is `v6.0.0`, and the core module test directory exists under that tag, so I’m patching the JSON with those version-template URLs.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+diff --git a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+index c157c39fe212ac0404e6d6f77960ac6eaf014432..e3f53b747960f435334bb63bdc18500fe7b8b5b9
+--- a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
++++ b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
++  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
++  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
++  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+index c157c39fe212ac0404e6d6f77960ac6eaf014432..e3f53b747960f435334bb63bdc18500fe7b8b5b9
+--- a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
++++ b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
++  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
++  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
++  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+{
+  "coordinates": "io.fluentlenium:fluentlenium-core:6.0.0",
+  "repository-url": "https://github.com/FluentLenium/FluentLenium",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
+  "test-code-url": "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
+  "description": "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/FluentLenium/FluentLenium/tree/v6.0.0/fluentlenium-core/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:43:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1b817ddbf77ee8b0b649aa1c3c75e22e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=hvK2dtN0rYgvRPw931kDUujg%2BEPtunmWKfQJpDdytmMX2Cx1eN%2B0%2FSq%2BmFiIN3WQi1ambE30nZ6%2B5dyYsWvFbA%2BR5Jy68yE9Dt6dSzhN6eJI%2F%2BiMQPiBe0w2qDYjXe7bK6uhU52WOHk%2BNZY48700jJLcs0QH4Z2YXinbX5Bkd9XYXqGAjbL8bsn8SlIZq52Nfs6c%2B2wTReJenzgxHzx7l8KZB%2BgDkKrV7MkwgpesA6RgyTSh5TgcCDC9LYsEpbcnUxKGisoWN8f%2Bvd18qR7yaw%3D%3D--QX3w%2BHwR0yIvbNak--iSbl3bVd8XPWrKIl2pvKTQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1060053569.1778208238; expires=Sat, 08 May 2027 02:43:58 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 02:43:58 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511B:1F2E04:B699AE8:904F8E9:69FD4DEE
+
+
+diff --git a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+index c157c39fe212ac0404e6d6f77960ac6eaf014432..e3f53b747960f435334bb63bdc18500fe7b8b5b9
+--- a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
++++ b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
++  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
++  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
++  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+ }
+
+web search: 
+web search: https://github.com/FluentLenium/FluentLenium/tree/v6.0.0/fluentlenium-core/src/test
+web search: 
+web search: repo.maven.apache.org io fluentlenium fluentlenium-core 6.0.0 sources javadoc jar
+web search: 
+web search: https://central.sonatype.com/artifact/io.fluentlenium/fluentlenium-parent/6.0.0
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com artifact io.fluentlenium fluentlenium-core 6.0.0
+web search: 
+web search: "fluentlenium-core-6.0.0-sources.jar"
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/6.0.0/fluentlenium-core-6.0.0.jar -o /tmp/fluentlenium-core-6.0.0.jar && jar tf /tmp/fluentlenium-core-6.0.0.jar | rg '\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+ succeeded in 165ms:
+io/fluentlenium/configuration/ConfigurationProperties$TriggerMode.class
+io/fluentlenium/configuration/DefaultWebDriverFactories$RemoteWebDriverFactory.class
+io/fluentlenium/configuration/CapabilitiesRegistry.class
+io/fluentlenium/configuration/DefaultWebDriverFactories$ChromeWebDriverFactory.class
+io/fluentlenium/configuration/ConfigurationProperties$DriverLifecycle.class
+io/fluentlenium/configuration/DefaultWebDriverFactories.class
+io/fluentlenium/configuration/FluentConfiguration$BooleanValue.class
+io/fluentlenium/configuration/DefaultWebDriverFactories$HtmlUnitWebDriverFactory.class
+io/fluentlenium/configuration/EnvironmentVariablesBackend.class
+io/fluentlenium/configuration/DefaultConfigurationFactory.class
+
+diff --git a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+index c157c39fe212ac0404e6d6f77960ac6eaf014432..e3f53b747960f435334bb63bdc18500fe7b8b5b9
+--- a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
++++ b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
++  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
++  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
++  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json && sed -n '1,120p' build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62
+diff --git a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+index c157c39fe212ac0404e6d6f77960ac6eaf014432..e3f53b747960f435334bb63bdc18500fe7b8b5b9
+--- a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
++++ b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
++  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
++  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
++  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+ }
+
+ succeeded in 252ms:
+{
+  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
+  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
+  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
+  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+}
+
+web search: 
+web search: fluentlenium-core 6.0.0 Maven Central
+web search: 
+web search: FluentLenium GitHub v6.0.0 fluentlenium-core src test
+codex
+Updated [io.fluentlenium-fluentlenium-core-6.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json:1) with the repository, Maven source/javadoc URLs, GitHub test URL, and two-sentence description.
+
+I left `language` absent: this is the Java core module, not a Kotlin/Groovy/Scala-specific artifact. I also left `not-for-native-image` absent because the published artifact is a JVM JAR with `.class` files; Maven Central’s parent POM identifies the `v6.0.0` SCM tag and Java source layout. ([central.sonatype.com](https://central.sonatype.com/artifact/io.fluentlenium/fluentlenium-parent/6.0.0?utm_source=openai))
+
+Validation: `jq` parsed the JSON successfully, and the substituted source, documentation, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+index c157c39fe212ac0404e6d6f77960ac6eaf014432..e3f53b747960f435334bb63bdc18500fe7b8b5b9
+--- a/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
++++ b/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0"
++  "coordinates" : "io.fluentlenium:fluentlenium-core:6.0.0",
++  "repository-url" : "https://github.com/FluentLenium/FluentLenium",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/FluentLenium/FluentLenium/tree/v$version$/fluentlenium-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/fluentlenium/fluentlenium-core/$version$/fluentlenium-core-$version$-javadoc.jar",
++  "description" : "FluentLenium Core provides a fluent Java API for browser automation and acceptance testing on top of Selenium WebDriver, with support for CSS selector-based page interactions. The core module contains the shared runtime abstractions, component model, configuration, events, and utility APIs used by FluentLenium's framework integrations."
+ }
+
+tokens used
+113,945
+Updated [io.fluentlenium-fluentlenium-core-6.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/build/discovered-artifact-metadata/io.fluentlenium-fluentlenium-core-6.0.0.json:1) with the repository, Maven source/javadoc URLs, GitHub test URL, and two-sentence description.
+
+I left `language` absent: this is the Java core module, not a Kotlin/Groovy/Scala-specific artifact. I also left `not-for-native-image` absent because the published artifact is a JVM JAR with `.class` files; Maven Central’s parent POM identifies the `v6.0.0` SCM tag and Java source layout. ([central.sonatype.com](https://central.sonatype.com/artifact/io.fluentlenium/fluentlenium-parent/6.0.0?utm_source=openai))
+
+Validation: `jq` parsed the JSON successfully, and the substituted source, documentation, and test URLs returned HTTP 200.
+Ran agent for io.fluentlenium:fluentlenium-core:6.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/build/agent-artifact-discovery-logs/io.fluentlenium-fluentlenium-core-6.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3893-9696cc62/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 17s
+9 actionable tasks: 9 executed
