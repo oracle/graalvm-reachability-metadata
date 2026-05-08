@@ -264,6 +264,24 @@ public class Spring_oxmTest {
         assertThat(restored.getContent().getContentType()).isEqualTo("application/octet-stream");
     }
 
+    @Test
+    void jaxbMarshallerUnmarshalsMappedClassWithoutXmlRootElement() throws Exception {
+        Jaxb2Marshaller marshaller = newCustomerRecordMarshaller();
+        String xml = """
+                <customerRecord>
+                    <name>Grace Hopper</name>
+                    <active>true</active>
+                </customerRecord>
+                """;
+
+        CustomerRecord customerRecord = (CustomerRecord) marshaller.unmarshal(new StreamSource(new StringReader(xml)));
+
+        assertThat(customerRecord.getName()).isEqualTo("Grace Hopper");
+        assertThat(customerRecord.isActive()).isTrue();
+        assertThat(marshaller.supports(CustomerRecord.class)).isTrue();
+        assertThat(marshaller.supports(TextMessage.class)).isFalse();
+    }
+
     private static Jaxb2Marshaller newInvoiceMarshaller() throws Exception {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(Invoice.class, LineItem.class, MoneyValue.class);
@@ -287,6 +305,15 @@ public class Spring_oxmTest {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(BinaryDocument.class);
         marshaller.setMtomEnabled(true);
+        marshaller.afterPropertiesSet();
+        return marshaller;
+    }
+
+    private static Jaxb2Marshaller newCustomerRecordMarshaller() throws Exception {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setClassesToBeBound(CustomerRecord.class);
+        marshaller.setMappedClass(CustomerRecord.class);
+        marshaller.setCheckForXmlRootElement(false);
         marshaller.afterPropertiesSet();
         return marshaller;
     }
@@ -466,6 +493,27 @@ public class Spring_oxmTest {
 
         public DataHandler getContent() {
             return content;
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "customerRecord", propOrder = {"name", "active"})
+    public static class CustomerRecord {
+        @XmlElement(required = true)
+        private String name;
+
+        @XmlElement
+        private boolean active;
+
+        public CustomerRecord() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isActive() {
+            return active;
         }
     }
 
