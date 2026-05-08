@@ -11,10 +11,12 @@ import org.apache.pekko.stream.Attributes
 import org.apache.pekko.stream.FlowShape
 import org.apache.pekko.stream.IOResult
 import org.apache.pekko.stream.Inlet
+import org.apache.pekko.stream.KillSwitches
 import org.apache.pekko.stream.Outlet
 import org.apache.pekko.stream.OverflowStrategy
 import org.apache.pekko.stream.QueueOfferResult
 import org.apache.pekko.stream.SystemMaterializer
+import org.apache.pekko.stream.UniqueKillSwitch
 import org.apache.pekko.stream.scaladsl.Broadcast
 import org.apache.pekko.stream.scaladsl.FileIO
 import org.apache.pekko.stream.scaladsl.Flow
@@ -172,6 +174,20 @@ class Pekko_stream_3Test {
 
     assertThat(await(streamResult).toList.asJava)
       .containsExactly("element-1", "element-2", "element-3")
+  }
+
+  @Test
+  def shutsDownStreamWithKillSwitch(): Unit = withActorSystem("kill-switch") { system =>
+    val materializer = SystemMaterializer(system).materializer
+    val (killSwitch: UniqueKillSwitch, streamResult: Future[Seq[Int]]) = Source
+      .maybe[Int]
+      .viaMat(KillSwitches.single)(Keep.right)
+      .toMat(Sink.seq)(Keep.both)
+      .run()(materializer)
+
+    killSwitch.shutdown()
+
+    assertThat(await(streamResult).toList.asJava).isEmpty()
   }
 
   private def withActorSystem(testName: String)(testBody: ActorSystem => Unit): Unit = {
