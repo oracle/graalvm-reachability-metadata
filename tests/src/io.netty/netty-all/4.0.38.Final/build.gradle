@@ -9,6 +9,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String customLeakDetectorClass = "io.netty.util.ResourceLeakDetector"
 
 dependencies {
     testImplementation "io.netty:netty-all:$libraryVersion"
@@ -16,10 +17,15 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
+    systemProperty "io.netty.customResourceLeakDetector", customLeakDetectorClass
     jvmArgs += [
         "--add-opens=java.base/java.nio=ALL-UNNAMED",
         "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
     ]
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dio.netty.customResourceLeakDetector=$customLeakDetectorClass")
 }
 
 graalvmNative {
