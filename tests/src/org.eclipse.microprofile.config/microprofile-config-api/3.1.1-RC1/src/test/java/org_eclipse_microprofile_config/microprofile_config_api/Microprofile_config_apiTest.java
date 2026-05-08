@@ -203,6 +203,18 @@ public class Microprofile_config_apiTest {
         assertThat(Config.PROFILE).isEqualTo("mp.config.profile");
         assertThat(Config.PROPERTY_EXPRESSIONS_ENABLED).isEqualTo("mp.config.property.expressions.enabled");
     }
+
+    @Test
+    void configPropertiesLiteralSupportsQualifierAnnotationSemantics() {
+        ConfigProperties.Literal server = ConfigProperties.Literal.of("server");
+        ConfigProperties.Literal matchingServer = ConfigProperties.Literal.of("server");
+        ConfigProperties.Literal client = ConfigProperties.Literal.of("client");
+
+        assertThat(server).isInstanceOf(ConfigProperties.class);
+        assertThat(server).isEqualTo(matchingServer);
+        assertThat(server).hasSameHashCodeAs(matchingServer);
+        assertThat(server).isNotEqualTo(client);
+    }
 }
 
 final class MapBackedConfigSource implements ConfigSource {
