@@ -240,6 +240,20 @@ public class Maven_api_toolchainTest {
     }
 
     @Test
+    void inputLocationCanTrackItselfUnderExplicitKey() {
+        InputSource source = new InputSource("toolchains.xml");
+
+        InputLocation keyedLocation = new InputLocation(4, 9, source, "toolchain/type");
+        InputLocation unkeyedLocation = new InputLocation(5, 1, source, null);
+
+        assertThat(keyedLocation.getLocation("toolchain/type")).isSameAs(keyedLocation);
+        assertThat(keyedLocation.getLocations()).containsExactly(Map.entry("toolchain/type", keyedLocation));
+        assertThat(keyedLocation.getLocation("toolchain/provides")).isNull();
+        assertThat(unkeyedLocation.getLocations()).isEmpty();
+        assertThat(unkeyedLocation.getLocation("toolchain/type")).isNull();
+    }
+
+    @Test
     void inputLocationMergeCombinesNestedLocationsAndKeepsPrimaryCoordinates() {
         InputSource source = new InputSource("primary.xml");
         InputLocation primarySegment = new InputLocation(11, 1, source);
