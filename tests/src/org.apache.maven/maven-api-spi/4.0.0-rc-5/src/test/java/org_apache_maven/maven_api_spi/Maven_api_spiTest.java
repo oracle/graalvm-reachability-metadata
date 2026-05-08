@@ -187,6 +187,21 @@ public class Maven_api_spiTest {
     }
 
     @Test
+    void propertyContributorDirectMapCallbackEditsCollectedPropertiesInPlace() {
+        Map<String, String> userProperties = new LinkedHashMap<>();
+        userProperties.put("profile", "integration");
+        userProperties.put("internal.token", "secret");
+        PropertyContributor contributor = new SanitizingPropertyContributor();
+
+        contributor.contribute(userProperties);
+
+        assertThat(userProperties)
+                .containsEntry("profile", "integration")
+                .containsEntry("build.profile", "integration")
+                .doesNotContainKey("internal.token");
+    }
+
+    @Test
     void defaultPropertyContributorReturnsIndependentCopyOfUserProperties() {
         ProtoSession protoSession = ProtoSession.newBuilder()
                 .withUserProperties(Map.of("original", "value"))
@@ -394,6 +409,14 @@ public class Maven_api_spiTest {
         public void contribute(Map<String, String> userProperties) {
             Map<String, String> snapshot = new LinkedHashMap<>(userProperties);
             snapshot.forEach((key, value) -> userProperties.put("contributed." + key, value));
+        }
+    }
+
+    private static final class SanitizingPropertyContributor implements PropertyContributor {
+        @Override
+        public void contribute(Map<String, String> userProperties) {
+            userProperties.remove("internal.token");
+            userProperties.put("build.profile", userProperties.get("profile"));
         }
     }
 
