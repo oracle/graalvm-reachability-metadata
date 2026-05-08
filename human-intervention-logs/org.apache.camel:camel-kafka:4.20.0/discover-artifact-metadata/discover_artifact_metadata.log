@@ -1,0 +1,912 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e04e0-3da3-7f70-96a7-e2c9bdf77295
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.camel:camel-kafka:4.20.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.20.0" when "$version$" is replaced with "4.20.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+- Set "coordinates" to "org.apache.camel:camel-kafka:4.20.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.20.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact details against Maven and Apache Camel’s tagged sources, then update the JSON in place. After that I’ll validate the file format locally.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+-rw-rw-r-- 1 vjovanov vjovanov 60 May  8 01:57 build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+
+exec
+/usr/bin/bash -lc "rg -n 'camel-kafka|org.apache.camel' metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.java' -g '*.properties'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json:2:  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
+metadata/org.apache.camel/camel-util-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+metadata/org.apache.camel/camel-util-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-util-json/index.json:14:      "org.apache.camel.util.json"
+metadata/org.apache.camel/apt/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-sources.jar",
+metadata/org.apache.camel/apt/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-javadoc.jar",
+metadata/org.apache.camel/apt/index.json:25:      "org.apache.camel.tools.apt"
+metadata/org.apache.camel/camel-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-sources.jar",
+metadata/org.apache.camel/camel-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/org.apache.camel/camel-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-api/index.json:14:      "org.apache.camel"
+metadata/org.apache.camel/camel-management-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-management-api/$version$/camel-management-api-$version$-sources.jar",
+metadata/org.apache.camel/camel-management-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/org.apache.camel/camel-management-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-management-api/$version$/camel-management-api-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-management-api/index.json:14:      "org.apache.camel.api.management"
+metadata/org.apache.camel/camel-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
+metadata/org.apache.camel/camel-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-util/index.json:14:      "org.apache.camel.util"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:5:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:11:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:17:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:23:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:29:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:39:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:49:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:59:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:69:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:79:        "typeReached" : "org.apache.camel.util.ClassLoadingAwareObjectInputStream"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:86:        "typeReached" : "org.apache.camel.util.ClassLoadingAwareObjectInputStream"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:88:      "type" : "org.apache.camel.util.function.ThrowingSupplier"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:92:        "typeReached" : "org.apache.camel.util.ClassLoadingAwareObjectInputStream"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:96:          "org.apache.camel.util.function.ThrowingSupplier"
+metadata/org.apache.camel/camel-util/4.20.0/reachability-metadata.json:104:        "typeReached" : "org.apache.camel.util.FileUtil"
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-sources.jar",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:14:      "org.apache.camel.util.xml.pretty"
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-sources.jar",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:29:      "org.apache.camel.util.xml.pretty"
+metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:90:      "org.apache.camel.spi"
+metadata/org.apache.camel/spi-annotations/index.json:95:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:98:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:106:      "org.apache.camel.spi"
+metadata/org.apache.camel/spi-annotations/index.json:111:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:114:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:174:      "org.apache.camel.spi"
+tests/src/org.apache.camel/camel-util-json/4.20.0/src/test/java/org_apache_camel/camel_util_json/JsonArrayTest.java:7:package org_apache_camel.camel_util_json;
+tests/src/org.apache.camel/camel-util-json/4.20.0/src/test/java/org_apache_camel/camel_util_json/JsonArrayTest.java:9:import org.apache.camel.util.json.JsonArray;
+tests/src/org.apache.camel/camel-util-json/4.20.0/src/test/java/org_apache_camel/camel_util_json/JsonArrayTest.java:10:import org.apache.camel.util.json.Yytoken.Types;
+tests/src/org.apache.camel/camel-util-json/4.20.0/src/test/java/org_apache_camel/camel_util_json/JsonObjectTest.java:7:package org_apache_camel.camel_util_json;
+tests/src/org.apache.camel/camel-util-json/4.20.0/src/test/java/org_apache_camel/camel_util_json/JsonObjectTest.java:9:import org.apache.camel.util.json.JsonObject;
+tests/src/org.apache.camel/camel-util-json/4.20.0/src/test/java/org_apache_camel/camel_util_json/JsonObjectTest.java:10:import org.apache.camel.util.json.Yytoken.Types;
+tests/src/org.apache.camel/camel-util-json/4.20.0/gradle.properties:4:library.coordinates = org.apache.camel:camel-util-json:4.20.0
+tests/src/org.apache.camel/camel-util-json/4.20.0/gradle.properties:6:metadata.dir = org.apache.camel/camel-util-json/4.20.0/
+tests/src/org.apache.camel/camel-util-json/4.20.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.util.json.**"
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:7:package org_apache_camel.apt;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:25:import org.apache.camel.tools.apt.DocumentationHelper;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:26:import org.apache.camel.tools.apt.EipAnnotationProcessor;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:27:import org.apache.camel.tools.apt.EndpointAnnotationProcessor;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:28:import org.apache.camel.tools.apt.helper.CollectionStringBuffer;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:29:import org.apache.camel.tools.apt.helper.EndpointHelper;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:30:import org.apache.camel.tools.apt.helper.IOHelper;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:31:import org.apache.camel.tools.apt.helper.JsonSchemaHelper;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:32:import org.apache.camel.tools.apt.helper.Strings;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:33:import org.apache.camel.tools.apt.model.ComponentModel;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:34:import org.apache.camel.tools.apt.model.ComponentOption;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:35:import org.apache.camel.tools.apt.model.EndpointOption;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:36:import org.apache.camel.tools.apt.model.EndpointPath;
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:63:                        .containsExactly("org.apache.camel.spi.*"));
+tests/src/org.apache.camel/apt/2.16.2/src/test/java/org_apache_camel/apt/AptTest.java:68:                        .containsExactlyInAnyOrder("javax.xml.bind.annotation.*", "org.apache.camel.spi.Label"));
+tests/src/org.apache.camel/apt/2.16.2/gradle.properties:4:library.coordinates = org.apache.camel:apt:2.16.2
+tests/src/org.apache.camel/apt/2.16.2/gradle.properties:6:metadata.dir = org.apache.camel/apt/2.16.2/
+tests/src/org.apache.camel/apt/2.16.2/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.tools.apt.**"
+tests/src/org.apache.camel/apt/2.16.2/user-code-filter.json:10:      "includeClasses" : "org_apache_camel.apt.**"
+tests/src/org.apache.camel/camel-api/4.20.0/src/test/java/org_apache_camel/camel_api/BaseSSLContextParametersTest.java:7:package org_apache_camel.camel_api;
+tests/src/org.apache.camel/camel-api/4.20.0/src/test/java/org_apache_camel/camel_api/BaseSSLContextParametersTest.java:12:import org.apache.camel.support.jsse.FilterParameters;
+tests/src/org.apache.camel/camel-api/4.20.0/src/test/java/org_apache_camel/camel_api/BaseSSLContextParametersTest.java:13:import org.apache.camel.support.jsse.SSLContextParameters;
+tests/src/org.apache.camel/camel-api/4.20.0/gradle.properties:4:library.coordinates = org.apache.camel:camel-api:4.20.0
+tests/src/org.apache.camel/camel-api/4.20.0/gradle.properties:6:metadata.dir = org.apache.camel/camel-api/4.20.0/
+tests/src/org.apache.camel/camel-api/4.20.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.**"
+tests/src/org.apache.camel/camel-api/4.20.0/user-code-filter.json:10:      "includeClasses" : "org_apache_camel.camel_api.**"
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:7:package org_apache_camel.camel_management_api;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:26:import org.apache.camel.Processor;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:27:import org.apache.camel.api.management.JmxNotificationBroadcasterAware;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:28:import org.apache.camel.api.management.JmxSystemPropertyKeys;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:29:import org.apache.camel.api.management.ManagedCamelContext;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:30:import org.apache.camel.api.management.ManagedInstance;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:31:import org.apache.camel.api.management.NotificationSender;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:32:import org.apache.camel.api.management.NotificationSenderAware;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:33:import org.apache.camel.api.management.mbean.CamelOpenMBeanTypes;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:34:import org.apache.camel.api.management.mbean.ComponentVerifierExtension.Result;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:35:import org.apache.camel.api.management.mbean.ComponentVerifierExtension.Scope;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:36:import org.apache.camel.api.management.mbean.ComponentVerifierExtension.VerificationError;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:37:import org.apache.camel.api.management.mbean.ManagedCamelContextMBean;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:38:import org.apache.camel.api.management.mbean.ManagedConsumerMBean;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:39:import org.apache.camel.api.management.mbean.ManagedProcessorAware;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:40:import org.apache.camel.api.management.mbean.ManagedProcessorMBean;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:41:import org.apache.camel.api.management.mbean.ManagedRouteGroupMBean;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:42:import org.apache.camel.api.management.mbean.ManagedRouteMBean;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:43:import org.apache.camel.api.management.mbean.ManagedStepMBean;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:44:import org.apache.camel.api.management.mbean.RouteError;
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:180:                notification -> notification.getType().startsWith("org.apache.camel."),
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:190:        assertThat(notification.getType()).isEqualTo("org.apache.camel.management.route.started");
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:217:                .allSatisfy(key -> assertThat(key).startsWith("org.apache.camel.jmx."))
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:220:                .isEqualTo("org.apache.camel.jmx.registerRoutesCreateByTemplate");
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:222:                .isEqualTo("org.apache.camel.jmx.registerRoutesCreateByKamelet");
+tests/src/org.apache.camel/camel-management-api/4.20.0/src/test/java/org_apache_camel/camel_management_api/Camel_management_apiTest.java:504:                    "org.apache.camel.management.route.started",
+tests/src/org.apache.camel/camel-management-api/4.20.0/gradle.properties:4:library.coordinates = org.apache.camel:camel-management-api:4.20.0
+tests/src/org.apache.camel/camel-management-api/4.20.0/gradle.properties:6:metadata.dir = org.apache.camel/camel-management-api/4.20.0/
+tests/src/org.apache.camel/camel-management-api/4.20.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.api.management.**"
+tests/src/org.apache.camel/camel-management-api/4.20.0/user-code-filter.json:10:      "includeClasses" : "org_apache_camel.camel_management_api.**"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:4:      "type" : "org_apache_camel.camel_util.AnnotationHelperTest$AnnotatedParent",
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:8:      "type" : "org_apache_camel.camel_util.AnnotationHelperTest$AnnotatedChild",
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:12:      "type" : "org_apache_camel.camel_util.AnnotationHelperTest$MetaAnnotatedFixture",
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:16:      "type" : "org_apache_camel.camel_util.AnnotationHelperTest$MethodValueFixture",
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:20:      "type" : "org_apache_camel.camel_util.AnnotationHelperTest$FieldValueFixture",
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:33:          "org_apache_camel.camel_util.AnnotationHelperTest$CamelMarker"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:49:        "typeReached" : "org.apache.camel.util.AnnotationHelper"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:53:          "org_apache_camel.camel_util.AnnotationHelperTest$MetaCamelMarker"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:59:        "typeReached" : "org.apache.camel.util.ObjectHelper"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:61:      "type" : "org_apache_camel.camel_util.ObjectHelperArrayElement"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:67:        "typeReached" : "org.apache.camel.util.ObjectHelper"
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ObjectHelperTest.java:7:package org_apache_camel.camel_util;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ObjectHelperTest.java:13:import org.apache.camel.util.ObjectHelper;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ObjectHelperTest.java:178:            if ("org.apache.camel.impl.DefaultCamelContext".equals(name)) {
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ReflectionHelperTest.java:7:package org_apache_camel.camel_util;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ReflectionHelperTest.java:16:import org.apache.camel.util.ReflectionHelper;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ClassLoadingAwareObjectInputStreamTest.java:7:package org_apache_camel.camel_util;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ClassLoadingAwareObjectInputStreamTest.java:16:import org.apache.camel.util.ClassLoadingAwareObjectInputStream;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/ClassLoadingAwareObjectInputStreamTest.java:17:import org.apache.camel.util.function.ThrowingSupplier;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/AnnotationHelperTest.java:7:package org_apache_camel.camel_util;
+tests/src/org.apache.camel/camel-util/4.20.0/src/test/java/org_apache_camel/camel_util/AnnotationHelperTest.java:17:import org.apache.camel.util.AnnotationHelper;
+tests/src/org.apache.camel/camel-util/4.20.0/gradle.properties:4:library.coordinates = org.apache.camel:camel-util:4.20.0
+tests/src/org.apache.camel/camel-util/4.20.0/gradle.properties:6:metadata.dir = org.apache.camel/camel-util/4.20.0/
+tests/src/org.apache.camel/camel-util/4.20.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.util.**"
+tests/src/org.apache.camel/camel-util/4.20.0/user-code-filter.json:10:      "includeClasses" : "org_apache_camel.camel_util.**"
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/src/test/java/org_apache_camel/camel_xml_jaxp_util/Camel_xml_jaxp_utilTest.java:7:package org_apache_camel.camel_xml_jaxp_util;
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/src/test/java/org_apache_camel/camel_xml_jaxp_util/Camel_xml_jaxp_utilTest.java:12:import org.apache.camel.util.xml.pretty.XmlPrettyPrinter;
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/gradle.properties:4:library.coordinates = org.apache.camel:camel-xml-jaxp-util:4.20.0
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/gradle.properties:6:metadata.dir = org.apache.camel/camel-xml-jaxp-util/4.20.0/
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.util.xml.pretty.**"
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/user-code-filter.json:10:      "includeClasses" : "org_apache_camel.camel_xml_jaxp_util.**"
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.19.0/src/test/java/org_apache_camel/camel_xml_jaxp_util/CamelXmlJaxpUtilTest.java:7:package org_apache_camel.camel_xml_jaxp_util;
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.19.0/src/test/java/org_apache_camel/camel_xml_jaxp_util/CamelXmlJaxpUtilTest.java:9:import org.apache.camel.util.xml.pretty.XmlPrettyPrinter;
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.19.0/gradle.properties:4:library.coordinates = org.apache.camel:camel-xml-jaxp-util:4.19.0
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.19.0/gradle.properties:6:metadata.dir = org.apache.camel/camel-xml-jaxp-util/4.19.0/
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.19.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.util.xml.pretty.**"
+tests/src/org.apache.camel/spi-annotations/3.0.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:7:package org_apache_camel.spi_annotations;
+tests/src/org.apache.camel/spi-annotations/3.0.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:19:import org.apache.camel.spi.Metadata;
+tests/src/org.apache.camel/spi-annotations/3.0.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:20:import org.apache.camel.spi.UriEndpoint;
+tests/src/org.apache.camel/spi-annotations/3.0.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:21:import org.apache.camel.spi.UriParam;
+tests/src/org.apache.camel/spi-annotations/3.0.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:22:import org.apache.camel.spi.UriParams;
+tests/src/org.apache.camel/spi-annotations/3.0.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:23:import org.apache.camel.spi.UriPath;
+tests/src/org.apache.camel/spi-annotations/3.0.0/gradle.properties:4:library.coordinates = org.apache.camel:spi-annotations:3.0.0
+tests/src/org.apache.camel/spi-annotations/3.0.0/gradle.properties:6:metadata.dir = org.apache.camel/spi-annotations/3.0.0/
+tests/src/org.apache.camel/spi-annotations/3.0.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.spi.**"
+tests/src/org.apache.camel/spi-annotations/3.2.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:7:package org_apache_camel.spi_annotations;
+tests/src/org.apache.camel/spi-annotations/3.2.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:19:import org.apache.camel.spi.Metadata;
+tests/src/org.apache.camel/spi-annotations/3.2.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:20:import org.apache.camel.spi.UriEndpoint;
+tests/src/org.apache.camel/spi-annotations/3.2.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:21:import org.apache.camel.spi.UriParam;
+tests/src/org.apache.camel/spi-annotations/3.2.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:22:import org.apache.camel.spi.UriParams;
+tests/src/org.apache.camel/spi-annotations/3.2.0/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:23:import org.apache.camel.spi.UriPath;
+tests/src/org.apache.camel/spi-annotations/3.2.0/gradle.properties:4:library.coordinates = org.apache.camel:spi-annotations:3.2.0
+tests/src/org.apache.camel/spi-annotations/3.2.0/gradle.properties:6:metadata.dir = org.apache.camel/spi-annotations/3.2.0/
+tests/src/org.apache.camel/spi-annotations/3.2.0/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.spi.**"
+tests/src/org.apache.camel/spi-annotations/2.16.2/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:7:package org_apache_camel.spi_annotations;
+tests/src/org.apache.camel/spi-annotations/2.16.2/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:19:import org.apache.camel.spi.Metadata;
+tests/src/org.apache.camel/spi-annotations/2.16.2/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:20:import org.apache.camel.spi.UriEndpoint;
+tests/src/org.apache.camel/spi-annotations/2.16.2/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:21:import org.apache.camel.spi.UriParam;
+tests/src/org.apache.camel/spi-annotations/2.16.2/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:22:import org.apache.camel.spi.UriParams;
+tests/src/org.apache.camel/spi-annotations/2.16.2/src/test/java/org_apache_camel/spi_annotations/Spi_annotationsTest.java:23:import org.apache.camel.spi.UriPath;
+tests/src/org.apache.camel/spi-annotations/2.16.2/gradle.properties:4:library.coordinates = org.apache.camel:spi-annotations:2.16.2
+tests/src/org.apache.camel/spi-annotations/2.16.2/gradle.properties:6:metadata.dir = org.apache.camel/spi-annotations/2.16.2/
+tests/src/org.apache.camel/spi-annotations/2.16.2/user-code-filter.json:7:      "includeClasses" : "org.apache.camel.spi.**"
+
+web search: 
+web search: Maven Central org.apache.camel camel-kafka 4.20.0 source jar javadoc jar source-release zip
+codex
+The local file only contains the coordinates right now. Existing Camel entries in this repo prefer Maven Central source and javadoc artifacts, with the full Camel source-release ZIP used when a component’s tests are not published as a separate test artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>components</artifactId>
+    <version>4.20.0</version>
+  </parent>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-kafka</artifactId>
+  <version>4.20.0</version>
+  <name>Camel :: Kafka</name>
+  <description>Camel Kafka support</description>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-support</artifactId>
+      <version>4.20.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-health</artifactId>
+      <version>4.20.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>4.2.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.lz4</groupId>
+          <artifactId>lz4-java</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>at.yawk.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>1.11.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.21.2</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel/4.20.0/camel-4.20.0-source-release.zip' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:58:06 GMT
+content-type: application/zip
+content-length: 86184142
+cf-ray: 9f842bb90d1d039d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 331560
+etag: "1beae76b2972aebb16b3db0741170eca"
+last-modified: Thu, 23 Apr 2026 16:19:44 GMT
+x-checksum-md5: 1beae76b2972aebb16b3db0741170eca
+x-checksum-sha1: 26f55d6d1e33aefd740aa6fb8d52831aaa6cb76c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 110ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:58:06 GMT
+content-type: application/java-archive
+content-length: 236324
+cf-ray: 9f842bb92a92fbd6-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 301299
+etag: "d9fbbd8a1137361ca6561c48c4b0b979"
+last-modified: Thu, 23 Apr 2026 17:00:46 GMT
+x-checksum-md5: d9fbbd8a1137361ca6561c48c4b0b979
+x-checksum-sha1: 796c6b4e34dd32c7d8a4d281c98f6fadb4acfa74
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 433ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:58:06 GMT
+content-type: application/java-archive
+content-length: 812715
+cf-ray: 9f842bb8df4623bc-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "69fbf0d7bd4ffc6388b991771d267a7d"
+last-modified: Thu, 23 Apr 2026 17:00:46 GMT
+x-checksum-md5: 69fbf0d7bd4ffc6388b991771d267a7d
+x-checksum-sha1: 1f8d1c86221e12b26e8a7d64a05d0801bdce92e8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/components/4.20.0/components-4.20.0.pom | rg -n '<url>|<scm>|</scm>|connection|developerConnection|tag' -C 2" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+36-    <license>
+37-      <name>Apache-2.0</name>
+38:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+39-      <distribution>repo</distribution>
+40-    </license>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-tests.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-test-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 223ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/camel/camel-kafka/4.20.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/camel/camel-kafka/4.20.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="camel-kafka-4.20.0-javadoc.jar" title="camel-kafka-4.20.0-javadoc.jar">camel-kafka-4.20.0-javadoc.jar</a>                    2026-04-23 17:00    812715      
+<a href="camel-kafka-4.20.0-javadoc.jar.asc" title="camel-kafka-4.20.0-javadoc.jar.asc">camel-kafka-4.20.0-javadoc.jar.asc</a>                2026-04-23 17:00       833      
+<a href="camel-kafka-4.20.0-javadoc.jar.md5" title="camel-kafka-4.20.0-javadoc.jar.md5">camel-kafka-4.20.0-javadoc.jar.md5</a>                2026-04-23 17:00        32      
+<a href="camel-kafka-4.20.0-javadoc.jar.sha1" title="camel-kafka-4.20.0-javadoc.jar.sha1">camel-kafka-4.20.0-javadoc.jar.sha1</a>               2026-04-23 17:00        40      
+<a href="camel-kafka-4.20.0-sources.jar" title="camel-kafka-4.20.0-sources.jar">camel-kafka-4.20.0-sources.jar</a>                    2026-04-23 17:00    236324      
+<a href="camel-kafka-4.20.0-sources.jar.asc" title="camel-kafka-4.20.0-sources.jar.asc">camel-kafka-4.20.0-sources.jar.asc</a>                2026-04-23 17:00       833      
+<a href="camel-kafka-4.20.0-sources.jar.md5" title="camel-kafka-4.20.0-sources.jar.md5">camel-kafka-4.20.0-sources.jar.md5</a>                2026-04-23 17:00        32      
+<a href="camel-kafka-4.20.0-sources.jar.sha1" title="camel-kafka-4.20.0-sources.jar.sha1">camel-kafka-4.20.0-sources.jar.sha1</a>               2026-04-23 17:00        40      
+<a href="camel-kafka-4.20.0.jar" title="camel-kafka-4.20.0.jar">camel-kafka-4.20.0.jar</a>                            2026-04-23 17:00    358782      
+<a href="camel-kafka-4.20.0.jar.asc" title="camel-kafka-4.20.0.jar.asc">camel-kafka-4.20.0.jar.asc</a>                        2026-04-23 17:00       833      
+<a href="camel-kafka-4.20.0.jar.md5" title="camel-kafka-4.20.0.jar.md5">camel-kafka-4.20.0.jar.md5</a>                        2026-04-23 17:00        32      
+<a href="camel-kafka-4.20.0.jar.sha1" title="camel-kafka-4.20.0.jar.sha1">camel-kafka-4.20.0.jar.sha1</a>                       2026-04-23 17:00        40      
+<a href="camel-kafka-4.20.0.pom" title="camel-kafka-4.20.0.pom">camel-kafka-4.20.0.pom</a>                            2026-04-23 17:00      2732      
+<a href="camel-kafka-4.20.0.pom.asc" title="camel-kafka-4.20.0.pom.asc">camel-kafka-4.20.0.pom.asc</a>                        2026-04-23 17:00       833      
+<a href="camel-kafka-4.20.0.pom.md5" title="camel-kafka-4.20.0.pom.md5">camel-kafka-4.20.0.pom.md5</a>                        2026-04-23 17:00        32      
+<a href="camel-kafka-4.20.0.pom.sha1" title="camel-kafka-4.20.0.pom.sha1">camel-kafka-4.20.0.pom.sha1</a>                       2026-04-23 17:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 263ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 07 May 2026 23:58:13 GMT
+content-type: text/html
+cf-ray: 9f842be4db67576e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 308ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 07 May 2026 23:58:13 GMT
+content-type: text/html
+cf-ray: 9f842be508736d88-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: org.apache.camel camel-kafka 4.20.0 Maven Central repository url scm
+codex
+Maven Central publishes the component JAR, sources JAR, and javadocs JAR for `4.20.0`; it does not publish a `tests.jar` or `test-sources.jar` for this artifact. I’m checking the Apache source-release ZIP now so the test URL still points to a Maven-hosted artifact containing the component tests.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/camel-4.20.0-source-release.zip" https://repo.maven.apache.org/maven2/org/apache/camel/camel/4.20.0/camel-4.20.0-source-release.zip; unzip -l "$tmp/camel-4.20.0-source-release.zip" | rg '"'components/camel-kafka/src/test/.+\\.java"'$'"' | sed -n '1,30p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/camel-kafka-4.20.0.jar" https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0.jar; jar tf "$tmp/camel-kafka-4.20.0.jar" | rg '"'\\.class"'$'"' | sed -n '1,20p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/camel/tree/camel-4.20.0/components/camel-kafka' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://camel.apache.org/components/4.20.x/kafka-component.html' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+server: Apache
+last-modified: Tue, 14 Apr 2026 13:19:58 GMT
+access-control-allow-origin: *
+content-security-policy: default-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; connect-src https://*.algolia.net https://*.algolianet.com; img-src 'self' https://*.githubusercontent.com; child-src https://www.youtube-nocookie.com
+x-frame-options: DENY
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+referrer-policy: no-referrer-when-downgrade
+cache-control: no-transform
+content-type: text/html; charset=utf-8
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Thu, 07 May 2026 23:58:30 GMT
+x-served-by: cache-hel1410034-HEL, cache-fra-eddf8230169-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778198311.575021,VS0,VE28
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 14005
+
+
+ succeeded in 193ms:
+org/apache/camel/component/kafka/BatchManualCommit.class
+org/apache/camel/component/kafka/DefaultKafkaClientFactory.class
+org/apache/camel/component/kafka/KafkaClientFactory.class
+org/apache/camel/component/kafka/KafkaComponent.class
+org/apache/camel/component/kafka/KafkaComponentConfigurer.class
+org/apache/camel/component/kafka/KafkaConfiguration.class
+org/apache/camel/component/kafka/KafkaConstants.class
+org/apache/camel/component/kafka/KafkaConsumer.class
+org/apache/camel/component/kafka/KafkaConsumerFatalException.class
+org/apache/camel/component/kafka/KafkaConsumerHealthCheck.class
+org/apache/camel/component/kafka/KafkaDevConsole.class
+org/apache/camel/component/kafka/KafkaEndpoint.class
+org/apache/camel/component/kafka/KafkaEndpointConfigurer.class
+org/apache/camel/component/kafka/KafkaEndpointUriFactory.class
+org/apache/camel/component/kafka/KafkaFetchRecords$PausePreservingRebalanceListener.class
+org/apache/camel/component/kafka/KafkaFetchRecords$State.class
+org/apache/camel/component/kafka/KafkaFetchRecords.class
+org/apache/camel/component/kafka/KafkaHeaderDeserializer.class
+org/apache/camel/component/kafka/KafkaHeaderFilterStrategy.class
+org/apache/camel/component/kafka/KafkaProducer.class
+
+ succeeded in 573ms:
+HTTP/2 200 
+date: Thu, 07 May 2026 23:58:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0f43ba09467120ed7119142d505709cc"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kao%2F9VlQi%2Bor4%2FrAjEvU6YfuiJx0vuWjDUhpSXyDIX6qjYBuUMBsTJYeKgWkUBVxM%2FCmCPeyD8ZiRa2j9qTaGbbm%2BhvYGLv741VuMYlf%2BmWC2pFOprEYKDtzOgAZ%2FEecfG7ah55R1joUxvm8wqJVJAAEicr%2F6rtVaGPwucQW0y%2BUTUrm%2B2Vqn5n6W8LmHGreesEvTGfMaUh3gSQX1q7tcMk%2FVH%2BVMRNw8hp86xrMO3m0Vdard2Y2z1W5fdnc%2FRwWKfNGPe5c6JsjnO3EdgZE7Q%3D%3D--gaej6Bx3I8VbK8oA--far%2BOtOUVP9c7pR8dUeVsA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1537600138.1778198310; expires=Fri, 07 May 2027 23:58:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 07 May 2027 23:58:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:3F7D1B:A3FD73E:80C6077:69FD2726
+
+
+ succeeded in 2752ms:
+     2017  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/KafkaAutowireTest.java
+    27602  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/KafkaComponentTest.java
+     3465  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/KafkaConsumerTest.java
+     5863  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/KafkaProducerMultipleMessagesInTransactionWithLoopTest.java
+     6332  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/KafkaProducerMultipleMessagesInTransactionWithSplitTest.java
+    26032  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/KafkaProducerTest.java
+     2012  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/MockConsumerInterceptor.java
+     1726  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/MockProducerInterceptor.java
+     5718  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/consumer/OffsetCacheTest.java
+     3059  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/BaseExclusiveKafkaTestSupport.java
+     3059  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/BaseKafkaTestSupport.java
+     1591  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/CustomHeaderDeserializer.java
+     6633  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorOffUsingKafkaManualCommitIT.java
+     8552  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorReleaseResourcesIT.java
+     7876  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorReplayOldMessagesIT.java
+     9564  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorSeekIssueIT.java
+     6896  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorWithBatchUsingAsyncCommitManagerIT.java
+     7291  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorWithBatchUsingKafkaManualCommitIT.java
+     7253  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorWithBatchUsingKafkaManualCommitRetryIT.java
+     6342  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaBreakOnFirstErrorWithBatchUsingSyncCommitManagerIT.java
+     7579  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerAsyncManualCommitIT.java
+     8327  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerAuthIT.java
+     7497  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerAuthInvalidIT.java
+     7874  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerAuthInvalidWithReconnectIT.java
+     6342  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerAuthManualTest.java
+     4618  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerAutoInstResumeRouteStrategyIT.java
+     3552  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerBatchSizeIT.java
+     3998  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerCustomSubscribeAdapterIT.java
+    12602  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerFullIT.java
+     7109  2026-04-23 14:59   camel-4.20.0/components/camel-kafka/src/test/java/org/apache/camel/component/kafka/integration/KafkaConsumerGroupProtocolIT.java
+
+web search: 
+web search: 
+web search: 
+web search: https://github.com/apache/camel/tree/camel-4.20.0/components/camel-kafka
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0 camel-kafka-4.20.0-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.camel/camel-kafka
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f -name '*.json' | sed -n '1,20p' | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.camel/camel-api/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.20.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-javadoc.jar",
+    "description" : "Apache Camel API provides the core interfaces, annotations, and contracts used to define routes, exchanges, processors, components, endpoints, registries, and lifecycle services in Camel. It is the public API layer that Camel components and applications compile against while leaving runtime implementations to the rest of Camel.",
+    "tested-versions" : [
+      "4.20.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata -name index.json -print | xargs rg -n '\"description\"|\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:9:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:94:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:115:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:9:    "description" : "Spring JCL is Spring Framework's Commons Logging bridge, providing the org.apache.commons.logging API used by Spring while routing log calls to Log4j 2, SLF4J, or java.util.logging based on the runtime classpath. It lets Spring and applications use a small logging facade without depending on the external commons-logging artifact.",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:9:    "description" : "Prometheus Simpleclient is the legacy Java client core used to define and register application metrics such as counters, gauges, histograms, and summaries for Prometheus scraping. It provides the central Collector and CollectorRegistry APIs used by the 0.16.x simpleclient modules while keeping runtime dependencies minimal.",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:9:    "description" : "Apache Directory LDAP API Utilities provides shared helper classes for the Apache Directory LDAP API, including string and Unicode processing, hexadecimal and Base64 handling, generalized time parsing, collections, reflection, and OSGi helpers. It is a Java utility module used by the broader Directory API components rather than a standalone LDAP client or server.",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:9:    "description" : "Exposed is JetBrains' Kotlin SQL framework for building type-safe database queries and persistence code. The exposed-jdbc module provides the blocking JDBC integration, including database connections, transactions, schema utilities, and statement execution.",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:9:    "description" : "stax-ex extends the JSR-173 StAX API with support for parser reuse, non-text XML infosets, and improved namespace handling. It provides Java interfaces and helpers used by JAXB and Metro to stream XML data efficiently, including binary content.",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:25:    "description" : "stax-ex extends the JSR-173 StAX API with utilities for higher-performance XML streaming and parser reuse. It also improves handling of non-text XML infosets and namespace processing for JAXB and Metro use cases.",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:40:    "description" : "stax-ex provides extensions to the JSR-173 StAX API for handling binary and streaming XML content in Java. It adds XMLStreamReader and XMLStreamWriter support that enables efficient access to data such as base64-backed content without unnecessary copying.",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:6:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/$version$",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:9:    "description" : "ActiveMQ OpenWire Legacy Support provides the protocol marshalling classes needed by Apache ActiveMQ clients and brokers to handle older OpenWire wire-format versions. It helps maintain compatibility with legacy OpenWire clients and messages while relying on the core ActiveMQ client library.",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:9:    "description" : "Utility classes for Jetty. It provides foundational helpers for resources, security, SSL, threading, statistics, and other shared infrastructure used across Jetty components.",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/io/src/test",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:9:    "description" : "Provides iText's core input/output layer for reading and writing binary data, images, colors, and other low-level resources used in PDF processing. It also includes font parsing and encoding support plus random-access stream utilities that higher-level iText modules build on.",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:9:    "description" : "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and container environments to obtain credentials, validate them, and pass authenticated identities to the container. It also defines integration profiles that describe how containers such as Jakarta Servlet adapt to and use that SPI.",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:9:    "description" : "Jackson Module Paranamer adds annotation introspection support that lets Jackson discover constructor and factory method parameter names through the Paranamer library. It helps Jackson databind deserialize types whose creators rely on parameter names when explicit Jackson annotations are not present.",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:31:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:32:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:34:    "description" : "Jackson Module Paranamer adds annotation introspection support that lets Jackson discover constructor and factory method parameter names through the Paranamer library. It helps Jackson databind deserialize types whose creators rely on parameter names when explicit Jackson annotations are not present.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.camel/camel-util-json/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.20.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+    "description" : "Camel Util JSON provides Apache Camel's lightweight JSON parser and serializer utilities. It preserves map insertion order when reading JSON so Camel tooling and applications can process JSON object fields deterministically.",
+    "tested-versions" : [
+      "4.20.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.util.json"
+    ]
+  }
+]
+
+codex
+I found class files in the published component JAR, so this is a JVM artifact that can be consumed by native-image; I’m leaving `not-for-native-image` unset. It is not Kotlin, Groovy, or Scala-specific, so the `language` field should also be absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+index 6cd7c30e250d2c520d0377830a66a37eeee054fd..438b9984a24077c171ea516fbe5549a48db2cae7
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
++  "coordinates" : "org.apache.camel:camel-kafka:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
++  "description" : "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+index 6cd7c30e250d2c520d0377830a66a37eeee054fd..438b9984a24077c171ea516fbe5549a48db2cae7
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
++  "coordinates" : "org.apache.camel:camel-kafka:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
++  "description" : "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+ }
+
+codex
+The JSON is updated. I’ll do a quick parse check and verify that each templated Maven URL resolves when `$version$` is replaced with `4.20.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.camel:camel-kafka:4.20.0",
+  "repository-url": "https://github.com/apache/camel",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
+  "description": "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-sources.jar >/dev/null && printf 'source OK\\n'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+source OK
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel/4.20.0/camel-4.20.0-source-release.zip >/dev/null && printf 'test suite OK\\n'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+test suite OK
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/4.20.0/camel-kafka-4.20.0-javadoc.jar >/dev/null && printf 'documentation OK\\n'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+documentation OK
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+index 6cd7c30e250d2c520d0377830a66a37eeee054fd..438b9984a24077c171ea516fbe5549a48db2cae7
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
++  "coordinates" : "org.apache.camel:camel-kafka:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
++  "description" : "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+ }
+
+web search: 
+web search: https://github.com/apache/camel/tree/camel-4.20.0/components/camel-kafka
+web search: 
+web search: repo.maven.apache.org maven2 org apache camel camel-kafka 4.20.0 camel-kafka-4.20.0-sources.jar
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+index 6cd7c30e250d2c520d0377830a66a37eeee054fd..438b9984a24077c171ea516fbe5549a48db2cae7
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
++  "coordinates" : "org.apache.camel:camel-kafka:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
++  "description" : "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+index 6cd7c30e250d2c520d0377830a66a37eeee054fd..438b9984a24077c171ea516fbe5549a48db2cae7
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
++  "coordinates" : "org.apache.camel:camel-kafka:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
++  "description" : "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+ }
+
+ succeeded in 385ms:
+codex
+Updated [org.apache.camel-camel-kafka-4.20.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json:1) with the discovered repository, Maven source/test/doc URLs, and two-sentence description.
+
+Validation done: `jq` parses the JSON, and the three `$version$` URLs resolve with `4.20.0`. I left `language` and `not-for-native-image` absent.
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+index 6cd7c30e250d2c520d0377830a66a37eeee054fd..438b9984a24077c171ea516fbe5549a48db2cae7
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-kafka:4.20.0"
++  "coordinates" : "org.apache.camel:camel-kafka:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-kafka/$version$/camel-kafka-$version$-javadoc.jar",
++  "description" : "The Apache Camel Kafka component lets Camel routes send messages to and consume messages from Apache Kafka brokers. It integrates Kafka producer and consumer endpoints into Camel's routing model through Kafka client libraries and Camel component and endpoint options."
+ }
+
+tokens used
+97,469
+Updated [org.apache.camel-camel-kafka-4.20.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/build/discovered-artifact-metadata/org.apache.camel-camel-kafka-4.20.0.json:1) with the discovered repository, Maven source/test/doc URLs, and two-sentence description.
+
+Validation done: `jq` parses the JSON, and the three `$version$` URLs resolve with `4.20.0`. I left `language` and `not-for-native-image` absent.
+Ran agent for org.apache.camel:camel-kafka:4.20.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/build/agent-artifact-discovery-logs/org.apache.camel-camel-kafka-4.20.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4510-79a09dad/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 2s
+9 actionable tasks: 9 executed
