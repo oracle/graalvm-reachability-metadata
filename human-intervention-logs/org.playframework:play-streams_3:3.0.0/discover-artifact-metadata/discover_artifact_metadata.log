@@ -1,0 +1,1910 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e05c3-9819-7730-aa49-b2203a973a8e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.playframework:play-streams_3:3.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.0" when "$version$" is replaced with "3.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+- Set "coordinates" to "org.playframework:play-streams_3:3.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the target JSON and nearby discovered metadata first, then verify Play’s Maven/GitHub coordinates before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.playframework:play-streams_3:3.0.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'play|streams|org.playframework'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"not-for-native-image\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+codex
+The target file only has coordinates right now. I’m checking the repository’s existing metadata style so the added fields match what this project expects.
+exec
+/usr/bin/bash -lc "rg --files | rg 'artifact-metadata|metadata.*json|libraries' | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/resources/scaffold/reachability-metadata.json.template
+metadata/com.aayushatharva.brotli4j/brotli4j/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json
+metadata/com.aayushatharva.brotli4j/service/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/service/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/6.4.1/reachability-metadata.json
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/metadata-user-code-filter.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/reachability-metadata.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/io.suzaku/boopickle_2.13/1.5.0/reachability-metadata.json
+metadata/io.suzaku/boopickle_2.13/index.json
+metadata/io.suzaku/boopickle_3/1.4.0/reachability-metadata.json
+metadata/io.suzaku/boopickle_3/index.json
+metadata/com.google.javascript/closure-compiler-externs/index.json
+metadata/com.google.javascript/closure-compiler-externs/v20150505/reachability-metadata.json
+metadata/net.bytebuddy/byte-buddy-agent/1.10.9/reachability-metadata.json
+metadata/net.bytebuddy/byte-buddy-agent/index.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/3.0.0/reachability-metadata.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/3.31.6/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json
+metadata/com.google.api.grpc/grpc-google-common-protos/2.70.0/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json
+tests/src/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/2.64.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/3.52.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json
+metadata/com.google.api.grpc/proto-google-common-protos/2.41.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-common-protos/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/metadata-extra-filter.json
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/metadata-user-code-filter.json
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/metadata-extra-filter.json
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/metadata-user-code-filter.json
+tests/src/com.rabbitmq/amqp-client/5.12.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.springframework/spring-aspects/5.3.31/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/net.bytebuddy/byte-buddy-agent/1.10.9/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-logging-v2/0.111.5/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-logging-v2/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/metadata-extra-filter.json
+tests/src/org.apache.thrift/libthrift/0.13.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-iam-v1/1.40.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1/2.64.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta2/2.64.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta2/index.json
+metadata/ru.vyarus/generics-resolver/3.0.3/reachability-metadata.json
+metadata/ru.vyarus/generics-resolver/index.json
+metadata/dev.zio/zio_3/2.1.6/reachability-metadata.json
+metadata/dev.zio/zio_3/index.json
+metadata/dev.zio/zio-test_3/index.json
+metadata/dev.zio/zio-test_3/2.1.25/reachability-metadata.json
+metadata/dev.zio/zio-config_3/4.0.4/reachability-metadata.json
+metadata/dev.zio/zio-config_3/index.json
+metadata/dev.zio/zio-stacktracer_3/2.1.15/reachability-metadata.json
+metadata/dev.zio/zio-stacktracer_3/index.json
+metadata/dev.zio/zio-stacktracer_3/2.1.19/reachability-metadata.json
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/reachability-metadata.json
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json
+metadata/dev.zio/zio-internal-macros_2.13/2.0.22/reachability-metadata.json
+metadata/dev.zio/zio-internal-macros_2.13/index.json
+metadata/dev.zio/zio-http_3/3.3.3/reachability-metadata.json
+metadata/dev.zio/zio-http_3/index.json
+metadata/dev.zio/zio-logging_2.13/index.json
+metadata/dev.zio/zio-logging_2.13/2.4.0/reachability-metadata.json
+metadata/dev.zio/zio-internal-macros_3/2.1.15/reachability-metadata.json
+metadata/dev.zio/zio-internal-macros_3/index.json
+metadata/dev.zio/zio-internal-macros_3/2.1.19/reachability-metadata.json
+metadata/dev.zio/zio-query_3/0.7.7/reachability-metadata.json
+metadata/dev.zio/zio-query_3/index.json
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/reachability-metadata.json
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json
+metadata/dev.zio/zio-schema_3/1.7.0/reachability-metadata.json
+metadata/dev.zio/zio-schema_3/index.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' . --glob '*.json' | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:6:    "repository-url" : "https://github.com/raphw/byte-buddy",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:7:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta1/$version$/proto-google-cloud-bigquerystorage-v1beta1-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "find . -path '*/org.playframework*' -maxdepth 6 -type f | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+./stats/org.playframework/play-build-link/3.0.0/execution-metrics.json
+./stats/org.playframework/play-build-link/3.0.0/stats.json
+./stats/org.playframework/play-exceptions/3.0.0/execution-metrics.json
+./stats/org.playframework/play-exceptions/3.0.0/stats.json
+./metadata/org.playframework/play-build-link/index.json
+./metadata/org.playframework/play-build-link/3.0.0/reachability-metadata.json
+./metadata/org.playframework/play-exceptions/index.json
+./metadata/org.playframework/play-exceptions/3.0.0/reachability-metadata.json
+./build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+./build/agent-artifact-discovery-logs/org.playframework-play-streams_3-3.0.0.log
+./tests/src/org.playframework/play-build-link/3.0.0/user-code-filter.json
+./tests/src/org.playframework/play-build-link/3.0.0/gradle.properties
+./tests/src/org.playframework/play-build-link/3.0.0/.gitignore
+./tests/src/org.playframework/play-build-link/3.0.0/settings.gradle
+./tests/src/org.playframework/play-build-link/3.0.0/build.gradle
+./tests/src/org.playframework/play-exceptions/3.0.0/user-code-filter.json
+./tests/src/org.playframework/play-exceptions/3.0.0/gradle.properties
+./tests/src/org.playframework/play-exceptions/3.0.0/.gitignore
+./tests/src/org.playframework/play-exceptions/3.0.0/settings.gradle
+./tests/src/org.playframework/play-exceptions/3.0.0/build.gradle
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.playframework/play-exceptions/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+    "description" : "Play Exceptions provides the core Play Framework exception types used to carry structured error details such as titles, descriptions, source locations, attachments, and rich HTML descriptions. It supports Play's developer error reporting by exposing reusable exception classes that can identify relevant source lines and attach additional diagnostic content.",
+    "tested-versions" : [
+      "3.0.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.0.6",
+      "3.0.7",
+      "3.0.8",
+      "3.0.9",
+      "3.0.10",
+      "3.1.0-M1",
+      "3.1.0-M2",
+      "3.1.0-M3",
+      "3.1.0-M4",
+      "3.1.0-M5",
+      "3.1.0-M6",
+      "3.1.0-M7",
+      "3.1.0-M8",
+      "3.1.0-M9"
+    ],
+    "allowed-packages" : [
+      "play.api"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.playframework/play-build-link/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+    "tested-versions" : [
+      "3.0.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.0.6",
+      "3.0.7",
+      "3.0.8",
+      "3.0.9",
+      "3.0.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/agent-artifact-discovery-logs/org.playframework-play-streams_3-3.0.0.log" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+==== [2026-05-08 06:06:04] org.playframework:play-streams_3:3.0.0
+COMMAND: codex -a never exec -s danger-full-access Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.playframework:play-streams_3:3.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.0" when "$version$" is replaced with "3.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+- Set "coordinates" to "org.playframework:play-streams_3:3.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e05c3-9819-7730-aa49-b2203a973a8e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.playframework:play-streams_3:3.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.0" when "$version$" is replaced with "3.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+- Set "coordinates" to "org.playframework:play-streams_3:3.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the target JSON and nearby discovered metadata first, then verify Play’s Maven/GitHub coordinates before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.playframework:play-streams_3:3.0.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'play|streams|org.playframework'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"not-for-native-image\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+codex
+The target file only has coordinates right now. I’m checking the repository’s existing metadata style so the added fields match what this project expects.
+exec
+/usr/bin/bash -lc "rg --files | rg 'artifact-metadata|metadata.*json|libraries' | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/resources/scaffold/reachability-metadata.json.template
+metadata/com.aayushatharva.brotli4j/brotli4j/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json
+metadata/com.aayushatharva.brotli4j/service/1.18.0/reachability-metadata.json
+metadata/com.aayushatharva.brotli4j/service/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/6.4.1/reachability-metadata.json
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/metadata-user-code-filter.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/reachability-metadata.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/io.suzaku/boopickle_2.13/1.5.0/reachability-metadata.json
+metadata/io.suzaku/boopickle_2.13/index.json
+metadata/io.suzaku/boopickle_3/1.4.0/reachability-metadata.json
+metadata/io.suzaku/boopickle_3/index.json
+metadata/com.google.javascript/closure-compiler-externs/index.json
+metadata/com.google.javascript/closure-compiler-externs/v20150505/reachability-metadata.json
+metadata/net.bytebuddy/byte-buddy-agent/1.10.9/reachability-metadata.json
+metadata/net.bytebuddy/byte-buddy-agent/index.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/3.0.0/reachability-metadata.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/3.31.6/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json
+metadata/com.google.api.grpc/grpc-google-common-protos/2.70.0/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json
+tests/src/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/2.64.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/6.116.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/3.52.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json
+metadata/com.google.api.grpc/proto-google-common-protos/2.41.0/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-common-protos/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/metadata-extra-filter.json
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/metadata-user-code-filter.json
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/metadata-extra-filter.json
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/metadata-user-code-filter.json
+tests/src/com.rabbitmq/amqp-client/5.12.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.springframework/spring-aspects/5.3.31/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/net.bytebuddy/byte-buddy-agent/1.10.9/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/reachability-metadata.json
+
+web search: 
+web search: Maven Central org.playframework play-streams_3 3.0.0 POM scm url
+web search: 
+web search: https://github.com/playframework/playframework
+web search: 
+web search: central.sonatype org.playframework play-streams_3 3.0.0
+codex
+The existing Play entries use Maven Central for source and javadoc when the artifacts exist, with `N/A` for tests if no test artifact is published. I’m verifying the exact Play Streams Maven files and the module path under the `3.0.0` tag now.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-tests.jar && curl -fsSI https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-test-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 191ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/playframework/play-streams_3/3.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/playframework/play-streams_3/3.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="play-streams_3-3.0.0-javadoc.jar" title="play-streams_3-3.0.0-javadoc.jar">play-streams_3-3.0.0-javadoc.jar</a>                  2023-10-25 13:37   2724967      
+<a href="play-streams_3-3.0.0-javadoc.jar.asc" title="play-streams_3-3.0.0-javadoc.jar.asc">play-streams_3-3.0.0-javadoc.jar.asc</a>              2023-10-25 13:37       833      
+<a href="play-streams_3-3.0.0-javadoc.jar.asc.md5" title="play-streams_3-3.0.0-javadoc.jar.asc.md5">play-streams_3-3.0.0-javadoc.jar.asc.md5</a>          2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0-javadoc.jar.asc.sha1" title="play-streams_3-3.0.0-javadoc.jar.asc.sha1">play-streams_3-3.0.0-javadoc.jar.asc.sha1</a>         2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0-javadoc.jar.md5" title="play-streams_3-3.0.0-javadoc.jar.md5">play-streams_3-3.0.0-javadoc.jar.md5</a>              2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0-javadoc.jar.sha1" title="play-streams_3-3.0.0-javadoc.jar.sha1">play-streams_3-3.0.0-javadoc.jar.sha1</a>             2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0-sources.jar" title="play-streams_3-3.0.0-sources.jar">play-streams_3-3.0.0-sources.jar</a>                  2023-10-25 13:37     16024      
+<a href="play-streams_3-3.0.0-sources.jar.asc" title="play-streams_3-3.0.0-sources.jar.asc">play-streams_3-3.0.0-sources.jar.asc</a>              2023-10-25 13:37       833      
+<a href="play-streams_3-3.0.0-sources.jar.asc.md5" title="play-streams_3-3.0.0-sources.jar.asc.md5">play-streams_3-3.0.0-sources.jar.asc.md5</a>          2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0-sources.jar.asc.sha1" title="play-streams_3-3.0.0-sources.jar.asc.sha1">play-streams_3-3.0.0-sources.jar.asc.sha1</a>         2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0-sources.jar.md5" title="play-streams_3-3.0.0-sources.jar.md5">play-streams_3-3.0.0-sources.jar.md5</a>              2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0-sources.jar.sha1" title="play-streams_3-3.0.0-sources.jar.sha1">play-streams_3-3.0.0-sources.jar.sha1</a>             2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0.jar" title="play-streams_3-3.0.0.jar">play-streams_3-3.0.0.jar</a>                          2023-10-25 13:37    112612      
+<a href="play-streams_3-3.0.0.jar.asc" title="play-streams_3-3.0.0.jar.asc">play-streams_3-3.0.0.jar.asc</a>                      2023-10-25 13:37       833      
+<a href="play-streams_3-3.0.0.jar.asc.md5" title="play-streams_3-3.0.0.jar.asc.md5">play-streams_3-3.0.0.jar.asc.md5</a>                  2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0.jar.asc.sha1" title="play-streams_3-3.0.0.jar.asc.sha1">play-streams_3-3.0.0.jar.asc.sha1</a>                 2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0.jar.md5" title="play-streams_3-3.0.0.jar.md5">play-streams_3-3.0.0.jar.md5</a>                      2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0.jar.sha1" title="play-streams_3-3.0.0.jar.sha1">play-streams_3-3.0.0.jar.sha1</a>                     2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0.pom" title="play-streams_3-3.0.0.pom">play-streams_3-3.0.0.pom</a>                          2023-10-25 13:37      3655      
+<a href="play-streams_3-3.0.0.pom.asc" title="play-streams_3-3.0.0.pom.asc">play-streams_3-3.0.0.pom.asc</a>                      2023-10-25 13:37       833      
+<a href="play-streams_3-3.0.0.pom.asc.md5" title="play-streams_3-3.0.0.pom.asc.md5">play-streams_3-3.0.0.pom.asc.md5</a>                  2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0.pom.asc.sha1" title="play-streams_3-3.0.0.pom.asc.sha1">play-streams_3-3.0.0.pom.asc.sha1</a>                 2023-10-25 13:37        40      
+<a href="play-streams_3-3.0.0.pom.md5" title="play-streams_3-3.0.0.pom.md5">play-streams_3-3.0.0.pom.md5</a>                      2023-10-25 13:37        32      
+<a href="play-streams_3-3.0.0.pom.sha1" title="play-streams_3-3.0.0.pom.sha1">play-streams_3-3.0.0.pom.sha1</a>                     2023-10-25 13:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 215ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.playframework</groupId>
+    <artifactId>play-streams_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Play-Streams</description>
+    <url>https://github.com/playframework/playframework</url>
+    <version>3.0.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Play-Streams</name>
+    <organization>
+        <name>The Play Framework Project</name>
+        <url>https://playframework.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/playframework/playframework</url>
+        <connection>scm:git:https://github.com/playframework/playframework.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/playframework.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>playframework</id>
+            <name>The Play Framework Contributors</name>
+            <url>https://github.com/playframework</url>
+            <email>contact@playframework.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.playframework.com/documentation/3.0.0/api/scala/index.html</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-stream_3</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_3</artifactId>
+            <version>4.20.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_3</artifactId>
+            <version>4.20.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sbt</groupId>
+            <artifactId>junit-interface</artifactId>
+            <version>0.13.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+ exited 22 in 246ms:
+HTTP/2 404 
+date: Fri, 08 May 2026 04:06:36 GMT
+content-type: text/html
+cf-ray: 9f8597bb68ff9808-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://github.com/playframework/playframework/tree/3.0.0
+web search: 
+web search: https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0.pom
+web search: 
+web search: repo.maven.apache.org/maven2/org/playframework/play-streams_3/3.0.0 play-streams_3-3.0.0-sources.jar
+web search: 
+web search: 
+web search: 
+web search: mvnrepository org.playframework play-streams_3 3.0.0
+web search: 
+web search: https://index.scala-lang.org/playframework/playframework/artifacts/play-streams/3.0.0
+web search: 
+web search: https://www.playframework.com/documentation/3.0.0/api/scala/index.html
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/playframework/playframework/3.0.0/build.sbt | rg -n "play-streams|streams|lazy val|project"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents?ref=3.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/playframework/playframework/3.0.0/project/BuildSettings.scala | rg -n "streams|play-streams|moduleName|Play-Streams"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 214ms:
+7:import pl.project13.scala.sbt.JmhPlugin.generateJmhSourcesAndResources
+33:lazy val PlayBuildLinkProject = PlayNonCrossBuiltProject("Play-Build-Link", "dev-mode/play-build-link")
+36:// play-run-support project is only compiled against sbt scala version
+37:lazy val PlayRunSupportProject = PlaySbtProject("Play-Run-Support", "dev-mode/play-run-support")
+44:// This project is actually not needed by Play, we (cross) publish it for the community only:
+46:lazy val PlayRoutesCompilerProject = PlayDevelopmentProject("Play-Routes-Compiler", "dev-mode/play-routes-compiler")
+54:lazy val SbtRoutesCompilerProject = PlaySbtProject("Sbt-Routes-Compiler", "dev-mode/play-routes-compiler")
+62:lazy val PlayStreamsProject = PlayCrossBuiltProject("Play-Streams", "core/play-streams")
+63:  .settings(libraryDependencies ++= streamsDependencies)
+65:lazy val PlayExceptionsProject = PlayNonCrossBuiltProject("Play-Exceptions", "core/play-exceptions")
+67:lazy val PlayBillOfMaterials = PlayCrossBuiltProject("Play-Bom", "dev-mode/play-bill-of-materials")
+74:lazy val PlayJodaFormsProject = PlayCrossBuiltProject("Play-Joda-Forms", "web/play-joda-forms")
+80:lazy val PlayProject = PlayCrossBuiltProject("Play", "core/play")
+121:lazy val PlayServerProject = PlayCrossBuiltProject("Play-Server", "transport/server/play-server")
+128:lazy val PlayNettyServerProject = PlayCrossBuiltProject("Play-Netty-Server", "transport/server/play-netty-server")
+132:lazy val PlayPekkoHttpServerProject =
+141:lazy val PlayPekkoHttp2SupportProject =
+145:lazy val PlayClusterSharding = PlayCrossBuiltProject("Play-Cluster-Sharding", "cluster/play-cluster-sharding")
+149:lazy val PlayJavaClusterSharding =
+154:lazy val PlayJdbcApiProject = PlayCrossBuiltProject("Play-JDBC-Api", "persistence/play-jdbc-api")
+159:lazy val PlayJdbcProject: Project = PlayCrossBuiltProject("Play-JDBC", "persistence/play-jdbc")
+164:lazy val PlayJdbcEvolutionsProject = PlayCrossBuiltProject("Play-JDBC-Evolutions", "persistence/play-jdbc-evolutions")
+171:lazy val PlayJavaJdbcProject = PlayCrossBuiltProject("Play-Java-JDBC", "persistence/play-java-jdbc")
+175:lazy val PlayJpaProject = PlayCrossBuiltProject("Play-Java-JPA", "persistence/play-java-jpa")
+181:lazy val PlayTestProject = PlayCrossBuiltProject("Play-Test", "testkit/play-test")
+194:lazy val PlaySpecs2Project = PlayCrossBuiltProject("Play-Specs2", "testkit/play-specs2")
+202:lazy val PlayJavaProject = PlayCrossBuiltProject("Play-Java", "core/play-java")
+211:lazy val PlayJavaFormsProject = PlayCrossBuiltProject("Play-Java-Forms", "web/play-java-forms")
+219:lazy val PlayDocsProject = PlayCrossBuiltProject("Play-Docs", "dev-mode/play-docs")
+226:lazy val PlayGuiceProject = PlayCrossBuiltProject("Play-Guice", "core/play-guice")
+232:lazy val SbtPluginProject = PlaySbtPluginProject("Sbt-Plugin", "dev-mode/sbt-plugin")
+250:lazy val SbtScriptedToolsProject = PlaySbtPluginProject("Sbt-Scripted-Tools", "dev-mode/sbt-scripted-tools")
+254:lazy val PlayLogback = PlayCrossBuiltProject("Play-Logback", "core/play-logback")
+264:lazy val PlayConfiguration = PlayCrossBuiltProject("Play-Configuration", "core/play-configuration")
+273:lazy val PlayWsProject = PlayCrossBuiltProject("Play-WS", "transport/client/play-ws")
+283:lazy val PlayAhcWsProject = PlayCrossBuiltProject("Play-AHC-WS", "transport/client/play-ahc-ws")
+295:lazy val PlayOpenIdProject = PlayCrossBuiltProject("Play-OpenID", "web/play-openid")
+304:lazy val PlayFiltersHelpersProject = PlayCrossBuiltProject("Play-Filters-Helpers", "web/play-filters-helpers")
+318:lazy val PlayIntegrationTestProject = PlayCrossBuiltProject("Play-Integration-Test", "core/play-integration-test")
+319:// This project is just for testing Play, not really a public artifact
+342:// NOTE: this project depends on JMH, which is GPLv2.
+343:lazy val PlayMicrobenchmarkProject = PlayCrossBuiltProject("Play-Microbenchmark", "core/play-microbenchmark")
+345:  // This project is just for microbenchmarking Play. Not published.
+350:    // when we depend on the integration test project, we have to use
+375:lazy val PlayCacheProject = PlayCrossBuiltProject("Play-Cache", "cache/play-cache")
+384:lazy val PlayEhcacheProject = PlayCrossBuiltProject("Play-Ehcache", "cache/play-ehcache")
+394:lazy val PlayCaffeineCacheProject = PlayCrossBuiltProject("Play-Caffeine-Cache", "cache/play-caffeine-cache")
+405:lazy val PlayJCacheProject = PlayCrossBuiltProject("Play-JCache", "cache/play-jcache")
+415:lazy val PlayDocsSbtPlugin = PlaySbtPluginProject("Play-Docs-Sbt-Plugin", "dev-mode/play-docs-sbt-plugin")
+424:// These projects are aggregate by the root project and every
+426:// project will also be executed for them:
+430:lazy val userProjects = Seq[ProjectReference](
+464:lazy val nonUserProjects = Seq[ProjectReference](
+476:lazy val PlayFramework = Project("Play-Framework", file("."))
+496:        (baseDirectory.value / "project" ** "*.scala" --- (baseDirectory.value ** "target" ** "*")).get
+
+ succeeded in 180ms:
+[
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "eb76780e49c474d4a0bf364810d8ebad98f4df71",
+    "size": 999,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.git-blame-ignore-revs?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/eb76780e49c474d4a0bf364810d8ebad98f4df71",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.git-blame-ignore-revs?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/eb76780e49c474d4a0bf364810d8ebad98f4df71",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "19f26f484aea941e02999fd42aac4c954c08d562",
+    "size": 66,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.gitattributes?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/19f26f484aea941e02999fd42aac4c954c08d562",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.gitattributes?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/19f26f484aea941e02999fd42aac4c954c08d562",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "488d96f25218cafffb830ed1a9c324e04f64f716",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.github?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/.github",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/488d96f25218cafffb830ed1a9c324e04f64f716",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.github?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/488d96f25218cafffb830ed1a9c324e04f64f716",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "30bf8de43cf2c93d33e8d1d674b568099d204aab",
+    "size": 260,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.gitignore?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/30bf8de43cf2c93d33e8d1d674b568099d204aab",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.gitignore?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/30bf8de43cf2c93d33e8d1d674b568099d204aab",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.gitignore"
+    }
+  },
+  {
+    "name": ".sbtopts",
+    "path": ".sbtopts",
+    "sha": "0230d251d3caf6dc337129a31899e5c9c7df0cc2",
+    "size": 101,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.sbtopts?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.sbtopts",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/0230d251d3caf6dc337129a31899e5c9c7df0cc2",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.sbtopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.sbtopts?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/0230d251d3caf6dc337129a31899e5c9c7df0cc2",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.sbtopts"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "fef60e3fa1a853c39370b0739f452be0c647d3e4",
+    "size": 2361,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.scalafmt.conf?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/fef60e3fa1a853c39370b0739f452be0c647d3e4",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.scalafmt.conf?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/fef60e3fa1a853c39370b0739f452be0c647d3e4",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "8dada3edaf50dbc082c9a125058f25def75e625a",
+    "size": 11357,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/LICENSE?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/LICENSE",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/8dada3edaf50dbc082c9a125058f25def75e625a",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/LICENSE?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/8dada3edaf50dbc082c9a125058f25def75e625a",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "b91768bfe2550d5c382add0887670c0a68ee4cdb",
+    "size": 6650,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/README.md?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/README.md",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/b91768bfe2550d5c382add0887670c0a68ee4cdb",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/README.md?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/b91768bfe2550d5c382add0887670c0a68ee4cdb",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/README.md"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "9f58d2eca4efe412b888ea8952ff39cb69dc8c6e",
+    "size": 19598,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/build.sbt?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/build.sbt",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/9f58d2eca4efe412b888ea8952ff39cb69dc8c6e",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/build.sbt?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/9f58d2eca4efe412b888ea8952ff39cb69dc8c6e",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/build.sbt"
+    }
+  },
+  {
+    "name": "cache",
+    "path": "cache",
+    "sha": "4a8837de9fc03ee31fed97a9965a5de075bba92d",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/cache?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/cache",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/4a8837de9fc03ee31fed97a9965a5de075bba92d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/cache?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/4a8837de9fc03ee31fed97a9965a5de075bba92d",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/cache"
+    }
+  },
+  {
+    "name": "cluster",
+    "path": "cluster",
+    "sha": "59ab9db5251918195542cd2fc7373b13b5bb9351",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/cluster?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/cluster",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/59ab9db5251918195542cd2fc7373b13b5bb9351",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/cluster?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/59ab9db5251918195542cd2fc7373b13b5bb9351",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/cluster"
+    }
+  },
+  {
+    "name": "common.sbt",
+    "path": "common.sbt",
+    "sha": "94c6ebd8e56097bf2ba31c8f022fad6e900e5c71",
+    "size": 1493,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/common.sbt?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/common.sbt",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/94c6ebd8e56097bf2ba31c8f022fad6e900e5c71",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/common.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/common.sbt?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/94c6ebd8e56097bf2ba31c8f022fad6e900e5c71",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/common.sbt"
+    }
+  },
+  {
+    "name": "core",
+    "path": "core",
+    "sha": "056fd796c1a8bea8ff823f4f078bc339a9175c0b",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/056fd796c1a8bea8ff823f4f078bc339a9175c0b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/056fd796c1a8bea8ff823f4f078bc339a9175c0b",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core"
+    }
+  },
+  {
+    "name": "dev-mode",
+    "path": "dev-mode",
+    "sha": "06bf0d57edc7013bb8326ce28819e0775cedc959",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/dev-mode?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/dev-mode",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/06bf0d57edc7013bb8326ce28819e0775cedc959",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/dev-mode?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/06bf0d57edc7013bb8326ce28819e0775cedc959",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/dev-mode"
+    }
+  },
+  {
+    "name": "documentation",
+    "path": "documentation",
+    "sha": "28aefd29c82b825bbf06178e9f102391775ff9f8",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/documentation?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/documentation",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/28aefd29c82b825bbf06178e9f102391775ff9f8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/documentation?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/28aefd29c82b825bbf06178e9f102391775ff9f8",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/documentation"
+    }
+  },
+  {
+    "name": "persistence",
+    "path": "persistence",
+    "sha": "dff530e44a9a44c46d28f34d45f20c77b092c4af",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/persistence?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/persistence",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/dff530e44a9a44c46d28f34d45f20c77b092c4af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/persistence?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/dff530e44a9a44c46d28f34d45f20c77b092c4af",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/persistence"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "d11ce0da9d85008cbd575ef1386054b22b4c0c65",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/project?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/project",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/d11ce0da9d85008cbd575ef1386054b22b4c0c65",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/project?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/d11ce0da9d85008cbd575ef1386054b22b4c0c65",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/project"
+    }
+  },
+  {
+    "name": "testkit",
+    "path": "testkit",
+    "sha": "18abf55d83a7615f0dab5e9c89438fb98610fd73",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/18abf55d83a7615f0dab5e9c89438fb98610fd73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/18abf55d83a7615f0dab5e9c89438fb98610fd73",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit"
+    }
+  },
+  {
+    "name": "transport",
+    "path": "transport",
+    "sha": "27b5c946e438571a8d2953a6777f3ef8a20d40cd",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/transport?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/transport",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/27b5c946e438571a8d2953a6777f3ef8a20d40cd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/transport?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/27b5c946e438571a8d2953a6777f3ef8a20d40cd",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/transport"
+    }
+  },
+  {
+    "name": "web",
+    "path": "web",
+    "sha": "5fda341f305e7cde65c3c1b6f76490cd71b8c0df",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/web?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/web",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/5fda341f305e7cde65c3c1b6f76490cd71b8c0df",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/web?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/5fda341f305e7cde65c3c1b6f76490cd71b8c0df",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/web"
+    }
+  }
+]
+
+ succeeded in 190ms:
+216:      (organization.value %% moduleName.value % version).cross(cross)
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src?ref=3.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test?ref=3.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main?ref=3.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams?ref=3.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 180ms:
+[
+  {
+    "name": "java",
+    "path": "core/play-streams/src/main/java",
+    "sha": "7ce948894961b33f60ede5b7fd88ea28a3e393dc",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/java?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/main/java",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/7ce948894961b33f60ede5b7fd88ea28a3e393dc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/java?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/7ce948894961b33f60ede5b7fd88ea28a3e393dc",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/main/java"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "core/play-streams/src/main/scala",
+    "sha": "524a3ac2fddfdf8d9f87ecff6dd184243ceb8968",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/main/scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/524a3ac2fddfdf8d9f87ecff6dd184243ceb8968",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/524a3ac2fddfdf8d9f87ecff6dd184243ceb8968",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/main/scala"
+    }
+  }
+]
+
+ succeeded in 199ms:
+[
+  {
+    "name": "java",
+    "path": "core/play-streams/src/test/java",
+    "sha": "740a6f949ab39540fab280df662c5773def0739c",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/java?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test/java",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/740a6f949ab39540fab280df662c5773def0739c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/java?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/740a6f949ab39540fab280df662c5773def0739c",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "core/play-streams/src/test/resources",
+    "sha": "13ef0af3ec1f6f1b84860193732410eeb8d56804",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/resources?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test/resources",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/13ef0af3ec1f6f1b84860193732410eeb8d56804",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/resources?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/13ef0af3ec1f6f1b84860193732410eeb8d56804",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "core/play-streams/src/test/scala",
+    "sha": "61283234342b0865f46eb51eef8324b07bc2d3fb",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test/scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/61283234342b0865f46eb51eef8324b07bc2d3fb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test/scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/61283234342b0865f46eb51eef8324b07bc2d3fb",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 217ms:
+[
+  {
+    "name": "main",
+    "path": "core/play-streams/src/main",
+    "sha": "7e784b4e0ed26aa09a8b91b43cb06dc6ac353f6f",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/main",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/7e784b4e0ed26aa09a8b91b43cb06dc6ac353f6f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/7e784b4e0ed26aa09a8b91b43cb06dc6ac353f6f",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "core/play-streams/src/test",
+    "sha": "f2fee5ce4d3f46781b1b42b92b36ff64a03f6bd1",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/f2fee5ce4d3f46781b1b42b92b36ff64a03f6bd1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/test?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/f2fee5ce4d3f46781b1b42b92b36ff64a03f6bd1",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test"
+    }
+  }
+]
+
+ succeeded in 256ms:
+[
+  {
+    "name": "src",
+    "path": "core/play-streams/src",
+    "sha": "7d7cbb971d7a994088184bc1558af2d9ca46f472",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/7d7cbb971d7a994088184bc1558af2d9ca46f472",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/7d7cbb971d7a994088184bc1558af2d9ca46f472",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/playframework/playframework/blob/3.0.0/build.sbt
+web search: 
+web search: https://github.com/playframework/playframework/blob/3.0.0/build.sbt
+web search: 
+web search: https://raw.githubusercontent.com/playframework/playframework/3.0.0/build.sbt
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams?ref=3.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-sources.jar; jar tf "$tmp/sources.jar" | sed -n '"'1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/main.jar" https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0.jar; jar tf "$tmp/main.jar" | sed -n '"'1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 143ms:
+META-INF/MANIFEST.MF
+play/
+play/api/
+play/api/libs/
+play/api/libs/streams/
+play/libs/
+play/libs/streams/
+play/api/libs/streams/Accumulator$$anon$1.class
+play/api/libs/streams/Accumulator$.class
+play/api/libs/streams/Accumulator.class
+play/api/libs/streams/Accumulator.tasty
+play/api/libs/streams/ActorFlow$$anon$1.class
+play/api/libs/streams/ActorFlow$$anon$2.class
+play/api/libs/streams/ActorFlow$$anon$3.class
+play/api/libs/streams/ActorFlow$.class
+play/api/libs/streams/ActorFlow.class
+play/api/libs/streams/ActorFlow.tasty
+play/api/libs/streams/Execution$.class
+play/api/libs/streams/Execution$Implicits$.class
+play/api/libs/streams/Execution$trampoline$.class
+play/api/libs/streams/Execution$trampoline$Empty$.class
+play/api/libs/streams/Execution.class
+play/api/libs/streams/Execution.tasty
+play/api/libs/streams/FlattenedAccumulator.class
+play/api/libs/streams/FlattenedAccumulator.tasty
+play/api/libs/streams/GzipFlow$$anon$2.class
+play/api/libs/streams/GzipFlow$$anon$3.class
+play/api/libs/streams/GzipFlow$.class
+play/api/libs/streams/GzipFlow$Chunker$$anon$1.class
+play/api/libs/streams/GzipFlow$Chunker.class
+play/api/libs/streams/GzipFlow.class
+play/api/libs/streams/GzipFlow.tasty
+play/api/libs/streams/PekkoStreams$$anon$1.class
+play/api/libs/streams/PekkoStreams$$anon$2.class
+play/api/libs/streams/PekkoStreams$$anon$3.class
+play/api/libs/streams/PekkoStreams$$anon$4.class
+play/api/libs/streams/PekkoStreams$.class
+play/api/libs/streams/PekkoStreams.class
+play/api/libs/streams/PekkoStreams.tasty
+play/api/libs/streams/Probes$$anon$1.class
+play/api/libs/streams/Probes$$anon$2.class
+play/api/libs/streams/Probes$$anon$3.class
+play/api/libs/streams/Probes$$anon$4.class
+play/api/libs/streams/Probes$$anon$5$$anon$6.class
+play/api/libs/streams/Probes$$anon$5.class
+play/api/libs/streams/Probes$.class
+play/api/libs/streams/Probes$Probe.class
+play/api/libs/streams/Probes.class
+play/api/libs/streams/Probes.tasty
+play/api/libs/streams/SinkAccumulator.class
+play/api/libs/streams/SinkAccumulator.tasty
+play/api/libs/streams/StrictAccumulator.class
+play/api/libs/streams/StrictAccumulator.tasty
+play/libs/streams/Accumulator$FlattenSubscriber$1.class
+play/libs/streams/Accumulator$FlattenSubscriber.class
+play/libs/streams/Accumulator$NoOpSubscriber.class
+play/libs/streams/Accumulator$SinkAccumulator.class
+play/libs/streams/Accumulator$StrictAccumulator$1.class
+play/libs/streams/Accumulator$StrictAccumulator.class
+play/libs/streams/Accumulator.class
+play/libs/streams/ActorFlow$1.class
+play/libs/streams/ActorFlow$2.class
+play/libs/streams/ActorFlow.class
+
+ succeeded in 202ms:
+[
+  {
+    "name": "Accumulator.scala",
+    "path": "core/play-streams/src/main/scala/play/api/libs/streams/Accumulator.scala",
+    "sha": "d07322b91a7c85dae563549e1d3cf90320b82c1a",
+    "size": 10962,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/Accumulator.scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Accumulator.scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/d07322b91a7c85dae563549e1d3cf90320b82c1a",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Accumulator.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/Accumulator.scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/d07322b91a7c85dae563549e1d3cf90320b82c1a",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Accumulator.scala"
+    }
+  },
+  {
+    "name": "ActorFlow.scala",
+    "path": "core/play-streams/src/main/scala/play/api/libs/streams/ActorFlow.scala",
+    "sha": "4b01fc7ecdedca015e7e1e1b05e70803e0e98e5e",
+    "size": 2943,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/ActorFlow.scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/ActorFlow.scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/4b01fc7ecdedca015e7e1e1b05e70803e0e98e5e",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/ActorFlow.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/ActorFlow.scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/4b01fc7ecdedca015e7e1e1b05e70803e0e98e5e",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/ActorFlow.scala"
+    }
+  },
+  {
+    "name": "Execution.scala",
+    "path": "core/play-streams/src/main/scala/play/api/libs/streams/Execution.scala",
+    "sha": "6ae5e47438a180b3d65ed2d268ffde04ee22fa73",
+    "size": 4814,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/Execution.scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Execution.scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/6ae5e47438a180b3d65ed2d268ffde04ee22fa73",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Execution.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/Execution.scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/6ae5e47438a180b3d65ed2d268ffde04ee22fa73",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Execution.scala"
+    }
+  },
+  {
+    "name": "GzipFlow.scala",
+    "path": "core/play-streams/src/main/scala/play/api/libs/streams/GzipFlow.scala",
+    "sha": "f533d983854969559d61b2c1c3164c444ff11e79",
+    "size": 3143,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/GzipFlow.scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/GzipFlow.scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/f533d983854969559d61b2c1c3164c444ff11e79",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/GzipFlow.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/GzipFlow.scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/f533d983854969559d61b2c1c3164c444ff11e79",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/GzipFlow.scala"
+    }
+  },
+  {
+    "name": "PekkoStreams.scala",
+    "path": "core/play-streams/src/main/scala/play/api/libs/streams/PekkoStreams.scala",
+    "sha": "f84b8aef2e03ffc41ce971a7491db1c225fd4d09",
+    "size": 4374,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/PekkoStreams.scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/PekkoStreams.scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/f84b8aef2e03ffc41ce971a7491db1c225fd4d09",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/PekkoStreams.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/PekkoStreams.scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/f84b8aef2e03ffc41ce971a7491db1c225fd4d09",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/PekkoStreams.scala"
+    }
+  },
+  {
+    "name": "Probes.scala",
+    "path": "core/play-streams/src/main/scala/play/api/libs/streams/Probes.scala",
+    "sha": "284114718891658ad8e9f8602cac9e92e73a49af",
+    "size": 5117,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/Probes.scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Probes.scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/284114718891658ad8e9f8602cac9e92e73a49af",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Probes.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core/play-streams/src/main/scala/play/api/libs/streams/Probes.scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/284114718891658ad8e9f8602cac9e92e73a49af",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/core/play-streams/src/main/scala/play/api/libs/streams/Probes.scala"
+    }
+  }
+]
+
+ succeeded in 455ms:
+META-INF/MANIFEST.MF
+play/
+play/api/
+play/api/libs/
+play/api/libs/streams/
+play/libs/
+play/libs/streams/
+play/api/libs/streams/Accumulator.scala
+play/api/libs/streams/ActorFlow.scala
+play/api/libs/streams/Execution.scala
+play/api/libs/streams/GzipFlow.scala
+play/api/libs/streams/PekkoStreams.scala
+play/api/libs/streams/Probes.scala
+play/libs/streams/Accumulator.java
+play/libs/streams/ActorFlow.java
+
+codex
+Maven Central publishes the main jar, sources jar, and javadoc jar, but no tests jar. The `3.0.0` GitHub tag does include `core/play-streams/src/test`, so I’m going to use Maven for sources/docs and the tagged GitHub test directory for tests.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:07:27 GMT
+content-type: application/java-archive
+content-length: 16024
+cf-ray: 9f8598fd7c7abe61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 9
+etag: "6e5d00bc59329275ca0b8887470e3661"
+last-modified: Wed, 25 Oct 2023 13:37:01 GMT
+x-checksum-md5: 6e5d00bc59329275ca0b8887470e3661
+x-checksum-sha1: a7b96296c00eeaca6ed54dc171f2ce7aef71d6eb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/playframework/playframework' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 402ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:07:27 GMT
+content-type: application/java-archive
+content-length: 2724967
+cf-ray: 9f8598fdaf38bc5d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "50b5d60c90939407b520052f19903c42"
+last-modified: Wed, 25 Oct 2023 13:37:01 GMT
+x-checksum-md5: 50b5d60c90939407b520052f19903c42
+x-checksum-sha1: b54fb9ef64d3ead77611f2738220016813a98054
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 583ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:07:28 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2032d3e951792efd9ebf4dbf8160aee9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=SEocpmtBrSxRNx352kNLgiHgY8Di%2BzwdWIpHFRFZZFV2paR9W09elH7ImMn%2BlZZ5I5bFVV9rhhb7QopeLOHuAVoZvmu%2BhqTLX%2B1K%2BqtSoiQK%2F7GE3jEYHp1AFvXjKWkDhVq0VPXk4EpFB4tY2GH65iNeJuhap%2B4D3lHerF0L0KUkPi6YqXFumu123ZG1izgOmK7RDLmZ10ZTjs9jwYQhKgBDtCG2LeVSRpNwWjqKp6ORBFs3CsT7Zo1rW%2FRyK%2Fs2fjTVqwwCiq9%2F6s27x5ySTA%3D%3D--Jtnib0j3eTF9yZcI--bguUSAKO8KG5VjlFklZM7w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2053259691.1778213247; expires=Sat, 08 May 2027 04:07:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:07:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5177:168B:679025B:509F7AF:69FD617F
+
+
+ succeeded in 850ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 04:07:28 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"11c67eabc89c4c65883715549c546bbd"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=D%2FoLKfSLut%2FSRsXtBbOPn7mtHoV%2FVOjblASR3UQe%2FK%2FpRV2qnKAbda9d%2Fx%2BBNTNPKnrExCnmhH%2FSLIs5x5cgRQ6LReBWQAVm7Ps8KOVjeZBU7%2FQTSF%2BSgywtgcEOnfxMc4RNUO5g6QlQwVddiK4rroDPNGDyH9zIWid%2BHKTvQILTv3IrC2THGcOJEhE1%2BgLzWMk4zXmkVP6kjMdacOIUmvN%2B8O%2Fa5gEFpcE%2FUIV7ZqEIouA0PPZkVrbUtyKhcqPMydDzR6XlNgU8LlY8NGxc6g%3D%3D--pyhm1s7JKPTcxawr--OwHjUXrHlF2JY1pCbWvcbA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.293578537.1778213247; expires=Sat, 08 May 2027 04:07:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:07:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 517A:168136:BCD0BF3:9502F66:69FD617F
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/dev.zio/zio_3/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio",
+    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-javadoc.jar",
+    "description" : "ZIO is a Scala 3 effect system for building asynchronous, concurrent, and resource-safe applications on the JVM. It provides the core runtime and data types for composing typed effects, managing fibers, scheduling work, and handling errors.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.1.6",
+      "2.1.7",
+      "2.1.8",
+      "2.1.9",
+      "2.1.10",
+      "2.1.11",
+      "2.1.12",
+      "2.1.13",
+      "2.1.14",
+      "2.1.15",
+      "2.1.16",
+      "2.1.17",
+      "2.1.18",
+      "2.1.19",
+      "2.1.20",
+      "2.1.21",
+      "2.1.22",
+      "2.1.23",
+      "2.1.24",
+      "2.1.25",
+      "2.1.26"
+    ],
+    "allowed-packages" : [
+      "zio"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/io.suzaku/boopickle_3/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/suzaku-io/boopickle",
+    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.4.0",
+      "1.5.0"
+    ],
+    "allowed-packages" : [
+      "boopickle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"' build metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ghostdogpr/caliban-macros_3/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.runtime/runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.foundation/foundation/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/primitive-adapters/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-tcnative-boringssl-static/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-core/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-ktor/index.json:3:    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+metadata/io.insert-koin/koin-test/index.json:3:    "not-for-native-image": true,
+metadata/org.webjars/jquery/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:3:    "not-for-native-image": true,
+
+codex
+I’ve got the fields with enough confidence. I’ll now replace the placeholder JSON with the discovered metadata and keep Native Image exclusion fields absent because the artifact is a JVM jar with class files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+index db5227a107f10b70217ca0e1118379fd924ad10b..cb9dc47f278d7330b68e75bf5337806b1ce94b89
+--- a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-streams_3:3.0.0"
++  "coordinates" : "org.playframework:play-streams_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+index db5227a107f10b70217ca0e1118379fd924ad10b..cb9dc47f278d7330b68e75bf5337806b1ce94b89
+--- a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-streams_3:3.0.0"
++  "coordinates" : "org.playframework:play-streams_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+{
+  "coordinates": "org.playframework:play-streams_3:3.0.0",
+  "repository-url": "https://github.com/playframework/playframework",
+  "source-code-url": "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
+  "description": "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-sources.jar \\
+  https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test \\
+  https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-javadoc.jar; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+index db5227a107f10b70217ca0e1118379fd924ad10b..cb9dc47f278d7330b68e75bf5337806b1ce94b89
+--- a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-streams_3:3.0.0"
++  "coordinates" : "org.playframework:play-streams_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 496ms:
+200 https://github.com/playframework/playframework/tree/3.0.0/core/play-streams/src/test
+200 https://repo1.maven.org/maven2/org/playframework/play-streams_3/3.0.0/play-streams_3-3.0.0-javadoc.jar
+
+codex
+The JSON parses cleanly, and the three version-substituted URLs all return HTTP 200 for `3.0.0`. I’m doing one last status check so I can report exactly what changed.
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json >/dev/null 2>&1; echo tracked:$?' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+tracked:1
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.playframework:play-streams_3:3.0.0",
+  "repository-url" : "https://github.com/playframework/playframework",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
+  "description" : "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+index db5227a107f10b70217ca0e1118379fd924ad10b..cb9dc47f278d7330b68e75bf5337806b1ce94b89
+--- a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-streams_3:3.0.0"
++  "coordinates" : "org.playframework:play-streams_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 309ms:
+web search: 
+web search: https://index.scala-lang.org/playframework/playframework/artifacts/play-streams/3.0.0
+web search: 
+web search: 
+web search: 
+web search: "play-streams_3-3.0.0-sources.jar"
+codex
+Updated [org.playframework-play-streams_3-3.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json) with repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata. The artifact is a JVM jar, so I left `not-for-native-image`, `reason`, and `replacement` absent.
+
+Validation: `jq` parsed the JSON, and the rendered `3.0.0` source, test, and documentation URLs all returned HTTP 200. Scaladex confirms `org.playframework:play-streams_3:3.0.0` and Scala 3.x, and GitHub confirms the tagged `core/play-streams/src/test` path. ([index.scala-lang.org](https://index.scala-lang.org/playframework/playframework/artifacts/play-streams/3.0.0))
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+index db5227a107f10b70217ca0e1118379fd924ad10b..cb9dc47f278d7330b68e75bf5337806b1ce94b89
+--- a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-streams_3:3.0.0"
++  "coordinates" : "org.playframework:play-streams_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-streams/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-streams_3/$version$/play-streams_3-$version$-javadoc.jar",
++  "description" : "Play Streams provides Play Framework's stream integration layer, including Accumulator, ActorFlow, GzipFlow, execution helpers, and adapters around Apache Pekko Streams and Reactive Streams. It is used by Play to consume request bodies and produce streaming results from Scala and Java APIs while composing streams with futures, sinks, and actor-backed flows.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+171,022
+Updated [org.playframework-play-streams_3-3.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/discovered-artifact-metadata/org.playframework-play-streams_3-3.0.0.json) with repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata. The artifact is a JVM jar, so I left `not-for-native-image`, `reason`, and `replacement` absent.
+
+Validation: `jq` parsed the JSON, and the rendered `3.0.0` source, test, and documentation URLs all returned HTTP 200. Scaladex confirms `org.playframework:play-streams_3:3.0.0` and Scala 3.x, and GitHub confirms the tagged `core/play-streams/src/test` path. ([index.scala-lang.org](https://index.scala-lang.org/playframework/playframework/artifacts/play-streams/3.0.0))
+Ran agent for org.playframework:play-streams_3:3.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/agent-artifact-discovery-logs/org.playframework-play-streams_3-3.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3878-9d036f7a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 16s
+9 actionable tasks: 9 executed
