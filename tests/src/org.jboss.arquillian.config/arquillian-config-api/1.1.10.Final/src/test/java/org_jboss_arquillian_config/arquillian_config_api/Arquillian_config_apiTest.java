@@ -12,6 +12,8 @@ import static org.assertj.core.api.Assertions.entry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
@@ -23,6 +25,7 @@ import org.jboss.arquillian.config.descriptor.api.GroupDef;
 import org.jboss.arquillian.config.descriptor.api.ProtocolDef;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Arquillian_config_apiTest {
     @Test
@@ -222,6 +225,38 @@ public class Arquillian_config_apiTest {
         assertThat(managed.getProtocols().get(1).getProtocolProperties()).containsOnly(entry("enabled", "true"));
         assertThat(onlyExtensionNamed(reImported.getExtensions(), "webdriver").getExtensionProperties())
                 .containsOnly(entry("browser", "firefox"));
+    }
+
+    @Test
+    void descriptorCanBeImportedFromXmlFilePath(@TempDir Path tempDirectory) throws Exception {
+        Path descriptorFile = tempDirectory.resolve("arquillian.xml");
+        Files.writeString(descriptorFile, """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <arquillian xmlns="http://jboss.org/schema/arquillian"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+                    <engine>
+                        <property name="deploymentExportPath">target/from-file</property>
+                        <property name="maxTestClassesBeforeRestart">7</property>
+                    </engine>
+                    <container qualifier="file-managed" default="true" mode="suite">
+                        <dependencies>
+                            <dependency>org.example:file-adapter</dependency>
+                        </dependencies>
+                    </container>
+                </arquillian>
+                """, StandardCharsets.UTF_8);
+
+        ArquillianDescriptor descriptor = Descriptors.importAs(ArquillianDescriptor.class, "file-import.xml")
+                .fromFile(descriptorFile.toString());
+
+        assertThat(descriptor.getDescriptorName()).isEqualTo("file-import.xml");
+        assertThat(descriptor.engine().getDeploymentExportPath()).isEqualTo("target/from-file");
+        assertThat(descriptor.engine().getMaxTestClassesBeforeRestart()).isEqualTo(7);
+        ContainerDef importedContainer = onlyContainerNamed(descriptor.getContainers(), "file-managed");
+        assertThat(importedContainer.isDefault()).isTrue();
+        assertThat(importedContainer.getMode()).isEqualTo("suite");
+        assertThat(importedContainer.getDependencies()).containsExactly("org.example:file-adapter");
     }
 
     private static ArquillianDescriptor populatedDescriptor(String descriptorName) {
