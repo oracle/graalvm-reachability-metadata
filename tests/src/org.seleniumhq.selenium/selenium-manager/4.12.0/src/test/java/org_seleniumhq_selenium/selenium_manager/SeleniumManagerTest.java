@@ -20,7 +20,7 @@ public class SeleniumManagerTest {
     void extractsBundledManagerBinaryBeforeRunningBrowserResolution() {
         ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "unknown-browser-for-test");
 
-        assertThatThrownBy(() -> SeleniumManager.getInstance().getDriverPath(capabilities))
+        assertThatThrownBy(() -> SeleniumManager.getInstance().getDriverPath(capabilities, true))
                 .isInstanceOf(WebDriverException.class)
                 .hasMessageContaining("Invalid browser name: unknown-browser-for-test");
     }
