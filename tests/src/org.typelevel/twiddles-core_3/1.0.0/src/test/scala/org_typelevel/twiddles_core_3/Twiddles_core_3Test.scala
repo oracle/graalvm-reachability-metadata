@@ -28,13 +28,15 @@ class Twiddles_core_3Test {
     val name: Option[String] = Some("Ada")
     val active: Option[Boolean] = Some(true)
 
+    type NestedTriple = Int *: (String *: Boolean *: EmptyTuple) *: EmptyTuple
+
     val pair: Option[Int *: String *: EmptyTuple] = id *: name
-    val triple: Option[Int *: String *: Boolean *: EmptyTuple] = id *: name *: active
+    val triple: Option[NestedTriple] = id *: name *: active
     val missingId: Option[Int] = None
     val missingPair: Option[Int *: String *: EmptyTuple] = missingId *: name
 
     assertThat(pair).isEqualTo(Some(7 *: "Ada" *: EmptyTuple))
-    assertThat(triple).isEqualTo(Some(7 *: "Ada" *: true *: EmptyTuple))
+    assertThat(triple.map(_.productIterator.toList)).isEqualTo(Some(List(7, "Ada", true)))
     assertThat(missingPair).isEqualTo(None)
   }
 
