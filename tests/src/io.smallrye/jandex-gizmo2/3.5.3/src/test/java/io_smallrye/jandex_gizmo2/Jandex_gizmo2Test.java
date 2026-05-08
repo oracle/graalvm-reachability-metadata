@@ -45,11 +45,13 @@ import io.quarkus.gizmo2.Gizmo;
 import io.quarkus.gizmo2.TypeArgument;
 import io.quarkus.gizmo2.desc.ConstructorDesc;
 import io.quarkus.gizmo2.desc.FieldDesc;
+import io.quarkus.gizmo2.desc.InterfaceMethodDesc;
 import io.quarkus.gizmo2.desc.MethodDesc;
 
 public class Jandex_gizmo2Test {
     private static final ClassDesc SAMPLE_DESC = ClassDesc.of("io_smallrye.jandex_gizmo2.JandexGizmoSample");
     private static final ClassDesc STATUS_DESC = ClassDesc.of("io_smallrye.jandex_gizmo2.JandexGizmoStatus");
+    private static final ClassDesc CONTRACT_DESC = ClassDesc.of("io_smallrye.jandex_gizmo2.JandexGizmoContract");
     private static final ClassDesc STRING_DESC = ClassDesc.of("java.lang.String");
     private static final ClassDesc LIST_DESC = ClassDesc.of("java.util.List");
     private static final ClassDesc MAP_DESC = ClassDesc.of("java.util.Map");
@@ -95,6 +97,21 @@ public class Jandex_gizmo2Test {
         ClassInfo status = requireClass(index, "io_smallrye.jandex_gizmo2.JandexGizmoStatus");
         assertThat(Jandex2Gizmo.constOfEnum(status.field("READY")).desc())
                 .isEqualTo(Enum.EnumDesc.of(STATUS_DESC, "READY"));
+    }
+
+    @Test
+    void createsInterfaceMethodDescriptorsFromIndexedInterfaces() throws IOException {
+        Index index = sampleIndex();
+        ClassInfo contract = requireClass(index, "io_smallrye.jandex_gizmo2.JandexGizmoContract");
+
+        assertThat(Jandex2Gizmo.classDescOf(contract)).isEqualTo(CONTRACT_DESC);
+
+        MethodDesc describeDesc = Jandex2Gizmo.methodDescOf(contract.firstMethod("describe"));
+        assertThat(describeDesc).isInstanceOf(InterfaceMethodDesc.class);
+        assertThat(describeDesc.owner()).isEqualTo(CONTRACT_DESC);
+        assertThat(describeDesc.name()).isEqualTo("describe");
+        assertThat(describeDesc.returnType()).isEqualTo(STRING_DESC);
+        assertThat(describeDesc.parameterTypes()).containsExactly(STRING_DESC);
     }
 
     @Test
@@ -254,8 +271,8 @@ public class Jandex_gizmo2Test {
     }
 
     private static Index sampleIndex() throws IOException {
-        return Index.of(JandexGizmoSample.class, JandexGizmoStatus.class, RuntimeMarker.class,
-                ClassRetentionMarker.class, FieldOnlyMarker.class, NestedRuntimeMarker.class);
+        return Index.of(JandexGizmoSample.class, JandexGizmoStatus.class, JandexGizmoContract.class,
+                RuntimeMarker.class, ClassRetentionMarker.class, FieldOnlyMarker.class, NestedRuntimeMarker.class);
     }
 
     private static ClassInfo requireClass(Index index, String name) {
@@ -336,6 +353,10 @@ class JandexGizmoSample<T extends Number & Comparable<T>> {
 enum JandexGizmoStatus {
     READY,
     DONE
+}
+
+interface JandexGizmoContract {
+    String describe(String input);
 }
 
 @Target({ ElementType.TYPE, ElementType.TYPE_USE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
