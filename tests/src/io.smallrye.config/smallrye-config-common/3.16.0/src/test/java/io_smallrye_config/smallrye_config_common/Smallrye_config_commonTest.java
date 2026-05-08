@@ -110,6 +110,17 @@ public class Smallrye_config_commonTest {
     }
 
     @Test
+    void configSourceUtilSkipsPropertiesThatCannotBeConvertedToStrings() {
+        Properties properties = new Properties();
+        properties.put("kept.key", "kept-value");
+        properties.put(new UnstringifiableObject(), "ignored-value");
+        properties.put("ignored.key", new UnstringifiableObject());
+
+        assertThat(ConfigSourceUtil.propertiesToMap(properties))
+                .containsOnly(Map.entry("kept.key", "kept-value"));
+    }
+
+    @Test
     void stringUtilSplitsCommaSeparatedValuesWithEscapes() {
         assertThat(StringUtil.split(null)).isEmpty();
         assertThat(StringUtil.split("")).isEmpty();
@@ -194,6 +205,13 @@ public class Smallrye_config_commonTest {
         UppercaseConverter uppercaseConverter = new UppercaseConverter(trimmingDelegate);
         assertThat(uppercaseConverter.getDelegate()).isSameAs(trimmingDelegate);
         assertThat(uppercaseConverter.convert(" smallrye ")).isEqualTo("SMALLRYE");
+    }
+
+    private static final class UnstringifiableObject {
+        @Override
+        public String toString() {
+            throw new IllegalStateException("This value should be ignored by propertiesToMap");
+        }
     }
 
     private static final class TestConfigSource extends MapBackedConfigSource {
