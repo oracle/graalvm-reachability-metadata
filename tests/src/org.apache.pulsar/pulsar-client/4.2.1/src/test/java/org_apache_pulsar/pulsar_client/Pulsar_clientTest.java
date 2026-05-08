@@ -42,6 +42,7 @@ import org.apache.pulsar.client.api.PulsarClientSharedResources;
 import org.apache.pulsar.client.api.Range;
 import org.apache.pulsar.client.api.RegexSubscriptionMode;
 import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.SchemaSerializationException;
 import org.apache.pulsar.client.api.ServiceUrlProvider;
 import org.apache.pulsar.client.api.SizeUnit;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
@@ -147,6 +148,22 @@ public class Pulsar_clientTest {
         assertThat(genericSchema.getFields()).extracting(field -> field.getName()).containsExactly("x", "label");
         assertThat(genericDecoded.getField("x")).isEqualTo(12);
         assertThat(genericDecoded.getField("label")).isEqualTo("north");
+    }
+
+    @Test
+    void autoProduceBytesSchemaValidatesPayloadsAgainstWrappedSchema() {
+        final Schema<byte[]> autoProduceSchema = Schema.AUTO_PRODUCE_BYTES(Schema.INT32);
+        final byte[] validPayload = Schema.INT32.encode(123_456);
+
+        assertThat(autoProduceSchema.getSchemaInfo().getType()).isEqualTo(SchemaType.INT32);
+        assertThat(autoProduceSchema.encode(validPayload)).containsExactly(validPayload);
+        assertThat(Schema.INT32.decode(autoProduceSchema.decode(validPayload, new byte[] {1, 2}))).isEqualTo(123_456);
+
+        final Schema<byte[]> clonedSchema = autoProduceSchema.clone();
+        assertThat(clonedSchema.getSchemaInfo().getType()).isEqualTo(SchemaType.INT32);
+        assertThat(clonedSchema.encode(validPayload)).containsExactly(validPayload);
+
+        assertThrows(SchemaSerializationException.class, () -> autoProduceSchema.encode(new byte[] {1, 2, 3}));
     }
 
     @Test
