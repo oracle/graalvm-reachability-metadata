@@ -249,6 +249,20 @@ public class Jackson_jaxrs_baseTest {
     }
 
     @Test
+    void providerAppliesDefaultViewsWhenEndpointHasNoViewAnnotation() throws Exception {
+        TestProvider provider = new TestProvider();
+        assertThat(provider.setDefaultReadView(PublicView.class)).isSameAs(provider);
+        assertThat(provider.setDefaultWriteView(InternalView.class)).isSameAs(provider);
+
+        provider.writeTo(Map.of("view", "write"), Map.class, Map.class, NO_ANNOTATIONS,
+                MediaType.APPLICATION_JSON_TYPE, new MultivaluedHashMap<>(), new ByteArrayOutputStream());
+        read(provider, "{\"view\":\"read\"}");
+
+        assertThat(provider.lastWritingView).isEqualTo(InternalView.class);
+        assertThat(provider.lastReadingView).isEqualTo(PublicView.class);
+    }
+
+    @Test
     void providerReadsWritesHeadersAndCachesEndpointConfigurations() throws Exception {
         TestProvider provider = new TestProvider();
         provider.enable(JaxRSFeature.ADD_NO_SNIFF_HEADER);
@@ -451,6 +465,8 @@ public class Jackson_jaxrs_baseTest {
     private static final class TestProvider extends ProviderBase<TestProvider, JsonMapper, TestEndpointConfig,
             TestMapperConfigurator> {
         private JsonMapper mapperFromProvider;
+        private Class<?> lastReadingView;
+        private Class<?> lastWritingView;
         private int readingConfigurations;
         private int writingConfigurations;
 
@@ -481,12 +497,14 @@ public class Jackson_jaxrs_baseTest {
 
         @Override
         protected TestEndpointConfig _configForReading(ObjectReader reader, Annotation[] annotations) {
+            lastReadingView = reader.getConfig().getActiveView();
             readingConfigurations++;
             return TestEndpointConfig.forReading(reader, annotations);
         }
 
         @Override
         protected TestEndpointConfig _configForWriting(ObjectWriter writer, Annotation[] annotations) {
+            lastWritingView = writer.getConfig().getActiveView();
             writingConfigurations++;
             return TestEndpointConfig.forWriting(writer, annotations);
         }
@@ -644,6 +662,9 @@ public class Jackson_jaxrs_baseTest {
     }
 
     private interface PublicView {
+    }
+
+    private interface InternalView {
     }
 
     private @interface NamedAnnotation {
