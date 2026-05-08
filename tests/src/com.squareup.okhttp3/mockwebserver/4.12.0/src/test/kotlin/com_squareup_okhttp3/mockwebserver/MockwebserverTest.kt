@@ -7,6 +7,7 @@
 package com_squareup_okhttp3.mockwebserver
 
 import java.net.HttpURLConnection
+import java.net.Proxy
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -70,6 +71,41 @@ public class MockwebserverTest {
             }
         } finally {
             client.closeResources()
+        }
+    }
+
+    @Test
+    fun servesRequestsSentThroughHttpProxy(): Unit {
+        MockWebServer().use { server: MockWebServer ->
+            server.start()
+            server.enqueue(
+                MockResponse()
+                    .setHeader("X-Proxy-Response", "yes")
+                    .setBody("proxied"),
+            )
+
+            val client: OkHttpClient = newClient(server.toProxyAddress())
+            try {
+                val request: Request = Request.Builder()
+                    .url("http://example.com/proxied/path?via=mock")
+                    .header("X-Proxied", "true")
+                    .build()
+
+                client.newCall(request).execute().use { response: Response ->
+                    assertThat(response.code).isEqualTo(HttpURLConnection.HTTP_OK)
+                    assertThat(response.header("X-Proxy-Response")).isEqualTo("yes")
+                    assertThat(response.body!!.string()).isEqualTo("proxied")
+                }
+
+                val recorded: RecordedRequest = server.awaitRequest()
+                assertThat(recorded.method).isEqualTo("GET")
+                assertThat(recorded.requestLine).isEqualTo("GET http://example.com/proxied/path?via=mock HTTP/1.1")
+                assertThat(recorded.getHeader("Host")).isEqualTo("example.com")
+                assertThat(recorded.getHeader("X-Proxied")).isEqualTo("true")
+                assertThat(server.requestCount).isEqualTo(1)
+            } finally {
+                client.closeResources()
+            }
         }
     }
 
@@ -309,11 +345,16 @@ public class MockwebserverTest {
     }
 }
 
-private fun newClient(): OkHttpClient = OkHttpClient.Builder()
+private fun newClient(proxy: Proxy? = null): OkHttpClient = OkHttpClient.Builder()
     .connectTimeout(2, TimeUnit.SECONDS)
     .readTimeout(2, TimeUnit.SECONDS)
     .writeTimeout(2, TimeUnit.SECONDS)
     .callTimeout(5, TimeUnit.SECONDS)
+    .apply {
+        if (proxy != null) {
+            proxy(proxy)
+        }
+    }
     .build()
 
 private fun OkHttpClient.closeResources(): Unit {
