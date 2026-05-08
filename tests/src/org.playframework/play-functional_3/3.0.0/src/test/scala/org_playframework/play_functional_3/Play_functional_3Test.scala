@@ -191,6 +191,39 @@ class Play_functional_3Test {
     assertThat(tupleCodec.write((12, "runtime"))).isEqualTo("12|runtime")
   }
 
+  @Test
+  def variantExtractorsSelectVarianceSpecificTypeClassImplementations(): Unit = {
+    val functorExtractor: VariantExtractor[Option] = FunctorExtractor[Option](implicitly[Functor[Option]])
+    val invariantExtractor: VariantExtractor[TextCodec] = InvariantFunctorExtractor[TextCodec](textCodecInvariantFunctor)
+    val contravariantExtractor: VariantExtractor[Predicate] =
+      ContravariantFunctorExtractor[Predicate](predicateContravariantFunctor)
+
+    val mappedOption: Option[Int] = functorExtractor match {
+      case FunctorExtractor(functor) => functor.fmap(Option(12), (value: Int) => value + 30)
+      case _                        => None
+    }
+    val prefixedCodec: TextCodec[String] = invariantExtractor match {
+      case InvariantFunctorExtractor(invariantFunctor) =>
+        invariantFunctor.inmap(
+          TextCodec[Int](_.toInt, _.toString),
+          (value: Int) => s"item-$value",
+          (value: String) => value.stripPrefix("item-").toInt
+        )
+      case _ => TextCodec[String](value => value, value => value)
+    }
+    val purchasePredicate: Predicate[Purchase] = contravariantExtractor match {
+      case ContravariantFunctorExtractor(contravariantFunctor) =>
+        contravariantFunctor.contramap(Predicate[Int](_ >= 2), (purchase: Purchase) => purchase.quantity)
+      case _ => Predicate[Purchase](_ => false)
+    }
+
+    assertThat(mappedOption).isEqualTo(Some(42))
+    assertThat(prefixedCodec.read("7")).isEqualTo("item-7")
+    assertThat(prefixedCodec.write("item-9")).isEqualTo("9")
+    assertThat(purchasePredicate(Purchase(2, "notebook"))).isTrue()
+    assertThat(purchasePredicate(Purchase(1, "notebook"))).isFalse()
+  }
+
   private final case class FullName(first: String, last: String)
 
   private final case class Purchase(quantity: Int, sku: String)
