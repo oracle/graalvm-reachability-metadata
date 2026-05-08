@@ -25,3 +25,10 @@ graalvmNative {
         }
     }
 }
+
+tasks.withType(Test).configureEach {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    jvmArgs += ["-Djava.security.manager=allow"]
+}
