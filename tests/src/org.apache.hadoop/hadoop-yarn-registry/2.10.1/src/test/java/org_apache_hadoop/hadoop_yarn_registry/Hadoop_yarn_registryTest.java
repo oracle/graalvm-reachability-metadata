@@ -8,7 +8,7 @@ package org_apache_hadoop.hadoop_yarn_registry;
 
 import org.junit.jupiter.api.Test;
 
-class Hadoop_yarn_registryTest {
+public class Hadoop_yarn_registryTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
