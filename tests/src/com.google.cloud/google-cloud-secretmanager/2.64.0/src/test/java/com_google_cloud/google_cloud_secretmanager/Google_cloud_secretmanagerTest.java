@@ -199,6 +199,74 @@ public class Google_cloud_secretmanagerTest {
 
     @Test
     @Timeout(value = 10)
+    void callableApiHandlesPagedListRequestsAndUnaryResponses() throws Exception {
+        FakeSecretManagerService service = new FakeSecretManagerService();
+        String serverName = InProcessServerBuilder.generateName();
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .addService(service)
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName).directExecutor().build();
+        SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
+                .setCredentialsProvider(NoCredentialsProvider.create())
+                .setTransportChannelProvider(
+                        FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel)))
+                .build();
+
+        try (SecretManagerServiceClient client = SecretManagerServiceClient.create(settings)) {
+            Secret secretTemplate = Secret.newBuilder()
+                    .setReplication(Replication.newBuilder().setAutomatic(Replication.Automatic.newBuilder()))
+                    .build();
+            for (String secretId : List.of("alpha", "beta", "gamma")) {
+                CreateSecretRequest request = CreateSecretRequest.newBuilder()
+                        .setParent(PARENT)
+                        .setSecretId(secretId)
+                        .setSecret(secretTemplate)
+                        .build();
+                client.createSecretCallable().futureCall(request).get(5, TimeUnit.SECONDS);
+            }
+
+            SecretManagerServiceClient.ListSecretsPage firstPage = client.listSecretsPagedCallable()
+                    .call(ListSecretsRequest.newBuilder().setParent(PARENT).setPageSize(2).build())
+                    .getPage();
+            List<String> firstPageNames = new ArrayList<>();
+            firstPage.getValues().forEach(secret -> firstPageNames.add(secret.getName()));
+            SecretManagerServiceClient.ListSecretsPage secondPage = firstPage.getNextPage();
+            List<String> secondPageNames = new ArrayList<>();
+            secondPage.getValues().forEach(secret -> secondPageNames.add(secret.getName()));
+
+            assertThat(firstPageNames).containsExactly(PARENT + "/secrets/alpha", PARENT + "/secrets/beta");
+            assertThat(firstPage.hasNextPage()).isTrue();
+            assertThat(secondPageNames).containsExactly(PARENT + "/secrets/gamma");
+            assertThat(secondPage.hasNextPage()).isFalse();
+            assertThat(service.listSecretsPageTokens).containsExactly("", "2");
+
+            SecretPayload payload = SecretPayload.newBuilder()
+                    .setData(ByteString.copyFromUtf8("callable-secret"))
+                    .build();
+            SecretVersion version = client.addSecretVersionCallable()
+                    .futureCall(AddSecretVersionRequest.newBuilder()
+                            .setParent(SecretName.of(PROJECT_ID, "alpha").toString())
+                            .setPayload(payload)
+                            .build())
+                    .get(5, TimeUnit.SECONDS);
+            AccessSecretVersionResponse accessed = client.accessSecretVersionCallable()
+                    .futureCall(AccessSecretVersionRequest.newBuilder().setName(version.getName()).build())
+                    .get(5, TimeUnit.SECONDS);
+
+            assertThat(version.getName()).isEqualTo(PARENT + "/secrets/alpha/versions/1");
+            assertThat(accessed.getPayload().getData().toStringUtf8()).isEqualTo("callable-secret");
+        } finally {
+            channel.shutdownNow();
+            channel.awaitTermination(5, TimeUnit.SECONDS);
+            server.shutdownNow();
+            server.awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
+    @Timeout(value = 10)
     void clientCallsSecretLifecycleAgainstInProcessGrpcService() throws Exception {
         FakeSecretManagerService service = new FakeSecretManagerService();
         String serverName = InProcessServerBuilder.generateName();
@@ -295,6 +363,7 @@ public class Google_cloud_secretmanagerTest {
         private final Map<String, SecretVersion> versions = new LinkedHashMap<>();
         private final Map<String, SecretPayload> payloads = new LinkedHashMap<>();
         private final List<CreateSecretRequest> createSecretRequests = new ArrayList<>();
+        private final List<String> listSecretsPageTokens = new ArrayList<>();
         private final List<String> deletedSecrets = new ArrayList<>();
         private final List<String> updateMasks = new ArrayList<>();
         private Policy policy = Policy.getDefaultInstance();
@@ -339,7 +408,14 @@ public class Google_cloud_secretmanagerTest {
         }
 
         private void listSecrets(ListSecretsRequest request, StreamObserver<ListSecretsResponse> observer) {
-            observer.onNext(ListSecretsResponse.newBuilder().addAllSecrets(secrets.values()).build());
+            List<Secret> allSecrets = new ArrayList<>(secrets.values());
+            int startIndex = pageStartIndex(request.getPageToken());
+            int endIndex = pageEndIndex(startIndex, request.getPageSize(), allSecrets.size());
+            listSecretsPageTokens.add(request.getPageToken());
+            observer.onNext(ListSecretsResponse.newBuilder()
+                    .addAllSecrets(allSecrets.subList(startIndex, endIndex))
+                    .setNextPageToken(nextPageToken(endIndex, allSecrets.size()))
+                    .build());
             observer.onCompleted();
         }
 
@@ -444,6 +520,27 @@ public class Google_cloud_secretmanagerTest {
             SecretVersion version = versions.get(name).toBuilder().setState(state).build();
             versions.put(name, version);
             return version;
+        }
+
+        private static int pageStartIndex(String pageToken) {
+            if (pageToken.isEmpty()) {
+                return 0;
+            }
+            return Integer.parseInt(pageToken);
+        }
+
+        private static int pageEndIndex(int startIndex, int pageSize, int valueCount) {
+            if (pageSize <= 0) {
+                return valueCount;
+            }
+            return Math.min(startIndex + pageSize, valueCount);
+        }
+
+        private static String nextPageToken(int endIndex, int valueCount) {
+            if (endIndex >= valueCount) {
+                return "";
+            }
+            return String.valueOf(endIndex);
         }
 
         private static <ReqT extends Message, RespT extends Message> MethodDescriptor<ReqT, RespT> unaryMethod(
