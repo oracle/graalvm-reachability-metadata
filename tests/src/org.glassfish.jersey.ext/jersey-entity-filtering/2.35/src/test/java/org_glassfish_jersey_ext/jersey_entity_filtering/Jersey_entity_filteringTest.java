@@ -151,6 +151,13 @@ public class Jersey_entity_filteringTest {
     }
 
     @Test
+    void entityFilteringFeatureReportsDisabledWhenNoFilteringFeatureIsRegistered() {
+        RecordingFeatureContext context = new RecordingFeatureContext(RuntimeType.SERVER);
+
+        assertThat(EntityFilteringFeature.enabled(context.getConfiguration())).isFalse();
+    }
+
+    @Test
     void securityAnnotationFactoriesCreateRuntimeAnnotations() {
         RolesAllowed rolesAllowed = SecurityAnnotations.rolesAllowed("admin", null, "auditor");
         PermitAll permitAll = SecurityAnnotations.permitAll();
