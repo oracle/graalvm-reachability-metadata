@@ -1,0 +1,881 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e05d2-7bfb-72c2-91ce-0cf31ad28de1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-serialization-jackson_3:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.1" when "$version$" is replaced with "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+- Set "coordinates" to "org.apache.pekko:pekko-serialization-jackson_3:1.0.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and upstream Pekko sources, then update the JSON in place with version-tokenized URLs where the site supports them.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'pekko|serialization-jackson' || true" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+
+exec
+/usr/bin/bash -lc "rg -n 'pekko-serialization-jackson|org.apache.pekko' -S . | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+./metadata/org.apache.pekko/pekko-parsing_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+./metadata/org.apache.pekko/pekko-parsing_3/index.json:7:    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+./metadata/org.apache.pekko/pekko-parsing_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+./metadata/org.apache.pekko/pekko-parsing_3/index.json:18:      "org.apache.pekko.http.ccompat",
+./metadata/org.apache.pekko/pekko-parsing_3/index.json:19:      "org.apache.pekko.macros"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:7:    "test-code-url" : "https://github.com/apache/pekko/blob/v$version$-RC1/remote/src/test/scala/org/apache/pekko/remote/serialization/ProtobufSerializerSpec.scala",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:9:    "description" : "Apache Pekko Protobuf V3 packages a shaded Google Protocol Buffers v3 Java runtime under the org.apache.pekko.protobufv3.internal namespace for Pekko modules. It lets Pekko use protobuf serialization without exposing or conflicting with application-level protobuf dependencies.",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:19:      "org.apache.pekko.protobufv3.internal"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:28:    "description" : "Apache Pekko Protobuf V3 packages the Google Protocol Buffers Java runtime shaded under org.apache.pekko.protobufv3.internal for use by Pekko modules. The relocation lets Pekko depend on protobuf serialization internals without exposing or conflicting with applications' own com.google.protobuf dependencies.",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:37:      "org.apache.pekko.protobufv3.internal"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:5:        "typeReached" : "org.apache.pekko.protobufv3.internal.ExtensionSchemas"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:7:      "type" : "org.apache.pekko.protobufv3.internal.ExtensionSchemaFull",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:17:        "typeReached" : "org.apache.pekko.protobufv3.internal.MapFieldSchemas"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:19:      "type" : "org.apache.pekko.protobufv3.internal.MapFieldSchemaFull",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:29:        "typeReached" : "org.apache.pekko.protobufv3.internal.ListFieldSchemas"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:31:      "type" : "org.apache.pekko.protobufv3.internal.ListFieldSchemaFull",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:41:        "typeReached" : "org.apache.pekko.protobufv3.internal.NewInstanceSchemas"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:43:      "type" : "org.apache.pekko.protobufv3.internal.NewInstanceSchemaFull",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:53:        "typeReached" : "org.apache.pekko.protobufv3.internal.ManifestSchemaFactory"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:55:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorMessageInfoFactory",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:65:        "typeReached" : "org.apache.pekko.protobufv3.internal.ExtensionRegistryFactory"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:67:      "type" : "org.apache.pekko.protobufv3.internal.ExtensionRegistry",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:81:        "typeReached" : "org.apache.pekko.protobufv3.internal.ExtensionRegistryLite"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:83:      "type" : "org.apache.pekko.protobufv3.internal.ExtensionRegistry",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:88:            "org.apache.pekko.protobufv3.internal.Extension"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:95:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedFile"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:97:      "type" : "org.apache.pekko.protobufv3.internal.JavaFeaturesProto",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:106:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedMessage"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:108:      "type" : "org.apache.pekko.protobufv3.internal.Any",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:126:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedMessage"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:128:      "type" : "org.apache.pekko.protobufv3.internal.Any$Builder",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:151:            "org.apache.pekko.protobufv3.internal.ByteString"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:161:            "org.apache.pekko.protobufv3.internal.ByteString"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:172:        "typeReached" : "org.apache.pekko.protobufv3.internal.SchemaUtil"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:174:      "type" : "org.apache.pekko.protobufv3.internal.UnknownFieldSetSchema",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:184:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:186:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:191:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:193:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$Builder",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:198:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:200:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$EnforceNamingStyle",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:205:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:207:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$EnumType",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:212:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:214:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$FieldPresence",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:219:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:221:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$JsonFormat",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:226:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:228:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$MessageEncoding",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:233:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:235:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$RepeatedFieldEncoding",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:240:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:242:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$Utf8Validation",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:247:        "typeReached" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:249:      "type" : "org.apache.pekko.protobufv3.internal.DescriptorProtos$FeatureSet$VisibilityFeature$DefaultSymbolVisibility",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:254:        "typeReached" : "org.apache.pekko.protobufv3.internal.UnsafeUtil"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:265:        "typeReached" : "org.apache.pekko.protobufv3.internal.UnsafeUtil"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:279:        "typeReached" : "org.apache.pekko.protobufv3.internal.UnsafeUtil$1"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:290:        "typeReached" : "org.apache.pekko.protobufv3.internal.UnsafeUtil$MemoryAccessor"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:361:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:363:      "type" : "org.apache.pekko.protobufv3.internal.GeneratedMessageLite$SerializedForm",
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:368:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:384:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:390:        "typeReached" : "org.apache.pekko.protobufv3.internal.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/reachability-metadata.json:392:      "type" : "org.apache.pekko.protobufv3.internal.GeneratedMessageLite$SerializedForm"
+./metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+./metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+./metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:9:    "description" : "Apache Pekko Protobuf V3 packages the Google Protocol Buffers Java runtime shaded under org.apache.pekko.protobufv3.internal for use by Pekko modules. The relocation lets Pekko depend on protobuf serialization internals without exposing or conflicting with applications' own com.google.protobuf dependencies.",
+./metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:26:      "org.apache.pekko.protobufv3.internal"
+./stats/org.apache.pekko/pekko-parsing_3/1.3.0/execution-metrics.json:4:    "library": "org.apache.pekko:pekko-parsing_3:1.3.0",
+./stats/org.apache.pekko/pekko-parsing_3/1.3.0/execution-metrics.json:52:      "test_file": "tests/src/org.apache.pekko/pekko-parsing_3/1.3.0/src/test/scala/org_apache_pekko/pekko_parsing_3/Pekko_parsing_3Test.scala",
+./stats/org.apache.pekko/pekko-parsing_3/1.3.0/execution-metrics.json:53:      "metadata_file": "metadata/org.apache.pekko/pekko-parsing_3/1.3.0/reachability-metadata.json"
+./stats/org.apache.pekko/pekko-protobuf-v3_2.13/1.1.5/execution-metrics.json:4:    "library": "org.apache.pekko:pekko-protobuf-v3_2.13:1.1.5",
+./stats/org.apache.pekko/pekko-protobuf-v3_2.13/1.1.5/execution-metrics.json:59:      "test_file": "tests/src/org.apache.pekko/pekko-protobuf-v3_2.13/1.1.5/src/test/scala/org_apache_pekko/pekko_protobuf_v3_2_13/ExtensionSchemasTest.scala",
+./stats/org.apache.pekko/pekko-protobuf-v3_2.13/1.1.5/execution-metrics.json:60:      "metadata_file": "metadata/org.apache.pekko/pekko-protobuf-v3_2.13/1.1.5/reachability-metadata.json"
+./stats/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/execution-metrics.json:4:    "library": "org.apache.pekko:pekko-protobuf-v3_2.13:1.6.0",
+
+web search: 
+web search: org.apache.pekko pekko-serialization-jackson_3 1.0.1 Maven repository
+codex
+The local file is currently just coordinates. I found existing Pekko metadata patterns in the repo, but this artifact needs fresh verification because the `_3` suffix makes the Scala variant and tag choice important.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/pekko-serialization-jackson_3-1.0.1.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-serialization-jackson_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>1.0.1</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>pekko-serialization-jackson</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/incubator-pekko</url>
+        <connection>scm:git:https://github.com/apache/incubator-pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/incubator-pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/incubator-pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/1.0.1</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor_3</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor-typed_3</artifactId>
+            <version>1.0.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-stream_3</artifactId>
+            <version>1.0.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor-tests_3</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-testkit_3</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-cbor</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_3</artifactId>
+            <version>2.14.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.14</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 359ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-serialization-jackson_3/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-serialization-jackson_3/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-serialization-jackson_3-1.0.1-javadoc.jar" title="pekko-serialization-jackson_3-1.0.1-javadoc.jar">pekko-serialization-jackson_3-1.0.1-javadoc.j...</a>  2023-07-24 23:12   2785076      
+<a href="pekko-serialization-jackson_3-1.0.1-javadoc.jar.asc" title="pekko-serialization-jackson_3-1.0.1-javadoc.jar.asc">pekko-serialization-jackson_3-1.0.1-javadoc.j...</a>  2023-07-24 23:12       488      
+<a href="pekko-serialization-jackson_3-1.0.1-javadoc.jar.asc.md5" title="pekko-serialization-jackson_3-1.0.1-javadoc.jar.asc.md5">pekko-serialization-jackson_3-1.0.1-javadoc.j...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1-javadoc.jar.asc.sha1" title="pekko-serialization-jackson_3-1.0.1-javadoc.jar.asc.sha1">pekko-serialization-jackson_3-1.0.1-javadoc.j...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1-javadoc.jar.md5" title="pekko-serialization-jackson_3-1.0.1-javadoc.jar.md5">pekko-serialization-jackson_3-1.0.1-javadoc.j...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1-javadoc.jar.sha1" title="pekko-serialization-jackson_3-1.0.1-javadoc.jar.sha1">pekko-serialization-jackson_3-1.0.1-javadoc.j...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1-sources.jar" title="pekko-serialization-jackson_3-1.0.1-sources.jar">pekko-serialization-jackson_3-1.0.1-sources.j...</a>  2023-07-24 23:12     29580      
+<a href="pekko-serialization-jackson_3-1.0.1-sources.jar.asc" title="pekko-serialization-jackson_3-1.0.1-sources.jar.asc">pekko-serialization-jackson_3-1.0.1-sources.j...</a>  2023-07-24 23:12       488      
+<a href="pekko-serialization-jackson_3-1.0.1-sources.jar.asc.md5" title="pekko-serialization-jackson_3-1.0.1-sources.jar.asc.md5">pekko-serialization-jackson_3-1.0.1-sources.j...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1-sources.jar.asc.sha1" title="pekko-serialization-jackson_3-1.0.1-sources.jar.asc.sha1">pekko-serialization-jackson_3-1.0.1-sources.j...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1-sources.jar.md5" title="pekko-serialization-jackson_3-1.0.1-sources.jar.md5">pekko-serialization-jackson_3-1.0.1-sources.j...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1-sources.jar.sha1" title="pekko-serialization-jackson_3-1.0.1-sources.jar.sha1">pekko-serialization-jackson_3-1.0.1-sources.j...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1.buildinfo" title="pekko-serialization-jackson_3-1.0.1.buildinfo">pekko-serialization-jackson_3-1.0.1.buildinfo</a>     2023-07-24 23:12       819      
+<a href="pekko-serialization-jackson_3-1.0.1.buildinfo.asc" title="pekko-serialization-jackson_3-1.0.1.buildinfo.asc">pekko-serialization-jackson_3-1.0.1.buildinfo...</a>  2023-07-24 23:12       488      
+<a href="pekko-serialization-jackson_3-1.0.1.buildinfo.asc.md5" title="pekko-serialization-jackson_3-1.0.1.buildinfo.asc.md5">pekko-serialization-jackson_3-1.0.1.buildinfo...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1.buildinfo.asc.sha1" title="pekko-serialization-jackson_3-1.0.1.buildinfo.asc.sha1">pekko-serialization-jackson_3-1.0.1.buildinfo...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1.buildinfo.md5" title="pekko-serialization-jackson_3-1.0.1.buildinfo.md5">pekko-serialization-jackson_3-1.0.1.buildinfo...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1.buildinfo.sha1" title="pekko-serialization-jackson_3-1.0.1.buildinfo.sha1">pekko-serialization-jackson_3-1.0.1.buildinfo...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1.jar" title="pekko-serialization-jackson_3-1.0.1.jar">pekko-serialization-jackson_3-1.0.1.jar</a>           2023-07-24 23:12    192669      
+<a href="pekko-serialization-jackson_3-1.0.1.jar.asc" title="pekko-serialization-jackson_3-1.0.1.jar.asc">pekko-serialization-jackson_3-1.0.1.jar.asc</a>       2023-07-24 23:12       488      
+<a href="pekko-serialization-jackson_3-1.0.1.jar.asc.md5" title="pekko-serialization-jackson_3-1.0.1.jar.asc.md5">pekko-serialization-jackson_3-1.0.1.jar.asc.m...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1.jar.asc.sha1" title="pekko-serialization-jackson_3-1.0.1.jar.asc.sha1">pekko-serialization-jackson_3-1.0.1.jar.asc.s...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1.jar.md5" title="pekko-serialization-jackson_3-1.0.1.jar.md5">pekko-serialization-jackson_3-1.0.1.jar.md5</a>       2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1.jar.sha1" title="pekko-serialization-jackson_3-1.0.1.jar.sha1">pekko-serialization-jackson_3-1.0.1.jar.sha1</a>      2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1.pom" title="pekko-serialization-jackson_3-1.0.1.pom">pekko-serialization-jackson_3-1.0.1.pom</a>           2023-07-24 23:12      5269      
+<a href="pekko-serialization-jackson_3-1.0.1.pom.asc" title="pekko-serialization-jackson_3-1.0.1.pom.asc">pekko-serialization-jackson_3-1.0.1.pom.asc</a>       2023-07-24 23:12       488      
+<a href="pekko-serialization-jackson_3-1.0.1.pom.asc.md5" title="pekko-serialization-jackson_3-1.0.1.pom.asc.md5">pekko-serialization-jackson_3-1.0.1.pom.asc.m...</a>  2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1.pom.asc.sha1" title="pekko-serialization-jackson_3-1.0.1.pom.asc.sha1">pekko-serialization-jackson_3-1.0.1.pom.asc.s...</a>  2023-07-24 23:12        40      
+<a href="pekko-serialization-jackson_3-1.0.1.pom.md5" title="pekko-serialization-jackson_3-1.0.1.pom.md5">pekko-serialization-jackson_3-1.0.1.pom.md5</a>       2023-07-24 23:12        32      
+<a href="pekko-serialization-jackson_3-1.0.1.pom.sha1" title="pekko-serialization-jackson_3-1.0.1.pom.sha1">pekko-serialization-jackson_3-1.0.1.pom.sha1</a>      2023-07-24 23:12        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 395ms:
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+    "description" : "Apache Pekko Protobuf V3 packages the Google Protocol Buffers Java runtime shaded under org.apache.pekko.protobufv3.internal for use by Pekko modules. The relocation lets Pekko depend on protobuf serialization internals without exposing or conflicting with applications' own com.google.protobuf dependencies.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.0.1",
+      "1.0.2",
+      "1.0.3",
+      "1.1.0",
+      "1.1.1",
+      "1.1.2",
+      "1.1.3",
+      "1.1.4",
+      "1.1.5"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko.protobufv3.internal"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,50p' metadata/org.apache.pekko/pekko-parsing_3/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko-http",
+    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+    "description" : "Apache Pekko Parsing is a Scala-specific internal support module for Pekko HTTP that provides compile-time logging guards and cross-Scala-version compatibility annotations used by the HTTP parsing implementation. It is published as a JVM JAR for each Scala binary version, including Scala 3, so downstream Pekko HTTP modules can share those internal helpers without duplicating them.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.3.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko.http.ccompat",
+      "org.apache.pekko.macros"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/incubator-pekko/tree/v1.0.1 | sed -n '1,20p' && curl -I -L -s https://github.com/apache/pekko/tree/v1.0.1 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 1124ms:
+HTTP/2 301 
+date: Fri, 08 May 2026 04:22:44 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/apache/pekko/tree/v1.0.1
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=Z7lRyXbSDAsmYx19Q6%2BYjJF1HflpaLRBJwc3uoK3uWidDwvqn0nHNL%2B6%2BR3nVhvwietjfshsrKOr7DMrykO1NDNkx6jdfTjVUvPBkUx0%2FE9Q5s3iXN6NLr3Ao22ETFcJssVIOXBOw5As%2Bo0qEVdXT4bPirVVzQpyUMjfA5dbuA%2BUSNWLGakp%2FDpOdaWYGcT7Mn3Zy0R3Azu61lJlRN55JWjicNRNnKJTcskooJ2fgH0wwlFXuqRmPsSR5fbSWdgj1i9j60WdQaLC3hIS4WrvtA%3D%3D--Myeh%2FAIQu67%2BYPfo--XTkbCe1omRYsXL5Zu43dCw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2030205947.1778214164; expires=Sat, 08 May 2027 04:22:44 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:22:44 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5164:137F95:C1D0D4F:98E4B84:69FD6514
+
+HTTP/2 200 
+HTTP/2 200 
+date: Fri, 08 May 2026 04:22:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2ce2db65cf695e778fe37a323479b930"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=GfoiAXuSyLWlUyb6pEhSXepwCUxtmg0kX4aDQmbTMDRxKGgktiTrLToVBK%2BpI7MkIqD1N5kUoIi8Jv7ZIa%2BMsbFggHkkgRzNVlkKSFPLokrrtaiJlDkFH1VWxwZTIpct%2FNJs8KbU68cknxFYE4DlGc%2BPfu%2FpLc4p0699Qv14hBvUOAelj4IQUpkS42mnVy%2FFHBuV6hTRQFF%2BGeZYRhAcgYYLbjw7ll9cu3aknknxy%2BDXg%2BYK7sbjViGQxerfyiclNLLjB4VvbHX8acztsMwdRQ%3D%3D--HQ92gdBBXSOhimiG--pwAhWTROybCHx40mQz2Rkw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.948657773.1778214165; expires=Sat, 08 May 2027 04:22:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 04:22:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5149:170C:2E2370F:255F8F5:69FD6515
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.apache.pekko pekko-serialization-jackson_3 1.0.1 sources javadoc
+codex
+Maven Central confirms this is a normal JVM `jar` and publishes both `-sources.jar` and `-javadoc.jar`; I don’t see a published tests/test-sources artifact in that Maven directory, so I’m checking the upstream tag for the test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test?ref=v1.0.1' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/main?ref=v1.0.1' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/pekko-serialization-jackson_3-1.0.1.jar -o /tmp/pekko-serialization-jackson_3-1.0.1.jar && jar tf /tmp/pekko-serialization-jackson_3-1.0.1.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 170ms:
+[
+  {
+    "name": "java",
+    "path": "serialization-jackson/src/test/java",
+    "sha": "3ba230016474a7f274c54a9d5e275f66b25d1e9b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test/java?ref=v1.0.1",
+    "html_url": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/3ba230016474a7f274c54a9d5e275f66b25d1e9b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test/java?ref=v1.0.1",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/3ba230016474a7f274c54a9d5e275f66b25d1e9b",
+      "html": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "serialization-jackson/src/test/resources",
+    "sha": "019c8c404bde74c5cd25645d8bcdff2b59ba95ce",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test/resources?ref=v1.0.1",
+    "html_url": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/019c8c404bde74c5cd25645d8bcdff2b59ba95ce",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test/resources?ref=v1.0.1",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/019c8c404bde74c5cd25645d8bcdff2b59ba95ce",
+      "html": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "serialization-jackson/src/test/scala",
+    "sha": "4871bed2109a8d3712577327c6743a09c8a38ebc",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test/scala?ref=v1.0.1",
+    "html_url": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test/scala",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/4871bed2109a8d3712577327c6743a09c8a38ebc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/test/scala?ref=v1.0.1",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/4871bed2109a8d3712577327c6743a09c8a38ebc",
+      "html": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 185ms:
+[
+  {
+    "name": "resources",
+    "path": "serialization-jackson/src/main/resources",
+    "sha": "1b7eb833e1e833d5e295958b17a5b30bb44d87d2",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/main/resources?ref=v1.0.1",
+    "html_url": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/main/resources",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/1b7eb833e1e833d5e295958b17a5b30bb44d87d2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/main/resources?ref=v1.0.1",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/1b7eb833e1e833d5e295958b17a5b30bb44d87d2",
+      "html": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/main/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "serialization-jackson/src/main/scala",
+    "sha": "4486325c33b0831b9e3f7f010e61eb89f916af05",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/main/scala?ref=v1.0.1",
+    "html_url": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/main/scala",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/4486325c33b0831b9e3f7f010e61eb89f916af05",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson/src/main/scala?ref=v1.0.1",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/4486325c33b0831b9e3f7f010e61eb89f916af05",
+      "html": "https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/main/scala"
+    }
+  }
+]
+
+ succeeded in 172ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/DISCLAIMER
+META-INF/LICENSE
+META-INF/NOTICE
+org/
+org/apache/
+org/apache/pekko/
+org/apache/pekko/serialization/
+org/apache/pekko/serialization/jackson/
+org/apache/pekko/serialization/jackson/ActorRefDeserializer$.class
+org/apache/pekko/serialization/jackson/ActorRefDeserializer.class
+org/apache/pekko/serialization/jackson/ActorRefDeserializer.tasty
+org/apache/pekko/serialization/jackson/ActorRefModule.class
+org/apache/pekko/serialization/jackson/ActorRefModule.tasty
+org/apache/pekko/serialization/jackson/ActorRefSerializer$.class
+org/apache/pekko/serialization/jackson/ActorRefSerializer.class
+org/apache/pekko/serialization/jackson/ActorRefSerializer.tasty
+org/apache/pekko/serialization/jackson/ActorSystemAccess$.class
+org/apache/pekko/serialization/jackson/ActorSystemAccess.class
+org/apache/pekko/serialization/jackson/ActorSystemAccess.tasty
+org/apache/pekko/serialization/jackson/AddressDeserializer$.class
+org/apache/pekko/serialization/jackson/AddressDeserializer.class
+org/apache/pekko/serialization/jackson/AddressDeserializer.tasty
+org/apache/pekko/serialization/jackson/AddressModule.class
+org/apache/pekko/serialization/jackson/AddressModule.tasty
+org/apache/pekko/serialization/jackson/AddressSerializer$.class
+org/apache/pekko/serialization/jackson/AddressSerializer.class
+org/apache/pekko/serialization/jackson/AddressSerializer.tasty
+org/apache/pekko/serialization/jackson/Compression$.class
+org/apache/pekko/serialization/jackson/Compression$Algoritm.class
+org/apache/pekko/serialization/jackson/Compression$GZip$.class
+org/apache/pekko/serialization/jackson/Compression$GZip.class
+org/apache/pekko/serialization/jackson/Compression$LZ4$.class
+org/apache/pekko/serialization/jackson/Compression$LZ4.class
+org/apache/pekko/serialization/jackson/Compression$Off$.class
+org/apache/pekko/serialization/jackson/Compression.class
+org/apache/pekko/serialization/jackson/Compression.tasty
+org/apache/pekko/serialization/jackson/FiniteDurationDeserializer$.class
+org/apache/pekko/serialization/jackson/FiniteDurationDeserializer.class
+org/apache/pekko/serialization/jackson/FiniteDurationDeserializer.tasty
+org/apache/pekko/serialization/jackson/FiniteDurationModule.class
+org/apache/pekko/serialization/jackson/FiniteDurationModule.tasty
+org/apache/pekko/serialization/jackson/FiniteDurationSerializer$.class
+org/apache/pekko/serialization/jackson/FiniteDurationSerializer.class
+org/apache/pekko/serialization/jackson/FiniteDurationSerializer.tasty
+org/apache/pekko/serialization/jackson/JacksonCborSerializer.class
+org/apache/pekko/serialization/jackson/JacksonCborSerializer.tasty
+org/apache/pekko/serialization/jackson/JacksonJsonSerializer.class
+org/apache/pekko/serialization/jackson/JacksonJsonSerializer.tasty
+org/apache/pekko/serialization/jackson/JacksonMigration.class
+org/apache/pekko/serialization/jackson/JacksonMigration.tasty
+org/apache/pekko/serialization/jackson/JacksonModule$.class
+org/apache/pekko/serialization/jackson/JacksonModule$DeserializerResolverByClass.class
+org/apache/pekko/serialization/jackson/JacksonModule$SerializerResolverByClass.class
+org/apache/pekko/serialization/jackson/JacksonModule.class
+org/apache/pekko/serialization/jackson/JacksonModule.tasty
+org/apache/pekko/serialization/jackson/JacksonObjectMapperFactory.class
+org/apache/pekko/serialization/jackson/JacksonObjectMapperFactory.tasty
+org/apache/pekko/serialization/jackson/JacksonObjectMapperProvider$.class
+org/apache/pekko/serialization/jackson/JacksonObjectMapperProvider.class
+org/apache/pekko/serialization/jackson/JacksonObjectMapperProvider.tasty
+org/apache/pekko/serialization/jackson/JacksonObjectMapperProviderSetup$.class
+org/apache/pekko/serialization/jackson/JacksonObjectMapperProviderSetup.class
+org/apache/pekko/serialization/jackson/JacksonObjectMapperProviderSetup.tasty
+org/apache/pekko/serialization/jackson/JacksonSerializer$.class
+org/apache/pekko/serialization/jackson/JacksonSerializer$GadgetClassDenyList.class
+org/apache/pekko/serialization/jackson/JacksonSerializer$LZ4Meta$.class
+org/apache/pekko/serialization/jackson/JacksonSerializer$LZ4Meta.class
+org/apache/pekko/serialization/jackson/JacksonSerializer.class
+org/apache/pekko/serialization/jackson/JacksonSerializer.tasty
+org/apache/pekko/serialization/jackson/PekkoJacksonModule$.class
+org/apache/pekko/serialization/jackson/PekkoJacksonModule.class
+org/apache/pekko/serialization/jackson/PekkoJacksonModule.tasty
+org/apache/pekko/serialization/jackson/PekkoSerializationDeserializer.class
+org/apache/pekko/serialization/jackson/PekkoSerializationDeserializer.tasty
+org/apache/pekko/serialization/jackson/PekkoSerializationSerializer.class
+org/apache/pekko/serialization/jackson/PekkoSerializationSerializer.tasty
+org/apache/pekko/serialization/jackson/PekkoStreamJacksonModule$.class
+org/apache/pekko/serialization/jackson/PekkoStreamJacksonModule.class
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r -n1 sh -c 'echo \""'$1"; sed -n "1,40p" "$1"'"' sh" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+{
+  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
+}
+
+web search: 
+web search: https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test
+web search: 
+web search: repo.maven.apache.org org/apache/pekko/pekko-serialization-jackson_3/1.0.1 pekko-serialization-jackson_3-1.0.1-sources.jar
+web search: 
+web search: "Central Repository: org/apache/pekko/pekko-serialization-jackson_3/1.0.1"
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-serialization-jackson_3/1.0.1
+codex
+I’m going to write the discovered values now: Maven Central for source and javadoc, GitHub `v$version$` for tests, Scala 3 language metadata, and no `not-for-native-image` marker because the artifact contains JVM `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+index d28465d44efe00af4023754619d526a76bad1402..c953d60753c433b3d89c65ae5eb1952e07e2e9f0
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+index d28465d44efe00af4023754619d526a76bad1402..c953d60753c433b3d89c65ae5eb1952e07e2e9f0
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
+  "repository-url": "https://github.com/apache/pekko",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
+  "description": "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/pekko-serialization-jackson_3-1.0.1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/pekko-serialization-jackson_3-1.0.1-javadoc.jar \\
+  https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test; do \\
+  status="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$status" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+index d28465d44efe00af4023754619d526a76bad1402..c953d60753c433b3d89c65ae5eb1952e07e2e9f0
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1642ms:
+200 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/pekko-serialization-jackson_3-1.0.1-sources.jar
+200 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/pekko-serialization-jackson_3-1.0.1-javadoc.jar
+200 https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+index d28465d44efe00af4023754619d526a76bad1402..c953d60753c433b3d89c65ae5eb1952e07e2e9f0
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
+  "repository-url" : "https://github.com/apache/pekko",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
+  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+index d28465d44efe00af4023754619d526a76bad1402..c953d60753c433b3d89c65ae5eb1952e07e2e9f0
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Apache Pekko GitHub repository serialization-jackson v1.0.1
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-serialization-jackson_3/1.0.1
+web search: 
+web search: https://github.com/apache/pekko/tree/v1.0.1/serialization-jackson/src/test
+web search: 
+web search: "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/1.0.1/"
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-serialization-jackson_3/1.0.1
+codex
+Updated [org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json) with the repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Scala 3 language field.
+
+I left `not-for-native-image` absent: Maven Central lists the artifact as a JVM `jar` and shows Scala 3 dependencies, and the downloaded jar contains `.class` files. The test URL resolves at the `v1.0.1` tag, and the Pekko docs confirm this module provides Jackson serialization for Pekko messages with JSON/CBOR support. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.pekko/pekko-serialization-jackson_3/1.0.1))
+
+Validation done: `jq` passed, and the substituted source, javadoc, and test URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+index d28465d44efe00af4023754619d526a76bad1402..c953d60753c433b3d89c65ae5eb1952e07e2e9f0
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1"
++  "coordinates" : "org.apache.pekko:pekko-serialization-jackson_3:1.0.1",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/serialization-jackson/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-serialization-jackson_3/$version$/pekko-serialization-jackson_3-$version$-javadoc.jar",
++  "description" : "Apache Pekko Serialization Jackson provides Jackson-based JSON and CBOR serializers and object-mapper integration for Pekko actor messages and related Pekko types. It supplies Pekko-specific Jackson modules, migration hooks, compression support, and serializers/deserializers that let Pekko applications configure reliable message serialization.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+108,836
+Updated [org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/build/discovered-artifact-metadata/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.json) with the repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Scala 3 language field.
+
+I left `not-for-native-image` absent: Maven Central lists the artifact as a JVM `jar` and shows Scala 3 dependencies, and the downloaded jar contains `.class` files. The test URL resolves at the `v1.0.1` tag, and the Pekko docs confirm this module provides Jackson serialization for Pekko messages with JSON/CBOR support. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.pekko/pekko-serialization-jackson_3/1.0.1))
+
+Validation done: `jq` passed, and the substituted source, javadoc, and test URLs all returned HTTP 200.
+Ran agent for org.apache.pekko:pekko-serialization-jackson_3:1.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/build/agent-artifact-discovery-logs/org.apache.pekko-pekko-serialization-jackson_3-1.0.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3876-f502de69/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 30s
+9 actionable tasks: 9 executed
