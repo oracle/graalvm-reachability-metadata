@@ -216,6 +216,29 @@ public class Jackson_jakarta_rs_baseTest {
     }
 
     @Test
+    void readFromConsumesFullStreamWhenFeatureIsEnabled() throws Exception {
+        byte[] inputWithTrailingJson = "{\"visible\":\"first\"} {\"visible\":\"second\"}"
+                .getBytes(StandardCharsets.UTF_8);
+        TestProvider strictProvider = new TestProvider(new ObjectMapper());
+        assertThat(strictProvider.isEnabled(JakartaRSFeature.READ_FULL_STREAM)).isTrue();
+
+        assertThatThrownBy(() -> strictProvider.readFrom(objectClass(User.class), User.class, NO_ANNOTATIONS, JSON,
+                new MultivaluedHashMap<>(), new ByteArrayInputStream(inputWithTrailingJson)))
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Trailing token");
+
+        TestProvider lenientProvider = new TestProvider(new ObjectMapper());
+        lenientProvider.disable(JakartaRSFeature.READ_FULL_STREAM);
+        Object result = lenientProvider.readFrom(objectClass(User.class), User.class, NO_ANNOTATIONS, JSON,
+                new MultivaluedHashMap<>(), new ByteArrayInputStream(inputWithTrailingJson));
+
+        assertThat(result).isInstanceOfSatisfying(User.class, user -> {
+            assertThat(user.visible).isEqualTo("first");
+            assertThat(user.secret).isNull();
+        });
+    }
+
+    @Test
     void endpointCachingAndDynamicMapperLookupAreConfigurable() throws Exception {
         ObjectMapper configuredMapper = new ObjectMapper();
         ObjectMapper providerMapper = new ObjectMapper();
