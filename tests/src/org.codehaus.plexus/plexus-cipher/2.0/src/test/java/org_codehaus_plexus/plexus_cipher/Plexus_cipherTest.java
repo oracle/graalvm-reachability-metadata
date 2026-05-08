@@ -56,6 +56,20 @@ public class Plexus_cipherTest {
     }
 
     @Test
+    void escapedDecorationDelimitersAreHandledWhenDetectingEncryptedValues() throws Exception {
+        PlexusCipher cipher = new DefaultPlexusCipher();
+        String escapedBraces = "\\{not encrypted\\}";
+        String mixedBraces = "Comment {foo\\{inner secret\\}} trailing text with }";
+
+        assertThat(cipher.isEncryptedString(escapedBraces)).isFalse();
+        assertThat(cipher.isEncryptedString(mixedBraces)).isTrue();
+        assertThat(cipher.unDecorate(mixedBraces)).isEqualTo("foo\\{inner secret\\}");
+        assertThatExceptionOfType(PlexusCipherException.class)
+                .isThrownBy(() -> cipher.unDecorate(escapedBraces))
+                .withMessage("default.plexus.cipher.badEncryptedPassword");
+    }
+
+    @Test
     void cipherPreservesNullAndEmptyInputsWhereApiDefinesPassThrough() throws Exception {
         PlexusCipher cipher = new DefaultPlexusCipher();
 
