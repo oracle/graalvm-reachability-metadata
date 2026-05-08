@@ -24,6 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.Scanner;
@@ -144,6 +146,21 @@ public class Plexus_build_apiTest {
         assertThatThrownBy(() -> context.addMessage(file, 1, 1, "unknown", 99, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("severity=99");
+    }
+
+    @Test
+    void plexusContainerDiscoversDefaultBuildContextComponent() throws Exception {
+        PlexusContainer container = new DefaultPlexusContainer();
+        try {
+            container.initialize();
+            container.start();
+            String role = BuildContext.class.getName();
+
+            assertThat(container.hasComponent(role, "default")).isTrue();
+            assertThat(container.lookup(role, "default")).isInstanceOf(DefaultBuildContext.class);
+        } finally {
+            container.dispose();
+        }
     }
 
     @Test
