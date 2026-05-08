@@ -209,6 +209,26 @@ public class SolsticeTest {
     }
 
     @Test
+    void equoChromiumDetectsRequestedBrowserDependencies() {
+        P2Model model = new P2Model();
+
+        assertThat(Catalog.EQUO_CHROMIUM.isPureMaven()).isTrue();
+        assertThat(Catalog.EQUO_CHROMIUM.mavenRepo()).startsWith("https://").contains("equo");
+        assertThat(Catalog.EQUO_CHROMIUM.isEnabled(model)).isFalse();
+        assertThat(Catalog.EQUO_CHROMIUM.isEnabled(List.of(new File("unrelated.jar")))).isFalse();
+        assertThat(Catalog.EQUO_CHROMIUM.getUserAgent()).startsWith("Mozilla/5.0").contains("Chrome/");
+
+        String chromiumCoordinate = Catalog.EQUO_CHROMIUM.getTargetsFor(null).stream()
+                .filter(target -> target.startsWith("com.equo:com.equo.chromium:"))
+                .findFirst()
+                .orElseThrow();
+        model.getPureMaven().add(chromiumCoordinate);
+
+        assertThat(Catalog.EQUO_CHROMIUM.isEnabled(model)).isTrue();
+        assertThat(Catalog.EQUO_CHROMIUM.isEnabled(List.of(new File("com.equo.chromium.browser.jar")))).isTrue();
+    }
+
+    @Test
     void workspaceInitializersWriteAndCopyPreferenceFiles() throws IOException {
         WorkspaceInit base = new WorkspaceInit();
         Catalog.PLATFORM.showLineNumbers(base, true);
