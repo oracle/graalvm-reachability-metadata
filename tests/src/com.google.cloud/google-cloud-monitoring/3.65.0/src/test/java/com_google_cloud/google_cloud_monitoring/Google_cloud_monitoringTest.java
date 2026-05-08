@@ -98,7 +98,6 @@ import com.google.monitoring.v3.UpdateAlertPolicyRequest;
 import com.google.monitoring.v3.UpdateGroupRequest;
 import com.google.monitoring.v3.UpdateNotificationChannelRequest;
 import com.google.monitoring.v3.UpdateServiceLevelObjectiveRequest;
-import com.google.monitoring.v3.UpdateServiceRequest;
 import com.google.monitoring.v3.UpdateSnoozeRequest;
 import com.google.monitoring.v3.UpdateUptimeCheckConfigRequest;
 import com.google.monitoring.v3.UptimeCheckConfig;
