@@ -38,6 +38,21 @@ public class Plexus_cipherTest {
     }
 
     @Test
+    void encryptedTextCannotBeRecoveredWithDifferentPassphrase() throws Exception {
+        PlexusCipher cipher = new DefaultPlexusCipher();
+        String plaintext = "passphrase protected secret";
+
+        String encrypted = cipher.encrypt(plaintext, PASSPHRASE);
+
+        try {
+            String decrypted = cipher.decrypt(encrypted, "different " + PASSPHRASE);
+            assertThat(decrypted).isNotEqualTo(plaintext);
+        } catch (PlexusCipherException expected) {
+            assertThat(expected).hasCauseInstanceOf(Exception.class);
+        }
+    }
+
+    @Test
     void decoratedEncryptionRoundTripsAndSupportsDecoratorUtilities() throws Exception {
         PlexusCipher cipher = new DefaultPlexusCipher();
         String plaintext = "decorated secret";
