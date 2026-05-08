@@ -51,14 +51,12 @@ import org.neo4j.bolt.connection.ResponseHandler;
 import org.neo4j.bolt.connection.RoutingContext;
 import org.neo4j.bolt.connection.SecurityPlan;
 import org.neo4j.bolt.connection.SecurityPlans;
-import org.neo4j.bolt.connection.TelemetryApi;
-import org.neo4j.bolt.connection.TransactionType;
 import org.neo4j.bolt.connection.exception.BoltServiceUnavailableException;
+import org.neo4j.bolt.connection.message.Message;
 import org.neo4j.bolt.connection.routed.ClusterCompositionLookupResult;
 import org.neo4j.bolt.connection.routed.Rediscovery;
 import org.neo4j.bolt.connection.routed.RoutedBoltConnectionProvider;
 import org.neo4j.bolt.connection.routed.RoutingTable;
-import org.neo4j.bolt.connection.values.Value;
 
 public class Neo4j_bolt_connection_routedTest {
     private static final SecurityPlan SECURITY_PLAN = SecurityPlans.unencrypted();
@@ -121,7 +119,8 @@ public class Neo4j_bolt_connection_routedTest {
         assertThat(rediscovery.lookupCount()).isEqualTo(1);
         assertThat(firstProvider.connectAttempts()).isEqualTo(1);
         assertThat(secondProvider.connectAttempts()).isEqualTo(1);
-        assertThat(await(firstConnection.run("RETURN 1", Collections.emptyMap()))).isSameAs(firstConnection);
+        await(firstConnection.write(Collections.emptyList()));
+        assertThat(firstProvider.connections().get(0).writeAttempts()).isEqualTo(1);
 
         await(firstConnection.close());
         BoltConnection thirdConnection = await(connect(
@@ -220,7 +219,7 @@ public class Neo4j_bolt_connection_routedTest {
                 .enqueueFlushFailure(new BoltServiceUnavailableException("connection lost while flushing"));
         AtomicReference<Throwable> reportedError = new AtomicReference<>();
 
-        await(failedConnection.flush(reportedError::set));
+        await(failedConnection.writeAndFlush(reportedError::set, Collections.emptyList()));
 
         assertThat(reportedError.get())
                 .isInstanceOf(BoltServiceUnavailableException.class)
@@ -591,7 +590,8 @@ public class Neo4j_bolt_connection_routedTest {
         private final BoltServerAddress address;
         private final BoltProtocolVersion protocolVersion;
         private final AtomicInteger closeAttempts = new AtomicInteger();
-        private final ArrayDeque<Throwable> flushFailures = new ArrayDeque<>();
+        private final AtomicInteger writeAttempts = new AtomicInteger();
+        private final ArrayDeque<Throwable> writeAndFlushFailures = new ArrayDeque<>();
 
         private RecordingConnection(BoltServerAddress address, BoltProtocolVersion protocolVersion) {
             this.address = address;
@@ -599,102 +599,19 @@ public class Neo4j_bolt_connection_routedTest {
         }
 
         @Override
-        public <T> CompletionStage<T> onLoop(Supplier<T> supplier) {
-            return CompletableFuture.completedFuture(supplier.get());
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> route(
-                DatabaseName databaseName, String impersonatedUser, Set<String> bookmarks) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> beginTransaction(
-                DatabaseName databaseName,
-                AccessMode accessMode,
-                String impersonatedUser,
-                Set<String> bookmarks,
-                TransactionType transactionType,
-                Duration txTimeout,
-                Map<String, Value> txMetadata,
-                String txType,
-                NotificationConfig notificationConfig) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> runInAutoCommitTransaction(
-                DatabaseName databaseName,
-                AccessMode accessMode,
-                String impersonatedUser,
-                Set<String> bookmarks,
-                String query,
-                Map<String, Value> parameters,
-                Duration txTimeout,
-                Map<String, Value> txMetadata,
-                NotificationConfig notificationConfig) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> run(String query, Map<String, Value> parameters) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> pull(long qid, long request) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> discard(long qid, long number) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> commit() {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> rollback() {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> reset() {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> logoff() {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> logon(AuthToken authToken) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> telemetry(TelemetryApi telemetryApi) {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> clear() {
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<Void> flush(ResponseHandler handler) {
-            Throwable failure = flushFailures.pollFirst();
+        public CompletionStage<Void> writeAndFlush(ResponseHandler handler, List<Message> messages) {
+            Throwable failure = writeAndFlushFailures.pollFirst();
             if (failure != null) {
                 handler.onError(failure);
             } else {
                 handler.onComplete();
             }
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public CompletionStage<Void> write(List<Message> messages) {
+            writeAttempts.incrementAndGet();
             return CompletableFuture.completedFuture(null);
         }
 
@@ -754,16 +671,16 @@ public class Neo4j_bolt_connection_routedTest {
             return Optional.empty();
         }
 
-        private CompletionStage<BoltConnection> completedThis() {
-            return CompletableFuture.completedFuture(this);
-        }
-
         private void enqueueFlushFailure(Throwable failure) {
-            flushFailures.addLast(failure);
+            writeAndFlushFailures.addLast(failure);
         }
 
         private int closeAttempts() {
             return closeAttempts.get();
+        }
+
+        private int writeAttempts() {
+            return writeAttempts.get();
         }
     }
 
