@@ -16,6 +16,8 @@ import java.util.function.BiPredicate;
 import org.jboss.jandex.DotName;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.builder.item.MultiBuildItem;
+import io.quarkus.builder.item.SimpleBuildItem;
 import io.quarkus.hibernate.validator.spi.AdditionalConstrainedClassBuildItem;
 import io.quarkus.hibernate.validator.spi.BeanValidationAnnotationsBuildItem;
 import io.quarkus.hibernate.validator.spi.BeanValidationTraversableResolverBuildItem;
@@ -72,6 +74,20 @@ public class Quarkus_hibernate_validator_spiTest {
                 .isInstanceOf(UnsupportedOperationException.class);
         assertThatThrownBy(() -> item.getAllAnnotations().remove(valid))
                 .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void buildItemsExposeQuarkusBuildItemMultiplicity() {
+        AdditionalConstrainedClassBuildItem additionalClass = AdditionalConstrainedClassBuildItem.of(
+                SampleConstrainedBean.class);
+        BeanValidationAnnotationsBuildItem annotations = new BeanValidationAnnotationsBuildItem(
+                DotName.createSimple("jakarta.validation.Valid"), Set.of(), Set.of());
+        BeanValidationTraversableResolverBuildItem traversableResolver = new BeanValidationTraversableResolverBuildItem(
+                (bean, attributeName) -> true);
+
+        assertThat(additionalClass).isInstanceOf(MultiBuildItem.class);
+        assertThat(annotations).isInstanceOf(SimpleBuildItem.class).isNotInstanceOf(MultiBuildItem.class);
+        assertThat(traversableResolver).isInstanceOf(SimpleBuildItem.class).isNotInstanceOf(MultiBuildItem.class);
     }
 
     @Test
