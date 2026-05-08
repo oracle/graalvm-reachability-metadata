@@ -127,6 +127,12 @@ tasks.register('test') { t ->
 // and without applying the 'java' plugin to avoid task name conflicts.
 apply plugin: "org.graalvm.internal.tck-harness"
 
+tasks.register('generateChangedTestedVersionsMatrix') { task ->
+    task.setDescription("Legacy alias for generateChangedMetadataTestMatrix")
+    task.setGroup("metadata")
+    task.dependsOn("generateChangedMetadataTestMatrix")
+}
+
 tasks.named("check").configure {
     dependsOn("validateLibraryStats")
     dependsOn("checkDocLinks")
