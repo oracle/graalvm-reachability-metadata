@@ -179,7 +179,7 @@ public class Ktor_network_tls_jvmTest {
         assertThat(keysGenerationAlgorithm("SHA256withRSA")).isEqualTo("RSA")
         assertThatThrownBy { OID.fromAlgorithm("SHA3withRSA") }
             .isInstanceOf(IllegalStateException::class.java)
-            .hasMessageContaining("Could't find OID")
+            .hasMessageContaining("Couldn't find OID")
         assertThatThrownBy { keysGenerationAlgorithm("Ed25519") }
             .isInstanceOf(IllegalStateException::class.java)
             .hasMessageContaining("Couldn't find KeyPairGenerator algorithm")
