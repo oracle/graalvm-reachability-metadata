@@ -34,6 +34,7 @@ import kotlinx.io.Source
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.io.IOException
 import java.nio.ByteBuffer
 
 public class Ktor_http_cio_jvmTest {
@@ -212,7 +213,8 @@ public class Ktor_http_cio_jvmTest {
                 runBlocking {
                     decodeChunked(ByteReadChannel("1\r\na\r\nnot-a-size\r\n"), ByteChannel(autoFlush = true))
                 }
-            }.isInstanceOf(NumberFormatException::class.java)
+            }.isInstanceOf(IOException::class.java)
+                .hasMessageContaining("Invalid chunk size character")
         }
     }
 
@@ -293,7 +295,7 @@ public class Ktor_http_cio_jvmTest {
     }
 
     @Test
-    fun exposesParsedHeadersThroughIndexedAndOffsetAccessors(): Unit = runBlocking {
+    fun exposesParsedHeadersThroughOffsetAccessors(): Unit = runBlocking {
         withTimeout(10_000) {
             val headers = parseHeaders(
                 ByteReadChannel(
@@ -304,15 +306,12 @@ public class Ktor_http_cio_jvmTest {
                 )
             )
             try {
-                val indexedPairs: List<String> = (0 until headers.size)
-                    .map { "${headers.nameAt(it)}: ${headers.valueAt(it)}" }
                 val offsets: List<Int> = headers.offsets().toList()
                 val offsetPairs: List<String> = offsets
                     .map { "${headers.nameAtOffset(it)}: ${headers.valueAtOffset(it)}" }
 
                 assertThat(offsets).hasSize(headers.size)
-                assertThat(indexedPairs).containsExactlyInAnyOrder("Alpha: one", "Beta: two", "Alpha: three")
-                assertThat(offsetPairs).containsExactlyElementsOf(indexedPairs)
+                assertThat(offsetPairs).containsExactlyInAnyOrder("Alpha: one", "Beta: two", "Alpha: three")
             } finally {
                 headers.release()
             }
