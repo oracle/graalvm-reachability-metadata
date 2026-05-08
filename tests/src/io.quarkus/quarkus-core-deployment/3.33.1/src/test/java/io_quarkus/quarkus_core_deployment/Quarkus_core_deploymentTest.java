@@ -8,9 +8,9 @@ package io_quarkus.quarkus_core_deployment;
 
 import org.junit.jupiter.api.Test;
 
-class Quarkus_core_deploymentTest {
+public class Quarkus_core_deploymentTest {
     @Test
-    void test() throws Exception {
+    void test() {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
