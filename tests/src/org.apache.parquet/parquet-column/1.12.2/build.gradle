@@ -15,6 +15,14 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    maxHeapSize = "2g"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Xmx2g")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
