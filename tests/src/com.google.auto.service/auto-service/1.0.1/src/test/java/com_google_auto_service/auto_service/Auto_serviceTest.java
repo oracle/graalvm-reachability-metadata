@@ -115,6 +115,31 @@ public class Auto_serviceTest {
     }
 
     @Test
+    void generatesDescriptorForParameterizedServiceTypeAndWarnsAboutRawType() {
+        CompilationResult result = compile(List.of("test.GenericService"), new Source("test.GenericServiceProvider", """
+                package test;
+
+                import com.google.auto.service.AutoService;
+
+                interface GenericService<T> {
+                    T convert(T value);
+                }
+
+                @AutoService(GenericService.class)
+                final class GenericServiceProvider implements GenericService<String> {
+                    @Override
+                    public String convert(String value) {
+                        return value;
+                    }
+                }
+                """));
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        assertThat(result.diagnosticText()).contains("is generic, so it can't be named exactly by @AutoService");
+        assertThat(result.serviceEntries("test.GenericService")).containsExactly("test.GenericServiceProvider");
+    }
+
+    @Test
     void mergesProvidersForSameServiceUsingSortedBinaryNames() {
         CompilationResult result = compile(List.of("java.lang.Runnable"), new Source("test.ServiceContainer", """
                 package test;
