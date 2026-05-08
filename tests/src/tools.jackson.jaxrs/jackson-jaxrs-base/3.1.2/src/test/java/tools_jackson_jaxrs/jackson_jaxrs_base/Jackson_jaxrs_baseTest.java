@@ -399,8 +399,8 @@ public class Jackson_jaxrs_baseTest {
 
         assertThat(property.getName()).isEqualTo("JAX-RS/endpoint");
         assertThat(property.getType()).isEqualTo(stringType);
-        assertThat(property.getAnnotation(NamedAnnotation.class)).isSameAs(annotation);
-        assertThat(property.getAnnotation(JsonView.class)).isNull();
+        assertThat(((EndpointAsBeanProperty) property).getAnnotation(NamedAnnotation.class)).isSameAs(annotation);
+        assertThat(((EndpointAsBeanProperty) property).getAnnotation(JsonView.class)).isNull();
         assertThat(property.withType(stringType)).isSameAs(property);
 
         BeanProperty.Std changedType = property.withType(integerType);
@@ -412,7 +412,7 @@ public class Jackson_jaxrs_baseTest {
                 EndpointAsBeanProperty.ENDPOINT_NAME,
                 stringType,
                 null);
-        assertThat(withoutAnnotations.getAnnotation(NamedAnnotation.class)).isNull();
+        assertThat(((EndpointAsBeanProperty) withoutAnnotations).getAnnotation(NamedAnnotation.class)).isNull();
     }
 
     @Test
