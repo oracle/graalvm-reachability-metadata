@@ -65,6 +65,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.io.serializer.SerializationFactory;
+import org.apache.hadoop.io.serializer.WritableSerialization;
 import org.apache.hadoop.security.Credentials;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -281,6 +283,12 @@ public class Avro_mapredTest {
             }
 
             Path writablePath = new Path(tempDir.resolve("writable.seq").toUri());
+            System.err.println("io.serializations.get=" + conf.get("io.serializations"));
+            System.err.println("io.serializations.collection=" + conf.getStringCollection("io.serializations"));
+            System.err.println("writable.direct.accept=" + new WritableSerialization().accept(Text.class));
+            SerializationFactory serializationFactory = new SerializationFactory(conf);
+            System.err.println("serializationFactory.text=" + serializationFactory.getSerialization(Text.class));
+            System.err.println("serializationFactory.avroKey=" + serializationFactory.getSerialization(AvroKey.class));
             AvroSequenceFile.Writer.Options writableWriterOptions = new AvroSequenceFile.Writer.Options()
                     .withFileSystem(fileSystem)
                     .withConfiguration(conf)
@@ -384,6 +392,9 @@ public class Avro_mapredTest {
     }
 
     private static Configuration hadoopConfiguration() {
+        ClassLoader classLoader = Configuration.class.getClassLoader();
+        System.err.println("core-default.resource=" + classLoader.getResource("core-default.xml"));
+        System.err.println("core-default.stream=" + (classLoader.getResourceAsStream("core-default.xml") != null));
         Configuration conf = new Configuration();
         conf.setBoolean("fs.file.impl.disable.cache", true);
         return conf;
