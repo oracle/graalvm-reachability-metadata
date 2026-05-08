@@ -271,6 +271,80 @@ public class Maven_api_pluginTest {
     }
 
     @Test
+    void sparseBuildersPreserveBaseValuesWhenPartiallyUpdatingModels() {
+        MojoDescriptor mojo = MojoDescriptor.newBuilder()
+                .goal("verify")
+                .implementation("org.example.VerifyMojo")
+                .fullGoalName("example:verify")
+                .build();
+        PluginDescriptor descriptor = PluginDescriptor.newBuilder()
+                .namespaceUri("https://maven.apache.org/plugin")
+                .modelEncoding("UTF-16")
+                .name("Example Maven Plugin")
+                .description("Plugin used by integration tests")
+                .groupId("org.example")
+                .artifactId("example-maven-plugin")
+                .version("1.0.0")
+                .goalPrefix("example")
+                .requiredJavaVersion("17")
+                .requiredMavenVersion("4.0.0")
+                .mojos(List.of(mojo))
+                .build();
+
+        PluginDescriptor unchanged = PluginDescriptor.newBuilder(descriptor, false).build();
+
+        assertThat(unchanged.getName()).isEqualTo(descriptor.getName());
+        assertThat(unchanged.getModelEncoding()).isEqualTo(descriptor.getModelEncoding());
+        assertThat(unchanged.getMojos()).containsExactly(mojo);
+
+        PluginDescriptor renamed = PluginDescriptor.newBuilder(descriptor, false)
+                .name("Renamed Maven Plugin")
+                .build();
+
+        assertThat(renamed.getName()).isEqualTo("Renamed Maven Plugin");
+        assertThat(renamed.getNamespaceUri()).isEqualTo("https://maven.apache.org/plugin");
+        assertThat(renamed.getModelEncoding()).isEqualTo("UTF-16");
+        assertThat(renamed.getDescription()).isEqualTo("Plugin used by integration tests");
+        assertThat(renamed.getGroupId()).isEqualTo("org.example");
+        assertThat(renamed.getArtifactId()).isEqualTo("example-maven-plugin");
+        assertThat(renamed.getVersion()).isEqualTo("1.0.0");
+        assertThat(renamed.getGoalPrefix()).isEqualTo("example");
+        assertThat(renamed.getRequiredJavaVersion()).isEqualTo("17");
+        assertThat(renamed.getRequiredMavenVersion()).isEqualTo("4.0.0");
+        assertThat(renamed.getMojos()).containsExactly(mojo);
+        assertThat(descriptor.getName()).isEqualTo("Example Maven Plugin");
+
+        Lifecycle lifecycle = Lifecycle.newBuilder()
+                .id("default")
+                .phases(List.of(Phase.newBuilder().id("verify").build()))
+                .build();
+        LifecycleConfiguration lifecycleConfiguration = LifecycleConfiguration.newBuilder()
+                .namespaceUri("https://maven.apache.org/lifecycle")
+                .modelEncoding("UTF-8")
+                .lifecycles(List.of(lifecycle))
+                .build();
+
+        LifecycleConfiguration unchangedLifecycleConfiguration =
+                LifecycleConfiguration.newBuilder(lifecycleConfiguration, false).build();
+
+        assertThat(unchangedLifecycleConfiguration.getNamespaceUri())
+                .isEqualTo(lifecycleConfiguration.getNamespaceUri());
+        assertThat(unchangedLifecycleConfiguration.getModelEncoding())
+                .isEqualTo(lifecycleConfiguration.getModelEncoding());
+        assertThat(unchangedLifecycleConfiguration.getLifecycles()).containsExactly(lifecycle);
+
+        Lifecycle renamedLifecycle = lifecycle.withId("site");
+        LifecycleConfiguration updatedLifecycles = LifecycleConfiguration.newBuilder(lifecycleConfiguration, false)
+                .lifecycles(List.of(renamedLifecycle))
+                .build();
+
+        assertThat(updatedLifecycles.getNamespaceUri()).isEqualTo("https://maven.apache.org/lifecycle");
+        assertThat(updatedLifecycles.getModelEncoding()).isEqualTo("UTF-8");
+        assertThat(updatedLifecycles.getLifecycles()).containsExactly(renamedLifecycle);
+        assertThat(lifecycleConfiguration.getLifecycles()).containsExactly(lifecycle);
+    }
+
+    @Test
     void lifecycleConfigurationPreservesXmlConfigurationAndEffectivePhaseIds() {
         XmlNode configuration = XmlNode.newInstance(
                 "configuration",
