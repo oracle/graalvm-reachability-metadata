@@ -10,12 +10,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
@@ -24,6 +27,7 @@ import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.ie.ElementScrollBehavior;
 import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
+import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 
 public class Selenium_ie_driverTest {
@@ -179,6 +183,41 @@ public class Selenium_ie_driverTest {
                         InternetExplorerDriverLogLevel.ERROR,
                         InternetExplorerDriverLogLevel.FATAL);
         assertThat(InternetExplorerDriverLogLevel.valueOf("INFO")).isSameAs(InternetExplorerDriverLogLevel.INFO);
+    }
+
+    @Test
+    void serviceBuilderScoresInternetExplorerCapabilities() {
+        InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
+        MutableCapabilities unsupported = new MutableCapabilities();
+        MutableCapabilities browserOnly = new MutableCapabilities();
+        browserOnly.setCapability("browserName", IE_BROWSER_NAME);
+        MutableCapabilities optionsOnly = new MutableCapabilities();
+        optionsOnly.setCapability(IE_OPTIONS, Collections.singletonMap(IGNORE_ZOOM_SETTING, true));
+
+        assertThat(builder.score(unsupported)).isZero();
+        assertThat(builder.score(browserOnly)).isOne();
+        assertThat(builder.score(optionsOnly)).isOne();
+        assertThat(builder.score(new InternetExplorerOptions())).isEqualTo(2);
+    }
+
+    @Test
+    void serviceBuilderCreatesServiceFromExplicitExecutableAndPort(@TempDir Path tempDirectory) throws Exception {
+        Path executable = Files.createFile(tempDirectory.resolve("IEDriverServer"));
+        assertThat(executable.toFile().setExecutable(true)).isTrue();
+
+        InternetExplorerDriverService service = new InternetExplorerDriverService.Builder()
+                .usingDriverExecutable(executable.toFile())
+                .usingPort(12345)
+                .withLogFile(tempDirectory.resolve("iedriver.log").toFile())
+                .withLogLevel(InternetExplorerDriverLogLevel.INFO)
+                .withHost("127.0.0.1")
+                .withExtractPath(tempDirectory.toFile())
+                .withSilent(true)
+                .withEnvironment(Collections.singletonMap("IE_DRIVER_TEST_ENV", "enabled"))
+                .build();
+
+        assertThat(service.getUrl().toString()).isEqualTo("http://localhost:12345");
+        assertThat(service.isRunning()).isFalse();
     }
 
     @Test
