@@ -4,12 +4,88 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import java.util.zip.ZipFile
+
 plugins {
     id "org.graalvm.internal.tck"
     id "scala"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources").get().asFile
+
+sourceSets {
+    test {
+        resources.srcDir generatedTestResourcesDir
+    }
+}
+
+tasks.register("generateAkkaNativeReferenceConfig") {
+    outputs.dir(generatedTestResourcesDir)
+    doLast {
+        delete(generatedTestResourcesDir)
+        generatedTestResourcesDir.mkdirs()
+
+        def resolvedArtifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+        File actorJar = resolvedArtifacts.find {
+            it.moduleVersion.id.group == "com.typesafe.akka" &&
+                    it.name == "akka-actor_3" &&
+                    it.moduleVersion.id.version == libraryVersion
+        }?.file
+        File serializationJar = resolvedArtifacts.find {
+            it.moduleVersion.id.group == "com.typesafe.akka" &&
+                    it.name == "akka-serialization-jackson_3" &&
+                    it.moduleVersion.id.version == libraryVersion
+        }?.file
+
+        Map<String, String> extractedEntries = [:]
+        [actorJar, serializationJar].findAll { it != null }.each { File jarFile ->
+            ZipFile zipFile = new ZipFile(jarFile)
+            try {
+                ["reference.conf", "version.conf"].each { String entryName ->
+                    def entry = zipFile.getEntry(entryName)
+                    if (entry != null) {
+                        extractedEntries["${jarFile.name}:${entryName}"] =
+                                zipFile.getInputStream(entry).getText("UTF-8")
+                    }
+                }
+            } finally {
+                zipFile.close()
+            }
+        }
+
+        String actorReference = actorJar == null ? null : extractedEntries["${actorJar.name}:reference.conf"]
+        String actorVersion = actorJar == null ? null : extractedEntries["${actorJar.name}:version.conf"]
+        String serializationReference = serializationJar == null ? null : extractedEntries["${serializationJar.name}:reference.conf"]
+
+        if (!actorReference || !actorVersion || !serializationReference) {
+            throw new GradleException("Failed to extract Akka reference configs for ${libraryVersion}")
+        }
+
+        String mergedReference = actorReference.replace('include "version"', actorVersion.trim()) +
+                System.lineSeparator() + System.lineSeparator() +
+                serializationReference.trim() + System.lineSeparator()
+        new File(generatedTestResourcesDir, "akka-native-reference.conf").text = mergedReference
+
+        File nativeImageConfigDir = new File(
+                generatedTestResourcesDir,
+                "META-INF/native-image/com.typesafe.akka/akka-serialization-jackson_3")
+        nativeImageConfigDir.mkdirs()
+        new File(nativeImageConfigDir, "resource-config.json").text = """
+                {
+                  "resources": {
+                    "includes": [
+                      { "pattern": "akka-native-reference[.]conf" }
+                    ]
+                  }
+                }
+                """.stripIndent()
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn("generateAkkaNativeReferenceConfig")
+}
 
 dependencies {
     testImplementation "com.typesafe.akka:akka-serialization-jackson_3:$libraryVersion"

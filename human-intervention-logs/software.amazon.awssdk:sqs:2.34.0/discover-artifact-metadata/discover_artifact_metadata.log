@@ -1,0 +1,947 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0574-1427-7960-b104-501f0c9e4c9f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:sqs:2.34.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.34.0" when "$version$" is replaced with "2.34.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+- Set "coordinates" to "software.amazon.awssdk:sqs:2.34.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.34.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify the AWS SDK artifact URLs against Maven/GitHub so the version placeholders line up with `2.34.0`.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+{
+  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"software\\.amazon\\.awssdk:sqs|aws-sdk-java-v2|\\"'$version'"\\"'$" build/discovered-artifact-metadata metadata -g '"'*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json:2:  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
+metadata/library-and-framework-list.json:2680:          "https://github.com/search?q=repo%3Aaws%2Faws-sdk-java-v2%20META-INF%2Fnative-image&type=code",
+metadata/library-and-framework-list.json:2684:          "https://github.com/aws/aws-sdk-java-v2/tree/master/test/sdk-native-image-test",
+metadata/library-and-framework-list.json:2685:          "https://github.com/aws/aws-sdk-java-v2/blob/03ee2c63a59958775db3c83ff7494264b765daf8/.github/workflows/codebuild-ci.yml#L89-L101"
+metadata/software.amazon.awssdk/metrics-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/metrics-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/metrics-spi/src/test/java",
+metadata/software.amazon.awssdk/http-client-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-client-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-client-spi/src/test",
+metadata/software.amazon.awssdk/retries/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries/src/test/java",
+metadata/software.amazon.awssdk/utils/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/utils/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils/src/test",
+metadata/software.amazon.awssdk/checksums/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/checksums/src/test",
+metadata/software.amazon.awssdk/utils-lite/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/utils-lite/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils-lite/src/test",
+metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:110:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:111:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/endpoints-spi/src/test",
+metadata/software.amazon.awssdk/profiles/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/profiles/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/profiles/src/test/java",
+metadata/software.amazon.awssdk/identity-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/identity-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/identity-spi/src/test/java",
+metadata/software.amazon.awssdk/annotations/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth/src/test",
+metadata/software.amazon.awssdk/checksums-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries-spi/src/test/java",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth-spi/src/test/java",
+
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg 'software\\.amazon\\.awssdk|sqs|discovered-artifact-metadata'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+metadata/software.amazon.awssdk/http-client-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/http-client-spi/index.json
+metadata/software.amazon.awssdk/profiles/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/profiles/index.json
+metadata/software.amazon.awssdk/metrics-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/metrics-spi/index.json
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json
+metadata/software.amazon.awssdk/s3/index.json
+metadata/software.amazon.awssdk/retries/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/retries/index.json
+metadata/software.amazon.awssdk/checksums-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/checksums-spi/index.json
+metadata/software.amazon.awssdk/utils/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/utils/index.json
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/checksums/index.json
+metadata/software.amazon.awssdk/utils-lite/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/utils-lite/index.json
+metadata/software.amazon.awssdk/endpoints-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/endpoints-spi/index.json
+metadata/software.amazon.awssdk/identity-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/identity-spi/index.json
+metadata/software.amazon.awssdk/retries-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/retries-spi/index.json
+metadata/software.amazon.awssdk/http-auth-spi/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/http-auth-spi/index.json
+metadata/software.amazon.awssdk/annotations/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/annotations/index.json
+metadata/software.amazon.awssdk/http-auth/2.34.0/reachability-metadata.json
+metadata/software.amazon.awssdk/http-auth/index.json
+stats/software.amazon.awssdk/http-client-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/http-client-spi/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/profiles/2.34.0/stats.json
+stats/software.amazon.awssdk/profiles/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/metrics-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/metrics-spi/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/s3/2.30.0/stats.json
+stats/software.amazon.awssdk/s3/2.30.0/execution-metrics.json
+stats/software.amazon.awssdk/s3/2.25.3/stats.json
+stats/software.amazon.awssdk/s3/2.25.3/execution-metrics.json
+stats/software.amazon.awssdk/retries/2.34.0/stats.json
+stats/software.amazon.awssdk/retries/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/utils/2.34.0/stats.json
+stats/software.amazon.awssdk/utils/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/checksums/2.34.0/stats.json
+stats/software.amazon.awssdk/checksums/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/utils-lite/2.34.0/stats.json
+stats/software.amazon.awssdk/utils-lite/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/endpoints-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/endpoints-spi/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/identity-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/identity-spi/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/retries-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/retries-spi/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/http-auth-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/http-auth-spi/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/annotations/2.34.0/stats.json
+stats/software.amazon.awssdk/annotations/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/http-auth/2.34.0/stats.json
+stats/software.amazon.awssdk/http-auth/2.34.0/execution-metrics.json
+stats/software.amazon.awssdk/checksums-spi/2.34.0/stats.json
+stats/software.amazon.awssdk/checksums-spi/2.34.0/execution-metrics.json
+tests/src/software.amazon.awssdk/http-client-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/http-client-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/http-client-spi/2.34.0/src/test/java/software_amazon_awssdk/http_client_spi/Http_client_spiTest.java
+tests/src/software.amazon.awssdk/http-client-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/http-client-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/profiles/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/profiles/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/profiles/2.34.0/src/test/java/software_amazon_awssdk/profiles/ProfilesTest.java
+tests/src/software.amazon.awssdk/profiles/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/profiles/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/metrics-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/metrics-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/metrics-spi/2.34.0/src/test/java/software_amazon_awssdk/metrics_spi/Metrics_spiTest.java
+tests/src/software.amazon.awssdk/metrics-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/metrics-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/s3/2.30.0/build.gradle
+tests/src/software.amazon.awssdk/s3/2.30.0/settings.gradle
+tests/src/software.amazon.awssdk/s3/2.30.0/src/test/java/software_amazon_awssdk/s3/S3Test.java
+tests/src/software.amazon.awssdk/s3/2.30.0/gradle.properties
+tests/src/software.amazon.awssdk/s3/2.30.0/user-code-filter.json
+tests/src/software.amazon.awssdk/s3/2.25.3/build.gradle
+tests/src/software.amazon.awssdk/s3/2.25.3/settings.gradle
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java
+tests/src/software.amazon.awssdk/s3/2.25.3/gradle.properties
+tests/src/software.amazon.awssdk/s3/2.25.3/user-code-filter.json
+tests/src/software.amazon.awssdk/retries/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/retries/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/retries/2.34.0/src/test/java/software_amazon_awssdk/retries/RetriesTest.java
+tests/src/software.amazon.awssdk/retries/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/retries/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/utils/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/utils/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/utils/2.34.0/src/test/java/software_amazon_awssdk/utils/ClassLoaderHelperTest.java
+tests/src/software.amazon.awssdk/utils/2.34.0/src/test/java/software_amazon_awssdk/utils/ReflectionMethodInvokerTest.java
+tests/src/software.amazon.awssdk/utils/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/utils/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/checksums/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/checksums/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/checksums/2.34.0/src/test/java/software_amazon_awssdk/checksums/CrcCloneOnMarkChecksumTest.java
+tests/src/software.amazon.awssdk/checksums/2.34.0/src/test/java/software_amazon_awssdk/checksums/CrcChecksumProviderTest.java
+tests/src/software.amazon.awssdk/checksums/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/checksums/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/utils-lite/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/utils-lite/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/annotations/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/annotations/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/annotations/2.34.0/src/test/java/software_amazon_awssdk/annotations/AnnotationsTest.java
+tests/src/software.amazon.awssdk/annotations/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/annotations/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/utils-lite/2.34.0/src/test/java/software_amazon_awssdk/utils_lite/Utils_liteTest.java
+tests/src/software.amazon.awssdk/utils-lite/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/utils-lite/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/http-auth/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/http-auth/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/endpoints-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/endpoints-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/http-auth/2.34.0/src/test/java/software_amazon_awssdk/http_auth/Http_authTest.java
+tests/src/software.amazon.awssdk/http-auth/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/http-auth/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/checksums-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/checksums-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/endpoints-spi/2.34.0/src/test/java/software_amazon_awssdk/endpoints_spi/Endpoints_spiTest.java
+tests/src/software.amazon.awssdk/endpoints-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/endpoints-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/checksums-spi/2.34.0/src/test/java/software_amazon_awssdk/checksums_spi/Checksums_spiTest.java
+tests/src/software.amazon.awssdk/checksums-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/checksums-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/identity-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/identity-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/identity-spi/2.34.0/src/test/java/software_amazon_awssdk/identity_spi/Identity_spiTest.java
+tests/src/software.amazon.awssdk/identity-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/identity-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/retries-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/retries-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/retries-spi/2.34.0/src/test/java/software_amazon_awssdk/retries_spi/Retries_spiTest.java
+tests/src/software.amazon.awssdk/retries-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/retries-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/http-auth-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/http-auth-spi/2.34.0/settings.gradle
+tests/src/software.amazon.awssdk/http-auth-spi/2.34.0/user-code-filter.json
+tests/src/software.amazon.awssdk/http-auth-spi/2.34.0/gradle.properties
+tests/src/software.amazon.awssdk/http-auth-spi/2.34.0/src/test/java/software_amazon_awssdk/http_auth_spi/Http_auth_spiTest.java
+
+codex
+The repository already uses GitHub tag-based URLs for other `software.amazon.awssdk` entries, but this task asks us to prefer Maven-hosted sources/tests when present. I’m checking the published artifact classifiers now before editing.
+web search: 
+web search: Maven Central software.amazon.awssdk sqs 2.34.0 sources tests
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/services/sqs
+web search: 
+web search: repo.maven.apache.org/maven2 software/amazon/awssdk/sqs/2.34.0 sqs-2.34.0-sources.jar
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/software.amazon.awssdk/s3/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.30.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-javadoc.jar",
+    "description" : "This module provides the AWS SDK for Java v2 client classes for Amazon S3. It lets Java applications interact with Amazon Simple Storage Service to manage buckets and objects.",
+    "tested-versions" : [
+      "2.30.0",
+      "2.30.1",
+      "2.30.2",
+      "2.30.3",
+      "2.30.4",
+      "2.30.5",
+      "2.30.6",
+      "2.30.7",
+      "2.30.8",
+      "2.30.9",
+      "2.30.10",
+      "2.30.11",
+      "2.30.12",
+      "2.30.13",
+      "2.30.14",
+      "2.30.15",
+      "2.30.16",
+      "2.30.17",
+      "2.30.18",
+      "2.30.19",
+      "2.30.20",
+      "2.30.21",
+      "2.30.22",
+      "2.30.23",
+      "2.30.24",
+      "2.30.25",
+      "2.30.26",
+      "2.30.27",
+      "2.30.28",
+      "2.30.29",
+      "2.30.30",
+      "2.30.31",
+      "2.30.32",
+      "2.30.33",
+      "2.30.34",
+      "2.30.35",
+      "2.30.36",
+      "2.30.37",
+      "2.30.38",
+      "2.31.0",
+      "2.31.1",
+      "2.31.2",
+      "2.31.3",
+      "2.31.4",
+      "2.31.5",
+      "2.31.6",
+      "2.31.7",
+      "2.31.8",
+      "2.31.9",
+      "2.31.10",
+      "2.31.11",
+      "2.31.12",
+      "2.31.13",
+      "2.31.14",
+      "2.31.15",
+      "2.31.16",
+      "2.31.17",
+      "2.31.18",
+      "2.31.19",
+      "2.31.20",
+      "2.31.21",
+      "2.31.22",
+      "2.31.23",
+      "2.31.24",
+      "2.31.25",
+      "2.31.26",
+      "2.31.27",
+      "2.31.28",
+      "2.31.29",
+      "2.31.30",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/software.amazon.awssdk/retries/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/retries/$version$/retries-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/retries/$version$/retries-$version$-javadoc.jar",
+    "description" : "This module provides the AWS SDK for Java 2.x retry strategy implementations, including standard, legacy, and adaptive retry behavior. It classifies retryable failures, computes backoff delays, and manages retry token and circuit-breaker state used by AWS SDK clients.",
+    "tested-versions" : [
+      "2.34.0",
+      "2.34.1",
+      "2.34.2",
+      "2.34.3",
+      "2.34.4",
+      "2.34.5",
+      "2.34.6",
+      "2.34.7",
+      "2.34.8",
+      "2.34.9",
+      "2.35.0",
+      "2.35.1",
+      "2.35.2",
+      "2.35.3",
+      "2.35.4",
+      "2.35.5",
+      "2.35.6",
+      "2.35.7",
+      "2.35.8",
+      "2.35.9",
+      "2.35.10",
+      "2.35.11",
+      "2.36.0",
+      "2.36.1",
+      "2.36.2",
+      "2.36.3",
+      "2.37.0",
+      "2.37.1",
+      "2.37.2",
+      "2.37.3",
+      "2.37.4",
+      "2.37.5",
+      "2.38.0",
+      "2.38.1",
+      "2.38.2",
+      "2.38.3",
+      "2.38.4",
+      "2.38.5",
+      "2.38.6",
+      "2.38.7",
+      "2.38.8",
+      "2.38.9",
+      "2.39.0",
+      "2.39.1",
+      "2.39.2",
+      "2.39.3",
+      "2.39.4",
+      "2.39.5",
+      "2.39.6",
+      "2.40.0",
+      "2.40.1",
+      "2.40.2",
+      "2.40.3",
+      "2.40.4",
+      "2.40.5",
+      "2.40.6",
+      "2.40.7",
+      "2.40.8",
+      "2.40.9",
+      "2.40.10",
+      "2.40.11",
+      "2.40.12",
+      "2.40.13",
+      "2.40.14",
+      "2.40.15",
+      "2.40.16",
+      "2.40.17",
+      "2.41.0",
+      "2.41.1",
+      "2.41.2",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo.maven.apache.org|\"source-code-url\" : \"https://repo.maven.apache.org|\"test-code-url\" : \"https://repo.maven.apache.org' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+metadata/org.jline/jline-reader/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.jline/jline-native/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-sources.jar",
+metadata/org.jline/jline-native/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-math/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-sources.jar",
+metadata/org.apache.commons/commons-math/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:30:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:44:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-javadoc.jar",
+
+web search: 
+web search: Maven Central software.amazon.awssdk sqs 2.34.0
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0/sqs-2.34.0.pom | sed -n '1,140p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ You may not use this file except in compliance with the License.
+  ~ A copy of the License is located at
+  ~
+  ~  http://aws.amazon.com/apache2.0
+  ~
+  ~ or in the "license" file accompanying this file. This file is distributed
+  ~ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  ~ express or implied. See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>services</artifactId>
+        <version>2.34.0</version>
+    </parent>
+    <artifactId>sqs</artifactId>
+    <name>AWS Java SDK :: Services :: Amazon SQS</name>
+    <description>The AWS Java SDK for Amazon SQS module holds the client classes that are used for communicating with
+        Amazon Simple Queue
+        Service
+    </description>
+    <url>https://aws.amazon.com/sdkforjava</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>software.amazon.awssdk.services.sqs</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>aws-json-protocol</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>protocol-core</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>iam</artifactId>
+            <version>${awsjavasdk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sts</artifactId>
+            <version>${awsjavasdk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>http-auth-aws</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>service-test-utils</artifactId>
+            <version>${awsjavasdk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/services/sqs/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 187ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/awssdk/sqs/2.34.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/awssdk/sqs/2.34.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sqs-2.34.0-javadoc.jar" title="sqs-2.34.0-javadoc.jar">sqs-2.34.0-javadoc.jar</a>                            2025-09-19 21:47   2837782      
+<a href="sqs-2.34.0-javadoc.jar.asc" title="sqs-2.34.0-javadoc.jar.asc">sqs-2.34.0-javadoc.jar.asc</a>                        2025-09-19 21:47       833      
+<a href="sqs-2.34.0-javadoc.jar.md5" title="sqs-2.34.0-javadoc.jar.md5">sqs-2.34.0-javadoc.jar.md5</a>                        2025-09-19 21:47        32      
+<a href="sqs-2.34.0-javadoc.jar.sha1" title="sqs-2.34.0-javadoc.jar.sha1">sqs-2.34.0-javadoc.jar.sha1</a>                       2025-09-19 21:47        40      
+<a href="sqs-2.34.0-sources.jar" title="sqs-2.34.0-sources.jar">sqs-2.34.0-sources.jar</a>                            2025-09-19 21:47    551119      
+<a href="sqs-2.34.0-sources.jar.asc" title="sqs-2.34.0-sources.jar.asc">sqs-2.34.0-sources.jar.asc</a>                        2025-09-19 21:47       833      
+<a href="sqs-2.34.0-sources.jar.md5" title="sqs-2.34.0-sources.jar.md5">sqs-2.34.0-sources.jar.md5</a>                        2025-09-19 21:47        32      
+<a href="sqs-2.34.0-sources.jar.sha1" title="sqs-2.34.0-sources.jar.sha1">sqs-2.34.0-sources.jar.sha1</a>                       2025-09-19 21:47        40      
+<a href="sqs-2.34.0.jar" title="sqs-2.34.0.jar">sqs-2.34.0.jar</a>                                    2025-09-19 21:47    978786      
+<a href="sqs-2.34.0.jar.asc" title="sqs-2.34.0.jar.asc">sqs-2.34.0.jar.asc</a>                                2025-09-19 21:47       833      
+<a href="sqs-2.34.0.jar.md5" title="sqs-2.34.0.jar.md5">sqs-2.34.0.jar.md5</a>                                2025-09-19 21:47        32      
+<a href="sqs-2.34.0.jar.sha1" title="sqs-2.34.0.jar.sha1">sqs-2.34.0.jar.sha1</a>                               2025-09-19 21:47        40      
+<a href="sqs-2.34.0.pom" title="sqs-2.34.0.pom">sqs-2.34.0.pom</a>                                    2025-09-19 21:47      4323      
+<a href="sqs-2.34.0.pom.asc" title="sqs-2.34.0.pom.asc">sqs-2.34.0.pom.asc</a>                                2025-09-19 21:47       833      
+<a href="sqs-2.34.0.pom.md5" title="sqs-2.34.0.pom.md5">sqs-2.34.0.pom.md5</a>                                2025-09-19 21:47        32      
+<a href="sqs-2.34.0.pom.sha1" title="sqs-2.34.0.pom.sha1">sqs-2.34.0.pom.sha1</a>                               2025-09-19 21:47        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 758ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:39:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b25af7beb8c3c244637cafa06e488d76"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=oMVxnH2%2B9u99Jt%2B5NJGvMuAaFdscw4tsXc%2BvneLrr0NxBMu7XMtlEzaMFixcj9GDb0%2FWMPSGQYTxpgUDv0WFVdIWhPXInAM8JWORiS1pRCW78xHRM6lZCIZgp1HU0WrwoqOHMrO6MqSeLO3roydskOPHyUt0xv0H%2BH%2F0lLTLVerH0EXs%2FQjbl9xnunAYzSRokLL24ZjtBkohYRjGVBSq7hVSmbJzsFfxugRlWKlQ8wVu7o64PIOhqNiGgv1RwVGflFWG5bKE0OhBuaRJmTGIVw%3D%3D--rkSjGZZSu6c4hPNe--g0K%2FFtfSSlrPy5ecABZsJQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.611938370.1778207988; expires=Sat, 08 May 2027 02:39:48 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 02:39:48 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:16AC:197ABF8:15080CE:69FD4CF4
+
+
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/services/sqs/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0/sqs-2.34.0-sources.jar
+web search: 
+web search: "sqs-2.34.0-sources.jar"
+web search: 
+web search: 
+web search: 
+web search: search.maven.org artifact software.amazon.awssdk sqs 2.34.0 jar
+web search: 
+web search: https://central.sonatype.com/artifact/software.amazon.awssdk/sqs
+web search: 
+web search: https://aws.amazon.com/sdkforjava
+codex
+I found a Maven Central sources jar and javadoc jar for `sqs` at `2.34.0`, but no Maven-published tests jar in that version directory. I’m going to use the repo’s established AWS SDK pattern for tests: the `services/sqs/src/test` directory under the `2.34.0` GitHub tag.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+index 6a2f5363bf2934416eeaa5eabadab2052e4ddfb5..c3b38c67b3b68a05e00c44b98570631ebed520ba
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
++  "coordinates" : "software.amazon.awssdk:sqs:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
++  "description" : "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+ }
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+index 6a2f5363bf2934416eeaa5eabadab2052e4ddfb5..c3b38c67b3b68a05e00c44b98570631ebed520ba
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
++  "coordinates" : "software.amazon.awssdk:sqs:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
++  "description" : "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+{
+  "coordinates": "software.amazon.awssdk:sqs:2.34.0",
+  "repository-url": "https://github.com/aws/aws-sdk-java-v2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
+  "test-code-url": "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
+  "description": "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0/sqs-2.34.0-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:40:18 GMT
+content-type: application/java-archive
+content-length: 551119
+cf-ray: 9f8519529fad2680-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 109888
+etag: "9706816f23e62f2027882a64807cf57c"
+last-modified: Fri, 19 Sep 2025 21:45:16 GMT
+x-checksum-md5: 9706816f23e62f2027882a64807cf57c
+x-checksum-sha1: 8fcf954db9ca345e0dd19d547deede21cc4dd49f
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0/sqs-2.34.0-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+index 6a2f5363bf2934416eeaa5eabadab2052e4ddfb5..c3b38c67b3b68a05e00c44b98570631ebed520ba
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
++  "coordinates" : "software.amazon.awssdk:sqs:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
++  "description" : "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+ }
+
+ succeeded in 238ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:40:18 GMT
+content-type: application/java-archive
+content-length: 2837782
+cf-ray: 9f851952d9e1bab3-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "ecde9d62b4b8300eef8b8924daf145b5"
+last-modified: Fri, 19 Sep 2025 21:46:13 GMT
+x-checksum-md5: ecde9d62b4b8300eef8b8924daf145b5
+x-checksum-sha1: 5b639bee890af5b8418d7ec75bb8e40f48cb8c6a
+server: cloudflare
+
+codex
+The JSON parses cleanly, and the Maven Central source and javadoc URLs resolve with `2.34.0`. I’m doing one last check that the GitHub test URL resolves and that the artifact is a normal JVM jar.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/services/sqs/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 02:39:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b25af7beb8c3c244637cafa06e488d76"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0/sqs-2.34.0.jar -o "$tmp" && jar tf "$tmp" | rg -m 5 '"'\\.class"'$'"'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+index 6a2f5363bf2934416eeaa5eabadab2052e4ddfb5..c3b38c67b3b68a05e00c44b98570631ebed520ba
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
++  "coordinates" : "software.amazon.awssdk:sqs:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
++  "description" : "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+ }
+
+ succeeded in 406ms:
+software/amazon/awssdk/services/sqs/model/KmsNotFoundException$Builder.class
+software/amazon/awssdk/services/sqs/model/KmsNotFoundException$BuilderImpl.class
+software/amazon/awssdk/services/sqs/model/KmsNotFoundException$1.class
+software/amazon/awssdk/services/sqs/model/KmsNotFoundException.class
+software/amazon/awssdk/services/sqs/model/SqsException$Builder.class
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json && git status --short -- build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+index 6a2f5363bf2934416eeaa5eabadab2052e4ddfb5..c3b38c67b3b68a05e00c44b98570631ebed520ba
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
++  "coordinates" : "software.amazon.awssdk:sqs:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
++  "description" : "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+ }
+
+ succeeded in 303ms:
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/2.34.0 sqs-2.34.0-sources.jar sqs-2.34.0-javadoc.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/
+web search: 
+web search: '2.34.0/' in https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/
+web search: 
+web search: 
+codex
+Updated [software.amazon.awssdk-sqs-2.34.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json) with the repository, Maven Central sources/javadocs, GitHub test suite URL, and a two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image`: this is a normal JVM AWS SDK for Java v2 jar, and I verified it contains `.class` files. Maven Central lists the `sqs` artifact and version `2.34.0`; GitHub identifies `aws/aws-sdk-java-v2` as the official AWS SDK for Java v2 repository. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/software/amazon/awssdk/))
+
+Validation done: `jq` parsed the JSON, source/javadoc Maven URLs returned HTTP 200, and the GitHub test URL returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+index 6a2f5363bf2934416eeaa5eabadab2052e4ddfb5..c3b38c67b3b68a05e00c44b98570631ebed520ba
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:sqs:2.34.0"
++  "coordinates" : "software.amazon.awssdk:sqs:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sqs/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sqs/$version$/sqs-$version$-javadoc.jar",
++  "description" : "This module provides the AWS SDK for Java 2.x client classes for Amazon Simple Queue Service (SQS). It lets JVM applications create and manage queues, send and receive messages, and integrate SQS operations through the AWS SDK client APIs."
+ }
+
+tokens used
+99,708
+Updated [software.amazon.awssdk-sqs-2.34.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/build/discovered-artifact-metadata/software.amazon.awssdk-sqs-2.34.0.json) with the repository, Maven Central sources/javadocs, GitHub test suite URL, and a two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image`: this is a normal JVM AWS SDK for Java v2 jar, and I verified it contains `.class` files. Maven Central lists the `sqs` artifact and version `2.34.0`; GitHub identifies `aws/aws-sdk-java-v2` as the official AWS SDK for Java v2 repository. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/software/amazon/awssdk/))
+
+Validation done: `jq` parsed the JSON, source/javadoc Maven URLs returned HTTP 200, and the GitHub test URL returned HTTP 200.
+Ran agent for software.amazon.awssdk:sqs:2.34.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/build/agent-artifact-discovery-logs/software.amazon.awssdk-sqs-2.34.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4466-5b20a666/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 18s
+9 actionable tasks: 9 executed

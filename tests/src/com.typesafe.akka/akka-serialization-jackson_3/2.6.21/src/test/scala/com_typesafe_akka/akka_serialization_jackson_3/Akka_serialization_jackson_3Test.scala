@@ -203,7 +203,9 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
+    .withFallback(ConfigFactory.parseResources("akka-native-reference.conf"))
     .withFallback(ConfigFactory.load())
+    .resolve()
 }
 
 final case class MapperEnvelope(
