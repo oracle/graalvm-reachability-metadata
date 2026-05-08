@@ -163,6 +163,36 @@ public class Microprofile_config_apiTest {
     }
 
     @Test
+    @ResourceLock("microprofile-config-provider-resolver")
+    void configProviderResolvesConfigsByThreadContextAndExplicitClassLoaders() {
+        SimpleConfigProviderResolver resolver = new SimpleConfigProviderResolver();
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader contextClassLoader = new IsolatedClassLoader(originalClassLoader);
+        ClassLoader explicitClassLoader = new IsolatedClassLoader(originalClassLoader);
+        ConfigProviderResolver.setInstance(resolver);
+        try {
+            Config contextConfig = InMemoryConfig.builder()
+                    .withSources(new MapBackedConfigSource("context", Map.of("scope", "thread-context")))
+                    .build();
+            Config explicitConfig = InMemoryConfig.builder()
+                    .withSources(new MapBackedConfigSource("explicit", Map.of("scope", "explicit")))
+                    .build();
+            resolver.registerConfig(contextConfig, contextClassLoader);
+            resolver.registerConfig(explicitConfig, explicitClassLoader);
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+
+            assertThat(ConfigProvider.getConfig()).isSameAs(contextConfig);
+            assertThat(ConfigProvider.getConfig().getValue("scope", String.class)).isEqualTo("thread-context");
+            assertThat(ConfigProvider.getConfig(explicitClassLoader)).isSameAs(explicitConfig);
+            assertThat(ConfigProvider.getConfig(explicitClassLoader).getValue("scope", String.class))
+                    .isEqualTo("explicit");
+        } finally {
+            ConfigProviderResolver.setInstance(null);
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
     void configPropertiesLiteralAndConstantsExposeSpecifiedSentinels() {
         ConfigProperties.Literal literal = ConfigProperties.Literal.of("server");
 
@@ -210,6 +240,12 @@ final class StaticConfigSourceProvider implements ConfigSourceProvider {
     @Override
     public Iterable<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
         return sources;
+    }
+}
+
+final class IsolatedClassLoader extends ClassLoader {
+    IsolatedClassLoader(ClassLoader parent) {
+        super(parent);
     }
 }
 
