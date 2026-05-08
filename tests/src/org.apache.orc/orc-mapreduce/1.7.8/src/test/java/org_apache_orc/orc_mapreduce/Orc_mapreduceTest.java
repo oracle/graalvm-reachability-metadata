@@ -7,6 +7,8 @@
 package org_apache_orc.orc_mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configuration.IntegerRanges;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.BytesWritable;
@@ -15,9 +17,22 @@ import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.RawComparator;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.hadoop.mapreduce.JobID;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.OutputFormat;
+import org.apache.hadoop.mapreduce.Partitioner;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.TaskType;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.security.Credentials;
 import org.apache.orc.ColumnStatistics;
 import org.apache.orc.OrcConf;
 import org.apache.orc.StripeInformation;
@@ -37,10 +52,13 @@ import org.apache.orc.mapreduce.OrcMapreduceRecordReader;
 import org.apache.orc.mapreduce.OrcMapreduceRecordWriter;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -139,6 +157,25 @@ public class Orc_mapreduceTest {
         assertThatThrownBy(() -> keyStruct.getFieldValue("missing"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("missing");
+    }
+
+    @Test
+    void mapreduceOutputFormatCanSkipTemporaryDirectory() throws Exception {
+        Configuration conf = new Configuration(false);
+        Path outputPath = new Path("target/orc-output-" + UUID.randomUUID());
+        conf.set(FileOutputFormat.OUTDIR, outputPath.toString());
+        conf.setBoolean(org.apache.orc.mapreduce.OrcOutputFormat.SKIP_TEMP_DIRECTORY, true);
+
+        TaskAttemptID attemptId = new TaskAttemptID("job", 1, TaskType.MAP, 0, 0);
+        TaskAttemptContext context = new SimpleTaskAttemptContext(conf, attemptId);
+        org.apache.orc.mapreduce.OrcOutputFormat<OrcStruct> outputFormat =
+                new org.apache.orc.mapreduce.OrcOutputFormat<>();
+
+        Path workFile = outputFormat.getDefaultWorkFile(context, ".orc");
+
+        assertThat(workFile.getParent()).isEqualTo(outputPath);
+        assertThat(workFile.getName()).startsWith("part-m-").endsWith(".orc");
+        assertThat(workFile.toString()).doesNotContain("_temporary");
     }
 
     @Test
@@ -255,6 +292,236 @@ public class Orc_mapreduceTest {
                     batch.cols[field], rowIndex, schema.getChildren().get(field), null));
         }
         return result;
+    }
+
+    private static final class SimpleTaskAttemptContext implements TaskAttemptContext {
+        private final Configuration conf;
+        private final TaskAttemptID attemptId;
+        private String status = "";
+
+        private SimpleTaskAttemptContext(Configuration conf, TaskAttemptID attemptId) {
+            this.conf = conf;
+            this.attemptId = attemptId;
+        }
+
+        @Override
+        public Configuration getConfiguration() {
+            return conf;
+        }
+
+        @Override
+        public Credentials getCredentials() {
+            return new Credentials();
+        }
+
+        @Override
+        public JobID getJobID() {
+            return attemptId.getJobID();
+        }
+
+        @Override
+        public int getNumReduceTasks() {
+            return 0;
+        }
+
+        @Override
+        public Path getWorkingDirectory() throws IOException {
+            return new Path(".");
+        }
+
+        @Override
+        public Class<?> getOutputKeyClass() {
+            return NullWritable.class;
+        }
+
+        @Override
+        public Class<?> getOutputValueClass() {
+            return OrcStruct.class;
+        }
+
+        @Override
+        public Class<?> getMapOutputKeyClass() {
+            return NullWritable.class;
+        }
+
+        @Override
+        public Class<?> getMapOutputValueClass() {
+            return OrcStruct.class;
+        }
+
+        @Override
+        public String getJobName() {
+            return "orc-mapreduce-test";
+        }
+
+        @Override
+        public Class<? extends InputFormat<?, ?>> getInputFormatClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Mapper<?, ?, ?, ?>> getMapperClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Reducer<?, ?, ?, ?>> getCombinerClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Reducer<?, ?, ?, ?>> getReducerClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends OutputFormat<?, ?>> getOutputFormatClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Partitioner<?, ?>> getPartitionerClass() {
+            return null;
+        }
+
+        @Override
+        public RawComparator<?> getSortComparator() {
+            return null;
+        }
+
+        @Override
+        public String getJar() {
+            return null;
+        }
+
+        @Override
+        public RawComparator<?> getCombinerKeyGroupingComparator() {
+            return null;
+        }
+
+        @Override
+        public RawComparator<?> getGroupingComparator() {
+            return null;
+        }
+
+        @Override
+        public boolean getJobSetupCleanupNeeded() {
+            return false;
+        }
+
+        @Override
+        public boolean getTaskCleanupNeeded() {
+            return false;
+        }
+
+        @Override
+        public boolean getProfileEnabled() {
+            return false;
+        }
+
+        @Override
+        public String getProfileParams() {
+            return "";
+        }
+
+        @Override
+        public IntegerRanges getProfileTaskRange(boolean isMap) {
+            return new IntegerRanges();
+        }
+
+        @Override
+        public String getUser() {
+            return "test";
+        }
+
+        @Override
+        public boolean getSymlink() {
+            return false;
+        }
+
+        @Override
+        public Path[] getArchiveClassPaths() {
+            return new Path[0];
+        }
+
+        @Override
+        public URI[] getCacheArchives() {
+            return new URI[0];
+        }
+
+        @Override
+        public URI[] getCacheFiles() {
+            return new URI[0];
+        }
+
+        @Override
+        public Path[] getLocalCacheArchives() {
+            return new Path[0];
+        }
+
+        @Override
+        public Path[] getLocalCacheFiles() {
+            return new Path[0];
+        }
+
+        @Override
+        public Path[] getFileClassPaths() {
+            return new Path[0];
+        }
+
+        @Override
+        public String[] getArchiveTimestamps() {
+            return new String[0];
+        }
+
+        @Override
+        public String[] getFileTimestamps() {
+            return new String[0];
+        }
+
+        @Override
+        public int getMaxMapAttempts() {
+            return 1;
+        }
+
+        @Override
+        public int getMaxReduceAttempts() {
+            return 1;
+        }
+
+        @Override
+        public TaskAttemptID getTaskAttemptID() {
+            return attemptId;
+        }
+
+        @Override
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        @Override
+        public String getStatus() {
+            return status;
+        }
+
+        @Override
+        public float getProgress() {
+            return 0.0f;
+        }
+
+        @Override
+        public Counter getCounter(Enum<?> counterName) {
+            return null;
+        }
+
+        @Override
+        public Counter getCounter(String groupName, String counterName) {
+            return null;
+        }
+
+        @Override
+        public void progress() {
+        }
     }
 
     private static final class CapturingWriter implements Writer {
