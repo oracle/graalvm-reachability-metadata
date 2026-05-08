@@ -6,6 +6,8 @@
  */
 package org_apache_avro.avro_mapred;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -13,7 +15,9 @@ import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
+import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.hadoop.file.SortedKeyValueFile;
@@ -22,10 +26,12 @@ import org.apache.avro.hadoop.io.AvroDatumConverterFactory;
 import org.apache.avro.hadoop.io.AvroKeyValue;
 import org.apache.avro.hadoop.io.AvroSequenceFile;
 import org.apache.avro.hadoop.util.AvroCharSequenceComparator;
+import org.apache.avro.io.DatumReader;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapred.AvroWrapper;
 import org.apache.avro.mapred.Pair;
+import org.apache.avro.mapreduce.AvroKeyValueRecordWriter;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.avro.util.Utf8;
 import org.apache.hadoop.conf.Configuration;
@@ -289,6 +295,37 @@ public class Avro_mapredTest {
     }
 
     @Test
+    void avroKeyValueRecordWriterCreatesReadableAvroDataFiles() throws IOException {
+        JobConf conf = new JobConf(false);
+        AvroDatumConverterFactory factory = new AvroDatumConverterFactory(conf);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        AvroKeyValueRecordWriter<Text, IntWritable> writer = new AvroKeyValueRecordWriter<>(
+                factory.create(Text.class),
+                factory.create(IntWritable.class),
+                GenericData.get(),
+                CodecFactory.nullCodec(),
+                output);
+
+        Schema expectedSchema = AvroKeyValue.getSchema(STRING_SCHEMA, INT_SCHEMA);
+        assertThat(writer.getWriterSchema()).isEqualTo(expectedSchema);
+        writer.write(new Text("red"), new IntWritable(1));
+        long syncPosition = writer.sync();
+        writer.write(new Text("green"), new IntWritable(2));
+        writer.close(null);
+
+        assertThat(syncPosition).isPositive();
+        DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
+        try (DataFileStream<GenericRecord> reader = new DataFileStream<>(
+                new ByteArrayInputStream(output.toByteArray()),
+                datumReader)) {
+            assertThat(reader.getSchema()).isEqualTo(expectedSchema);
+            assertNextKeyValueEntry(reader, "red", 1);
+            assertNextKeyValueEntry(reader, "green", 2);
+            assertThat(reader.hasNext()).isFalse();
+        }
+    }
+
+    @Test
     void charSequenceComparatorOrdersDifferentCharSequenceImplementations() {
         AvroCharSequenceComparator<CharSequence> comparator = new AvroCharSequenceComparator<>();
 
@@ -312,5 +349,13 @@ public class Avro_mapredTest {
         assertThat(key).isNotNull();
         assertThat(key.datum()).hasToString(expectedKey);
         assertThat(value.datum()).isEqualTo(expectedValue);
+    }
+
+    private static void assertNextKeyValueEntry(DataFileStream<GenericRecord> reader, String expectedKey,
+            int expectedValue) throws IOException {
+        assertThat(reader.hasNext()).isTrue();
+        AvroKeyValue<CharSequence, Integer> keyValue = new AvroKeyValue<>(reader.next());
+        assertThat(keyValue.getKey()).hasToString(expectedKey);
+        assertThat(keyValue.getValue()).isEqualTo(expectedValue);
     }
 }
