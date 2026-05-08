@@ -135,6 +135,51 @@ public class Quarkus_builderTest {
     }
 
     @Test
+    void honorsOrderOnlyConstraintsAroundItemConsumersAndProducers() throws Exception {
+        List<String> events = Collections.synchronizedList(new ArrayList<>());
+        AtomicBoolean inputProduced = new AtomicBoolean(false);
+        AtomicBoolean beforeConsumerRan = new AtomicBoolean(false);
+        AtomicBoolean afterProducerRan = new AtomicBoolean(false);
+        BuildChainBuilder builder = BuildChain.builder();
+
+        builder.addBuildStep(new NamedStep("before-consume", context -> {
+            beforeConsumerRan.set(true);
+            events.add("before-consume");
+        })).beforeConsume(OrderedInputItem.class).build();
+        builder.addBuildStep(new NamedStep("producer", context -> {
+            inputProduced.set(true);
+            events.add("producer");
+            context.produce(new OrderedInputItem("configured"));
+        })).produces(OrderedInputItem.class).build();
+        builder.addBuildStep(new NamedStep("after-produce", context -> {
+            assertThat(inputProduced).isTrue();
+            afterProducerRan.set(true);
+            events.add("after-produce");
+            context.produce(new OrderedGateItem());
+        })).afterProduce(OrderedInputItem.class).produces(OrderedGateItem.class).build();
+        builder.addBuildStep(new NamedStep("consumer", context -> {
+            assertThat(beforeConsumerRan).isTrue();
+            assertThat(afterProducerRan).isTrue();
+            OrderedInputItem input = context.consume(OrderedInputItem.class);
+            context.consume(OrderedGateItem.class);
+            events.add("consumer");
+            context.produce(new OrderedResultItem(input.value() + ":consumed"));
+        })).consumes(OrderedInputItem.class)
+                .consumes(OrderedGateItem.class)
+                .produces(OrderedResultItem.class)
+                .build();
+        builder.addFinal(OrderedResultItem.class);
+
+        BuildResult result = builder.build().createExecutionBuilder("order-only-build").execute();
+
+        assertThat(result.consume(OrderedResultItem.class).value()).isEqualTo("configured:consumed");
+        assertThat(events).containsExactlyInAnyOrder("before-consume", "producer", "after-produce", "consumer");
+        assertThat(events.indexOf("before-consume")).isLessThan(events.indexOf("consumer"));
+        assertThat(events.indexOf("producer")).isLessThan(events.indexOf("after-produce"));
+        assertThat(events.indexOf("after-produce")).isLessThan(events.indexOf("consumer"));
+    }
+
+    @Test
     void supportsOptionalConsumesOverridableProducersAndFlagSets() throws Exception {
         BuildChainBuilder builder = BuildChain.builder();
         AtomicBoolean overridableRan = new AtomicBoolean(false);
@@ -404,6 +449,33 @@ public class Quarkus_builderTest {
     }
 
     private static final class MissingOptionalItem extends SimpleBuildItem {
+    }
+
+    private static final class OrderedInputItem extends SimpleBuildItem {
+        private final String value;
+
+        private OrderedInputItem(String value) {
+            this.value = value;
+        }
+
+        private String value() {
+            return value;
+        }
+    }
+
+    private static final class OrderedGateItem extends SimpleBuildItem {
+    }
+
+    private static final class OrderedResultItem extends SimpleBuildItem {
+        private final String value;
+
+        private OrderedResultItem(String value) {
+            this.value = value;
+        }
+
+        private String value() {
+            return value;
+        }
     }
 
     private static final class MissingRequiredItem extends SimpleBuildItem {
