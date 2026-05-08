@@ -1,0 +1,1737 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e098a-dd3b-7250-8417-2ee428803b11
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.orc:orc-shims:1.7.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.7.8" when "$version$" is replaced with "1.7.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+- Set "coordinates" to "org.apache.orc:orc-shims:1.7.8".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.7.8".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven Central and the upstream ORC repository, then update the discovered metadata JSON in place.
+web search: 
+web search: Maven Central org.apache.orc orc-shims 1.7.8 sources tests jar
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+-rw-rw-r-- 1 vjovanov vjovanov 55 May  8 23:42 build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'orc-shims|org.apache.orc' metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.xml' -g '*.java'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json:2:  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.apache.orc orc-shims 1.7.8 sources tests jar
+codex
+The local file is just the coordinate stub. I’m checking the published Maven artifacts first because this repo prefers those for sources and tests when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.orc</groupId>
+    <artifactId>orc</artifactId>
+    <version>1.7.8</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>orc-shims</artifactId>
+  <packaging>jar</packaging>
+  <name>ORC Shims</name>
+  <description>
+    A shim layer for supporting various versions of Hadoop dynamically.
+
+    This module uses a higher version of Hadoop so that we can create shims
+    that let us use new features of Hadoop without having a hard dependency
+    on the latest version.
+  </description>
+
+  <dependencies>
+    <!-- inter-project -->
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- test inter-project -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/test/resources</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <destDir>${project.artifactId}</destDir>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredDependencies>
+            <ignoredDependency>org.apache.hadoop:hadoop-hdfs</ignoredDependency>
+          </ignoredDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>cmake</id>
+      <build>
+        <directory>${build.dir}/shims</directory>
+      </build>
+    </profile>
+    <profile>
+      <id>java17</id>
+      <activation>
+        <jdk>[17,)</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-client-api</artifactId>
+          <version>${hadoop.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/orc/git/matching-refs/tags | rg '1\\.7\\.8|release-1\\.7|rel|v1\\.7'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 114ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/orc/orc-shims/1.7.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/orc/orc-shims/1.7.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="orc-shims-1.7.8-cyclonedx.json" title="orc-shims-1.7.8-cyclonedx.json">orc-shims-1.7.8-cyclonedx.json</a>                    2023-01-16 21:30     89281      
+<a href="orc-shims-1.7.8-cyclonedx.json.asc" title="orc-shims-1.7.8-cyclonedx.json.asc">orc-shims-1.7.8-cyclonedx.json.asc</a>                2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8-cyclonedx.json.md5" title="orc-shims-1.7.8-cyclonedx.json.md5">orc-shims-1.7.8-cyclonedx.json.md5</a>                2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8-cyclonedx.json.sha1" title="orc-shims-1.7.8-cyclonedx.json.sha1">orc-shims-1.7.8-cyclonedx.json.sha1</a>               2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8-cyclonedx.xml" title="orc-shims-1.7.8-cyclonedx.xml">orc-shims-1.7.8-cyclonedx.xml</a>                     2023-01-16 21:30     77951      
+<a href="orc-shims-1.7.8-cyclonedx.xml.asc" title="orc-shims-1.7.8-cyclonedx.xml.asc">orc-shims-1.7.8-cyclonedx.xml.asc</a>                 2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8-cyclonedx.xml.md5" title="orc-shims-1.7.8-cyclonedx.xml.md5">orc-shims-1.7.8-cyclonedx.xml.md5</a>                 2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8-cyclonedx.xml.sha1" title="orc-shims-1.7.8-cyclonedx.xml.sha1">orc-shims-1.7.8-cyclonedx.xml.sha1</a>                2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8-javadoc.jar" title="orc-shims-1.7.8-javadoc.jar">orc-shims-1.7.8-javadoc.jar</a>                       2023-01-16 21:30    110582      
+<a href="orc-shims-1.7.8-javadoc.jar.asc" title="orc-shims-1.7.8-javadoc.jar.asc">orc-shims-1.7.8-javadoc.jar.asc</a>                   2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8-javadoc.jar.md5" title="orc-shims-1.7.8-javadoc.jar.md5">orc-shims-1.7.8-javadoc.jar.md5</a>                   2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8-javadoc.jar.sha1" title="orc-shims-1.7.8-javadoc.jar.sha1">orc-shims-1.7.8-javadoc.jar.sha1</a>                  2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8-sources.jar" title="orc-shims-1.7.8-sources.jar">orc-shims-1.7.8-sources.jar</a>                       2023-01-16 21:30     21100      
+<a href="orc-shims-1.7.8-sources.jar.asc" title="orc-shims-1.7.8-sources.jar.asc">orc-shims-1.7.8-sources.jar.asc</a>                   2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8-sources.jar.md5" title="orc-shims-1.7.8-sources.jar.md5">orc-shims-1.7.8-sources.jar.md5</a>                   2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8-sources.jar.sha1" title="orc-shims-1.7.8-sources.jar.sha1">orc-shims-1.7.8-sources.jar.sha1</a>                  2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8-test-sources.jar" title="orc-shims-1.7.8-test-sources.jar">orc-shims-1.7.8-test-sources.jar</a>                  2023-01-16 21:30      9727      
+<a href="orc-shims-1.7.8-test-sources.jar.asc" title="orc-shims-1.7.8-test-sources.jar.asc">orc-shims-1.7.8-test-sources.jar.asc</a>              2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8-test-sources.jar.md5" title="orc-shims-1.7.8-test-sources.jar.md5">orc-shims-1.7.8-test-sources.jar.md5</a>              2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8-test-sources.jar.sha1" title="orc-shims-1.7.8-test-sources.jar.sha1">orc-shims-1.7.8-test-sources.jar.sha1</a>             2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8-tests.jar" title="orc-shims-1.7.8-tests.jar">orc-shims-1.7.8-tests.jar</a>                         2023-01-16 21:30      9394      
+<a href="orc-shims-1.7.8-tests.jar.asc" title="orc-shims-1.7.8-tests.jar.asc">orc-shims-1.7.8-tests.jar.asc</a>                     2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8-tests.jar.md5" title="orc-shims-1.7.8-tests.jar.md5">orc-shims-1.7.8-tests.jar.md5</a>                     2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8-tests.jar.sha1" title="orc-shims-1.7.8-tests.jar.sha1">orc-shims-1.7.8-tests.jar.sha1</a>                    2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8.jar" title="orc-shims-1.7.8.jar">orc-shims-1.7.8.jar</a>                               2023-01-16 21:30     29261      
+<a href="orc-shims-1.7.8.jar.asc" title="orc-shims-1.7.8.jar.asc">orc-shims-1.7.8.jar.asc</a>                           2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8.jar.md5" title="orc-shims-1.7.8.jar.md5">orc-shims-1.7.8.jar.md5</a>                           2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8.jar.sha1" title="orc-shims-1.7.8.jar.sha1">orc-shims-1.7.8.jar.sha1</a>                          2023-01-16 21:30        40      
+<a href="orc-shims-1.7.8.pom" title="orc-shims-1.7.8.pom">orc-shims-1.7.8.pom</a>                               2023-01-16 21:30      3827      
+<a href="orc-shims-1.7.8.pom.asc" title="orc-shims-1.7.8.pom.asc">orc-shims-1.7.8.pom.asc</a>                           2023-01-16 21:30       833      
+<a href="orc-shims-1.7.8.pom.md5" title="orc-shims-1.7.8.pom.md5">orc-shims-1.7.8.pom.md5</a>                           2023-01-16 21:30        32      
+<a href="orc-shims-1.7.8.pom.sha1" title="orc-shims-1.7.8.pom.sha1">orc-shims-1.7.8.pom.sha1</a>                          2023-01-16 21:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 340ms:
+    "ref": "refs/tags/rel/release-1.0.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.0.0",
+    "ref": "refs/tags/rel/release-1.1.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.1.0",
+    "ref": "refs/tags/rel/release-1.1.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.1.1",
+    "ref": "refs/tags/rel/release-1.1.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.1.2",
+    "ref": "refs/tags/rel/release-1.2.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.2.0",
+    "ref": "refs/tags/rel/release-1.2.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.2.1",
+    "ref": "refs/tags/rel/release-1.2.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.2.2",
+    "ref": "refs/tags/rel/release-1.2.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.2.3",
+    "ref": "refs/tags/rel/release-1.3.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.3.0",
+    "ref": "refs/tags/rel/release-1.3.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.3.1",
+    "ref": "refs/tags/rel/release-1.3.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.3.2",
+    "ref": "refs/tags/rel/release-1.3.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.3.3",
+    "ref": "refs/tags/rel/release-1.3.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.3.4",
+    "ref": "refs/tags/rel/release-1.4.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.4.0",
+    "ref": "refs/tags/rel/release-1.4.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.4.1",
+    "ref": "refs/tags/rel/release-1.4.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.4.2",
+    "ref": "refs/tags/rel/release-1.4.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.4.3",
+    "ref": "refs/tags/rel/release-1.4.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.4.4",
+    "ref": "refs/tags/rel/release-1.4.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.4.5",
+    "ref": "refs/tags/rel/release-1.5.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.0",
+    "ref": "refs/tags/rel/release-1.5.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.1",
+    "ref": "refs/tags/rel/release-1.5.10",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.10",
+    "ref": "refs/tags/rel/release-1.5.11",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.11",
+    "ref": "refs/tags/rel/release-1.5.12",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.12",
+    "ref": "refs/tags/rel/release-1.5.13",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.13",
+    "ref": "refs/tags/rel/release-1.5.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.2",
+    "ref": "refs/tags/rel/release-1.5.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.3",
+    "ref": "refs/tags/rel/release-1.5.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.4",
+    "ref": "refs/tags/rel/release-1.5.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.5",
+    "ref": "refs/tags/rel/release-1.5.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.6",
+    "ref": "refs/tags/rel/release-1.5.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.7",
+    "ref": "refs/tags/rel/release-1.5.8",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.8",
+    "ref": "refs/tags/rel/release-1.5.9",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.5.9",
+    "ref": "refs/tags/rel/release-1.6.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.0",
+    "ref": "refs/tags/rel/release-1.6.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.1",
+    "ref": "refs/tags/rel/release-1.6.10",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.10",
+    "ref": "refs/tags/rel/release-1.6.11",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.11",
+    "ref": "refs/tags/rel/release-1.6.12",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.12",
+    "ref": "refs/tags/rel/release-1.6.13",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.13",
+    "ref": "refs/tags/rel/release-1.6.14",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.14",
+    "ref": "refs/tags/rel/release-1.6.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.2",
+    "ref": "refs/tags/rel/release-1.6.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.3",
+    "ref": "refs/tags/rel/release-1.6.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.4",
+    "ref": "refs/tags/rel/release-1.6.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.5",
+    "ref": "refs/tags/rel/release-1.6.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.6",
+    "ref": "refs/tags/rel/release-1.6.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.7",
+    "ref": "refs/tags/rel/release-1.6.8",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.8",
+    "ref": "refs/tags/rel/release-1.6.9",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.6.9",
+    "ref": "refs/tags/rel/release-1.7.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.0",
+    "ref": "refs/tags/rel/release-1.7.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.1",
+    "ref": "refs/tags/rel/release-1.7.10",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.10",
+    "ref": "refs/tags/rel/release-1.7.11",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.11",
+    "ref": "refs/tags/rel/release-1.7.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.2",
+    "ref": "refs/tags/rel/release-1.7.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.3",
+    "ref": "refs/tags/rel/release-1.7.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.4",
+    "ref": "refs/tags/rel/release-1.7.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.5",
+    "ref": "refs/tags/rel/release-1.7.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.6",
+    "ref": "refs/tags/rel/release-1.7.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.7",
+    "ref": "refs/tags/rel/release-1.7.8",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.8",
+    "ref": "refs/tags/rel/release-1.7.9",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.7.9",
+    "ref": "refs/tags/rel/release-1.8.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.0",
+    "ref": "refs/tags/rel/release-1.8.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.1",
+    "ref": "refs/tags/rel/release-1.8.10",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.10",
+    "ref": "refs/tags/rel/release-1.8.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.2",
+    "ref": "refs/tags/rel/release-1.8.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.3",
+    "ref": "refs/tags/rel/release-1.8.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.4",
+    "ref": "refs/tags/rel/release-1.8.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.5",
+    "ref": "refs/tags/rel/release-1.8.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.6",
+    "ref": "refs/tags/rel/release-1.8.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.7",
+    "ref": "refs/tags/rel/release-1.8.8",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.8",
+    "ref": "refs/tags/rel/release-1.8.9",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.8.9",
+    "ref": "refs/tags/rel/release-1.9.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.0",
+    "ref": "refs/tags/rel/release-1.9.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.1",
+    "ref": "refs/tags/rel/release-1.9.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.2",
+    "ref": "refs/tags/rel/release-1.9.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.3",
+    "ref": "refs/tags/rel/release-1.9.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.4",
+    "ref": "refs/tags/rel/release-1.9.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.5",
+    "ref": "refs/tags/rel/release-1.9.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.6",
+    "ref": "refs/tags/rel/release-1.9.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.7",
+    "ref": "refs/tags/rel/release-1.9.8",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-1.9.8",
+    "ref": "refs/tags/rel/release-2.0.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.0",
+    "ref": "refs/tags/rel/release-2.0.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.1",
+    "ref": "refs/tags/rel/release-2.0.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.2",
+    "ref": "refs/tags/rel/release-2.0.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.3",
+    "ref": "refs/tags/rel/release-2.0.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.4",
+    "ref": "refs/tags/rel/release-2.0.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.5",
+    "ref": "refs/tags/rel/release-2.0.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.6",
+    "ref": "refs/tags/rel/release-2.0.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.0.7",
+    "ref": "refs/tags/rel/release-2.1.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.1.0",
+    "ref": "refs/tags/rel/release-2.1.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.1.1",
+    "ref": "refs/tags/rel/release-2.1.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.1.2",
+    "ref": "refs/tags/rel/release-2.1.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.1.3",
+    "ref": "refs/tags/rel/release-2.1.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.1.4",
+    "ref": "refs/tags/rel/release-2.2.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.2.0",
+    "ref": "refs/tags/rel/release-2.2.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.2.1",
+    "ref": "refs/tags/rel/release-2.2.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.2.2",
+    "ref": "refs/tags/rel/release-2.3.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/rel/release-2.3.0",
+    "ref": "refs/tags/v1.7.0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.0",
+    "ref": "refs/tags/v1.7.1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.1",
+    "ref": "refs/tags/v1.7.10",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.10",
+    "ref": "refs/tags/v1.7.10-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.10-rc0",
+    "ref": "refs/tags/v1.7.11",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.11",
+    "ref": "refs/tags/v1.7.11-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.11-rc0",
+    "ref": "refs/tags/v1.7.2",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.2",
+    "ref": "refs/tags/v1.7.3",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.3",
+    "ref": "refs/tags/v1.7.4",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.4",
+    "ref": "refs/tags/v1.7.4-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.4-rc0",
+    "ref": "refs/tags/v1.7.5",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.5",
+    "ref": "refs/tags/v1.7.5-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.5-rc0",
+    "ref": "refs/tags/v1.7.6",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.6",
+    "ref": "refs/tags/v1.7.6-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.6-rc0",
+    "ref": "refs/tags/v1.7.7",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.7",
+    "ref": "refs/tags/v1.7.7-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.7-rc0",
+    "ref": "refs/tags/v1.7.8",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.8",
+    "ref": "refs/tags/v1.7.8-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.8-rc0",
+    "ref": "refs/tags/v1.7.9",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.9",
+    "ref": "refs/tags/v1.7.9-rc0",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.9-rc0",
+    "ref": "refs/tags/v1.7.9-rc1",
+    "url": "https://api.github.com/repos/apache/orc/git/refs/tags/v1.7.9-rc1",
+
+web search: 
+web search: Maven Central org.apache.orc orc-shims 1.7.8 sources tests jar
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc/1.7.8/orc-1.7.8.pom | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p; /<modules>/,/<\\/modules>/p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-sources.jar -o /tmp/orc-shims-1.7.8-sources.jar && jar tf /tmp/orc-shims-1.7.8-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8.jar -o /tmp/orc-shims-1.7.8.jar && jar tf /tmp/orc-shims-1.7.8.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-test-sources.jar -o /tmp/orc-shims-1.7.8-test-sources.jar && jar tf /tmp/orc-shims-1.7.8-test-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 109ms:
+  <url>https://orc.apache.org</url>
+  <modules>
+    <module>shims</module>
+    <module>core</module>
+    <module>mapreduce</module>
+    <module>tools</module>
+    <module>examples</module>
+  </modules>
+      <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+      <url>https://repo.maven.apache.org/maven2</url>
+              <url>https://orc.apache.org/api/hive-storage-api</url>
+              <url>https://orc.apache.org/api/orc-core</url>
+              <url>https://orc.apache.org/api/orc-mapreduce</url>
+      <modules>
+        <module>bench</module>
+      </modules>
+
+ succeeded in 247ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/maven/
+META-INF/maven/org.apache.orc/
+META-INF/maven/org.apache.orc/orc-shims/
+META-INF/maven/org.apache.orc/orc-shims/pom.properties
+META-INF/maven/org.apache.orc/orc-shims/pom.xml
+org/
+org/apache/
+org/apache/orc/
+org/apache/orc/EncryptionAlgorithm.class
+org/apache/orc/impl/
+org/apache/orc/impl/HadoopShims$ByteBufferPoolShim.class
+org/apache/orc/impl/HadoopShims$DirectCompressionType.class
+org/apache/orc/impl/HadoopShims$DirectDecompressor.class
+org/apache/orc/impl/HadoopShims$KeyMetadata.class
+org/apache/orc/impl/HadoopShims$KeyProviderKind.class
+org/apache/orc/impl/HadoopShims$ZeroCopyReaderShim.class
+org/apache/orc/impl/HadoopShims.class
+org/apache/orc/impl/HadoopShimsCurrent.class
+org/apache/orc/impl/HadoopShimsPre2_3$NullKeyProvider.class
+org/apache/orc/impl/HadoopShimsPre2_3.class
+org/apache/orc/impl/HadoopShimsPre2_6$1.class
+org/apache/orc/impl/HadoopShimsPre2_6$SnappyDirectDecompressWrapper.class
+org/apache/orc/impl/HadoopShimsPre2_6$ZlibDirectDecompressWrapper.class
+org/apache/orc/impl/HadoopShimsPre2_6.class
+org/apache/orc/impl/HadoopShimsPre2_7$KeyProviderImpl.class
+org/apache/orc/impl/HadoopShimsPre2_7.class
+org/apache/orc/impl/KeyProvider$Factory.class
+org/apache/orc/impl/KeyProvider.class
+org/apache/orc/impl/LocalKey.class
+org/apache/orc/impl/ZeroCopyShims$ByteBufferPoolAdapter.class
+org/apache/orc/impl/ZeroCopyShims$ZeroCopyAdapter.class
+org/apache/orc/impl/ZeroCopyShims.class
+
+ succeeded in 335ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/maven/
+META-INF/maven/org.apache.orc/
+META-INF/maven/org.apache.orc/orc-shims/
+META-INF/maven/org.apache.orc/orc-shims/pom.properties
+META-INF/maven/org.apache.orc/orc-shims/pom.xml
+annotations/
+org/
+org/apache/
+org/apache/orc/
+org/apache/orc/EncryptionAlgorithm.java
+org/apache/orc/impl/
+org/apache/orc/impl/HadoopShims.java
+org/apache/orc/impl/HadoopShimsCurrent.java
+org/apache/orc/impl/HadoopShimsPre2_3.java
+org/apache/orc/impl/HadoopShimsPre2_6.java
+org/apache/orc/impl/HadoopShimsPre2_7.java
+org/apache/orc/impl/KeyProvider.java
+org/apache/orc/impl/LocalKey.java
+org/apache/orc/impl/ZeroCopyShims.java
+
+ succeeded in 611ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/maven/
+META-INF/maven/org.apache.orc/
+META-INF/maven/org.apache.orc/orc-shims/
+META-INF/maven/org.apache.orc/orc-shims/pom.properties
+META-INF/maven/org.apache.orc/orc-shims/pom.xml
+log4j.properties
+org/
+org/apache/
+org/apache/orc/
+org/apache/orc/impl/
+org/apache/orc/impl/TestHadoopShimsPre2_7.java
+resources/
+resources/log4j.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc/1.7.8/orc-1.7.8.pom | rg -n '<scm>|</scm>|connection|developerConnection|tag|url|github|gitbox' -C 2" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+26-
+27-  <name>Apache ORC</name>
+28:  <url>https://orc.apache.org</url>
+29-  <description>
+30-     ORC is a self-describing type-aware columnar file format designed
+--
+93-      -->
+94-      <name>GCS Maven Central mirror</name>
+95:      <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+96-      <releases>
+97-        <enabled>true</enabled>
+--
+107-      <id>central</id>
+108-      <name>Maven Repository</name>
+109:      <url>https://repo.maven.apache.org/maven2</url>
+110-      <releases>
+111-        <enabled>true</enabled>
+--
+124-      -->
+125-      <name>GCS Maven Central mirror</name>
+126:      <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+127-      <releases>
+128-        <enabled>true</enabled>
+--
+134-    <pluginRepository>
+135-      <id>central</id>
+136:      <url>https://repo.maven.apache.org/maven2</url>
+137-      <releases>
+138-        <enabled>true</enabled>
+--
+178-          <offlineLinks>
+179-            <offlineLink>
+180:              <url>https://orc.apache.org/api/hive-storage-api</url>
+181-              <location>${project.basedir}/../../site/api/hive-storage-api</location>
+182-            </offlineLink>
+183-            <offlineLink>
+184:              <url>https://orc.apache.org/api/orc-core</url>
+185-              <location>${project.basedir}/../../site/api/orc-core</location>
+186-            </offlineLink>
+187-            <offlineLink>
+188:              <url>https://orc.apache.org/api/orc-mapreduce</url>
+189-              <location>${project.basedir}/../../site/api/orc-mapreduce</location>
+190-            </offlineLink>
+--
+253-      </plugin>
+254-      <plugin>
+255:        <groupId>io.github.zlika</groupId>
+256-        <artifactId>reproducible-build-maven-plugin</artifactId>
+257-        <executions>
+--
+322-        </plugin>
+323-        <plugin>
+324:          <groupId>com.github.spotbugs</groupId>
+325-          <artifactId>spotbugs-maven-plugin</artifactId>
+326-          <version>4.7.1.1</version>
+327-          <dependencies>
+328-            <dependency>
+329:              <groupId>com.github.spotbugs</groupId>
+330-              <artifactId>spotbugs</artifactId>
+331-              <version>4.7.1</version>
+--
+478-        </plugin>
+479-        <plugin>
+480:          <groupId>com.github.os72</groupId>
+481-          <artifactId>protoc-jar-maven-plugin</artifactId>
+482-          <version>3.11.4</version>
+--
+550-        </plugin>
+551-        <plugin>
+552:          <groupId>io.github.zlika</groupId>
+553-          <artifactId>reproducible-build-maven-plugin</artifactId>
+554-          <version>0.15</version>
+--
+575-          </plugin>
+576-          <plugin>
+577:            <groupId>com.github.spotbugs</groupId>
+578-            <artifactId>spotbugs-maven-plugin</artifactId>
+579-          </plugin>
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/apache/orc/tree/v1.7.8/shims | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/org.apache.orc/orc-shims/1.7.8 | sed -n '1,16p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 309ms:
+HTTP/2 303 
+date: Fri, 08 May 2026 21:43:22 GMT
+content-length: 0
+location: /doc/org.apache.orc/orc-shims/1.7.8/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=qI2SKzwFQ1npnYHubnD6y%2F91FFJLFjilauSwtJVdWty8FCE3KbTPceyQBZvgm2322CH2SGgKeWhcd7fTRIAMkpoh1n04OE2YghumqJfmKQDbdsDYCZRxCWTu7hmYjMQILVI9qTrscA%2F4"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f8ba3bcfd31bbff-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 390ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 21:43:22 GMT
+content-type: application/java-archive
+content-length: 110582
+cf-ray: 9f8ba3bcd8cdbe5f-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "cfff0c18991e1fac190a5bb1fb7cabf9"
+last-modified: Mon, 16 Jan 2023 21:30:18 GMT
+x-checksum-md5: cfff0c18991e1fac190a5bb1fb7cabf9
+x-checksum-sha1: 054559262da6155389224635b14263077cf05044
+server: cloudflare
+
+ succeeded in 538ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 08 May 2026 21:43:22 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+
+codex
+Maven Central publishes sources, test sources, tests, and Javadoc for this exact version. I’m checking the upstream tree shape now so the repository root is correct even though the metadata can use Maven-hosted source/test/doc artifacts.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/orc/contents/java?ref=v1.7.8 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/orc/contents?ref=v1.7.8 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/orc/contents/shims?ref=v1.7.8 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 184ms:
+[
+  {
+    "name": ".asf.yaml",
+    "path": ".asf.yaml",
+    "sha": "a5d5b85c378ba11fae273e56a9fd3335ee89d1ab",
+    "size": 1165,
+    "url": "https://api.github.com/repos/apache/orc/contents/.asf.yaml?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/.asf.yaml",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/a5d5b85c378ba11fae273e56a9fd3335ee89d1ab",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/.asf.yaml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/.asf.yaml?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/a5d5b85c378ba11fae273e56a9fd3335ee89d1ab",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/.asf.yaml"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "3819839900e9f5b8cf76d7d93a81c0764888e3db",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/.github?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/.github",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/3819839900e9f5b8cf76d7d93a81c0764888e3db",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/.github?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/3819839900e9f5b8cf76d7d93a81c0764888e3db",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "09f9b47c380035a33cac9ef696ca762a7b93e3b8",
+    "size": 111,
+    "url": "https://api.github.com/repos/apache/orc/contents/.gitignore?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/.gitignore",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/09f9b47c380035a33cac9ef696ca762a7b93e3b8",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/.gitignore?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/09f9b47c380035a33cac9ef696ca762a7b93e3b8",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/.gitignore"
+    }
+  },
+  {
+    "name": "CMakeLists.txt",
+    "path": "CMakeLists.txt",
+    "sha": "75570a742728844cea94caa8b913b564bd4ef2c0",
+    "size": 5485,
+    "url": "https://api.github.com/repos/apache/orc/contents/CMakeLists.txt?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/CMakeLists.txt",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/75570a742728844cea94caa8b913b564bd4ef2c0",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/CMakeLists.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/CMakeLists.txt?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/75570a742728844cea94caa8b913b564bd4ef2c0",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/CMakeLists.txt"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "70507878eeb9c4676d4bf9d30b268162aaa5455f",
+    "size": 19441,
+    "url": "https://api.github.com/repos/apache/orc/contents/LICENSE?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/LICENSE",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/70507878eeb9c4676d4bf9d30b268162aaa5455f",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/LICENSE?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/70507878eeb9c4676d4bf9d30b268162aaa5455f",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/LICENSE"
+    }
+  },
+  {
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "sha": "4c79570facdae86882df8fc85b9553bce20b33d6",
+    "size": 302,
+    "url": "https://api.github.com/repos/apache/orc/contents/NOTICE?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/NOTICE",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/4c79570facdae86882df8fc85b9553bce20b33d6",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/NOTICE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/NOTICE?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/4c79570facdae86882df8fc85b9553bce20b33d6",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/NOTICE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "a7d959247e13f1a265ee7c9b224384ae51c23541",
+    "size": 3119,
+    "url": "https://api.github.com/repos/apache/orc/contents/README.md?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/README.md",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/a7d959247e13f1a265ee7c9b224384ae51c23541",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/README.md?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/a7d959247e13f1a265ee7c9b224384ae51c23541",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/README.md"
+    }
+  },
+  {
+    "name": "c++",
+    "path": "c++",
+    "sha": "b28830812b6d432d430dff68bbbb80ceecf00835",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/c%2B%2B?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/c%2B%2B",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/b28830812b6d432d430dff68bbbb80ceecf00835",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/c%2B%2B?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/b28830812b6d432d430dff68bbbb80ceecf00835",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/c%2B%2B"
+    }
+  },
+  {
+    "name": "cmake_modules",
+    "path": "cmake_modules",
+    "sha": "31216fc3572c4201f0e4f407d97f67be7c8bc43d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/cmake_modules?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/cmake_modules",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/31216fc3572c4201f0e4f407d97f67be7c8bc43d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/cmake_modules?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/31216fc3572c4201f0e4f407d97f67be7c8bc43d",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/cmake_modules"
+    }
+  },
+  {
+    "name": "dev",
+    "path": "dev",
+    "sha": "261529367208bc151410cb0db42570ccffffc36b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/dev?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/dev",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/261529367208bc151410cb0db42570ccffffc36b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/dev?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/261529367208bc151410cb0db42570ccffffc36b",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/dev"
+    }
+
+ succeeded in 189ms:
+[
+  {
+    "name": ".idea",
+    "path": "java/.idea",
+    "sha": "0a0589fc3251cc36854604f3cbcec7839e5a4b6c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/.idea?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/java/.idea",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/0a0589fc3251cc36854604f3cbcec7839e5a4b6c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/.idea?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/0a0589fc3251cc36854604f3cbcec7839e5a4b6c",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/java/.idea"
+    }
+  },
+  {
+    "name": "CMakeLists.txt",
+    "path": "java/CMakeLists.txt",
+    "sha": "5e1c0f85bdb0e00e0eaf4276afc29b79240d78da",
+    "size": 3646,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/CMakeLists.txt?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/java/CMakeLists.txt",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/5e1c0f85bdb0e00e0eaf4276afc29b79240d78da",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/java/CMakeLists.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/CMakeLists.txt?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/5e1c0f85bdb0e00e0eaf4276afc29b79240d78da",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/java/CMakeLists.txt"
+    }
+  },
+  {
+    "name": "bench",
+    "path": "java/bench",
+    "sha": "7654079997a050935c34946c489c0e11568071df",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/bench?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/java/bench",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/7654079997a050935c34946c489c0e11568071df",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/bench?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/7654079997a050935c34946c489c0e11568071df",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/java/bench"
+    }
+  },
+  {
+    "name": "core",
+    "path": "java/core",
+    "sha": "0eabb28d1c4dd1ef139efedf319cb53aa55d9459",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/core?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/java/core",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/0eabb28d1c4dd1ef139efedf319cb53aa55d9459",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/core?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/0eabb28d1c4dd1ef139efedf319cb53aa55d9459",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/java/core"
+    }
+  },
+  {
+    "name": "examples",
+    "path": "java/examples",
+    "sha": "8f2e9167d3a9926fdf9b58efd0068202dd70c144",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/examples?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/java/examples",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/8f2e9167d3a9926fdf9b58efd0068202dd70c144",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/examples?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/8f2e9167d3a9926fdf9b58efd0068202dd70c144",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/java/examples"
+    }
+  },
+  {
+    "name": "mapreduce",
+    "path": "java/mapreduce",
+    "sha": "b7cadc68fb1e7f3c7b45a264512bf396faec968a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/mapreduce?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/java/mapreduce",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/b7cadc68fb1e7f3c7b45a264512bf396faec968a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/mapreduce?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/b7cadc68fb1e7f3c7b45a264512bf396faec968a",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/java/mapreduce"
+    }
+  },
+  {
+    "name": "mvnw",
+    "path": "java/mvnw",
+    "sha": "affd9d7dc2579c34ecb1d95437cd78c448e87c86",
+    "size": 4075,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/mvnw?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/java/mvnw",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/affd9d7dc2579c34ecb1d95437cd78c448e87c86",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/java/mvnw",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/mvnw?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/affd9d7dc2579c34ecb1d95437cd78c448e87c86",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/java/mvnw"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "java/pom.xml",
+    "sha": "16ae6897f7120ead40b123954c151559d4848896",
+    "size": 34351,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/pom.xml?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/java/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/16ae6897f7120ead40b123954c151559d4848896",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/java/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/pom.xml?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/16ae6897f7120ead40b123954c151559d4848896",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/java/pom.xml"
+    }
+  },
+  {
+    "name": "shims",
+    "path": "java/shims",
+    "sha": "2509300c09b181649166e63c5ea980200636e644",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/shims?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/tree/v1.7.8/java/shims",
+    "git_url": "https://api.github.com/repos/apache/orc/git/trees/2509300c09b181649166e63c5ea980200636e644",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/shims?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/trees/2509300c09b181649166e63c5ea980200636e644",
+      "html": "https://github.com/apache/orc/tree/v1.7.8/java/shims"
+    }
+  },
+  {
+    "name": "spotbugs-exclude.xml",
+    "path": "java/spotbugs-exclude.xml",
+    "sha": "d5f7fe7d9c74b8e80e08284c8a6462fe5b01a618",
+    "size": 2174,
+    "url": "https://api.github.com/repos/apache/orc/contents/java/spotbugs-exclude.xml?ref=v1.7.8",
+    "html_url": "https://github.com/apache/orc/blob/v1.7.8/java/spotbugs-exclude.xml",
+    "git_url": "https://api.github.com/repos/apache/orc/git/blobs/d5f7fe7d9c74b8e80e08284c8a6462fe5b01a618",
+    "download_url": "https://raw.githubusercontent.com/apache/orc/v1.7.8/java/spotbugs-exclude.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/orc/contents/java/spotbugs-exclude.xml?ref=v1.7.8",
+      "git": "https://api.github.com/repos/apache/orc/git/blobs/d5f7fe7d9c74b8e80e08284c8a6462fe5b01a618",
+      "html": "https://github.com/apache/orc/blob/v1.7.8/java/spotbugs-exclude.xml"
+    }
+
+ succeeded in 176ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-sources.jar
+web search: 
+web search: central sonatype org.apache.orc orc-shims 1.7.8
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url|source-code-url|test-code-url|repository-url|description' . -g '*.json' -g '*.java' -g '*.groovy' -g '*.kt' -g '*.md'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|artifact-metadata|metadata-version' . -g '*.json' -g '*.java' -g '*.groovy' -g '*.kt' -g '*.md'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 111ms:
+./stats/schemas/run-metrics-output-schema-v1.0.1.json:246:          "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the generated library version."
+./stats/schemas/run-metrics-output-schema-v1.0.1.json:250:          "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the previous library version when applicable."
+
+ succeeded in 116ms:
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:277:            description = "Builds a recipe from command line ingredients",
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:283:                description = "Number of batches",
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:291:                description = "Preparation mode",
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:296:        @Option(name = "verbose", shortName = 'v', description = "Enable verbose output", hasValue = false)
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:299:        @OptionList(name = "tag", shortName = 't', description = "Recipe tags", valueSeparator = ',')
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:302:        @Arguments(description = "Ingredients")
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:314:            description = "Administrative commands",
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:324:    @CommandDefinition(name = "status", description = "Shows status for a named environment")
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:326:        @Option(name = "name", required = true, description = "Environment name")
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:338:            description = "Runs a validated task",
+./tests/src/org.aesh/aesh/2.8.2/src/test/java/org_aesh/aesh/AeshTest.java:342:        @Option(name = "name", required = true, description = "Task name")
+./tests/src/org.apache.maven/maven-model/2.0.10/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:220:                  <description>Copyright &copy; Example &mdash; all rights reserved</description>
+./tests/src/org.apache.maven/maven-model/2.0.10/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:382:                  <description>A project model used by reachability tests.</description>
+./tests/src/org.apache.maven/maven-model/2.0.6/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:220:                  <description>Copyright &copy; Example &mdash; all rights reserved</description>
+./tests/src/org.apache.maven/maven-model/2.0.6/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:382:                  <description>A project model used by reachability tests.</description>
+./tests/src/org.apache.maven/maven-support/4.0.0-rc-5/src/test/java/org_apache_maven/maven_support/Maven_supportTest.java:117:                  <description>Copyright &copy; Maven contributors &mdash; ready</description>
+./tests/src/org.apache.maven/maven-support/4.0.0-rc-5/src/test/java/org_apache_maven/maven_support/Maven_supportTest.java:401:                  <description>Runs an example goal</description>
+./tests/src/org.apache.maven/maven-support/4.0.0-rc-5/src/test/java/org_apache_maven/maven_support/Maven_supportTest.java:413:                      <description>Run the example</description>
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:54:        assertThat(firstMonitor.events).extracting(event -> event.description()).containsExactly(
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:58:        assertThat(secondMonitor.events).extracting(event -> event.description()).containsExactly(
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:98:        assertThat(monitor.events).extracting(event -> event.description()).containsExactly(
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:125:        assertThat(allEventsMonitor.events).extracting(event -> event.description()).containsExactly(
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:143:        assertThat(earlyMonitor.events).extracting(event -> event.description()).containsExactly(
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:146:        assertThat(lateMonitor.events).extracting(event -> event.description()).containsExactly(
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:163:        assertThat(monitor.events).extracting(event -> event.description())
+./tests/src/org.apache.maven/maven-monitor/2.0.6/src/test/java/org_apache_maven/maven_monitor/Maven_monitorTest.java:247:        private String description() {
+./tests/src/org.opentest4j/opentest4j/1.2.0/src/test/java/org_opentest4j/opentest4j/Opentest4jTest.java:277:        private final String description;
+./tests/src/org.opentest4j/opentest4j/1.2.0/src/test/java/org_opentest4j/opentest4j/Opentest4jTest.java:279:        private DescribedObject(String description) {
+./tests/src/org.opentest4j/opentest4j/1.2.0/src/test/java/org_opentest4j/opentest4j/Opentest4jTest.java:280:            this.description = description;
+./tests/src/org.opentest4j/opentest4j/1.2.0/src/test/java/org_opentest4j/opentest4j/Opentest4jTest.java:285:            return description;
+./tests/src/io.netty/netty-codec-xml/4.1.74.Final/src/test/java/io_netty/netty_codec_xml/Netty_codec_xmlTest.java:114:                <root description="Tom &amp; Jerry &quot;show&quot;">
+./tests/src/io.netty/netty-codec-xml/4.1.74.Final/src/test/java/io_netty/netty_codec_xml/Netty_codec_xmlTest.java:123:            assertThat(attribute.name()).isEqualTo("description");
+./tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/2.1.0/src/test/java/io_opentelemetry_instrumentation/opentelemetry_instrumentation_api/Opentelemetry_instrumentation_apiTest.java:461:        public SpanStatusBuilder setStatus(StatusCode statusCode, String description) {
+./tests/src/com.jamesmurty.utils/java-xmlbuilder/1.1/src/test/java/com_jamesmurty_utils/java_xmlbuilder/Base64Test.java:34:                .e("description")
+./tests/src/com.jamesmurty.utils/java-xmlbuilder/1.1/src/test/java/com_jamesmurty_utils/java_xmlbuilder/Base64Test.java:48:        XMLBuilder description = parsed.xpathFind("/catalog/bk:book/description", namespaceContext);
+./tests/src/com.jamesmurty.utils/java-xmlbuilder/1.1/src/test/java/com_jamesmurty_utils/java_xmlbuilder/Base64Test.java:54:        assertThat(description.getElement().getTextContent()).isEqualTo("<native-image ready>");
+./tests/src/com.jamesmurty.utils/java-xmlbuilder/0.6/src/test/java/com_jamesmurty_utils/java_xmlbuilder/Base64Test.java:30:                .e("description")
+./tests/src/com.jamesmurty.utils/java-xmlbuilder/0.6/src/test/java/com_jamesmurty_utils/java_xmlbuilder/Base64Test.java:43:        XMLBuilder description = parsed.xpathFind("/catalog/bk:book/description", parsed.buildDocumentNamespaceContext());
+./tests/src/com.jamesmurty.utils/java-xmlbuilder/0.6/src/test/java/com_jamesmurty_utils/java_xmlbuilder/Base64Test.java:49:        assertThat(description.getElement().getTextContent()).isEqualTo("<native-image ready>");
+
+exec
+/usr/bin/bash -lc "sed -n '240,360p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+
+        Path indexPath = getProject().getProjectDir().toPath()
+                .resolve("metadata")
+                .resolve(group)
+                .resolve(artifact)
+                .resolve("index.json");
+        if (!Files.exists(indexPath)) {
+            throw new GradleException("Missing index.json for coordinates " + coordinate + " at " + indexPath);
+        }
+
+        List<MetadataVersionsIndexEntry> entries = OBJECT_MAPPER.readValue(indexPath.toFile(), new TypeReference<>() {});
+        MetadataVersionsIndexEntry target = entries.stream()
+                .filter(entry -> version.equals(entry.metadataVersion()))
+                .findFirst()
+                .orElse(null);
+
+        if (target == null) {
+            target = entries.stream()
+                    .filter(entry -> entry.testedVersions() != null && entry.testedVersions().contains(version))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        if (target == null) {
+            return null;
+        }
+
+        return new TargetEntry(group, artifact, version, indexPath, target);
+    }
+
+    private String buildPrompt(TargetEntry target, boolean overwriteExisting, boolean verifyArtifactSources) {
+        String indexFile = target.indexPath.toString().replace('\\', '/');
+        String metadataVersion = target.entry.metadataVersion();
+        String testVersion = hasText(target.entry.testVersion()) ? target.entry.testVersion() : metadataVersion;
+        String testedVersions = testedVersionsDisplay(target.entry.testedVersions(), metadataVersion);
+        String urlUpdateInstructions = urlUpdateInstructions(overwriteExisting);
+        String sourceArtifactVerificationInstructions = sourceArtifactVerificationInstructions(verifyArtifactSources, testedVersions);
+
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s:%s:%s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [%s].
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+                %s
+
+                Update this repository directly:
+                - File: %s
+                - Entry selector: "metadata-version" = "%s"
+                %s
+                - Set the "description" field to the selected two-sentence explanation.
+                - Set the "language" field only when the library is language-specific.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Do not use unversioned docs or "latest/current" docs.
+                - Keep all other fields unchanged.
+                - Keep JSON valid and consistently formatted.
+
+                Current URL values:
+                - source-code-url: %s
+                - repository-url: %s
+                - test-code-url: %s
+                - documentation-url: %s
+                - description: %s
+                - language: %s
+
+                Context:
+                - Coordinate version: %s
+                - Entry metadata-version: %s
+                - Entry test-version: %s
+                - Entry tested-versions: [%s]
+                """.formatted(
+                target.group,
+                target.artifact,
+                target.version,
+                testedVersions,
+                sourceArtifactVerificationInstructions,
+                indexFile,
+                metadataVersion,
+                urlUpdateInstructions,
+                currentValue(target.entry.sourceCodeUrl()),
+                currentValue(target.entry.repositoryUrl()),
+                currentValue(target.entry.testCodeUrl()),
+                currentValue(target.entry.documentationUrl()),
+                currentValue(target.entry.description()),
+                currentLanguageValue(target.entry),
+                target.version,
+                metadataVersion,
+                testVersion,
+                testedVersions
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String testedVersions) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for every entry tested-version alias ([%s]), including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                - If an existing URL can be rendered as a version template, verify the rendered candidate for every entry tested-version alias before writing the "$version$" template.
+                """.formatted(testedVersions).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+exec
+/usr/bin/bash -lc "sed -n '95,125p' docs/CONTRIBUTING.md" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+
+#### Index Entry Fields
+
+**Required Keys:**
+* `metadata-version`: Specifies the subdirectory where the GraalVM configuration files (e.g., `reflect-config.json`) reside.
+* `tested-versions`: An array of library versions verified to work with this specific metadata.
+* `allowed-packages`: An array of package prefixes. The TCK ensures that configuration entries (like reflection targets) belong strictly to these packages.
+
+**Optional Keys:**
+* `latest`: Boolean. If `true`, this is the default metadata version for the artifact.
+* `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
+* `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
+* `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
+* `source-code-url`: URL to the metadata source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+* `repository-url`: URL to the canonical project repository for this index entry.
+* `test-code-url`: URL to the test source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+* `documentation-url`: URL to the project documentation for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+* `description`: A concise explanation of the library in exactly two sentences.
+* `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
+* `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
+
+#### Comprehensive Example
+
+```json
+[
+  {
+    "allowed-packages": ["org.example.library"],
+    "metadata-version": "1.0.0",
+    "tested-versions": [
+      "1.0.0",
+      "1.0.1"
+
+exec
+/usr/bin/bash -lc "rg -n 'javadoc.io/doc|repo.maven.apache.org/.+javadoc|repo1.maven.org/.+javadoc' metadata -g 'index.json' | head -60" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.github.jnr/jnr-a64asm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-a64asm/$version$/jnr-a64asm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-javadoc.jar",
+metadata/junit/junit/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/junit/junit/$version$/junit-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/org.slf4j/jul-to-slf4j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/$version$/jul-to-slf4j-$version$-javadoc.jar",
+metadata/org.slf4j/log4j-over-slf4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/$version$/log4j-over-slf4j-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+metadata/org.codehaus.jackson/jackson-mapper-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-javadoc.jar",
+metadata/com.typesafe.play/play_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_2.13/$version$/twirl-api_2.13-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+metadata/com.mchange/mchange-commons-java/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-javadoc.jar",
+metadata/com.typesafe.play/twirl-api_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-testng/$version$/kotlin-test-testng-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo.maven.apache.org/maven2/.+sources.jar|repo1.maven.org/maven2/.+sources.jar|test-sources.jar' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-testng/$version$/kotlin-test-testng-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jsr223/$version$/kotlin-scripting-jsr223-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/$version$/kotlin-stdlib-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit5/$version$/kotlin-test-junit5-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:54:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-sources.jar https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-test-sources.jar https://javadoc.io/doc/org.apache.orc/orc-shims/1.7.8 | sed -n '1,45p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 625ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 21:44:03 GMT
+content-type: application/java-archive
+content-length: 21100
+cf-ray: 9f8ba4c08e068628-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1384392
+etag: "ca6349fe93354120bb3edeb1740109a6"
+last-modified: Mon, 16 Jan 2023 21:30:15 GMT
+x-checksum-md5: ca6349fe93354120bb3edeb1740109a6
+x-checksum-sha1: 724e3f0160f8c1a956243f37440f0a3a9b53c9ac
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 08 May 2026 21:44:04 GMT
+content-type: application/java-archive
+content-length: 9727
+cf-ray: 9f8ba4c0ae578628-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "fb79b5b3bbb8ac3e994eca8d7f55c57d"
+last-modified: Mon, 16 Jan 2023 21:30:17 GMT
+x-checksum-md5: fb79b5b3bbb8ac3e994eca8d7f55c57d
+x-checksum-sha1: ea1bcce370b098841ef1655b473c71f8604e5526
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Fri, 08 May 2026 21:44:04 GMT
+content-length: 0
+location: /doc/org.apache.orc/orc-shims/1.7.8/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=O9OS%2F1hFLtBkeH%2FfWgotJLDMNurNU1T7FMIvIguEUbseneI4sptTqRXoj9TYjch6O5oGoNDLbKr49eiTTpWF96ivUO90FeQNrNjJ5eRlPA0JFeS6sdXPdEYbbelK6gF6JOdF2u0ce0Fk"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f8ba4c2bb4ebc05-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found verified Maven source and test-source artifacts containing real Java files, plus a versioned Maven Javadoc artifact. I’m writing those into the discovered metadata file and leaving language/not-for-native-image absent because this is a JVM Java jar with class files, not a Kotlin/Groovy/Scala or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+diff --git a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+index 0f46a5484d80684bef270433e274cef95fb84102..a38d5df2b962aaa6b90e126e54f7ee83be13e9b1
+--- a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
++++ b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
++  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/orc",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
++  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+index 0f46a5484d80684bef270433e274cef95fb84102..a38d5df2b962aaa6b90e126e54f7ee83be13e9b1
+--- a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
++++ b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
++  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/orc",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
++  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.orc:orc-shims:1.7.8",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/orc",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
+  "description": "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
+  "repository-url" : "https://github.com/apache/orc",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
+  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+index 0f46a5484d80684bef270433e274cef95fb84102..a38d5df2b962aaa6b90e126e54f7ee83be13e9b1
+--- a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
++++ b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
++  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/orc",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
++  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-sources.jar https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-test-sources.jar https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-javadoc.jar | rg '"'^HTTP/'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+diff --git a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+index 0f46a5484d80684bef270433e274cef95fb84102..a38d5df2b962aaa6b90e126e54f7ee83be13e9b1
+--- a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
++++ b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
++  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/orc",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
++  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+ }
+
+ succeeded in 280ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a
+diff --git a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+index 0f46a5484d80684bef270433e274cef95fb84102..a38d5df2b962aaa6b90e126e54f7ee83be13e9b1
+--- a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
++++ b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
++  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/orc",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
++  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+ }
+
+ succeeded in 213ms:
+web search: 
+web search: org.apache.orc orc-shims 1.7.8 Maven Central
+web search: 
+web search: https://github.com/apache/orc
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/orc/orc-shims/1.7.8/orc-shims-1.7.8-sources.jar
+codex
+Updated [org.apache.orc-orc-shims-1.7.8.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json) with Maven-hosted source, test-source, and Javadoc artifact URLs, plus the canonical Apache ORC GitHub repository and a two-sentence description. The description is based on ORC Shims’ stated role as a Hadoop-version shim layer, and Apache ORC’s upstream repository is the canonical project root. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.orc/orc-shims))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. I verified the JSON with `jq`, and the rendered `1.7.8` Maven source, test-source, and Javadoc URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+index 0f46a5484d80684bef270433e274cef95fb84102..a38d5df2b962aaa6b90e126e54f7ee83be13e9b1
+--- a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
++++ b/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.orc:orc-shims:1.7.8"
++  "coordinates" : "org.apache.orc:orc-shims:1.7.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/orc",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-shims/$version$/orc-shims-$version$-javadoc.jar",
++  "description" : "ORC Shims provides Apache ORC's Java shim layer for dynamically supporting multiple Hadoop versions. It allows ORC to use newer Hadoop APIs and features without requiring a hard dependency on the latest Hadoop release."
+ }
+
+tokens used
+112,581
+Updated [org.apache.orc-orc-shims-1.7.8.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/build/discovered-artifact-metadata/org.apache.orc-orc-shims-1.7.8.json) with Maven-hosted source, test-source, and Javadoc artifact URLs, plus the canonical Apache ORC GitHub repository and a two-sentence description. The description is based on ORC Shims’ stated role as a Hadoop-version shim layer, and Apache ORC’s upstream repository is the canonical project root. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.orc/orc-shims))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. I verified the JSON with `jq`, and the rendered `1.7.8` Maven source, test-source, and Javadoc URLs all returned HTTP 200.
+Ran agent for org.apache.orc:orc-shims:1.7.8 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/build/agent-artifact-discovery-logs/org.apache.orc-orc-shims-1.7.8.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3177-7d373b8a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 55s
+9 actionable tasks: 9 executed
