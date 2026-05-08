@@ -24,6 +24,7 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.MXParser;
+import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.junit.jupiter.api.Test;
 
@@ -214,6 +215,35 @@ public class Maven_xml_implTest {
         assertThat(forcedMerge.getChild("items").getChildren("item")).extracting(Xpp3Dom::getValue)
                 .containsExactly("local");
         assertThat(Xpp3Dom.mergeXpp3Dom(null, recessive)).isSameAs(recessive);
+    }
+
+    @Test
+    void serializesXpp3DomTreeThroughXmlSerializer() throws Exception {
+        Xpp3Dom root = new Xpp3Dom("configuration");
+        root.setAttribute("enabled", "true");
+        Xpp3Dom threshold = new Xpp3Dom("threshold");
+        threshold.setValue("5");
+        Xpp3Dom nested = new Xpp3Dom("nested");
+        Xpp3Dom name = new Xpp3Dom("name");
+        name.setValue("compiler");
+        nested.addChild(name);
+        root.addChild(threshold);
+        root.addChild(nested);
+
+        StringWriter output = new StringWriter();
+        MXSerializer serializer = new MXSerializer();
+        serializer.setOutput(output);
+
+        root.writeToSerializer(null, serializer);
+        serializer.flush();
+
+        String serialized = output.toString();
+        assertThat(serialized)
+                .contains("<configuration")
+                .contains("enabled=\"true\"")
+                .contains("<threshold>5</threshold>")
+                .contains("<nested><name>compiler</name></nested>");
+        assertThat(Xpp3DomBuilder.build(new StringReader(serialized))).isEqualTo(root);
     }
 
     @Test
