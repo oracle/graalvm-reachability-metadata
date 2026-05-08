@@ -6,11 +6,9 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import groovy.json.JsonSlurper;
 import org.graalvm.internal.tck.DockerUtils;
 import org.graalvm.internal.tck.harness.TckExtension;
-import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -90,7 +88,6 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
 
         // Collect union of required docker images
         Set<String> requiredImages = new LinkedHashSet<>();
-        ObjectMapper mapper = new ObjectMapper();
 
         for (String c : matching) {
             String[] parts = c.split(":");
@@ -106,35 +103,7 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
                     .resolve(group)
                     .resolve(artifact)
                     .resolve("index.json");
-            String content = Files.readString(indexPath, StandardCharsets.UTF_8);
-
-            if (content == null || content.isBlank()) {
-                throw new GradleException("Cannot find index file at: " + indexPath);
-            }
-
-            List<MetadataVersionsIndexEntry> entries = mapper.readValue(indexPath.toFile(), new TypeReference<>() {});
- 
-            String testVersion = null;
-            // 1) Primary: when a tested-version is provided, find the entry whose tested-versions contains it
-            for (MetadataVersionsIndexEntry entry : entries) {
-                List<String> tvs = entry.testedVersions();
-                if (tvs != null && tvs.contains(version)) {
-                    // Priority: 1. test-version (if present), 2. metadata-version
-                    String tv = entry.testVersion();
-                    testVersion = (tv != null && !tv.isBlank()) ? tv : entry.metadataVersion();
-                    break;
-                }
-            }
-            // 2) Fallback: if the coordinate version is actually a metadata-version, match it directly
-            if (testVersion == null) {
-                for (MetadataVersionsIndexEntry entry : entries) {
-                    if (version.equals(entry.metadataVersion())) {
-                        String tv = entry.testVersion();
-                        testVersion = (tv != null && !tv.isBlank()) ? tv : entry.metadataVersion();
-                        break;
-                    }
-                }
-            }
+            String testVersion = resolveTestVersion(indexPath, version);
             if (testVersion != null) {
                 Path dockerImagesPath = getProject().getProjectDir().toPath()
                         .resolve("tests/src")
@@ -174,6 +143,69 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
             getLogger().lifecycle("No required docker images found for coordinates filter '{}'. If your tests use docker, please read: {}", filter,
                     URI.create("https://github.com/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#providing-the-tests-that-use-docker"));
         }
+    }
+
+    static String resolveTestVersion(Path indexPath, String version) throws IOException {
+        List<Map<String, Object>> entries = readIndexEntries(indexPath);
+
+        // 1) Primary: when a tested-version is provided, find the entry whose tested-versions contains it.
+        for (Map<String, Object> entry : entries) {
+            Object rawTestedVersions = entry.get("tested-versions");
+            if (rawTestedVersions instanceof List<?> testedVersions && testedVersions.contains(version)) {
+                return effectiveTestVersion(entry);
+            }
+        }
+
+        // 2) Fallback: if the coordinate version is itself a metadata-version, match it directly.
+        for (Map<String, Object> entry : entries) {
+            Object rawMetadataVersion = entry.get("metadata-version");
+            if (version.equals(rawMetadataVersion)) {
+                return effectiveTestVersion(entry);
+            }
+        }
+
+        return null;
+    }
+
+    private static List<Map<String, Object>> readIndexEntries(Path indexPath) throws IOException {
+        if (!Files.exists(indexPath)) {
+            throw new GradleException("Cannot find index file at: " + indexPath);
+        }
+
+        String content = Files.readString(indexPath, StandardCharsets.UTF_8);
+        if (content.isBlank()) {
+            throw new GradleException("Cannot find index file at: " + indexPath);
+        }
+
+        Object parsed = new JsonSlurper().parseText(content);
+        if (!(parsed instanceof List<?> rawEntries)) {
+            throw new GradleException("Invalid index file at: " + indexPath + ": expected a JSON array.");
+        }
+
+        List<Map<String, Object>> entries = new ArrayList<>();
+        for (Object rawEntry : rawEntries) {
+            if (!(rawEntry instanceof Map<?, ?> rawMap)) {
+                throw new GradleException("Invalid index entry in " + indexPath + ": expected a JSON object.");
+            }
+            Map<String, Object> normalizedEntry = new LinkedHashMap<>();
+            rawMap.forEach((key, value) -> normalizedEntry.put(String.valueOf(key), value));
+            entries.add(normalizedEntry);
+        }
+        return entries;
+    }
+
+    private static String effectiveTestVersion(Map<String, Object> entry) {
+        Object rawTestVersion = entry.get("test-version");
+        if (rawTestVersion instanceof String testVersion && !testVersion.isBlank()) {
+            return testVersion;
+        }
+
+        Object rawMetadataVersion = entry.get("metadata-version");
+        if (rawMetadataVersion instanceof String metadataVersion && !metadataVersion.isBlank()) {
+            return metadataVersion;
+        }
+
+        return null;
     }
 
     private static void validateRequiredImages(Set<String> requiredImages) {
